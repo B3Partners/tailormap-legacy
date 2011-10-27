@@ -11,6 +11,7 @@ var webMapController = null;
 Controller.prototype.getId = function(){
     return "Controller";
 }
+
 /******************************Static declarations***************************************/
 
 //Events:
