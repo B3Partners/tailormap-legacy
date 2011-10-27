@@ -1,4 +1,11 @@
 /*JavaScript interface class file*/
+
+/**
+ * Controller
+ * @class 
+ * @constructor
+ * @param viewerObject Het viewerObject
+ */
 function Controller(viewerObject){
     this.maps= new Array();
     this.tools= new Array();
