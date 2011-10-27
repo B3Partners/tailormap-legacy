@@ -153,6 +153,7 @@ Controller.prototype.getTool = function (id){
             return tool;
         }
     }
+    return null;
 }
 /**
  *Returns the tools that are added with type: type
@@ -287,7 +288,7 @@ Controller.prototype.getGenericEventName = function (specific){
 
 /**
  * Gets the specific name for the specified generic eventname. null or undefined if generic name does not exist.
- * @param The generic name
+ * @param generic The generic name
  * @return The specific name.
  */
 Controller.prototype.getSpecificEventName = function (generic){
