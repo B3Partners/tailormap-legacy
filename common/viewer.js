@@ -1,4 +1,3 @@
-var webMapController= null;
 var viewerType = "openlayers";
 var mapViewer = null;
 function initMapComponent(){
@@ -9,9 +8,7 @@ function initMapComponent(){
     mapViewer = new MapViewer(viewerType);
     mapViewer.init();
     
-    var map = mapViewer.createMap();
-    webMapController = mapViewer.webMapController;
-   
+    var map = mapViewer.createMap();   
     mapViewer.bind(Event.ON_CONFIG_COMPLETE,webMapController,onConfigComplete);
     mapViewer.bind(Event.ON_GET_CAPABILITIES,map,onGsdetCapabilities);
 }
