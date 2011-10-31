@@ -68,3 +68,19 @@ MapViewer.prototype.zoomToExtent = function(minx,miny,maxx,maxy){
 MapViewer.prototype.addLayer = function (layer,mapId){
     this.getMap(mapId).addLayer(layer);
 }
+
+/********************************************************************
+ *                                                                  *
+ * EventHandling                                                    *
+ *                                                                  *
+ *                                                                  *
+ ********************************************************************/
+
+MapViewer.prototype.bind = function (event,object,handler){
+    this.webMapController.registerEvent(event, object, handler);
+}
+
+MapViewer.prototype.unbind = function (event,object){
+    this.webMapController.unRegisterEvent(event, object);
+}
+

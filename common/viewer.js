@@ -12,12 +12,12 @@ function initMapComponent(){
     var map = mapViewer.createMap();
     webMapController = mapViewer.webMapController;
    
-    webMapController.registerEvent(Event.ON_GET_CAPABILITIES,map,onGetCapabilities);
-    webMapController.registerEvent(Event.ON_CONFIG_COMPLETE,webMapController,onConfigComplete);
+    mapViewer.bind(Event.ON_CONFIG_COMPLETE,webMapController,onConfigComplete);
+    mapViewer.bind(Event.ON_GET_CAPABILITIES,map,onGsdetCapabilities);
 }
 
-function onGetCapabilities(){
-// later vullen met goede dingen
+function onGsdetCapabilities(){
+    alert("OnGetCap");
 }
 
 var eerste = true;
@@ -55,8 +55,6 @@ function loadBaseLayers(){
     options["isBaseLayer"]=false;
     
     var osmLayer = mapViewer.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-    //var osmLayer = webMapController.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-    //webMapController.getMap().addLayer(osmLayer);
     mapViewer.addLayer(osmLayer);
 }
 
