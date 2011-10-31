@@ -35,10 +35,14 @@ FlamingoController.prototype.initEvents = function(){
 /**
 *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
 *@param id the id of the map that is configured in the configuration xml
+*@param options Options for the map
 *@returns a FlamingoController
 */
-FlamingoController.prototype.createMap = function(id){
-    return new FlamingoMap(id,this.viewerObject);
+FlamingoController.prototype.createMap = function(id,options){
+    var map = new FlamingoMap(id,this.viewerObject);
+    var maxExtent = options["maxExtent"];
+   // map.setMaxExtent(maxExtent);
+    return map;
 }
 
 /**

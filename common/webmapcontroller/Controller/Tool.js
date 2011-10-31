@@ -27,6 +27,7 @@ Tool.DRAW_FEATURE_POLYGON       = 15;
 Tool.prototype.getFrameworkTool = function(){
     return this.frameworkTool;
 }
+
 Tool.prototype.getType = function(){
     return this.type;
 }

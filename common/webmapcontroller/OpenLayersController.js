@@ -56,6 +56,13 @@ OpenLayersController.prototype.createMap = function(id, options){
     if (!options["theme"])
         options["theme"]=OpenLayers._getScriptLocation()+'theme/b3p/style.css';
     //create the map.
+    
+    $("#map").html(" "); // aanpassen aan id van mapdiv
+    $("#map").css("border","1px solid black"); // aanpassen aan id van mapdiv
+    var maxExtent = options["maxExtent"];
+    var maxBounds = new OpenLayers.Bounds(maxExtent.minx,maxExtent.miny,maxExtent.maxx,maxExtent.maxy);
+
+    options["maxExtent"] = maxBounds;
     var map=new OpenLayers.Map(id,options);
     map.events.register("click",webMapController, webMapController.onIdentifyHandler);
     return new OpenLayersMap(map);

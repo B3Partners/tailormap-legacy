@@ -1,36 +1,18 @@
 var webMapController= null;
 var viewerType = "openlayers";
+var mapViewer = null;
 function initMapComponent(){
-    mapviewer = viewerType;
 
-    if (window.location.href.indexOf("flamingo")>0)
-        mapviewer="flamingo";
-    if (mapviewer== "flamingo"){
-        webMapController=new FlamingoController('map'); // aanpassen aan id van div
-        var map=webMapController.createMap("map"); // aanpassen aan config.xml
-        webMapController.addMap(map);
-    }else if (mapviewer=="openlayers"){
-        webMapController= new OpenLayersController();
-        var maxBounds=new OpenLayers.Bounds(10000,304000,280000,620000);
-
-        var opt={
-            projection: new OpenLayers.Projection("EPSG:28992"),
-            maxExtent: maxBounds,
-            allOverlays: true,
-            units :'m',
-            resolutions: [512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125],
-            controls : [new OpenLayers.Control.Navigation({
-                zoomBoxEnabled: true
-            }),new OpenLayers.Control.ArgParser()],
-            events: []
-        };
-        $("#map").html(" "); // aanpassen aan id van mapdiv
-        var olmap=webMapController.createMap('map',opt); // aanpassen aan id van mapdiv
-        $("#map").css("border","1px solid black"); // aanpassen aan id van mapdiv
-        webMapController.addMap(olmap);
+    if (window.location.href.indexOf("flamingo")>0){
+        viewerType="flamingo";
     }
-    webMapController.initEvents();
-    webMapController.registerEvent(Event.ON_GET_CAPABILITIES,webMapController.getMap(),onGetCapabilities);
+    mapViewer = new MapViewer(viewerType);
+    mapViewer.init();
+    
+    var map = mapViewer.createMap();
+    webMapController = mapViewer.webMapController;
+   
+    webMapController.registerEvent(Event.ON_GET_CAPABILITIES,map,onGetCapabilities);
     webMapController.registerEvent(Event.ON_CONFIG_COMPLETE,webMapController,onConfigComplete);
 }
 
@@ -72,8 +54,10 @@ function loadBaseLayers(){
     
     options["isBaseLayer"]=false;
     
-    var osmLayer = webMapController.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-    webMapController.getMap().addLayer(osmLayer);
+    var osmLayer = mapViewer.createWMSLayer("OSM",layerUrl , ogcOptions, options);
+    //var osmLayer = webMapController.createWMSLayer("OSM",layerUrl , ogcOptions, options);
+    //webMapController.getMap().addLayer(osmLayer);
+    mapViewer.addLayer(osmLayer);
 }
 
 var mapInitialized = false;
@@ -82,17 +66,11 @@ var firstTimeOninit = true;
 function onFrameworkLoaded(){
     if (firstTimeOninit) {
         firstTimeOninit=false;
-
         moveToExtent(10000,304000,280000,620000);
     }
     mapInitialized=true;
 }
 
 function moveToExtent(minx,miny,maxx,maxy){
-    webMapController.getMap().zoomToExtent({
-        minx:minx,
-        miny:miny,
-        maxx:maxx,
-        maxy:maxy
-    }, 0);
+    mapViewer.zoomToExtent(minx, miny, maxx, maxy);
 }
