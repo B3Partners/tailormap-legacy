@@ -52,7 +52,7 @@ Feature.prototype.toFlamingoFeature = function(){
 
 /**
 * Helper function: Converts the given Flamingo Feature to the generic feature.
-* @param FlamingoFeature The FlamingoFeature to be converted
+* @param flamingoFeature The FlamingoFeature to be converted
 * @return The generic feature
 */
 Feature.prototype.fromFlamingoFeature = function(flamingoFeature){
