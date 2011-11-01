@@ -1,4 +1,11 @@
-/* The class for controls */
+/**
+ * @class 
+ * @constructor
+ * @description The class for controls 
+ * @param id The id of the tool
+ * @param frameworkObject The frameworkspecific object, to store as a reference
+ * @param type The type of tool to be created
+ */
 function Tool(id,frameworkObject,type){
     this.id=id;
     this.frameworkTool=frameworkObject;

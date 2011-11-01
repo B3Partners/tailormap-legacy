@@ -1,15 +1,28 @@
-function MapViewer(viewerType){
+/*JavaScript interface class file*/
+
+/**
+ * MapViewer
+ * @class 
+ * @constructor
+ * @param viewerType The type of the viewer: flamingo/openlayers/etc..
+ * @param mapid The id of the div in which the map has to be shown.
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ */
+
+function MapViewer(viewerType,mapId){
     this.viewerType = viewerType;
+    this.wms = null;
+    this.webMapController = null;
+    this.mapDivId = mapId;
 }
 
 MapViewer.prototype.init = function (){
     this.mapOptions = {};
-    if (viewerType== "flamingo"){
-        this.webMapController=new FlamingoController('map'); // aanpassen aan id van div
-    }else if (viewerType=="openlayers"){
+    if (this.viewerType== "flamingo"){
+        this.webMapController=new FlamingoController(this.mapDivId); // aanpassen aan id van div
+    }else if (this.viewerType=="openlayers"){
         this.webMapController= new OpenLayersController();
-        //  var maxBounds=new OpenLayers.Bounds(10000,304000,280000,620000);
-
         this.mapOptions = {
             projection: new OpenLayers.Projection("EPSG:28992"),
             allOverlays: true,
@@ -18,16 +31,15 @@ MapViewer.prototype.init = function (){
             controls : [new OpenLayers.Control.Navigation({
                 zoomBoxEnabled: true
             }),new OpenLayers.Control.ArgParser()],
-            events: [],
-            maxExtent: new OpenLayers.Bounds(101827,368579,145183,601096)
+            events: []            
         };
     }
     
-    var maxBounds = new Extent(10000, 304000,280000,620000);
-    //var maxBounds =   new Extent(101827,468579,145183,501096); // Adam extent
-    this.mapOptions.maxExtent =  maxBounds;
+    this.mapOptions.maxExtent =  new Extent(10000, 304000,280000,620000);
+    
     this.webMapController.initEvents();
-
+    // Convenience accessor for the webmapController
+    this.wmc = this.webMapController;
 }
 
 
@@ -36,24 +48,9 @@ MapViewer.prototype.createMap = function(options){
         this.mapOptions[key] = options[key];
     }
 
-    var map=this.webMapController.createMap("map",this.mapOptions); // aanpassen aan config.xml
+    var map=this.webMapController.createMap(this.mapDivId,this.mapOptions); // aanpassen aan config.xml
     this.webMapController.addMap(map);
     return map;
-}
-/**
- *Creates a layer for this framework
- *@param name the showable name of the layer
- *@param url the url to the serviceProvider
- *@param ogcParams the params that are used in the OGC-WMS request
- *@param options extra options for this wms layer
- *Must be implemented by subclass
-*/
-MapViewer.prototype.createWMSLayer = function(name, url, ogcParams,options){
-    return this.webMapController.createWMSLayer(name, url, ogcParams,options);
-}
-
-MapViewer.prototype.getMap = function (id){
-    return this.webMapController.getMap(id)
 }
 
 MapViewer.prototype.zoomToExtent = function(minx,miny,maxx,maxy){
@@ -63,10 +60,6 @@ MapViewer.prototype.zoomToExtent = function(minx,miny,maxx,maxy){
         maxx:maxx,
         maxy:maxy
     }, 0);
-}
-
-MapViewer.prototype.addLayer = function (layer,mapId){
-    this.getMap(mapId).addLayer(layer);
 }
 
 /********************************************************************

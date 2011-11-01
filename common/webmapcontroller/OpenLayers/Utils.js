@@ -1,3 +1,9 @@
+/**
+ * @class 
+ * @constructor
+ * @description
+ */
+
 function Utils(){
 }
 Utils.createBounds=function(extent){
@@ -45,22 +51,6 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
     }
 });
 
-/* Copyright (c) 2006-2008 MetaCarta, Inc., published under the Clear BSD
- * license.  See http://svn.openlayers.org/trunk/openlayers/license.txt for the
- * full text of the license. */
-
-/**
- * @requires OpenLayers/Control.js
- *
- * Class: OpenLayers.Control.LoadingPanel
- * In some applications, it makes sense to alert the user that something is
- * happening while tiles are loading. This control displays a div across the
- * map when this is going on.
- * SRC: http://svn.openlayers.org/addins/loadingPanel/trunk/
- *
- * Inherits from:
- *  - <OpenLayers.Control>
- */
 OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
 
     /**

@@ -1,4 +1,10 @@
-/** Flamingomap */
+/** 
+ * Flamingomap 
+ * @class 
+ * @constructor
+ * @description
+ * 
+ */
 function FlamingoMap(id,flamingoObject){
     if (id==undefined || flamingoObject==undefined)
         throw("FlamingoMap.constructor: Id or Flamingo object is undefined");

@@ -1,4 +1,8 @@
-/** The FlamingoVectorLayer class. In flamingo also known as EditMap. **/
+/**
+ * @class 
+ * @constructor
+ * @description The FlamingoVectorLayer class. In flamingo also known as EditMap. 
+ **/
 function FlamingoVectorLayer(id,flamingoObject){
     FlamingoLayer.call(this,id,null,flamingoObject);
     this.layerName = "layer1";

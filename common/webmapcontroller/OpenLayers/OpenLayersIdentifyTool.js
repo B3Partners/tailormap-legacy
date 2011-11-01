@@ -1,5 +1,7 @@
 /**
- *An identify tool
+ * @class 
+ * @constructor
+ * @description An identify tool
  */
 function OpenLayersIdentifyTool(id,olControlObject,type){
     if (type!=Tool.GET_FEATURE_INFO){

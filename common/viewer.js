@@ -5,11 +5,11 @@ function initMapComponent(){
     if (window.location.href.indexOf("flamingo")>0){
         viewerType="flamingo";
     }
-    mapViewer = new MapViewer(viewerType);
+    mapViewer = new MapViewer(viewerType,"map");
     mapViewer.init();
     
     var map = mapViewer.createMap();   
-    mapViewer.bind(Event.ON_CONFIG_COMPLETE,webMapController,onConfigComplete);
+    mapViewer.bind(Event.ON_CONFIG_COMPLETE,mapViewer.wmc,onConfigComplete);
     mapViewer.bind(Event.ON_GET_CAPABILITIES,map,onGsdetCapabilities);
 }
 
@@ -51,8 +51,8 @@ function loadBaseLayers(){
     
     options["isBaseLayer"]=false;
     
-    var osmLayer = mapViewer.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-    mapViewer.addLayer(osmLayer);
+    var osmLayer = mapViewer.wmc.createWMSLayer("OSM",layerUrl , ogcOptions, options);
+    mapViewer.wmc.getMap().addLayer(osmLayer);
 }
 
 var mapInitialized = false;

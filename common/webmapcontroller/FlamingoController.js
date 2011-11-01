@@ -1,5 +1,10 @@
 /**
- *Controller subclass for Flamingo
+ * @class 
+ * @constructur
+ * @augments Controller
+ * @description Controller subclass for Flamingo
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/
 function FlamingoController(domId){
     var so = new SWFObject("flamingo/flamingo.swf?config=/config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
@@ -32,6 +37,7 @@ FlamingoController.prototype.initEvents = function(){
 
 }
 
+FlamingoController.prototype.aap = 0;
 /**
 *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
 *@param id the id of the map that is configured in the configuration xml
@@ -258,6 +264,5 @@ function dispatchEventJS(event, comp) {
         comp[0] = webMapController.getId();
         comp[1] = new Object();
     }
-    
-    webMapController.handleEvents(event,comp);
+    mapViewer.wmc.handleEvents(event,comp);
 }

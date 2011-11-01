@@ -1,5 +1,10 @@
 /**
- *Controller subclass for OpenLayers
+ * @class
+ * @constructor
+ * @augments Controller
+ * @description Controller subclass for OpenLayers
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 function OpenLayersController(){
     this.pointButton = null;
@@ -11,7 +16,10 @@ function OpenLayersController(){
 OpenLayersController.prototype = new Controller();
 OpenLayersController.prototype.constructor=OpenLayersController;
 
-        
+/**
+ * @function
+ * @description Initializes the events
+ */
 OpenLayersController.prototype.initEvents = function(){
     this.eventList[Event.ON_EVENT_DOWN]                             = "activate";
     this.eventList[Event.ON_EVENT_UP]                               = "deactivate";
@@ -27,11 +35,11 @@ OpenLayersController.prototype.initEvents = function(){
     this.eventList[Event.ON_FINISHED_CHANGE_EXTENT]                 = "zoomend";
     this.eventList[Event.ON_CHANGE_EXTENT]                          = "move";
 }
+
 /**
-     *Gets the panel of this controller and OpenLayers.Map. If the panel is still
-     *null, the panel is created and added to the map.
-     *@return a OpenLayers.Control.Panel
-     */
+* @description Gets the panel of this controller and OpenLayers.Map. If the panel is still null, the panel is created and added to the map.
+* @returns a OpenLayers.Control.Panel
+*/
 OpenLayersController.prototype.getPanel = function(){
     if (this.panel==null){
         this.panel=new OpenLayers.Control.Panel();
@@ -40,25 +48,34 @@ OpenLayersController.prototype.getPanel = function(){
     return this.panel;
 }
 
+/**
+* @description Creates a OpenLayers.Control.Panel and adds it to the map
+*/
 OpenLayersController.prototype.createPanel = function (id){
     var paneel= new OpenLayers.Control.Panel();
     this.panel = paneel;
     this.maps[0].getFrameworkMap().addControl(this.panel);
 }
 /**
-     *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
-     *@param id the id the DomElement where the map must be set
-     *@param options extra options for the map. See the OpenLayers.Map docs.
-     *@returns a OpenLayersMap
-     */
+ * @description Creates a Openlayers.Map object for this framework. See the openlayers.map docs
+ *@param id the id the DomElement where the map must be set
+ *@param options extra options for the map. See the OpenLayers.Map docs.
+ *@returns a OpenLayersMap
+ */
 OpenLayersController.prototype.createMap = function(id, options){
     //set some default options:
     if (!options["theme"])
         options["theme"]=OpenLayers._getScriptLocation()+'theme/b3p/style.css';
     //create the map.
-    
-    $("#map").html(" "); // aanpassen aan id van mapdiv
-    $("#map").css("border","1px solid black"); // aanpassen aan id van mapdiv
+    Ext.fly("map").replaceWith(
+        {
+            tag:'div',
+            id: "map",
+            style: {
+                border: '1px solid black'
+            }
+        }
+    );
     var maxExtent = options["maxExtent"];
     var maxBounds = new OpenLayers.Bounds(maxExtent.minx,maxExtent.miny,maxExtent.maxx,maxExtent.maxy);
 
@@ -75,6 +92,7 @@ OpenLayersController.prototype.createWMSLayer = function(name, wmsurl,ogcParams,
     options["id"]=null;
     options["isBaseLayer"]=false;
     options["singleTile"]=true;
+    options["transitionEffect"] = "resize";
     options["events"] = new Object();
     var wmsLayer = new OpenLayersWMSLayer(new OpenLayers.Layer.WMS(name,wmsurl,ogcParams,options),name);
     if(ogcParams["query_layers"] != null && ogcParams["query_layers"] != ""){
@@ -106,7 +124,7 @@ OpenLayersController.prototype.createWMSLayer = function(name, wmsurl,ogcParams,
     return wmsLayer;
 }
 /**
- *See @link Controller.createTMSLayer
+ *see {@link Controller.createTMSLayer} sdf
  */
 OpenLayersController.prototype.createTMSLayer = function (name,url, options){
     var tmsLayer= new OpenLayersTMSLayer(new OpenLayers.Layer.TMS(name,url,options),name);
@@ -559,7 +577,7 @@ OpenLayersController.prototype.onIdentifyHandler = function(extent){
     }
 }
 
-$(document).ready(function() {
+Ext.onReady(function() {
     if( webMapController instanceof OpenLayersController){
         var specificName = webMapController.getSpecificEventName(Event.ON_CONFIG_COMPLETE);
         webMapController.handleEvent(specificName);

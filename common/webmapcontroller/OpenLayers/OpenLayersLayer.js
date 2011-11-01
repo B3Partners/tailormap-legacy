@@ -1,4 +1,8 @@
-
+/**
+ * @class 
+ * @constructor
+ * @description
+ */
 function OpenLayersLayer(olLayerObject,id){
     if (!olLayerObject instanceof OpenLayers.Layer){
         throw("The given layer object is not of type 'OpenLayers.Layer'. But: "+olLayerObject);
@@ -9,8 +13,8 @@ OpenLayersLayer.prototype = new Layer();
 OpenLayersLayer.prototype.constructor = OpenLayersLayer;
 
 /**
-     *see @link Layer.getOption
-     */
+ *see @link Layer.getOption
+ */
 OpenLayersLayer.prototype.getOption = function(optionKey){
     var lowerOptionKey=optionKey.toLowerCase();
     for (var key in this.getFrameworkLayer().options){

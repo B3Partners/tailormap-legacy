@@ -1,4 +1,8 @@
-
+/**
+ * @class 
+ * @constructor
+ * @description
+ */
 function OpenLayersTool(id,olControlObject,type,addToPanel){
     this.controls = new Array();
     this.onActiveHandler = new Object();

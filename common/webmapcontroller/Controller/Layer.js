@@ -1,4 +1,13 @@
-/*  The superclass for all layers */
+/**  
+ * Layer
+ * @class 
+ * @constructor
+ * @description The superclass for all layers 
+ * @param frameworkLayer The frameworkspecific layer
+ * @param id The id of the layer
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ */
 
 function Layer(frameworkLayer,id){
     this.frameworkLayer=frameworkLayer;

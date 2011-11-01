@@ -1,4 +1,8 @@
-
+/**
+ * @class 
+ * @constructor
+ * @description
+ */
 function OpenLayersWMSLayer(olLayerObject,id){
     if (!olLayerObject instanceof OpenLayers.Layer.WMS){
         throw("The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+olLayerObject);

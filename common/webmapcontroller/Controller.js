@@ -5,6 +5,8 @@
  * @class 
  * @constructor
  * @param viewerObject Het viewerObject
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 function Controller(viewerObject){
     this.maps= new Array();
@@ -18,38 +20,6 @@ var webMapController = null;
 Controller.prototype.getId = function(){
     return "Controller";
 }
-
-/******************************Static declarations***************************************/
-
-//Events:
-//Controller events:                        0 - 10
-Event.ON_CONFIG_COMPLETE                    = 0;
-Event.ON_SET_TOOL                           = 1;
-    
-// Map events:                              11 - 50
-Event.ON_GET_FEATURE_INFO                   = 11;
-Event.ON_GET_FEATURE_INFO_DATA              = 12;
-Event.ON_ALL_LAYERS_LOADING_COMPLETE        = 13;
-Event.ON_CHANGE_EXTENT                      = 14;
-Event.ON_FINISHED_CHANGE_EXTENT             = 15;
-
-
-// Layer events:                            50 - 100
-Event.ON_GET_CAPABILITIES                   = 50;
-Event.ON_FEATURE_ADDED                      = 51;
-Event.ON_REQUEST                            = 52;
-Event.ON_LOADING_START                      = 53;
-Event.ON_LOADING_END                        = 54;
-    
-// Tool events:                             100 - 150
-Event.ON_EVENT_DOWN                         = 100;
-Event.ON_EVENT_UP                           = 101;
-Event.ON_CLICK                              = 102;
-Event.ON_MEASURE                            = 103;
-
-// Shared evens:                            150 - ...
-Event.ON_ONIT                               = 150;  // Shared by
-    
 	
 /**
  *Create functions. SubClass needs to implement these so the user can
@@ -68,11 +38,12 @@ Controller.prototype.createWMSLayer = function(name, url, ogcParams,options){
     throw("Controller.createWMSLayer() Not implemented! Must be implemented in sub-class");
 }
 /**
- *Creates a OSGEO TMS layer.
- *@param id the id of the layer
- *@param name the showable name of the layer
- *@param url the url to the tms service
- *@param options extra options for this TMS layer
+ * @description Creates a OSGEO TMS layer.
+ * @param id the id of the layer
+ * @param name the showable name of the layer
+ * @param url the url to the tms service
+ * @param options extra options for this TMS layer
+ * @returns Returns the TMSLayer
  */
 Controller.prototype.createTMSLayer = function (id,name,url, options){
     throw("Controller.createTMSLayer() Not implemented! Must be implemented in sub-class");

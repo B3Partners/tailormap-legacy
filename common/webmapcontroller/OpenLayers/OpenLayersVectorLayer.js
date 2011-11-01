@@ -1,6 +1,7 @@
-
 /**
- *Vector layer
+ * @class 
+ * @constructor
+ * @description A drawable vector layer
  */
 function OpenLayersVectorLayer(olLayerObject,id){
     if (!olLayerObject instanceof OpenLayers.Layer.Vector){

@@ -1,4 +1,8 @@
-/** The flamingo Tool Class **/
+/** 
+ * @class 
+ * @constructor
+ * @description The flamingo Tool Class 
+ **/
 function FlamingoTool(id,flamingoObject){
     Tool.call(this,id,flamingoObject);
 }

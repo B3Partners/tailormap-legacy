@@ -1,4 +1,8 @@
-/** Flamingo WMS layer class **/
+/**
+ * @class 
+ * @constructor
+ * @description Flamingo WMS layer class 
+ **/
 function FlamingoWMSLayer(id,options,flamingoObject){
     FlamingoLayer.call(this,id,options,flamingoObject);
     this.url=null;
