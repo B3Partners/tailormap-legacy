@@ -6,6 +6,7 @@
 
 function Utils(){
 }
+
 Utils.createBounds=function(extent){
     return new OpenLayers.Bounds(extent.minx,extent.miny,extent.maxx,extent.maxy);
 }

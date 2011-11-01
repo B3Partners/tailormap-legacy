@@ -5,14 +5,14 @@
  * @class 
  * @constructor
  * @param viewerType The type of the viewer: flamingo/openlayers/etc..
- * @param mapid The id of the div in which the map has to be shown.
+ * @param mapId The id of the div in which the map has to be shown.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 
 function MapViewer(viewerType,mapId){
     this.viewerType = viewerType;
-    this.wms = null;
+    this.wmc = null;
     this.webMapController = null;
     this.mapDivId = mapId;
 }
@@ -42,12 +42,11 @@ MapViewer.prototype.init = function (){
     this.wmc = this.webMapController;
 }
 
-
-MapViewer.prototype.createMap = function(options){
-    for (var key in options){
-        this.mapOptions[key] = options[key];
+MapViewer.prototype.createMap = function(opts){
+    var a= 0;
+    for (var key in opts){
+        this.mapOptions[key] = opts[key];
     }
-
     var map=this.webMapController.createMap(this.mapDivId,this.mapOptions); // aanpassen aan config.xml
     this.webMapController.addMap(map);
     return map;

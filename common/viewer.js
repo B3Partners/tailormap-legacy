@@ -13,8 +13,72 @@ function initMapComponent(){
     mapViewer.bind(Event.ON_GET_CAPABILITIES,map,onGsdetCapabilities);
 }
 
+
+function initializeButtons(){
+    /*ie bug fix*/
+    if (Ext.isIE && (Ext.isIE7 || Ext.isIE6)){
+        var viewport= document.getElementById('OpenLayers.Map_2_OpenLayers_ViewPort');
+        if (viewport){
+            viewport.style.position="absolute";
+        }
+    }
+    webMapController.createPanel("toolGroup");
+  //  webMapController.registerEvent(Event.ON_ALL_LAYERS_LOADING_COMPLETE,webMapController.getMap(), onAllLayersFinishedLoading);
+
+    webMapController.addTool(webMapController.createTool("loading",Tool.LOADING_BAR));
+
+    zoomBox = webMapController.createTool("toolZoomin",Tool.ZOOM_BOX, {title: 'Inzomen met selectie'});
+    webMapController.addTool(zoomBox);
+
+    pan = webMapController.createTool("b_pan",Tool.PAN, {title: 'Verschuiven'});
+    webMapController.addTool(pan);
+    webMapController.activateTool("b_pan");
+
+    prevExtent = webMapController.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {title: 'Vorige extent'});
+    webMapController.addTool(prevExtent);
+
+    /*var options = new Object();
+    options["handlerGetFeatureHandler"] = onIdentifyData;
+    options["handlerBeforeGetFeatureHandler"] = onIdentify;
+    options["title"]="Ophalen gegevens";
+    identify = webMapController.createTool("identify",Tool.GET_FEATURE_INFO,options);
+    webMapController.addTool(identify);
+    webMapController.registerEvent(Event.ON_SET_TOOL,identify,onChangeTool);*/
+
+    var editLayer = webMapController.createVectorLayer("editMap",{displayInLayerSwitcher: false});
+    webMapController.getMap().addLayer(editLayer);
+    webMapController.getMap().setLayerIndex(editLayer, webMapController.getMap().getLayers().length);
+
+
+    var edittingtb = webMapController.createTool("redLiningContainer",Tool.DRAW_FEATURE, {layer: editLayer});
+    webMapController.addTool(edittingtb);
+
+
+    var bu_removePolygons = webMapController.createTool("b_removePolygons",Tool.BUTTON, {layer: editLayer, title: 'Verwijder object'});
+    webMapController.registerEvent(Event.ON_EVENT_DOWN,bu_removePolygons,b_removePolygons);
+    webMapController.addTool(bu_removePolygons);
+    
+    var bu_measure = webMapController.createTool("b_measure",Tool.MEASURE, {title: 'Meten'});
+    //webMapController.registerEvent(Event.ON_MEASURE,bu_measure,measured);
+    webMapController.addTool(bu_measure);
+
+    var scalebar = webMapController.createTool("scalebar",Tool.SCALEBAR);
+    webMapController.addTool(scalebar);
+
+    var zoombar= webMapController.createTool("zoombar",Tool.ZOOM_BAR);
+    webMapController.addTool(zoombar);
+}
+
+/**
+ * Alle geïmplementeerde eventhandling functies
+ */
+function b_removePolygons(id,params){
+    mapViewer.wmc.getMap().getLayer("editMap").removeAllFeatures();
+}
+
+
 function onGsdetCapabilities(){
-    alert("OnGetCap");
+ //   alert("OnGetCap");
 }
 
 var eerste = true;
@@ -22,6 +86,7 @@ function onConfigComplete(){
     if(eerste){
         loadBaseLayers();
         onFrameworkLoaded();
+        initializeButtons();
         eerste = false;
     }
 }

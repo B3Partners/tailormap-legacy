@@ -67,10 +67,10 @@ OpenLayersController.prototype.createMap = function(id, options){
     if (!options["theme"])
         options["theme"]=OpenLayers._getScriptLocation()+'theme/b3p/style.css';
     //create the map.
-    Ext.fly("map").replaceWith(
+    Ext.fly(id).replaceWith(
         {
             tag:'div',
-            id: "map",
+            id: id,
             style: {
                 border: '1px solid black'
             }
@@ -327,7 +327,7 @@ OpenLayersController.prototype.addTool = function(tool){
         }
     }else if (tool.getType()==Tool.NAVIGATION_HISTORY){
         this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-        this.getPanel().addControls([tool.getFrameworkTool().next, tool.getFrameworkTool().previous]);
+        this.getPanel().addControls([tool.getFrameworkTool().previous,tool.getFrameworkTool().next]);
     }else if (tool.getType() == Tool.CLICK){
         this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         this.getPanel().addControls([tool.getFrameworkTool().button]);
