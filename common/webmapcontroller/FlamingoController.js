@@ -47,7 +47,7 @@ FlamingoController.prototype.aap = 0;
 FlamingoController.prototype.createMap = function(id,options){
     var map = new FlamingoMap(id,this.viewerObject);
     var maxExtent = options["maxExtent"];
-   // map.setMaxExtent(maxExtent);
+    // map.setMaxExtent(maxExtent);
     return map;
 }
 
@@ -70,6 +70,27 @@ FlamingoController.prototype.createWMSLayer = function(name, url,ogcParams,optio
         }
     }
     return new FlamingoWMSLayer(id,object,this.viewerObject);
+}
+
+FlamingoController.prototype.createArcIMSLayer = function(name,server,servlet,mapservice,ogcParams,options){
+    var object=new Object();
+    object["name"]=name;
+    object["server"]=server;
+    object["servlet"]=servlet;
+    object["mapservice"]=mapservice;
+    var id=null;
+    
+    for (var key in ogcParams){
+        object[key]=ogcParams[key];
+    }
+    for (var key in options){
+        if (key.toLowerCase()=="id"){
+            id=options[key];
+        }else{
+            object[key]=options[key];
+        }
+    }
+    return new FlamingoArcIMSLayer(id,object,this.viewerObject);
 }
 /**
 * See @link Controller.createTool
