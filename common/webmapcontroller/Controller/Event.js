@@ -55,3 +55,6 @@ Event.ON_MEASURE                            = 103;
 // Shared evens:                            150 - ...
 /** @field */
 Event.ON_ONIT                               = 150;  // Shared by
+
+Event.ON_LAYER_SWITCHED_OFF                 = "layerSwitchedOff";
+Event.ON_LAYER_SWITCHED_ON                 = "layerSwitchedOn";

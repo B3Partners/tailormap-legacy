@@ -4,7 +4,7 @@ function TOC(divId, mapViewer,options){
     this.div = divId;
     this.options = options;
     this.loadTree();
-    this.addEvents('layerSwitchedOff','layerSwitchedOff');
+    this.addEvents(Event.ON_LAYER_SWITCHED_OFF,Event.ON_LAYER_SWITCHED_ON);
     
     Layer.call(this);
 }
@@ -120,9 +120,9 @@ TOC.prototype.checkboxClicked = function(nodeObj,checked,toc){
         toc.toc.mapViewer.wmc.getMap().addLayer(laag);
         nodeObj.data.layerObj = laag;
         nodeObj.updateInfo();
-        toc.toc.fireEvent("layerSwitchedOn",this,laag);
+        toc.toc.fireEvent(Event.ON_LAYER_SWITCHED_ON,this,laag);
     }else{
         toc.toc.mapViewer.wmc.getMap().removeLayer(layer)
-        toc.toc.fireEvent("layerSwitchedOff",this,layer);
+        toc.toc.fireEvent(Event.ON_LAYER_SWITCHED_OFF,this,layer);
     }
 }

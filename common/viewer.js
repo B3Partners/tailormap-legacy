@@ -88,8 +88,8 @@ function loadTOC(){
     
     var eind = new Date();
     var totaal = eind.getTime() - begin.getTime();
-    mapViewer.bind("layerSwitchedOn",toc,callBack)
-    mapViewer.bind("layerSwitchedOff",toc,callBack)
+    mapViewer.bind(Event.ON_LAYER_SWITCHED_ON,toc,callBack)
+    mapViewer.bind(Event.ON_LAYER_SWITCHED_OFF,toc,callBack)
 }
 
 /**
