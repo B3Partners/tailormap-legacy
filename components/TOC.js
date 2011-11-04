@@ -4,6 +4,22 @@ function TOC(divId, mapViewer,options){
     this.div = divId;
     this.options = options;
     this.loadTree();
+    this.addEvents('pipo');
+    
+    Layer.call(this);
+}
+
+TOC.prototype = new Component();
+TOC.prototype.constructor = TOC;
+
+TOC.prototype.bind = function(event,handler){
+    this.addListener(event,handler);
+    var a = 0;
+}
+
+TOC.prototype.fire = function(event){
+    this.fireEvent(event,this);
+    var a = 0;
 }
 
 TOC.prototype.loadTree = function(){

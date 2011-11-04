@@ -88,17 +88,6 @@ function loadTOC(){
     
     var eind = new Date();
     var totaal = eind.getTime() - begin.getTime();
-
-    Ext.fly("aap").replaceWith(
-    {
-        tag:'span',
-        id: "aap",
-        html:"Klaar in:" + totaal,
-        style: {
-            border: '1px solid black'
-        }
-    }
-    );
 }
 
 /**
@@ -108,6 +97,9 @@ function b_removePolygons(id,params){
     mapViewer.wmc.getMap().getLayer("editMap").removeAllFeatures();
 }
 
+function callBack(){
+    alert("asdf");
+}
 
 function onGsdetCapabilities(){
 //   alert("OnGetCap");
