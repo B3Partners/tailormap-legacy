@@ -37,7 +37,6 @@ FlamingoController.prototype.initEvents = function(){
 
 }
 
-FlamingoController.prototype.aap = 0;
 /**
 *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
 *@param id the id of the map that is configured in the configuration xml

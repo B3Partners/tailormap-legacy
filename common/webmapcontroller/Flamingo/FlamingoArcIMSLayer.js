@@ -22,7 +22,7 @@ FlamingoArcIMSLayer.prototype.toXML = function(){
     var xml="<fmc:";
     xml+=this.getTagName();
     xml+=" xmlns:fmc=\"fmc\"";
-   // xml+=" id=\""+this.getId()+"\"";
+    xml+=" id=\""+this.getId()+"\"";
     //fix for SLD support in flamingo
     if (this.getOption("sld") && this.getOption("url")){
         xml+=this.getOption("url").indexOf("?")>=0 ? "&" : "?";
@@ -71,7 +71,7 @@ FlamingoArcIMSLayer.prototype.reload = function (){
 
 
 FlamingoArcIMSLayer.prototype.getName = function (){
-    return this.name;
+    return this.options["name"];
 }
 
 FlamingoArcIMSLayer.prototype.getServer = function (){

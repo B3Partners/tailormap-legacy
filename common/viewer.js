@@ -1,9 +1,9 @@
-var viewerType = "openlayers";
+var viewerType = "flamingo";
 var mapViewer = null;
 function initMapComponent(){
 
-    if (window.location.href.indexOf("flamingo")>0){
-        viewerType="flamingo";
+    if (window.location.href.indexOf("openlayers")>0){
+        viewerType="openlayers";
     }
     mapViewer = new MapViewer(viewerType,"map");
     mapViewer.init();
@@ -13,6 +13,7 @@ function initMapComponent(){
     mapViewer.bind(Event.ON_GET_CAPABILITIES,map,onGsdetCapabilities);
 }
 
+var toc = null;
 
 function initializeButtons(){
     /*ie bug fix*/
@@ -23,42 +24,49 @@ function initializeButtons(){
         }
     }
     webMapController.createPanel("toolGroup");
-  //  webMapController.registerEvent(Event.ON_ALL_LAYERS_LOADING_COMPLETE,webMapController.getMap(), onAllLayersFinishedLoading);
+    //  webMapController.registerEvent(Event.ON_ALL_LAYERS_LOADING_COMPLETE,webMapController.getMap(), onAllLayersFinishedLoading);
 
     webMapController.addTool(webMapController.createTool("loading",Tool.LOADING_BAR));
 
-    zoomBox = webMapController.createTool("toolZoomin",Tool.ZOOM_BOX, {title: 'Inzomen met selectie'});
+    zoomBox = webMapController.createTool("toolZoomin",Tool.ZOOM_BOX, {
+        title: 'Inzomen met selectie'
+    });
     webMapController.addTool(zoomBox);
 
-    pan = webMapController.createTool("b_pan",Tool.PAN, {title: 'Verschuiven'});
+    pan = webMapController.createTool("b_pan",Tool.PAN, {
+        title: 'Verschuiven'
+    });
     webMapController.addTool(pan);
     webMapController.activateTool("b_pan");
 
-    prevExtent = webMapController.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {title: 'Vorige extent'});
+    prevExtent = webMapController.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {
+        title: 'Vorige extent'
+    });
     webMapController.addTool(prevExtent);
 
-    /*var options = new Object();
-    options["handlerGetFeatureHandler"] = onIdentifyData;
-    options["handlerBeforeGetFeatureHandler"] = onIdentify;
-    options["title"]="Ophalen gegevens";
-    identify = webMapController.createTool("identify",Tool.GET_FEATURE_INFO,options);
-    webMapController.addTool(identify);
-    webMapController.registerEvent(Event.ON_SET_TOOL,identify,onChangeTool);*/
-
-    var editLayer = webMapController.createVectorLayer("editMap",{displayInLayerSwitcher: false});
+    var editLayer = webMapController.createVectorLayer("editMap",{
+        displayInLayerSwitcher: false
+    });
     webMapController.getMap().addLayer(editLayer);
     webMapController.getMap().setLayerIndex(editLayer, webMapController.getMap().getLayers().length);
 
 
-    var edittingtb = webMapController.createTool("redLiningContainer",Tool.DRAW_FEATURE, {layer: editLayer});
+    var edittingtb = webMapController.createTool("redLiningContainer",Tool.DRAW_FEATURE, {
+        layer: editLayer
+    });
     webMapController.addTool(edittingtb);
 
 
-    var bu_removePolygons = webMapController.createTool("b_removePolygons",Tool.BUTTON, {layer: editLayer, title: 'Verwijder object'});
+    var bu_removePolygons = webMapController.createTool("b_removePolygons",Tool.BUTTON, {
+        layer: editLayer, 
+        title: 'Verwijder object'
+    });
     webMapController.registerEvent(Event.ON_EVENT_DOWN,bu_removePolygons,b_removePolygons);
     webMapController.addTool(bu_removePolygons);
     
-    var bu_measure = webMapController.createTool("b_measure",Tool.MEASURE, {title: 'Meten'});
+    var bu_measure = webMapController.createTool("b_measure",Tool.MEASURE, {
+        title: 'Meten'
+    });
     //webMapController.registerEvent(Event.ON_MEASURE,bu_measure,measured);
     webMapController.addTool(bu_measure);
 
@@ -67,6 +75,30 @@ function initializeButtons(){
 
     var zoombar= webMapController.createTool("zoombar",Tool.ZOOM_BAR);
     webMapController.addTool(zoombar);
+}
+
+function loadTOC(){
+    
+    loadAvo();
+    loadOmgevingsVisie();
+    var begin = new Date();
+    
+    toc = new TOC("tree-div",mapViewer,{});
+    toc.addArcIMS();
+    
+    var eind = new Date();
+    var totaal = eind.getTime() - begin.getTime();
+
+    Ext.fly("aap").replaceWith(
+    {
+        tag:'span',
+        id: "aap",
+        html:"Klaar in:" + totaal,
+        style: {
+            border: '1px solid black'
+        }
+    }
+    );
 }
 
 /**
@@ -78,7 +110,7 @@ function b_removePolygons(id,params){
 
 
 function onGsdetCapabilities(){
- //   alert("OnGetCap");
+//   alert("OnGetCap");
 }
 
 var eerste = true;
@@ -87,6 +119,7 @@ function onConfigComplete(){
         loadBaseLayers();
         onFrameworkLoaded();
         initializeButtons();
+        loadTOC();
         eerste = false;
     }
 }
