@@ -88,6 +88,8 @@ function loadTOC(){
     
     var eind = new Date();
     var totaal = eind.getTime() - begin.getTime();
+    mapViewer.bind("layerSwitchedOn",toc,callBack)
+    mapViewer.bind("layerSwitchedOff",toc,callBack)
 }
 
 /**
@@ -97,8 +99,8 @@ function b_removePolygons(id,params){
     mapViewer.wmc.getMap().getLayer("editMap").removeAllFeatures();
 }
 
-function callBack(){
-    alert("asdf");
+function callBack(a,b,c){
+    console.log(b.getName());
 }
 
 function onGsdetCapabilities(){

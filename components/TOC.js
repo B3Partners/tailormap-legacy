@@ -4,7 +4,7 @@ function TOC(divId, mapViewer,options){
     this.div = divId;
     this.options = options;
     this.loadTree();
-    this.addEvents('pipo');
+    this.addEvents('layerSwitchedOff','layerSwitchedOff');
     
     Layer.call(this);
 }
@@ -14,12 +14,6 @@ TOC.prototype.constructor = TOC;
 
 TOC.prototype.bind = function(event,handler){
     this.addListener(event,handler);
-    var a = 0;
-}
-
-TOC.prototype.fire = function(event){
-    this.fireEvent(event,this);
-    var a = 0;
 }
 
 TOC.prototype.loadTree = function(){
@@ -126,7 +120,9 @@ TOC.prototype.checkboxClicked = function(nodeObj,checked,toc){
         toc.toc.mapViewer.wmc.getMap().addLayer(laag);
         nodeObj.data.layerObj = laag;
         nodeObj.updateInfo();
+        toc.toc.fireEvent("layerSwitchedOn",this,laag);
     }else{
         toc.toc.mapViewer.wmc.getMap().removeLayer(layer)
+        toc.toc.fireEvent("layerSwitchedOff",this,layer);
     }
 }
