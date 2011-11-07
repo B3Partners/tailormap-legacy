@@ -19,8 +19,8 @@ FlamingoController.prototype = new Controller();
 FlamingoController.prototype.constructor=FlamingoController;
 
 /**
-* Initialize the events. These events are specific for flamingo.
-*/
+ * Initialize the events. These events are specific for flamingo.
+ */
 FlamingoController.prototype.initEvents = function(){
     this.eventList[Event.ON_EVENT_DOWN]              	= "onEvent";
     this.eventList[Event.ON_EVENT_UP]                	= "onEvent";
@@ -38,11 +38,11 @@ FlamingoController.prototype.initEvents = function(){
 }
 
 /**
-*Creates a Openlayers.Map object for this framework. See the openlayers.map docs
-*@param id the id of the map that is configured in the configuration xml
-*@param options Options for the map
-*@returns a FlamingoController
-*/
+ *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
+ *@param id the id of the map that is configured in the configuration xml
+ *@param options Options for the map
+ *@returns a FlamingoController
+ */
 FlamingoController.prototype.createMap = function(id,options){
     var map = new FlamingoMap(id,this.viewerObject);
     var maxExtent = options["maxExtent"];
@@ -51,8 +51,8 @@ FlamingoController.prototype.createMap = function(id,options){
 }
 
 /**
-*See @link Controller.createWMSLayer
-*/
+ *See @link Controller.createWMSLayer
+ */
 FlamingoController.prototype.createWMSLayer = function(name, url,ogcParams,options){
     var object=new Object();
     object["name"]=name;
@@ -92,9 +92,9 @@ FlamingoController.prototype.createArcIMSLayer = function(name,server,servlet,ma
     return new FlamingoArcIMSLayer(id,object,this.viewerObject);
 }
 /**
-* See @link Controller.createTool
-* TODO: make the parameter layer part of the options. 
-*/
+ * See @link Controller.createTool
+ * TODO: make the parameter layer part of the options. 
+ */
 FlamingoController.prototype.createTool= function (id,type,options){
     var tool = new FlamingoTool(id,this.viewerObject);
     if(type == Tool.GET_FEATURE_INFO){
@@ -105,21 +105,21 @@ FlamingoController.prototype.createTool= function (id,type,options){
 }
 
 /**
-* See @link Controller.createVectorLayer
-*/
+ * See @link Controller.createVectorLayer
+ */
 FlamingoController.prototype.createVectorLayer = function (id){
     return new FlamingoVectorLayer(id,this.viewerObject);
 }
 
 /**
-* See @link Controller.createPanel
-*/
+ * See @link Controller.createPanel
+ */
 FlamingoController.prototype.createPanel = function (name){
     this.panel = name;
 }
 /**
-*See @link Controller.addTool
-*/
+ *See @link Controller.addTool
+ */
 FlamingoController.prototype.addTool = function(tool){
     if (!(tool instanceof FlamingoTool)){
         throw("The given tool is not of type 'FlamingoTool'");
@@ -129,15 +129,15 @@ FlamingoController.prototype.addTool = function(tool){
 }
 
 /**
-*See @link Controller.activateTool
-*/
+ *See @link Controller.activateTool
+ */
 FlamingoController.prototype.activateTool = function (id){
     this.viewerObject.call(this.panel, "setTool", id);
 }
 
 /**
-*See @link Controller.removeTool
-*/
+ *See @link Controller.removeTool
+ */
 FlamingoController.prototype.removeTool = function (tool){
     if (!(tool instanceof FlamingoTool)){
         throw("The given tool is not of type 'FlamingoTool'");
@@ -146,9 +146,9 @@ FlamingoController.prototype.removeTool = function (tool){
     Controller.prototype.removeTool.call(this,tool);
 }
 /**
-*Add a map to the controller.
-*For know only 1 map supported.
-*/
+ *Add a map to the controller.
+ *For know only 1 map supported.
+ */
 FlamingoController.prototype.addMap = function (map){
     if (!(map instanceof FlamingoMap)){
         throw("FlamingoController.addMap(): The given map is not of the type 'FlamingoMap'");
@@ -157,8 +157,8 @@ FlamingoController.prototype.addMap = function (map){
 }
 
 /**
-* See @link Controller.removeToolById
-*/
+ * See @link Controller.removeToolById
+ */
 FlamingoController.prototype.removeToolById = function (id){
     var tool = this.getTool(id);
     if(tool == null || !(tool instanceof FlamingoTool)){
@@ -168,10 +168,10 @@ FlamingoController.prototype.removeToolById = function (id){
 }
 
 /**
-*Get the map by id. If no id is given and 1 map is available that map wil be returned
-*@param mapId the mapId
-*@returns the Map with the id, or the only map.
-*/
+ *Get the map by id. If no id is given and 1 map is available that map wil be returned
+ *@param mapId the mapId
+ *@returns the Map with the id, or the only map.
+ */
 FlamingoController.prototype.getMap = function (mapId){
     if (mapId==undefined && this.maps.length==1){
         return this.maps[0];
@@ -185,7 +185,8 @@ FlamingoController.prototype.getMap = function (mapId){
             return this.maps[i];
         }
     }
-    throw("FlamingoController.getMap(): Map with id: "+mapId+" not found! Available maps: "+availableMaps);
+    return null;
+//throw("FlamingoController.getMap(): Map with id: "+mapId+" not found! Available maps: "+availableMaps);
 }
 
 /****************************************************************Event handling***********************************************************/
@@ -197,13 +198,21 @@ FlamingoController.prototype.getMap = function (mapId){
  * The second index is the id of the object. 
  */
 FlamingoController.prototype.registerEvent = function (event,object,handler){
-    if( this.events[event] == undefined){
-        this.events[event] = new Object();
+    if(object instanceof Ext.util.Observable){
+        object.registerEvent(event,handler);
+    }else{
+        if( this.events[event] == undefined){
+            this.events[event] = new Object();
+        }
+        
+        if(object.getId() === undefined){
+            var a =0;
+        }
+        if (this.events[event][object.getId()]==undefined){
+            this.events[event][object.getId()]=new Array();
+        }
+        this.events[event][object.getId()].push(handler);
     }
-    if (this.events[event][object.getId()]==undefined){
-        this.events[event][object.getId()]=new Array();
-    }
-    this.events[event][object.getId()].push(handler);
 }
 /**
  *Unregister the event @link see Controller.unRegisterEvent
@@ -221,6 +230,17 @@ FlamingoController.prototype.unRegisterEvent = function (event,object,handler){
         this.events[event][object.getId()]=newHandlerArray;
     }
     
+}
+
+FlamingoController.prototype.getObject = function(name){
+    if(this.getMap(name)!= null){
+        return this.getMap(name);
+    }else if( name instanceof Array && this.getMap().getLayer( (name[0].replace(this.getMap().getId() + "_" ,""))) != null){
+
+        
+        return this.getMap().getLayer( (name[0].replace(this.getMap().getId() + "_" ,"")));
+    }
+    return null;
 }
 /**
  * Handles all the events. This function retrieves the function registered to this event.
@@ -271,8 +291,14 @@ FlamingoController.prototype.handleEvents = function (event, component){
             component = component[2];
         }
     }
-    for (var i=0; i < this.events[event][id].length; i++){
-        this.events[event][id][i](id,component);
+    
+    var object = this.getObject(component);
+    if(object != undefined){
+        object.fire(event);
+    }else{
+        for (var i=0; i < this.events[event][id].length; i++){
+            this.events[event][id][i](id,component);
+        }
     }
 }
 
@@ -284,5 +310,7 @@ function dispatchEventJS(event, comp) {
         comp[0] = webMapController.getId();
         comp[1] = new Object();
     }
+    /*console.log("Event",event);
+    console.log("Comp",comp);*/
     mapViewer.wmc.handleEvents(event,comp);
 }

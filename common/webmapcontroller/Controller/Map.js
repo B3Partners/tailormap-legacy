@@ -9,6 +9,9 @@ function Map(frameworkMap){
     this.layers=new Array();
     this.frameworkMap=frameworkMap;
 }
+
+Ext.extend(Map,Ext.util.Observable,{});
+
 /**
  * @returns the framework map object.
  */

@@ -15,6 +15,7 @@ function Layer(frameworkLayer,id){
     this.maptips=new Array();
 }
 
+Ext.extend(Layer,Ext.util.Observable,{});
 /**
 * Get's the frameworklayer: the viewer specific layer.
 */

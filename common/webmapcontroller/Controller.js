@@ -15,8 +15,12 @@ function Controller(viewerObject){
     this.panel=null;
     this.eventList = new Array();
     webMapController = this;
+    
 }
 var webMapController = null;
+
+//Ext.extend(Controller,Ext.util.Observable,{});
+
 Controller.prototype.getId = function(){
     return "Controller";
 }

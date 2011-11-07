@@ -14,47 +14,47 @@ function Event(){
 //Events:
 //Controller events:                        0 - 10
 /** @field */
-Event.ON_CONFIG_COMPLETE                    = 0;
+Event.ON_CONFIG_COMPLETE                    = "ON_CONFIG_COMPLETE";
 /** @field */
-Event.ON_SET_TOOL                           = 1;
+Event.ON_SET_TOOL                           = "ON_SET_TOOL";
     
 // Map events:                              11 - 50
 /** @field */
-Event.ON_GET_FEATURE_INFO                   = 11;
+Event.ON_GET_FEATURE_INFO                   = "ON_GET_FEATURE_INFO";
 /** @field */
-Event.ON_GET_FEATURE_INFO_DATA              = 12;
+Event.ON_GET_FEATURE_INFO_DATA              = "ON_GET_FEATURE_INFO_DATA";
 /** @field */
-Event.ON_ALL_LAYERS_LOADING_COMPLETE        = 13;
+Event.ON_ALL_LAYERS_LOADING_COMPLETE        = "ON_ALL_LAYERS_LOADING_COMPLETE";
 /** @field */
-Event.ON_CHANGE_EXTENT                      = 14;
+Event.ON_CHANGE_EXTENT                      = "ON_CHANGE_EXTENT";
 /** @field */
-Event.ON_FINISHED_CHANGE_EXTENT             = 15;
+Event.ON_FINISHED_CHANGE_EXTENT             = "ON_FINISHED_CHANGE_EXTENT";
 
 
 // Layer events:                            50 - 100
 /** @field */
-Event.ON_GET_CAPABILITIES                   = 50;
+Event.ON_GET_CAPABILITIES                   = "ON_REQUEST";
 /** @field */
-Event.ON_FEATURE_ADDED                      = 51;
+Event.ON_FEATURE_ADDED                      = "ON_FEATURE_ADDED";
 /** @field */
-Event.ON_REQUEST                            = 52;
+Event.ON_REQUEST                            = "ON_REQUEST";
 /** @field */
-Event.ON_LOADING_START                      = 53;
+Event.ON_LOADING_START                      = "ON_LOADING_START";
 /** @field */
-Event.ON_LOADING_END                        = 54;
+Event.ON_LOADING_END                        = "ON_LOADING_END";
     
 // Tool events:                             100 - 150
-Event.ON_EVENT_DOWN                         = 100;
+Event.ON_EVENT_DOWN                         = "ON_EVENT_DOWN";
 /** @field */
-Event.ON_EVENT_UP                           = 101;
+Event.ON_EVENT_UP                           = "ON_EVENT_UP";
 /** @field */
-Event.ON_CLICK                              = 102;
+Event.ON_CLICK                              = "ON_CLICK";
 /** @field */
-Event.ON_MEASURE                            = 103;
+Event.ON_MEASURE                            = "ON_MEASURE";
 
 // Shared evens:                            150 - ...
 /** @field */
-Event.ON_ONIT                               = 150;  // Shared by
+Event.ON_ONIT                               = "ON_ONIT";  // Shared by
 
-Event.ON_LAYER_SWITCHED_OFF                 = "layerSwitchedOff";
-Event.ON_LAYER_SWITCHED_ON                 = "layerSwitchedOn";
+Event.ON_LAYER_SWITCHED_OFF                 = "ON_LAYER_SWITCHED_OFF";
+Event.ON_LAYER_SWITCHED_ON                  = "ON_LAYER_SWITCHED_ON";

@@ -92,6 +92,10 @@ function loadTOC(){
     mapViewer.bind(Event.ON_LAYER_SWITCHED_OFF,toc,callBack)
 }
 
+function test(a,b,c){
+    alert("fired! ",a);
+}
+
 /**
  * Alle geïmplementeerde eventhandling functies
  */

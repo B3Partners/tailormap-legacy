@@ -16,12 +16,19 @@ function FlamingoLayer(id,options,flamingoObject){
     }
     this.id=id;
     this.options=options;
+    this.addEvents(Event.ON_REQUEST,Event.ON_FEATURE_ADDED,Event.ON_GET_CAPABILITIES,Event.ON_LOADING_START,Event.ON_LOADING_END);
     Layer.call(this,flamingoObject,id);
 }
 FlamingoLayer.prototype = new Layer();
 FlamingoLayer.prototype.constructor = FlamingoLayer;
 
+FlamingoLayer.prototype.fire = function (event,options){
+    this.fireEvent(event,this,options);
+}
 
+FlamingoLayer.prototype.registerEvent = function (event,handler){
+    this.addListener(event,handler);
+}
 
 FlamingoLayer.prototype.getId = function(){
     return this.id;
