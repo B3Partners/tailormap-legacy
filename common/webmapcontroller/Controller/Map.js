@@ -12,6 +12,15 @@ function Map(frameworkMap){
 
 Ext.extend(Map,Ext.util.Observable,{});
 
+
+Map.prototype.registerEvent = function (event,handler){
+    this.addListener(event,handler);
+}
+
+Map.prototype.fire = function (event,options){
+    this.fireEvent (event,this,options);
+}
+
 /**
  * @returns the framework map object.
  */

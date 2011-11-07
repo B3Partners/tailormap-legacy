@@ -10,6 +10,18 @@ function Tool(id,frameworkObject,type){
     this.id=id;
     this.frameworkTool=frameworkObject;
     this.type=type;
+   this.addEvents(Event.ON_CLICK);
+}
+
+Ext.extend(Tool,Ext.util.Observable,{});
+
+
+Tool.prototype.fire = function (event,options){
+    this.fireEvent(event,this,options);
+}
+
+Tool.prototype.registerEvent = function (event,handler){
+    this.addListener(event,handler);
 }
 
 // The different types of tools

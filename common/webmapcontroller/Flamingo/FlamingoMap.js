@@ -16,14 +16,6 @@ function FlamingoMap(id,flamingoObject){
 FlamingoMap.prototype = new Map();
 FlamingoMap.prototype.constructor=FlamingoMap;
 
-FlamingoMap.prototype.registerEvent = function (event,handler){
-    this.addListener(event,handler);
-}
-
-FlamingoMap.prototype.fire = function (event,options){
-    this.fireEvent (event,this,options);
-}
-
 /**
 *See @link Map.getId
 */

@@ -22,14 +22,6 @@ function FlamingoLayer(id,options,flamingoObject){
 FlamingoLayer.prototype = new Layer();
 FlamingoLayer.prototype.constructor = FlamingoLayer;
 
-FlamingoLayer.prototype.fire = function (event,options){
-    this.fireEvent(event,this,options);
-}
-
-FlamingoLayer.prototype.registerEvent = function (event,handler){
-    this.addListener(event,handler);
-}
-
 FlamingoLayer.prototype.getId = function(){
     return this.id;
 }

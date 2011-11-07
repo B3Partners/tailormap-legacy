@@ -74,3 +74,11 @@ Layer.prototype.getMapTipByFeatureType = function(featureType){
     }
     return null;
 }
+
+Layer.prototype.fire = function (event,options){
+    this.fireEvent(event,this,options);
+}
+
+Layer.prototype.registerEvent = function (event,handler){
+    this.addListener(event,handler);
+}

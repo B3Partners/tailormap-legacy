@@ -235,18 +235,23 @@ FlamingoController.prototype.unRegisterEvent = function (event,object,handler){
 FlamingoController.prototype.getObject = function(name){
     if(this.getMap(name)!= null){
         return this.getMap(name);
-    }else if( name instanceof Array && this.getMap().getLayer( (name[0].replace(this.getMap().getId() + "_" ,""))) != null){
-
+    }else if( name instanceof Array){
+        name = name[0];
+        if( this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){
         
-        return this.getMap().getLayer( (name[0].replace(this.getMap().getId() + "_" ,"")));
+            return this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,"")));
+        }else if(this.getTool(name) != null){
+            return this.getTool(name);
+        }
+    }else{
+        return null;
     }
-    return null;
 }
 /**
- * Handles all the events. This function retrieves the function registered to this event.
- * Flamingo doesn't understand per object eventhandling, but instead it fires an event, with a id of the object (and a bunch of parameters).
- * In this function we translate the events to per object events, and more specific events (button up/down)
- */
+     * Handles all the events. This function retrieves the function registered to this event.
+     * Flamingo doesn't understand per object eventhandling, but instead it fires an event, with a id of the object (and a bunch of parameters).
+     * In this function we translate the events to per object events, and more specific events (button up/down)
+     */
 FlamingoController.prototype.handleEvents = function (event, component){
     var id = component[0];
     // onEvent is a general event, fired when a jsButton is hovered over, pressed or released. Here we specify which it was.
@@ -267,8 +272,8 @@ FlamingoController.prototype.handleEvents = function (event, component){
             var tokens = component[0].split("_");
 
             /* TODO kijken of we de functie kunnen uitbreiden zodat dit werkt met meer
-             * dan 3 tokens en of dat nut heeft. Kun je weten aan de hand van aantal tokens
-             * om wat voor layer het gaat ? */
+                 * dan 3 tokens en of dat nut heeft. Kun je weten aan de hand van aantal tokens
+                 * om wat voor layer het gaat ? */
             if (tokens.length == 2){
                 this.getMap(tokens[0]).getLayer(tokens[1]).setURL(obj.url);
             }
@@ -303,8 +308,8 @@ FlamingoController.prototype.handleEvents = function (event, component){
 }
 
 /**
- * Entrypoint for flamingoevents. This function propagates the events to the webMapController (handleEvents).
- */
+     * Entrypoint for flamingoevents. This function propagates the events to the webMapController (handleEvents).
+     */
 function dispatchEventJS(event, comp) {
     if(comp [0]== null){
         comp[0] = webMapController.getId();
