@@ -199,8 +199,13 @@ FlamingoController.prototype.getMap = function (mapId){
  */
 FlamingoController.prototype.registerEvent = function (event,object,handler){
     if(object instanceof Ext.util.Observable){
-        object.registerEvent(event,handler);
+        if(object == this){
+            this.addListener(event,handler);
+        }else{
+            object.registerEvent(event,handler);
+        }
     }else{
+        alert("Unmapped event:",event);
         if( this.events[event] == undefined){
             this.events[event] = new Object();
         }
@@ -233,16 +238,19 @@ FlamingoController.prototype.unRegisterEvent = function (event,object,handler){
 }
 
 FlamingoController.prototype.getObject = function(name){
+    if( name instanceof Array){
+        name = name[0];
+    }
+    
     if(this.getMap(name)!= null){
         return this.getMap(name);
-    }else if( name instanceof Array){
-        name = name[0];
-        if( this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){
+    }else if( this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){
         
-            return this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,"")));
-        }else if(this.getTool(name) != null){
-            return this.getTool(name);
-        }
+        return this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,"")));
+    }else if(this.getTool(name) != null){
+        return this.getTool(name);
+    }else if(name == this.getId()){
+        return this;
     }else{
         return null;
     }
@@ -284,7 +292,7 @@ FlamingoController.prototype.handleEvents = function (event, component){
         }        
     }else if(event==Event.ON_SET_TOOL){
         //onchange tool is called for a tool group but event is registerd on the controller
-        id=component[1];
+        id=this.getId();
     }else{
         if(event == Event.ON_FEATURE_ADDED){
             // Make sure "component" is the drawn feature
@@ -297,14 +305,19 @@ FlamingoController.prototype.handleEvents = function (event, component){
         }
     }
     
-    var object = this.getObject(component);
+    var object = this.getObject(id);
     if(object != undefined){
         object.fire(event);
     }else{
+        alert("Event niet gemapped:",event);
         for (var i=0; i < this.events[event][id].length; i++){
             this.events[event][id][i](id,component);
         }
     }
+}
+
+FlamingoController.prototype.fire =  function (event,options){
+    this.fireEvent (event,this,options);
 }
 
 /**
@@ -315,7 +328,5 @@ function dispatchEventJS(event, comp) {
         comp[0] = webMapController.getId();
         comp[1] = new Object();
     }
-    /*console.log("Event",event);
-    console.log("Comp",comp);*/
     mapViewer.wmc.handleEvents(event,comp);
 }

@@ -14,12 +14,13 @@ function Controller(viewerObject){
     this.events = new Array();
     this.panel=null;
     this.eventList = new Array();
+    this.addEvents(Event.ON_CONFIG_COMPLETE);
     webMapController = this;
     
 }
 var webMapController = null;
 
-//Ext.extend(Controller,Ext.util.Observable,{});
+Ext.extend(Controller,Ext.util.Observable,{});
 
 Controller.prototype.getId = function(){
     return "Controller";

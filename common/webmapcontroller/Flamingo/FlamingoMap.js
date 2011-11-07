@@ -9,7 +9,6 @@ function FlamingoMap(id,flamingoObject){
     if (id==undefined || flamingoObject==undefined)
         throw("FlamingoMap.constructor: Id or Flamingo object is undefined");
     this.id=id;
-    this.addEvents(Event.ON_ALL_LAYERS_LOADING_COMPLETE,Event.ON_CHANGE_EXTENT,Event.ON_GET_FEATURE_INFO,Event.ON_GET_FEATURE_INFO_DATA,Event.ON_FINISHED_CHANGE_EXTENT);
     Map.call(this,flamingoObject);
 }
 //set inheritance

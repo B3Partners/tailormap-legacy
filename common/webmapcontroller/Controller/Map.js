@@ -7,6 +7,7 @@
  * */
 function Map(frameworkMap){
     this.layers=new Array();
+    this.addEvents(Event.ON_ALL_LAYERS_LOADING_COMPLETE,Event.ON_CHANGE_EXTENT,Event.ON_GET_FEATURE_INFO,Event.ON_GET_FEATURE_INFO_DATA,Event.ON_FINISHED_CHANGE_EXTENT);
     this.frameworkMap=frameworkMap;
 }
 

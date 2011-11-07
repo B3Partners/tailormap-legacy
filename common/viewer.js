@@ -91,8 +91,7 @@ function loadTOC(){
     var totaal = eind.getTime() - begin.getTime();
     mapViewer.bind(Event.ON_LAYER_SWITCHED_ON,toc,callBack)
     mapViewer.bind(Event.ON_LAYER_SWITCHED_OFF,toc,callBack)
-}
-
+} 
 
 /**
  * Alle geïmplementeerde eventhandling functies
