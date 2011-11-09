@@ -10,13 +10,43 @@
  * 
  */
 
+Ext.define("FlamingoLayer",{
+    extend: "Layer",
+    constructor :function (config){
+        this.initConfig(config);
+        return this;
+    },
+    
+    toXML : function(){
+        throw("FlamingoLayer.toXML(): .toXML() must be made!");
+    },
+
+    getTagName : function(){
+        throw("FlamingoLayer.getTagName: .getTagName() must be made!");
+    },
+    getOption: function(optionKey){
+        var availableOptions=""
+        for (var op in this.options){
+            if (op.toLowerCase()==optionKey.toLowerCase())
+                return this.options[op];
+            availableOptions+=op+",";
+        }
+        return null;
+    },
+    setOption : function(optionKey,optionValue){
+        this.options[optionKey]=optionValue;
+    },
+    getId : function(){
+        return this.id;
+    }
+});
+/*
 function FlamingoLayer(id,options,flamingoObject){
     if (id==null){
         id="";
     }
     this.id=id;
     this.options=options;
-    this.addEvents(Event.ON_REQUEST,Event.ON_FEATURE_ADDED,Event.ON_GET_CAPABILITIES,Event.ON_LOADING_START,Event.ON_LOADING_END);
     Layer.call(this,flamingoObject,id);
 }
 FlamingoLayer.prototype = new Layer();
@@ -33,11 +63,11 @@ FlamingoLayer.prototype.toXML = function(){
 FlamingoLayer.prototype.getTagName = function(){
     throw("FlamingoLayer.getTagName: .getTagName() must be made!");
 }
-
+*/
 /**
 *Gets a option of this layer
 *@return the option value or null if not exists
-*/
+*//*
 FlamingoLayer.prototype.getOption = function(optionKey){
     var availableOptions=""
     for (var op in this.options){
@@ -46,10 +76,10 @@ FlamingoLayer.prototype.getOption = function(optionKey){
         availableOptions+=op+",";
     }
     return null;
-}
+}*/
 /**
 *sets or overwrites a option
-*/
+*//*
 FlamingoLayer.prototype.setOption = function(optionKey,optionValue){
     this.options[optionKey]=optionValue;
-}
+}*/

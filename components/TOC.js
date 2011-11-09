@@ -6,7 +6,7 @@ function TOC(divId, mapViewer,options){
     this.loadTree();
     this.addEvents(Event.ON_LAYER_SWITCHED_OFF,Event.ON_LAYER_SWITCHED_ON);
     
-    Layer.call(this);
+  //  Layer.call(this);
 }
 
 TOC.prototype = new Component();

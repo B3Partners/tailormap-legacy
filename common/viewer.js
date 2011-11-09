@@ -1,7 +1,8 @@
 var viewerType = "flamingo";
 var mapViewer = null;
+var aaron = null;
 function initMapComponent(){
-
+    
     if (window.location.href.indexOf("openlayers")>0){
         viewerType="openlayers";
     }
@@ -14,7 +15,7 @@ function initMapComponent(){
 }
 
 var toc = null;
-
+var bu_removePolygons;
 function initializeButtons(){
     /*ie bug fix*/
     if (Ext.isIE && (Ext.isIE7 || Ext.isIE6)){
@@ -45,11 +46,9 @@ function initializeButtons(){
     });
     mapViewer.wmc.addTool(prevExtent);
 
-    var editLayer = webMapController.createVectorLayer("editMap",{
-        displayInLayerSwitcher: false
-    });
+    var editLayer = webMapController.createVectorLayer("editMap");
     mapViewer.wmc.getMap().addLayer(editLayer);
-    mapViewer.wmc.getMap().setLayerIndex(editLayer, webMapController.getMap().getLayers().length);
+   // mapViewer.wmc.getMap().setLayerIndex(editLayer, webMapController.getMap().getLayers().length);
 
 
     var edittingtb = mapViewer.wmc.createTool("redLiningContainer",Tool.DRAW_FEATURE, {
@@ -58,7 +57,7 @@ function initializeButtons(){
     mapViewer.wmc.addTool(edittingtb);
 
 
-    var bu_removePolygons = webMapController.createTool("b_removePolygons",Tool.BUTTON, {
+    bu_removePolygons = webMapController.createTool("b_removePolygons",Tool.BUTTON, {
         layer: editLayer, 
         title: 'Verwijder object'
     });
@@ -68,6 +67,7 @@ function initializeButtons(){
     var bu_measure = mapViewer.wmc.createTool("b_measure",Tool.MEASURE, {
         title: 'Meten'
     });
+   
     //webMapController.registerEvent(Event.ON_MEASURE,bu_measure,measured);
     mapViewer.wmc.addTool(bu_measure);
 
@@ -112,8 +112,8 @@ var eerste = true;
 function onConfigComplete(){
     if(eerste){
         loadBaseLayers();
-        onFrameworkLoaded();
         initializeButtons();
+        onFrameworkLoaded();
         loadTOC();
         eerste = false;
     }
@@ -127,6 +127,7 @@ function loadBaseLayers(){
         retryonerror: 10,
         getcapabilitiesurl: layerUrl,
         ratio: 1,
+        
         showerrors: true,
         initService: true
     };

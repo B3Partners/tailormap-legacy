@@ -240,6 +240,7 @@ Controller.prototype.initEvents = function(){
  * @return The generic name.
  */
 Controller.prototype.getGenericEventName = function (specific){
+  //  console.log(specific);
     if (this.eventList.length==0){
         this.initEvents();
     }
