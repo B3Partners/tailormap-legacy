@@ -14,6 +14,20 @@ function initMapComponent(){
     mapViewer.bind(Event.ON_GET_CAPABILITIES,map,onGsdetCapabilities);
 }
 
+
+var eerste = true;
+function onConfigComplete(){
+    if(eerste){
+        loadBaseLayers();
+        initializeButtons();
+        onFrameworkLoaded();
+        eerste = false;
+        loadTOC();
+    }
+}
+
+
+
 var toc = null;
 var bu_removePolygons;
 function initializeButtons(){
@@ -26,7 +40,7 @@ function initializeButtons(){
     }
     
     mapViewer.wmc.createPanel("toolGroup");
-    //  webMapController.registerEvent(Event.ON_ALL_LAYERS_LOADING_COMPLETE,webMapController.getMap(), onAllLayersFinishedLoading);
+    //webMapController.registerEvent(Event.ON_ALL_LAYERS_LOADING_COMPLETE,webMapController.getMap(), onAllLayersFinishedLoading);
 
     mapViewer.wmc.addTool(mapViewer.wmc.createTool("loading",Tool.LOADING_BAR));
 
@@ -46,9 +60,9 @@ function initializeButtons(){
     });
     mapViewer.wmc.addTool(prevExtent);
 
-    var editLayer = webMapController.createVectorLayer("editMap");
+  /*  var editLayer = webMapController.createVectorLayer("editMap");
     mapViewer.wmc.getMap().addLayer(editLayer);
-   // mapViewer.wmc.getMap().setLayerIndex(editLayer, webMapController.getMap().getLayers().length);
+    // mapViewer.wmc.getMap().setLayerIndex(editLayer, webMapController.getMap().getLayers().length);
 
 
     var edittingtb = mapViewer.wmc.createTool("redLiningContainer",Tool.DRAW_FEATURE, {
@@ -63,7 +77,7 @@ function initializeButtons(){
     });
     mapViewer.bind(Event.ON_EVENT_DOWN,bu_removePolygons,b_removePolygons);
     mapViewer.wmc.addTool(bu_removePolygons);
-    
+    */
     var bu_measure = mapViewer.wmc.createTool("b_measure",Tool.MEASURE, {
         title: 'Meten'
     });
@@ -110,17 +124,6 @@ function callBack(a,b,c){
 
 function onGsdetCapabilities(){
 //   alert("OnGetCap");
-}
-
-var eerste = true;
-function onConfigComplete(){
-    if(eerste){
-        loadBaseLayers();
-        initializeButtons();
-        onFrameworkLoaded();
-        loadTOC();
-        eerste = false;
-    }
 }
 
 function loadBaseLayers(){

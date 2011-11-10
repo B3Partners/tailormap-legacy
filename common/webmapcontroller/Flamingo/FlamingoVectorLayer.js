@@ -8,7 +8,7 @@ Ext.define("FlamingoVectorLayer",{
     extend: "FlamingoLayer",
     layerName: "layer1",
     constructor: function(config){
-        this.superclass.constructor.call(this, config);
+        FlamingoVectorLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },

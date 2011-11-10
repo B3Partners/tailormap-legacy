@@ -13,6 +13,7 @@
 Ext.define("FlamingoLayer",{
     extend: "Layer",
     constructor :function (config){
+        FlamingoLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },

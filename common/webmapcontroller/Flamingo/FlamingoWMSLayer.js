@@ -7,6 +7,7 @@
 Ext.define("FlamingoWMSLayer",{
     extend: "FlamingoLayer",
     constructor: function(config){
+        FlamingoWMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },

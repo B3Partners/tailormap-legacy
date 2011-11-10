@@ -9,9 +9,8 @@
 Ext.define("FlamingoMap",{
     extend: "Map",
     constructor: function(config){
-        this.superclass.constructor.call(this, config);
+        FlamingoMap.superclass.constructor.call(this, config);
         this.initConfig(config);
-        
         return this;
     },
     

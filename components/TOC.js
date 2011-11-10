@@ -2,7 +2,7 @@ Ext.define ("TOC",{
     extend: "Component",
     panel: null,
     constructor: function (config){
-        this.superclass.constructor.call(this, config);
+        TOC.superclass.constructor.call(this, config);
         this.addEvents(Event.ON_LAYER_SWITCHED_OFF,Event.ON_LAYER_SWITCHED_ON);
         this.initConfig(config);
         this.loadTree();
