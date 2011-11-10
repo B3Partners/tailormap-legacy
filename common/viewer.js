@@ -83,8 +83,12 @@ function loadTOC(){
     loadAvo();
     loadOmgevingsVisie();
     var begin = new Date();
-    
-    toc = new TOC("tree-div",mapViewer,{});
+    var  config = {
+        name: "naam",
+        div: "tree-div",
+        options: {}
+    };
+    toc = new TOC(config);
     toc.addArcIMS();
     
     var eind = new Date();

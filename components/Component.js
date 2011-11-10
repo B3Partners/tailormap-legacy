@@ -1,13 +1,24 @@
-function Component(){
-    this.component = true;
-}
-
-Component.prototype.isComponent = function(){
-    return this.component;
-}
-
-Component.prototype.bind = function(event,handler){
-    throw("Component.bind(): .bind() must be made!");
-}
-
-Ext.extend(Component,Ext.util.Observable,{});
+Ext.define("Component",{
+    extend: "Ext.util.Observable",
+    component: true,
+    events: [],
+    div: null,
+    mapViewer: null,
+    config: {
+        name: "naam",
+        div: new Object(),
+        //mapViewert: new Object(),
+        options: new Object()
+    },
+    constructor: function(config){
+        this.mapViewer = mapViewer;
+        this.initConfig(config);
+        return this;
+    },
+    isComponent : function(){
+        return this.component;
+    },
+    bind : function(event,handler){
+        this.addListener(event,handler);
+    }
+});

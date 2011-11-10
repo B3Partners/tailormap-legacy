@@ -69,7 +69,7 @@ MapViewer.prototype.zoomToExtent = function(minx,miny,maxx,maxy){
  ********************************************************************/
 
 MapViewer.prototype.bind = function (event,object,handler){
-    if(object instanceof Component){
+    if(object.isComponent != undefined){
         object.bind(event,handler);
     }else{
         this.webMapController.registerEvent(event, object, handler);
