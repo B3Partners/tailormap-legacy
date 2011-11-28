@@ -1,0 +1,31 @@
+<project name="hibernate-schemaexport" default="schemaexport" basedir=".">
+
+	<dirname property="destdir" file="${ant.file.hibernate-schemaexport}"/>
+
+	<property name="outputfile" value="schema-export.sql"/>
+
+	<target name="schemaexport" depends="compile">
+		<taskdef name="hibernatetool"
+			classname="org.hibernate.tool.ant.HibernateToolTask"
+			classpath="${javac.classpath}">
+		</taskdef>
+
+		<hibernatetool destdir="${destdir}">
+			<classpath>
+				<path location="${build.classes.dir}"/>
+				<path location="${j2ee.platform.classpath}"/>
+			</classpath>
+
+			<jpaconfiguration/>
+
+			<hbm2ddl
+				export="false"
+				drop="false"
+				create="true"
+				outputfilename="${outputfile}"
+				format="true"/>
+		</hibernatetool>
+
+		<fixcrlf srcDir="${destdir}" includes="${outputfile}"/>
+	</target>
+</project>
