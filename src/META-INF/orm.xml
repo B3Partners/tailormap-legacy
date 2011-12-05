@@ -12,15 +12,22 @@
         </persistence-unit-defaults>
     </persistence-unit-metadata>
 
-    <package>nl.b3p.viewer.config.services</package>
-
     <!-- For Oracle, manually assign sequences for generated id columns -->
 
-    <entity class="GeoService">
+    <entity class="nl.b3p.viewer.config.services.GeoService">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="geo_service_id_seq"/>
                 <sequence-generator name="geo_service_id_seq" sequence-name="geo_service_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.Application">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="app_id_seq"/>
+                <sequence-generator name="app_id_seq" sequence-name="app_id_seq"/>
             </id>
         </attributes>
     </entity>

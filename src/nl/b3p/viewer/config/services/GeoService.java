@@ -16,7 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -25,13 +25,13 @@ import javax.persistence.Id;
  * @author Matthijs Laan
  */
 @Entity
-public class GeoService implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class GeoService {
     @Id
     private Long id;
 
+    @Column(nullable=false, length=255, unique=true)
     private String name;
-
+    
     public Long getId() {
         return id;
     }
@@ -54,23 +54,4 @@ public class GeoService implements Serializable {
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof GeoService)) {
-            return false;
-        }
-        GeoService other = (GeoService) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "nl.b3p.viewer.config.services.Service[ id=" + id + " ]";
-    }
-
 }
