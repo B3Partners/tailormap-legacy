@@ -18,14 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
-<stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
-    <stripes:layout-component name="head">
-        <title><c:out value="${actionBean.application.name}"/></title>
-    </stripes:layout-component>
-
-    <stripes:layout-component name="body">
-
-        app: ${actionBean.application.name}
-        
-    </stripes:layout-component>
-</stripes:layout-render>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title><fmt:message key="error.title"/></title>
+    </head>
+    <body>
+        <h3><fmt:message key="error.title"/></h3>
+        <p>
+            <stripes:errors/>
+            <stripes:messages/>
+        </p>
+    </body>
+</html>

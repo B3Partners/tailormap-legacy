@@ -17,18 +17,19 @@
 package nl.b3p.viewer.stripes;
 
 import javax.persistence.EntityManager;
-
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.*;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.Validate;
-
-import nl.b3p.viewer.config.services.GeoService;
 import org.stripesstuff.stripersist.Stripersist;
+import nl.b3p.viewer.config.app.Application;
 
 /**
  *
  * @author Matthijs Laan
  */
-@UrlBinding("/app/{name}")
+@UrlBinding("/app/{name}/v{version}")
 @StrictBinding
 public class ApplicationActionBean implements ActionBean {
 
@@ -37,8 +38,12 @@ public class ApplicationActionBean implements ActionBean {
     @Validate
     private String name;
 
-    private GeoService service;
+    @Validate
+    private String version;
 
+    private Application application;
+
+    //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public String getName() {
         return name;
     }
@@ -47,12 +52,20 @@ public class ApplicationActionBean implements ActionBean {
         this.name = name;
     }
 
-    public GeoService getService() {
-        return service;
+    public String getVersion() {
+        return version;
     }
 
-    public void setService(GeoService service) {
-        this.service = service;
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
     }
 
     public void setContext(ActionBeanContext context) {
@@ -62,17 +75,34 @@ public class ApplicationActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
+    //</editor-fold>
 
     public Resolution view() {
         EntityManager em = Stripersist.getEntityManager();
 
-        //service = em.find(Service.class, (long)50);
+        if(name != null) {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery q = cb.createQuery(Application.class);
+            Predicate p;
+            Root<Application> root = q.from(Application.class);
+            p = cb.equal(root.get("name"), name);
+            if(version != null) {
+                p = cb.and(p,
+                        cb.equal(root.get("version"), version));
+            }
+            q.where(p);
+            try {
+                application = (Application) em.createQuery(q).getSingleResult();
+            } catch(NoResultException nre) {
+            }
+        }
 
-        service = new GeoService();
-        service.setName("pietje");
-        em.persist(service);
+        if(application == null) {
+            getContext().getValidationErrors().addGlobalError(new LocalizableError("app.notfound", name + (version != null ? " v" + version : "")));
+            return new ForwardResolution("/WEB-INF/jsp/error.jsp");
+        }
 
-        em.getTransaction().commit();
+        getContext().getMessages().add(new SimpleMessage("test!"));
         
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }

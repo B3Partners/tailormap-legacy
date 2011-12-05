@@ -23,18 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <stripes:url var="url" beanclass="nl.b3p.viewer.stripes.ApplicationActionBean">
+            <stripes:param name="name" value="default"/>
+        </stripes:url>
+        <meta http-equiv="Refresh" content="0;url=${url}">
         <title>Geo viewer</title>
     </head>
     <body>
-        <h1>Geo viewer</h1>
-
-        <p>Geen applicatie...</p>
-
-        <p>
-            <stripes:link beanclass="nl.b3p.viewer.stripes.ApplicationActionBean">
-                <stripes:param name="name" value="test"/>
-                Test app
-            </stripes:link>
-        </p>
     </body>
 </html>

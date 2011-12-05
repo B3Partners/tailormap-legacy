@@ -18,14 +18,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
-<stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
-    <stripes:layout-component name="head">
-        <title><c:out value="${actionBean.application.name}"/></title>
-    </stripes:layout-component>
+<stripes:layout-definition>
 
-    <stripes:layout-component name="body">
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-        app: ${actionBean.application.name}
-        
-    </stripes:layout-component>
-</stripes:layout-render>
+        <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
+        <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
+
+        <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
+        <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
+
+        <stripes:layout-component name="head"/>
+    </head>
+    <body>
+        <stripes:layout-component name="body"/>
+    </body>
+</html>
+
+</stripes:layout-definition>

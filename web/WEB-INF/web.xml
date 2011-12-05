@@ -42,6 +42,14 @@
             <param-name>LocalePicker.Locales</param-name>
             <param-value>nl_NL</param-value>
         </init-param>
+        <init-param>
+            <param-name>LocalizationBundleFactory.ErrorMessageBundle</param-name>
+            <param-value>ViewerResources</param-value>
+        </init-param>
+        <init-param>
+            <param-name>LocalizationBundleFactory.FieldNameBundle</param-name>
+            <param-value>ViewerResources</param-value>
+        </init-param>
     </filter>
 
     <filter-mapping>
