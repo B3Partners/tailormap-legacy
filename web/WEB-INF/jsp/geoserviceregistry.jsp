@@ -18,15 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Gegegevensregister</title>
-    </head>
-    <body>
+<stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
+    <stripes:layout-component name="head">
+        <title>Gegevensregister</title>
+    </stripes:layout-component>
+
+    <stripes:layout-component name="body">
+
         <h1>Gegegevensregister</h1>
 
         <pre>var tree = <c:out value="${actionBean.registryTreeJson}"/>;</pre>
-    </body>
-</html>
+    </stripes:layout-component>
+</stripes:layout-render>

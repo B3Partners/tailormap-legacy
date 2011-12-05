@@ -71,6 +71,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
 
     public Resolution view() throws JSONException {
 
+        Stripersist.getEntityManager().getTransaction().commit();
 
         return new ForwardResolution("/WEB-INF/jsp/geoserviceregistry.jsp");
     }

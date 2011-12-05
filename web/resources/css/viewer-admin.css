@@ -1,0 +1,72 @@
+/* messages */
+
+.messages .box {
+    width: 400px;
+    padding: 5px;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+.wideMessages .box {
+    width: 700px;
+    padding: 5px;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+.box div {
+    padding-left: 18px;
+    padding-bottom: 1px;
+}
+
+.security {
+    border: 1px solid #7f7f00;
+    background-color: #ffffee;
+}
+
+.security div {
+    background: url(../images/lock.gif) no-repeat;
+    color: #7f7f00;
+}
+
+.errors {
+    border: 1px solid red;
+	background-color: #fff5f5;
+}
+
+.errors div {
+    background: url(../images/error.gif) no-repeat;
+    color: red;
+}
+
+.info {
+    border: 1px solid blue;
+    background-color: #f5f5ff;
+}
+
+.info div {
+    background: url(../images/info.gif) no-repeat;
+    color: blue;
+}
+
+.warnings {
+    border: 1px solid #7f7f00;
+    background-color: #ffffee;
+}
+
+.warnings div {
+    background: url(../images/warning.gif) no-repeat;
+    color: #7f7f00;
+}
+
+/* validation styles */
+
+input.error, textarea.error {
+    color: red;
+    background-color: #ffffaa;
+}
+
+input.error[type="radio"], input.error[type="checkbox"], select.error {
+    background-color: white;
+    border: 2px solid red;
+}
