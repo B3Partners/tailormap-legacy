@@ -83,14 +83,12 @@ public class ApplicationActionBean implements ActionBean {
         if(name != null) {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery q = cb.createQuery(Application.class);
-            Predicate p;
             Root<Application> root = q.from(Application.class);
-            p = cb.equal(root.get("name"), name);
-            if(version != null) {
-                p = cb.and(p,
-                        cb.equal(root.get("version"), version));
-            }
-            q.where(p);
+            Predicate namePredicate = cb.equal(root.get("name"), name);
+            Predicate versionPredicate = version != null 
+                    ? cb.equal(root.get("version"), version)
+                    : cb.isNull(root.get("version"));                    
+            q.where(cb.and(namePredicate, versionPredicate));
             try {
                 application = (Application) em.createQuery(q).getSingleResult();
             } catch(NoResultException nre) {
