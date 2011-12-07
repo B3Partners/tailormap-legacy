@@ -27,6 +27,7 @@ import javax.persistence.*;
 public class Layer {
     public static final String EXTRA_KEY_METADATA_URL = "metadata.url";
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
+    public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
     
     @Id
     private Long id;
@@ -40,6 +41,11 @@ public class Layer {
     @Basic(optional=false)
     private String name;
 
+    @Column(name="name_alias")
+    private String alias;
+
+    private String legendImageUrl;
+
     private Double minScale;
     private Double maxScale;
 
@@ -52,8 +58,12 @@ public class Layer {
     private boolean queryable;
     private boolean filterable;
 
-    @OneToOne(fetch=FetchType.LAZY, mappedBy="layer", orphanRemoval=true)
+    @ManyToOne
     private SimpleFeatureType featureType;
+
+    @ElementCollection
+    @Column(name="keyword")
+    private Set<String> keywords = new HashSet<String>();
 
     @ElementCollection
     @Column(name="role_name")
@@ -163,6 +173,14 @@ public class Layer {
         return extraInfo;
     }
 
+    public Set<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(Set<String> keywords) {
+        this.keywords = keywords;
+    }
+
     public void setExtraInfo(Map<String, String> extraInfo) {
         this.extraInfo = extraInfo;
     }
@@ -190,5 +208,21 @@ public class Layer {
     public void setTileset(TileSet tileset) {
         this.tileset = tileset;
     }    
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getLegendImageUrl() {
+        return legendImageUrl;
+    }
+
+    public void setLegendImageUrl(String legendImageUrl) {
+        this.legendImageUrl = legendImageUrl;
+    }
     //</editor-fold>
 }

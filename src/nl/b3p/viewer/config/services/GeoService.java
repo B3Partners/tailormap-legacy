@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @author Matthijs Laan
  */
 @Entity
-@DiscriminatorColumn(name="service_type")
+@DiscriminatorColumn(name="protocol")
 public abstract class GeoService {
     @Id
     private Long id;
@@ -47,9 +47,8 @@ public abstract class GeoService {
 
     private boolean monitoringEnabled;
 
-    @OneToMany(orphanRemoval=true, mappedBy="service")
-    @OrderColumn
-    private List<Layer> layers = new ArrayList<Layer>();
+    @OneToOne(orphanRemoval=true)
+    private Layer topLayer;
 
     @Embedded
     private Envelope extent;
@@ -83,12 +82,12 @@ public abstract class GeoService {
         this.category = category;
     }
 
-    public List<Layer> getLayers() {
-        return layers;
+    public Layer getTopLayer() {
+        return topLayer;
     }
 
-    public void setLayers(List<Layer> layers) {
-        this.layers = layers;
+    public void setTopLayer(Layer topLayer) {
+        this.topLayer = topLayer;
     }
 
     public String getPassword() {

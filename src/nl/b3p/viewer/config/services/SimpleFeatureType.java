@@ -27,8 +27,12 @@ import javax.persistence.*;
 @Table(name="feature_type")
 public class SimpleFeatureType {
     @Id
+    private Long id;
+
     @ManyToOne
-    private Layer layer;
+    private FeatureSource featureSource;
+
+    private boolean writeable;
 
     private String geometryAttribute;
 
@@ -36,8 +40,22 @@ public class SimpleFeatureType {
     @OrderColumn
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
 
-    @Lob
-    private String featureSourceConfig;
+    //<editor-fold defaultstate="collapsed" desc="getters en setters">
+    public List<AttributeDescriptor> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<AttributeDescriptor> attributes) {
+        this.attributes = attributes;
+    }
+
+    public FeatureSource getFeatureSource() {
+        return featureSource;
+    }
+
+    public void setFeatureSource(FeatureSource featureSource) {
+        this.featureSource = featureSource;
+    }
 
     public String getGeometryAttribute() {
         return geometryAttribute;
@@ -47,28 +65,21 @@ public class SimpleFeatureType {
         this.geometryAttribute = geometryAttribute;
     }
 
-    public Layer getLayer() {
-        return layer;
+    public boolean isWriteable() {
+        return writeable;
     }
 
-    public void setLayer(Layer layer) {
-        this.layer = layer;
+    public void setWriteable(boolean writeable) {
+        this.writeable = writeable;
     }
 
-    public List<AttributeDescriptor> getAttributes() {
-        return attributes;
+    public Long getId() {
+        return id;
     }
 
-    public void setAttributes(List<AttributeDescriptor> attributes) {
-        this.attributes = attributes;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    public String getFeatureSourceConfig() {
-        return featureSourceConfig;
-    }
-
-    public void setFeatureSourceConfig(String featureSourceConfig) {
-        this.featureSourceConfig = featureSourceConfig;
-    }
+    //</editor-fold>
 }
 
