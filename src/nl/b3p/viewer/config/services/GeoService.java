@@ -16,22 +16,49 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.*;
+import javax.persistence.*;
 
 /**
  *
  * @author Matthijs Laan
  */
 @Entity
-public class GeoService {
+@DiscriminatorColumn(name="service_type")
+public abstract class GeoService {
     @Id
     private Long id;
 
-    @Column(nullable=false, length=255, unique=true)
+    @Column(unique=true)
+    @Basic(optional=false)
     private String name;
-    
+
+    @ManyToOne
+    private Category category;
+
+    @Basic(optional=false)
+    private String url;
+
+    private String username;
+    private String password;
+
+    private String metadataUrl;
+    private String metadataStylesheetUrl;
+
+    private boolean monitoringEnabled;
+
+    @OneToMany(orphanRemoval=true, mappedBy="service")
+    @OrderColumn
+    private List<Layer> layers = new ArrayList<Layer>();
+
+    @Embedded
+    private Envelope extent;
+
+    @ElementCollection
+    @Column(name="keyword")
+    private Set<String> keywords = new HashSet<String>();
+
+    //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
         return id;
     }
@@ -48,10 +75,84 @@ public class GeoService {
         this.name = name;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public Category getCategory() {
+        return category;
     }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public List<Layer> getLayers() {
+        return layers;
+    }
+
+    public void setLayers(List<Layer> layers) {
+        this.layers = layers;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Set<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(Set<String> keywords) {
+        this.keywords = keywords;
+    }
+
+    public String getMetadataStylesheetUrl() {
+        return metadataStylesheetUrl;
+    }
+
+    public void setMetadataStylesheetUrl(String metadataStylesheetUrl) {
+        this.metadataStylesheetUrl = metadataStylesheetUrl;
+    }
+
+    public String getMetadataUrl() {
+        return metadataUrl;
+    }
+
+    public void setMetadataUrl(String metadataUrl) {
+        this.metadataUrl = metadataUrl;
+    }
+
+    public Envelope getExtent() {
+        return extent;
+    }
+
+    public void setExtent(Envelope extent) {
+        this.extent = extent;
+    }
+
+    public boolean isMonitoringEnabled() {
+        return monitoringEnabled;
+    }
+
+    public void setMonitoringEnabled(boolean monitoringEnabled) {
+        this.monitoringEnabled = monitoringEnabled;
+    }
+    //</editor-fold>
 }

@@ -1,0 +1,74 @@
+/*
+ * Copyright (C) 2011 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package nl.b3p.viewer.config.services;
+
+import java.util.*;
+import javax.persistence.*;
+
+/**
+ *
+ * @author Matthijs Laan
+ */
+@Entity
+@Table(name="feature_type")
+public class SimpleFeatureType {
+    @Id
+    @ManyToOne
+    private Layer layer;
+
+    private String geometryAttribute;
+
+    @OneToMany(orphanRemoval=true)
+    @OrderColumn
+    private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
+
+    @Lob
+    private String featureSourceConfig;
+
+    public String getGeometryAttribute() {
+        return geometryAttribute;
+    }
+
+    public void setGeometryAttribute(String geometryAttribute) {
+        this.geometryAttribute = geometryAttribute;
+    }
+
+    public Layer getLayer() {
+        return layer;
+    }
+
+    public void setLayer(Layer layer) {
+        this.layer = layer;
+    }
+
+    public List<AttributeDescriptor> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<AttributeDescriptor> attributes) {
+        this.attributes = attributes;
+    }
+
+    public String getFeatureSourceConfig() {
+        return featureSourceConfig;
+    }
+
+    public void setFeatureSourceConfig(String featureSourceConfig) {
+        this.featureSourceConfig = featureSourceConfig;
+    }
+}
+

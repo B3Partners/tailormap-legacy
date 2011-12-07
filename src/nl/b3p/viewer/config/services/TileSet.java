@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.config.app;
+package nl.b3p.viewer.config.services;
 
 import javax.persistence.*;
 
@@ -23,26 +23,25 @@ import javax.persistence.*;
  * @author Matthijs Laan
  */
 @Entity
-@Table(
-        uniqueConstraints=
-            @UniqueConstraint(columnNames={"name", "version"})
-)
-public class Application  {
-    @Id
-    private Long id;
+public class TileSet {
 
-    @Basic(optional=false)
+    @Id
     private String name;
 
-    @Column(length=30)
-    private String version;
+    private int width;
+    private int height;
 
-    public Long getId() {
-        return id;
+    @ElementCollection
+    @OrderColumn
+    @Column(name="resolution")
+    private double[] resolutions;
+
+    public int getHeight() {
+        return height;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public String getName() {
@@ -53,11 +52,19 @@ public class Application  {
         this.name = name;
     }
 
-    public String getVersion() {
-        return version;
+    public double[] getResolutions() {
+        return resolutions;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setResolutions(double[] resolutions) {
+        this.resolutions = resolutions;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
 }

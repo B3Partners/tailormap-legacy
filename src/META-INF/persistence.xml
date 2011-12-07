@@ -4,6 +4,7 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
     <class>nl.b3p.viewer.config.services.GeoService</class>
+    <class>nl.b3p.viewer.config.services.Category</class>
     <properties>
       <!-- use with default orm.xml -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>

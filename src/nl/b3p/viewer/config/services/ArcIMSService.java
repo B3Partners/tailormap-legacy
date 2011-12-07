@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.config.app;
+package nl.b3p.viewer.config.services;
 
 import javax.persistence.*;
 
@@ -23,41 +23,7 @@ import javax.persistence.*;
  * @author Matthijs Laan
  */
 @Entity
-@Table(
-        uniqueConstraints=
-            @UniqueConstraint(columnNames={"name", "version"})
-)
-public class Application  {
-    @Id
-    private Long id;
+@DiscriminatorValue("arcims")
+public class ArcIMSService extends GeoService {
 
-    @Basic(optional=false)
-    private String name;
-
-    @Column(length=30)
-    private String version;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
 }

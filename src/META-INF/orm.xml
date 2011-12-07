@@ -14,11 +14,38 @@
 
     <!-- For Oracle, manually assign sequences for generated id columns -->
 
+    <entity class="nl.b3p.viewer.config.services.Category">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="category_id_seq"/>
+                <sequence-generator name="category_id_seq" sequence-name="category_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
     <entity class="nl.b3p.viewer.config.services.GeoService">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="geo_service_id_seq"/>
                 <sequence-generator name="geo_service_id_seq" sequence-name="geo_service_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.services.Layer">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="layer_id_seq"/>
+                <sequence-generator name="layer_id_seq" sequence-name="layer_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.services.AttributeDescriptor">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="attribute_desc_id_seq"/>
+                <sequence-generator name="attribute_desc_id_seq" sequence-name="attribute_desc_id_seq"/>
             </id>
         </attributes>
     </entity>
