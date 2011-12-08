@@ -25,14 +25,14 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue("tiled")
 public class TileService extends GeoService {
-    private String protocol;
+    private String tilingProtocol;
 
-    public String getProtocol() {
-        return protocol;
+    public String getTilingProtocol() {
+        return tilingProtocol;
     }
 
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
+    public void setTilingProtocol(String tilingProtocol) {
+        this.tilingProtocol = tilingProtocol;
     }
 
     @Override
