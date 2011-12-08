@@ -42,16 +42,10 @@ public abstract class GeoService {
     private String username;
     private String password;
 
-    private String metadataUrl;
-    private String metadataStylesheetUrl;
-
     private boolean monitoringEnabled;
 
     @OneToOne(orphanRemoval=true)
     private Layer topLayer;
-
-    @Embedded
-    private Envelope extent;
 
     @ElementCollection
     @Column(name="keyword")
@@ -120,30 +114,6 @@ public abstract class GeoService {
 
     public void setKeywords(Set<String> keywords) {
         this.keywords = keywords;
-    }
-
-    public String getMetadataStylesheetUrl() {
-        return metadataStylesheetUrl;
-    }
-
-    public void setMetadataStylesheetUrl(String metadataStylesheetUrl) {
-        this.metadataStylesheetUrl = metadataStylesheetUrl;
-    }
-
-    public String getMetadataUrl() {
-        return metadataUrl;
-    }
-
-    public void setMetadataUrl(String metadataUrl) {
-        this.metadataUrl = metadataUrl;
-    }
-
-    public Envelope getExtent() {
-        return extent;
-    }
-
-    public void setExtent(Envelope extent) {
-        this.extent = extent;
     }
 
     public boolean isMonitoringEnabled() {

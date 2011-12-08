@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
 
@@ -26,6 +27,9 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorColumn(name="protocol")
 public abstract class FeatureSource {
+    public static final int MAX_FEATURES_DEFAULT = 0;
+    public static final int MAX_FEATURES_UNBOUNDED = -1;
+    
     @Id
     private Long id;
 
@@ -38,28 +42,12 @@ public abstract class FeatureSource {
 
     private String username;
     private String password;
-
-    /**
-     * Extra information to configure the feature source, for example WFS
-     * FeatureType name, ArcXML layer, username, password etc.
-     *
-     * Stored in a JSON format specific for the concrete subclass of GeoService.
-     */
-    @Lob
-    private String featureSourceConfig;
     
     @OneToMany(orphanRemoval=true, mappedBy="featureSource")
     @OrderColumn
     private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
-    public String getFeatureSourceConfig() {
-        return featureSourceConfig;
-    }
-
-    public void setFeatureSourceConfig(String featureSourceConfig) {
-        this.featureSourceConfig = featureSourceConfig;
-    }
 
     public List<SimpleFeatureType> getFeatureTypes() {
         return featureTypes;
@@ -110,4 +98,9 @@ public abstract class FeatureSource {
     }
     //</editor-fold>
 
+    public List<String> calculateUniqueValues(String attributeName) throws IOException {
+        return calculateUniqueValues(attributeName, MAX_FEATURES_DEFAULT);
+    }
+    
+    public abstract List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException;
 }

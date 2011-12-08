@@ -38,23 +38,36 @@ public class Layer {
     @ManyToOne
     private Layer parent;
 
-    @Basic(optional=false)
     private String name;
 
-    @Column(name="name_alias")
-    private String alias;
+    private String title;
+
+    /**
+     * Alternative title, can be set by admin
+     */
+    private String titleAlias;
 
     private String legendImageUrl;
 
     private Double minScale;
     private Double maxScale;
 
-    @Embedded
-    private Envelope extent;
+    @ElementCollection
+    private Set<CoordinateReferenceSystem> crsList = new HashSet<CoordinateReferenceSystem>();
+
+    @ElementCollection
+    private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<CoordinateReferenceSystem,BoundingBox>();
 
     @ManyToOne
     private TileSet tileset;
 
+    /**
+     * If a service does not have a single top layer, a virtual top layer is
+     * created. A virtual layer should not be used in a request to the service.
+     *
+     * Also a WMS layer which does not have a name is virtual.
+     */
+    private boolean virtual;
     private boolean queryable;
     private boolean filterable;
 
@@ -89,6 +102,30 @@ public class Layer {
         this.parent = parent;
     }
 
+    public boolean isVirtual() {
+        return virtual;
+    }
+
+    public void setVirtual(boolean virtual) {
+        this.virtual = virtual;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitleAlias() {
+        return titleAlias;
+    }
+
+    public void setTitleAlias(String titleAlias) {
+        this.titleAlias = titleAlias;
+    }
+
     public GeoService getService() {
         return service;
     }
@@ -97,12 +134,12 @@ public class Layer {
         this.service = service;
     }
 
-    public Envelope getExtent() {
-        return extent;
+    public Set<CoordinateReferenceSystem> getCrsList() {
+        return crsList;
     }
 
-    public void setExtent(Envelope extent) {
-        this.extent = extent;
+    public void setCrsList(Set<CoordinateReferenceSystem> crsList) {
+        this.crsList = crsList;
     }
 
     public SimpleFeatureType getFeatureType() {
@@ -209,20 +246,20 @@ public class Layer {
         this.tileset = tileset;
     }    
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
     public String getLegendImageUrl() {
         return legendImageUrl;
     }
 
     public void setLegendImageUrl(String legendImageUrl) {
         this.legendImageUrl = legendImageUrl;
+    }
+
+    public Map<CoordinateReferenceSystem, BoundingBox> getBoundingBoxes() {
+        return boundingBoxes;
+    }
+
+    public void setBoundingBoxes(Map<CoordinateReferenceSystem, BoundingBox> boundingBoxes) {
+        this.boundingBoxes = boundingBoxes;
     }
     //</editor-fold>
 }
