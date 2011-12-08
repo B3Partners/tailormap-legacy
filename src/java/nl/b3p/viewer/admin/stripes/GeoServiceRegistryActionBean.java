@@ -16,10 +16,11 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.List;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,11 +32,13 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Matthijs Laan
  */
 @UrlBinding("/action/geoserviceregistry/{$event}")
+@StrictBinding
 public class GeoServiceRegistryActionBean implements ActionBean {
 
     private ActionBeanContext context;
 
-    private String registryTreeJson;
+    @Validate
+    private Category category;
 
     public void setContext(ActionBeanContext context) {
         this.context = context;
@@ -45,34 +48,55 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         return context;
     }
 
-    public String getRegistryTreeJson() {
-        return registryTreeJson;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setRegistryTreeJson(String registryTreeJson) {
-        this.registryTreeJson = registryTreeJson;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    @After(stages=LifecycleStage.EventHandling)
-    public void loadRegistryTree() throws JSONException {
+    public Resolution loadCategoryTree() throws JSONException {
+
         EntityManager em = Stripersist.getEntityManager();
 
-        List<GeoService> services = em.createQuery("from GeoService order by name").getResultList();
+        if(!em.contains(category)) {
+            category = Category.getRootCategory();
+        }
 
-        JSONArray a = new JSONArray();
-        for(GeoService s: services) {
+        final JSONObject c = new JSONObject();
+        c.put("id", category.getId());
+        c.put("name", category.getName());
+
+        JSONArray subCats = new JSONArray();
+        c.put("subCategories", subCats);
+        for(Category sub: category.getChildren()) {
+            JSONObject j = new JSONObject();
+            j.put("id", sub.getId());
+            j.put("name", sub.getName());
+            subCats.put(j);
+        }
+
+        JSONArray services = new JSONArray();
+        c.put("services", services);
+
+        for(GeoService s: category.getServices()) {
             JSONObject j = new JSONObject();
             j.put("id", s.getId());
             j.put("name", s.getName());
-            a.put(j);
+            j.put("class", s.getClass().getName());
+            services.put(j);
         }
-        registryTreeJson = a.toString(4);
+        
+        return new StreamingResolution("application/json") {
+           @Override
+           public void stream(HttpServletResponse response) throws Exception {
+               response.getWriter().print(c.toString());
+           }
+        };
     }
 
     public Resolution view() throws JSONException {
-
-        Stripersist.getEntityManager().getTransaction().commit();
-
         return new ForwardResolution("/WEB-INF/jsp/geoserviceregistry.jsp");
     }
 }

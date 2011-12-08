@@ -27,6 +27,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <h1>Gegegevensregister</h1>
 
-        <pre>var tree = <c:out value="${actionBean.registryTreeJson}"/>;</pre>
+<script type="text/javascript">
+
+    function loadCategoryTree(c) {
+        Ext.Ajax.request({
+        url : '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>' ,
+            params : { category : c },
+            method: 'GET',
+            success: function ( result, request ) {
+                Ext.MessageBox.alert('Success', 'Data return from the server: '+ result.responseText);
+            },
+            failure: function ( result, request) {
+                Ext.MessageBox.alert('Failed', result.responseText);
+            }
+        });
+    }
+</script>
+
+<input type="button" onclick="loadCategoryTree(0)" value="laad tree ajax">
     </stripes:layout-component>
 </stripes:layout-render>
