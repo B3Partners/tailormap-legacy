@@ -124,4 +124,6 @@ public abstract class GeoService {
         this.monitoringEnabled = monitoringEnabled;
     }
     //</editor-fold>
+
+    public abstract GeoService loadFromUrl(String url);
 }

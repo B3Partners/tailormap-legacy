@@ -26,4 +26,9 @@ import javax.persistence.*;
 @DiscriminatorValue("arcims")
 public class ArcIMSService extends GeoService {
 
+    @Override
+    public GeoService loadFromUrl(String url) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

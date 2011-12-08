@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.io.Serializable;
 import javax.persistence.*;
 
 /**
@@ -24,6 +25,11 @@ import javax.persistence.*;
  */
 @Entity
 @DiscriminatorValue("wms")
-public class WMSService extends GeoService {
+public class WMSService extends GeoService implements Serializable {
+
+    @Override
+    public GeoService loadFromUrl(String url) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

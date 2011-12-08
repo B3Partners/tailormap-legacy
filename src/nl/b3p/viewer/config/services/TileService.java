@@ -23,6 +23,21 @@ import javax.persistence.*;
  * @author Matthijs Laan
  */
 @Entity
-public abstract class TileService extends GeoService {
+@DiscriminatorValue("tiled")
+public class TileService extends GeoService {
+    private String protocol;
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    @Override
+    public GeoService loadFromUrl(String url) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }
