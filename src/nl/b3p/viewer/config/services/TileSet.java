@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.util.*;
 import javax.persistence.*;
 
 /**
@@ -34,7 +35,7 @@ public class TileSet {
     @ElementCollection
     @OrderColumn
     @Column(name="resolution")
-    private double[] resolutions;
+    private List<Double> resolutions = new ArrayList<Double>();
 
     public int getHeight() {
         return height;
@@ -52,11 +53,11 @@ public class TileSet {
         this.name = name;
     }
 
-    public double[] getResolutions() {
+    public List<Double> getResolutions() {
         return resolutions;
     }
 
-    public void setResolutions(double[] resolutions) {
+    public void setResolutions(List<Double> resolutions) {
         this.resolutions = resolutions;
     }
 
