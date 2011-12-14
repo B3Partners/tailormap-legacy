@@ -65,12 +65,12 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             category = Category.getRootCategory();
         }
 
-        final JSONObject c = new JSONObject();
-        c.put("id", category.getId());
-        c.put("name", category.getName());
+        // final JSONObject c = new JSONObject();
+        // c.put("id", category.getId());
+        // c.put("name", category.getName());
 
-        JSONArray children = new JSONArray();
-        c.put("children", children);
+        final JSONArray children = new JSONArray();
+        // c.put("", children);
         for(Category sub: category.getChildren()) {
             JSONObject j = new JSONObject();
             j.put("id", sub.getId());
@@ -81,7 +81,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
 
         for(GeoService s: category.getServices()) {
             JSONObject j = new JSONObject();
-            j.put("id", s.getId());
+            j.put("id", "s" + s.getId());
             j.put("name", s.getName());
             j.put("type", "service");
             j.put("status", Math.random() > 0.5 ? "ok" : "error");
@@ -92,7 +92,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {
-               response.getWriter().print(c.toString());
+               response.getWriter().print(children.toString());
            }
         };
     }
