@@ -22,6 +22,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.config.services.Layer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,24 +69,24 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         c.put("id", category.getId());
         c.put("name", category.getName());
 
-        JSONArray subCats = new JSONArray();
-        c.put("subCategories", subCats);
+        JSONArray children = new JSONArray();
+        c.put("children", children);
         for(Category sub: category.getChildren()) {
             JSONObject j = new JSONObject();
             j.put("id", sub.getId());
             j.put("name", sub.getName());
-            subCats.put(j);
+            j.put("type", "category");
+            children.put(j);
         }
-
-        JSONArray services = new JSONArray();
-        c.put("services", services);
 
         for(GeoService s: category.getServices()) {
             JSONObject j = new JSONObject();
             j.put("id", s.getId());
             j.put("name", s.getName());
+            j.put("type", "service");
+            j.put("status", Math.random() > 0.5 ? "ok" : "error");
             j.put("class", s.getClass().getName());
-            services.put(j);
+            children.put(j);
         }
         
         return new StreamingResolution("application/json") {
@@ -96,6 +97,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         };
     }
 
+    @DefaultHandler
     public Resolution view() throws JSONException {
         return new ForwardResolution("/WEB-INF/jsp/geoserviceregistry.jsp");
     }

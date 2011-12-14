@@ -44,6 +44,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
 </script>
 
-<input type="button" onclick="loadCategoryTree(0)" value="laad tree ajax">
+<input type="button" onclick="loadCategoryTree()" value="laad tree ajax">
     </stripes:layout-component>
 </stripes:layout-render>
