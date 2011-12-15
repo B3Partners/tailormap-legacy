@@ -32,6 +32,7 @@ Ext.onReady(function() {
             { name: 'type',  type: 'string' },
             { name: 'status', type: 'string' },
             { name: 'class', type: 'string' },
+            { name: 'parentid', type: 'string' },
             
             // Text is used by tree, mapped to name
             { name: 'text', type: 'string', mapping: 'name' }
@@ -67,31 +68,23 @@ Ext.onReady(function() {
             type: 'ajax',
             url: treeurl
         },
-        defaultRootId: 0,
+        defaultRootId: 'c0',
         defaultRootProperty: 'children',
         model: TreeNode,
-        nodeParam: 'category'
+        nodeParam: 'nodeid'
     });
 
     var categoryMenu = new Ext.menu.Menu({
+        data: {
+            parent: 0,
+            clickedItem: null
+        },
         items: [{
             text: 'Nieuwe categorie toevoegen',
             icon: foldericon,
             listeners: {
                 click: function(item, e, eOpts) {
-                    Ext.MessageBox.show({
-                        title:'Nieuwe categorie toevoegen',
-                        msg: 'Naam van nieuwe categorie:',
-                        buttons: Ext.MessageBox.OKCANCEL,
-                        prompt:true,
-                        fn: function(btn, text, cBoxes){
-                            if(btn=='ok' && text){
-                                // Ajax request: create category(text)
-                                // Response: json
-                                // tree.getRootNode().appendChild(json node);
-                            }
-                        }
-                    });
+                    addCategory(item.ownerCt.data.parent);
                 }
             }
         }]
@@ -100,18 +93,99 @@ Ext.onReady(function() {
     var tree = Ext.create('Ext.tree.Panel', {
         store: treeStore,
         rootVisible: false,
+        root: {
+            text: "Root node",
+            expanded: true
+        },
         useArrows: true,
         frame: true,
-        title: 'Services',
+        //title: 'Services',
         renderTo: 'tree-container',
-        width: 300,
+        width: 225,
         height: 400,
         listeners: {
+            itemcontextmenu: function(view, record, item, index, event, eOpts) {
+                if(record.get('type') == "category") {
+                    categoryMenu.data.parent = record.get('id');
+                    categoryMenu.data.clickedItem = record;
+                    categoryMenu.showAt(event.getXY());
+                    event.stopEvent();
+                }
+            },
             containercontextmenu: function(view, event, eOpts) {
+                categoryMenu.data.parent = 0;
                 categoryMenu.showAt(event.getXY());
                 event.stopEvent();
+            },
+            itemclick: function(view, record, item, index, event, eOpts) {
+                var recordType = record.get('type');
+                if(recordType == "category") {
+                    // click on category = new service
+                    Ext.get('editFrame').dom.src = geoserviceediturl + '?parentId=' + record.get('id');
+                }
+                if(recordType == "service") {
+                    // click on service = edit service
+                    Ext.get('editFrame').dom.src = geoserviceediturl + '?service=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
+                }
+                if(recordType == "layer") {
+                    // click on layer = edit layer
+                    Ext.get('editFrame').dom.src = layerediturl + '?layer=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
+                }
             }
-        }
+        },
+        bbar: [
+            "->",
+            { xtype: 'button', text: 'Categorie toevoegen', handler: function() { addCategory(0) }, cls: 'x-btn-text-icon', icon: addicon }
+        ]
     });
     
+    function addCategory(parentid) {
+        Ext.MessageBox.show({
+            title:'Nieuwe categorie toevoegen',
+            msg: 'Naam van nieuwe categorie:',
+            buttons: Ext.MessageBox.OKCANCEL,
+            prompt:true,
+            fn: function(btn, text, cBoxes){
+                if(btn=='ok' && text){
+                    Ext.Ajax.request({
+                        url: addcategoryurl,
+                        params: {
+                            name: text,
+                            parent: parentid // Always on root
+                        },
+                        method: 'POST',
+                        success: function ( result, request ) {
+                            var objData = Ext.JSON.decode(result.responseText);
+                            objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
+                            var newNode = Ext.create('TreeNode', objData);
+                            addNode(newNode, objData.parentid);
+                        },
+                        failure: function ( result, request) {
+                            Ext.MessageBox.alert('Failed', result.responseText);
+                        }
+                    });
+                }
+            }
+        });
+    }
+    
+    function addNode(node, parentid) {
+        var record = null;
+        if(parentid == '0' || parentid == 'c0') {
+            record = tree.getRootNode();
+        } else {
+            record = tree.getRootNode().findChild('id', parentid);
+        }
+        // First expand, then append child, otherwise childnodes are replaced?
+        record.expand(false, function() {
+            record.appendChild(node);
+        });
+    }
+    
 });
+
+/* function addServiceNode(json, parentid) {
+    var objData = Ext.JSON.decode(json);
+    objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
+    var newNode = Ext.create('TreeNode', objData);
+} */

@@ -19,42 +19,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
+    
     <stripes:layout-component name="head">
         <title>Gegevensregister</title>
     </stripes:layout-component>
 
+    <stripes:layout-component name="header">
+        <jsp:include page="/WEB-INF/jsp/header.jsp"/>
+    </stripes:layout-component>
+        
     <stripes:layout-component name="body">
-
+        
         <h1>Gegegevensregister</h1>
 
         <div id="tree-container"></div>
+        <div id="form-container">
+            <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="editGeoService"/>" id="editFrame" frameborder="0"></iframe>
+        </div>
         
-<script type="text/javascript">
-
-    function loadCategoryTree(c) {
-        Ext.Ajax.request({
-        url : '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>' ,
-            params : { category : c },
-            method: 'GET',
-            success: function ( result, request ) {
-                Ext.MessageBox.alert('Success', 'Data return from the server: '+ result.responseText);
-            },
-            failure: function ( result, request) {
-                Ext.MessageBox.alert('Failed', result.responseText);
-            }
-        });
-    }
-    
-    var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
-    var categoryurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
-    var serviceurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadServiceTree"/>';
-    var dummydata = '${contextPath}/resources/js/geoserviceregistry/treedata.json';
-    var foldericon = '${contextPath}/resources/images/folder.png';
-    var layericon = '${contextPath}/resources/images/map.png';
-    var serviceokicon = '${contextPath}/resources/images/serviceok.png';
-    var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
-</script>
-<script type="text/javascript" src="${contextPath}/resources/js/geoserviceregistry/geoserviceregistry.js"></script>
-<input type="button" onclick="loadCategoryTree()" value="laad tree ajax">
+        <script type="text/javascript">
+            // Definition of URLS and icons... how are we going to do this?
+            var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
+            var addcategoryurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="addCategory"/>';
+            var geoserviceediturl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="editGeoService"/>';
+            var layerediturl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="editLayer"/>';
+            var foldericon = '${contextPath}/resources/images/folder.png';
+            var layericon = '${contextPath}/resources/images/map.png';
+            var serviceokicon = '${contextPath}/resources/images/serviceok.png';
+            var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
+            var addicon = '${contextPath}/resources/images/add.png';
+        </script>
+        <script type="text/javascript" src="${contextPath}/resources/js/geoserviceregistry/geoserviceregistry.js"></script>
     </stripes:layout-component>
+        
 </stripes:layout-render>

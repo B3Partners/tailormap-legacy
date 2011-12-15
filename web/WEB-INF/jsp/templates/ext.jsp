@@ -27,14 +27,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
         <link href="${contextPath}/resources/css/viewer-admin.css" rel="stylesheet">
+        <link rel="stylesheet/less" type="text/css" href="${contextPath}/resources/less/main.less">
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/less-1.1.5.min.js"></script>
 
         <stripes:layout-component name="head"/>
     </head>
     <body>
-        <stripes:layout-component name="body"/>
+        <stripes:layout-component name="header" />
+        <div id="content">
+            <stripes:layout-component name="body"/>
+        </div>
     </body>
 </html>
 

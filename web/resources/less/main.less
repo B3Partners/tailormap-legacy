@@ -1,0 +1,54 @@
+// Variables
+@maincolor: #1C6CA7;
+@mainbgcolor: #FFFFFF;
+
+// Mixins
+.treecontainer (@width: 250px) {
+    width: @width;
+    float: left;
+    margin-top: 10px;
+}
+
+.formcontainer (@width: 100%) {
+    overflow: hidden;
+}
+
+body {
+    color: @maincolor;
+    background-color: @mainbgcolor;
+    &.x-body {
+        color: @maincolor;
+        background-color: @mainbgcolor;
+    }
+}
+
+#header {
+    background-color: @maincolor;
+    width: 100%;
+    #menu {
+        padding: 10px;
+        height: 40px;
+        color: @mainbgcolor;
+    }
+}
+
+#content {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+}
+
+#tree-container {
+    .treecontainer;
+}
+
+#form-container {
+    .formcontainer;
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: 0px none;
+    }
+}
+
