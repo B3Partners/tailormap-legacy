@@ -44,18 +44,19 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     @Validate
     private Category category;
 
+    //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public ActionBeanContext getContext() {
         return context;
     }
-
+    
     public Category getCategory() {
         return category;
     }
-
+    
     public void setCategory(Category category) {
         this.category = category;
     }
@@ -63,18 +64,19 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     public String getId() {
         return id;
     }
-
+    
     public void setId(String id) {
         this.id = id;
     }
-
+    
     public String getParentId() {
         return parentId;
     }
-
+    
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
+    //</editor-fold>
     
     public Resolution editGeoService() throws JSONException {
         this.setId(this.getContext().getRequest().getParameter("service"));
@@ -89,14 +91,28 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     }
 
     public Resolution addCategory() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
+        
         String name = this.getContext().getRequest().getParameter("name");
         String parentId = this.getContext().getRequest().getParameter("parent");
+        
+        /*int id = Integer.parseInt(parentId.substring(1));
+        Category parent = em.find(Category.class, new Long(id));
+        
+        // save category
+        Category c = new Category();
+        c.setName(name);
+        c.setParent(parent);
+        em.persist(c);*/
+        /* De children_order word niet opgeslagen en de category verschijnt niet in de boom bij herladen pagina. */
         
         final JSONObject j = new JSONObject();
         j.put("id", (int)(Math.random() * 100)+1);
         j.put("name", name);
         j.put("type", "category");
         j.put("parentid", parentId);
+        
+        Stripersist.getEntityManager().getTransaction().commit();
         
         return new StreamingResolution("application/json") {
            @Override
@@ -108,30 +124,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     
     public Resolution loadCategoryTree() throws JSONException {
 
-        /* EntityManager em = Stripersist.getEntityManager();
-
-        if(!em.contains(category)) {
-            category = Category.getRootCategory();
-        }
-
-        final JSONArray children = new JSONArray();
-        for(Category sub: category.getChildren()) {
-            JSONObject j = new JSONObject();
-            j.put("id", sub.getId());
-            j.put("name", sub.getName());
-            j.put("type", "category");
-            children.put(j);
-        }
-
-        for(GeoService s: category.getServices()) {
-            JSONObject j = new JSONObject();
-            j.put("id", "s" + s.getId());
-            j.put("name", s.getName());
-            j.put("type", "service");
-            j.put("status", Math.random() > 0.5 ? "ok" : "error");
-            j.put("class", s.getClass().getName());
-            children.put(j);
-        } */
+        EntityManager em = Stripersist.getEntityManager();
         
         final JSONArray children = new JSONArray();
         
@@ -140,26 +133,32 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         int id = Integer.parseInt(nodeId.substring(1));
         if(type.equals("c")) {
             if(id == 0) {
-                for(int i = 1; i < 4; i++) {
+                if(!em.contains(category)) {
+                    category = Category.getRootCategory();
+                }
+                for(Category sub: category.getChildren()) {
                     JSONObject j = new JSONObject();
-                    j.put("id", "c" + id + i);
-                    j.put("name", "Categorie " + i);
+                    j.put("id", "c" + sub.getId());
+                    j.put("name", sub.getName());
                     j.put("type", "category");
                     j.put("parentid", "0");
                     children.put(j);
                 }
             } else {
-                JSONObject jc = new JSONObject();
-                jc.put("id", "c" + id + 1);
-                jc.put("name", "Subcategorie " + 1);
-                jc.put("type", "category");
-                jc.put("parentid", nodeId);
-                children.put(jc);
-                
-                for(int i = 1; i < 4; i++) {
+                Category c = em.find(Category.class, new Long(id));
+                for(Category sub: c.getChildren()) {
                     JSONObject j = new JSONObject();
-                    j.put("id", "s" + id + i);
-                    j.put("name", "Service " + i);
+                    j.put("id", "c" + sub.getId());
+                    j.put("name", sub.getName());
+                    j.put("type", "category");
+                    j.put("parentid", "0");
+                    children.put(j);
+                }
+                
+                for(GeoService service: c.getServices()) {
+                    JSONObject j = new JSONObject();
+                    j.put("id", "s" + service.getId());
+                    j.put("name", service.getName());
                     j.put("type", "service");
                     j.put("status", Math.random() > 0.5 ? "ok" : "error");
                     j.put("parentid", nodeId);
@@ -168,23 +167,28 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             }
         }
         if(type.equals("s")) {
-            for(int i = 1; i < 4; i++) {
+            GeoService gs = em.find(GeoService.class, new Long(id));
+            Layer toplayer = gs.getTopLayer();
+            for(Layer sublayer: toplayer.getChildren()) {
                 JSONObject j = new JSONObject();
-                j.put("id", "l" + id + i);
-                j.put("name", "Layer " + i);
+                j.put("id", "l" + sublayer.getId());
+                j.put("name", sublayer.getName());
                 j.put("type", "layer");
                 j.put("parentid", nodeId);
                 children.put(j);
             }
         }
         if(type.equals("l")) {
-            if(id > 300) {
-                JSONObject j = new JSONObject();
-                j.put("id", "l" + id + 1);
-                j.put("name", "Layer " + 1);
-                j.put("type", "layer");
-                j.put("parentid", nodeId);
-                children.put(j);
+            Layer layer = em.find(Layer.class, new Long(id));
+            for(Layer sublayer: layer.getChildren()) {
+                //if(sublayer != null){
+                    JSONObject j = new JSONObject();
+                    j.put("id", "l" + sublayer.getId());
+                    j.put("name", sublayer.getName());
+                    j.put("type", "layer");
+                    j.put("parentid", nodeId);
+                    children.put(j);
+                //}
             }
         }
         
@@ -198,6 +202,8 @@ public class GeoServiceRegistryActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution view() throws JSONException {
+        Stripersist.getEntityManager().getTransaction().commit();
+        
         return new ForwardResolution("/WEB-INF/jsp/geoserviceregistry.jsp");
     }
 }
