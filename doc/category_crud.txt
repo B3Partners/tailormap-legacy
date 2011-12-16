@@ -1,0 +1,24 @@
+Nieuwe categorie:
+
+category = new Category();
+parent.getChildren().add(category);
+category.setParent(parent);
+em.persist(category);
+
+Verwijderen categorie:
+
+parent.getChildren().remove(category);
+em.remove(category);
+
+Verplaatsen zonder parent aan te passen:
+
+- pas index in parent.getChildren() list aan, bijvoorbeeld met sort() of vooor
+  enkele category met remove() en add(newIndex_na_removen)
+- let op dat dit alleen werkt door de unique (children) constraint op de 
+  join table te verwijderen
+  
+Verplaatsen naar andere parent:
+
+oldParent.getChildren().remove(category);
+newParent.getChildren().add(newIndex, category);
+category.setParent(newParent);

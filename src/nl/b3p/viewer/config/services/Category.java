@@ -50,8 +50,9 @@ public class Category {
     @ManyToOne
     private Category parent;
 
-    @OneToMany(orphanRemoval=true, mappedBy="parent")
-    @OrderColumn
+    @OneToMany
+    @JoinTable(joinColumns=@JoinColumn(name="parent"),inverseJoinColumns=@JoinColumn(name="child"))
+    @OrderColumn(name="list_index")
     private List<Category> children = new ArrayList<Category>();
 
     @OneToMany(orphanRemoval=true, mappedBy="category")

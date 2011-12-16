@@ -1,0 +1,6 @@
+Voor elke join table met order column, verwijder unique constraint (staat in create table)
+
+Lijst van tabellen waarvoor dit geldt:
+
+category_children (child)
+
