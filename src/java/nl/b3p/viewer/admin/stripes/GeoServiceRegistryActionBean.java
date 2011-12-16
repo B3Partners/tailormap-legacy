@@ -38,8 +38,11 @@ public class GeoServiceRegistryActionBean implements ActionBean {
 
     private ActionBeanContext context;
 
-    private String id;
+    @Validate(on="addCategory", required=true)
     private String parentId;
+
+    @Validate
+    private String name;
 
     @Validate
     private Category category;
@@ -52,7 +55,15 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -60,15 +71,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     public void setCategory(Category category) {
         this.category = category;
     }
-    
-    public String getId() {
-        return id;
-    }
-    
-    public void setId(String id) {
-        this.id = id;
-    }
-    
+
     public String getParentId() {
         return parentId;
     }
@@ -77,42 +80,30 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         this.parentId = parentId;
     }
     //</editor-fold>
-    
-    public Resolution editGeoService() throws JSONException {
-        this.setId(this.getContext().getRequest().getParameter("service"));
-        this.setParentId(this.getContext().getRequest().getParameter("parentId"));
-        return new ForwardResolution("/WEB-INF/jsp/geoservice.jsp");
-    }
-    
-    public Resolution editLayer() throws JSONException {
-        this.setId(this.getContext().getRequest().getParameter("layer"));
-        this.setParentId(this.getContext().getRequest().getParameter("parentId"));
-        return new ForwardResolution("/WEB-INF/jsp/layer.jsp");
-    }
 
     public Resolution addCategory() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
+
+        // Demangle id
+        Long parentIdLong = Long.parseLong(parentId.substring(1));
+
+        Category parent = em.find(Category.class, parentIdLong);
         
-        String name = this.getContext().getRequest().getParameter("name");
-        String parentId = this.getContext().getRequest().getParameter("parent");
-        
-        /*int id = Integer.parseInt(parentId.substring(1));
-        Category parent = em.find(Category.class, new Long(id));
-        
-        // save category
         Category c = new Category();
         c.setName(name);
         c.setParent(parent);
-        em.persist(c);*/
-        /* De children_order word niet opgeslagen en de category verschijnt niet in de boom bij herladen pagina. */
-        
+        parent.getChildren().add(c);
+
+        em.persist(c);
+        em.persist(parent);
+        em.getTransaction().commit();
+
         final JSONObject j = new JSONObject();
-        j.put("id", (int)(Math.random() * 100)+1);
-        j.put("name", name);
+        j.put("id", c.getId());
+        j.put("name", c.getName());
         j.put("type", "category");
+        j.put("hasChildren", false);
         j.put("parentid", parentId);
-        
-        Stripersist.getEntityManager().getTransaction().commit();
         
         return new StreamingResolution("application/json") {
            @Override
@@ -132,41 +123,29 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         String type = nodeId.substring(0, 1);
         int id = Integer.parseInt(nodeId.substring(1));
         if(type.equals("c")) {
-            if(id == 0) {
-                if(!em.contains(category)) {
-                    category = Category.getRootCategory();
+            Category c = em.find(Category.class, new Long(id));
+            for(Category sub: c.getChildren()) {
+                JSONObject j = new JSONObject();
+                j.put("id", "c" + sub.getId());
+                j.put("name", sub.getName());
+                j.put("type", "category");
+                j.put("hasChildren", !sub.getChildren().isEmpty());
+                if(sub.getParent() != null) {
+                    j.put("parentid", sub.getParent().getId());
                 }
-                for(Category sub: category.getChildren()) {
-                    JSONObject j = new JSONObject();
-                    j.put("id", "c" + sub.getId());
-                    j.put("name", sub.getName());
-                    j.put("type", "category");
-                    j.put("parentid", "0");
-                    children.put(j);
-                }
-            } else {
-                Category c = em.find(Category.class, new Long(id));
-                for(Category sub: c.getChildren()) {
-                    JSONObject j = new JSONObject();
-                    j.put("id", "c" + sub.getId());
-                    j.put("name", sub.getName());
-                    j.put("type", "category");
-                    j.put("parentid", "0");
-                    children.put(j);
-                }
-                
-                for(GeoService service: c.getServices()) {
-                    JSONObject j = new JSONObject();
-                    j.put("id", "s" + service.getId());
-                    j.put("name", service.getName());
-                    j.put("type", "service");
-                    j.put("status", Math.random() > 0.5 ? "ok" : "error");
-                    j.put("parentid", nodeId);
-                    children.put(j);
-                }
+                children.put(j);
             }
-        }
-        if(type.equals("s")) {
+
+            for(GeoService service: c.getServices()) {
+                JSONObject j = new JSONObject();
+                j.put("id", "s" + service.getId());
+                j.put("name", service.getName());
+                j.put("type", "service");
+                j.put("status", Math.random() > 0.5 ? "ok" : "error");
+                j.put("parentid", nodeId);
+                children.put(j);
+            }
+        } else if(type.equals("s")) {
             GeoService gs = em.find(GeoService.class, new Long(id));
             Layer toplayer = gs.getTopLayer();
             for(Layer sublayer: toplayer.getChildren()) {
