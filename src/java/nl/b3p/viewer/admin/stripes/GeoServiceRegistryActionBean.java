@@ -147,14 +147,16 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             }
         } else if(type.equals("s")) {
             GeoService gs = em.find(GeoService.class, new Long(id));
-            Layer toplayer = gs.getTopLayer();
-            for(Layer sublayer: toplayer.getChildren()) {
-                JSONObject j = new JSONObject();
-                j.put("id", "l" + sublayer.getId());
-                j.put("name", sublayer.getName());
-                j.put("type", "layer");
-                j.put("parentid", nodeId);
-                children.put(j);
+            // GeoService may be invalid and not have a top layer
+            if(gs.getTopLayer() != null) {
+                for(Layer sublayer: gs.getTopLayer().getChildren()) {
+                    JSONObject j = new JSONObject();
+                    j.put("id", "l" + sublayer.getId());
+                    j.put("name", sublayer.getName());
+                    j.put("type", "layer");
+                    j.put("parentid", nodeId);
+                    children.put(j);
+                }
             }
         }
         if(type.equals("l")) {
