@@ -86,8 +86,9 @@ public class Layer {
     @Column(name="role_name")
     private Set<String> writers = new HashSet<String>();
 
-    @OneToMany(orphanRemoval=true, mappedBy="parent")
-    @OrderColumn
+    @OneToMany(orphanRemoval=true)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
+    @OrderColumn(name="list_index")
     private List<Layer> children = new ArrayList<Layer>();
 
     @ElementCollection

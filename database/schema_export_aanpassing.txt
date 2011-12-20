@@ -3,4 +3,7 @@ Voor elke join table met order column, verwijder unique constraint (staat in cre
 Lijst van tabellen waarvoor dit geldt:
 
 category_children (child)
+category_services (service)
+feature_source_feature_types (feature_type)
+layer_children (child)
 

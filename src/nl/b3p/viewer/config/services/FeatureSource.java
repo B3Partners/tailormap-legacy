@@ -43,8 +43,9 @@ public abstract class FeatureSource {
     private String username;
     private String password;
     
-    @OneToMany(orphanRemoval=true, mappedBy="featureSource")
-    @OrderColumn
+    @OneToMany(orphanRemoval=true)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="feature_type"))
+    @OrderColumn(name="list_index")
     private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">

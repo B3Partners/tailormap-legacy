@@ -37,6 +37,7 @@ public class SimpleFeatureType {
     private String geometryAttribute;
 
     @OneToMany(orphanRemoval=true)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
     @OrderColumn
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
 

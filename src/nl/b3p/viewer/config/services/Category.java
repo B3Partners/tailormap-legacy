@@ -51,12 +51,13 @@ public class Category {
     private Category parent;
 
     @OneToMany
-    @JoinTable(joinColumns=@JoinColumn(name="parent"),inverseJoinColumns=@JoinColumn(name="child"))
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Category> children = new ArrayList<Category>();
 
-    @OneToMany(orphanRemoval=true, mappedBy="category")
-    @OrderColumn
+    @OneToMany
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="service"))
+    @OrderColumn(name="list_index")
     private List<GeoService> services = new ArrayList<GeoService>();
 
     @ElementCollection
