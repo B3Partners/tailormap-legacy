@@ -96,7 +96,12 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         EntityManager em = Stripersist.getEntityManager();
 
         // Demangle id
-        Long parentIdLong = Long.parseLong(parentId.substring(1));
+        Long parentIdLong;
+        if(parentId.equals("0")){
+            parentIdLong = new Long(0);
+        }else{
+            parentIdLong = Long.parseLong(parentId.substring(1));
+        }
 
         Category parent = em.find(Category.class, parentIdLong);
         

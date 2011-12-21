@@ -37,17 +37,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:when>
                 </c:choose>
                 <div>
-                    Naam: <stripes:text name="name"/><br />
-                    Url: <stripes:text name="url"/><br />
+                    Naam: <stripes:text name="service.name"/><br />
+                    Url: <stripes:text name="service.url"/><br />
                     Type: 
-                    <stripes:select id="serviceType" name="serviceType">
+                    <stripes:select id="serviceType" name="service.serviceType">
                         <c:forEach var="types" items="${actionBean.serviceTypes}">
                             <stripes:option  value="${types}"><c:out value="${types}"/></stripes:option>
                         </c:forEach>
                     </stripes:select>
                     <br />
-                    Gebruikersnaam: <stripes:text name="username"/><br />
-                    Wachtwoord: <stripes:text name="password"/><br />
+                    Gebruikersnaam: <stripes:text name="service.username"/><br />
+                    Wachtwoord: <stripes:text name="service.password"/><br />
                     <stripes:submit name="saveGeoService" value="opslaan"/><br />
                 </div>
             </c:if>

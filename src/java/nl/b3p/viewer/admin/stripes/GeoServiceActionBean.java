@@ -16,8 +16,10 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.services.GeoService;
 import org.json.JSONException;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -35,17 +37,9 @@ public class GeoServiceActionBean implements ActionBean{
     private String parentId;
     
     @Validate
-    private String name;
-    @Validate
-    private String url;
-    @Validate
-    private String username;
-    @Validate
-    private String password;
+    GeoService service;
     
     private String[] serviceTypes = {"wms", "arcgis", "arcims"};
-    @Validate
-    private String serviceType;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -56,28 +50,12 @@ public class GeoServiceActionBean implements ActionBean{
         this.context = context;
     }
 
-    public String getName() {
-        return name;
+    public GeoService getService() {
+        return service;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
+    public void setService(GeoService service) {
+        this.service = service;
     }
 
     public String[] getServiceTypes() {
@@ -86,22 +64,6 @@ public class GeoServiceActionBean implements ActionBean{
 
     public void setServiceTypes(String[] serviceTypes) {
         this.serviceTypes = serviceTypes;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
     
     public String getServiceId() {
@@ -123,8 +85,11 @@ public class GeoServiceActionBean implements ActionBean{
     
     @DefaultHandler
     public Resolution editGeoService() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
+        
         if(serviceId != null){
-            
+            Long idLong = Long.parseLong(serviceId.substring(1)); 
+            service = em.find(GeoService.class, idLong);
         }
         
         Stripersist.getEntityManager().getTransaction().commit();
@@ -133,7 +98,7 @@ public class GeoServiceActionBean implements ActionBean{
     }
     
     public Resolution saveGeoService() throws JSONException {
-
+        String blaa = "blaa";
         
         Stripersist.getEntityManager().getTransaction().commit();
         
