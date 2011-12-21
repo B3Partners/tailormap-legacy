@@ -71,7 +71,7 @@ Ext.onReady(function() {
         defaultRootId: 'c0',
         defaultRootProperty: 'children',
         model: TreeNode,
-        nodeParam: 'nodeid'
+        nodeParam: 'nodeId'
     });
 
     var categoryMenu = new Ext.menu.Menu({
@@ -121,15 +121,15 @@ Ext.onReady(function() {
                 var recordType = record.get('type');
                 if(recordType == "category") {
                     // click on category = new service
-                    Ext.get('editFrame').dom.src = geoserviceediturl + '?parentId=' + record.get('id');
+                    Ext.get('editFrame').dom.src = geoserviceediturl + '&parentId=' + record.get('id');
                 }
                 if(recordType == "service") {
                     // click on service = edit service
-                    Ext.get('editFrame').dom.src = geoserviceediturl + '?service=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
+                    Ext.get('editFrame').dom.src = geoserviceediturl + '&serviceId=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
                 }
                 if(recordType == "layer") {
                     // click on layer = edit layer
-                    Ext.get('editFrame').dom.src = layerediturl + '?layer=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
+                    Ext.get('editFrame').dom.src = layerediturl + '&layer=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
                 }
             }
         },
@@ -151,7 +151,7 @@ Ext.onReady(function() {
                         url: addcategoryurl,
                         params: {
                             name: text,
-                            parent: parentid // Always on root
+                            parentId: parentid // Always on root
                         },
                         method: 'POST',
                         success: function ( result, request ) {

@@ -23,19 +23,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk Geoservice</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <c:choose>
-            <c:when test="${!empty actionBean.id}">
-                <h1>Geoservice bewerken</h1>
-                Parent ID: ${actionBean.parentId}<br />
-                Service ID: ${actionBean.id}
-            </c:when>
-            <c:otherwise>
-                <h1>Geoservice toevoegen</h1>
-                Parent ID: ${actionBean.parentId}
-            </c:otherwise>
-        </c:choose>
-        <c:if test="">
-            
-        </c:if>
+        <stripes:form id="saveForm" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+            <c:if test="${!empty actionBean.serviceId || !empty actionBean.parentId}">
+                <c:choose>
+                    <c:when test="${!empty actionBean.serviceId}">
+                        <h1>Geoservice bewerken</h1>
+                        Parent ID: ${actionBean.parentId}<br />
+                        Service ID: ${actionBean.serviceId}
+                    </c:when>
+                    <c:when test="${!empty actionBean.parentId}">
+                        <h1>Geoservice toevoegen</h1>
+                        Parent ID: ${actionBean.parentId}
+                    </c:when>
+                </c:choose>
+                <div>
+                    Naam: <stripes:text name="name"/><br />
+                    Url: <stripes:text name="url"/><br />
+                    Type: 
+                    <stripes:select id="serviceType" name="serviceType">
+                        <c:forEach var="types" items="${actionBean.serviceTypes}">
+                            <stripes:option  value="${types}"><c:out value="${types}"/></stripes:option>
+                        </c:forEach>
+                    </stripes:select>
+                    <br />
+                    Gebruikersnaam: <stripes:text name="username"/><br />
+                    Wachtwoord: <stripes:text name="password"/><br />
+                    <stripes:submit name="saveGeoService" value="opslaan"/><br />
+                </div>
+            </c:if>
+        </stripes:form>
     </stripes:layout-component>
 </stripes:layout-render>

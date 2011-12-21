@@ -40,6 +40,9 @@ public class GeoServiceRegistryActionBean implements ActionBean {
 
     @Validate(on="addCategory", required=true)
     private String parentId;
+    
+    @Validate
+    private String nodeId;
 
     @Validate
     private String name;
@@ -70,6 +73,14 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 
     public String getParentId() {
@@ -119,7 +130,6 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         
         final JSONArray children = new JSONArray();
         
-        String nodeId = this.getContext().getRequest().getParameter("nodeid");
         String type = nodeId.substring(0, 1);
         int id = Integer.parseInt(nodeId.substring(1));
         if(type.equals("c")) {
@@ -162,14 +172,12 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         if(type.equals("l")) {
             Layer layer = em.find(Layer.class, new Long(id));
             for(Layer sublayer: layer.getChildren()) {
-                //if(sublayer != null){
-                    JSONObject j = new JSONObject();
-                    j.put("id", "l" + sublayer.getId());
-                    j.put("name", sublayer.getName());
-                    j.put("type", "layer");
-                    j.put("parentid", nodeId);
-                    children.put(j);
-                //}
+                JSONObject j = new JSONObject();
+                j.put("id", "l" + sublayer.getId());
+                j.put("name", sublayer.getName());
+                j.put("type", "layer");
+                j.put("parentid", nodeId);
+                children.put(j);
             }
         }
         
