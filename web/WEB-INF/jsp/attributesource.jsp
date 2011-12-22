@@ -19,13 +19,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
+    
     <stripes:layout-component name="head">
-        <title>Bewerk Geoservice</title>
+        <title>Gegevensregister</title>
     </stripes:layout-component>
+
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
-    </stripes:layout-component>    
-    <stripes:layout-component name="body">
-        
     </stripes:layout-component>
+        
+    <stripes:layout-component name="body">
+        <div id="content">
+            <h1>Attribuutbronnen</h1><br />
+
+            <div id="grid-container" class="attributesources">
+                
+            </div>
+            <div id="form-container" class="attributesources">
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="editAttributeSource"/>" id="editFrame" frameborder="0"></iframe>
+            </div>
+        </div>
+        
+        <script type="text/javascript">
+            var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
+            var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="editAttributeSource"/>';
+            var activelink = 'menu_attribuutbronnen';
+        </script>
+        <script type="text/javascript" src="${contextPath}/resources/js/attributesource/attributesource.js"></script>
+    </stripes:layout-component>
+        
 </stripes:layout-render>

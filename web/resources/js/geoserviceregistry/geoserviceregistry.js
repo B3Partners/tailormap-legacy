@@ -33,6 +33,7 @@ Ext.onReady(function() {
             { name: 'status', type: 'string' },
             { name: 'class', type: 'string' },
             { name: 'parentid', type: 'string' },
+            { name: 'hasChildren', type: 'boolean' },
             
             // Text is used by tree, mapped to name
             { name: 'text', type: 'string', mapping: 'name' }
@@ -53,6 +54,7 @@ Ext.onReady(function() {
             }
             if(fieldName == "leaf") {
                 nodeType = this.get('type');
+                if(nodeType == "category" && !this.get('hasChildren')) return true;
                 if(nodeType == "layer" && this.get('children') == undefined) return true;
                 return false;
             }
@@ -151,7 +153,7 @@ Ext.onReady(function() {
                         url: addcategoryurl,
                         params: {
                             name: text,
-                            parentId: parentid // Always on root
+                            parentId: parentid
                         },
                         method: 'POST',
                         success: function ( result, request ) {
@@ -182,10 +184,10 @@ Ext.onReady(function() {
         });
     }
     
+    /* function addServiceNode(json, parentid) {
+        var objData = Ext.JSON.decode(json);
+        objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
+        var newNode = Ext.create('TreeNode', objData);
+    } */
+    
 });
-
-/* function addServiceNode(json, parentid) {
-    var objData = Ext.JSON.decode(json);
-    objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-    var newNode = Ext.create('TreeNode', objData);
-} */

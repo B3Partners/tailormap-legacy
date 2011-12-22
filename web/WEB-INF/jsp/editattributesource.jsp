@@ -20,12 +20,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Bewerk Geoservice</title>
+        <title>Bewerk Attribuutbron</title>
     </stripes:layout-component>
-    <stripes:layout-component name="header">
-        <jsp:include page="/WEB-INF/jsp/header.jsp"/>
-    </stripes:layout-component>    
     <stripes:layout-component name="body">
-        
+        Test
+        <c:choose>
+            <c:when test="${!empty actionBean.sourceId && actionBean.sourceId != 0}">
+                Bewerken: ${actionBean.sourceId}
+            </c:when>
+            <c:otherwise>
+                Nieuwe toevoegen
+            </c:otherwise>
+        </c:choose>
     </stripes:layout-component>
 </stripes:layout-render>

@@ -29,12 +29,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
         
     <stripes:layout-component name="body">
-        
-        <h1>Gegegevensregister</h1>
+        <div id="content">
+            <h1>Gegegevensregister</h1>
 
-        <div id="tree-container"></div>
-        <div id="form-container">
-            <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="editGeoService"/>" id="editFrame" frameborder="0"></iframe>
+            <div id="tree-container"></div>
+            <div id="form-container" class="services">
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="editGeoService"/>" id="editFrame" frameborder="0"></iframe>
+            </div>
         </div>
         
         <script type="text/javascript">
@@ -48,6 +49,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var serviceokicon = '${contextPath}/resources/images/serviceok.png';
             var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
             var addicon = '${contextPath}/resources/images/add.png';
+            
+            var activelink = 'menu_services';
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/geoserviceregistry/geoserviceregistry.js"></script>
     </stripes:layout-component>

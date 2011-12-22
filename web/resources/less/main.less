@@ -1,6 +1,11 @@
 // Variables
 @maincolor: #1C6CA7;
 @mainbgcolor: #FFFFFF;
+@menubgcolor: #1C6CA7;
+@menutextcolor: #FFFFFF;
+@menuSubBgColorInactive: #DDDDDD;
+@statuscolorOk: #00990F;
+@statuscolorError: #A00002;
 
 // Mixins
 .treecontainer (@width: 250px) {
@@ -9,8 +14,31 @@
     margin-top: 10px;
 }
 
-.formcontainer (@width: 100%) {
+.gridcontainer {
+    height: 40%;
+}
+
+.formcontainer (@height: auto) {
     overflow: hidden;
+    height: @height;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.status_ok {
+    color: @statuscolorOk;
+}
+
+.status_error {
+    color: @statuscolorError;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
 }
 
 body {
@@ -23,20 +51,83 @@ body {
 }
 
 #header {
-    background-color: @maincolor;
+    background-color: @menubgcolor;
     width: 100%;
+    position: absolute;
     #menu {
-        padding: 10px;
         height: 40px;
-        color: @mainbgcolor;
+        color: @menutextcolor;
+        ul {
+            list-style-type: none;
+            li {
+                float: left;
+                display: block;
+                a {
+                    display: block;
+                    height: 40px;
+                    padding: 10px;
+                    color: @menutextcolor;
+                    float: left;
+                    text-decoration: none;
+                }
+                ul {
+                    display: none;
+                    float: left;
+                    position: relative;
+                    background-color: @menubgcolor;
+                    li {
+                        a {
+                            background-color: @menuSubBgColorInactive;
+                            border: none;
+                            color: @menubgcolor;
+                            &.active {
+                                background-color: @menutextcolor;
+                            }
+                        }
+                        ul {
+                            float: none;
+                            position: absolute;
+                            right: 0px;
+                            margin-top: 40px;
+                            li {
+                                a {
+                                    width: 250px;
+                                    float: right;
+                                    text-align: right;
+                                    border-top: 1px solid @menutextcolor;
+                                    border-right: 2px solid @menutextcolor;
+                                }
+                            }
+                        }
+                    }
+                }
+                &.menuclicked {
+                    ul {
+                        display: block;
+                        li {
+                            ul {
+                                display: none;
+                            }
+                            &:hover {
+                                ul {
+                                    display: block;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 #content {
-    padding-top: 10px;
+    padding-top: 50px;
     padding-left: 10px;
     padding-right: 10px;
-    overflow: hidden;
+    padding-bottom: 10px;
+    // overflow: hidden;
+    height: 100%;
 }
 
 #tree-container {
@@ -44,7 +135,12 @@ body {
 }
 
 #form-container {
-    .formcontainer;
+    &.services {
+        .formcontainer(100%);
+    }
+    &.attributesources {
+        .formcontainer(60%);
+    }
     iframe {
         width: 100%;
         height: 100%;
@@ -52,3 +148,8 @@ body {
     }
 }
 
+#grid-container {
+    &.attributesources {
+        .gridcontainer
+    }
+}
