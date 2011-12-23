@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import org.geotools.data.ows.CRSEnvelope;
 
 /**
  *
@@ -86,13 +87,46 @@ public class Layer {
     @Column(name="role_name")
     private Set<String> writers = new HashSet<String>();
 
-    @OneToMany(orphanRemoval=true)
+    @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
     @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Layer> children = new ArrayList<Layer>();
 
     @ElementCollection
     private Map<String,String> extraInfo = new HashMap<String,String>();
+
+    public Layer() {
+    }
+    
+    public Layer(org.geotools.data.ows.Layer l) {
+        name = l.getName();
+        title = l.getTitle();
+        minScale = l.getScaleDenominatorMin();
+        if(Double.isNaN(minScale)) {
+            minScale = null;
+        }
+        maxScale = l.getScaleDenominatorMax();
+        if(Double.isNaN(maxScale)) {
+            maxScale = null;
+        }
+
+        for(CRSEnvelope e: l.getLayerBoundingBoxes()) {
+            BoundingBox b = new BoundingBox(e);
+            boundingBoxes.put(b.getCrs(), b);
+        }
+        
+        for(String s: l.getSrs()) {
+            crsList.add(new CoordinateReferenceSystem(s));
+        }
+        queryable = l.isQueryable();
+        if(l.getKeywords() != null) {
+            keywords.addAll(Arrays.asList(l.getKeywords()));
+        }
+
+        for(org.geotools.data.ows.Layer child: l.getLayerChildren()) {
+            children.add(new Layer(child));
+        }
+    }
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Layer getParent() {

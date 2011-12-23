@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.services;
 
 import javax.persistence.*;
+import nl.b3p.web.WaitPageStatus;
 
 /**
  *
@@ -27,7 +28,7 @@ import javax.persistence.*;
 public class ArcGISService extends GeoService {
 
     @Override
-    public GeoService loadFromUrl(String url) {
+    public GeoService loadFromUrl(String url, WaitPageStatus waitStatus) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

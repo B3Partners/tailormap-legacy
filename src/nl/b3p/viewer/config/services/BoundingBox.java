@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.services;
 
 import javax.persistence.Embeddable;
+import org.geotools.data.ows.CRSEnvelope;
 
 /**
  *
@@ -26,6 +27,17 @@ import javax.persistence.Embeddable;
 public class BoundingBox {
     CoordinateReferenceSystem crs;
     Double minx, miny, maxx, maxy;
+
+    public BoundingBox() {
+    }
+
+    public BoundingBox(CRSEnvelope e) {
+        crs = new CoordinateReferenceSystem(e.getSRSName());
+        minx = e.getMinX();
+        miny = e.getMinY();
+        maxx = e.getMaxX();
+        maxy = e.getMaxY();
+    }
 
     public CoordinateReferenceSystem getCrs() {
         return crs;

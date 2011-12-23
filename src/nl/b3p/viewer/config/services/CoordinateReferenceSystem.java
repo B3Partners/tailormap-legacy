@@ -28,6 +28,13 @@ public class CoordinateReferenceSystem {
     @Column(name="crs")
     private String name;
 
+    public CoordinateReferenceSystem() {
+    }
+
+    public CoordinateReferenceSystem(String s) {
+        name = s;
+    }
+
     public String getName() {
         return name;
     }

@@ -6,4 +6,4 @@ category_children (child)
 category_services (service)
 feature_source_feature_types (feature_type)
 layer_children (child)
-
+feature_type_attribute (attribute_descriptor)

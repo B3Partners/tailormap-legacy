@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.web.WaitPageStatus;
 
 /**
  *
@@ -29,7 +30,6 @@ public abstract class GeoService {
     @Id
     private Long id;
 
-    @Column(unique=true)
     @Basic(optional=false)
     private String name;
 
@@ -44,7 +44,7 @@ public abstract class GeoService {
 
     private boolean monitoringEnabled;
 
-    @OneToOne(orphanRemoval=true)
+    @OneToOne(orphanRemoval=true, cascade=CascadeType.ALL)
     private Layer topLayer;
 
     @ElementCollection
@@ -125,5 +125,9 @@ public abstract class GeoService {
     }
     //</editor-fold>
 
-    public abstract GeoService loadFromUrl(String url);
+    public GeoService loadFromUrl(String url) throws Exception {
+        return loadFromUrl(url, new WaitPageStatus());
+    }
+
+    public abstract GeoService loadFromUrl(String url, WaitPageStatus waitStatus) throws Exception;
 }
