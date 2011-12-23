@@ -38,6 +38,14 @@
             <param-value>net.sourceforge.stripes.controller.multipart.CommonsMultipartWrapper</param-value>
         </init-param>
         <init-param>
+            <param-name>CoreInterceptor.Classes</param-name>
+            <param-value>
+                org.stripesstuff.plugin.waitpage.WaitPageInterceptor,
+                net.sourceforge.stripes.controller.BeforeAfterMethodInterceptor,
+                net.sourceforge.stripes.controller.HttpCacheInterceptor
+            </param-value>
+        </init-param>
+        <init-param>
             <param-name>LocalePicker.Locales</param-name>
             <param-value>nl_NL</param-value>
         </init-param>
@@ -81,6 +89,10 @@
     <servlet-mapping>
         <servlet-name>StripesDispatcher</servlet-name>
         <url-pattern>/action/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StripesDispatcher</servlet-name>
+        <url-pattern>*.wait</url-pattern>
     </servlet-mapping>
 
     <session-config>

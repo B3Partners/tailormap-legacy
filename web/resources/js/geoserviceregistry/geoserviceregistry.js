@@ -26,17 +26,17 @@ Ext.onReady(function() {
     Ext.define('TreeNode', {
         extend: 'Ext.data.Model',
         fields: [
-            { name: 'id', type: 'string' },
-            { name: 'children', type: 'array' },
-            { name: 'name', type: 'string' },
-            { name: 'type',  type: 'string' },
-            { name: 'status', type: 'string' },
-            { name: 'class', type: 'string' },
-            { name: 'parentid', type: 'string' },
-            { name: 'hasChildren', type: 'boolean' },
+            {name: 'id', type: 'string'},
+            {name: 'children', type: 'array'},
+            {name: 'name', type: 'string'},
+            {name: 'type',  type: 'string'},
+            {name: 'status', type: 'string'},
+            {name: 'class', type: 'string'},
+            {name: 'parentid', type: 'string'},
+            {name: 'isLeaf', type: 'boolean'},
             
             // Text is used by tree, mapped to name
-            { name: 'text', type: 'string', mapping: 'name' }
+            {name: 'text', type: 'string', mapping: 'name'}
         ],
         get: function(fieldName) {
             var nodeType = '';
@@ -53,10 +53,7 @@ Ext.onReady(function() {
             // default?
             }
             if(fieldName == "leaf") {
-                nodeType = this.get('type');
-                if(nodeType == "category" && !this.get('hasChildren')) return true;
-                if(nodeType == "layer" && this.get('children') == undefined) return true;
-                return false;
+                return this.get('isLeaf');
             }
             
             // From ExtJS source
@@ -121,13 +118,15 @@ Ext.onReady(function() {
             },
             itemclick: function(view, record, item, index, event, eOpts) {
                 var recordType = record.get('type');
+                var id = record.get('id').substr(1);
+                console.log("tree item " + recordType + " " + id);
                 if(recordType == "category") {
                     // click on category = new service
-                    Ext.get('editFrame').dom.src = geoserviceediturl + '&parentId=' + record.get('id');
+                    Ext.get('editFrame').dom.src = geoserviceediturl + '?category=' + id;
                 }
                 if(recordType == "service") {
                     // click on service = edit service
-                    Ext.get('editFrame').dom.src = geoserviceediturl + '&serviceId=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
+                    Ext.get('editFrame').dom.src = geoserviceediturl + '?service=' + id;
                 }
                 if(recordType == "layer") {
                     // click on layer = edit layer
@@ -137,7 +136,7 @@ Ext.onReady(function() {
         },
         bbar: [
             "->",
-            { xtype: 'button', text: 'Categorie toevoegen', handler: function() { addCategory(0) }, cls: 'x-btn-text-icon', icon: addicon }
+            {xtype: 'button', text: 'Categorie toevoegen', handler: function() {addCategory(0)}, cls: 'x-btn-text-icon', icon: addicon}
         ]
     });
     

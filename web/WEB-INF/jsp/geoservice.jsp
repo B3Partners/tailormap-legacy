@@ -20,37 +20,91 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Bewerk Geoservice</title>
+        <title>Geo service</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <stripes:form id="saveForm" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
-            <c:if test="${!empty actionBean.serviceId || !empty actionBean.parentId}">
-                <c:choose>
-                    <c:when test="${!empty actionBean.serviceId}">
-                        <h1>Geoservice bewerken</h1>
-                        Parent ID: ${actionBean.parentId}<br />
-                        Service ID: ${actionBean.serviceId}
-                    </c:when>
-                    <c:when test="${!empty actionBean.parentId}">
-                        <h1>Geoservice toevoegen</h1>
-                        Parent ID: ${actionBean.parentId}
-                    </c:when>
-                </c:choose>
-                <div>
-                    Naam: <stripes:text name="service.name"/><br />
-                    Url: <stripes:text name="service.url"/><br />
-                    Type: 
-                    <stripes:select id="serviceType" name="service.serviceType">
-                        <c:forEach var="types" items="${actionBean.serviceTypes}">
-                            <stripes:option  value="${types}"><c:out value="${types}"/></stripes:option>
-                        </c:forEach>
-                    </stripes:select>
-                    <br />
-                    Gebruikersnaam: <stripes:text name="service.username"/><br />
-                    Wachtwoord: <stripes:text name="service.password"/><br />
-                    <stripes:submit name="saveGeoService" value="opslaan"/><br />
-                </div>
-            </c:if>
-        </stripes:form>
+
+        <p>
+        <stripes:errors/>
+        <stripes:messages/>
+        <p>
+        event: ${actionBean.context.eventName}<br>
+        <p>
+<c:if test="${actionBean.context.eventName == 'default' && !empty actionBean.category}">
+
+    <script type="text/javascript">
+        Ext.create('Ext.Button', {
+            renderTo: document.body,
+            text    : 'Service toevoegen aan <c:out value="${actionBean.category.name}"/>',
+            icon    : '${contextPath}/resources/images/add.png',
+            handler: function() {
+                window.location.href = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="addForm"><stripes:param name="category" value="${actionBean.category}"/></stripes:url>';
+            }
+        });
+    </script>
+</c:if>
+            
+    <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+    
+<%-- Bestaande service --%>
+<c:if test="${actionBean.context.eventName == 'edit'}">
+    <h1><c:out value="${actionBean.service}"/></h1>
+    Category: ${actionBean.category.name}<br />
+    ID: ${actionBean.service.id}
+</c:if>
+
+<%-- Nieuwe service --%>
+<c:if test="${actionBean.context.eventName == 'addForm' || actionBean.context.eventName == 'add'}">
+
+    <stripes:hidden name="category"/>
+    
+    <h1>Nieuwe service toevoegen</h1>
+    <p>
+    <script type="text/javascript">
+        function checkProtocol() {
+            var protocol = Ext.query("select[name='protocol']")[0].value;
+            Ext.fly('useUrlTr').setVisible(protocol == "wms");
+        }
+
+        Ext.onReady(checkProtocol);
+    </script>
+    <table>
+        <tr>
+            <td>URL van de service:</td>
+            <td><stripes:text name="url" maxlength="255" size="80"/></td>
+        </tr>
+        <tr><td>Protocol:</td>
+            <td>
+                <stripes:select name="protocol" onchange="checkProtocol()" onkeyup="checkProtocol()">
+                    <stripes:option value="wms">WMS</stripes:option>
+                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                    <stripes:option value="arcxml">ArcIMS</stripes:option>
+                </stripes:select>
+            </td>
+        </tr>
+        <tr id="useUrlTr">
+            <td colspan="2">
+                <label>
+                    <stripes:checkbox name="overrideUrl"/>Gebruik altijd ingevulde URL in plaats van URLs in GetCapabilities
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Weergavenaam:</td>
+            <td><stripes:text name="name" maxlength="255" size="30"/></td>
+        </tr>
+        <tr>
+            <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service
+                    automatisch bepaald. Bovenstaand kan optioneel een alternatieve weergavenaam
+                    worden ingevuld.</i>
+            </td>
+        </tr>
+
+    </table>
+    <stripes:submit name="add" value="Service inladen"/>
+</c:if>
+
+</stripes:form>
+
     </stripes:layout-component>
 </stripes:layout-render>

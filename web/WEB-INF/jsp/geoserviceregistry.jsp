@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             // Definition of URLS and icons... how are we going to do this?
             var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
             var addcategoryurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="addCategory"/>';
-            var geoserviceediturl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="editGeoService"/>';
+            var geoserviceediturl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean"/>';
             var layerediturl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean" event="editLayer"/>';
             var foldericon = '${contextPath}/resources/images/folder.png';
             var layericon = '${contextPath}/resources/images/map.png';

@@ -144,7 +144,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 j.put("id", "c" + sub.getId());
                 j.put("name", sub.getName());
                 j.put("type", "category");
-                j.put("hasChildren", !sub.getChildren().isEmpty());
+                j.put("isLeaf", sub.getChildren().isEmpty() && sub.getServices().isEmpty());
                 if(sub.getParent() != null) {
                     j.put("parentid", sub.getParent().getId());
                 }
@@ -156,6 +156,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 j.put("id", "s" + service.getId());
                 j.put("name", service.getName());
                 j.put("type", "service");
+                j.put("isLeaf", service.getTopLayer() == null);
                 j.put("status", Math.random() > 0.5 ? "ok" : "error");
                 j.put("parentid", nodeId);
                 children.put(j);
@@ -169,6 +170,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                     j.put("id", "l" + sublayer.getId());
                     j.put("name", sublayer.getName());
                     j.put("type", "layer");
+                    j.put("isLeaf", sublayer.getChildren().isEmpty());
                     j.put("parentid", nodeId);
                     children.put(j);
                 }
@@ -181,6 +183,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 j.put("id", "l" + sublayer.getId());
                 j.put("name", sublayer.getName());
                 j.put("type", "layer");
+                j.put("isLeaf", sublayer.getChildren().isEmpty());
                 j.put("parentid", nodeId);
                 children.put(j);
             }
