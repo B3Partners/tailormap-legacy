@@ -130,7 +130,7 @@ Ext.onReady(function() {
                 }
                 if(recordType == "layer") {
                     // click on layer = edit layer
-                    Ext.get('editFrame').dom.src = layerediturl + '&layer=' + record.get('id') + '&parentId=' + record.parentNode.get('id');
+                    Ext.get('editFrame').dom.src = layerediturl + '&layer=' + id + '&parentId=' + record.parentNode.get('id');
                 }
             }
         },

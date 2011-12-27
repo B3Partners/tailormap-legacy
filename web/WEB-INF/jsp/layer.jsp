@@ -24,6 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <h1>Layer bewerken</h1>
-        Layer ID: ${actionBean.id}
+        Layer ID: ${actionBean.layer.id}
     </stripes:layout-component>
 </stripes:layout-render>

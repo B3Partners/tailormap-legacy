@@ -18,6 +18,7 @@ package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.services.Layer;
 import org.json.JSONException;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -26,10 +27,13 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Jytte Schaeffer
  */
 public class LayerActionBean implements ActionBean{
+    private static final String JSP = "/WEB-INF/jsp/layer.jsp";
+    
     private ActionBeanContext context;
     
     @Validate
-    private String id;
+    private Layer layer;
+    
     @Validate
     private String parentId;
 
@@ -41,13 +45,13 @@ public class LayerActionBean implements ActionBean{
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
-    public String getId() {
-        return id;
+
+    public Layer getLayer() {
+        return layer;
     }
-    
-    public void setId(String id) {
-        this.id = id;
+
+    public void setLayer(Layer layer) {
+        this.layer = layer;
     }
     
     public String getParentId() {
@@ -61,11 +65,9 @@ public class LayerActionBean implements ActionBean{
     
     @DefaultHandler
     public Resolution editLayer() throws JSONException {
-        /*this.setId(this.getContext().getRequest().getParameter("layer"));
-        this.setParentId(this.getContext().getRequest().getParameter("parentId"));*/
         
         Stripersist.getEntityManager().getTransaction().commit();
         
-        return new ForwardResolution("/WEB-INF/jsp/geoservice.jsp");
+        return new ForwardResolution(JSP);
     }
 }
