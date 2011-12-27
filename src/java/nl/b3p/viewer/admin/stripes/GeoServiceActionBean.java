@@ -44,6 +44,7 @@ public class GeoServiceActionBean implements ActionBean{
     @Validate(on={"addForm","add"},required=true)
     private Category category;
     
+    @Validate(on="editGeoService",required=true)
     private GeoService service;
 
     @Validate(on="add", required=true)

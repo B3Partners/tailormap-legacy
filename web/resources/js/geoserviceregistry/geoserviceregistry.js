@@ -122,11 +122,11 @@ Ext.onReady(function() {
                 console.log("tree item " + recordType + " " + id);
                 if(recordType == "category") {
                     // click on category = new service
-                    Ext.get('editFrame').dom.src = geoserviceediturl + '?category=' + id;
+                    Ext.get('editFrame').dom.src = geoserviceurl + '?category=' + id;
                 }
                 if(recordType == "service") {
                     // click on service = edit service
-                    Ext.get('editFrame').dom.src = geoserviceediturl + '?service=' + id;
+                    Ext.get('editFrame').dom.src = geoserviceediturl + '?service=' + id + '&category=' + record.parentNode.get('id').substr(1);
                 }
                 if(recordType == "layer") {
                     // click on layer = edit layer

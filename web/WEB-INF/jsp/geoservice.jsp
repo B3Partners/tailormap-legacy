@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
     
 <%-- Bestaande service --%>
-<c:if test="${actionBean.context.eventName == 'edit'}">
+<c:if test="${actionBean.context.eventName == 'editGeoService'}">
     <h1><c:out value="${actionBean.service}"/></h1>
     Category: ${actionBean.category.name}<br />
     ID: ${actionBean.service.id}
