@@ -19,7 +19,6 @@ package nl.b3p.viewer.admin.stripes;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
-import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.Category;
@@ -53,6 +52,7 @@ public class GeoServiceActionBean implements ActionBean{
     @Validate(on="add", required=true)
     private String protocol;
 
+    @Validate
     private String name;
 
     @Validate
