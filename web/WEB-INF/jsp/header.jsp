@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <li><a href="#" id="menu_instellingen">Instellingen</a></li>
                             <li><a href="#" id="menu_boomstructuur">Boomstructuur met kaarten</a></li>
                             <li><a href="#" id="menu_startkaartbeeld">Startkaartbeeld</a></li>
-                            <li><a href="#" id="menu_layout">Layout met beschikbare componenten</a></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="menu_layout">Layout met beschikbare componenten</stripes:link></li>
                         </ul>
                     </li>
                 </ul>

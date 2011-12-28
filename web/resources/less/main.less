@@ -6,6 +6,8 @@
 @menuSubBgColorInactive: #DDDDDD;
 @statuscolorOk: #00990F;
 @statuscolorError: #A00002;
+@graycolor: #CCCCCC;
+@baseurl: 'viewer-admin';
 
 // Mixins
 .treecontainer (@width: 250px) {
@@ -89,13 +91,15 @@ body {
                             position: absolute;
                             right: 0px;
                             margin-top: 40px;
+                            margin-right: -2px;
+                            border: 2px solid @menubgcolor;
+                            border-top: 0px none;
                             li {
                                 a {
-                                    width: 250px;
+                                    width: 300px;
                                     float: right;
                                     text-align: right;
                                     border-top: 1px solid @menutextcolor;
-                                    border-right: 2px solid @menutextcolor;
                                 }
                             }
                         }
@@ -151,5 +155,116 @@ body {
 #grid-container {
     &.attributesources {
         .gridcontainer
+    }
+}
+
+#component-container {
+    .treecontainer;
+    border: 2px solid @maincolor;
+    margin-right: 10px;
+    height: 90%;
+    .component-view {
+        .component-block {
+            margin: 10px;
+            padding: 3px;
+            border: 2px solid @maincolor;
+            text-align: center;
+            .wrangler, .remove {
+                display: none;
+            }
+            &.component-added {
+                border: 2px solid @graycolor;
+                color: @graycolor;
+            }
+        }
+    }
+}
+
+#layout-container {
+    .formcontainer(90%);
+    border: 2px solid @maincolor;
+    margin-top: 10px;
+    padding-top: 0px;
+    overflow: auto;
+    .content-container {
+        border: 2px dashed @graycolor;
+        padding: 10px;
+        .component-block {
+            margin-top: 10px;
+            padding: 3px;
+            border: 2px solid @maincolor;
+            text-align: left;
+            .title {
+                padding-left: 3px;
+            }
+            &.float-component {
+                float: left;
+                .title {
+                    float: left;
+                    padding-right: 3px;
+                }
+            }
+            &:hover {
+                .wrangler, .remove {
+                    background-image: url("/@{baseurl}/resources/images/wrench.png");
+                    width: 16px;
+                    height: 16px;
+                    float: right;
+                    cursor: pointer;
+                    margin-left: 15px;
+                }
+                .remove {
+                    background-image: url("/@{baseurl}/resources/images/delete.png");
+                    margin-left: 5px;
+                }
+            }
+        }
+        &.content-container-hover {
+            border: 2px dashed @maincolor;
+        }
+    }
+    #layout-north, #layout-south {
+        margin: 10px;
+    }
+    #layout-center {
+        margin-left: 10px;
+        margin-right: 10px;
+        #center_left, #center_right {
+            width: 200px;
+            float: left;
+            margin-right: 10px;
+            .top {
+                height: 40%;
+                margin-bottom: 10px;
+            }
+            .bottom {
+                height: 60%;
+            }
+        }
+        #center_right {
+            float: right;
+            margin-right: 0px;
+            margin-left: 10px;
+        }
+        #center_center {
+            overflow: auto;
+            #layout_left_menu {
+                float: left;
+                margin-right: 10px;
+            }
+            #center_center_center {
+                overflow: auto;
+                #layout_top_menu, #layout_content {
+                    margin-bottom: 10px;
+                }
+                #layout_top_menu {
+                    float: left;
+                    width: 100%;
+                }
+                #layout_content {
+                    clear: both;
+                }
+            }
+        }
     }
 }
