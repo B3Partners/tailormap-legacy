@@ -115,7 +115,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         em.getTransaction().commit();
 
         final JSONObject j = new JSONObject();
-        j.put("id", c.getId());
+        j.put("id", "c" + c.getId());
         j.put("name", c.getName());
         j.put("type", "category");
         j.put("hasChildren", false);

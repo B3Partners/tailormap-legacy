@@ -16,9 +16,6 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
@@ -26,7 +23,6 @@ import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONException;
@@ -167,14 +163,22 @@ public class GeoServiceActionBean implements ActionBean{
     }*/
     
     public Resolution deleteService(){
+        /* Als een service layers heeft die toegevoegt zijn aan een applicatie 
+         * mag de service niet verwijderd worden */
+        Category c = service.getCategory();
+        c.getServices().remove(service);
+        Stripersist.getEntityManager().persist(c);
+        Stripersist.getEntityManager().remove(service);
+        Stripersist.getEntityManager().getTransaction().commit();
         
+        getContext().getMessages().add(new SimpleMessage("De service is verwijderd"));
         
         return new ForwardResolution(JSP);
     }
     
     public Resolution deleteCategory(){
         if(category.getChildren().size() > 0){
-            getContext().getValidationErrors().addGlobalError(new SimpleError("De categorie bevat nog andere categorieen en kan niet verwijderd worden. "));
+            getContext().getValidationErrors().addGlobalError(new SimpleError("De categorie bevat nog andere categorieën en kan niet verwijderd worden. "));
             return new ForwardResolution(JSP);
         }else if(category.getServices().size() > 0){
             getContext().getValidationErrors().addGlobalError(new SimpleError("De categorie bevat services en kan niet verwijderd worden. "));
@@ -186,6 +190,8 @@ public class GeoServiceActionBean implements ActionBean{
         Stripersist.getEntityManager().persist(c);
         Stripersist.getEntityManager().remove(category);
         Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("De categorie is verwijderd"));
         
         return new ForwardResolution(JSP);
     }
