@@ -173,7 +173,7 @@ function addNode(node, parentid) {
 // Remove a treenode based in its ID
 function removeTreeNode(nodeid) {
     var tree = Ext.getCmp('servicestree');
-    tree.getRootNode().findChild('id', nodeid).remove();
+    tree.getRootNode().findChild('id', nodeid, true).remove();
 }
 
 // Add a category, shows a prompt dialog for the new name and adds the category
@@ -218,5 +218,5 @@ function addServiceNode(json) {
 // Function to rename a node, based in its ID
 function renameNode(nodeid, newname) {
     var tree = Ext.getCmp('servicestree');
-    tree.getRootNode().findChild('id', nodeid).set('text', newname);
+    tree.getRootNode().findChild('id', nodeid, true).set('text', newname);
 }
