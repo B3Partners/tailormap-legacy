@@ -45,18 +45,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         });
     </script>
     <stripes:hidden name="category" value="${actionBean.category.id}"/>
-    <stripes:submit name="deleteCategory" value="Verwijder categorie"/><br />
-    <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
+    Naam: <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
     <stripes:submit name="editCategory" value="Opslaan"/>
+    <stripes:submit name="deleteCategory" value="Verwijder categorie"/><br />
 </c:if>
             
     
     
 <%-- Bestaande service --%>
 <c:if test="${actionBean.context.eventName == 'editGeoService'}">
-    <h1><c:out value="${actionBean.service}"/></h1>
+    <!--<h1><c:out value="${actionBean.service}"/></h1>
     Category: ${actionBean.category.name}<br />
-    ID: ${actionBean.service.id}<br />
+    ID: ${actionBean.service.id}<br />-->
+    
+    <h1>Service wijzigen</h1>
+    
+    <table>
+        <tr>
+            <td>URL van de service:</td>
+            <td><stripes:text name="url" value="${actionBean.service.url}" maxlength="255" size="80" disabled="true"/></td>
+        </tr>
+        <tr><td>Protocol:</td>
+            <td>
+                <stripes:select name="protocol" disabled="true" onchange="checkProtocol()" onkeyup="checkProtocol()">
+                    <stripes:option value="wms">WMS</stripes:option>
+                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                    <stripes:option value="arcxml">ArcIMS</stripes:option>
+                </stripes:select>
+            </td>
+        </tr>
+        <tr>
+            <td>Weergavenaam:</td>
+            <td><stripes:text name="name" value="${actionBean.service.name}" maxlength="255" size="30"/></td>
+        </tr>
+        <tr>
+            <td>gebruikersnaam:</td>
+            <td><stripes:text name="username" value="${actionBean.service.username}" maxlength="255" size="30"/></td>
+        </tr>
+        <tr>
+            <td>Wachtwoord:</td>
+            <td><stripes:text name="password" value="${actionBean.service.password}" maxlength="255" size="30"/></td>
+        </tr>
+    </table>
+    
+    <stripes:submit name="saveService" value="Opslaan"/>
     <stripes:hidden name="service" value="${actionBean.service.id}"/>
     <stripes:submit name="deleteService" value="Verwijder service"/>
 </c:if>

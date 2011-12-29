@@ -168,10 +168,21 @@ public class GeoServiceActionBean implements ActionBean{
         return new ForwardResolution(JSP);
     }
     
-    /*public Resolution saveGeoService() throws JSONException {
+    public Resolution saveService() throws JSONException {
+        if(name != null){
+            service.setName(name);
+        }
+
+        service.setUsername(username);
+        service.setPassword(password);
+        
+        Stripersist.getEntityManager().persist(service);
         Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("De service is opgeslagen"));
+        
         return new ForwardResolution(JSP);
-    }*/
+    }
     
     public Resolution deleteService(){
         /* Als een service layers heeft die toegevoegt zijn aan een applicatie 
@@ -214,6 +225,8 @@ public class GeoServiceActionBean implements ActionBean{
         
         Stripersist.getEntityManager().persist(category);
         Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("De categorie is opgeslagen"));
         
         return new ForwardResolution(JSP);
     }
