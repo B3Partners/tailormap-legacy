@@ -168,7 +168,11 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 for(Layer sublayer: gs.getTopLayer().getChildren()) {
                     JSONObject j = new JSONObject();
                     j.put("id", "l" + sublayer.getId());
-                    j.put("name", sublayer.getName());
+                    if(sublayer.getTitleAlias() != null){
+                        j.put("name", sublayer.getTitleAlias());
+                    }else{
+                        j.put("name", sublayer.getName());
+                    }
                     j.put("type", "layer");
                     j.put("isLeaf", sublayer.getChildren().isEmpty());
                     j.put("parentid", nodeId);
@@ -181,7 +185,11 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             for(Layer sublayer: layer.getChildren()) {
                 JSONObject j = new JSONObject();
                 j.put("id", "l" + sublayer.getId());
-                j.put("name", sublayer.getName());
+                if(sublayer.getTitleAlias() != null){
+                    j.put("name", sublayer.getTitleAlias());
+                }else{
+                    j.put("name", sublayer.getName());
+                }
                 j.put("type", "layer");
                 j.put("isLeaf", sublayer.getChildren().isEmpty());
                 j.put("parentid", nodeId);
