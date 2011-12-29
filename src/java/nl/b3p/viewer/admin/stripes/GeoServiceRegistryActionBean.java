@@ -118,7 +118,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         j.put("id", "c" + c.getId());
         j.put("name", c.getName());
         j.put("type", "category");
-        j.put("hasChildren", false);
+        j.put("isLeaf", true);
         j.put("parentid", parentId);
         
         return new StreamingResolution("application/json") {

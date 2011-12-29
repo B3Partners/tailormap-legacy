@@ -23,6 +23,8 @@ Ext.require([
 
 Ext.onReady(function() {
     
+    // Definition of the TreeNode model. Get function is overridden, so custom
+    // icons for the different types are possible
     Ext.define('TreeNode', {
         extend: 'Ext.data.Model',
         fields: [
@@ -34,7 +36,6 @@ Ext.onReady(function() {
             {name: 'class', type: 'string'},
             {name: 'parentid', type: 'string'},
             {name: 'isLeaf', type: 'boolean'},
-            
             // Text is used by tree, mapped to name
             {name: 'text', type: 'string', mapping: 'name'}
         ],
@@ -48,19 +49,17 @@ Ext.onReady(function() {
                     var nodeStatus = this.get('status');
                     if(nodeStatus == "ok") return serviceokicon;
                     if(nodeStatus == "error") return serviceerroricon;
-                // default?
                 }
-            // default?
             }
             if(fieldName == "leaf") {
                 return this.get('isLeaf');
             }
-            
-            // From ExtJS source
+            // Return default value, taken from ExtJS source
             return this[this.persistenceProperty][fieldName];
         }
     });
     
+    // Definition of the store, which takes care of loading the necessary json
     var treeStore = Ext.create('Ext.data.TreeStore', {
         autoLoad: true,
         proxy: {
@@ -73,6 +72,7 @@ Ext.onReady(function() {
         nodeParam: 'nodeId'
     });
 
+    // Definition of contextmenu for categories
     var categoryMenu = new Ext.menu.Menu({
         data: {
             parent: 0,
@@ -89,7 +89,9 @@ Ext.onReady(function() {
         }]
     });
 
+    // Definition of the tree
     var tree = Ext.create('Ext.tree.Panel', {
+        id: 'servicestree',
         store: treeStore,
         rootVisible: false,
         root: {
@@ -98,12 +100,12 @@ Ext.onReady(function() {
         },
         useArrows: true,
         frame: true,
-        //title: 'Services',
         renderTo: 'tree-container',
         width: 225,
         height: 400,
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
+                // Only show contextmenu (add new category) on category nodes
                 if(record.get('type') == "category") {
                     categoryMenu.data.parent = record.get('id');
                     categoryMenu.data.clickedItem = record;
@@ -112,6 +114,8 @@ Ext.onReady(function() {
                 }
             },
             containercontextmenu: function(view, event, eOpts) {
+                // When rightclicking in the treecontainer (not on a node) than
+                // show the context menu for adding a new category
                 categoryMenu.data.parent = 0;
                 categoryMenu.showAt(event.getXY());
                 event.stopEvent();
@@ -119,7 +123,6 @@ Ext.onReady(function() {
             itemclick: function(view, record, item, index, event, eOpts) {
                 var recordType = record.get('type');
                 var id = record.get('id').substr(1);
-                console.log("tree item " + recordType + " " + id);
                 if(recordType == "category") {
                     // click on category = new service
                     Ext.get('editFrame').dom.src = geoserviceurl + '?category=' + id;
@@ -139,54 +142,81 @@ Ext.onReady(function() {
             {xtype: 'button', text: 'Categorie toevoegen', handler: function() {addCategory(0)}, cls: 'x-btn-text-icon', icon: addicon}
         ]
     });
-    
-    function addCategory(parentid) {
-        Ext.MessageBox.show({
-            title:'Nieuwe categorie toevoegen',
-            msg: 'Naam van nieuwe categorie:',
-            buttons: Ext.MessageBox.OKCANCEL,
-            prompt:true,
-            fn: function(btn, text, cBoxes){
-                if(btn=='ok' && text){
-                    Ext.Ajax.request({
-                        url: addcategoryurl,
-                        params: {
-                            name: text,
-                            parentId: parentid
-                        },
-                        method: 'POST',
-                        success: function ( result, request ) {
-                            var objData = Ext.JSON.decode(result.responseText);
-                            objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-                            var newNode = Ext.create('TreeNode', objData);
-                            addNode(newNode, objData.parentid);
-                        },
-                        failure: function ( result, request) {
-                            Ext.MessageBox.alert('Failed', result.responseText);
-                        }
-                    });
-                }
-            }
-        });
-    }
-    
-    function addNode(node, parentid) {
-        var record = null;
-        if(parentid == '0' || parentid == 'c0') {
-            record = tree.getRootNode();
-        } else {
-            record = tree.getRootNode().findChild('id', parentid);
-        }
-        // First expand, then append child, otherwise childnodes are replaced?
-        record.expand(false, function() {
-            record.appendChild(node);
-        });
-    }
-    
-    /* function addServiceNode(json, parentid) {
-        var objData = Ext.JSON.decode(json);
-        objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-        var newNode = Ext.create('TreeNode', objData);
-    } */
-    
 });
+
+// Function for adding a node, should not be called directly, but trough the
+// addCategory or addServiceNode functions
+function addNode(node, parentid) {
+    var record = null;
+    var tree = Ext.getCmp('servicestree');
+    if(parentid == '0' || parentid == 'c0') {
+        record = tree.getRootNode();
+    } else {
+        record = tree.getRootNode().findChild('id', parentid, true);
+    }
+    if(record != null) {
+        if(record.isLeaf()) {
+            // If the parent is currently a Leaf, then setting it to false
+            // and expanding it will load the added childnode from backend
+            record.set('isLeaf', false);
+            record.expand(false);
+        } else {
+            // If it has childnodes then just append the new node
+            // First expand, then append child, otherwise childnodes are replaced?
+            record.expand(false, function() {
+                record.appendChild(node);
+            });
+        }
+    }
+}
+
+// Remove a treenode based in its ID
+function removeTreeNode(nodeid) {
+    var tree = Ext.getCmp('servicestree');
+    tree.getRootNode().findChild('id', nodeid).remove();
+}
+
+// Add a category, shows a prompt dialog for the new name and adds the category
+function addCategory(parentid) {
+    Ext.MessageBox.show({
+        title:'Nieuwe categorie toevoegen',
+        msg: 'Naam van nieuwe categorie:',
+        buttons: Ext.MessageBox.OKCANCEL,
+        prompt:true,
+        fn: function(btn, text, cBoxes){
+            if(btn=='ok' && text){
+                Ext.Ajax.request({
+                    url: addcategoryurl,
+                    params: {
+                        name: text,
+                        parentId: parentid
+                    },
+                    method: 'POST',
+                    success: function ( result, request ) {
+                        var objData = Ext.JSON.decode(result.responseText);
+                        objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
+                        var newNode = Ext.create('TreeNode', objData);
+                        addNode(newNode, objData.parentid);
+                    },
+                    failure: function ( result, request) {
+                        Ext.MessageBox.alert('Failed', result.responseText);
+                    }
+                });
+            }
+        }
+    });
+}
+
+// Function to add a service node. Parameter should hold the JSON for 1 servicenode
+function addServiceNode(json) {
+    var objData = Ext.JSON.decode(json);
+    objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
+    var newNode = Ext.create('TreeNode', objData);
+    addNode(newNode, objData.parentid);
+}
+
+// Function to rename a node, based in its ID
+function renameNode(nodeid, newname) {
+    var tree = Ext.getCmp('servicestree');
+    tree.getRootNode().findChild('id', nodeid).set('text', newname);
+}

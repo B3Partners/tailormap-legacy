@@ -52,6 +52,8 @@ public class GeoServiceActionBean implements ActionBean{
     @Validate(on="add", required=true)
     private String protocol;
 
+    private String categoryId;
+    
     @Validate
     private String name;
     
@@ -156,6 +158,14 @@ public class GeoServiceActionBean implements ActionBean{
     public void setOverrideUrl(boolean overrideUrl) {
         this.overrideUrl = overrideUrl;
     }
+    
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -207,6 +217,7 @@ public class GeoServiceActionBean implements ActionBean{
             return new ForwardResolution(JSP);
         }
         
+        this.setCategoryId("c" + category.getId());
         Category c = category.getParent();
         c.getChildren().remove(category);
         Stripersist.getEntityManager().persist(c);

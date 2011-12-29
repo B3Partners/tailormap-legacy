@@ -15,6 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Get parent function for iframes / popups
+function getParent() {
+    if (window.opener){
+        return window.opener;
+    }else if (window.parent){
+        return window.parent;
+    }else{
+        return window;
+    }
+}
+
 // Default grid config
 var defaultGridConfig = {
     autoWidth: true,

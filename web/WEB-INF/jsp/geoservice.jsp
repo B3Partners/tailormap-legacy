@@ -50,7 +50,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:submit name="deleteCategory" value="Verwijder categorie"/><br />
 </c:if>
             
-    
+<c:if test="${actionBean.context.eventName == 'deleteCategory'}">
+    <script type="text/javascript">
+        var frameParent = getParent();
+        if(frameParent && frameParent.removeTreeNode && '${actionBean.categoryId}' != '') {
+            frameParent.removeTreeNode('${actionBean.categoryId}');
+        }
+    </script>
+</c:if>
     
 <%-- Bestaande service --%>
 <c:if test="${actionBean.context.eventName == 'editGeoService'}">
