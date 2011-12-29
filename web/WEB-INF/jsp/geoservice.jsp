@@ -48,6 +48,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     Naam: <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
     <stripes:submit name="editCategory" value="Opslaan"/>
     <stripes:submit name="deleteCategory" value="Verwijder categorie"/><br />
+    
+    <script type="text/javascript">
+        var frameParent = getParent();
+        if(frameParent && frameParent.addServiceNode && '${actionBean.newService}' != '') {
+            frameParent.addServiceNode('${actionBean.newService}');
+        }
+    </script>
 </c:if>
             
 <c:if test="${actionBean.context.eventName == 'deleteCategory'}">
@@ -129,7 +136,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <%-- Nieuwe service --%>
 <c:if test="${actionBean.context.eventName == 'addForm' || actionBean.context.eventName == 'add'}">
-
+    
     <stripes:hidden name="category"/>
     
     <h1>Nieuwe service toevoegen</h1>

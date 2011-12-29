@@ -26,6 +26,7 @@ import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -70,6 +71,8 @@ public class GeoServiceActionBean implements ActionBean{
     private boolean overrideUrl;
 
     private WaitPageStatus status;
+    
+    private JSONObject newService;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
@@ -158,6 +161,14 @@ public class GeoServiceActionBean implements ActionBean{
 
     public void setOverrideUrl(boolean overrideUrl) {
         this.overrideUrl = overrideUrl;
+    }
+
+    public JSONObject getNewService() {
+        return newService;
+    }
+
+    public void setNewService(JSONObject newService) {
+        this.newService = newService;
     }
 
     public String getServiceId() {
@@ -258,7 +269,7 @@ public class GeoServiceActionBean implements ActionBean{
     }
 
     @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=0, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
-    public Resolution add() {
+    public Resolution add() throws JSONException {
 
         status = new WaitPageStatus();
 
@@ -292,6 +303,14 @@ public class GeoServiceActionBean implements ActionBean{
 
         Stripersist.getEntityManager().persist(service);
         Stripersist.getEntityManager().getTransaction().commit();
+        
+        newService = new JSONObject();
+        newService.put("id", "s" + service.getId());
+        newService.put("name", service.getName());
+        newService.put("type", "service");
+        newService.put("isLeaf", service.getTopLayer() == null);
+        newService.put("status", Math.random() > 0.5 ? "ok" : "error");
+        newService.put("parentid", "c"+category.getId());
 
         getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
 
