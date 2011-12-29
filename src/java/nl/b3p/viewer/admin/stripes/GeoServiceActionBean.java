@@ -53,6 +53,7 @@ public class GeoServiceActionBean implements ActionBean{
     private String protocol;
 
     private String categoryId;
+    private String serviceId;
     
     @Validate
     private String name;
@@ -158,6 +159,14 @@ public class GeoServiceActionBean implements ActionBean{
     public void setOverrideUrl(boolean overrideUrl) {
         this.overrideUrl = overrideUrl;
     }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
     
     public String getCategoryId() {
         return categoryId;
@@ -197,6 +206,7 @@ public class GeoServiceActionBean implements ActionBean{
     public Resolution deleteService(){
         /* Als een service layers heeft die toegevoegt zijn aan een applicatie 
          * mag de service niet verwijderd worden */
+        this.setServiceId("s" + service.getId());
         Category c = service.getCategory();
         c.getServices().remove(service);
         Stripersist.getEntityManager().persist(c);

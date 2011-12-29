@@ -59,6 +59,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </script>
 </c:if>
     
+<c:if test="${actionBean.context.eventName == 'deleteService'}">
+    <script type="text/javascript">
+        var frameParent = getParent();
+        if(frameParent && frameParent.removeTreeNode && '${actionBean.serviceId}' != '') {
+            frameParent.removeTreeNode('${actionBean.serviceId}');
+        }
+    </script>
+</c:if>
+    
+ <c:if test="${actionBean.context.eventName == 'editCategory'}">
+    <script type="text/javascript">
+        var frameParent = getParent();
+        if(frameParent && frameParent.renameNode && '${actionBean.category.name}' != '') {
+            frameParent.renameNode('c${actionBean.category.id}','${actionBean.category.name}');
+        }
+    </script>
+</c:if>
+    
+ <c:if test="${actionBean.context.eventName == 'saveService'}">
+    <script type="text/javascript">
+        var frameParent = getParent();
+        if(frameParent && frameParent.renameNode && '${actionBean.service.name}' != '') {
+            frameParent.renameNode('s${actionBean.service.id}','${actionBean.service.name}');
+        }
+    </script>
+</c:if>
+
 <%-- Bestaande service --%>
 <c:if test="${actionBean.context.eventName == 'editGeoService'}">
     <!--<h1><c:out value="${actionBean.service}"/></h1>

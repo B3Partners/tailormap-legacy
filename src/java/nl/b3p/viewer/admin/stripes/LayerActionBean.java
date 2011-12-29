@@ -76,9 +76,9 @@ public class LayerActionBean implements ActionBean{
     
     @DefaultHandler
     public Resolution editLayer() throws JSONException {
-        titleAlias = layer.getTitleAlias();
+        //titleAlias = layer.getTitleAlias();
         
-        Stripersist.getEntityManager().getTransaction().commit();
+        //Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);
     }
@@ -92,6 +92,8 @@ public class LayerActionBean implements ActionBean{
         
         Stripersist.getEntityManager().persist(layer);
         Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
         
         return new ForwardResolution(JSP);
     }

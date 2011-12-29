@@ -23,16 +23,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk layer</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <p>
+        <stripes:errors/>
+        <stripes:messages/>
+        <p>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean">
             
         <h1>Layer bewerken</h1>
-        Layer ID: ${actionBean.layer.id}<br/>
+        <!--Layer ID: ${actionBean.layer.id}<br/>-->
         <stripes:hidden name="layer.id"/>
-        Naam: <stripes:text name="titleAlias"/><br/>
-        Layer: <stripes:text name="layer.title" disabled="true" size="30"/><br/>
+        
+        <table>
+            <tr>
+                <td>Naam: 
+                <td><stripes:text name="titleAlias" value="${actionBean.layer.titleAlias}" maxlength="255" size="30"/></td>
+            </tr>
+            <tr>     
+                <td>Layer:</td> 
+                <td><stripes:text name="layer.title" disabled="true" maxlength="255" size="30"/></td>
+            </tr>
+            <tr>     
+                <td>Legenda:</td> 
+                <td><stripes:text name="legenda" maxlength="255" size="30"/></td>
+            </tr>
+            <tr>     
+                <td>Metadata:</td> 
+                <td><stripes:text name="metadata" maxlength="255" size="30"/></td>
+            </tr>
+            <tr>     
+                <td>Downloadlink:</td> 
+                <td><stripes:text name="downloadlink" maxlength="255" size="30"/></td>
+            </tr>
+        </table>
         
         <stripes:submit name="saveLayer" value="Kaartlaag opslaan"/>
         
         </stripes:form>
+        
+        <c:if test="${actionBean.context.eventName == 'saveLayer'}">
+            <script type="text/javascript">
+                var frameParent = getParent();
+                if(frameParent && frameParent.renameNode && '${actionBean.titleAlias}' != '') {
+                    frameParent.renameNode('l${actionBean.layer.id}','${actionBean.titleAlias}');
+                }
+            </script>
+        </c:if>
     </stripes:layout-component>
 </stripes:layout-render>
