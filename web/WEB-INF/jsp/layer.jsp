@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </tr>
             <tr>     
                 <td>Legenda:</td> 
-                <td><stripes:text name="legenda" maxlength="255" size="30"/></td>
+                <td><stripes:text name="legenda" value="${actionBean.layer.legendImageUrl}" maxlength="255" size="30"/></td>
             </tr>
             <tr>     
                 <td>Metadata:</td> 

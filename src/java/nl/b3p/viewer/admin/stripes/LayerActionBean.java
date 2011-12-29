@@ -39,6 +39,12 @@ public class LayerActionBean implements ActionBean{
     
     @Validate
     private String titleAlias;
+    @Validate
+    private String legenda;
+    @Validate
+    private String metadata;
+    @Validate
+    private String downloadlink;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -64,6 +70,30 @@ public class LayerActionBean implements ActionBean{
     public void setTitleAlias(String titleAlias) {
         this.titleAlias = titleAlias;
     }
+
+    public String getDownloadlink() {
+        return downloadlink;
+    }
+
+    public void setDownloadlink(String downloadlink) {
+        this.downloadlink = downloadlink;
+    }
+
+    public String getLegenda() {
+        return legenda;
+    }
+
+    public void setLegenda(String legenda) {
+        this.legenda = legenda;
+    }
+
+    public String getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(String metadata) {
+        this.metadata = metadata;
+    }
     
     public String getParentId() {
         return parentId;
@@ -76,7 +106,8 @@ public class LayerActionBean implements ActionBean{
     
     @DefaultHandler
     public Resolution editLayer() throws JSONException {
-        //titleAlias = layer.getTitleAlias();
+        downloadlink = layer.getExtraInfo().get(layer.EXTRA_KEY_DOWNLOAD_URL);
+        metadata = layer.getExtraInfo().get(layer.EXTRA_KEY_METADATA_URL);
         
         //Stripersist.getEntityManager().getTransaction().commit();
         
@@ -89,6 +120,9 @@ public class LayerActionBean implements ActionBean{
         if(titleAlias != null){
             layer.setTitleAlias(titleAlias);
         }
+        layer.setLegendImageUrl(legenda);
+        layer.getExtraInfo().put(layer.EXTRA_KEY_DOWNLOAD_URL, downloadlink);
+        layer.getExtraInfo().put(layer.EXTRA_KEY_METADATA_URL, metadata);
         
         Stripersist.getEntityManager().persist(layer);
         Stripersist.getEntityManager().getTransaction().commit();
