@@ -30,6 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
         event: ${actionBean.context.eventName}<br>
         <p>
+            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+                
 <c:if test="${actionBean.context.eventName == 'default' && !empty actionBean.category}">
 
     <script type="text/javascript">
@@ -42,15 +44,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
         });
     </script>
+    <stripes:hidden name="category" value="${actionBean.category.id}"/>
+    <stripes:submit name="deleteCategory" value="Verwijder categorie"/>
 </c:if>
             
-    <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+    
     
 <%-- Bestaande service --%>
 <c:if test="${actionBean.context.eventName == 'editGeoService'}">
     <h1><c:out value="${actionBean.service}"/></h1>
     Category: ${actionBean.category.name}<br />
-    ID: ${actionBean.service.id}
+    ID: ${actionBean.service.id}<br />
+    <stripes:hidden name="service" value="${actionBean.service.id}"/>
+    <stripes:submit name="deleteService" value="Verwijder service"/>
 </c:if>
 
 <%-- Nieuwe service --%>
@@ -92,6 +98,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <tr>
             <td>Weergavenaam:</td>
             <td><stripes:text name="name" maxlength="255" size="30"/></td>
+        </tr>
+        <tr>
+            <td>gebruikersnaam:</td>
+            <td><stripes:text name="username" maxlength="255" size="30"/></td>
+        </tr>
+        <tr>
+            <td>Wachtwoord:</td>
+            <td><stripes:text name="password" maxlength="255" size="30"/></td>
         </tr>
         <tr>
             <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service

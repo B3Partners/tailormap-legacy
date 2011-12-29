@@ -16,6 +16,9 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
@@ -23,6 +26,7 @@ import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONException;
@@ -54,6 +58,11 @@ public class GeoServiceActionBean implements ActionBean{
 
     @Validate
     private String name;
+    
+    @Validate
+    private String username;
+    @Validate
+    private String password;
 
     @Validate
     private boolean overrideUrl;
@@ -91,6 +100,22 @@ public class GeoServiceActionBean implements ActionBean{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getProtocol() {
@@ -136,8 +161,32 @@ public class GeoServiceActionBean implements ActionBean{
         return new ForwardResolution(JSP);
     }
     
-    public Resolution saveGeoService() throws JSONException {
+    /*public Resolution saveGeoService() throws JSONException {
         Stripersist.getEntityManager().getTransaction().commit();
+        return new ForwardResolution(JSP);
+    }*/
+    
+    public Resolution deleteService(){
+        
+        
+        return new ForwardResolution(JSP);
+    }
+    
+    public Resolution deleteCategory(){
+        if(category.getChildren().size() > 0){
+            getContext().getValidationErrors().addGlobalError(new SimpleError("De categorie bevat nog andere categorieen en kan niet verwijderd worden. "));
+            return new ForwardResolution(JSP);
+        }else if(category.getServices().size() > 0){
+            getContext().getValidationErrors().addGlobalError(new SimpleError("De categorie bevat services en kan niet verwijderd worden. "));
+            return new ForwardResolution(JSP);
+        }
+        
+        Category c = category.getParent();
+        c.getChildren().remove(category);
+        Stripersist.getEntityManager().persist(c);
+        Stripersist.getEntityManager().remove(category);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
         return new ForwardResolution(JSP);
     }
 
@@ -168,6 +217,12 @@ public class GeoServiceActionBean implements ActionBean{
 
         if(name != null) {
             service.setName(name);
+        }
+        if(username != null) {
+            service.setUsername(username);
+        }
+        if(password != null) {
+            service.setPassword(password);
         }
         category = Stripersist.getEntityManager().find(Category.class, category.getId());
         service.setCategory(category);
