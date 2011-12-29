@@ -36,6 +36,9 @@ public class LayerActionBean implements ActionBean{
     
     @Validate
     private String parentId;
+    
+    @Validate
+    private String titleAlias;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -53,6 +56,14 @@ public class LayerActionBean implements ActionBean{
     public void setLayer(Layer layer) {
         this.layer = layer;
     }
+
+    public String getTitleAlias() {
+        return titleAlias;
+    }
+
+    public void setTitleAlias(String titleAlias) {
+        this.titleAlias = titleAlias;
+    }
     
     public String getParentId() {
         return parentId;
@@ -65,7 +76,21 @@ public class LayerActionBean implements ActionBean{
     
     @DefaultHandler
     public Resolution editLayer() throws JSONException {
+        titleAlias = layer.getTitleAlias();
         
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        return new ForwardResolution(JSP);
+    }
+    
+    public Resolution saveLayer() throws JSONException {
+        layer = Stripersist.getEntityManager().find(Layer.class, layer.getId());
+        
+        if(titleAlias != null){
+            layer.setTitleAlias(titleAlias);
+        }
+        
+        Stripersist.getEntityManager().persist(layer);
         Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);

@@ -28,8 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" id="menu_attribuutbronnen">Attribuutbronnen</stripes:link></li>
                     <li><a href="#" id="menu_attributen">Attributen</a></li>
                     <li><a href="#" id="menu_documenten">Documenten</a></li>
-                    <li><a href="#" id="menu_layerservices">Layer services</a></li>
-                    <li><a href="#" id="menu_layer">Layer?</a></li>
+                    <li><a href="#" id="menu_layarservices">Layer services</a></li>
+                    <li><a href="#" id="menu_layer">Layar?</a></li>
                 </ul>
             </li>
             <li class="menu-level1">

@@ -23,7 +23,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk layer</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean">
+            
         <h1>Layer bewerken</h1>
-        Layer ID: ${actionBean.layer.id}
+        Layer ID: ${actionBean.layer.id}<br/>
+        <stripes:hidden name="layer.id"/>
+        Naam: <stripes:text name="titleAlias"/><br/>
+        Layer: <stripes:text name="layer.title" disabled="true" size="30"/><br/>
+        
+        <stripes:submit name="saveLayer" value="Kaartlaag opslaan"/>
+        
+        </stripes:form>
     </stripes:layout-component>
 </stripes:layout-render>
