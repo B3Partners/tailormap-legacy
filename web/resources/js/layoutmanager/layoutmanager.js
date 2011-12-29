@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,10 +25,13 @@ Ext.require([
 
 Ext.onReady(function() {
     var components = [
-        {id:'1',name:'Flamingo Map',shortName:'Fm',restrictions:['content']},
-        {id:'2',name:'OpenLayers Map',shortName:'Om',restrictions:['content']},
-        {id:'3',name:'Tabs',shortName:'Tb',restrictions:['leftmargin_top', 'rightmargin_top']},
-        {id:'4',name:'Zoom',shortName:'Zm',restrictions:['top_menu']},
+        {id:'flamingo',name:'Flamingo Map',shortName:'Fm',restrictions:['content'],addOnce:true,linkedComponents:['openlayers'],addedToRegions:['content']},
+        {id:'openlayers',name:'OpenLayers Map',shortName:'Om',restrictions:['content'],addOnce:true,linkedComponents:['flamingo']},
+        {id:'tabs',name:'Tabs',shortName:'Tb',restrictions:['leftmargin_top', 'rightmargin_top'],addOnce:false,linkedComponents:[]},
+        {id:'zoom',name:'Zoom',shortName:'Zm',restrictions:['top_menu'],addOnce:true,linkedComponents:[]},
+        {id:'pan',name:'Pan',shortName:'Pa',restrictions:['top_menu'],addOnce:true,linkedComponents:[]},
+        {id:'streetview',name:'Streetview',shortName:'Sv',restrictions:['top_menu'],addOnce:true,linkedComponents:[]},
+        {id:'identify',name:'Identify',shortName:'Id',restrictions:['top_menu'],addOnce:true,linkedComponents:[]}
     ];
 
     var layoutRegions = [
@@ -51,13 +54,51 @@ Ext.onReady(function() {
             {name: 'id', type: 'string'},
             {name: 'name', type: 'string'},
             {name: 'shortName', type: 'string'},
-            {name: 'restrictions', type: 'array'}
-        ]
+            {name: 'restrictions', type: 'array'},
+            {name: 'addOnce', type: 'boolean'},
+            {name: 'linkedComponents', type: 'array'},
+            {name: 'addedToRegions', type: 'array'}
+        ],
+        isAddedToRegion: function(regionid) {
+            var isAdded = false;
+            Ext.Array.each(this.get('addedToRegions'), function(region, index) {
+                if(region == regionid) {
+                    isAdded = true;
+                }
+            });
+            return isAdded;
+        }
     });
     
     var componentStore = Ext.create('Ext.data.Store', {
         model: 'Component',
         data: components
+    });
+    
+    Ext.define('LayoutRegion', {
+        extend: 'Ext.data.Model',
+        idProperty: 'id',
+        fields: [
+            {name: 'id', type: 'string'},
+            {name: 'htmlId', type: 'string'},
+            {name: 'useShortName', type: 'boolean'},
+            {name: 'floatComponents', type: 'boolean'},
+            {name: 'addedComponents', type: 'array'}
+        ],
+        isComponentAdded: function(compid) {
+            var isAdded = false;
+            Ext.Array.each(this.get('addedComponents'), function(comp, index) {
+                if(comp == compid) {
+                    isAdded = true;
+                }
+            });
+            return isAdded;
+        }
+    });
+    
+    var layoutRegionsStore = Ext.create('Ext.data.Store', {
+        model: 'LayoutRegion',
+        data: layoutRegions
     });
     
     Ext.create('Ext.view.View', {
@@ -96,69 +137,144 @@ Ext.onReady(function() {
                         return this.dragData.repairXY;
                     }
                 });
+            },
+            viewready: function(view, e) {
+                initRegions();
+                initConfig(view);
             }
         }
     });
 
-    Ext.each(layoutRegions, function(layoutRegion, index, arr) {
-        Ext.create('Ext.dd.DropZone', Ext.get(layoutRegion.htmlId), {
-            getTargetFromEvent: function(e) {
-                return e.getTarget('.content-container');
-            },
-            onNodeEnter : function(target, dd, e, data){
-                Ext.fly(target).addCls('content-container-hover');
-            },
-            onNodeOut : function(target, dd, e, data){
-                Ext.fly(target).removeCls('content-container-hover');
-            },
-            onNodeOver : function(target, dd, e, data){
-                if(this.checkDropAllowed(data)) {
-                    return Ext.dd.DropZone.prototype.dropAllowed;
-                }
-                return Ext.dd.DropZone.prototype.dropNotAllowed;
-            },
-            onNodeDrop : function(target, dd, e, data){
-                if(this.checkDropAllowed(data)) {
-                    Ext.fly(target).appendChild(data.ddel);
-                    var droppedEl = Ext.get(data.ddel);
-                    if(layoutRegion.useShortName) {
-                        droppedEl.child('.title').update(data.componentData.shortName);
+    function initRegions() {
+        layoutRegionsStore.each(function(layoutRegion) {
+            Ext.create('Ext.dd.DropZone', Ext.get(layoutRegion.get('htmlId')), {
+                getTargetFromEvent: function(e) {
+                    return e.getTarget('.content-container');
+                },
+                onNodeEnter : function(target, dd, e, data){
+                    Ext.fly(target).addCls('content-container-hover');
+                },
+                onNodeOut : function(target, dd, e, data){
+                    Ext.fly(target).removeCls('content-container-hover');
+                },
+                onNodeOver : function(target, dd, e, data){
+                    if(this.checkDropAllowed(data)) {
+                        return Ext.dd.DropZone.prototype.dropAllowed;
                     }
-                    if(layoutRegion.floatComponents) {
-                        droppedEl.addCls('float-component');
+                    return Ext.dd.DropZone.prototype.dropNotAllowed;
+                },
+                onNodeDrop : function(target, dd, e, data){
+                    if(this.checkDropAllowed(data)) {
+                        addComponentToRegion(target, data, layoutRegion);
+                        return true;
                     }
-                    droppedEl.child('.wrangler').on('click', function() {
-                        editComponent(data.componentData);
-                    });
-                    droppedEl.child('.remove').on('click', function() {
-                        Ext.MessageBox.confirm(
-                            "Component uit layout verwijderen?",
-                            "Weet u zeker dat dit component uit de layout wilt verwijderen?<br />" +
-                            "Bij het opslaan van de layout gaat eventuele configuratie van<br />" +
-                            "dit component verloren als u dit component verwijderd",
-                            function(btnClicked) {
-                                if(btnClicked == 'yes') {
-                                    Ext.fly(data.sourceEl).removeCls("component-added");
-                                    droppedEl.remove();
-                                }
+                    return false;
+                },
+                checkDropAllowed: function(data) {
+                    var restrictions = data.componentData.restrictions;
+                    var linkedComponents = data.componentData.linkedComponents;
+                    var dropId = layoutRegion.get('id');
+                    if(Ext.isEmpty(restrictions) || (Ext.isArray(restrictions) && Ext.Array.contains(restrictions, dropId))) {
+                        if(!Ext.isEmpty(linkedComponents)) {
+                            if(Ext.isArray(linkedComponents)) {
+                                var linkedComponentAdded = false;
+                                Ext.Array.each(linkedComponents, function(comp, index) {
+                                    if(layoutRegion.isComponentAdded(comp)) {
+                                        linkedComponentAdded = true;
+                                    }
+                                });
+                                if(linkedComponentAdded) return false;
                             }
-                        );
-                    });
-                    Ext.fly(data.sourceEl).addCls("component-added");
-                    return true;
+                        }
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            },
-            checkDropAllowed: function(data) {
-                var restrictions = data.componentData.restrictions;
-                var dropId = layoutRegion.id;
-                if(Ext.isEmpty(restrictions) || (Ext.isArray(restrictions) && Ext.Array.contains(restrictions, dropId))) {
-                    return true;
-                }
-                return false;
+            });
+        });
+    }
+    
+    // Initial config. Adds all previously added components to the right regions
+    function initConfig(view) {
+        componentStore.each(function(component){
+            if(!Ext.isEmpty(component.get('addedToRegions'))) {
+                Ext.Array.each(component.get('addedToRegions'), function(regionid, index) {
+                    var region = layoutRegionsStore.findRecord('id', regionid);
+                    var sourceEl = view.getNode(component);
+                    if(sourceEl && region) {
+                        var d = sourceEl.cloneNode(true);
+                        d.id = Ext.id();
+                        var data = {
+                            sourceEl: sourceEl,
+                            repairXY: Ext.fly(sourceEl).getXY(),
+                            ddel: d,
+                            componentData: component.data
+                        }
+                        addComponentToRegion(region.get('htmlId'), data, region);
+                    }
+                });
             }
         });
-    });
+    }
+    
+    function addComponentToRegion(target, data, layoutRegion) {
+        Ext.fly(target).appendChild(data.ddel);
+        var droppedEl = Ext.get(data.ddel);
+        if(layoutRegion.get('useShortName')) {
+            droppedEl.child('.title').update(data.componentData.shortName);
+        }
+        if(layoutRegion.get('floatComponents')) {
+            droppedEl.addCls('float-component');
+        }
+        droppedEl.child('.wrangler').on('click', function() {
+            editComponent(data.componentData);
+        });
+        droppedEl.child('.remove').on('click', function() {
+            Ext.MessageBox.confirm(
+                "Component uit layout verwijderen?",
+                "Weet u zeker dat dit component uit de layout wilt verwijderen?<br />" +
+                "Bij het opslaan van de layout gaat eventuele configuratie van<br />" +
+                "dit component verloren als u dit component verwijderd",
+                function(btnClicked) {
+                    if(btnClicked == 'yes') {
+                        Ext.fly(data.sourceEl).removeCls("component-added");
+                        droppedEl.remove();
+                        var addedToRegions = data.componentData.addedToRegions;
+                        if(!Ext.isEmpty(addedToRegions) && Ext.isArray(addedToRegions)) {
+                            Ext.Array.remove(addedToRegions, layoutRegion.get('id'));
+                        }
+                        var addedComponents = layoutRegion.get('addedComponents');
+                        if(!Ext.isEmpty(addedComponents) && Ext.isArray(addedComponents)) {
+                            Ext.Array.remove(addedToRegions, data.componentData.id);
+                        }
+                    }
+                }
+            );
+        });
+        if(data.componentData.addOnce) {
+            Ext.fly(data.sourceEl).addCls("component-added");
+        }
+
+        // Add region to component, so it knows the regions its added to
+        var addedToRegions = data.componentData.addedToRegions;
+        if(Ext.isEmpty(addedToRegions)) {
+            addedToRegions = [layoutRegion.get('id')];
+        } else {
+            // check if it is not added already
+            if(!Ext.Array.contains(data.componentData.addedToRegions, layoutRegion.get('id'))) {
+                addedToRegions.push(layoutRegion.get('id'));
+            }
+        }
+        data.componentData.addedToRegions = addedToRegions;
+
+        // Add component to region, so it knows which components are added
+        var addedComponents = layoutRegion.get('addedComponents');
+        if(Ext.isEmpty(addedComponents)) {
+            addedComponents = new Array();
+        }
+        addedComponents.push(data.componentData.id);
+        layoutRegion.set('addedComponents', addedComponents);
+    }
 });
 
 function editComponent(componentData) {
