@@ -59,6 +59,9 @@ public class GeoServiceActionBean implements ActionBean{
     private String username;
     @Validate
     private String password;
+    
+    @Validate
+    private String categoryName;
 
     @Validate
     private boolean overrideUrl;
@@ -88,6 +91,14 @@ public class GeoServiceActionBean implements ActionBean{
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getName() {
@@ -192,6 +203,17 @@ public class GeoServiceActionBean implements ActionBean{
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("De categorie is verwijderd"));
+        
+        return new ForwardResolution(JSP);
+    }
+    
+    public Resolution editCategory(){
+        if(categoryName != null){
+            category.setName(categoryName);
+        }
+        
+        Stripersist.getEntityManager().persist(category);
+        Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);
     }

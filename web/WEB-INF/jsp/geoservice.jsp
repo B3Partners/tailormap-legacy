@@ -45,7 +45,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         });
     </script>
     <stripes:hidden name="category" value="${actionBean.category.id}"/>
-    <stripes:submit name="deleteCategory" value="Verwijder categorie"/>
+    <stripes:submit name="deleteCategory" value="Verwijder categorie"/><br />
+    <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
+    <stripes:submit name="editCategory" value="Opslaan"/>
 </c:if>
             
     
