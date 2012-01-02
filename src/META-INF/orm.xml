@@ -40,6 +40,15 @@
             </id>
         </attributes>
     </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.FeatureSource">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="feature_source_id_seq"/>
+                <sequence-generator name="feature_source_id_seq" sequence-name="feature_source_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
 
     <entity class="nl.b3p.viewer.config.services.SimpleFeatureType">
         <attributes>
