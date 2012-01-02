@@ -94,11 +94,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </c:if>
 
 <%-- Bestaande service --%>
-<c:if test="${actionBean.context.eventName == 'editGeoService'}">
-    <!--<h1><c:out value="${actionBean.service}"/></h1>
-    Category: ${actionBean.category.name}<br />
-    ID: ${actionBean.service.id}<br />-->
-    
+<c:if test="${actionBean.context.eventName == 'editGeoService'}">   
     <h1>Service wijzigen</h1>
     
     <table>

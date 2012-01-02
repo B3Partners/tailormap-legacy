@@ -19,10 +19,13 @@ package nl.b3p.viewer.admin.stripes;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.Category;
+import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.WFSFeatureSource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +40,8 @@ import org.stripesstuff.stripersist.Stripersist;
 public class AttributeSourceActionBean implements ActionBean {
 
     private ActionBeanContext context;
+    private static final String JSP = "/WEB-INF/jsp/geoservice.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/editattributesource.jsp";
    
     @Validate(on="editAttributeSource", required=false)
     private int sourceId;
@@ -59,13 +64,57 @@ public class AttributeSourceActionBean implements ActionBean {
     @Validate
     private JSONArray filter;
     
+    @Validate
+    private String name;
+    @Validate
+    private String url;
+    @Validate
+    private String protocol;
+    @Validate
+    private String username;
+    @Validate
+    private String password;
+    
+    @Validate
+    private FeatureSource featureSource;
+    
     @DefaultHandler
     public Resolution view() throws JSONException {
-        return new ForwardResolution("/WEB-INF/jsp/attributesource.jsp");
+        return new ForwardResolution(JSP);
     }
     
     public Resolution editAttributeSource() throws JSONException {
-        return new ForwardResolution("/WEB-INF/jsp/editattributesource.jsp");
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    public Resolution saveAttributeSource() throws JSONException {
+        
+        try {
+            if(protocol.equals("wfs")) {
+                featureSource = new WFSFeatureSource();
+            } else if(protocol.equals("arcgis")) {
+                
+            } else if(protocol.equals("arcxml")) {
+            
+            } else if(protocol.equals("jdbc")) {
+                
+            } else {
+                getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
+            }
+        } catch(Exception e) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(e.getClass().getName() + ": " + e.getMessage()));
+            return new ForwardResolution(EDITJSP);
+        }
+        
+        featureSource.setName(name);
+        featureSource.setUrl(url);
+        featureSource.setUsername(username);
+        featureSource.setPassword(password);
+        
+        /*Stripersist.getEntityManager().persist(source);
+        Stripersist.getEntityManager().getTransaction().commit();*/
+        
+        return new ForwardResolution(EDITJSP);
     }
     
     public Resolution getGridData() throws JSONException { 
@@ -149,10 +198,11 @@ public class AttributeSourceActionBean implements ActionBean {
         return j;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-
+    
     public ActionBeanContext getContext() {
         return this.context;
     }
@@ -160,57 +210,105 @@ public class AttributeSourceActionBean implements ActionBean {
     public int getLimit() {
         return limit;
     }
-
+    
     public void setLimit(int limit) {
         this.limit = limit;
     }
-
+    
     public int getPage() {
         return page;
     }
-
+    
     public void setPage(int page) {
         this.page = page;
     }
-
+    
     public int getStart() {
         return start;
     }
-
+    
     public void setStart(int start) {
         this.start = start;
     }
-
+    
     public String getDir() {
         return dir;
     }
-
+    
     public void setDir(String dir) {
         this.dir = dir;
     }
-
+    
     public String getSort() {
         return sort;
     }
-
+    
     public void setSort(String sort) {
         this.sort = sort;
     }
-
+    
     public int getSourceId() {
         return sourceId;
     }
-
+    
     public void setSourceId(int sourceId) {
         this.sourceId = sourceId;
     }
-
+    
     public JSONArray getFilter() {
         return filter;
     }
-
+    
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
 
+    public FeatureSource getFeatureSource() {
+        return featureSource;
+    }
+
+    public void setFeatureSource(FeatureSource featureSource) {
+        this.featureSource = featureSource;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+ //</editor-fold>
 }

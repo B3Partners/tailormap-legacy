@@ -23,14 +23,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk Attribuutbron</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        Test
         <c:choose>
             <c:when test="${!empty actionBean.sourceId && actionBean.sourceId != 0}">
-                Bewerken: ${actionBean.sourceId}
+                <h1>Attribuutbron bewerken: ${actionBean.sourceId}</h1>
             </c:when>
             <c:otherwise>
-                Nieuwe toevoegen
+                <h1>Nieuwe attribuutbron toevoegen</h1>
             </c:otherwise>
         </c:choose>
+                
+                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
+                    <table>
+                        <tr>
+                            <td>Naam:</td>
+                            <td><stripes:text name="name" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>Bron URL:</td>
+                            <td><stripes:text name="url" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>Type:</td>
+                            <td>
+                                <stripes:select name="protocol">
+                                    <stripes:option value="wfs">WFS</stripes:option>
+                                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                                    <stripes:option value="arcxml">ArcXml</stripes:option>
+                                    <stripes:option value="jdbc">JDBC</stripes:option>
+                                </stripes:select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Gebruikersnaam:</td>
+                            <td><stripes:text name="username" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>Wachtwoord:</td>
+                            <td><stripes:text name="password" maxlength="255" size="30"/></td>
+                        </tr>
+                    </table>
+                    <stripes:submit name="saveAttributeSource" value="Opslaan"/>
+                </stripes:form>
     </stripes:layout-component>
 </stripes:layout-render>
