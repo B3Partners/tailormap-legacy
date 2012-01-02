@@ -16,15 +16,11 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.FeatureSource;
-import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +36,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class AttributeSourceActionBean implements ActionBean {
 
     private ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/geoservice.jsp";
+    private static final String JSP = "/WEB-INF/jsp/attributesource.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/editattributesource.jsp";
    
     @Validate(on="editAttributeSource", required=false)
@@ -111,8 +107,8 @@ public class AttributeSourceActionBean implements ActionBean {
         featureSource.setUsername(username);
         featureSource.setPassword(password);
         
-        /*Stripersist.getEntityManager().persist(source);
-        Stripersist.getEntityManager().getTransaction().commit();*/
+        Stripersist.getEntityManager().persist(featureSource);
+        Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(EDITJSP);
     }
