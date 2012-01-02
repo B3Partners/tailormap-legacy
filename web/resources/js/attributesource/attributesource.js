@@ -15,9 +15,9 @@ Ext.onReady(function(){
         fields: [
             {name: 'id', type: 'int' },
             {name: 'status', type: 'string'},
-            {name: 'naam', type: 'string'},
+            {name: 'name', type: 'string'},
             {name: 'url', type: 'string'},
-            {name: 'type', type: 'string'}
+            {name: 'protocol', type: 'string'}
         ]
     });
 
@@ -57,7 +57,7 @@ Ext.onReady(function(){
             },{
                 id: 'name',
                 text: "Naam",
-                dataIndex: 'naam',
+                dataIndex: 'name',
                 flex: 1,
                 filter: {
                     xtype: 'textfield'
@@ -71,9 +71,9 @@ Ext.onReady(function(){
                     xtype: 'textfield'
                 }
             },{
-                id: 'type',
+                id: 'protocol',
                 text: "Type",
-                dataIndex: 'type',
+                dataIndex: 'protocol',
                 flex: 1,
                 filter: {
                     xtype: 'textfield'

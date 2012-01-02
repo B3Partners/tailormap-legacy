@@ -16,12 +16,23 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.Iterator;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.services.ArcGISFeatureSource;
+import nl.b3p.viewer.config.services.ArcXMLFeatureSource;
 import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,14 +125,10 @@ public class AttributeSourceActionBean implements ActionBean {
     }
     
     public Resolution getGridData() throws JSONException { 
-        String[] types = { "WFS", "ArcXML", "ArcGIS", "JDBC" };
-        
         JSONArray jsonData = new JSONArray();
-        int i = this.getStart() + 1;
-        int l = i + this.getLimit();
         
-        String naam = "Attribuutbron ";
-        String url = "http://www.example.org/";
+        String filterName = "";
+        String filterUrl = "";
         String filterType = "";
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
@@ -133,47 +140,75 @@ public class AttributeSourceActionBean implements ActionBean {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
                 String value = j.getString("value");
-                if(property.equals("naam")) {
-                    naam = value;
+                if(property.equals("name")) {
+                    filterName = value;
                 }
                 if(property.equals("url")) {
-                    url = value;
+                    filterUrl = value;
                 }
-                if(property.equals("type")) {
+                if(property.equals("protocol")) {
                     filterType = value;
                 }
             }
         }
         
-        /* Just for showing sorting, should ofcourse be dealt with by DB in
-         * combination with sort variable. Sorting is delivered by the frontend
+        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
+        Criteria c = sess.createCriteria(FeatureSource.class);
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
+        
+        /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
          */
-        if(this.getDir() == null || this.getDir().equals("DESC")) {
-            for(; i <= l; i++)
-            {
-                String type = filterType;
-                if(type.equals("")) {
-                    type = types[(int)(Math.random()*3) + 1];
-                }
-                JSONObject j = this.getGridRow(i, naam, url, type);
-                jsonData.put(j);
+        if(sort != null && dir != null){
+            /* Sorteren op protocol nog niet mogelijk */
+            Order order = null;
+            if(dir.equals("ASC")){
+               order = Order.asc(sort);
+            }else{
+                order = Order.desc(sort);
             }
-        } else {
-            for(; l >= i; l--)
-            {
-                String type = filterType;
-                if(type.equals("")) {
-                    type = types[(int)(Math.random()*3) + 1];
-                }
-                JSONObject j = this.getGridRow(l, naam, url, type);
-                jsonData.put(j);
-            }
+            order.ignoreCase();
+            c.addOrder(order);
         }
         
+        if(filterName != null && filterName.length() > 0){
+            Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
+            c.add(nameCrit);
+        }
+        if(filterUrl != null && filterUrl.length() > 0){
+            Criterion urlCrit = Restrictions.ilike("url", filterUrl, MatchMode.ANYWHERE);
+            c.add(urlCrit);
+        }
+        if(filterType != null && filterType.length() > 0){
+            /*Criterion protocolCrit = Restrictions.ilike("protocol", filterType, MatchMode.ANYWHERE);*/
+            Criterion protocolCrit = Restrictions.sqlRestriction("protocol like '%"+filterType+"%'");
+            c.add(protocolCrit);
+        }
+        
+        List sources = c.list();
+
+        for(Iterator it = sources.iterator(); it.hasNext();){
+            FeatureSource source = (FeatureSource)it.next();
+            String protocolType = "";
+            if(source instanceof WFSFeatureSource){
+                protocolType = "WFS";
+            } else if(source instanceof JDBCFeatureSource){
+                protocolType = "JDBC";
+            } else if(source instanceof ArcGISFeatureSource){
+                protocolType = "ArcGIS";
+            } else if(source instanceof ArcXMLFeatureSource){
+                protocolType = "ArcXML";
+            }
+            JSONObject j = this.getGridRow(source.getId().intValue(), source.getName(), source.getUrl(), protocolType);
+            jsonData.put(j);
+        }
+        
+        int rowCount = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList().size();
+        
         final JSONObject grid = new JSONObject();
-        grid.put("totalCount", 1000);
+        grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
     
         return new StreamingResolution("application/json") {
@@ -188,9 +223,9 @@ public class AttributeSourceActionBean implements ActionBean {
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("status", Math.random() > 0.5 ? "ok" : "error");
-        j.put("naam", name + " " + i);
-        j.put("url", url + i);
-        j.put("type", type);
+        j.put("name", name);
+        j.put("url", url);
+        j.put("protocol", type);
         return j;
     }
 
