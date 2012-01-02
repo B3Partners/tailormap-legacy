@@ -100,11 +100,11 @@ public class AttributeSourceActionBean implements ActionBean {
             if(protocol.equals("wfs")) {
                 featureSource = new WFSFeatureSource();
             } else if(protocol.equals("arcgis")) {
-                
+                featureSource = new ArcGISFeatureSource();
             } else if(protocol.equals("arcxml")) {
-            
+                featureSource = new ArcXMLFeatureSource();
             } else if(protocol.equals("jdbc")) {
-                
+                featureSource = new JDBCFeatureSource();
             } else {
                 getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
             }
@@ -130,12 +130,14 @@ public class AttributeSourceActionBean implements ActionBean {
         String filterName = "";
         String filterUrl = "";
         String filterType = "";
+        boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
          */
         if(this.getFilter() != null) {
+            hasFilter = true;
             for(int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
@@ -182,7 +184,6 @@ public class AttributeSourceActionBean implements ActionBean {
             c.add(urlCrit);
         }
         if(filterType != null && filterType.length() > 0){
-            /*Criterion protocolCrit = Restrictions.ilike("protocol", filterType, MatchMode.ANYWHERE);*/
             Criterion protocolCrit = Restrictions.sqlRestriction("protocol like '%"+filterType+"%'");
             c.add(protocolCrit);
         }
@@ -205,7 +206,12 @@ public class AttributeSourceActionBean implements ActionBean {
             jsonData.put(j);
         }
         
-        int rowCount = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList().size();
+        int rowCount;
+        if(!hasFilter){
+            rowCount = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList().size();
+        }else{
+            rowCount = sources.size();
+        }
         
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
