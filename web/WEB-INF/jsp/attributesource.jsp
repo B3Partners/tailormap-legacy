@@ -43,6 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript">
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="editAttributeSource"/>';
+            var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="deleteAttributeSource"/>';
             var activelink = 'menu_attribuutbronnen';
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/attributesource/attributesource.js"></script>

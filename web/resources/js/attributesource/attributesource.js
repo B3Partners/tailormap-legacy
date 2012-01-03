@@ -108,7 +108,7 @@ Ext.onReady(function(){
 });
 
 function editObject(objId) {
-    Ext.get('editFrame').dom.src = editurl + '?sourceId=' + objId;
+    Ext.get('editFrame').dom.src = editurl + '?featureSource=' + objId;
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
     return false;
@@ -116,7 +116,7 @@ function editObject(objId) {
 
 function removeObject(objId) {
     // How are we going to remove items? In the iframe or directly trough ajax?
-    Ext.get('editFrame').dom.src = editurl + '?sourceId=' + objId;
+    Ext.get('editFrame').dom.src = deleteurl + '?featureSource=' + objId;
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
     return false;

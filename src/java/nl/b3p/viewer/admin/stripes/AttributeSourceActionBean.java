@@ -49,9 +49,6 @@ public class AttributeSourceActionBean implements ActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/attributesource.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/editattributesource.jsp";
-   
-    @Validate(on="editAttributeSource", required=false)
-    private int sourceId;
     
     @Validate
     private int page;
@@ -94,6 +91,14 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
+    public Resolution deleteAttributeSource() throws JSONException {
+        Stripersist.getEntityManager().remove(featureSource);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
+        return new ForwardResolution(EDITJSP);
+    }
+    
     public Resolution saveAttributeSource() throws JSONException {
         
         try {
@@ -120,6 +125,8 @@ public class AttributeSourceActionBean implements ActionBean {
         
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
         
         return new ForwardResolution(EDITJSP);
     }
@@ -282,14 +289,6 @@ public class AttributeSourceActionBean implements ActionBean {
     
     public void setSort(String sort) {
         this.sort = sort;
-    }
-    
-    public int getSourceId() {
-        return sourceId;
-    }
-    
-    public void setSourceId(int sourceId) {
-        this.sourceId = sourceId;
     }
     
     public JSONArray getFilter() {

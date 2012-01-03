@@ -23,9 +23,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk Attribuutbron</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <p>
+        <stripes:errors/>
+        <stripes:messages/>
+        <p>
         <c:choose>
-            <c:when test="${!empty actionBean.sourceId && actionBean.sourceId != 0}">
-                <h1>Attribuutbron bewerken: ${actionBean.sourceId}</h1>
+            <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}">
+                <h1>Attribuutbron bewerken: ${actionBean.featureSource.id}</h1>
             </c:when>
             <c:otherwise>
                 <h1>Nieuwe attribuutbron toevoegen</h1>
@@ -33,14 +37,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:choose>
                 
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
+                    <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
                     <table>
                         <tr>
                             <td>Naam:</td>
-                            <td><stripes:text name="name" maxlength="255" size="30"/></td>
+                            <td><stripes:text name="name" value="${actionBean.featureSource.name}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
                             <td>Bron URL:</td>
-                            <td><stripes:text name="url" maxlength="255" size="30"/></td>
+                            <td><stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
                             <td>Type:</td>
@@ -55,11 +60,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                         <tr>
                             <td>Gebruikersnaam:</td>
-                            <td><stripes:text name="username" maxlength="255" size="30"/></td>
+                            <td><stripes:text name="username" value="${actionBean.featureSource.username}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
                             <td>Wachtwoord:</td>
-                            <td><stripes:text name="password" maxlength="255" size="30"/></td>
+                            <td><stripes:text name="password" value="${actionBean.featureSource.password}" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
                     <stripes:submit name="saveAttributeSource" value="Opslaan"/>
