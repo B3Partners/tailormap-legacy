@@ -194,6 +194,10 @@ public class GeoServiceActionBean implements ActionBean{
         return new ForwardResolution(JSP);
     }
     
+    public Resolution cancel() throws JSONException {
+        return new ForwardResolution(JSP);
+    }
+    
     public Resolution editGeoService() throws JSONException {
         return new ForwardResolution(JSP);
     }

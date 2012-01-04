@@ -28,8 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:errors/>
         <stripes:messages/>
         <p>
-        event: ${actionBean.context.eventName}<br>
-        <p>
+        <!--event: ${actionBean.context.eventName}<br>
+        <p>-->
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
                 
 <c:if test="${actionBean.context.eventName == 'default' && !empty actionBean.category}">
@@ -47,7 +47,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:hidden name="category" value="${actionBean.category.id}"/>
     Naam: <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
     <stripes:submit name="editCategory" value="Opslaan"/>
-    <stripes:submit name="deleteCategory" value="Verwijder categorie"/><br />
+    <stripes:submit name="deleteCategory" value="Verwijder categorie"/>
+    <stripes:submit name="cancel" value="Annuleren"/><br />
     
     <script type="text/javascript">
         var frameParent = getParent();
@@ -128,6 +129,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:submit name="saveService" value="Opslaan"/>
     <stripes:hidden name="service" value="${actionBean.service.id}"/>
     <stripes:submit name="deleteService" value="Verwijder service"/>
+    <stripes:submit name="cancel" value="Annuleren"/>
 </c:if>
 
 <%-- Nieuwe service --%>
@@ -187,6 +189,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     </table>
     <stripes:submit name="add" value="Service inladen"/>
+    <stripes:submit name="cancel" value="Annuleren"/>
 </c:if>
 
 </stripes:form>

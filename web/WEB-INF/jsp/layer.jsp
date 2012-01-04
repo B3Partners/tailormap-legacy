@@ -28,9 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         <p>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean">
-            
+        <c:if test="${actionBean.context.eventName == 'editLayer'}"> 
         <h1>Layer bewerken</h1>
-        <!--Layer ID: ${actionBean.layer.id}<br/>-->
         <stripes:hidden name="layer.id"/>
         
         <table>
@@ -57,7 +56,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </table>
         
         <stripes:submit name="saveLayer" value="Kaartlaag opslaan"/>
-        
+        <stripes:submit name="cancel" value="Annuleren"/>
+        </c:if>
         </stripes:form>
         
         <c:if test="${actionBean.context.eventName == 'saveLayer'}">

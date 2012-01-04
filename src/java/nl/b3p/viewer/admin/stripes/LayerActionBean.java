@@ -105,12 +105,13 @@ public class LayerActionBean implements ActionBean{
     //</editor-fold>
     
     @DefaultHandler
+    public Resolution view() throws JSONException {
+        return new ForwardResolution(JSP);
+    }
+    
     public Resolution editLayer() throws JSONException {
         downloadlink = layer.getExtraInfo().get(layer.EXTRA_KEY_DOWNLOAD_URL);
-        metadata = layer.getExtraInfo().get(layer.EXTRA_KEY_METADATA_URL);
-        
-        //Stripersist.getEntityManager().getTransaction().commit();
-        
+        metadata = layer.getExtraInfo().get(layer.EXTRA_KEY_METADATA_URL);      
         return new ForwardResolution(JSP);
     }
     
