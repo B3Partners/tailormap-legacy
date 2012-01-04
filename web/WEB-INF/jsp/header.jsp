@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" id="menu_services">Services en Kaartlagen</stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" id="menu_attribuutbronnen">Attribuutbronnen</stripes:link></li>
                     <li><a href="#" id="menu_attributen">Attributen</a></li>
-                    <li><a href="#" id="menu_documenten">Documenten</a></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" id="menu_documenten">Documenten</stripes:link></li>
                     <li><a href="#" id="menu_layarservices">Layer services</a></li>
                     <li><a href="#" id="menu_layer">Layar?</a></li>
                 </ul>
