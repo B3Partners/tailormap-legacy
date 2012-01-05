@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 
             </div>
             <div id="form-container" class="attributesources">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="editAttributeSource"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
         

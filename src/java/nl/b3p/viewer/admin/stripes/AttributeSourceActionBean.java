@@ -91,6 +91,10 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
+    public Resolution cancel() throws JSONException {
+        return new ForwardResolution(EDITJSP);
+    }
+    
     public Resolution deleteAttributeSource() throws JSONException {
         Stripersist.getEntityManager().remove(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();

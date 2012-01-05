@@ -28,8 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:errors/>
         <stripes:messages/>
         <p>
-        <!--event: ${actionBean.context.eventName}<br>
-        <p>-->
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
                 
 <c:if test="${actionBean.context.eventName == 'default' && !empty actionBean.category}">

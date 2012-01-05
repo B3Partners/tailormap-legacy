@@ -70,11 +70,11 @@ public class DocumentActionBean implements ActionBean {
     @Validate
     private Document document;
     
-    @Validate
+    @Validate(on="saveDocument", required=true)
     private String name;
     @Validate
     private String rubriek;
-    @Validate
+    @Validate(on="saveDocument", required=true)
     private String url;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
@@ -177,6 +177,10 @@ public class DocumentActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
+    public Resolution cancel() throws JSONException {
+        return new ForwardResolution(EDITJSP);
+    }
+    
     public Resolution deleteDocument() throws JSONException {
         Stripersist.getEntityManager().remove(document);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -193,7 +197,9 @@ public class DocumentActionBean implements ActionBean {
         
         document.setName(name);
         document.setUrl(url);
-        document.setRubriek(rubriek);
+        if(rubriek != null){
+            document.setRubriek(rubriek);
+        }
         
         Stripersist.getEntityManager().persist(document);
         Stripersist.getEntityManager().getTransaction().commit();
