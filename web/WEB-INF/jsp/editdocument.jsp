@@ -35,15 +35,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <table>
                     <tr>
                         <td>Naam:</td>
-                        <td><stripes:text name="name" value="${actionBean.document.name}" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="document.name" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Rubriek:</td>
-                        <td><stripes:text name="rubriek" value="${actionBean.document.rubriek}" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="document.category" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>URL:</td>
-                        <td><stripes:text name="url" value="${actionBean.document.url}" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="document.url" maxlength="255" size="30"/></td>
                     </tr>
                 </table>
 

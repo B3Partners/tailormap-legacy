@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
+import net.sourceforge.stripes.action.DontBind;
+import net.sourceforge.stripes.action.DontValidate;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.HandlesEvent;
 import net.sourceforge.stripes.action.Resolution;
@@ -30,6 +32,7 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.services.Document;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -66,16 +69,14 @@ public class DocumentActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-    
+
     @Validate
+    @ValidateNestedProperties({
+                @Validate(field="name", required=true, maxlength=255),
+                @Validate(field="rubriek", maxlength=255),
+                @Validate(field="url", required=true, maxlength=255)
+    })
     private Document document;
-    
-    @Validate(on="saveDocument", required=true)
-    private String name;
-    @Validate
-    private String rubriek;
-    @Validate(on="saveDocument", required=true)
-    private String url;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -84,30 +85,6 @@ public class DocumentActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRubriek() {
-        return rubriek;
-    }
-
-    public void setRubriek(String rubriek) {
-        this.rubriek = rubriek;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getDir() {
@@ -169,18 +146,22 @@ public class DocumentActionBean implements ActionBean {
     
     @DefaultHandler
     @HandlesEvent("default")
+    @DontValidate
     public Resolution defaultResolution() throws JSONException {
         return new ForwardResolution(JSP);
     }
-    
+
+    @DontValidate
     public Resolution editDocument() throws JSONException {
         return new ForwardResolution(EDITJSP);
     }
-    
-    public Resolution cancel() throws JSONException {
+
+    @DontBind
+    public Resolution cancel() throws JSONException {        
         return new ForwardResolution(EDITJSP);
     }
-    
+
+    @DontValidate
     public Resolution deleteDocument() throws JSONException {
         Stripersist.getEntityManager().remove(document);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -191,15 +172,6 @@ public class DocumentActionBean implements ActionBean {
     }
     
     public Resolution saveDocument() throws JSONException {
-        if(document == null){
-            document = new Document();
-        } 
-        
-        document.setName(name);
-        document.setUrl(url);
-        if(rubriek != null){
-            document.setCategory(rubriek);
-        }
         
         Stripersist.getEntityManager().persist(document);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -208,7 +180,8 @@ public class DocumentActionBean implements ActionBean {
         
         return new ForwardResolution(EDITJSP);
     }
-    
+
+    @DontValidate
     public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
         
