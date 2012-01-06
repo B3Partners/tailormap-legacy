@@ -30,7 +30,7 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.app.Document;
+import nl.b3p.viewer.config.services.Document;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -198,7 +198,7 @@ public class DocumentActionBean implements ActionBean {
         document.setName(name);
         document.setUrl(url);
         if(rubriek != null){
-            document.setRubriek(rubriek);
+            document.setCategory(rubriek);
         }
         
         Stripersist.getEntityManager().persist(document);
@@ -275,7 +275,7 @@ public class DocumentActionBean implements ActionBean {
         List documenten = c.list();
         for(Iterator it = documenten.iterator(); it.hasNext();){
             Document doc = (Document)it.next();
-            JSONObject j = this.getGridRow(doc.getId().intValue(), doc.getName(), doc.getUrl(), doc.getRubriek());
+            JSONObject j = this.getGridRow(doc.getId().intValue(), doc.getName(), doc.getUrl(), doc.getCategory());
             jsonData.put(j);
         }
         
