@@ -28,31 +28,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:messages/>
         <p>
 
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean">
-            <c:if test="${actionBean.context.eventName == 'editDocument' || actionBean.context.eventName == 'saveDocument'}">
-            <h1>bewerken</h1>
-                <stripes:hidden name="document" value="${actionBean.document.id}"/>
-                <table>
-                    <tr>
-                        <td>Naam:</td>
-                        <td><stripes:text name="document.name" maxlength="255" size="30"/></td>
-                    </tr>
-                    <tr>
-                        <td>Rubriek:</td>
-                        <td><stripes:text name="document.category" maxlength="255" size="30"/></td>
-                    </tr>
-                    <tr>
-                        <td>URL:</td>
-                        <td><stripes:text name="document.url" maxlength="255" size="30"/></td>
-                    </tr>
-                </table>
+            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean">
+                <c:choose>
+                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save'}">
+                    <h1>bewerken</h1>
+                    <stripes:hidden name="document" value="${actionBean.document.id}"/>
+                    <table>
+                        <tr>
+                            <td>Naam:</td>
+                            <td><stripes:text name="document.name" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>Rubriek:</td>
+                            <td><stripes:text name="document.category" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>URL:</td>
+                            <td><stripes:text name="document.url" maxlength="255" size="30"/></td>
+                        </tr>
+                    </table>
 
-                <stripes:submit name="saveDocument" value="Opslaan"/>
-                <stripes:submit name="cancel" value="Annuleren"/>
-            </c:if>
-            <c:if test="${actionBean.context.eventName == 'cancel'}">
-                <stripes:submit name="editDocument" value="Nieuwe document"/>
-            </c:if>
+                    <stripes:submit name="save" value="Opslaan"/>
+                    <stripes:submit name="cancel" value="Annuleren"/>
+                </c:when>
+                <c:otherwise>
+                    <stripes:submit name="edit" value="Nieuw document"/>
+                </c:otherwise>
+            </c:choose>
         </stripes:form>
 
     </stripes:layout-component>

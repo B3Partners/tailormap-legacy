@@ -73,7 +73,7 @@ public class DocumentActionBean implements ActionBean {
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="name", required=true, maxlength=255),
-                @Validate(field="rubriek", maxlength=255),
+                @Validate(field="category", maxlength=255),
                 @Validate(field="url", required=true, maxlength=255)
     })
     private Document document;
@@ -152,7 +152,7 @@ public class DocumentActionBean implements ActionBean {
     }
 
     @DontValidate
-    public Resolution editDocument() throws JSONException {
+    public Resolution edit() throws JSONException {
         return new ForwardResolution(EDITJSP);
     }
 
@@ -162,7 +162,7 @@ public class DocumentActionBean implements ActionBean {
     }
 
     @DontValidate
-    public Resolution deleteDocument() throws JSONException {
+    public Resolution delete() throws JSONException {
         Stripersist.getEntityManager().remove(document);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -171,7 +171,7 @@ public class DocumentActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution saveDocument() throws JSONException {
+    public Resolution save() throws JSONException {
         
         Stripersist.getEntityManager().persist(document);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -187,7 +187,7 @@ public class DocumentActionBean implements ActionBean {
         
         String filterName = "";
         String filterUrl = "";
-        String filterRubriek = "";
+        String filterCategory = "";
         boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
@@ -206,8 +206,8 @@ public class DocumentActionBean implements ActionBean {
                 if(property.equals("url")) {
                     filterUrl = value;
                 }
-                if(property.equals("rubriek")) {
-                    filterRubriek = value;
+                if(property.equals("category")) {
+                    filterCategory = value;
                 }
             }
         }
@@ -240,8 +240,8 @@ public class DocumentActionBean implements ActionBean {
             Criterion urlCrit = Restrictions.ilike("url", filterUrl, MatchMode.ANYWHERE);
             c.add(urlCrit);
         }
-        if(filterRubriek != null && filterRubriek.length() > 0){
-            Criterion rubriekCrit = Restrictions.ilike("rubriek", filterRubriek, MatchMode.ANYWHERE);
+        if(filterCategory != null && filterCategory.length() > 0){
+            Criterion rubriekCrit = Restrictions.ilike("category", filterCategory, MatchMode.ANYWHERE);
             c.add(rubriekCrit);
         }
         
