@@ -109,13 +109,13 @@ public class LayerActionBean implements ActionBean{
         return new ForwardResolution(JSP);
     }
     
-    public Resolution editLayer() throws JSONException {
+    public Resolution edit() throws JSONException {
         downloadlink = layer.getExtraInfo().get(layer.EXTRA_KEY_DOWNLOAD_URL);
         metadata = layer.getExtraInfo().get(layer.EXTRA_KEY_METADATA_URL);      
         return new ForwardResolution(JSP);
     }
     
-    public Resolution saveLayer() throws JSONException {
+    public Resolution save() throws JSONException {
         layer = Stripersist.getEntityManager().find(Layer.class, layer.getId());
         
         if(titleAlias != null){
