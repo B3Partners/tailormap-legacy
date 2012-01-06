@@ -52,27 +52,22 @@ public class AttributeSourceActionBean implements ActionBean {
     
     @Validate
     private int page;
-
     @Validate
     private int start;
-    
     @Validate
     private int limit;
-    
     @Validate
     private String sort;
-    
     @Validate
     private String dir;
-
     @Validate
     private JSONArray filter;
     
-    @Validate
+    @Validate(on="saveAttributeSource", required=true)
     private String name;
-    @Validate
+    @Validate(on="saveAttributeSource", required=true)
     private String url;
-    @Validate
+    @Validate(on="saveAttributeSource", required=true)
     private String protocol;
     @Validate
     private String username;
@@ -87,7 +82,7 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution editAttributeSource() throws JSONException {
+    public Resolution edit() throws JSONException {
         return new ForwardResolution(EDITJSP);
     }
     
@@ -95,7 +90,7 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution deleteAttributeSource() throws JSONException {
+    public Resolution delete() throws JSONException {
         Stripersist.getEntityManager().remove(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -103,7 +98,7 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution saveAttributeSource() throws JSONException {
+    public Resolution save() throws JSONException {
         
         try {
             if(protocol.equals("wfs")) {
@@ -175,15 +170,17 @@ public class AttributeSourceActionBean implements ActionBean {
          * holds the direction (ASC, DESC).
          */
         if(sort != null && dir != null){
-            /* Sorteren op protocol nog niet mogelijk */
-            Order order = null;
-            if(dir.equals("ASC")){
-               order = Order.asc(sort);
-            }else{
-                order = Order.desc(sort);
+            /* Sorteren op protocol en status nog niet mogelijk */
+            if(!dir.equals("status") && dir.equals("protocol")){
+                Order order = null;
+                if(dir.equals("ASC")){
+                   order = Order.asc(sort);
+                }else{
+                    order = Order.desc(sort);
+                }
+                order.ignoreCase();
+                c.addOrder(order); 
             }
-            order.ignoreCase();
-            c.addOrder(order);
         }
         
         if(filterName != null && filterName.length() > 0){

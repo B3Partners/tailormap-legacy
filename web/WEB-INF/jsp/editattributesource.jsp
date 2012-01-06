@@ -28,52 +28,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:messages/>
         <p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
-                <c:if test="${actionBean.context.eventName == 'editAttributeSource'}"> 
-                    <c:choose>
-                        <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}">
-                        <h1>Attribuutbron bewerken: ${actionBean.featureSource.id}</h1>
-                    </c:when>
-                    <c:otherwise>
-                        <h1>Nieuwe attribuutbron toevoegen</h1>
-                    </c:otherwise>
-                </c:choose>
+                <c:choose>
+                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save'}"> 
+                        <c:choose>
+                            <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}">
+                            <h1>Attribuutbron bewerken: ${actionBean.featureSource.id}</h1>
+                        </c:when>
+                        <c:otherwise>
+                            <h1>Nieuwe attribuutbron toevoegen</h1>
+                        </c:otherwise>
+                    </c:choose>
 
-                <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
-                <table>
-                    <tr>
-                        <td>Naam:</td>
-                        <td><stripes:text name="name" value="${actionBean.featureSource.name}" maxlength="255" size="30"/></td>
-                    </tr>
-                    <tr>
-                        <td>Bron URL:</td>
-                        <td><stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30"/></td>
-                    </tr>
-                    <tr>
-                        <td>Type:</td>
-                        <td>
-                            <stripes:select name="protocol">
-                                <stripes:option value="wfs">WFS</stripes:option>
-                                <stripes:option value="arcgis">ArcGIS Server</stripes:option>
-                                <stripes:option value="arcxml">ArcXml</stripes:option>
-                                <stripes:option value="jdbc">JDBC</stripes:option>
-                            </stripes:select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Gebruikersnaam:</td>
-                        <td><stripes:text name="username" value="${actionBean.featureSource.username}" maxlength="255" size="30"/></td>
-                    </tr>
-                    <tr>
-                        <td>Wachtwoord:</td>
-                        <td><stripes:text name="password" value="${actionBean.featureSource.password}" maxlength="255" size="30"/></td>
-                    </tr>
-                </table>
-                <stripes:submit name="saveAttributeSource" value="Opslaan"/>
-                <stripes:submit name="cancel" value="Annuleren"/>
-            </c:if>
-            <c:if test="${actionBean.context.eventName == 'cancel'}">
-                <stripes:submit name="editAttributeSource" value="Nieuwe attribuutbron"/>
-            </c:if>
+                    <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
+                    <table>
+                        <tr>
+                            <td>Naam:</td>
+                            <td><stripes:text name="name" value="${actionBean.featureSource.name}" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>Bron URL:</td>
+                            <td><stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>Type:</td>
+                            <td>
+                                <stripes:select name="protocol">
+                                    <stripes:option value="wfs">WFS</stripes:option>
+                                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                                    <stripes:option value="arcxml">ArcXml</stripes:option>
+                                    <stripes:option value="jdbc">JDBC</stripes:option>
+                                </stripes:select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Gebruikersnaam:</td>
+                            <td><stripes:text name="username" value="${actionBean.featureSource.username}" maxlength="255" size="30"/></td>
+                        </tr>
+                        <tr>
+                            <td>Wachtwoord:</td>
+                            <td><stripes:text name="password" value="${actionBean.featureSource.password}" maxlength="255" size="30"/></td>
+                        </tr>
+                    </table>
+                    <stripes:submit name="save" value="Opslaan"/>
+                    <stripes:submit name="cancel" value="Annuleren"/>
+                </c:when>
+                <c:otherwise>
+                    <stripes:submit name="edit" value="Nieuwe attribuutbron"/>
+                </c:otherwise>
+            </c:choose>
         </stripes:form>
     </stripes:layout-component>
 </stripes:layout-render>
