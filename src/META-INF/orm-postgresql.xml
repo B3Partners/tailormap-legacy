@@ -62,7 +62,7 @@
         </attributes>
     </entity>
     
-    <entity class="nl.b3p.viewer.config.app.Document">
+    <entity class="nl.b3p.viewer.config.services.Document">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>

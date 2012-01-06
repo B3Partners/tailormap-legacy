@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 B3Partners B.V.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,35 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.config.app;
+package nl.b3p.viewer.config.security;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  *
- * @author Jytte Schaeffer
+ * @author Matthijs Laan
  */
 @Entity
-public class Document {
+@Table(name="group_")
+public class Group {
     @Id
-    private Long id;
-    
-    @Basic(optional=false)
     private String name;
-    
-    @Basic(optional=false)
-    private String url;
-    
-    private String rubriek;
 
-    public Long getId() {
-        return id;
+    @Lob
+    private String description;
+
+    @ManyToMany(mappedBy="groups")
+    private Set<User> members = new HashSet<User>();
+
+    public String getDescription() {
+        return description;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getName() {
@@ -53,19 +51,11 @@ public class Document {
         this.name = name;
     }
 
-    public String getUrl() {
-        return url;
+    public Set<User> getMembers() {
+        return members;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getRubriek() {
-        return rubriek;
-    }
-
-    public void setRubriek(String rubriek) {
-        this.rubriek = rubriek;
+    public void setMembers(Set<User> members) {
+        this.members = members;
     }
 }
