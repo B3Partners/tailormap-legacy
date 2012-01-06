@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <ul class="slideoutmenu">
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" id="menu_services">Services en Kaartlagen</stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" id="menu_attribuutbronnen">Attribuutbronnen</stripes:link></li>
-                    <li><a href="#" id="menu_attributen">Attributen</a></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" id="menu_attributen">Attributen</stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" id="menu_documenten">Documenten</stripes:link></li>
                     <li><a href="#" id="menu_layarservices">Layer services</a></li>
                     <li><a href="#" id="menu_layer">Layar?</a></li>
@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <li class="menu-level1">
                 <a href="#">Applicatiebeheer</a>
                 <ul class="slideoutmenu">
-                    <li><a href="#" id="menu_kiesapplicatie">Kies een applicatie</a></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" id="menu_kiesapplicatie">Kies een applicatie</stripes:link></li>
                     <li>
                         <a href="#">Beheer applicatie 1</a>
                         <ul class="dropdownmenu">
