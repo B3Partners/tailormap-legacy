@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <li class="menu-level1">
                 <a href="#">Beheer toegang</a>
                 <ul class="slideoutmenu">
-                    <li><a href="#" id="menu_gebruikersgroepen">Gebruikersgroepen</a></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" id="menu_gebruikersgroepen">Gebruikersgroepen</stripes:link></li>
                     <li><a href="#" id="menu_gebruikers">Gebruikers</a></li>
                 </ul>
             </li>
