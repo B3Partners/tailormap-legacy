@@ -27,16 +27,16 @@ import java.util.*;
 @Table(name="user_")
 public class User {
     @Id
-    private String name;
+    private String username;
 
     private String password;
 
     @ManyToMany
-    @JoinTable(name="user_groups", joinColumns=@JoinColumn(name="member_"), inverseJoinColumns=@JoinColumn(name="group_"))
+    @JoinTable(name="user_groups", joinColumns=@JoinColumn(name="username"), inverseJoinColumns=@JoinColumn(name="group_"))
     private Set<Group> groups = new HashSet<Group>();
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name="user_"))
+    @JoinTable(joinColumns=@JoinColumn(name="username"))
     private Map<String,String> details = new HashMap<String,String>();
 
     public String getPassword() {
@@ -63,11 +63,11 @@ public class User {
         this.groups = groups;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
