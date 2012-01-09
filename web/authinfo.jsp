@@ -34,19 +34,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </table>
         <p>
         Lijst met roles:
-        <c:catch var="e">
-            <ol>
-                <%
-                if(request.getUserPrincipal() != null) {
-                    String[] roles = ((org.apache.catalina.realm.GenericPrincipal)request.getUserPrincipal()).getRoles();
-                    for(String s: roles) {
-                        pageContext.setAttribute("role", s);
-                        %><li><c:out value="${role}"/></li><%
+        <ol>
+            <c:catch var="e">
+                    <%
+                    if(request.getUserPrincipal() != null) {
+                        String[] roles = ((org.apache.catalina.realm.GenericPrincipal)request.getUserPrincipal()).getRoles();
+                        for(String s: roles) {
+                            pageContext.setAttribute("role", s);
+                            %><li><c:out value="${role}"/></li><%
+                        }
                     }
-                }
-                %>
-            </ol>
-        </c:catch>
+                    %>
+            </c:catch>
+        </ol>
         <p>
         Test HttpServletRequest.isUserInRole():
         <p>
