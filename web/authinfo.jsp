@@ -48,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </ol>
         </c:catch>
         <p>
-        Test HttpRequest.isUserInRole():
+        Test HttpServletRequest.isUserInRole():
         <p>
         <c:if test="${!empty param.role}">
             Rol <b><c:out value="${param.role}"/>: <b><%= request.isUserInRole(request.getParameter("role")) %></b>
