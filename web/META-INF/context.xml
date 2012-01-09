@@ -25,4 +25,12 @@
 
     <!-- Tomcat resource link -->
     <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
+
+    <Realm
+        className="org.apache.catalina.realm.DataSourceRealm"
+        dataSourceName="jdbc/geo_viewer"
+        allRolesMode="authOnly"
+        userTable="user_" userNameCol="username" userCredCol="password" digest="SHA-1"
+        userRoleTable="user_groups" roleNameCol="group_"
+   />
 </Context>

@@ -56,7 +56,7 @@
         <init-param>
             <param-name>LocalizationBundleFactory.FieldNameBundle</param-name>
             <param-value>ViewerResources</param-value>
-        </init-param>        
+        </init-param>
     </filter>
 
     <filter-mapping>
@@ -95,6 +95,54 @@
         <url-pattern>*.wait</url-pattern>
     </servlet-mapping>
 
+    <!-- Note: No authorization on url-patterns but on Stripes ActionBeans using
+      @Secure (from Stripesstuff), so when the @UrlBinding changes no url-patterns
+      need to be updated
+    -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>all</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>roles</web-resource-name>
+            <url-pattern>/authinfo.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <!-- BASIC is useful during development with lots of  redeploys, use
+             FORM for production
+        -->
+        <auth-method>BASIC</auth-method>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/loginfail.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-role>
+        <role-name>Admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>RegistryAdmin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>UserAdmin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>ApplicationAdmin</role-name>
+    </security-role>
+
     <session-config>
         <session-timeout>
             30
@@ -103,7 +151,7 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    
+
     <!-- Stel mime type in voor .js zodat bij Tomcat in server.xml in het
          compressableMimeType attribuut voor het Connector element kan worden opgenomen:
 
