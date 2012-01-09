@@ -12,5 +12,9 @@ insert into group_(name,description) values ('Admin','Groep met toegang tot behe
 insert into group_(name,description) values ('RegistryAdmin','Beheer van het gegevensregister');
 insert into group_(name,description) values ('UserAdmin','Beheer van gebruikers en groepen');
 insert into group_(name,description) values ('ApplicationAdmin','Beheer van applicaties');
+insert into group_(name,description) values ('ExtendedUser','Interne medewerkers (via LDAP geauthenticeerd)');
 
 insert into user_groups(username,group_) values('admin','Admin');
+insert into user_groups(username,group_) values('admin','RegistryAdmin');
+insert into user_groups(username,group_) values('admin','UserAdmin');
+insert into user_groups(username,group_) values('admin','ApplicationAdmin');
