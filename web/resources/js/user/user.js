@@ -89,7 +89,7 @@ Ext.onReady(function(){
                 dataIndex: 'id',
                 flex: 1,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(1);">Bewerken</a>', value) +
+                    return Ext.String.format('<a href="#" onclick="return editObject({0});">Bewerken</a>', value) +
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
                 },
@@ -115,7 +115,7 @@ Ext.onReady(function(){
 
 
 function editObject(objId) {
-    Ext.get('editFrame').dom.src = editurl + '?user=' + 'tpersoon';//objId;
+    Ext.get('editFrame').dom.src = editurl + '?user=' + objId;
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
     return false;

@@ -16,34 +16,16 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.ActionBean;
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.DontBind;
-import net.sourceforge.stripes.action.DontValidate;
-import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.HandlesEvent;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.SimpleMessage;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -100,7 +82,7 @@ public class UserActionBean implements ActionBean {
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="username", required=true, maxlength=255),
-                @Validate(field="password", maxlength=255),
+                @Validate(field="password", maxlength=255)
     })
     private User user;
     
@@ -290,7 +272,7 @@ public class UserActionBean implements ActionBean {
     }
     
     public Resolution save() throws JSONException {  
-        Map details = user.getDetails();
+        Map details = new HashMap();
         if(name != null){
             details.put(DETAIL_NAME, name);
         }
@@ -312,6 +294,7 @@ public class UserActionBean implements ActionBean {
         if(phone != null){
             details.put(DETAIL_PHONE, phone);
         }
+        user.setDetails(details);
         //org.apache.catalina.realm.RealmBase.Digest(password, "SHA-1", "UTF-8");
         
         if(groups != null){
@@ -324,7 +307,11 @@ public class UserActionBean implements ActionBean {
             user.setGroups(groupset);
         }
         
-        Stripersist.getEntityManager().persist(user);
+        if(Stripersist.getEntityManager().find(User.class, user.getUsername()) != null){
+            Stripersist.getEntityManager().merge(user);
+        }else{
+            Stripersist.getEntityManager().persist(user);
+        }
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Gebruikersgroep is opgeslagen"));
