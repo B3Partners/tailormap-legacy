@@ -92,7 +92,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:submit name="cancel" value="Annuleren"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="Nieuw document"/>
+                    <stripes:submit name="edit" value="Nieuwe gebruiker"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>
