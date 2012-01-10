@@ -33,7 +33,7 @@ Ext.onReady(function(){
             {name: 'id', type: 'string'},
             {name: 'username', type: 'string'},
             {name: 'organization', type: 'string'},
-            {name: 'function', type: 'string'}
+            {name: 'position', type: 'string'}
         ]
     });
 
@@ -76,9 +76,9 @@ Ext.onReady(function(){
                     xtype: 'textfield'
                 }
             },{
-                id: 'function',
+                id: 'position',
                 text: "Functie",
-                dataIndex: 'function',
+                dataIndex: 'position',
                 flex: 1,
                 filter: {
                     xtype: 'textfield'
@@ -89,9 +89,9 @@ Ext.onReady(function(){
                 dataIndex: 'id',
                 flex: 1,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject({0});">Bewerken</a>', value) +
+                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
+                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
                 },
                 sortable: false
             }

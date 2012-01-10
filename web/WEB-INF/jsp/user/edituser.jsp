@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save'}">
                     <h1>bewerken</h1>
-                    <stripes:hidden name="group" value="${actionBean.user.username}"/>
+                    <stripes:hidden name="user" value="${actionBean.user.username}"/>
 
                     <table>
                         <tr>
@@ -40,46 +40,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <table>
                                     <tr>
                                         <td>Naam:</td>
-                                        <td><stripes:text name="name" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="details['name']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>Organisatie:</td>
-                                        <td><stripes:text name="organization" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="details['organization']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>Functie:</td>
-                                        <td><stripes:text name="function" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="details['position']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>Adres:</td>
-                                        <td><stripes:text name="address" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="details['address']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>Plaats:</td>
-                                        <td><stripes:text name="city" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="details['city']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>E-mailadres:</td>
-                                        <td><stripes:text name="email" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="details['email']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>Telefoon:</td>
-                                        <td><stripes:text name="phone" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="details['phone']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>Gebruikersnaam:</td>
-                                        <td><stripes:text name="user.username" maxlength="255" size="30"/></td>
+                                        <td><stripes:text name="username" disabled="${!empty actionBean.user.username}" maxlength="255" size="30" value="${actionBean.user.username}"/></td>
                                     </tr>
                                     <tr>
                                         <td>Wachtwoord:</td>
-                                        <td><stripes:password name="user.password" maxlength="255" size="30"/></td>
+                                        <td><stripes:password name="password" maxlength="255" size="30"/></td>
                                     </tr>
                                 </table>
                             </td>
-                            <td>
+                            <td valign="top">
                                 <h1>Groepen:</h1>
                                 
-                                    <c:forEach var="group" items="${actionBean.groupsList}">
+                                    <c:forEach var="group" items="${actionBean.allGroups}">
                                         <stripes:checkbox name="groups" value="${group.name}"/>${group.name}<br>
                                     </c:forEach>
                                 

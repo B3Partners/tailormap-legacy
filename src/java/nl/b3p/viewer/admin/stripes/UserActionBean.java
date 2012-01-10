@@ -17,10 +17,11 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.validation.Validate;
-import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import org.hibernate.Criteria;
@@ -40,15 +41,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class UserActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/user/user.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/user/edituser.jsp";
-    
-    private static final String DETAIL_NAME = "naam";
-    private static final String DETAIL_ORGANIZATION = "organisatie";
-    private static final String DETAIL_FUNCTION = "functie";
-    private static final String DETAIL_ADDRESS = "adres";
-    private static final String DETAIL_CITY = "plaats";
-    private static final String DETAIL_EMAIL = "email";
-    private static final String DETAIL_PHONE = "telefoon";
-    
+      
     private ActionBeanContext context;
     
     @Validate
@@ -63,33 +56,23 @@ public class UserActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-    
+        
     @Validate
-    private String name;
-    @Validate
-    private String organization;
-    @Validate
-    private String function;
-    @Validate
-    private String address;
-    @Validate
-    private String city;
-    @Validate
-    private String email;
-    @Validate
-    private String phone;
-    
-    @Validate
-    @ValidateNestedProperties({
-                @Validate(field="username", required=true, maxlength=255),
-                @Validate(field="password", maxlength=255)
-    })
     private User user;
-    
-    private List groupsList;
-    
+
     @Validate
-    private List groups;
+    private String username;
+
+    @Validate
+    private String password;
+
+    private List<Group> allGroups;
+
+    @Validate
+    private List<String> groups = new ArrayList<String>();
+
+    @Validate
+    private Map<String,String> details = new HashMap<String,String>();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -108,78 +91,30 @@ public class UserActionBean implements ActionBean {
         this.user = user;
     }
 
-    public String getFunction() {
-        return function;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFunction(String function) {
-        this.function = function;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public List<Group> getAllGroups() {
+        return allGroups;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
     }
 
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public List getGroupsList() {
-        return groupsList;
-    }
-
-    public void setGroupsList(List groupsList) {
-        this.groupsList = groupsList;
-    }
-
-    public List getGroups() {
+    public List<String> getGroups() {
         return groups;
     }
 
-    public void setGroups(List groups) {
+    public void setGroups(List<String> groups) {
         this.groups = groups;
     }
-    
+
     public String getDir() {
         return dir;
     }
@@ -227,6 +162,22 @@ public class UserActionBean implements ActionBean {
     public void setStart(int start) {
         this.start = start;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -236,33 +187,21 @@ public class UserActionBean implements ActionBean {
         return new ForwardResolution(JSP);
     }
 
+    @Before(stages=LifecycleStage.BindingAndValidation)
+    public void load() {
+        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+    }
+
     @DontValidate
     public Resolution edit() {
-        if(user != null){
-            Map details = user.getDetails();
-            if(details.containsKey(DETAIL_NAME)){
-                name = details.get(DETAIL_NAME).toString();
+
+        if(user != null) {
+            for(Group g: user.getGroups()) {
+                groups.add(g.getName());
             }
-            if(details.containsKey(DETAIL_ORGANIZATION)){
-                organization = details.get(DETAIL_ORGANIZATION).toString();
-            }
-            if(details.containsKey(DETAIL_FUNCTION)){
-                function = details.get(DETAIL_FUNCTION).toString();
-            }
-            if(details.containsKey(DETAIL_ADDRESS)){
-                address = details.get(DETAIL_ADDRESS).toString();
-            }
-            if(details.containsKey(DETAIL_CITY)){
-                city = details.get(DETAIL_CITY).toString();
-            }
-            if(details.containsKey(DETAIL_EMAIL)){
-                email = details.get(DETAIL_EMAIL).toString();
-            }
-            if(details.containsKey(DETAIL_PHONE)){
-                phone = details.get(DETAIL_PHONE).toString();
-            }
+            details = user.getDetails();
         }
-        groupsList = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+        
         return new ForwardResolution(EDITJSP);
     }
 
@@ -270,60 +209,79 @@ public class UserActionBean implements ActionBean {
     public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
     }
-    
-    public Resolution save() {  
-        Map details = new HashMap();
-        if(name != null){
-            details.put(DETAIL_NAME, name);
-        }
-        if(organization != null){
-            details.put(DETAIL_ORGANIZATION, organization);
-        }
-        if(function != null){
-            details.put(DETAIL_FUNCTION, function);
-        }
-        if(address != null){
-            details.put(DETAIL_ADDRESS, address);
-        }
-        if(city != null){
-            details.put(DETAIL_CITY, city);
-        }
-        if(email != null){
-            details.put(DETAIL_EMAIL, email);
-        }
-        if(phone != null){
-            details.put(DETAIL_PHONE, phone);
-        }
-        user.setDetails(details);
-        //org.apache.catalina.realm.RealmBase.Digest(password, "SHA-1", "UTF-8");
-        
-        if(groups != null){
-            Set groupset = new HashSet();
-            for(Iterator it = groups.iterator(); it.hasNext();){
-                String groupName = it.next().toString();
-                Group gr = Stripersist.getEntityManager().find(Group.class, groupName);
-                groupset.add(gr);
+
+    @ValidationMethod(on="save")
+    public void validate(ValidationErrors errors) throws Exception {
+        // If user already persistent username cannot be changed
+        if(user == null) {
+
+            if(username == null) {
+                errors.add("user.username", new LocalizableError("validation.required.valueNotPresent"));
+                return;
             }
-            user.setGroups(groupset);
+
+            try {
+                Object o = Stripersist.getEntityManager().createQuery("select 1 from User where username = :username")
+                        .setMaxResults(1)
+                        .setParameter("username", username)
+                        .getSingleResult();
+
+                errors.add("user.username", new SimpleError("Gebruikersnaam bestaat al"));
+                return;
+
+            } catch(NoResultException nre) {
+                // username is unique
+            }
         }
-        
-        if(Stripersist.getEntityManager().find(User.class, user.getUsername()) != null){
-            Stripersist.getEntityManager().merge(user);
-        }else{
-            Stripersist.getEntityManager().persist(user);
+
+        if(user == null) {
+            if(password == null) {
+                errors.add("password", new LocalizableError("validation.required.valueNotPresent"));
+                return;
+            }
         }
+
+        if(password != null) {
+            if(password.length() < User.MIN_PASSWORD_LENGTH) {
+                errors.add("password", new LocalizableError("validation.minlength.valueTooShort", User.MIN_PASSWORD_LENGTH));
+                return;
+            }
+        }
+    }
+
+    public Resolution save() throws Exception {
+
+        if(user == null) {
+            user = new User();
+            user.setUsername(username);
+            user.changePassword(password);
+        } else {
+            if(password != null) {
+                user.changePassword(password);
+            }
+        }
+
+        user.getDetails().clear();
+        user.getDetails().putAll(details);
+
+        user.getGroups().clear();
+        for(String groupName: groups) {
+            user.getGroups().add(Stripersist.getEntityManager().find(Group.class, groupName));
+        }
+
+        Stripersist.getEntityManager().persist(user);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Gebruikersgroep is opgeslagen"));
+        getContext().getMessages().add(new SimpleMessage("Gebruiker is opgeslagen"));
         return new ForwardResolution(EDITJSP);
     }
     
     @DontValidate
     public Resolution delete() {
-        //Stripersist.getEntityManager().remove(user);
+        Stripersist.getEntityManager().remove(user);
         Stripersist.getEntityManager().getTransaction().commit();
         
-        getContext().getMessages().add(new SimpleMessage("Gebruikersgroep is verwijderd"));
+        getContext().getMessages().add(new SimpleMessage("Gebruiker is verwijderd"));
         
         return new ForwardResolution(EDITJSP);
     }
@@ -414,8 +372,8 @@ public class UserActionBean implements ActionBean {
         JSONObject j = new JSONObject();
         j.put("id", username);
         j.put("username", username);
-        j.put("organization", details.get(DETAIL_ORGANIZATION));
-        j.put("function", details.get(DETAIL_FUNCTION));
+        j.put("organization", details.get("organization"));
+        j.put("position", details.get("position"));
         return j;
     }
     
