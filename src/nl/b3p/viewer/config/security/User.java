@@ -16,6 +16,9 @@
  */
 package nl.b3p.viewer.config.security;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import javax.persistence.*;
 import java.util.*;
 
@@ -26,6 +29,11 @@ import java.util.*;
 @Entity
 @Table(name="user_")
 public class User {
+    public static final int MIN_PASSWORD_LENGTH = 8;
+
+    private static final String DIGEST_ALGORITM = "SHA-1";
+    private static final String DIGEST_CHARSET = "UTF-8";
+
     @Id
     private String username;
 
@@ -39,6 +47,21 @@ public class User {
     @JoinTable(joinColumns=@JoinColumn(name="username"))
     private Map<String,String> details = new HashMap<String,String>();
 
+    public void changePassword(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        MessageDigest md = (MessageDigest) MessageDigest.getInstance(DIGEST_ALGORITM);
+        md.update(password.getBytes(DIGEST_CHARSET));
+        byte[] digest = md.digest();
+
+        /* Converteer byte array naar hex-weergave */
+        StringBuilder sb = new StringBuilder(digest.length*2);
+        for(int i = 0; i < digest.length; i++) {
+            sb.append(Integer.toHexString(digest[i] >> 4 & 0xf)); /* and mask met 0xf nodig door sign-extenden van bytes... */
+            sb.append(Integer.toHexString(digest[i] & 0xf));
+        }
+        setPassword(sb.toString());
+    }
+    
     public String getPassword() {
         return password;
     }
