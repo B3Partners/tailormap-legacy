@@ -135,21 +135,21 @@ public class GroupActionBean implements ActionBean{
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
-    public Resolution defaultResolution() throws JSONException {
+    public Resolution defaultResolution() {
         return new ForwardResolution(JSP);
     }
 
     @DontValidate
-    public Resolution edit() throws JSONException {
+    public Resolution edit() {
         return new ForwardResolution(EDITJSP);
     }
 
     @DontBind
-    public Resolution cancel() throws JSONException {        
+    public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution save() throws JSONException {  
+    public Resolution save() {  
         Stripersist.getEntityManager().persist(group);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -158,7 +158,7 @@ public class GroupActionBean implements ActionBean{
     }
     
     @DontValidate
-    public Resolution delete() throws JSONException {
+    public Resolution delete() {
         Stripersist.getEntityManager().remove(group);
         Stripersist.getEntityManager().getTransaction().commit();
         

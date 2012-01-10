@@ -49,8 +49,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class AttributeActionBean implements ActionBean {
     private ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/attribute.jsp";
-    private static final String EDITJSP = "/WEB-INF/jsp/editattribute.jsp";
+    private static final String JSP = "/WEB-INF/jsp/attribute/attribute.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/attribute/editattribute.jsp";
     
     @Validate
     private int page;
@@ -157,15 +157,15 @@ public class AttributeActionBean implements ActionBean {
     //</editor-fold>
     
     @DefaultHandler
-    public Resolution view() throws JSONException {
+    public Resolution view() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution edit() throws JSONException {
+    public Resolution edit() {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution cancel() throws JSONException {
+    public Resolution cancel() {
         return new ForwardResolution(EDITJSP);
     }
     

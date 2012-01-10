@@ -37,7 +37,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/geoservice/{$event}/{service}")
 public class GeoServiceActionBean implements ActionBean{
-    private static final String JSP = "/WEB-INF/jsp/geoservice.jsp";
+    private static final String JSP = "/WEB-INF/jsp/services/geoservice.jsp";
     
     private ActionBeanContext context;
     
@@ -190,19 +190,19 @@ public class GeoServiceActionBean implements ActionBean{
     
     @DefaultHandler
     @HandlesEvent("default")
-    public Resolution defaultResolution() throws JSONException {
+    public Resolution defaultResolution() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution cancel() throws JSONException {
+    public Resolution cancel() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution editGeoService() throws JSONException {
+    public Resolution editGeoService() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution saveService() throws JSONException {
+    public Resolution saveService() {
         if(name != null){
             service.setName(name);
         }

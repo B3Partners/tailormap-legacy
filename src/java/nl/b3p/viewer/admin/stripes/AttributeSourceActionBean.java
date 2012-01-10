@@ -47,8 +47,8 @@ import org.stripesstuff.stripersist.Stripersist;
 public class AttributeSourceActionBean implements ActionBean {
 
     private ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/attributesource.jsp";
-    private static final String EDITJSP = "/WEB-INF/jsp/editattributesource.jsp";
+    private static final String JSP = "/WEB-INF/jsp/attribute/attributesource.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/attribute/editattributesource.jsp";
     
     @Validate
     private int page;
@@ -78,19 +78,19 @@ public class AttributeSourceActionBean implements ActionBean {
     private FeatureSource featureSource;
     
     @DefaultHandler
-    public Resolution view() throws JSONException {
+    public Resolution view() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution edit() throws JSONException {
+    public Resolution edit() {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution cancel() throws JSONException {
+    public Resolution cancel() {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution delete() throws JSONException {
+    public Resolution delete() {
         Stripersist.getEntityManager().remove(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -98,7 +98,7 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution save() throws JSONException {
+    public Resolution save() {
         
         try {
             if(protocol.equals("wfs")) {

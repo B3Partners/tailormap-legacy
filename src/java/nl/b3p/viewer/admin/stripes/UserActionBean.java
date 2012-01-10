@@ -232,12 +232,12 @@ public class UserActionBean implements ActionBean {
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
-    public Resolution defaultResolution() throws JSONException {
+    public Resolution defaultResolution() {
         return new ForwardResolution(JSP);
     }
 
     @DontValidate
-    public Resolution edit() throws JSONException {
+    public Resolution edit() {
         if(user != null){
             Map details = user.getDetails();
             if(details.containsKey(DETAIL_NAME)){
@@ -267,11 +267,11 @@ public class UserActionBean implements ActionBean {
     }
 
     @DontBind
-    public Resolution cancel() throws JSONException {        
+    public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution save() throws JSONException {  
+    public Resolution save() {  
         Map details = new HashMap();
         if(name != null){
             details.put(DETAIL_NAME, name);
@@ -319,7 +319,7 @@ public class UserActionBean implements ActionBean {
     }
     
     @DontValidate
-    public Resolution delete() throws JSONException {
+    public Resolution delete() {
         //Stripersist.getEntityManager().remove(user);
         Stripersist.getEntityManager().getTransaction().commit();
         

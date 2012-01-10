@@ -35,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/geoserviceregistry/{$event}")
 @StrictBinding
 public class GeoServiceRegistryActionBean implements ActionBean {
-
+    private static final String JSP = "/WEB-INF/jsp/services/geoserviceregistry.jsp";
     private ActionBeanContext context;
 
     @Validate(on="addCategory", required=true)
@@ -206,9 +206,9 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     }
 
     @DefaultHandler
-    public Resolution view() throws JSONException {
+    public Resolution view() {
         Stripersist.getEntityManager().getTransaction().commit();
         
-        return new ForwardResolution("/WEB-INF/jsp/geoserviceregistry.jsp");
+        return new ForwardResolution(JSP);
     }
 }

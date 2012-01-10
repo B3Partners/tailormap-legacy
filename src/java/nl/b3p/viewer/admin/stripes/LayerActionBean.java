@@ -27,7 +27,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Jytte Schaeffer
  */
 public class LayerActionBean implements ActionBean{
-    private static final String JSP = "/WEB-INF/jsp/layer.jsp";
+    private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";
     
     private ActionBeanContext context;
     
@@ -105,17 +105,17 @@ public class LayerActionBean implements ActionBean{
     //</editor-fold>
     
     @DefaultHandler
-    public Resolution view() throws JSONException {
+    public Resolution view() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution edit() throws JSONException {
+    public Resolution edit() {
         downloadlink = layer.getExtraInfo().get(layer.EXTRA_KEY_DOWNLOAD_URL);
         metadata = layer.getExtraInfo().get(layer.EXTRA_KEY_METADATA_URL);      
         return new ForwardResolution(JSP);
     }
     
-    public Resolution save() throws JSONException {
+    public Resolution save() {
         layer = Stripersist.getEntityManager().find(Layer.class, layer.getId());
         
         if(titleAlias != null){

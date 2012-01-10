@@ -49,7 +49,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class ChooseApplicationActionBean implements ActionBean {
     private ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/chooseApplication.jsp";
+    private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";
     
     @Validate
     private int page;
@@ -134,11 +134,11 @@ public class ChooseApplicationActionBean implements ActionBean {
     //</editor-fold>
     
     @DefaultHandler
-    public Resolution view() throws JSONException {
+    public Resolution view() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution deleteApplication() throws JSONException {
+    public Resolution deleteApplication() {
         Stripersist.getEntityManager().remove(application);
         Stripersist.getEntityManager().getTransaction().commit();
         
