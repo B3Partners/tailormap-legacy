@@ -34,7 +34,7 @@ public class ApplicationSettingsActionBean implements ActionBean {
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="name", required=true, maxlength=255),
-                @Validate(field="version", maxlength=255),
+                @Validate(field="version", maxlength=255)
     })
     private Application application;
 

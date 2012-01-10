@@ -37,6 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <tr>
                         <td>Naam:</td>
                         <td><stripes:text name="application.name" maxlength="255" size="30"/></td>
+                        <td rowspan="9">Opmerkingen<br><stripes:textarea cols="80" rows="5" name="opmerking"/></td>
                     </tr>
                     <tr>
                         <td>Versie:</td>
@@ -70,7 +71,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>Eigenaar:</td>
                         <td><stripes:text name="owner" maxlength="255" size="30"/></td>
                     </tr>
-                </table>
+                    <tr>
+                        <td>Start extensie:</td>
+                        <td>
+                            lo-x <stripes:text name="start-lo-x" maxlength="255" size="3"/>
+                            lo-y <stripes:text name="start-lo-y" maxlength="255" size="3"/>
+                            rb-x <stripes:text name="start-rb-x" maxlength="255" size="3"/>
+                            rb-y <stripes:text name="start-rb-y" maxlength="255" size="3"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Maximale extensie:</td>
+                        <td>
+                            lo-x <stripes:text name="max-lo-x" maxlength="255" size="3"/>
+                            lo-y <stripes:text name="max-lo-y" maxlength="255" size="3"/>
+                            rb-x <stripes:text name="max-rb-x" maxlength="255" size="3"/>
+                            rb-y <stripes:text name="max-rb-y" maxlength="255" size="3"/>
+                        </td>
+                    </tr>
+                </table>                   
                     <stripes:submit name="save" value="Opslaan"/>
                     <stripes:submit name="cancel" value="Annuleren"/>
                 </stripes:form>
