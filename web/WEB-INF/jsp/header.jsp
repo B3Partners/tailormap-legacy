@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <ul class="slideoutmenu">
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" id="menu_kiesapplicatie">Kies een applicatie</stripes:link></li>
                     <li>
-                        <a href="#">Applicatie: <c:out value="${actionBean.application.name}"/></a>
+                        <a href="#">Applicatie: </a>
                         <ul class="dropdownmenu">
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">Instellingen</stripes:link></li>
                             <li><a href="#" id="menu_boomstructuur">Boomstructuur met kaarten</a></li>
