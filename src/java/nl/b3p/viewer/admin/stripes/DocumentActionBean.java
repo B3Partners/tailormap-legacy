@@ -52,8 +52,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/document/{$event}/{service}")
 public class DocumentActionBean implements ActionBean {
-    private static final String JSP = "/WEB-INF/jsp/document.jsp";
-    private static final String EDITJSP = "/WEB-INF/jsp/editdocument.jsp";
+    private static final String JSP = "/WEB-INF/jsp/services/document.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/services/editdocument.jsp";
     
     private ActionBeanContext context;
     
