@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Groepen</title>
+        <title>Gebruikers</title>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -31,21 +31,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         <p>
         <div id="content">
-            <h1>Gebruikers groepen</h1>
-            <div id="grid-container" class="groups">
+            <h1>Gebruikers</h1>
+            <div id="grid-container" class="user">
 
             </div>
-            <div id="form-container" class="groups">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+            <div id="form-container" class="user">
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         
             <script type="text/javascript">
-                var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="getGridData"/>';
-                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="edit"/>';
-                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean" event="delete"/>';
-                var activelink = 'menu_gebruikersgroepen';
+                var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="getGridData"/>';
+                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="edit"/>';
+                var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="delete"/>';
+                var activelink = 'menu_gebruikers';
             </script>
-            <script type="text/javascript" src="${contextPath}/resources/js/user/group.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/user/user.js"></script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>
+
