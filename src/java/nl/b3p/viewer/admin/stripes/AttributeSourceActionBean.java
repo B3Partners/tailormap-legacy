@@ -47,8 +47,8 @@ import org.stripesstuff.stripersist.Stripersist;
 public class AttributeSourceActionBean implements ActionBean {
 
     private ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/attribute/attributesource.jsp";
-    private static final String EDITJSP = "/WEB-INF/jsp/attribute/editattributesource.jsp";
+    private static final String JSP = "/WEB-INF/jsp/services/attributesource.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/services/editattributesource.jsp";
     
     @Validate
     private int page;

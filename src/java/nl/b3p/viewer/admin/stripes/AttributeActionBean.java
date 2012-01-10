@@ -29,7 +29,6 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
-import nl.b3p.viewer.config.services.FeatureSource;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -49,8 +48,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class AttributeActionBean implements ActionBean {
     private ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/attribute/attribute.jsp";
-    private static final String EDITJSP = "/WEB-INF/jsp/attribute/editattribute.jsp";
+    private static final String JSP = "/WEB-INF/jsp/services/attribute.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/services/editattribute.jsp";
     
     @Validate
     private int page;
