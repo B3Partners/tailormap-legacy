@@ -233,12 +233,12 @@ public class ChooseApplicationActionBean implements ActionBean {
         };
     }
     
-    private JSONObject getGridRow(int i, String name, String url, String type) throws JSONException {       
+    private JSONObject getGridRow(int i, String name, String published, String owner) throws JSONException {       
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("name", name);
-        j.put("published", url);
-        j.put("owner", type);
+        j.put("published", published);
+        j.put("owner", owner);
         return j;
     }
     

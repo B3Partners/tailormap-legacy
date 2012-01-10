@@ -36,15 +36,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             </div>
             <div id="form-container" class="applicaties">
-                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean">
-                    <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
+                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean">
+                    <stripes:submit name="view" value="Nieuwe applicatie"/>
                 </stripes:form>
-                <%--<iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="view"/>" id="editFrame" frameborder="0"></iframe>--%>
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="view"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         
             <script type="text/javascript">
                 var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="getGridData"/>';
-                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="setActive"/>';
+                var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" event="edit"/>';
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>';
                 var activelink = 'menu_kiesapplicatie';
             </script>
