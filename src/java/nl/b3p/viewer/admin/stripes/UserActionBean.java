@@ -216,7 +216,7 @@ public class UserActionBean implements ActionBean {
         if(user == null) {
 
             if(username == null) {
-                errors.add("user.username", new LocalizableError("validation.required.valueNotPresent"));
+                errors.add("username", new LocalizableError("validation.required.valueNotPresent"));
                 return;
             }
 
@@ -226,7 +226,7 @@ public class UserActionBean implements ActionBean {
                         .setParameter("username", username)
                         .getSingleResult();
 
-                errors.add("user.username", new SimpleError("Gebruikersnaam bestaat al"));
+                errors.add("username", new SimpleError("Gebruikersnaam bestaat al"));
                 return;
 
             } catch(NoResultException nre) {
