@@ -36,7 +36,7 @@ public class Level {
     private boolean checked;
 
     @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
+    @JoinTable(name="level_children", inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Level> children = new ArrayList<Level>();
 
@@ -44,12 +44,12 @@ public class Level {
     private LevelType type;
 
     @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="layer"))
+    @JoinTable(name="level_layers", inverseJoinColumns=@JoinColumn(name="layer"))
     @OrderColumn(name="list_index")
     private List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
     @ManyToMany
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="document"))
+    @JoinTable(name="level_documents", inverseJoinColumns=@JoinColumn(name="document"))
     @OrderColumn(name="list_index")
     private List<Document> documents = new ArrayList<Document>();
 
