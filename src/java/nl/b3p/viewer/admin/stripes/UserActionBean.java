@@ -39,8 +39,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/user/{$event}/{service}")
 public class UserActionBean implements ActionBean {
-    private static final String JSP = "/WEB-INF/jsp/user/user.jsp";
-    private static final String EDITJSP = "/WEB-INF/jsp/user/edituser.jsp";
+    private static final String JSP = "/WEB-INF/jsp/security/user.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/security/edituser.jsp";
       
     private ActionBeanContext context;
     

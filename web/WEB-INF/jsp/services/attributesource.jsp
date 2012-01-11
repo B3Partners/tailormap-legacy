@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="delete"/>';
             var activelink = 'menu_attribuutbronnen';
         </script>
-        <script type="text/javascript" src="${contextPath}/resources/js/attributes/attributesource.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/services/attributesource.js"></script>
     </stripes:layout-component>
         
 </stripes:layout-render>

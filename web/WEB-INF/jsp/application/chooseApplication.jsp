@@ -48,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>';
                 var activelink = 'menu_kiesapplicatie';
             </script>
-            <script type="text/javascript" src="${contextPath}/resources/js/chooseApplication/chooseApplication.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/application/chooseApplication.js"></script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>

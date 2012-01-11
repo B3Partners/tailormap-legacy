@@ -41,8 +41,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/group/{$event}/{service}")
 public class GroupActionBean implements ActionBean{
-    private static final String JSP = "/WEB-INF/jsp/user/group.jsp";
-    private static final String EDITJSP = "/WEB-INF/jsp/user/editgroup.jsp";
+    private static final String JSP = "/WEB-INF/jsp/security/group.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/security/editgroup.jsp";
     
     private ActionBeanContext context;
     

@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="delete"/>';
                 var activelink = 'menu_gebruikers';
             </script>
-            <script type="text/javascript" src="${contextPath}/resources/js/user/user.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/security/user.js"></script>
         </div>
     </stripes:layout-component>
 </stripes:layout-render>

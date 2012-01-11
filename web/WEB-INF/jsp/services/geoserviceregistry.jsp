@@ -53,7 +53,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
             var activelink = 'menu_services';
         </script>
-        <script type="text/javascript" src="${contextPath}/resources/js/geoserviceregistry/geoserviceregistry.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/services/geoserviceregistry.js"></script>
     </stripes:layout-component>
         
 </stripes:layout-render>
