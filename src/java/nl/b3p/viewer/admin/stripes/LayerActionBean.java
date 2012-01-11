@@ -16,10 +16,10 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.Layer;
-import org.json.JSONException;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -38,13 +38,7 @@ public class LayerActionBean implements ActionBean{
     private String parentId;
     
     @Validate
-    private String titleAlias;
-    @Validate
-    private String legenda;
-    @Validate
-    private String metadata;
-    @Validate
-    private String downloadlink;
+    private Map<String,String> details = new HashMap<String,String>();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -55,44 +49,20 @@ public class LayerActionBean implements ActionBean{
         this.context = context;
     }
 
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
+
     public Layer getLayer() {
         return layer;
     }
 
     public void setLayer(Layer layer) {
         this.layer = layer;
-    }
-
-    public String getTitleAlias() {
-        return titleAlias;
-    }
-
-    public void setTitleAlias(String titleAlias) {
-        this.titleAlias = titleAlias;
-    }
-
-    public String getDownloadlink() {
-        return downloadlink;
-    }
-
-    public void setDownloadlink(String downloadlink) {
-        this.downloadlink = downloadlink;
-    }
-
-    public String getLegenda() {
-        return legenda;
-    }
-
-    public void setLegenda(String legenda) {
-        this.legenda = legenda;
-    }
-
-    public String getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
     }
     
     public String getParentId() {
@@ -110,20 +80,15 @@ public class LayerActionBean implements ActionBean{
     }
     
     public Resolution edit() {
-        downloadlink = layer.getExtraInfo().get(layer.EXTRA_KEY_DOWNLOAD_URL);
-        metadata = layer.getExtraInfo().get(layer.EXTRA_KEY_METADATA_URL);      
+        if(layer != null){
+            details = layer.getDetails();
+        }
         return new ForwardResolution(JSP);
     }
     
-    public Resolution save() {
-        layer = Stripersist.getEntityManager().find(Layer.class, layer.getId());
-        
-        if(titleAlias != null){
-            layer.setTitleAlias(titleAlias);
-        }
-        layer.setLegendImageUrl(legenda);
-        layer.getExtraInfo().put(layer.EXTRA_KEY_DOWNLOAD_URL, downloadlink);
-        layer.getExtraInfo().put(layer.EXTRA_KEY_METADATA_URL, metadata);
+    public Resolution save() {                
+        layer.getDetails().clear();
+        layer.getDetails().putAll(details);
         
         Stripersist.getEntityManager().persist(layer);
         Stripersist.getEntityManager().getTransaction().commit();

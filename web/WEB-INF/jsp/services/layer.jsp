@@ -30,12 +30,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean">
         <c:if test="${actionBean.context.eventName == 'edit'}"> 
         <h1>Layer bewerken</h1>
-        <stripes:hidden name="layer.id"/>
+        <stripes:hidden name="layer" value="${actionBean.layer.id}"/>
         
         <table>
             <tr>
                 <td>Naam: 
-                <td><stripes:text name="titleAlias" value="${actionBean.layer.titleAlias}" maxlength="255" size="30"/></td>
+                <td><stripes:text name="layer.titleAlias" maxlength="255" size="30"/></td>
             </tr>
             <tr>     
                 <td>Layer:</td> 
@@ -43,15 +43,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </tr>
             <tr>     
                 <td>Legenda:</td> 
-                <td><stripes:text name="legenda" value="${actionBean.layer.legendImageUrl}" maxlength="255" size="30"/></td>
+                <td><stripes:text name="layer.legendImageUrl" maxlength="255" size="30"/></td>
             </tr>
             <tr>     
                 <td>Metadata:</td> 
-                <td><stripes:text name="metadata" maxlength="255" size="30"/></td>
+                <td><stripes:text name="details['metadata.stylesheet']" maxlength="255" size="30"/></td>
             </tr>
             <tr>     
                 <td>Downloadlink:</td> 
-                <td><stripes:text name="downloadlink" maxlength="255" size="30"/></td>
+                <td><stripes:text name="details['download.url']" maxlength="255" size="30"/></td>
             </tr>
         </table>
         
@@ -63,8 +63,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${actionBean.context.eventName == 'save'}">
             <script type="text/javascript">
                 var frameParent = getParent();
-                if(frameParent && frameParent.renameNode && '${actionBean.titleAlias}' != '') {
-                    frameParent.renameNode('l${actionBean.layer.id}','${actionBean.titleAlias}');
+                if(frameParent && frameParent.renameNode && '${actionBean.layer.titleAlias}' != '') {
+                    frameParent.renameNode('l${actionBean.layer.id}','${actionBean.layer.titleAlias}');
                 }
             </script>
         </c:if>
