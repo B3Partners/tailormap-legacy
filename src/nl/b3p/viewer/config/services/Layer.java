@@ -93,7 +93,7 @@ public class Layer {
     private List<Layer> children = new ArrayList<Layer>();
 
     @ElementCollection
-    private Map<String,String> extraInfo = new HashMap<String,String>();
+    private Map<String,String> details = new HashMap<String,String>();
 
     public Layer() {
     }
@@ -241,10 +241,6 @@ public class Layer {
         this.children = children;
     }
 
-    public Map<String, String> getExtraInfo() {
-        return extraInfo;
-    }
-
     public Set<String> getKeywords() {
         return keywords;
     }
@@ -253,8 +249,12 @@ public class Layer {
         this.keywords = keywords;
     }
 
-    public void setExtraInfo(Map<String, String> extraInfo) {
-        this.extraInfo = extraInfo;
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
     }
 
     public Double getMaxScale() {
