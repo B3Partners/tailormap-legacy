@@ -38,7 +38,7 @@ public class SimpleFeatureType {
 
     @OneToMany(orphanRemoval=true)
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
-    @OrderColumn
+    @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">

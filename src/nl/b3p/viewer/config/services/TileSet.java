@@ -33,7 +33,7 @@ public class TileSet {
     private int height;
 
     @ElementCollection
-    @OrderColumn
+    @OrderColumn(name="list_index")
     @Column(name="resolution")
     private List<Double> resolutions = new ArrayList<Double>();
 
