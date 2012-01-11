@@ -16,7 +16,10 @@
  */
 package nl.b3p.viewer.config.app;
 
+import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.config.security.User;
+import nl.b3p.viewer.config.services.BoundingBox;
 
 /**
  *
@@ -36,6 +39,45 @@ public class Application  {
 
     @Column(length=30)
     private String version;
+
+    @Lob
+    private String layout;
+
+    @ElementCollection
+    @JoinTable(joinColumns=@JoinColumn(name="username"))
+    private Map<String,String> details = new HashMap<String,String>();
+
+    @ManyToOne
+    private User owner;
+
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "crs.name", column = @Column(name="start_crs")),
+        @AttributeOverride(name = "minx", column = @Column(name="start_minx")),
+        @AttributeOverride(name = "maxx", column = @Column(name="start_maxx")),
+        @AttributeOverride(name = "miny", column = @Column(name="start_miny")),
+        @AttributeOverride(name = "maxy", column = @Column(name="start_maxy"))
+    })
+    private BoundingBox startExtent;
+    
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "crs.name", column = @Column(name="max_crs")),
+        @AttributeOverride(name = "minx", column = @Column(name="max_minx")),
+        @AttributeOverride(name = "maxx", column = @Column(name="max_maxx")),
+        @AttributeOverride(name = "miny", column = @Column(name="max_miny")),
+        @AttributeOverride(name = "maxy", column = @Column(name="max_maxy"))
+    })
+    private BoundingBox maxExtent;
+
+    private boolean authenticatedRequired;
+
+    @ManyToOne
+    private Level root;
+
+    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL)
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="component"))
+    private Set<ConfiguredComponent> components = new HashSet<ConfiguredComponent>();
 
     public Long getId() {
         return id;
@@ -59,5 +101,69 @@ public class Application  {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getLayout() {
+        return layout;
+    }
+
+    public void setLayout(String layout) {
+        this.layout = layout;
+    }
+
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
+
+    public boolean isAuthenticatedRequired() {
+        return authenticatedRequired;
+    }
+
+    public void setAuthenticatedRequired(boolean authenticatedRequired) {
+        this.authenticatedRequired = authenticatedRequired;
+    }
+
+    public Set<ConfiguredComponent> getComponents() {
+        return components;
+    }
+
+    public void setComponents(Set<ConfiguredComponent> components) {
+        this.components = components;
+    }
+
+    public BoundingBox getMaxExtent() {
+        return maxExtent;
+    }
+
+    public void setMaxExtent(BoundingBox maxExtent) {
+        this.maxExtent = maxExtent;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public Level getRoot() {
+        return root;
+    }
+
+    public void setRoot(Level root) {
+        this.root = root;
+    }
+
+    public BoundingBox getStartExtent() {
+        return startExtent;
+    }
+
+    public void setStartExtent(BoundingBox startExtent) {
+        this.startExtent = startExtent;
     }
 }

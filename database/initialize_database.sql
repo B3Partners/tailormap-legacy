@@ -1,4 +1,4 @@
-insert into application(id,name) values(1,'default');
+insert into application(id,name,authenticated_required) values(1,'default',0);
 SELECT app_id_seq.NEXTVAL FROM dual;
 
 insert into category (id,name) values(0,'root');

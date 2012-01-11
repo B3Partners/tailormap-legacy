@@ -53,6 +53,14 @@
             </id>
         </attributes>
     </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.Document">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
 
     <entity class="nl.b3p.viewer.config.app.Application">
         <attributes>
@@ -61,8 +69,32 @@
             </id>
         </attributes>
     </entity>
-    
-    <entity class="nl.b3p.viewer.config.services.Document">
+
+    <entity class="nl.b3p.viewer.config.app.Level">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.ConfiguredComponent">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.ConfiguredAttribute">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.ApplicationLayer">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>

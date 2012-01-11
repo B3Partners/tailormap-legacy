@@ -67,15 +67,6 @@
             </id>
         </attributes>
     </entity>
-
-    <entity class="nl.b3p.viewer.config.app.Application">
-        <attributes>
-            <id name="id">
-                <generated-value strategy="SEQUENCE" generator="app_id_seq"/>
-                <sequence-generator name="app_id_seq" sequence-name="app_id_seq"/>
-            </id>
-        </attributes>
-    </entity>
     
     <entity class="nl.b3p.viewer.config.services.Document">
         <attributes>
@@ -86,4 +77,48 @@
         </attributes>
     </entity>
 
+    <entity class="nl.b3p.viewer.config.app.Application">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="app_id_seq"/>
+                <sequence-generator name="app_id_seq" sequence-name="app_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.Level">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="level_id_seq"/>
+                <sequence-generator name="level_id_seq" sequence-name="level_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.ConfiguredComponent">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="conf_comp_id_seq"/>
+                <sequence-generator name="conf_comp_id_seq" sequence-name="conf_comp_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.ConfiguredAttribute">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="conf_attr_id_seq"/>
+                <sequence-generator name="conf_attr_id_seq" sequence-name="conf_attr_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.b3p.viewer.config.app.ApplicationLayer">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="app_layer_id_seq"/>
+                <sequence-generator name="app_layer_id_seq" sequence-name="app_layer_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
 </entity-mappings>
