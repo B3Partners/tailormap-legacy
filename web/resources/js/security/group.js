@@ -79,10 +79,13 @@ Ext.onReady(function(){
                 header: '',
                 dataIndex: 'name',
                 flex: 1,
-                renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                renderer: function(value, obj, rec) {
+                    if(rec.get('editable')) {
+                        return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
+                               ' | ' +
+                               Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                    }
+                    return 'Deze groep mag niet worden bewerkt of verwijderd';
                 },
                 sortable: false
             }
