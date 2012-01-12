@@ -188,6 +188,7 @@ public class UserActionBean implements ActionBean {
     }
 
     @Before(stages=LifecycleStage.BindingAndValidation)
+    @SuppressWarnings("unchecked")
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
     }
