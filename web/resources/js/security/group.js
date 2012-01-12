@@ -30,9 +30,9 @@ Ext.onReady(function(){
     Ext.define('TableRow', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'id', type: 'string'},
             {name: 'name', type: 'string'},
-            {name: 'description', type: 'string'}
+            {name: 'description', type: 'string'},
+            {name: 'editable', type: 'boolean'}
         ]
     });
 
@@ -77,12 +77,12 @@ Ext.onReady(function(){
             },{
                 id: 'edit',
                 header: '',
-                dataIndex: 'id',
+                dataIndex: 'name',
                 flex: 1,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject({0});">Bewerken</a>', value) +
+                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
+                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
                 },
                 sortable: false
             }
@@ -104,8 +104,6 @@ Ext.onReady(function(){
 });
 
 function editObject(objId) {
-    alert(objId);
-    
     Ext.get('editFrame').dom.src = editurl + '?group=' + objId;
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
@@ -113,7 +111,6 @@ function editObject(objId) {
 }
 
 function removeObject(objId) {
-    alert(objId);
     // How are we going to remove items? In the iframe or directly trough ajax?
     Ext.get('editFrame').dom.src = deleteurl + '?group=' + objId;
     var gridCmp = Ext.getCmp('editGrid')

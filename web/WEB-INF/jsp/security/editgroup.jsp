@@ -40,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                         <tr>
                             <td>Extra informatie:</td>
-                            <td><stripes:text name="group.description" maxlength="255" size="30"/></td>
+                            <td><stripes:textarea name="group.description" cols="27" rows="4"/></td>
                         </tr>
                     </table>
 
@@ -48,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:submit name="cancel" value="Annuleren"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="Nieuw document"/>
+                    <stripes:submit name="edit" value="Nieuwe groep"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

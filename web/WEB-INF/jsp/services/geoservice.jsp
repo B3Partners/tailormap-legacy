@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
                 
-<c:if test="${actionBean.context.eventName == 'default' && !empty actionBean.category}">
+<c:if test="${(actionBean.context.eventName == 'default' || actionBean.context.eventName == 'editCategory') && !empty actionBean.category}">
 
     <script type="text/javascript">
         Ext.create('Ext.Button', {
@@ -54,6 +54,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             frameParent.addServiceNode('${actionBean.newService}');
         }
     </script>
+    <script type="text/javascript">
+        var frameParent = getParent();
+        if(frameParent && frameParent.renameNode && '${actionBean.category.name}' != '') {
+            frameParent.renameNode('c${actionBean.category.id}','${actionBean.category.name}');
+        }
+    </script>
 </c:if>
             
 <c:if test="${actionBean.context.eventName == 'deleteCategory'}">
@@ -74,14 +80,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </script>
 </c:if>
     
- <c:if test="${actionBean.context.eventName == 'editCategory'}">
+ <%--<c:if test="${actionBean.context.eventName == 'editCategory'}">
     <script type="text/javascript">
         var frameParent = getParent();
         if(frameParent && frameParent.renameNode && '${actionBean.category.name}' != '') {
             frameParent.renameNode('c${actionBean.category.id}','${actionBean.category.name}');
         }
     </script>
-</c:if>
+</c:if>--%>
     
  <c:if test="${actionBean.context.eventName == 'saveService'}">
     <script type="text/javascript">

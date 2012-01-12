@@ -84,9 +84,9 @@ Ext.onReady(function(){
                 dataIndex: 'id',
                 flex: 1,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject({0});">Bewerken</a>', value) +
+                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
+                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
                 },
                 sortable: false
             }

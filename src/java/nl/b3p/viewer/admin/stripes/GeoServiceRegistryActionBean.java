@@ -44,7 +44,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     @Validate
     private String nodeId;
 
-    @Validate
+    @Validate(on="addCategory",required=true)
     private String name;
 
     @Validate

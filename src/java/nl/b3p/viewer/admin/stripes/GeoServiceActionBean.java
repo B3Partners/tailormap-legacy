@@ -17,8 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.validation.SimpleError;
-import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.Category;
@@ -41,7 +40,7 @@ public class GeoServiceActionBean implements ActionBean{
     
     private ActionBeanContext context;
     
-    @Validate(on={"addForm","add"},required=true)
+    @Validate(on={"addForm","add","editCategory"},required=true)
     private Category category;
     
     @Validate(on="editGeoService",required=true)
@@ -64,7 +63,7 @@ public class GeoServiceActionBean implements ActionBean{
     @Validate
     private String password;
     
-    @Validate
+    @Validate(on="editCategory", required=true)
     private String categoryName;
 
     @Validate
@@ -255,9 +254,7 @@ public class GeoServiceActionBean implements ActionBean{
     }
     
     public Resolution editCategory(){
-        if(categoryName != null){
-            category.setName(categoryName);
-        }
+        category.setName(categoryName);
         
         Stripersist.getEntityManager().persist(category);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -266,7 +263,7 @@ public class GeoServiceActionBean implements ActionBean{
         
         return new ForwardResolution(JSP);
     }
-
+    
     public Resolution addForm() {
 
         return new ForwardResolution(JSP);

@@ -16,8 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -25,10 +24,7 @@ import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.security.Group;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +39,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class GroupActionBean implements ActionBean{
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/editgroup.jsp";
+    private static final List<String> DEFAULT_GROUPS = Arrays.asList("Admin", "RegistryAdmin", "UserAdmin", "ApplicationAdmin", "ExtendedUser");
     
     private ActionBeanContext context;
     
@@ -62,7 +59,7 @@ public class GroupActionBean implements ActionBean{
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="name", required=true, maxlength=255),
-                @Validate(field="description", maxlength=255)
+                @Validate(field="description")
     })
     private Group group;
 
@@ -251,9 +248,13 @@ public class GroupActionBean implements ActionBean{
     
     private JSONObject getGridRow(String name, String description) throws JSONException {       
         JSONObject j = new JSONObject();
-        j.put("id", name);
         j.put("name", name);
         j.put("description", description);
+        if(DEFAULT_GROUPS.contains(name)) {
+            j.put("editable", false);
+        } else {
+            j.put("editable", true);
+        }
         return j;
     }
 }
