@@ -23,7 +23,7 @@ var webMapController = null;
 Ext.extend(Controller,Ext.util.Observable,{});
 
 Controller.prototype.getId = function(){
-    return "Controller";
+    return "flamingo";
 }
 	
 /**
