@@ -74,6 +74,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </div>
                         </div>
                     </div>
+                    <div style="clear: both;"></div>
                 </div>
                 <div id="layout-south">
                     <div id="layout_footer" class="content-container">
@@ -81,6 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>
             </div>
+            <button id="savebutton">Opslaan</button>
         </div>
         
         <script type="text/javascript">           

@@ -223,6 +223,7 @@ body {
             margin-top: 10px;
             padding: 3px;
             border: 2px solid @maincolor;
+            background-color: White;
             text-align: left;
             .title {
                 padding-left: 3px;
@@ -234,19 +235,35 @@ body {
                     float: left;
                     padding-right: 3px;
                 }
+                .wrangler, .remove {
+                    width: 16px;
+                    height: 16px;
+                    float: right;
+                    margin-left: 5px;
+                }
+                .remove {
+                    margin-left: 0px;
+                    margin-right: 5px;
+                    float: left;
+                }
+                &:hover {
+                    .remove {
+                        margin-left: 0px;
+                        float: left;
+                    }
+                }
             }
             &:hover {
                 .wrangler, .remove {
                     background-image: url("/@{baseurl}/resources/images/wrench.png");
+                    cursor: pointer;
                     width: 16px;
                     height: 16px;
                     float: right;
-                    cursor: pointer;
-                    margin-left: 15px;
+                    margin-left: 5px;
                 }
                 .remove {
                     background-image: url("/@{baseurl}/resources/images/delete.png");
-                    margin-left: 5px;
                 }
             }
         }

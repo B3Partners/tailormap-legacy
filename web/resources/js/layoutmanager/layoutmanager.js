@@ -16,20 +16,23 @@
  */
 
 Ext.Loader.setConfig({enabled:true});
+Ext.Loader.setPath('Ext.ux', uxpath);
 Ext.require([
+    'Ext.container.*',
     'Ext.view.*',
     'Ext.data.*',
     'Ext.dd.*',
-    'Ext.layout.*'
+    'Ext.layout.*',
+    'Ext.ux.BoxReorderer'
 ]);
 
 Ext.onReady(function() {
     var components = [
-        {id:'flamingo',name:'Flamingo Map',shortName:'Fm',restrictions:['content'],addOnce:true,linkedComponents:['openlayers'],addedToRegions:['content']},
+        {id:'flamingo',name:'Flamingo Map',shortName:'Fm',restrictions:['content'],addOnce:true,linkedComponents:['openlayers']},
         {id:'openlayers',name:'OpenLayers Map',shortName:'Om',restrictions:['content'],addOnce:true,linkedComponents:['flamingo']},
         {id:'tabs',name:'Tabs',shortName:'Tb',restrictions:['leftmargin_top', 'rightmargin_top'],addOnce:false,linkedComponents:[]},
-        {id:'zoom',name:'Zoom',shortName:'Zm',restrictions:['top_menu'],addOnce:true,linkedComponents:[]},
-        {id:'pan',name:'Pan',shortName:'Pa',restrictions:['top_menu'],addOnce:true,linkedComponents:[]},
+        {id:'zoom',name:'Zoom',shortName:'Zm',restrictions:['top_menu'],addOnce:true,linkedComponents:[],addedToRegions:['top_menu']},
+        {id:'pan',name:'Pan',shortName:'Pa',restrictions:['top_menu'],addOnce:false,linkedComponents:[]},
         {id:'streetview',name:'Streetview',shortName:'Sv',restrictions:['top_menu'],addOnce:true,linkedComponents:[]},
         {id:'identify',name:'Identify',shortName:'Id',restrictions:['top_menu'],addOnce:true,linkedComponents:[]}
     ];
@@ -147,50 +150,80 @@ Ext.onReady(function() {
 
     function initRegions() {
         layoutRegionsStore.each(function(layoutRegion) {
-            Ext.create('Ext.dd.DropZone', Ext.get(layoutRegion.get('htmlId')), {
-                getTargetFromEvent: function(e) {
-                    return e.getTarget('.content-container');
+            var layoutType = 'vbox';
+            var flexValue = 0;
+            if(layoutRegion.get('floatComponents')) {
+                layoutType = 'hbox';
+                flexValue = 0;
+            }
+            var regionContainer = Ext.create('Ext.container.Container', {
+                cls: 'component-container',
+                layout: { 
+                    type: layoutType,
+                    shrinkToFit: false
                 },
-                onNodeEnter : function(target, dd, e, data){
-                    Ext.fly(target).addCls('content-container-hover');
+                style: {
+                    width: '100%',
+                    /* height: '100%', */
+                    minHeight: '25px'
                 },
-                onNodeOut : function(target, dd, e, data){
-                    Ext.fly(target).removeCls('content-container-hover');
+                defaults: {
+                    reorderable: true,
+                    flex: flexValue
                 },
-                onNodeOver : function(target, dd, e, data){
-                    if(this.checkDropAllowed(data)) {
-                        return Ext.dd.DropZone.prototype.dropAllowed;
-                    }
-                    return Ext.dd.DropZone.prototype.dropNotAllowed;
-                },
-                onNodeDrop : function(target, dd, e, data){
-                    if(this.checkDropAllowed(data)) {
-                        addComponentToRegion(target, data, layoutRegion);
-                        return true;
-                    }
-                    return false;
-                },
-                checkDropAllowed: function(data) {
-                    var restrictions = data.componentData.restrictions;
-                    var linkedComponents = data.componentData.linkedComponents;
-                    var dropId = layoutRegion.get('id');
-                    if(Ext.isEmpty(restrictions) || (Ext.isArray(restrictions) && Ext.Array.contains(restrictions, dropId))) {
-                        if(!Ext.isEmpty(linkedComponents)) {
-                            if(Ext.isArray(linkedComponents)) {
-                                var linkedComponentAdded = false;
-                                Ext.Array.each(linkedComponents, function(comp, index) {
-                                    if(layoutRegion.isComponentAdded(comp)) {
-                                        linkedComponentAdded = true;
+                autoScroll: true,
+                renderTo: layoutRegion.get('htmlId'),
+                plugins : Ext.create('Ext.ux.BoxReorderer',{}),
+                listeners: {
+                    render: function(c) {
+                        c.dropZone = Ext.create('Ext.dd.DropZone', c.getEl(), {
+                            getTargetFromEvent: function(e) {
+                                return e.getTarget('.content-container');
+                            },
+                            onNodeEnter : function(target, dd, e, data){
+                                Ext.fly(target).addCls('content-container-hover');
+                            },
+                            onNodeOut : function(target, dd, e, data){
+                                Ext.fly(target).removeCls('content-container-hover');
+                            },
+                            onNodeOver : function(target, dd, e, data){
+                                if(this.checkDropAllowed(data)) {
+                                    return Ext.dd.DropZone.prototype.dropAllowed;
+                                }
+                                return Ext.dd.DropZone.prototype.dropNotAllowed;
+                            },
+                            onNodeDrop : function(target, dd, e, data){
+                                if(this.checkDropAllowed(data)) {
+                                    addComponentToRegion(c, data, layoutRegion);
+                                    return true;
+                                }
+                                return false;
+                            },
+                            checkDropAllowed: function(data) {
+                                var restrictions = data.componentData.restrictions;
+                                var linkedComponents = data.componentData.linkedComponents;
+                                var dropId = layoutRegion.get('id');
+                                if(Ext.isEmpty(restrictions) || (Ext.isArray(restrictions) && Ext.Array.contains(restrictions, dropId))) {
+                                    if(!Ext.isEmpty(linkedComponents)) {
+                                        if(Ext.isArray(linkedComponents)) {
+                                            var linkedComponentAdded = false;
+                                            Ext.Array.each(linkedComponents, function(comp, index) {
+                                                if(layoutRegion.isComponentAdded(comp)) {
+                                                    linkedComponentAdded = true;
+                                                }
+                                            });
+                                            if(linkedComponentAdded) return false;
+                                        }
                                     }
-                                });
-                                if(linkedComponentAdded) return false;
+                                    return true;
+                                }
+                                return false;
                             }
-                        }
-                        return true;
+                        });
                     }
-                    return false;
                 }
             });
+            layoutRegion.regionContainer = regionContainer;
         });
     }
     
@@ -210,15 +243,32 @@ Ext.onReady(function() {
                             ddel: d,
                             componentData: component.data
                         }
-                        addComponentToRegion(region.get('htmlId'), data, region);
+                        addComponentToRegion(region.regionContainer, data, region);
                     }
                 });
             }
         });
     }
     
-    function addComponentToRegion(target, data, layoutRegion) {
-        Ext.fly(target).appendChild(data.ddel);
+    function addComponentToRegion(container, data, layoutRegion) {
+        var styleConfig = {
+            width: '100%'
+        };
+        if(layoutRegion.get('floatComponents')) {
+            styleConfig = {};
+        }
+        var itemId = Ext.id();
+        var addItem = {
+            id: itemId,
+            xtype: 'container',
+            cls: 'component-container-item',
+            contentEl: data.ddel,
+            style: styleConfig
+        };
+        container.add(addItem);
+        if(!layoutRegion.get('floatComponents')) {
+            container.setHeight(getTotalChildHeight(container, '.' + addItem.cls));
+        }
         var droppedEl = Ext.get(data.ddel);
         if(layoutRegion.get('useShortName')) {
             droppedEl.child('.title').update(data.componentData.shortName);
@@ -238,7 +288,7 @@ Ext.onReady(function() {
                 function(btnClicked) {
                     if(btnClicked == 'yes') {
                         Ext.fly(data.sourceEl).removeCls("component-added");
-                        droppedEl.remove();
+                        container.remove(itemId);
                         var addedToRegions = data.componentData.addedToRegions;
                         if(!Ext.isEmpty(addedToRegions) && Ext.isArray(addedToRegions)) {
                             Ext.Array.remove(addedToRegions, layoutRegion.get('id'));
@@ -254,7 +304,7 @@ Ext.onReady(function() {
         if(data.componentData.addOnce) {
             Ext.fly(data.sourceEl).addCls("component-added");
         }
-
+        
         // Add region to component, so it knows the regions its added to
         var addedToRegions = data.componentData.addedToRegions;
         if(Ext.isEmpty(addedToRegions)) {
@@ -275,6 +325,37 @@ Ext.onReady(function() {
         addedComponents.push(data.componentData.id);
         layoutRegion.set('addedComponents', addedComponents);
     }
+    
+    function getElementsFromContainer(container, childquery) {
+        var rootEl = container.getEl();
+        return rootEl.select(childquery);
+    }
+    
+    function getTotalChildHeight(container, childquery) {
+        var children = getElementsFromContainer(container, childquery);
+        var totalHeight = 0;
+        children.each(function(child, c, idx) {
+            totalHeight += child.getHeight();
+        });
+        return totalHeight;
+    }
+    
+    Ext.get('savebutton').on('click', function() {
+        var components = [];
+        Ext.Array.each(componentStore.data.items, function(comp, index) {
+            components.push(comp.data);
+        });
+        var layoutRegions = [];
+        Ext.Array.each(layoutRegionsStore.data.items, function(layout, index) {
+            layoutRegions.push(layout.data);
+        });
+        var response = {
+            'components': components,
+            'layoutRegions': layoutRegions
+        };
+        // Save JSON data to backend, using AJAX, form post, etc?
+        console.log('Saving data...', response);
+    });
 });
 
 function editComponent(componentData) {
