@@ -36,11 +36,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <table>
                         <tr>
                             <td>Naam:</td>
-                            <td><stripes:text name="group.name" maxlength="255" size="30"/></td>
+                            <td><stripes:text name="name" disabled="${!empty actionBean.group.name}" value="${actionBean.group.name}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
                             <td>Extra informatie:</td>
-                            <td><stripes:textarea name="group.description" cols="27" rows="4"/></td>
+                            <td><stripes:textarea name="description" value="${actionBean.group.description}" cols="27" rows="4"/></td>
                         </tr>
                     </table>
 

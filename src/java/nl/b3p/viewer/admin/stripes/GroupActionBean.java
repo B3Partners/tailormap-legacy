@@ -17,17 +17,15 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.validation.Validate;
-import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.security.Group;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -36,9 +34,11 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/group/{$event}/{service}")
-public class GroupActionBean implements ActionBean{
+public class GroupActionBean implements ActionBean {
+
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/editgroup.jsp";
+    
     private static final List<String> DEFAULT_GROUPS = Arrays.asList("Admin", "RegistryAdmin", "UserAdmin", "ApplicationAdmin", "ExtendedUser");
     
     private ActionBeanContext context;
@@ -57,17 +57,18 @@ public class GroupActionBean implements ActionBean{
     private JSONArray filter;
     
     @Validate
-    @ValidateNestedProperties({
-                @Validate(field="name", required=true, maxlength=255),
-                @Validate(field="description")
-    })
     private Group group;
+    
+    @Validate
+    private String name;
+    @Validate
+    private String description;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -79,56 +80,72 @@ public class GroupActionBean implements ActionBean{
     public void setGroup(Group group) {
         this.group = group;
     }
-    
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDir() {
         return dir;
     }
-    
+
     public void setDir(String dir) {
         this.dir = dir;
     }
-    
+
     public JSONArray getFilter() {
         return filter;
     }
-    
+
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
-    
+
     public int getLimit() {
         return limit;
     }
-    
+
     public void setLimit(int limit) {
         this.limit = limit;
     }
-    
+
     public int getPage() {
         return page;
     }
-    
+
     public void setPage(int page) {
         this.page = page;
     }
-    
+
     public String getSort() {
         return sort;
     }
-    
+
     public void setSort(String sort) {
         this.sort = sort;
     }
-    
+
     public int getStart() {
         return start;
     }
-    
+
     public void setStart(int start) {
         this.start = start;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
@@ -142,115 +159,148 @@ public class GroupActionBean implements ActionBean{
     }
 
     @DontBind
-    public Resolution cancel() {        
+    public Resolution cancel() {
         return new ForwardResolution(EDITJSP);
     }
-    
-    public Resolution save() {  
+
+    public Resolution save() {
+        if (group == null) {
+            group = new Group();
+            group.setName(name);
+            group.setDescription(description);
+        } else {
+            group.setDescription(description);
+        }
+
         Stripersist.getEntityManager().persist(group);
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         getContext().getMessages().add(new SimpleMessage("Gebruikersgroep is opgeslagen"));
         return new ForwardResolution(EDITJSP);
     }
-    
+
+    @ValidationMethod(on = "save")
+    public void validate(ValidationErrors errors) throws Exception {
+        if (group == null) {
+            if(name == null) {
+                errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
+                return;
+            }
+            
+            try {
+                Object o = Stripersist.getEntityManager().createQuery("select 1 from Group where name = :name").setMaxResults(1).setParameter("name", name).getSingleResult();
+
+                errors.add("name", new SimpleError("Naam bestaat al"));
+                return;
+
+            } catch (NoResultException nre) {
+                // name is unique
+            }
+        }
+    }
+
     @DontValidate
     public Resolution delete() {
+        if (!group.getMembers().isEmpty()) {
+            getContext().getValidationErrors().add("group", new SimpleError("De groep kan niet worden verwijderd omdat deze nog gebruikers heeft."));
+            return new ForwardResolution(EDITJSP);
+        }
         Stripersist.getEntityManager().remove(group);
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         getContext().getMessages().add(new SimpleMessage("Gebruikersgroep is verwijderd"));
-        
+
         return new ForwardResolution(EDITJSP);
     }
-    
+
     @DontValidate
-    public Resolution getGridData() throws JSONException { 
+    public Resolution getGridData() throws JSONException {
         JSONArray jsonData = new JSONArray();
-        
+
         String filterName = "";
         String filterDescription = "";
-        boolean hasFilter= false;
+        boolean hasFilter = false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
          */
-        if(this.getFilter() != null) {
+        if (this.getFilter() != null) {
             hasFilter = true;
-            for(int k = 0; k < this.getFilter().length(); k++) {
+            for (int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
                 String value = j.getString("value");
-                if(property.equals("name")) {
+                if (property.equals("name")) {
                     filterName = value;
                 }
-                if(property.equals("description")) {
+                if (property.equals("description")) {
                     filterDescription = value;
                 }
             }
         }
-        
-        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
+
+        Session sess = (Session) Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(Group.class);
         c.setMaxResults(limit);
         c.setFirstResult(start);
-        
+
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
          * holds the direction (ASC, DESC).
          */
-        if(sort != null && dir != null){
+        if (sort != null && dir != null) {
             Order order = null;
-            if(dir.equals("ASC")){
-               order = Order.asc(sort);
-            }else{
+            if (dir.equals("ASC")) {
+                order = Order.asc(sort);
+            } else {
                 order = Order.desc(sort);
             }
             order.ignoreCase();
             c.addOrder(order);
         }
-        
-        if(filterName != null && filterName.length() > 0){
+
+        if (filterName != null && filterName.length() > 0) {
             Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
             c.add(nameCrit);
         }
-        if(filterDescription != null && filterDescription.length() > 0){
+        if (filterDescription != null && filterDescription.length() > 0) {
             Criterion urlCrit = Restrictions.ilike("description", filterDescription, MatchMode.ANYWHERE);
             c.add(urlCrit);
         }
-        
+
         List groups = c.list();
-        for(Iterator it = groups.iterator(); it.hasNext();){
-            Group gr = (Group)it.next();
+        for (Iterator it = groups.iterator(); it.hasNext();) {
+            Group gr = (Group) it.next();
             JSONObject j = this.getGridRow(gr.getName(), gr.getDescription());
             jsonData.put(j);
         }
-        
+
         int rowCount;
-        if(!hasFilter){
+        if (!hasFilter) {
             rowCount = Stripersist.getEntityManager().createQuery("from Group").getResultList().size();
-        }else{
+        } else {
             rowCount = groups.size();
         }
-        
+
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-    
+
         return new StreamingResolution("application/json") {
-           @Override
-           public void stream(HttpServletResponse response) throws Exception {
-               response.getWriter().print(grid.toString());
-           }
+
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(grid.toString());
+            }
         };
     }
-    
-    private JSONObject getGridRow(String name, String description) throws JSONException {       
+
+    private JSONObject getGridRow(String name, String description) throws JSONException {
         JSONObject j = new JSONObject();
         j.put("name", name);
         j.put("description", description);
-        if(DEFAULT_GROUPS.contains(name)) {
+        if (DEFAULT_GROUPS.contains(name)) {
             j.put("editable", false);
         } else {
             j.put("editable", true);
