@@ -74,19 +74,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <tr>
                         <td>Start extensie:</td>
                         <td>
-                            lo-x <stripes:text name="start-lo-x" maxlength="255" size="3"/>
-                            lo-y <stripes:text name="start-lo-y" maxlength="255" size="3"/>
-                            rb-x <stripes:text name="start-rb-x" maxlength="255" size="3"/>
-                            rb-y <stripes:text name="start-rb-y" maxlength="255" size="3"/>
+                            lo-x <stripes:text name="startExtent.minx" maxlength="255" size="3"/>
+                            lo-y <stripes:text name="startExtent.miny" maxlength="255" size="3"/>
+                            rb-x <stripes:text name="startExtent.maxx" maxlength="255" size="3"/>
+                            rb-y <stripes:text name="startExtent.maxy" maxlength="255" size="3"/>
                         </td>
                     </tr>
                     <tr>
                         <td>Maximale extensie:</td>
                         <td>
-                            lo-x <stripes:text name="max-lo-x" maxlength="255" size="3"/>
-                            lo-y <stripes:text name="max-lo-y" maxlength="255" size="3"/>
-                            rb-x <stripes:text name="max-rb-x" maxlength="255" size="3"/>
-                            rb-y <stripes:text name="max-rb-y" maxlength="255" size="3"/>
+                            lo-x <stripes:text name="maxExtent.minx" maxlength="255" size="3"/>
+                            lo-y <stripes:text name="maxExtent.miny" maxlength="255" size="3"/>
+                            rb-x <stripes:text name="maxExtent.maxx" maxlength="255" size="3"/>
+                            rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="3"/>
                         </td>
                     </tr>
                 </table>   

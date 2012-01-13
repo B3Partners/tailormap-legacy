@@ -22,6 +22,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.security.User;
+import nl.b3p.viewer.config.services.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -48,6 +49,22 @@ public class ApplicationSettingsActionBean implements ActionBean {
     
     @Validate
     private Map<String,String> details = new HashMap<String,String>();
+    
+    @ValidateNestedProperties({
+                @Validate(field="minx", maxlength=255),
+                @Validate(field="miny", maxlength=255),
+                @Validate(field="maxx", maxlength=255),
+                @Validate(field="maxy", maxlength=255)
+    })
+    private BoundingBox startExtent;
+    
+    @ValidateNestedProperties({
+                @Validate(field="minx", maxlength=255),
+                @Validate(field="miny", maxlength=255),
+                @Validate(field="maxx", maxlength=255),
+                @Validate(field="maxy", maxlength=255)
+    })
+    private BoundingBox maxExtent;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public Application getApplication() {
@@ -97,6 +114,22 @@ public class ApplicationSettingsActionBean implements ActionBean {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    public BoundingBox getStartExtent() {
+        return startExtent;
+    }
+
+    public void setStartExtent(BoundingBox startExtent) {
+        this.startExtent = startExtent;
+    }
+
+    public BoundingBox getMaxExtent() {
+        return maxExtent;
+    }
+
+    public void setMaxExtent(BoundingBox maxExtent) {
+        this.maxExtent = maxExtent;
+    }
     
     public ActionBeanContext getContext() {
         return context;
@@ -121,6 +154,12 @@ public class ApplicationSettingsActionBean implements ActionBean {
             if(application.getOwner() != null){
                 owner = application.getOwner().getUsername();
             }
+            if(application.getStartExtent() != null){
+                startExtent = application.getStartExtent();
+            }
+            if(application.getMaxExtent() != null){
+                maxExtent = application.getMaxExtent();
+            }
         }
         
         return new ForwardResolution(JSP);
@@ -141,6 +180,12 @@ public class ApplicationSettingsActionBean implements ActionBean {
         if(owner != null){
             User appOwner = Stripersist.getEntityManager().find(User.class, owner);
             application.setOwner(appOwner);
+        }
+        if(startExtent != null){
+            application.setStartExtent(startExtent);
+        }
+        if(maxExtent != null){
+            application.setMaxExtent(maxExtent);
         }
         application.setAuthenticatedRequired(authenticatedRequired);
         
@@ -199,6 +244,16 @@ public class ApplicationSettingsActionBean implements ActionBean {
                 }
             } catch(NoResultException nre) {
                 errors.add("owner", new SimpleError("Gebruiker met deze naam bestaat niet."));
+            }
+        }
+        if(startExtent != null){
+            if(startExtent.getMinx() == null || startExtent.getMiny() == null || startExtent.getMaxx() == null || startExtent.getMaxy() == null ){
+                errors.add("startExtent", new SimpleError("Alle velden van de start extentie moeten ingevult worden."));
+            }
+        }
+        if(maxExtent != null){
+            if(maxExtent.getMinx() == null || maxExtent.getMiny() == null || maxExtent.getMaxx() == null || maxExtent.getMaxy() == null ){
+                errors.add("maxExtent", new SimpleError("Alle velden van de max extentie moeten ingevult worden."));
             }
         }
     }
