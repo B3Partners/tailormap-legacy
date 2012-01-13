@@ -16,9 +16,12 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.*;
+import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.security.User;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -32,11 +35,19 @@ public class ApplicationSettingsActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
     
     @Validate
-    @ValidateNestedProperties({
-                @Validate(field="name", required=true, maxlength=255),
-                @Validate(field="version", maxlength=255)
-    })
     private Application application;
+    
+    @Validate
+    private String name;
+    @Validate
+    private String version;
+    @Validate
+    private String owner;
+    @Validate
+    private boolean authenticatedRequired;
+    
+    @Validate
+    private Map<String,String> details = new HashMap<String,String>();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public Application getApplication() {
@@ -45,6 +56,46 @@ public class ApplicationSettingsActionBean implements ActionBean {
     
     public void setApplication(Application application) {
         this.application = application;
+    }
+
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
+
+    public boolean getAuthenticatedRequired() {
+        return authenticatedRequired;
+    }
+
+    public void setAuthenticatedRequired(boolean authenticatedRequired) {
+        this.authenticatedRequired = authenticatedRequired;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
     
     public ActionBeanContext getContext() {
@@ -65,6 +116,13 @@ public class ApplicationSettingsActionBean implements ActionBean {
     
     @DontValidate
     public Resolution edit(){
+        if(application != null){
+            details = application.getDetails();
+            if(application.getOwner() != null){
+                owner = application.getOwner().getUsername();
+            }
+        }
+        
         return new ForwardResolution(JSP);
     }
     
@@ -74,11 +132,74 @@ public class ApplicationSettingsActionBean implements ActionBean {
     }
     
     public Resolution save() {
+        if(application == null){
+            application = new Application();
+        }
+        application.setName(name);
+        application.setVersion(version);
+        
+        if(owner != null){
+            User appOwner = Stripersist.getEntityManager().find(User.class, owner);
+            application.setOwner(appOwner);
+        }
+        application.setAuthenticatedRequired(authenticatedRequired);
+        
+        application.getDetails().clear();
+        application.getDetails().putAll(details);
+        
         Stripersist.getEntityManager().persist(application);
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Applicatie is opgeslagen"));
         
         return new ForwardResolution(JSP);
+    }
+    
+    @ValidationMethod(on="save")
+    public void validate(ValidationErrors errors) throws Exception {
+        if(name == null) {
+            errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
+            return;
+        }
+        
+        try {
+            Long founId = null;
+            if(version == null){
+                founId = (Long)Stripersist.getEntityManager().createQuery("select id from Application where name = :name and version is null")
+                        .setMaxResults(1)
+                        .setParameter("name", name)
+                        .getSingleResult();
+            }else{                   
+                founId = (Long)Stripersist.getEntityManager().createQuery("select id from Application where name = :name and version = :version")
+                        .setMaxResults(1)
+                        .setParameter("name", name)
+                        .setParameter("version", version)
+                        .getSingleResult();
+            }
+
+            if(application != null && application.getId() != null){
+                if( !founId.equals(application.getId()) ){
+                    errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen.")); 
+                }
+            }else{
+                errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen."));
+            }
+        } catch(NoResultException nre) {
+            // name version combination is unique
+        }
+        
+        /*
+         * Check if owner is an excisting user
+         */
+        if(owner != null){
+            try {
+                User appOwner = Stripersist.getEntityManager().find(User.class, owner);
+                if(appOwner == null){
+                    errors.add("owner", new SimpleError("Gebruiker met deze naam bestaat niet."));
+                }
+            } catch(NoResultException nre) {
+                errors.add("owner", new SimpleError("Gebruiker met deze naam bestaat niet."));
+            }
+        }
     }
 }

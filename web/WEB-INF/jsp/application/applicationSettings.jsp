@@ -26,46 +26,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <p>
-        <stripes:errors/>
-        <stripes:messages/>
-        <p>
             <div id="content">
+                <p>
+                <stripes:errors/>
+                <stripes:messages/>
+                </p>
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean">
                     <stripes:hidden name="application" value="${actionBean.application.id}"/>
                 <table>
                     <tr>
                         <td>Naam:</td>
-                        <td><stripes:text name="application.name" maxlength="255" size="30"/></td>
-                        <td rowspan="9">Opmerkingen<br><stripes:textarea cols="80" rows="5" name="opmerking"/></td>
+                        <td><stripes:text name="name" value="${actionBean.application.name}" maxlength="255" size="30"/></td>
+                        <td rowspan="9">Opmerkingen<br><stripes:textarea cols="80" rows="5" name="details['opmerking']"/></td>
                     </tr>
                     <tr>
                         <td>Versie:</td>
-                        <td><stripes:text name="application.version" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="version" value="${actionBean.application.version}" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Steunkleur 1:</td>
-                        <td><stripes:text name="steunkleur1" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="details['steunkleur1']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Steunkleur 2:</td>
-                        <td><stripes:text name="steunkleur2" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="details['steunkleur2']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Spritebestand icoontjes:</td>
-                        <td><stripes:text name="icons" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="details['iconSprite']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Stylesheet metadata:</td>
-                        <td><stripes:text name="styleMeta" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="details['stylesheetMetadata']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Stylesheet feature info:</td>
-                        <td><stripes:text name="stylefeature" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="details['stylesheetfeatureInfo']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Stylesheet printen:</td>
-                        <td><stripes:text name="stylePrint" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="details['stylesheetPrint']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Eigenaar:</td>
@@ -89,7 +89,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             rb-y <stripes:text name="max-rb-y" maxlength="255" size="3"/>
                         </td>
                     </tr>
-                </table>                   
+                </table>   
+                    <stripes:checkbox name="authenticatedRequired" value="${actionBean.application.authenticatedRequired}"/> Inloggen verplicht<br>
                     <stripes:submit name="save" value="Opslaan"/>
                     <stripes:submit name="cancel" value="Annuleren"/>
                 </stripes:form>
