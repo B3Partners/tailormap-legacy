@@ -18,7 +18,9 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Layer;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -36,6 +38,14 @@ public class LayerActionBean implements ActionBean{
     
     @Validate
     private String parentId;
+    
+    private List<Group> allGroups;
+    
+    @Validate
+    private List<String> groupsRead = new ArrayList<String>();
+    
+    @Validate
+    private List<String> groupsWrite = new ArrayList<String>();
     
     @Validate
     private Map<String,String> details = new HashMap<String,String>();
@@ -64,6 +74,30 @@ public class LayerActionBean implements ActionBean{
     public void setLayer(Layer layer) {
         this.layer = layer;
     }
+
+    public List<Group> getAllGroups() {
+        return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
+    }
+
+    public List<String> getGroupsRead() {
+        return groupsRead;
+    }
+
+    public void setGroupsRead(List<String> groupsRead) {
+        this.groupsRead = groupsRead;
+    }
+
+    public List<String> getGroupsWrite() {
+        return groupsWrite;
+    }
+
+    public void setGroupsWrite(List<String> groupsWrite) {
+        this.groupsWrite = groupsWrite;
+    }
     
     public String getParentId() {
         return parentId;
@@ -79,9 +113,18 @@ public class LayerActionBean implements ActionBean{
         return new ForwardResolution(JSP);
     }
     
+    @Before(stages=LifecycleStage.BindingAndValidation)
+    @SuppressWarnings("unchecked")
+    public void load() {
+        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+    }
+    
     public Resolution edit() {
         if(layer != null){
             details = layer.getDetails();
+            
+            groupsRead.addAll(layer.getReaders());
+            groupsWrite.addAll(layer.getWriters());
         }
         return new ForwardResolution(JSP);
     }
@@ -89,6 +132,16 @@ public class LayerActionBean implements ActionBean{
     public Resolution save() {                
         layer.getDetails().clear();
         layer.getDetails().putAll(details);
+        
+        layer.getReaders().clear();
+        for(String groupName: groupsRead) {
+            layer.getReaders().add(groupName);
+        }
+        
+        layer.getWriters().clear();
+        for(String groupName: groupsWrite) {
+            layer.getWriters().add(groupName);
+        }
         
         Stripersist.getEntityManager().persist(layer);
         Stripersist.getEntityManager().getTransaction().commit();

@@ -53,6 +53,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <td>Downloadlink:</td> 
                 <td><stripes:text name="details['download.url']" maxlength="255" size="30"/></td>
             </tr>
+            <tr>
+                <td valign="top">
+                    <h1>Groepen:</h1>
+                    L &nbsp; B <br>
+
+                        <c:forEach var="group" items="${actionBean.allGroups}">
+                            <stripes:checkbox name="groupsRead" value="${group.name}"/>
+                            <stripes:checkbox name="groupsWrite" value="${group.name}"/>${group.name}<br>
+                        </c:forEach>
+
+                </td>
+            </tr>
         </table>
         
         <stripes:submit name="save" value="Kaartlaag opslaan"/>
