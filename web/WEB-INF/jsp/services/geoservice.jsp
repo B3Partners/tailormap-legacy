@@ -80,15 +80,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </script>
 </c:if>
     
- <%--<c:if test="${actionBean.context.eventName == 'editCategory'}">
-    <script type="text/javascript">
-        var frameParent = getParent();
-        if(frameParent && frameParent.renameNode && '${actionBean.category.name}' != '') {
-            frameParent.renameNode('c${actionBean.category.id}','${actionBean.category.name}');
-        }
-    </script>
-</c:if>--%>
-    
  <c:if test="${actionBean.context.eventName == 'saveService'}">
     <script type="text/javascript">
         var frameParent = getParent();
@@ -195,7 +186,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:submit name="add" value="Service inladen"/>
     <stripes:submit name="cancel" value="Annuleren"/>
 </c:if>
-
+    
 </stripes:form>
 
     </stripes:layout-component>

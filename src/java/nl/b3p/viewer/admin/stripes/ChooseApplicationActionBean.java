@@ -214,7 +214,11 @@ public class ChooseApplicationActionBean implements ActionBean {
             if(app.getOwner() != null){
                 ownername = app.getOwner().getUsername();
             }
-            JSONObject j = this.getGridRow(app.getId().intValue(), appName, "" ,ownername);
+            String published = "Nee";
+            if(app.getVersion() == null){
+                published = "Ja";
+            }
+            JSONObject j = this.getGridRow(app.getId().intValue(), appName, published ,ownername);
             jsonData.put(j);
         }
         
