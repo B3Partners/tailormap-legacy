@@ -23,20 +23,11 @@ Ext.require([
     'Ext.data.*',
     'Ext.dd.*',
     'Ext.layout.*',
-    'Ext.ux.BoxReorderer'
+    'Ext.ux.BoxReorderer',
+    'Component'
 ]);
 
 Ext.onReady(function() {
-    var components = [
-        {id:'flamingo',name:'Flamingo Map',shortName:'Fm',restrictions:['content'],addOnce:true,linkedComponents:['openlayers']},
-        {id:'openlayers',name:'OpenLayers Map',shortName:'Om',restrictions:['content'],addOnce:true,linkedComponents:['flamingo']},
-        {id:'tabs',name:'Tabs',shortName:'Tb',restrictions:['leftmargin_top', 'rightmargin_top'],addOnce:false,linkedComponents:[]},
-        {id:'zoom',name:'Zoom',shortName:'Zm',restrictions:['top_menu'],addOnce:true,linkedComponents:[],addedToRegions:['top_menu']},
-        {id:'pan',name:'Pan',shortName:'Pa',restrictions:['top_menu'],addOnce:false,linkedComponents:[]},
-        {id:'streetview',name:'Streetview',shortName:'Sv',restrictions:['top_menu'],addOnce:true,linkedComponents:[]},
-        {id:'identify',name:'Identify',shortName:'Id',restrictions:['top_menu'],addOnce:true,linkedComponents:[]}
-    ];
-
     var layoutRegions = [
         {id:'header', htmlId:'layout_header', useShortName:false, floatComponents: false},
         {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false},
@@ -49,29 +40,6 @@ Ext.onReady(function() {
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false},
         {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false}
     ];
-
-    Ext.define('Component', {
-        extend: 'Ext.data.Model',
-        idProperty: 'id',
-        fields: [
-            {name: 'id', type: 'string'},
-            {name: 'name', type: 'string'},
-            {name: 'shortName', type: 'string'},
-            {name: 'restrictions', type: 'array'},
-            {name: 'addOnce', type: 'boolean'},
-            {name: 'linkedComponents', type: 'array'},
-            {name: 'addedToRegions', type: 'array'}
-        ],
-        isAddedToRegion: function(regionid) {
-            var isAdded = false;
-            Ext.Array.each(this.get('addedToRegions'), function(region, index) {
-                if(region == regionid) {
-                    isAdded = true;
-                }
-            });
-            return isAdded;
-        }
-    });
     
     var componentStore = Ext.create('Ext.data.Store', {
         model: 'Component',
