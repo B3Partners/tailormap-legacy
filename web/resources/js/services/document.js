@@ -32,7 +32,7 @@ Ext.onReady(function(){
         fields: [
             {name: 'id', type: 'int' },
             {name: 'name', type: 'string'},
-            {name: 'rubriek', type: 'string'},
+            {name: 'category', type: 'string'},
             {name: 'url', type: 'string'}
         ]
     });
@@ -68,9 +68,9 @@ Ext.onReady(function(){
                     xtype: 'textfield'
                 }
             },{
-                id: 'rubriek',
+                id: 'category',
                 text: "Rubriek",
-                dataIndex: 'rubriek',
+                dataIndex: 'category',
                 flex: 1,
                 filter: {
                     xtype: 'textfield'

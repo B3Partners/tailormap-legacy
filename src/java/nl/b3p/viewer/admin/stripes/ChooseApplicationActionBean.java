@@ -150,8 +150,8 @@ public class ChooseApplicationActionBean implements ActionBean {
         JSONArray jsonData = new JSONArray();
         
         String filterName = "";
-        /*String filterPublished = "";
-        String filterOwner = "";*/
+        String filterPublished = "";
+        String filterOwner = "";
         boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
@@ -167,12 +167,12 @@ public class ChooseApplicationActionBean implements ActionBean {
                 if(property.equals("name")) {
                     filterName = value;
                 }
-                /*if(property.equals("published")) {
+                if(property.equals("published")) {
                     filterPublished = value;
                 }
                 if(property.equals("owner")) {
                     filterOwner = value;
-                }*/
+                }
             }
         }
         
@@ -187,6 +187,9 @@ public class ChooseApplicationActionBean implements ActionBean {
          */
         if(sort != null && dir != null){
             Order order = null;
+            if(sort.equals("published")){
+                sort = "version";
+            }
             if(dir.equals("ASC")){
                order = Order.asc(sort);
             }else{
@@ -200,7 +203,19 @@ public class ChooseApplicationActionBean implements ActionBean {
             Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
             c.add(nameCrit);
         }
-
+        if(filterPublished != null && filterPublished.length() > 0){
+            if(filterPublished.equalsIgnoreCase("nee")){
+                Criterion publishedCrit = Restrictions.isNotNull("version");
+                c.add(publishedCrit);
+            }else if(filterPublished.equalsIgnoreCase("ja")){
+                Criterion publishedCrit = Restrictions.isNull("version");
+                c.add(publishedCrit);
+            }
+        }
+        if(filterOwner != null && filterOwner.length() > 0){
+            Criterion ownerCrit = Restrictions.ilike("owner.username", filterOwner, MatchMode.ANYWHERE);
+            c.add(ownerCrit);
+        }
         
         List applications = c.list();
 

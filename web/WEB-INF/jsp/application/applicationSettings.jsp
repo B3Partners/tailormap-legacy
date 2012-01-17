@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <p>
                 <stripes:errors/>
                 <stripes:messages/>
+                <h1>Applicatie</h1>
                 </p>
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean">
                     <stripes:hidden name="application" value="${actionBean.application.id}"/>
