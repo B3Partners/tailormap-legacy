@@ -32,6 +32,9 @@ public class Level {
 
     @ManyToOne
     private Level parent;
+    
+    @Basic(optional=false)
+    private String name;
 
     private boolean checked;
 
@@ -131,5 +134,13 @@ public class Level {
 
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
