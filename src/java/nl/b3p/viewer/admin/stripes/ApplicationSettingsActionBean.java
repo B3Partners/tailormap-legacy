@@ -20,7 +20,7 @@ import java.util.*;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
-import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
@@ -173,6 +173,23 @@ public class ApplicationSettingsActionBean implements ActionBean {
     public Resolution save() {
         if(application == null){
             application = new Application();
+            
+            /*
+             * A new application always had a root and a background level.
+             */
+            Level root = new Level();
+            root.setName("root");
+            root.setType(LevelType.LEVEL);
+            
+            Level background = new Level();
+            background.setName("Achtergrond");
+            background.setType(LevelType.BACKGROUND);
+            root.getChildren().add(background);
+            background.setParent(root);
+            
+            Stripersist.getEntityManager().persist(background);
+            Stripersist.getEntityManager().persist(root);
+            application.setRoot(root);
         }
         application.setName(name);
         application.setVersion(version);

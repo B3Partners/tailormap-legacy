@@ -16,29 +16,15 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.ActionBean;
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.SimpleMessage;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -177,7 +163,7 @@ public class ChooseApplicationActionBean implements ActionBean {
         }
         
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
-        Criteria c = sess.createCriteria(Application.class);
+        Criteria c = sess.createCriteria(Application.class);   
         c.setMaxResults(limit);
         c.setFirstResult(start);
         
