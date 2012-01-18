@@ -31,13 +31,9 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationsettings/{$event}")
 @StrictBinding
-public class ApplicationSettingsActionBean implements ActionBean {
-    private ActionBeanContext context;
+public class ApplicationSettingsActionBean extends ApplicationActionBean{
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
-    
-    @Validate
-    private Application application;
-    
+   
     @Validate
     private String name;
     @Validate
@@ -67,13 +63,6 @@ public class ApplicationSettingsActionBean implements ActionBean {
     private BoundingBox maxExtent;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
-    public Application getApplication() {
-        return application;
-    }
-    
-    public void setApplication(Application application) {
-        this.application = application;
-    }
 
     public Map<String, String> getDetails() {
         return details;
@@ -129,14 +118,6 @@ public class ApplicationSettingsActionBean implements ActionBean {
 
     public void setMaxExtent(BoundingBox maxExtent) {
         this.maxExtent = maxExtent;
-    }
-    
-    public ActionBeanContext getContext() {
-        return context;
-    }
-    
-    public void setContext(ActionBeanContext context) {
-        this.context = context;
     }
     //</editor-fold>
     
