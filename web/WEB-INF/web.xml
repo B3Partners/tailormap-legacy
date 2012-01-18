@@ -31,7 +31,7 @@
         </init-param>
         <init-param>
             <param-name>Extension.Packages</param-name>
-            <param-value>org.stripesstuff.stripersist</param-value>
+            <param-value>org.stripesstuff.stripersist,org.stripesstuf.plugin.session</param-value>
         </init-param>
         <init-param>
             <param-name>MultipartWrapper.Class</param-name>
