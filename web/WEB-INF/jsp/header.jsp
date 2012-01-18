@@ -28,8 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" id="menu_attribuutbronnen">Attribuutbronnen</stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" id="menu_attributen">Attributen</stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" id="menu_documenten">Documenten</stripes:link></li>
-                    <li><a href="#" id="menu_layarservices">Layer services</a></li>
-                    <li><a href="#" id="menu_layer">Layar?</a></li>
+                    <li><a href="#" id="menu_layarservices">Layar services</a></li>
+                    <li><a href="#" id="menu_layer">Layar</a></li>
                 </ul>
             </li>
             <li class="menu-level1">
@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <a href="#">Applicatie: </a>
                         <ul class="dropdownmenu">
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">Instellingen</stripes:link></li>
-                            <li><a href="#" id="menu_boomstructuur">Boomstructuur met kaarten</a></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" id="menu_boomstructuur">Boomstructuur met kaarten</stripes:link></li>
                             <li><a href="#" id="menu_startkaartbeeld">Startkaartbeeld</a></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="menu_layout">Layout met beschikbare componenten</stripes:link></li>
                         </ul>
