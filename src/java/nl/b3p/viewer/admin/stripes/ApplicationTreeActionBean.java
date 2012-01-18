@@ -32,10 +32,8 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtree/{$event}")
 @StrictBinding
-public class ApplicationTreeActionBean implements ActionBean {
+public class ApplicationTreeActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTree.jsp";
-
-    private ActionBeanContext context;
     
     @Validate(on="addLevel", required=true)
     private String parentId;
@@ -47,33 +45,14 @@ public class ApplicationTreeActionBean implements ActionBean {
     private String name;
 
     private Level rootlevel;
-    
-    @Validate
-    private Application activeApplication;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
-    public ActionBeanContext getContext() {
-        return context;
-    }
-    
-    public void setContext(ActionBeanContext context) {
-        this.context = context;
-    }
-    
     public Level getRootlevel() {
         return rootlevel;
     }
     
     public void setRootlevel(Level rootlevel) {
         this.rootlevel = rootlevel;
-    }
-
-    public Application getActiveApplication() {
-        return activeApplication;
-    }
-
-    public void setActiveApplication(Application activeApplication) {
-        this.activeApplication = activeApplication;
     }
     
     public String getName() {
@@ -111,8 +90,7 @@ public class ApplicationTreeActionBean implements ActionBean {
     @Before(stages=LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
-        //rootLevel = activeApplication.getRoot();
-        rootlevel = Stripersist.getEntityManager().find(Level.class, new Long(101));
+        rootlevel = application.getRoot();
     }
     
     public Resolution loadApplicationTree() throws JSONException {

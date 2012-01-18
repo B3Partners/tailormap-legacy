@@ -16,9 +16,12 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.*;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.security.Group;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -28,13 +31,16 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtreelevel/{$event}")
 @StrictBinding
-public class ApplicationTreeLevelActionBean implements ActionBean {
+public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLevel.jsp";
-    
-    private ActionBeanContext context;
     
     @Validate
     private Level level;
+    
+    private List<Group> allGroups;
+    
+    @Validate
+    private List<String> groupsRead = new ArrayList<String>();
     
     @DefaultHandler
     public Resolution view() {
@@ -42,14 +48,34 @@ public class ApplicationTreeLevelActionBean implements ActionBean {
         
         return new ForwardResolution(JSP);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="getters & setters">
-    public ActionBeanContext getContext() {
-        return context;
+    
+    public Resolution edit() {
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        return new ForwardResolution(JSP);
     }
     
-    public void setContext(ActionBeanContext context) {
-        this.context = context;
+    @Before(stages=LifecycleStage.BindingAndValidation)
+    @SuppressWarnings("unchecked")
+    public void load() {
+        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="getters & setters">
+    public List<Group> getAllGroups() {
+        return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
+    }
+
+    public List<String> getGroupsRead() {
+        return groupsRead;
+    }
+
+    public void setGroupsRead(List<String> groupsRead) {
+        this.groupsRead = groupsRead;
     }
     
     public Level getLevel() {

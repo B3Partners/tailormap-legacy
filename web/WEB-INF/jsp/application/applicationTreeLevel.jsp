@@ -29,7 +29,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         <p>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean">
-            Level
+          
+            <c:if test="${actionBean.context.eventName == 'edit'}">
+        <h1>Rechten</h1>
+        <c:forEach var="group" items="${actionBean.allGroups}">
+            <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
+        </c:forEach>
+            </c:if>
+            
         </stripes:form>
     </stripes:layout-component>
 </stripes:layout-render>

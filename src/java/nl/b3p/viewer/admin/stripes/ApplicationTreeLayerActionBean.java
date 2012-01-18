@@ -28,10 +28,8 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtreelayer/{$event}")
 @StrictBinding
-public class ApplicationTreeLayerActionBean implements ActionBean {
+public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLayer.jsp";
-    
-    private ActionBeanContext context;
     
     @Validate
     private ApplicationLayer applicationLayer;
@@ -50,14 +48,6 @@ public class ApplicationTreeLayerActionBean implements ActionBean {
     
     public void setApplicationLayer(ApplicationLayer applicationLayer) {
         this.applicationLayer = applicationLayer;
-    }
-    
-    public ActionBeanContext getContext() {
-        return context;
-    }
-    
-    public void setContext(ActionBeanContext context) {
-        this.context = context;
     }
     //</editor-fold>
     
