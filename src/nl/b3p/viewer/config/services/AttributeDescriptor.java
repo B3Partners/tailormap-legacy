@@ -45,10 +45,6 @@ public class AttributeDescriptor {
 
     private String type;
 
-    @ElementCollection
-    @CollectionTable(name="attribute_descriptor_values")
-    private Set<String> optionValues = new HashSet<String>();
-
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
         return id;
@@ -80,14 +76,6 @@ public class AttributeDescriptor {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Set<String> getOptionValues() {
-        return optionValues;
-    }
-
-    public void setOptionValues(Set<String> optionValues) {
-        this.optionValues = optionValues;
     }
     //</editor-fold>
 }
