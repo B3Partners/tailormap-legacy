@@ -26,6 +26,10 @@ import javax.persistence.*;
 @Entity
 public class LayarService {
     @Id
+    private Long id;
+    
+    @Basic(optional=false)
+    @Column(unique=true)
     private String name;
 
     public String getName() {
@@ -34,5 +38,13 @@ public class LayarService {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

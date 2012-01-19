@@ -121,4 +121,13 @@
             </id>
         </attributes>
     </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.LayarService">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="layar_service_id_seq"/>
+                <sequence-generator name="layar_service_id_seq" sequence-name="layar_service_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
 </entity-mappings>
