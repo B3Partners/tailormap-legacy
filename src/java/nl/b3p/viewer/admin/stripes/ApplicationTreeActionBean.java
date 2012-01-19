@@ -103,32 +103,35 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         
         final JSONArray children = new JSONArray();
         
-        String type = nodeId.substring(0, 1);
-        int id = Integer.parseInt(nodeId.substring(1));
-        if(type.equals("n")) {
-            Level l = em.find(Level.class, new Long(id));
-            for(Level sub: l.getChildren()) {
-                JSONObject j = new JSONObject();
-                j.put("id", "n" + sub.getId());
-                j.put("name", sub.getName());
-                j.put("type", "level");
-                j.put("isLeaf", sub.getChildren().isEmpty() && sub.getLayers().isEmpty());
-                if(sub.getParent() != null) {
-                    j.put("parentid", sub.getParent().getId());
+        if(!nodeId.equals("n")){
+        
+            String type = nodeId.substring(0, 1);
+            int id = Integer.parseInt(nodeId.substring(1));
+            if(type.equals("n")) {
+                Level l = em.find(Level.class, new Long(id));
+                for(Level sub: l.getChildren()) {
+                    JSONObject j = new JSONObject();
+                    j.put("id", "n" + sub.getId());
+                    j.put("name", sub.getName());
+                    j.put("type", "level");
+                    j.put("isLeaf", sub.getChildren().isEmpty() && sub.getLayers().isEmpty());
+                    if(sub.getParent() != null) {
+                        j.put("parentid", sub.getParent().getId());
+                    }
+                    children.put(j);
                 }
-                children.put(j);
-            }
 
-            for(ApplicationLayer layer: l.getLayers()) {
-                JSONObject j = new JSONObject();
-                j.put("id", "s" + layer.getId());
-                j.put("name", layer.getLayerName());
-                j.put("type", "layer");
-                j.put("isLeaf", true);
-                j.put("parentid", nodeId);
-                children.put(j);
-            }
-        } 
+                for(ApplicationLayer layer: l.getLayers()) {
+                    JSONObject j = new JSONObject();
+                    j.put("id", "s" + layer.getId());
+                    j.put("name", layer.getLayerName());
+                    j.put("type", "layer");
+                    j.put("isLeaf", true);
+                    j.put("parentid", nodeId);
+                    children.put(j);
+                }
+            } 
+        }
         
         return new StreamingResolution("application/json") {
            @Override
