@@ -153,17 +153,10 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         }
 
         Level parent = em.find(Level.class, parentIdLong);
-        LevelType type = LevelType.LEVEL;
-        if(parent.getType() == LevelType.MAP || parent.getType() == LevelType.LAYER_GROUP){
-            type = LevelType.LAYER_GROUP;
-        }else if(parent.getType() == LevelType.BACKGROUND){
-            type = LevelType.MAP;
-        }
         
         Level l = new Level();
         l.setName(name);
         l.setParent(parent);
-        l.setType(type);
         parent.getChildren().add(l);
 
         em.persist(l);
