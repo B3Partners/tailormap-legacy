@@ -206,14 +206,14 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
         }
         
         try {
-            Long founId = null;
+            Long foundId = null;
             if(version == null){
-                founId = (Long)Stripersist.getEntityManager().createQuery("select id from Application where name = :name and version is null")
+                foundId = (Long)Stripersist.getEntityManager().createQuery("select id from Application where name = :name and version is null")
                         .setMaxResults(1)
                         .setParameter("name", name)
                         .getSingleResult();
             }else{                   
-                founId = (Long)Stripersist.getEntityManager().createQuery("select id from Application where name = :name and version = :version")
+                foundId = (Long)Stripersist.getEntityManager().createQuery("select id from Application where name = :name and version = :version")
                         .setMaxResults(1)
                         .setParameter("name", name)
                         .setParameter("version", version)
@@ -221,7 +221,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
             }
 
             if(application != null && application.getId() != null){
-                if( !founId.equals(application.getId()) ){
+                if( !foundId.equals(application.getId()) ){
                     errors.add("name", new SimpleError("Naam en versie moeten een unieke combinatie vormen.")); 
                 }
             }else{
