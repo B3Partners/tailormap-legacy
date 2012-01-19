@@ -40,6 +40,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     
     @Validate
     private String nodeId;
+    
+    @Validate
+    private String levelId;
 
     @Validate(on="addLevel",required=true)
     private String name;
@@ -69,6 +72,14 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
+    }
+    
+    public String getLevelId() {
+        return levelId;
+    }
+    
+    public void setLevelId(String levelId) {
+        this.levelId = levelId;
     }
     
     public String getParentId() {
@@ -131,6 +142,33 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                     children.put(j);
                 }
             } 
+        }
+        
+        return new StreamingResolution("application/json") {
+           @Override
+           public void stream(HttpServletResponse response) throws Exception {
+               response.getWriter().print(children.toString());
+           }
+        };
+    }
+    
+    public Resolution loadSelectedLayers() throws JSONException {
+
+        EntityManager em = Stripersist.getEntityManager();
+        
+        final JSONArray children = new JSONArray();
+        
+        if(!levelId.equals("")){
+            int id = Integer.parseInt(levelId);
+            Level l = em.find(Level.class, new Long(id));
+            for(ApplicationLayer appl: l.getLayers()) {
+                JSONObject j = new JSONObject();
+                j.put("id", "l" + appl.getId());
+                j.put("name", appl.getLayerName());
+                j.put("type", "layer");
+                j.put("isLeaf", true);
+                children.put(j);
+            }
         }
         
         return new StreamingResolution("application/json") {

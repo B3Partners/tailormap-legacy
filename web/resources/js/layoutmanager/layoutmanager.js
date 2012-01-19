@@ -236,6 +236,10 @@ Ext.onReady(function() {
         container.add(addItem);
         if(!layoutRegion.get('floatComponents')) {
             container.setHeight(getTotalChildHeight(container, '.' + addItem.cls));
+        } else {
+            container.setWidth(getTotalChildWidth(container, '.' + addItem.cls));
+            var containerEl = container.getEl();
+            containerEl.parent().setWidth(containerEl.getWidth());
         }
         var droppedEl = Ext.get(data.ddel);
         if(layoutRegion.get('useShortName')) {
@@ -264,6 +268,12 @@ Ext.onReady(function() {
                         var addedComponents = layoutRegion.get('addedComponents');
                         if(!Ext.isEmpty(addedComponents) && Ext.isArray(addedComponents)) {
                             Ext.Array.remove(addedToRegions, data.componentData.id);
+                        }
+                        
+                        if(!layoutRegion.get('floatComponents')) {
+                            container.setHeight(getTotalChildHeight(container, '.' + addItem.cls));
+                        } else {
+                            container.setWidth(getTotalChildWidth(container, '.' + addItem.cls));
                         }
                     }
                 }
@@ -306,6 +316,16 @@ Ext.onReady(function() {
             totalHeight += child.getHeight();
         });
         return totalHeight;
+    }
+    
+    function getTotalChildWidth(container, childquery) {
+        var containerParentWidth = container.getEl().parent().getWidth();
+        var children = getElementsFromContainer(container, childquery);
+        var totalWidth = 0;
+        children.each(function(child, c, idx) {
+            totalWidth += child.getWidth();
+        });
+        return (containerParentWidth < totalWidth) ? totalWidth : containerParentWidth;
     }
     
     Ext.get('savebutton').on('click', function() {

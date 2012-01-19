@@ -94,6 +94,7 @@ body {
                             margin-right: -2px;
                             border: 2px solid @menubgcolor;
                             border-top: 0px none;
+                            z-index: 99999;
                             li {
                                 a {
                                     width: 300px;
@@ -306,13 +307,19 @@ body {
                     margin-bottom: 10px;
                 }
                 #layout_top_menu {
-                    float: left;
-                    width: 100%;
+                    //float: left;
+                    //width: 100%;
                 }
                 #layout_content {
-                    clear: both;
+                    //clear: both;
                 }
             }
         }
+    }
+}
+
+#tree-tab {
+    #tree, #layerselection, #layerselection-buttons {
+        float: left;
     }
 }

@@ -16,16 +16,21 @@
  */
 
 Ext.onReady(function() {
-    Ext.select('.menu-level1').on('click', function(e, el, o) {
-        Ext.select('.menu-level1').removeCls('menuclicked');
-        Ext.get(this).addCls('menuclicked');
-    });
+    var menu = Ext.select('.menu-level1');
+    if(menu) {
+        menu.on('click', function(e, el, o) {
+            Ext.select('.menu-level1').removeCls('menuclicked');
+            Ext.get(this).addCls('menuclicked');
+        });
+    }
     // Active link should be set somewhere, better ideas to do this?
     if(typeof activelink !== 'undefined') {
         if(activelink != '') {
             var menuItem = Ext.get(activelink);
-            menuItem.addCls('active');
-            menuItem.findParent('.menu-level1', 10, true).addCls('menuclicked');
+            if(menuItem) {
+                menuItem.addCls('active');
+                menuItem.findParent('.menu-level1', 10, true).addCls('menuclicked');
+            }
         }
     }
 });

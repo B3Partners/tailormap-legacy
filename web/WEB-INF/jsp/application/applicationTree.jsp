@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             <div id="tree-container"></div>
             <div id="form-container" class="services">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" event="view"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
         

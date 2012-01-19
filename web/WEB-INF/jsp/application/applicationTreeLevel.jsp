@@ -34,21 +34,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:if test="${actionBean.context.eventName == 'edit'}">
                 <stripes:submit name="save" value="Opslaan"/>
                 <stripes:submit name="cancel" value="Annuleren"/>
-                
-                <div>
-                    <h1>Rechten:</h1>
-                    <c:forEach var="group" items="${actionBean.allGroups}">
-                        <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
-                    </c:forEach>
+                <br /><br />
+                <div id="tabs">
+                        <div id="tree-tab" class="x-hide-display">
+                            <div id="tree">
+                                <div id="servicetree-container"></div>
+                            </div>
+                            <div id="layerselection-buttons"></div>
+                            <div id="layerselection">
+                                <div id="selected-layers"></div>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+
+                        <div id="rights-tab" class="x-hide-display">
+                            <h1>Rechten:</h1>
+                            <c:forEach var="group" items="${actionBean.allGroups}">
+                                <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
+                            </c:forEach>
+                        </div>
+                    
+                        <div id="documents-tab" class="x-hide-display">
+                            Documenten
+                        </div>
+
+                        <div id="context-tab" class="x-hide-display">
+                            <h1>Context:</h1>
+                            <stripes:textarea name="level.info"/>
+                        </div>
                 </div>
-        
-                <div>
-                    <h1>Context:</h1>
-                    <stripes:textarea name="level.info"/>
-                </div>
-                
             </c:if>
 
         </stripes:form>
+        <script type="text/javascript">
+            // Definition of URLS and icons... how are we going to do this?
+            var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
+            var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
+            var levelid = '${actionBean.level.id}';
+ 
+            var foldericon = '${contextPath}/resources/images/folder.png';
+            var serviceokicon = '${contextPath}/resources/images/serviceok.png';
+            var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
+            var layericon = '${contextPath}/resources/images/map.png';
+            
+            var activelink = 'menu_boomstructuur';
+        </script>
+        <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLevel.js"></script>
     </stripes:layout-component>
 </stripes:layout-render>
