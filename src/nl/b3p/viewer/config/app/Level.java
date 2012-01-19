@@ -43,8 +43,7 @@ public class Level {
     @OrderColumn(name="list_index")
     private List<Level> children = new ArrayList<Level>();
 
-    @Enumerated(EnumType.STRING)
-    private LevelType type;
+    private boolean background;
 
     @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
     @JoinTable(name="level_layers", inverseJoinColumns=@JoinColumn(name="layer"))
@@ -120,12 +119,12 @@ public class Level {
         this.readers = readers;
     }
 
-    public LevelType getType() {
-        return type;
+    public boolean isBackground() {
+        return background;
     }
 
-    public void setType(LevelType type) {
-        this.type = type;
+    public void setBackground(boolean background) {
+        this.background = background;
     }
 
     public List<Document> getDocuments() {
