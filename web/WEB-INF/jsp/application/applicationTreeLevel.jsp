@@ -25,18 +25,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
 
         <p>
-        <stripes:errors/>
-        <stripes:messages/>
+            <stripes:errors/>
+            <stripes:messages/>
         <p>
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean">
-          
-            <c:if test="${actionBean.context.eventName == 'edit'}">
-        <h1>Rechten</h1>
-        <c:forEach var="group" items="${actionBean.allGroups}">
-            <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
-        </c:forEach>
+            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean">
+                <stripes:hidden name="level" value="${actionBean.level.id}"/>
+
+                <c:if test="${actionBean.context.eventName == 'edit'}">
+                <stripes:submit name="save" value="Opslaan"/>
+                <stripes:submit name="cancel" value="Annuleren"/>
+                
+                <div>
+                    <h1>Rechten:</h1>
+                    <c:forEach var="group" items="${actionBean.allGroups}">
+                        <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
+                    </c:forEach>
+                </div>
+        
+                <div>
+                    <h1>Context:</h1>
+                    <stripes:textarea name="level.info"/>
+                </div>
+                
             </c:if>
-            
+
         </stripes:form>
     </stripes:layout-component>
 </stripes:layout-render>

@@ -20,6 +20,7 @@ import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
 import org.stripesstuff.stripersist.Stripersist;
@@ -35,6 +36,9 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLevel.jsp";
     
     @Validate
+    @ValidateNestedProperties({
+                @Validate(field="info")
+    })
     private Level level;
     
     private List<Group> allGroups;
@@ -50,7 +54,9 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     }
     
     public Resolution edit() {
-        Stripersist.getEntityManager().getTransaction().commit();
+        if(level != null){
+            groupsRead.addAll(level.getReaders());
+        }
         
         return new ForwardResolution(JSP);
     }
@@ -59,6 +65,20 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     @SuppressWarnings("unchecked")
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+    }
+    
+    public Resolution save() {                
+        level.getReaders().clear();
+        for(String groupName: groupsRead) {
+            level.getReaders().add(groupName);
+        }
+        
+        Stripersist.getEntityManager().persist(level);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
+        
+        return new ForwardResolution(JSP);
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
