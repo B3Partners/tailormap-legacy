@@ -90,7 +90,11 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     @Before(stages=LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
-        rootlevel = application.getRoot();
+        if(application != null){
+            rootlevel = application.getRoot();
+        }else{
+            // melding geven
+        }
     }
     
     public Resolution loadApplicationTree() throws JSONException {
@@ -139,17 +143,24 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
         // Demangle id
         Long parentIdLong;
-        if(parentId.equals("101")){
-            parentIdLong = new Long(101);
+        if(!parentId.contains("n")){
+            parentIdLong = new Long(parentId);
         }else{
             parentIdLong = Long.parseLong(parentId.substring(1));
         }
 
         Level parent = em.find(Level.class, parentIdLong);
+        LevelType type = LevelType.LEVEL;
+        if(parent.getType() == LevelType.MAP || parent.getType() == LevelType.LAYER_GROUP){
+            type = LevelType.LAYER_GROUP;
+        }else if(parent.getType() == LevelType.BACKGROUND){
+            type = LevelType.MAP;
+        }
         
         Level l = new Level();
         l.setName(name);
         l.setParent(parent);
+        l.setType(type);
         parent.getChildren().add(l);
 
         em.persist(l);
