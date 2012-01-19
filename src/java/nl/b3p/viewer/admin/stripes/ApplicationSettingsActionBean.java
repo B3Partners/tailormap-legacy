@@ -160,11 +160,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
              */
             Level root = new Level();
             root.setName("root");
-            root.setType(LevelType.LEVEL);
             
             Level background = new Level();
             background.setName("Achtergrond");
-            background.setType(LevelType.BACKGROUND);
+            background.setBackground(true);
             root.getChildren().add(background);
             background.setParent(root);
             
