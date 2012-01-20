@@ -97,9 +97,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             for(int i = 0; i < layerIds.length; i++){
                 Long id = new Long(layerIds[i].substring(1));
                 Layer layer = Stripersist.getEntityManager().find(Layer.class, id);
-                ApplicationLayer appLayer = new ApplicationLayer();
-                appLayer.setService(layer.getService());
-                appLayer.setLayerName(layer.getName());
+                ApplicationLayer appLayer = null;
+                if(layer == null){
+                    appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
+                }else{
+                    appLayer = new ApplicationLayer();
+                    appLayer.setService(layer.getService());
+                    appLayer.setLayerName(layer.getName());
+                }
                 
                 level.getLayers().add(appLayer);
             }
