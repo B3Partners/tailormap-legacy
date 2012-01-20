@@ -16,12 +16,17 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.SimpleError;
+import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -30,19 +35,23 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/layoutmanager/{$event}")
 @StrictBinding
-public class LayoutManagerActionBean implements ActionBean {
+public class LayoutManagerActionBean extends ApplicationActionBean {
 
-    private ActionBeanContext context;
     private JSONArray components;
+    @Validate(on = "config")
+    private String configPageUrl;
+    @Validate(on = "saveComponentConfig")
+    private String configObject;
+    @Validate
+    private String name;
+    @Validate
+    private String className;
+    @Validate
+    private String div;
+    @Validate(on="saveComponentConfig")
+    private ConfiguredComponent component;
 
-    public void setContext(ActionBeanContext context) {
-        this.context = context;
-    }
-
-    public ActionBeanContext getContext() {
-        return context;
-    }
-
+    // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
         return components;
     }
@@ -51,86 +60,107 @@ public class LayoutManagerActionBean implements ActionBean {
         this.components = components;
     }
 
+    public String getConfigPageUrl() {
+        return configPageUrl;
+    }
+
+    public void setConfigPageUrl(String configPageUrl) {
+        this.configPageUrl = configPageUrl;
+    }
+
+    public String getConfigObject() {
+        return configObject;
+    }
+
+    public void setConfigObject(String configObject) {
+        this.configObject = configObject;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDiv() {
+        return div;
+    }
+
+    public void setDiv(String div) {
+        this.div = div;
+    }
+
+    public ConfiguredComponent getComponent() {
+        return component;
+    }
+
+    public void setComponent(ConfiguredComponent component) {
+        this.component = component;
+    }
+
+    //</editor-fold>
+    
     @DefaultHandler
     public Resolution view() throws JSONException {
         Stripersist.getEntityManager().getTransaction().commit();
 
         components = getComponentList();
 
-        return new ForwardResolution("/WEB-INF/jsp/layoutmanager.jsp");
+        return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
     }
 
-    private JSONArray getComponentList() throws JSONException {
-        JSONArray components = new JSONArray();
-
-        JSONObject flamingo = new JSONObject();
-        flamingo.put("id", "flamingo");
-        flamingo.put("name", "Flamingo Map");
-        flamingo.put("shortName", "Fm");
-        flamingo.put("restrictions", new JSONArray().put("content"));
-        flamingo.put("addOnce", true);
-        flamingo.put("linkedComponents", new JSONArray().put("openlayers"));
-
-        JSONObject openlayers = new JSONObject();
-        openlayers.put("id", "openlayers");
-        openlayers.put("name", "OpenLayers Map");
-        openlayers.put("shortName", "Om");
-        openlayers.put("restrictions", new JSONArray().put("content"));
-        openlayers.put("addOnce", true);
-        openlayers.put("linkedComponents", new JSONArray().put("flamingo"));
-
-        JSONObject tabs = new JSONObject();
-        tabs.put("id", "tabs");
-        tabs.put("name", "Tabs");
-        tabs.put("shortName", "Tb");
-        List<String> tabsRes = new ArrayList<String>();
-        tabsRes.add("leftmargin_top");
-        tabsRes.add("rightmargin_top");
-        tabs.put("restrictions", tabsRes);
-        tabs.put("addOnce", false);
-        tabs.put("linkedComponents", new JSONArray());
-
-        JSONObject zoom = new JSONObject();
-        zoom.put("id", "zoom");
-        zoom.put("name", "Zoom");
-        zoom.put("shortName", "Zm");
-        zoom.put("restrictions", new JSONArray().put("top_menu"));
-        zoom.put("addOnce", true);
-        zoom.put("linkedComponents", new JSONArray());
-
-        JSONObject pan = new JSONObject();
-        pan.put("id", "pan");
-        pan.put("name", "Pan");
-        pan.put("shortName", "Pa");
-        pan.put("restrictions", new JSONArray().put("top_menu"));
-        pan.put("addOnce", false);
-        pan.put("linkedComponents", new JSONArray());
-
-        JSONObject streetview = new JSONObject();
-        streetview.put("id", "streetview");
-        streetview.put("name", "Streetview");
-        streetview.put("shortName", "Sv");
-        streetview.put("restrictions", new JSONArray().put("top_menu"));
-        streetview.put("addOnce", true);
-        streetview.put("linkedComponents", new JSONArray());
-
-        JSONObject identify = new JSONObject();
-        identify.put("id", "identify");
-        identify.put("name", "Identify");
-        identify.put("shortName", "Id");
-        identify.put("restrictions", new JSONArray().put("top_menu"));
-        identify.put("addOnce", true);
-        identify.put("linkedComponents", new JSONArray());
-
-        components.put(flamingo);
-        components.put(openlayers);
-        components.put(tabs);
-        components.put(zoom);
-        components.put(streetview);
-        components.put(identify);
-        components.put(pan);
-
-        return components;
+    public Resolution config() {
+        Stripersist.getEntityManager().getTransaction().commit();
+        return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
-    
+
+    public Resolution saveComponentConfig() {
+        int a = 0;
+        if(component == null){
+            component = new ConfiguredComponent();
+        }
+        component.setConfig(configObject);
+        component.setName(name);
+        component.setClassName(className);
+
+        application.getComponents().add(component);
+        component.getDetails().put("div", div);
+
+        Stripersist.getEntityManager().getTransaction().commit();
+
+        return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
+    }
+
+    private JSONArray getComponentList() {
+        InputStream fis = null;
+        try {
+            URL url = new URL("http://localhost/config.json");
+            fis = url.openStream();
+            StringWriter sw = new StringWriter();
+            IOUtils.copy(fis, sw);
+            JSONArray json = new JSONArray(sw.toString());
+            return json;
+        } catch (IOException ex) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
+        } catch (JSONException ex) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException ex) {
+                Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
 }

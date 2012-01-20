@@ -24,7 +24,7 @@ import org.stripesstuff.plugin.session.Session;
 
 /**
  *
- * @author meine
+ * @author Meine Toonen
  */
 public class ApplicationActionBean implements ActionBean{
     

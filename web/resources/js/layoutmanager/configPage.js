@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011 B3Partners B.V.
+ * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,29 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-// Get parent function for iframes / popups
-function getParent() {
-    if (window.opener){
-        return window.opener;
-    }else if (window.parent){
-        return window.parent;
-    }else{
-        return window;
-    }
-}
-
-// Default grid config
-var defaultGridConfig = {
-    autoWidth: true,
-    autoHeight: true,
-    disableSelection: false,
-    loadMask: true,
-    viewConfig: {
-        trackOver: true,
-        stripeRows: true
-    }
-}
-JSON.clone = function (obj) {
-  return JSON.parse( JSON.stringify( obj ) );
-};
+var componentData = null;
+Ext.onReady(function(){
+    componentData = getParent().objectBeingConfigured;
+    Ext.get("className").dom.value=componentData.className;
+    Ext.get("name").dom.value=componentData.name;
+    Ext.get("div").dom.value= componentData.region;
+    ConfigSource("config",configObj.jsonConfig);
+});

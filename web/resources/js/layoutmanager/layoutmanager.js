@@ -26,7 +26,7 @@ Ext.require([
     'Ext.ux.BoxReorderer',
     'Component'
 ]);
-
+var objectBeingConfigured = null;
 Ext.onReady(function() {
     var layoutRegions = [
         {id:'header', htmlId:'layout_header', useShortName:false, floatComponents: false},
@@ -279,6 +279,20 @@ Ext.onReady(function() {
                 }
             );
         });
+        droppedEl.on('click',function(){
+            objectBeingConfigured = JSON.clone(data.componentData);
+            objectBeingConfigured.id =itemId;
+            objectBeingConfigured.region = layoutRegion.get('id');
+            if( data.componentData.configSource != undefined ){
+                var pageEl = Ext.get("configPage");
+                pageEl.dom.src= configPageLink + "&configPageUrl=" +data.componentData.configSource;configPageLink
+                var b=0;
+            }else{
+                // Propertygrid
+            }
+            
+        });
+        
         if(data.componentData.addOnce) {
             Ext.fly(data.sourceEl).addCls("component-added");
         }
