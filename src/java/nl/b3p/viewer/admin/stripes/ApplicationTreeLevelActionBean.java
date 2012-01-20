@@ -21,8 +21,9 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
-import nl.b3p.viewer.config.app.Level;
-import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.security.*;
+import nl.b3p.viewer.config.services.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -48,6 +49,9 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
+    
+    @Validate
+    private String selectedlayers;
     
     @DefaultHandler
     public Resolution view() {
@@ -87,10 +91,19 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             level.getReaders().add(groupName);
         }
         
-        /*
-         * background kan alleen submappen met layers hebben
-         * in de eerste mappen na rootlevel kunnen geen layers zitten
-         */
+        level.getLayers().clear();
+        if(selectedlayers != null && selectedlayers.length() > 0){
+            String[] layerIds = selectedlayers.split(",");
+            for(int i = 0; i < layerIds.length; i++){
+                Long id = new Long(layerIds[i].substring(1));
+                Layer layer = Stripersist.getEntityManager().find(Layer.class, id);
+                ApplicationLayer appLayer = new ApplicationLayer();
+                appLayer.setService(layer.getService());
+                appLayer.setLayerName(layer.getName());
+                
+                level.getLayers().add(appLayer);
+            }
+        }
         
         Stripersist.getEntityManager().persist(level);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -123,6 +136,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
 
     public void setLayersAllowed(boolean layersAllowed) {
         this.layersAllowed = layersAllowed;
+    }
+
+    public String getSelectedlayers() {
+        return selectedlayers;
+    }
+
+    public void setSelectedlayers(String selectedlayers) {
+        this.selectedlayers = selectedlayers;
     }
     
     public Level getLevel() {

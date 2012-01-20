@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </div>
                             <div id="layermove-buttons"></div>
                             <div style="clear: both;"></div>
-                            <input type="hidden" id="selectedlayersinput" name="selectedlayers" />
+                            <stripes:hidden id="selectedlayersinput" name="selectedlayers" />
                         </div>
 
                         <div id="rights-tab" class="x-hide-display">
