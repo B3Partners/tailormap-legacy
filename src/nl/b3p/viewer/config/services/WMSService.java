@@ -77,7 +77,7 @@ public class WMSService extends GeoService implements Serializable {
             status.setProgress(70);
 
             org.geotools.data.ows.Layer l = gtwms.getCapabilities().getLayer();
-            wms.setTopLayer(new Layer(l));
+            wms.setTopLayer(new Layer(l, wms));
             
             return wms;
         } finally {

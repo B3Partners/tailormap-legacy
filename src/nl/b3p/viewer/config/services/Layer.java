@@ -98,10 +98,11 @@ public class Layer {
     public Layer() {
     }
     
-    public Layer(org.geotools.data.ows.Layer l) {
+    public Layer(org.geotools.data.ows.Layer l, GeoService service) {
         name = l.getName();
         title = l.getTitle();
         minScale = l.getScaleDenominatorMin();
+        this.service = service;
         if(Double.isNaN(minScale)) {
             minScale = null;
         }
@@ -124,7 +125,7 @@ public class Layer {
         }
 
         for(org.geotools.data.ows.Layer child: l.getLayerChildren()) {
-            children.add(new Layer(child));
+            children.add(new Layer(child, service));
         }
     }
 
