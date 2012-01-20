@@ -79,6 +79,7 @@ Ext.onReady(function() {
         defaultRootId: levelid,
         defaultRootProperty: 'children',
         autoLoad: true,
+        folderSort: true,
         proxy: {
             type: 'ajax',
             url: selectedlayersurl
@@ -193,64 +194,98 @@ Ext.onReady(function() {
         }
     });
     
-    var selectionButtons = Ext.create('Ext.container.Container', {
+    Ext.create('Ext.Button', {
         renderTo: 'layerselection-buttons',
-        height: 400,
-        width: 30,
-        items: [
-            {
-                xtype:'button',
-                html: '&gt;',
-                flex: 1,
-                listeners: {
-                    click: function() {
-                        Ext.Array.each(tree.getSelectionModel().getSelection(), function(record) {
-                            addToSelection(record);
-                        });
-                    }
-                }
-            },
-            {
-                xtype:'button',
-                html: '&lt;',
-                flex: 1,
-                listeners: {
-                    click: function() {
-                        var rootNode = selectedlayers.getRootNode();
-                        Ext.Array.each(selectedlayers.getSelectionModel().getSelection(), function(record) {
-                            rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
-                        });
-                    }
-                }
+        icon: moverighticon,
+        width: 23,
+        height: 22,
+        listeners: {
+            click: function() {
+                Ext.Array.each(tree.getSelectionModel().getSelection(), function(record) {
+                    addToSelection(record);
+                });
             }
-        ]
+        }
     });
     
-    var tabs = Ext.createWidget('tabpanel', {
+    Ext.create('Ext.Button', {
+        renderTo: 'layerselection-buttons',
+        icon: movelefticon,
+        width: 23,
+        height: 22,
+        listeners: {
+            click: function() {
+                var rootNode = selectedlayers.getRootNode();
+                Ext.Array.each(selectedlayers.getSelectionModel().getSelection(), function(record) {
+                    rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
+                });
+            }
+        }
+    });
+    
+    Ext.create('Ext.Button', {
+        icon: moveupicon,
+        width: 23,
+        height: 22,
+        renderTo: 'layermove-buttons',
+        listeners: {
+            click: function() {
+                var rootNode = selectedlayers.getRootNode();
+                Ext.Array.each(selectedlayers.getSelectionModel().getSelection(), function(record) {
+                    var node = rootNode.findChild('id', record.get('id'), true);
+                    var sib = node.previousSibling;
+                    if(sib !== null) {
+                        rootNode.insertBefore(node, sib);
+                    }
+                });
+            }
+        }
+    });
+    
+    Ext.create('Ext.Button', {
+        icon: movedownicon,
+        width: 23,
+        height: 22,
+        renderTo: 'layermove-buttons',
+        listeners: {
+            click: function() {
+                var rootNode = selectedlayers.getRootNode();
+                Ext.Array.each(selectedlayers.getSelectionModel().getSelection(), function(record) {
+                    var node = rootNode.findChild('id', record.get('id'), true);
+                    var sib = node.nextSibling;
+                    if(sib !== null) {
+                        rootNode.insertBefore(sib, node);
+                    }
+                });
+            }
+        }
+    });
+    
+    var tabconfig = [{
+        contentEl:'rights-tab', 
+        title: 'Rechten'
+    },{
+        contentEl:'documents-tab', 
+        title: 'Documenten'
+    },{
+        contentEl:'context-tab', 
+        title: 'Context'
+    }];
+    if(layersAllowed) {
+        tabconfig.unshift({
+            contentEl:'tree-tab', 
+            title: 'Kaarten'
+        });
+    }
+    Ext.createWidget('tabpanel', {
         renderTo: 'tabs',
         width: '100%',
         activeTab: 0,
         defaults :{
             bodyPadding: 10
         },
-        items: [{
-            contentEl:'tree-tab', 
-            title: 'Kaarten'
-        },{
-            contentEl:'rights-tab', 
-            title: 'Rechten'
-        },{
-            contentEl:'documents-tab', 
-            title: 'Documenten'
-        },{
-            contentEl:'context-tab', 
-            title: 'Context'
-        }],
-        bbar: [
-          "->",
-          {xtype: 'button', text: 'Opslaan'},
-          {xtype: 'button', text: 'Annuleren'}
-        ]
+        layoutOnTabChange: true,
+        items: tabconfig
     });
 
     function setAllNodesVisible(visible) {
@@ -274,13 +309,13 @@ Ext.onReady(function() {
     }
 
     function addToSelection(record) {
-        console.log(selectedlayers.getRootNode());
-        if(record.get('type') == "layer" && record.get('isLeaf')) {
+        if(record.get('type') == "layer") {
             var addedNode = selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
                 var objData = record.raw;
                 objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                 objData.isLeaf = true;
+                objData.draggable = true;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = selectedlayers.getRootNode();
                 if(treenode != null) {
@@ -289,4 +324,13 @@ Ext.onReady(function() {
             }
         }
     }
+    
+    Ext.get('levelform').on('submit', function() {
+        var addedLayers = '';
+        selectedlayers.getRootNode().eachChild(function(record) {
+            if(addedLayers != '') addedLayers += ',';
+            addedLayers += record.get('id');
+        });
+        Ext.fly('selectedlayersinput').set({value:addedLayers});
+    });
 });

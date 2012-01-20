@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:hidden name="level" value="${actionBean.level.id}"/>
 
                 <c:if test="${actionBean.context.eventName == 'edit'}">
-                <stripes:submit name="save" value="Opslaan"/>
+                <stripes:submit name="save" value="Opslaan" />
                 <stripes:submit name="cancel" value="Annuleren"/>
                 <br /><br />
                 <div id="tabs">
@@ -44,7 +44,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <div id="layerselection">
                                 <div id="selected-layers"></div>
                             </div>
+                            <div id="layermove-buttons"></div>
                             <div style="clear: both;"></div>
+                            <input type="hidden" id="selectedlayersinput" name="selectedlayers" />
                         </div>
 
                         <div id="rights-tab" class="x-hide-display">
@@ -80,11 +82,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
             var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
             var levelid = '${actionBean.level.id}';
+            var layersAllowed = ${actionBean.layersAllowed};
  
             var foldericon = '${contextPath}/resources/images/folder.png';
             var serviceokicon = '${contextPath}/resources/images/serviceok.png';
             var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
             var layericon = '${contextPath}/resources/images/map.png';
+            var movelefticon = '${contextPath}/resources/images/move-left.gif';
+            var moverighticon = '${contextPath}/resources/images/move-right.gif';
+            var moveupicon = '${contextPath}/resources/images/move-up.gif';
+            var movedownicon = '${contextPath}/resources/images/move-down.gif';
             
             var activelink = 'menu_boomstructuur';
         </script>
