@@ -75,8 +75,7 @@ public class Application  {
     @ManyToOne
     private Level root;
 
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL)
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="component"))
+    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private Set<ConfiguredComponent> components = new HashSet<ConfiguredComponent>();
 
     public Long getId() {

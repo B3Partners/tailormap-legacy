@@ -24,6 +24,10 @@ import javax.persistence.*;
  * @author Matthijs Laan
  */
 @Entity
+@Table(
+        uniqueConstraints=
+            @UniqueConstraint(columnNames={"name", "application"})
+)
 public class ConfiguredComponent {
     @Id
     private Long id;
@@ -39,6 +43,9 @@ public class ConfiguredComponent {
 
     @ElementCollection
     private Map<String,String> details = new HashMap<String,String>();
+
+    @ManyToOne(optional=false)
+    private Application application;
 
     public Long getId() {
         return id;
@@ -90,5 +97,13 @@ public class ConfiguredComponent {
 
     public void setDetails(Map<String, String> details) {
         this.details = details;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
     }
 }
