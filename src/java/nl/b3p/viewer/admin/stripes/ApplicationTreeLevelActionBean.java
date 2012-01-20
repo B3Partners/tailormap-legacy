@@ -37,11 +37,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     
     @Validate
     @ValidateNestedProperties({
-                @Validate(field="info")
+                @Validate(field="info"),
+                @Validate(field="name",required=true)
     })
     private Level level;
     
     private List<Group> allGroups;
+    
+    private boolean layersAllowed;
     
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
@@ -53,9 +56,20 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         return new ForwardResolution(JSP);
     }
     
+    @DontValidate
     public Resolution edit() {
+        Level rootLevel = application.getRoot();
+        
         if(level != null){
             groupsRead.addAll(level.getReaders());
+            
+            if(level.isBackground()){
+                layersAllowed = false;
+            }else if(level.getParent() != null && level.getParent().equals(rootLevel)){
+                layersAllowed = false;
+            }else{
+                layersAllowed = true;
+            }
         }
         
         return new ForwardResolution(JSP);
@@ -72,6 +86,11 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         for(String groupName: groupsRead) {
             level.getReaders().add(groupName);
         }
+        
+        /*
+         * background kan alleen submappen met layers hebben
+         * in de eerste mappen na rootlevel kunnen geen layers zitten
+         */
         
         Stripersist.getEntityManager().persist(level);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -96,6 +115,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
 
     public void setGroupsRead(List<String> groupsRead) {
         this.groupsRead = groupsRead;
+    }
+
+    public boolean isLayersAllowed() {
+        return layersAllowed;
+    }
+
+    public void setLayersAllowed(boolean layersAllowed) {
+        this.layersAllowed = layersAllowed;
     }
     
     public Level getLevel() {

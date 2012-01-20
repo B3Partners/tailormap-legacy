@@ -192,6 +192,16 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
         Level parent = em.find(Level.class, parentIdLong);
         
+        if(!parent.isBackground() && parent.getParent() != null){
+            if(parent.getParent().isBackground()){
+                /*
+                 * Checks if the new level is not a sub sub level of background. 
+                 * A background can only have sub levels with layers.
+                 */
+                return null;
+            }
+        }
+        
         Level l = new Level();
         l.setName(name);
         l.setParent(parent);

@@ -60,10 +60,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                         <div id="context-tab" class="x-hide-display">
                             <h1>Context:</h1>
-                            <stripes:textarea name="level.info"/>
+                            <stripes:textarea cols="150" rows="5" name="level.info"/><br>
+                            Niveau naam: <stripes:text name="level.name"/>
                         </div>
                 </div>
             </c:if>
+        <c:if test="${actionBean.context.eventName == 'save'}">
+            <script type="text/javascript">
+                var frameParent = getParent();
+                if(frameParent && frameParent.renameNode && '${actionBean.level.name}' != '') {
+                    frameParent.renameNode('n${actionBean.level.id}','${actionBean.level.name}');
+                }
+            </script>
+        </c:if>
 
         </stripes:form>
         <script type="text/javascript">
