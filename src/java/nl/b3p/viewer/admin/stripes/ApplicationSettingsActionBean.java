@@ -125,6 +125,15 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
     @HandlesEvent("default")
     @DontValidate
     public Resolution view(){
+        if(application == null){
+            getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
+            return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
+        }
+        return new ForwardResolution(JSP);
+    }
+    
+    @DontValidate
+    public Resolution newApplication(){
         return new ForwardResolution(JSP);
     }
     

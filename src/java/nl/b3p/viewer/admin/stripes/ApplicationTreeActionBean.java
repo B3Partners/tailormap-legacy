@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
 import org.json.*;
@@ -93,7 +94,10 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     
     @DefaultHandler
     public Resolution view() {
-        Stripersist.getEntityManager().getTransaction().commit();
+        if(application == null){
+            getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
+            return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
+        }
         
         return new ForwardResolution(JSP);
     }
