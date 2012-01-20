@@ -69,7 +69,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             
             if(level.isBackground()){
                 layersAllowed = false;
-            }else if(level.getParent() != null && level.getParent().equals(rootLevel)){
+            }else if(level.getParent() != null && level.getParent().getId().equals(rootLevel.getId())){
                 layersAllowed = false;
             }else{
                 layersAllowed = true;
