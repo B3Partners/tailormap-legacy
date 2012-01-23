@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
 
     <stripes:layout-component name="head">
-        <title>Layoutmanager</title>
+        <title>Configureer component</title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -30,32 +30,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean">
-            <stripes:hidden id="configObject" name="configObject"/>
-            <stripes:hidden id="name" name="name"/>
-            <stripes:hidden id="className" name="className"/>
-            <stripes:hidden id="name" name="name"/>
-            <stripes:hidden id="div" name="div"/>
+            <stripes:hidden name="component" value="${actionBean.component.id}"/>
+            <stripes:hidden name="className" value="${actionBean.className}"/>
+            <stripes:hidden name="name" value="${actionBean.name}"/>
+            <stripes:hidden name="configObject" id="configObject"/>
 
-
-            <stripes:hidden name="application"/>
-            <c:forEach items="${actionBean.application.components}" var="comp">
-
-                <c:set var="configObj" value="${comp.config}"/>
-                <c:set var="id" value="${comp.id}"/>
-            </c:forEach>
-
-            <stripes:hidden id="component" name="component" value="${id}"/>
-            <script>
-                var configObj = new Object();
-                <c:if test="${!empty configObj}">
-                        configObj = ${configObj};
-                </c:if>
-            </script>
             <div id ="config"></div>
 
-            <stripes:submit name="saveComponentConfig" onclick="getConfig()">Opslaan</stripes:submit>
+            <stripes:submit onclick="getConfig()" name="saveComponentConfig">Opslaan</stripes:submit>
         </stripes:form>
-        <script type="text/javascript" src="${contextPath}${actionBean.configPageUrl}"></script>
+        <script>
+            var className = "${actionBean.className}";
+            var name = "${actionBean.name}";
+            var metadata = new Object();
+            <c:if test="${!empty actionBean.metadata}">
+                metadata = JSON.parse ('${actionBean.metadata}');
+            </c:if>
+            var contextPath = "${contextPath}";
+            var configObject = new Object();
+            <c:if test="${!empty actionBean.component.config}">
+                configObject= JSON.parse ('${actionBean.component.config}');
+            </c:if>
+        </script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>
 

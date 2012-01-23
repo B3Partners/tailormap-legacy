@@ -14,11 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-var componentData = null;
-Ext.onReady(function(){
-    componentData = getParent().objectBeingConfigured;
-    Ext.get("className").dom.value=componentData.className;
-    Ext.get("name").dom.value=componentData.name;
-    Ext.get("div").dom.value= componentData.region;
-    ConfigSource("config",configObj.jsonConfig);
-});
+if(metadata.configSource != undefined){
+    loadConfigSource(metadata.configSource);
+    Ext.onReady(function(){
+        ConfigSource("config", configObject);
+    });
+}
+
+function loadConfigSource(url){
+    var fileref=document.createElement('script')
+    fileref.setAttribute("type","text/javascript")
+    fileref.setAttribute("src", contextPath +url)
+   
+    document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
+function getConfig(){
+    var config = getConfigObject();
+    
+    var configFormObject = Ext.get("configObject");
+    configFormObject.dom.value = JSON.stringify( config);
+}

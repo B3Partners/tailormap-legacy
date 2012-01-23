@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.Loader.setConfig({enabled:true});
+Ext.Loader.setConfig({
+    enabled:true
+});
 Ext.Loader.setPath('Ext.ux', uxpath);
 Ext.require([
     'Ext.container.*',
@@ -25,10 +27,10 @@ Ext.require([
     'Ext.layout.*',
     'Ext.ux.BoxReorderer',
     'Component'
-]);
+    ]);
 var objectBeingConfigured = null;
 Ext.onReady(function() {
-    var layoutRegions = [
+     var layoutRegions = [
         {id:'header', htmlId:'layout_header', useShortName:false, floatComponents: false},
         {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false},
         {id:'leftmargin_bottom', htmlId:'layout_left_bottom', useShortName:false, floatComponents: false},
@@ -38,8 +40,7 @@ Ext.onReady(function() {
         {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false},
         {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false},
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false},
-        {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false}
-    ];
+        {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false}];
     
     var componentStore = Ext.create('Ext.data.Store', {
         model: 'Component',
@@ -50,7 +51,7 @@ Ext.onReady(function() {
         extend: 'Ext.data.Model',
         idProperty: 'id',
         fields: [
-            {name: 'id', type: 'string'},
+        {name: 'id', type: 'string'},
             {name: 'htmlId', type: 'string'},
             {name: 'useShortName', type: 'boolean'},
             {name: 'floatComponents', type: 'boolean'},
@@ -75,12 +76,12 @@ Ext.onReady(function() {
     Ext.create('Ext.view.View', {
         cls: 'component-view',
         tpl: '<tpl for=".">' +
-                '<div class="component-block">' +
-                    '<div class="remove"></div>' +
-                    '<div class="wrangler"></div>' +
-                    '<div class="title">{name}</div>' +
-                '</div>' +
-             '</tpl>',
+        '<div class="component-block">' +
+        '<div class="remove"></div>' +
+        '<div class="wrangler"></div>' +
+        '<div class="title">{name}</div>' +
+        '</div>' +
+        '</tpl>',
         itemSelector: 'div.component-block',
         overItemCls: 'component-over',
         selectedItemClass: 'component-selected',
@@ -277,22 +278,8 @@ Ext.onReady(function() {
                         }
                     }
                 }
-            );
+                );
         });
-        droppedEl.on('click',function(){
-            objectBeingConfigured = JSON.clone(data.componentData);
-            objectBeingConfigured.id =itemId;
-            objectBeingConfigured.region = layoutRegion.get('id');
-            if( data.componentData.configSource != undefined ){
-                var pageEl = Ext.get("configPage");
-                pageEl.dom.src= configPageLink + "&configPageUrl=" +data.componentData.configSource;configPageLink
-                var b=0;
-            }else{
-                // Propertygrid
-            }
-            
-        });
-        
         if(data.componentData.addOnce) {
             Ext.fly(data.sourceEl).addCls("component-added");
         }
@@ -361,5 +348,6 @@ Ext.onReady(function() {
 });
 
 function editComponent(componentData) {
-    console.log('Edit!', componentData);
+    var pageEl = Ext.get("configPage");
+    pageEl.dom.src= configPageLink + "&name="+componentData.name+"&className="+componentData.className;
 }

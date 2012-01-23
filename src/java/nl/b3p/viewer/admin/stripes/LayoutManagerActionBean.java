@@ -20,13 +20,18 @@ import java.io.*;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -37,19 +42,16 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 public class LayoutManagerActionBean extends ApplicationActionBean {
 
+    private JSONObject metadata;
     private JSONArray components;
     @Validate(on = "config")
-    private String configPageUrl;
+    private String name;// = "testComponent1";
+    @Validate(on = "config")
+    private String className;
+    @Validate(on = "saveComponentConfig")
+    private ConfiguredComponent component;
     @Validate(on = "saveComponentConfig")
     private String configObject;
-    @Validate
-    private String name;
-    @Validate
-    private String className;
-    @Validate
-    private String div;
-    @Validate(on="saveComponentConfig")
-    private ConfiguredComponent component;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
@@ -58,14 +60,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public void setComponents(JSONArray components) {
         this.components = components;
-    }
-
-    public String getConfigPageUrl() {
-        return configPageUrl;
-    }
-
-    public void setConfigPageUrl(String configPageUrl) {
-        this.configPageUrl = configPageUrl;
     }
 
     public String getConfigObject() {
@@ -92,14 +86,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.name = name;
     }
 
-    public String getDiv() {
-        return div;
-    }
-
-    public void setDiv(String div) {
-        this.div = div;
-    }
-
     public ConfiguredComponent getComponent() {
         return component;
     }
@@ -108,39 +94,60 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.component = component;
     }
 
+    public JSONObject getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(JSONObject metadata) {
+        this.metadata = metadata;
+    }
+
     //</editor-fold>
-    
     @DefaultHandler
     public Resolution view() throws JSONException {
         Stripersist.getEntityManager().getTransaction().commit();
-
         components = getComponentList();
-
         return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
     }
 
     public Resolution config() {
-        Stripersist.getEntityManager().getTransaction().commit();
+        EntityManager em = Stripersist.getEntityManager();
+        try {
+            metadata = getMetadata(className);
+            if (metadata == null) {
+                getContext().getValidationErrors().addGlobalError(new SimpleError("Geen metadata gevonden bij componentclassname: " + className));
+            }
+        } catch (JSONException ex) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
+        }
+        
+        Query q = em.createQuery("FROM ConfiguredComponent WHERE application = :application AND name = :name").setParameter("application", application).setParameter("name", name);
+        try {
+            component = (ConfiguredComponent) q.getSingleResult();
+            em.getTransaction().commit();
+        } catch (NoResultException ex) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
+        }
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
 
     public Resolution saveComponentConfig() {
-        int a = 0;
-        if(component == null){
+        EntityManager em = Stripersist.getEntityManager();
+        if (component == null) {
             component = new ConfiguredComponent();
         }
         component.setConfig(configObject);
         component.setName(name);
         component.setClassName(className);
+        component.setApplication(application);
 
-        application.getComponents().add(component);
-        component.getDetails().put("div", div);
-
-        Stripersist.getEntityManager().getTransaction().commit();
+        em.persist(component);
+        em.getTransaction().commit();
 
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
 
+    @Before(stages = {LifecycleStage.HandlerResolution})
     private JSONArray getComponentList() {
         InputStream fis = null;
         try {
@@ -148,8 +155,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             fis = url.openStream();
             StringWriter sw = new StringWriter();
             IOUtils.copy(fis, sw);
-            JSONArray json = new JSONArray(sw.toString());
-            return json;
+            components = new JSONArray(sw.toString());
+            return components;
         } catch (IOException ex) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
         } catch (JSONException ex) {
@@ -159,6 +166,18 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
                 fis.close();
             } catch (IOException ex) {
                 Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+
+    private JSONObject getMetadata(String className) throws JSONException {
+        for (int i = 0; i < components.length(); i++) {
+            JSONObject ob = components.getJSONObject(i);
+            if (ob.has("className")) {
+                if (ob.get("className").equals(className)) {
+                    return ob;
+                }
             }
         }
         return null;

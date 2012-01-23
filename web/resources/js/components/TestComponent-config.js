@@ -38,19 +38,9 @@ function ConfigSource(parentId, config){
             name: 'nummer',
             value: config.nummer
         }]
-    });
-        
+    });      
 }
 
-function getConfig() {
-    var config = {
-        id: componentData.id,
-        name: componentData.name,
-        containerID: componentData.region,
-        className: componentData.className,
-        jsonConfig : form.getValues()
-    };
-    
-    var configFormObject = Ext.get("configObject");
-    configFormObject.dom.value = JSON.stringify( config);
+function getConfigObject() {
+    return form.getValues();
 }
