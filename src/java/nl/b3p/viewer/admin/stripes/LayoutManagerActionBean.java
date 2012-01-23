@@ -18,6 +18,9 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -28,6 +31,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
+import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +48,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     private JSONObject metadata;
     private JSONArray components;
+    private List<Group> allGroups;
+    
     @Validate(on = "config")
     private String name;// = "testComponent1";
     @Validate(on = "config")
@@ -52,6 +58,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private ConfiguredComponent component;
     @Validate(on = "saveComponentConfig")
     private String configObject;
+    @Validate(on = "saveComponentConfig")
+    private List<String> groups = new ArrayList<String>();
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
@@ -102,7 +110,24 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.metadata = metadata;
     }
 
+    public List<Group> getAllGroups() {
+        return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
+    }
+
     //</editor-fold>
+    
     @DefaultHandler
     public Resolution view() throws JSONException {
         Stripersist.getEntityManager().getTransaction().commit();
@@ -120,6 +145,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         } catch (JSONException ex) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
         }
+        
+        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
         
         Query q = em.createQuery("FROM ConfiguredComponent WHERE application = :application AND name = :name").setParameter("application", application).setParameter("name", name);
         try {
@@ -140,6 +167,9 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         component.setName(name);
         component.setClassName(className);
         component.setApplication(application);
+        
+        component.getReaders().clear();
+        component.setReaders(new HashSet<String>(groups));
 
         em.persist(component);
         em.getTransaction().commit();

@@ -36,6 +36,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden name="configObject" id="configObject"/>
 
             <div id ="config"></div>
+            <div id="rights"> 
+                <h1>Groepen:</h1>
+                De volgende gebruikersgroepen hebben recht op dit component:<br/>
+
+                <c:forEach var="group" items="${actionBean.allGroups}">
+                    <stripes:checkbox name="groups" value="${group.name}"/>${group.name}<br>
+                </c:forEach>
+            </div>
+            <div id="layout">
+                <h1>Vensterpositie</h1>
+                <input type="radio" name="positie" value="center">Gecentreerd <br/>
+                <input type="radio"  name="positie" value="fixed">Vaste positie (van linker bovenhoek popup t.o.v. linker bovenhoek scherm)<br/>
+                <input type="checkbox" value="changeablePosition">Gebruiker kan de positie van de popup aanpassen<br/>
+                
+                <h1>Venstergrootte</h1>
+                Breedte <input id="breedte" type="text"/><br/>
+                Hoogte<input id="hoogte" type="text"/><br/>
+                <input type="checkbox" value="changeableSize">Gebruiker kan de grootte van de popup aanpassen<br/>
+            </div>
 
             <stripes:submit onclick="getConfig()" name="saveComponentConfig">Opslaan</stripes:submit>
         </stripes:form>
@@ -46,8 +65,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:if test="${!empty actionBean.metadata}">
                 metadata = JSON.parse ('${actionBean.metadata}');
             </c:if>
-            var contextPath = "${contextPath}";
-            var configObject = new Object();
+                var contextPath = "${contextPath}";
+                var configObject = new Object();
             <c:if test="${!empty actionBean.component.config}">
                 configObject= JSON.parse ('${actionBean.component.config}');
             </c:if>
