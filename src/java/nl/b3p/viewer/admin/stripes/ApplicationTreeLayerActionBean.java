@@ -16,9 +16,12 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.*;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.security.Group;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -34,10 +37,43 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     @Validate
     private ApplicationLayer applicationLayer;
     
+    private List<Group> allGroups;
+    
+    @Validate
+    private List<String> groupsRead = new ArrayList<String>();
+    
     @DefaultHandler
     public Resolution view() {
         Stripersist.getEntityManager().getTransaction().commit();
         
+        return new ForwardResolution(JSP);
+    }
+    
+    @DontValidate
+    public Resolution edit() {
+        if(applicationLayer != null){
+            groupsRead.addAll(applicationLayer.getReaders());
+        }
+        
+        return new ForwardResolution(JSP);
+    }
+    
+    @Before(stages=LifecycleStage.BindingAndValidation)
+    @SuppressWarnings("unchecked")
+    public void load() {
+        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+    }
+    
+    public Resolution save() {
+        applicationLayer.getReaders().clear();
+        for(String groupName: groupsRead) {
+            applicationLayer.getReaders().add(groupName);
+        }
+        
+        Stripersist.getEntityManager().persist(applicationLayer);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
         return new ForwardResolution(JSP);
     }
 
@@ -49,6 +85,21 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     public void setApplicationLayer(ApplicationLayer applicationLayer) {
         this.applicationLayer = applicationLayer;
     }
+
+    public List<Group> getAllGroups() {
+        return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
+    }
+
+    public List<String> getGroupsRead() {
+        return groupsRead;
+    }
+
+    public void setGroupsRead(List<String> groupsRead) {
+        this.groupsRead = groupsRead;
+    }
     //</editor-fold>
-    
 }

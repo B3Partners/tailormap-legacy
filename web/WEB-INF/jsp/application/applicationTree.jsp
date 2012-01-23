@@ -43,7 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadApplicationTree"/>';
             var addlevelurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="addLevel"/>';
             var levelurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" event="edit"/>';
-            var layerurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" event="view"/>';
+            var layerurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" event="edit"/>';
  
             var foldericon = '${contextPath}/resources/images/folder.png';
             var layericon = '${contextPath}/resources/images/map.png';

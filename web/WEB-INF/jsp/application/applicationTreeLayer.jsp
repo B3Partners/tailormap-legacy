@@ -29,7 +29,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         <p>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean">
-            
+            <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
+            <c:if test="${actionBean.context.eventName == 'edit'}">
+                <stripes:submit name="save" value="Opslaan" />
+                <stripes:submit name="cancel" value="Annuleren"/>
+                <br /><br />
+                <div id="tabs">
+                    <div id="rights-tab" class="x-hide-display">
+                        <h1>Rechten:</h1>
+                        <c:forEach var="group" items="${actionBean.allGroups}">
+                            <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
+                        </c:forEach>
+                    </div>
+                    <div id="attributes-tab" class="x-hide-display">
+                        Attributen
+                    </div>
+                    <div id="settings-tab" class="x-hide-display">
+                        Instellingen
+                    </div>
+                    <div id="edit-tab" class="x-hide-display">
+                        Edit
+                    </div>
+                    <div id="filter-tab" class="x-hide-display">
+                        Selectie en filter
+                    </div>
+                </div>
+            </c:if>
         </stripes:form>
+        <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
     </stripes:layout-component>
 </stripes:layout-render>
