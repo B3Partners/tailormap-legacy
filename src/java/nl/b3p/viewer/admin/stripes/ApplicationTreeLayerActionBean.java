@@ -41,6 +41,11 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
+    @Validate
+    private List<String> groupsWrite = new ArrayList<String>();
+    
+    @Validate
+    private Map<String,String> details = new HashMap<String,String>();
     
     @DefaultHandler
     public Resolution view() {
@@ -52,7 +57,10 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     @DontValidate
     public Resolution edit() {
         if(applicationLayer != null){
+            details = applicationLayer.getDetails();
+                    
             groupsRead.addAll(applicationLayer.getReaders());
+            groupsWrite.addAll(applicationLayer.getWriters());
         }
         
         return new ForwardResolution(JSP);
@@ -65,9 +73,17 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     }
     
     public Resolution save() {
+        applicationLayer.getDetails().clear();
+        applicationLayer.getDetails().putAll(details);
+        
         applicationLayer.getReaders().clear();
         for(String groupName: groupsRead) {
             applicationLayer.getReaders().add(groupName);
+        }
+        
+        applicationLayer.getWriters().clear();
+        for(String groupName: groupsWrite) {
+            applicationLayer.getWriters().add(groupName);
         }
         
         Stripersist.getEntityManager().persist(applicationLayer);
@@ -92,6 +108,22 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
 
     public void setAllGroups(List<Group> allGroups) {
         this.allGroups = allGroups;
+    }
+
+    public Map<String, String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, String> details) {
+        this.details = details;
+    }
+
+    public List<String> getGroupsWrite() {
+        return groupsWrite;
+    }
+
+    public void setGroupsWrite(List<String> groupsWrite) {
+        this.groupsWrite = groupsWrite;
     }
 
     public List<String> getGroupsRead() {

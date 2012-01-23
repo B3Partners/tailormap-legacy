@@ -37,15 +37,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="tabs">
                     <div id="rights-tab" class="x-hide-display">
                         <h1>Rechten:</h1>
+                        L &nbsp; B <br>
                         <c:forEach var="group" items="${actionBean.allGroups}">
-                            <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
+                            <stripes:checkbox name="groupsRead" value="${group.name}"/>
+                            <stripes:checkbox name="groupsWrite" value="${group.name}"/>
+                            ${group.name}<br>
                         </c:forEach>
                     </div>
                     <div id="attributes-tab" class="x-hide-display">
                         Attributen
                     </div>
                     <div id="settings-tab" class="x-hide-display">
-                        Instellingen
+                        <table>
+                            <tr>
+                                <td>Transparantie beginwaarde:</td>
+                                <td><stripes:text name="details['transparantie']" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Straalinvloedsgebied:</td>
+                                <td><stripes:text name="details['straalinvloedsgebied']" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Samenvatting - titel:</td>
+                                <td><stripes:text name="details['samenvatting.titel']" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Samenvatting - afbeelding:</td>
+                                <td><stripes:text name="details['samenvatting.afbeelding']" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>Samenvatting - omschrijving:</td>
+                                <td><stripes:textarea name="details['samenvatting.omschrijving']" rows="5" cols="27"/></td>
+                            </tr>
+                            <tr>
+                                <td>Samenvatting - link:</td>
+                                <td><stripes:text name="details['samenvatting.link']" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td>EditFunctionaliteit - titel:</td>
+                                <td><stripes:text name="details['editfunctie.titel']" maxlength="255" size="30"/></td>
+                            </tr>
+                        </table>
                     </div>
                     <div id="edit-tab" class="x-hide-display">
                         Edit
