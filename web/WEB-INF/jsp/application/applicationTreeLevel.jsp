@@ -37,14 +37,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <br /><br />
                 <div id="tabs">
                         <div id="tree-tab" class="x-hide-display">
-                            <div id="tree">
+                            <div id="tree" class="tree-selection-tree">
                                 <div id="servicetree-container"></div>
                             </div>
-                            <div id="layerselection-buttons"></div>
-                            <div id="layerselection">
+                            <div id="layerselection-buttons" class="tree-selection-buttons"></div>
+                            <div id="layerselection" class="tree-selection-tree">
                                 <div id="selected-layers"></div>
                             </div>
-                            <div id="layermove-buttons"></div>
+                            <div id="layermove-buttons" class="tree-selection-buttons"></div>
                             <div style="clear: both;"></div>
                             <stripes:hidden id="selectedlayersinput" name="selectedlayers" />
                         </div>
@@ -72,6 +72,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var frameParent = getParent();
                 if(frameParent && frameParent.renameNode && '${actionBean.level.name}' != '') {
                     frameParent.renameNode('n${actionBean.level.id}','${actionBean.level.name}');
+                    frameParent.refreshNode('n${actionBean.level.id}');
                 }
             </script>
         </c:if>
@@ -95,6 +96,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
             var activelink = 'menu_boomstructuur';
         </script>
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/TreeSelection.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLevel.js"></script>
     </stripes:layout-component>
 </stripes:layout-render>

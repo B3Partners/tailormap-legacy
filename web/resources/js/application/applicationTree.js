@@ -55,8 +55,36 @@ Ext.onReady(function() {
         }
     });
     
+    // Override van TreeStore to fix load function, used to refresh tree node
+    Ext.define('Ext.ux.b3p.TreeStore', {
+        extend: 'Ext.data.TreeStore',
+        load: function(options) {
+            options = options || {};
+            options.params = options.params || {};
+            var me = this,
+                node = options.node || me.tree.getRootNode(),
+                root;
+            if (!node) {
+                node = me.setRootNode({
+                    expanded: true
+                });
+            }
+            if (me.clearOnLoad) {
+                node.removeAll(false);
+            }
+            Ext.applyIf(options, {
+                node: node
+            });
+            options.params[me.nodeParam] = node ? node.getId() : 'root';
+            if (node) {
+                node.set('loading', true);
+            }
+            return me.callParent([options]);
+        }
+    });
+    
     // Definition of the store, which takes care of loading the necessary json
-    var treeStore = Ext.create('Ext.data.TreeStore', {
+    var treeStore = Ext.create('Ext.ux.b3p.TreeStore', {
         autoLoad: true,
         proxy: {
             type: 'ajax',
@@ -209,4 +237,17 @@ function addServiceNode(json) {
 function renameNode(nodeid, newname) {
     var tree = Ext.getCmp('applicationtree');
     tree.getRootNode().findChild('id', nodeid, true).set('text', newname);
+}
+
+function refreshNode(nodeid) {
+    var tree = Ext.getCmp('applicationtree');
+    var treeStore = tree.getStore();
+    var record = treeStore.getNodeById(nodeid)
+    // Set isLeaf false so if node did not have children before, it would
+    // correctly expand when children are added
+    record.set('isLeaf', false);
+    treeStore.load({
+        node: record,
+        clearOnLoad: true
+    });
 }
