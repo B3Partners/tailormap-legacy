@@ -1,3 +1,14 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+div {
+    padding: 0px;
+    margin: 0px;
+}
 /* messages */
 
 .messages .box {
@@ -31,7 +42,7 @@
 
 .errors {
     border: 1px solid red;
-	background-color: #fff5f5;
+    background-color: #fff5f5;
 }
 
 .errors div {
