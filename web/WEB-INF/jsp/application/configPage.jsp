@@ -67,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var className = metadata.className;
             </c:if>
                 var contextPath = "${contextPath}";
-                var configObject = new Object();
+                var configObject = null;
             <c:if test="${!empty actionBean.component.config}">
                 configObject= JSON.parse ('${actionBean.component.config}');
             </c:if>

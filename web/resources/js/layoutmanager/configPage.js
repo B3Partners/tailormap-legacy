@@ -24,11 +24,9 @@ if(metadata.configSource != undefined){
         ConfigSource("config", configObject);
     });
 }else{    
-    loadConfigSource(metadata.source);
     Ext.onReady(function(){
-        var comp = Ext.create(className);
-        if(configObject == undefined){
-            configObject = comp.config;
+        if(configObject == undefined || configObject == null){
+            configObject = metadata.configObjects;
         }
         propertyGrid = Ext.create('Ext.grid.property.Grid', {
             title: 'Pas de instellingen aan',
