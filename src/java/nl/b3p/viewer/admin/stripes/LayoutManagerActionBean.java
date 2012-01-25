@@ -131,7 +131,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     @DefaultHandler
     public Resolution view() throws JSONException {
         Stripersist.getEntityManager().getTransaction().commit();
-        components = getComponentList();
+        
         return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
     }
 
@@ -151,6 +151,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         Query q = em.createQuery("FROM ConfiguredComponent WHERE application = :application AND name = :name").setParameter("application", application).setParameter("name", name);
         try {
             component = (ConfiguredComponent) q.getSingleResult();
+            groups = new ArrayList<String>(component.getReaders());
             em.getTransaction().commit();
         } catch (NoResultException ex) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));

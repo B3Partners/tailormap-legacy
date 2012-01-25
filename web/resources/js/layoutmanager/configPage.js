@@ -14,10 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.Loader.setConfig({
+    enabled:true
+});
+var propertyGrid;
 if(metadata.configSource != undefined){
     loadConfigSource(metadata.configSource);
     Ext.onReady(function(){
         ConfigSource("config", configObject);
+    });
+}else{    
+    loadConfigSource(metadata.source);
+    Ext.onReady(function(){
+        var comp = Ext.create(className);
+        if(configObject == undefined){
+            configObject = comp.config;
+        }
+        propertyGrid = Ext.create('Ext.grid.property.Grid', {
+            title: 'Pas de instellingen aan',
+            width: 300,
+            renderTo: "config",
+            source: configObject
+        });
     });
 }
 
@@ -30,7 +48,12 @@ function loadConfigSource(url){
 }
 
 function getConfig(){
-    var config = getConfigObject();
+    var config;
+    if(metadata.configSource != undefined){
+        config = getConfigObject();
+    }else{
+        config = propertyGrid.getSource();
+    }
     
     var configFormObject = Ext.get("configObject");
     configFormObject.dom.value = JSON.stringify( config);

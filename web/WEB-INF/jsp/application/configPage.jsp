@@ -51,8 +51,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <input type="checkbox" value="changeablePosition">Gebruiker kan de positie van de popup aanpassen<br/>
                 
                 <h1>Venstergrootte</h1>
-                Breedte <input id="breedte" type="text"/><br/>
-                Hoogte<input id="hoogte" type="text"/><br/>
+                Breedte <stripes:text name="breedte" id="breedte"/><br/>
+                Hoogte<stripes:text name="hoogte" id="hoogte"/><br/>
                 <input type="checkbox" value="changeableSize">Gebruiker kan de grootte van de popup aanpassen<br/>
             </div>
 
@@ -64,6 +64,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var metadata = new Object();
             <c:if test="${!empty actionBean.metadata}">
                 metadata = JSON.parse ('${actionBean.metadata}');
+                var className = metadata.className;
             </c:if>
                 var contextPath = "${contextPath}";
                 var configObject = new Object();
@@ -71,6 +72,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 configObject= JSON.parse ('${actionBean.component.config}');
             </c:if>
         </script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/components/component.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>
 
