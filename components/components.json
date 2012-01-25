@@ -1,0 +1,30 @@
+
+/* JSON metadata describing components for viewer and viewer-admin webapps */
+
+[
+    {
+        className: "TOC",
+        sources: ["TOC.js"]
+    },
+
+    {
+        className: "TestComponent",
+        sources: ["TestComponent.js", "TestComponentFile2.js"],
+        closureCompilerSafe: true,
+        configSource: "TestComponent-config.js",
+
+        // http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.property.Grid-method-setSource
+        extPropertyGridConfig: {
+            "stringfield": "",
+            "numfield": 0.0,
+            "boolfield": false
+        }
+    },
+
+    {
+        className: "Zoom",
+        sources: ["zoom.js"],
+        closureCompilerSafe: true
+    }
+
+]
