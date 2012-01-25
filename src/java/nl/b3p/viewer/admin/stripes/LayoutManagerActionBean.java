@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -181,8 +182,9 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     @Before(stages = {LifecycleStage.HandlerResolution})
     private JSONArray getComponentList() {
         InputStream fis = null;
+        HttpServletRequest request = context.getRequest();
         try {
-            URL url = new URL("http://localhost/config.json");
+            URL url = new URL(request.getScheme(), request.getServerName(), request.getServerPort(), context.getServletContext().getContextPath() + "/resources/config.json");
             fis = url.openStream();
             StringWriter sw = new StringWriter();
             IOUtils.copy(fis, sw);

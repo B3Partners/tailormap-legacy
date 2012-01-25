@@ -220,6 +220,19 @@ body {
     .content-container {
         border: 2px dashed @graycolor;
         padding: 10px;
+        .regionconfig {
+            margin: 5px;
+            border: 1px solid @maincolor;
+            padding: 5px;
+            float: left;
+            .widthconfig, .heightconfig {
+                float: left;
+                margin-right: 10px;
+            }
+            input {
+                width: 25px;
+            }
+        }
         .component-block {
             margin-top: 10px;
             padding: 3px;

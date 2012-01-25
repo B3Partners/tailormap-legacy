@@ -38,52 +38,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="layout-container">
                 <div id="layout-north">
                     <div id="layout_header" class="content-container">
-                        <div class="layout_title">north</div>
                     </div>
                 </div>
                 <div id="layout-center">
                     <div id="center_left">
-                        <div id="layout_left_top" class="top content-container">
-                            <div class="layout_title">center_left_top</div>
-                        </div>
-                        <div id="layout_left_bottom" class="bottom content-container">
-                            <div class="layout_title">center_left_bottom</div>
-                        </div>
+                        <div id="layout_left_top" class="top content-container"></div>
+                        <div id="layout_left_bottom" class="bottom content-container"></div>
                     </div>
                     <div id="center_right">
-                        <div id="layout_right_top" class="top content-container">
-                            <div class="layout_title">center_right_top</div>
-                        </div>
-                        <div id="layout_right_bottom" class="bottom content-container">
-                            <div class="layout_title">center_right_bottom</div>
-                        </div>
+                        <div id="layout_right_top" class="top content-container"></div>
+                        <div id="layout_right_bottom" class="bottom content-container"></div>
                     </div>
                     <div id="center_center">
-                        <div id="layout_left_menu" class="content-container">
-                            <div class="layout_title">center_center_left</div>
-                        </div>
+                        <div id="layout_left_menu" class="content-container"></div>
                         <div id="center_center_center">
-                            <div id="layout_top_menu" class="content-container">
-                                <div class="layout_title">center_center_center_north</div>
-                            </div>
-                            <div id="layout_content" class="content-container">
-                                <div class="layout_title">center_center_center_center</div>
-                            </div>
-                            <div id="layout_popupwindow" class="content-container">
-                                <div class="layout_title">center_center_center_south</div>
-                            </div>
+                            <div id="layout_top_menu" class="content-container"></div>
+                            <div id="layout_content" class="content-container"></div>
+                            <div id="layout_popupwindow" class="content-container"></div>
                         </div>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
                 <div id="layout-south">
-                    <div id="layout_footer" class="content-container">
-                        <div class="layout_title">south</div>
-                    </div>
+                    <div id="layout_footer" class="content-container"></div>
                 </div>
-            <iframe id="configPage" width ="100%" height="50%" src="">
-                asdgasdfasdfasfasf
-            </iframe>
+                <iframe id="configPage" style="width: 100%; height: 100%; border: 0px none; display: none;" frameborder="0" src=""></iframe>
             </div>
             <button id="savebutton">Opslaan</button>
         </div>
