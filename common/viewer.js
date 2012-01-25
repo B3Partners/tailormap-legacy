@@ -11,7 +11,6 @@ function initMapComponent(){
     
     var map = mapViewer.createMap();   
     mapViewer.bind(Event.ON_CONFIG_COMPLETE,mapViewer.wmc,onConfigComplete);
-    mapViewer.bind(Event.ON_GET_CAPABILITIES,map,onGsdetCapabilities);
 }
 
 
@@ -40,7 +39,6 @@ function initializeButtons(){
     }
     
     mapViewer.wmc.createPanel("toolGroup");
-    //webMapController.registerEvent(Event.ON_ALL_LAYERS_LOADING_COMPLETE,webMapController.getMap(), onAllLayersFinishedLoading);
 
     mapViewer.wmc.addTool(mapViewer.wmc.createTool("loading",Tool.LOADING_BAR));
 
@@ -60,29 +58,10 @@ function initializeButtons(){
     });
     mapViewer.wmc.addTool(prevExtent);
 
-  /*  var editLayer = webMapController.createVectorLayer("editMap");
-    mapViewer.wmc.getMap().addLayer(editLayer);
-    // mapViewer.wmc.getMap().setLayerIndex(editLayer, webMapController.getMap().getLayers().length);
-
-
-    var edittingtb = mapViewer.wmc.createTool("redLiningContainer",Tool.DRAW_FEATURE, {
-        layer: editLayer
-    });
-    mapViewer.wmc.addTool(edittingtb);
-
-
-    bu_removePolygons = webMapController.createTool("b_removePolygons",Tool.BUTTON, {
-        layer: editLayer, 
-        title: 'Verwijder object'
-    });
-    mapViewer.bind(Event.ON_EVENT_DOWN,bu_removePolygons,b_removePolygons);
-    mapViewer.wmc.addTool(bu_removePolygons);
-    */
     var bu_measure = mapViewer.wmc.createTool("b_measure",Tool.MEASURE, {
         title: 'Meten'
     });
    
-    //webMapController.registerEvent(Event.ON_MEASURE,bu_measure,measured);
     mapViewer.wmc.addTool(bu_measure);
 
     var scalebar = mapViewer.wmc.createTool("scalebar",Tool.SCALEBAR);
@@ -93,10 +72,7 @@ function initializeButtons(){
 }
 
 function loadTOC(){
-    
     loadAvo();
-    loadOmgevingsVisie();
-    var begin = new Date();
     var  config = {
         name: "naam",
         div: "tree-div",
@@ -104,26 +80,13 @@ function loadTOC(){
     };
     toc = new TOC(config);
     toc.addArcIMS();
-    
-    var eind = new Date();
-    var totaal = eind.getTime() - begin.getTime();
-    mapViewer.bind(Event.ON_LAYER_SWITCHED_ON,toc,callBack)
-    mapViewer.bind(Event.ON_LAYER_SWITCHED_OFF,toc,callBack)
 } 
 
 /**
- * Alle geïmplementeerde eventhandling functies
+ * Alle geï¿½mplementeerde eventhandling functies
  */
 function b_removePolygons(id,params){
     mapViewer.wmc.getMap().getLayer("editMap").removeAllFeatures();
-}
-
-function callBack(a,b,c){
-    console.log(b.getName());
-}
-
-function onGsdetCapabilities(){
-//   alert("OnGetCap");
 }
 
 function loadBaseLayers(){

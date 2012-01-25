@@ -21,7 +21,7 @@ MapViewer.prototype.init = function (){
     this.mapOptions = {};
     if (this.viewerType== "flamingo"){
         this.webMapController=new FlamingoController(this.mapDivId); // aanpassen aan id van div
-    }else if (this.viewerType=="openlayers"){
+    }/*else if (this.viewerType=="openlayers"){
         this.webMapController= new OpenLayersController();
         this.mapOptions = {
             projection: new OpenLayers.Projection("EPSG:28992"),
@@ -33,7 +33,7 @@ MapViewer.prototype.init = function (){
             }),new OpenLayers.Control.ArgParser()],
             events: []            
         };
-    }
+    }*/
     
     this.mapOptions.maxExtent =  new Extent(10000, 304000,280000,620000);
     

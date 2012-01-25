@@ -7,7 +7,7 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/
 function FlamingoController(domId){
-    var so = new SWFObject("flamingo/flamingo.swf?config=/config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
+    var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
     so.addParam("wmode", "transparent");
     so.write(domId);
     this.viewerObject = document.getElementById("flamingo");
@@ -331,12 +331,12 @@ FlamingoController.prototype.handleEvents = function (event, component){
     var object = this.getObject(id);
     if(object != undefined){
         object.fire(event);
-    }else{
+    }/*else{
         alert("Event niet gemapped:",event);
         for (var i=0; i < this.events[event][id].length; i++){
             this.events[event][id][i](id,component);
         }
-    }
+    }*/
 }
 
 FlamingoController.prototype.fire =  function (event,options){

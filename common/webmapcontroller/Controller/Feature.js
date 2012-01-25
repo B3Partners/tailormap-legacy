@@ -11,7 +11,7 @@ Ext.define("Feature",{
         
         this.id = id;
         this.wkt = wkt;
-        this.wktParser = new OpenLayers.Format.WKT();
+       // this.wktParser = new OpenLayers.Format.WKT();
     },
     
     getId : function(){
@@ -27,7 +27,8 @@ Ext.define("Feature",{
      * @return The OpenLayerstype feature
      */
     toOpenLayersFeature : function(){
-        var olFeature = this.wktParser.read(this.getWkt());
+        throw ("Not yet implemented");
+       // var olFeature = this.wktParser.read(this.getWkt());
         return olFeature;
     },
 
