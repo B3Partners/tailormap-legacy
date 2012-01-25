@@ -16,20 +16,15 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.LocalizableError;
-import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ConfiguredComponent;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
@@ -40,12 +35,16 @@ import org.json.JSONObject;
 public class ApplicationActionBean implements ActionBean {
 
     private ActionBeanContext context;
+
     @Validate
     private String name;
+
     @Validate
     private String version;
+
     private Application application;
-    private JSONObject compConfigs;
+
+    private String script;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public String getName() {
@@ -79,50 +78,53 @@ public class ApplicationActionBean implements ActionBean {
     public ActionBeanContext getContext() {
         return context;
     }
-    
-    public JSONObject getCompConfigs() {
-        return compConfigs;
+
+    public String getScript() {
+        return script;
     }
 
-    public void setCompConfigs(JSONObject compConfigs) {
-        this.compConfigs = compConfigs;
+    public void setScript(String script) {
+        this.script = script;
     }
     //</editor-fold>
 
-
-    public Resolution view() {
+    public Resolution view() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
 
-        if (name != null) {
+        if(name != null) {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery q = cb.createQuery(Application.class);
             Root<Application> root = q.from(Application.class);
             Predicate namePredicate = cb.equal(root.get("name"), name);
-            Predicate versionPredicate = version != null
+            Predicate versionPredicate = version != null 
                     ? cb.equal(root.get("version"), version)
-                    : cb.isNull(root.get("version"));
+                    : cb.isNull(root.get("version"));                    
             q.where(cb.and(namePredicate, versionPredicate));
             try {
                 application = (Application) em.createQuery(q).getSingleResult();
-            } catch (NoResultException nre) {
+            } catch(NoResultException nre) {
             }
         }
 
-        if (application == null) {
+        if(application == null) {
             getContext().getValidationErrors().addGlobalError(new LocalizableError("app.notfound", name + (version != null ? " v" + version : "")));
             return new ForwardResolution("/WEB-INF/jsp/error.jsp");
         }
-        try {
-            compConfigs = new JSONObject();
-            for (ConfiguredComponent comp : application.getComponents()) {
-                compConfigs.put(comp.getName(), comp.getConfig());
-            }
-        } catch (JSONException ex) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError("Configuraties niet kunnen samenstellen: ",ex));
-        }
 
-        getContext().getMessages().add(new SimpleMessage("test!"));
-
+        buildScript();
+        
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
+    }
+
+    private void buildScript() throws JSONException {
+
+        // Define JSON variable with application data model
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("var app = ");
+        sb.append(application.toJSON());
+        sb.append(";\n\n");
+
+        script = sb.toString();
     }
 }
