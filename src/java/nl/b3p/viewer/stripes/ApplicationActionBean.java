@@ -16,14 +16,17 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.Validate;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import org.json.JSONException;
 
 /**
@@ -42,9 +45,14 @@ public class ApplicationActionBean implements ActionBean {
     @Validate
     private String version;
 
+    @Validate
+    private boolean debug;
+
     private Application application;
 
+    private String componentSourceHTML;
     private String script;
+
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public String getName() {
@@ -63,6 +71,14 @@ public class ApplicationActionBean implements ActionBean {
         this.version = version;
     }
 
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
     public Application getApplication() {
         return application;
     }
@@ -79,6 +95,14 @@ public class ApplicationActionBean implements ActionBean {
         return context;
     }
 
+    public String getComponentSourceHTML() {
+        return componentSourceHTML;
+    }
+
+    public void setComponentSourceHTML(String componentSourceHTML) {
+        this.componentSourceHTML = componentSourceHTML;
+    }
+
     public String getScript() {
         return script;
     }
@@ -88,32 +112,76 @@ public class ApplicationActionBean implements ActionBean {
     }
     //</editor-fold>
 
-    public Resolution view() throws JSONException {
+    static Application findApplication(String name, String version) {
         EntityManager em = Stripersist.getEntityManager();
-
         if(name != null) {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery q = cb.createQuery(Application.class);
             Root<Application> root = q.from(Application.class);
             Predicate namePredicate = cb.equal(root.get("name"), name);
-            Predicate versionPredicate = version != null 
+            Predicate versionPredicate = version != null
                     ? cb.equal(root.get("version"), version)
-                    : cb.isNull(root.get("version"));                    
+                    : cb.isNull(root.get("version"));
             q.where(cb.and(namePredicate, versionPredicate));
             try {
-                application = (Application) em.createQuery(q).getSingleResult();
+                return (Application) em.createQuery(q).getSingleResult();
             } catch(NoResultException nre) {
             }
         }
+        return null;
+    }
+
+    public Resolution view() throws JSONException {
+        application = findApplication(name, version);
 
         if(application == null) {
             getContext().getValidationErrors().addGlobalError(new LocalizableError("app.notfound", name + (version != null ? " v" + version : "")));
             return new ForwardResolution("/WEB-INF/jsp/error.jsp");
         }
 
+        buildComponentSourceHTML();
         buildScript();
         
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
+    }
+
+    private void buildComponentSourceHTML() {
+
+        StringBuilder sb = new StringBuilder();
+
+        //if(isDebug()) {
+
+            // Sort components by classNames, so order is always the same for debugging
+            List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
+            Collections.sort(comps, new Comparator<ConfiguredComponent>() {
+                public int compare(ConfiguredComponent lhs, ConfiguredComponent rhs) {
+                    return lhs.getClassName().compareTo(rhs.getClassName());
+                }
+            });
+
+            Set<String> classNamesDone = new HashSet<String>();
+
+            for(ConfiguredComponent cc: comps) {
+                if(!classNamesDone.contains(cc.getClassName())) {
+                    String url = new ForwardResolution(ComponentActionBean.class, "source")
+                            .addParameter("appName", name)
+                            .addParameter("version", version)
+                            .addParameter("name", cc.getClassName())
+                            .getUrl(context.getLocale());
+
+                    // TODO make script tag per ViewerComponent.sourceFiles array element for debugging
+
+                    sb.append("        <script type=\"text/javascript\" src=\"");
+                    sb.append(HtmlUtil.encode(context.getServletContext().getContextPath() + url));
+                    sb.append("\"></script>\n");
+                    classNamesDone.add(cc.getClassName());
+                }
+            }
+        //}
+
+        // TODO if not debugging, cat all source files in JSP
+
+        componentSourceHTML = sb.toString();
     }
 
     private void buildScript() throws JSONException {

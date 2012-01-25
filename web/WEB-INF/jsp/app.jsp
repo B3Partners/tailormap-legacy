@@ -28,7 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
 
-        <%-- loadScripts(); --%>
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
@@ -37,12 +36,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewer.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/jsonConfig.js"></script>
 
-        <%-- loadComponentScripts(); --%>
-        <%-- TOC.js TestComponent.js --%>
+${actionBean.componentSourceHTML}
     </head>
     <body>
-
-        <div id="loader" style="width: 100%; height: 100%; background-color: lightgrey"></div>
 
 <script type="text/javascript">
     ${actionBean.script}
@@ -51,13 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     Ext.onReady(function(){
 
-        //loadScripts();
-
-        //loadComponentScripts(/* { info uit metadata } */);
-
         //initLayout();
-
-        Ext.fly("loader").remove();
         
         initMapComponent();
     });
