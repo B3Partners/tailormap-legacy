@@ -18,6 +18,8 @@ package nl.b3p.viewer.config.services;
 
 import javax.persistence.Embeddable;
 import org.geotools.data.ows.CRSEnvelope;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -39,6 +41,7 @@ public class BoundingBox {
         maxy = e.getMaxY();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public CoordinateReferenceSystem getCrs() {
         return crs;
     }
@@ -77,5 +80,16 @@ public class BoundingBox {
 
     public void setMiny(Double miny) {
         this.miny = miny;
+    }
+    //</editor-fold>
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("crs", crs.getName());
+        o.put("minx", minx);
+        o.put("maxx", maxx);
+        o.put("miny", miny);
+        o.put("maxy", maxy);
+        return o;
     }
 }

@@ -19,6 +19,8 @@ package nl.b3p.viewer.config.app;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.services.Document;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -141,5 +143,9 @@ public class Level {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public JSONObject toJSONObject() throws JSONException {
+        return new JSONObject();
     }
 }

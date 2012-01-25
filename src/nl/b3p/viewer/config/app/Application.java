@@ -20,6 +20,9 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -78,6 +81,7 @@ public class Application  {
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private Set<ConfiguredComponent> components = new HashSet<ConfiguredComponent>();
 
+    // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
     }
@@ -164,5 +168,40 @@ public class Application  {
 
     public void setStartExtent(BoundingBox startExtent) {
         this.startExtent = startExtent;
+    }
+    //</editor-fold>
+
+    /**
+     * Create a JSON representation for use in browser to start this application
+     * @return
+     */
+    public String toJSON() throws JSONException {
+        JSONObject o = new JSONObject();
+
+        o.put("name", name);
+        o.put("layout", new JSONObject(layout));
+
+        JSONObject d = new JSONObject();
+        o.put("details", d);
+        for(Map.Entry<String,String> e: details.entrySet()) {
+            d.put(e.getKey(), e.getValue());
+        }
+
+        if(startExtent != null) {
+            o.put("startExtent", startExtent.toJSONObject());
+        }
+        if(maxExtent != null) {
+            o.put("maxExtent", maxExtent.toJSONObject());
+        }
+
+        o.put("rootLevel", root.toJSONObject());
+
+        JSONObject c = new JSONObject();
+        o.put("components", c);
+        for(ConfiguredComponent comp: components) {
+            c.put(comp.getName(), comp.toJSON());
+        }
+
+        return o.toString(4);
     }
 }

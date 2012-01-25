@@ -18,6 +18,8 @@ package nl.b3p.viewer.config.app;
 
 import java.util.*;
 import javax.persistence.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -47,6 +49,7 @@ public class ConfiguredComponent {
     @ManyToOne(optional=false)
     private Application application;
 
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
     }
@@ -105,5 +108,21 @@ public class ConfiguredComponent {
 
     public void setApplication(Application application) {
         this.application = application;
+    }
+    //</editor-fold>
+
+    public JSONObject toJSON() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("name", name);
+        o.put("className", className);
+
+        JSONObject d = new JSONObject();
+        o.put("details", d);
+        for(Map.Entry<String,String> e: details.entrySet()) {
+            d.put(e.getKey(), e.getValue());
+        }
+
+        o.put("config", new JSONObject(config));
+        return o;
     }
 }
