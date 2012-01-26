@@ -185,6 +185,7 @@ public class ApplicationActionBean implements ActionBean {
             String url = new ForwardResolution(ComponentActionBean.class, "source")
                     .addParameter("app", name)
                     .addParameter("version", version)
+                    .addParameter("minified", true)
                     .getUrl(context.getLocale());
 
             sb.append("        <script type=\"text/javascript\" src=\"");

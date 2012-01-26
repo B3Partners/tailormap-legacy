@@ -16,6 +16,10 @@
  */
 package nl.b3p.viewer.stripes;
 
+import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.CompilationLevel;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.JSSourceFile;
 import java.util.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +33,8 @@ import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -37,6 +43,7 @@ import org.apache.commons.io.IOUtils;
 @UrlBinding("/app/component/{className}/{$event}/{file}")
 @StrictBinding
 public class ComponentActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(ComponentActionBean.class);
 
     @Validate
     private String app;
@@ -50,10 +57,15 @@ public class ComponentActionBean implements ActionBean {
     @Validate
     private String file;
 
+    @Validate
+    private boolean minified;
+
     private Application application;
     private ViewerComponent component;
 
     private ActionBeanContext context;
+
+    private static final Map<String,Object[]> minifiedSourceCache = new HashMap<String,Object[]>();
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public void setContext(ActionBeanContext abc) {
@@ -95,6 +107,14 @@ public class ComponentActionBean implements ActionBean {
     public void setFile(String file) {
         this.file = file;
     }
+
+    public boolean isMinified() {
+        return minified;
+    }
+
+    public void setMinified(boolean minified) {
+        this.minified = minified;
+    }
     //</editor-fold>
 
     @Before(stages=LifecycleStage.EventHandling)
@@ -114,8 +134,6 @@ public class ComponentActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution source() throws IOException {
-        // TODO use closure compiler
-
         File[] files = null;
 
         if(component == null) {
@@ -184,15 +202,21 @@ public class ComponentActionBean implements ActionBean {
                     if(theFiles.length != 1) {
                         out.write(("\n\n// Source file: " + f.getName() + "\n\n").getBytes("UTF-8"));
                     }
-                    IOUtils.copy(new FileInputStream(f), out);
+                    if(isMinified()) {
+                        String minified = getMinifiedSource(f);
+                        if(minified != null) {
+                            out.write(minified.getBytes("UTF-8"));
+                        } else {
+                            IOUtils.copy(new FileInputStream(f), out);
+                        }
+                    } else {
+                        IOUtils.copy(new FileInputStream(f), out);
+                    }
                 }
             }
         };
         if(lastModified != -1) {
             res.setLastModified(lastModified);
-        }
-        if(file != null) {
-            res.setFilename(files[0].getName());
         }
         return res;
     }
@@ -203,5 +227,41 @@ public class ComponentActionBean implements ActionBean {
 
         getContext().getResponse().sendError(404);
         return null;
+    }
+
+    private static synchronized String getMinifiedSource(File f) throws IOException {
+        String key = f.getCanonicalPath();
+        Object[] cache = minifiedSourceCache.get(key);
+
+        if(cache != null) {
+            // check last modified time
+            Long lastModified = (Long)cache[0];
+            if(!lastModified.equals(f.lastModified())) {
+                minifiedSourceCache.remove(key);
+                cache = null;
+            }
+        }
+
+        if(cache != null) {
+            return (String)cache[1];
+        }
+
+        String minified = null;
+        try {
+            Compiler compiler = new Compiler();
+            CompilerOptions options = new CompilerOptions();
+            CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+            options.setOutputCharset("UTF-8");
+            compiler.compile(JSSourceFile.fromCode("dummy.js",""), JSSourceFile.fromFile(f), options);
+
+            minified = compiler.toSource();
+        } catch(Exception e) {
+            log.warn(String.format("Error minifying file \"%s\" using closure compiler, sending original source\n", f.getCanonicalPath()), e);
+        }
+
+        Object[] entry = new Object[] { f.lastModified(), minified};
+        minifiedSourceCache.put(key, entry);
+
+        return minified;
     }
 }
