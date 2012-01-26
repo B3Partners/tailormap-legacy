@@ -14,26 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.Loader.setConfig({
     enabled:true
 });
+
 var propertyGrid;
-if(metadata.configSource != undefined){
+
+if(metadata.configSource != undefined) {
     loadConfigSource(metadata.configSource);
     Ext.onReady(function(){
         ConfigSource("config", configObject);
     });
-}else{    
-    Ext.onReady(function(){
-        if(configObject == undefined || configObject == null){
-            configObject = metadata.configObjects;
+} else {
+    Ext.onReady(function() {
+
+        var source = configObject;
+
+        if(source == null && metadata.extPropertyGridConfigs) {
+            /* set source to from component metadata  (default config) */
+            source = metadata.extPropertyGridConfigs.source;
         }
-        propertyGrid = Ext.create('Ext.grid.property.Grid', {
-            title: 'Pas de instellingen aan',
-            width: 300,
-            renderTo: "config",
-            source: configObject
-        });
+        if(source != null) {
+            var propertyNames = {};
+            if(metadata.extPropertyGridConfigs && metadata.extPropertyGridConfigs.propertyNames) {
+                propertyNames = metadata.extPropertyGridConfigs.propertyNames;
+            }
+            console.log(source,propertyNames);
+            propertyGrid = Ext.create('Ext.grid.property.Grid', {
+                title: 'Pas de instellingen aan',
+                width: 300,
+                renderTo: "config",
+                source: source,
+                propertyNames: propertyNames
+            });
+        }
     });
 }
 
@@ -45,7 +60,7 @@ function loadConfigSource(url){
     document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-function getConfig(){
+function getConfig() {
     var config;
     if(metadata.configSource != undefined){
         config = getConfigObject();
@@ -54,5 +69,5 @@ function getConfig(){
     }
     
     var configFormObject = Ext.get("configObject");
-    configFormObject.dom.value = JSON.stringify( config);
+    configFormObject.dom.value = JSON.stringify(config);
 }

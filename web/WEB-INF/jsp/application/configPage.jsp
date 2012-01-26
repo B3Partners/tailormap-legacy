@@ -72,7 +72,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 configObject= JSON.parse ('${actionBean.component.config}');
             </c:if>
         </script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/components/component.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>
 
