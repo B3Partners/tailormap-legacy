@@ -263,7 +263,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
     addToSelection: function(record) {
         var me = this;
-        if(record.get('type') == "layer") {
+        if(record.get('type') == "layer" || record.get('type') == "document") {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
                 var objData = record.raw;
