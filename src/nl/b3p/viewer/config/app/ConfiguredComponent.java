@@ -32,7 +32,7 @@ import org.json.JSONObject;
         uniqueConstraints=
             @UniqueConstraint(columnNames={"name", "application"})
 )
-public class ConfiguredComponent {
+public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     @Id
     private Long id;
 
@@ -134,5 +134,10 @@ public class ConfiguredComponent {
 
         o.put("config", new JSONObject(config));
         return o;
+    }
+
+    @Override
+    public int compareTo(ConfiguredComponent rhs) {
+        return className.compareTo(rhs.getClassName());
     }
 }
