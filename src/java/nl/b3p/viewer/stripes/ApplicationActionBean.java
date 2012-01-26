@@ -167,7 +167,7 @@ public class ApplicationActionBean implements ActionBean {
 
                     for(File f: cc.getViewerComponent().getSources()) {
                         String url = new ForwardResolution(ComponentActionBean.class, "source")
-                                .addParameter("appName", name)
+                                .addParameter("app", name)
                                 .addParameter("version", version)
                                 .addParameter("className", cc.getClassName())
                                 .addParameter("file", f.getName())

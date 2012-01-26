@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
-import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
@@ -96,7 +95,7 @@ public class ComponentActionBean implements ActionBean {
     }
     //</editor-fold>
 
-    @Before(stages= LifecycleStage.EventHandling)
+    @Before(stages=LifecycleStage.EventHandling)
     public void load() {
         Application application = ApplicationActionBean.findApplication(app, version);
         if(application != null) {
