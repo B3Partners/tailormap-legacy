@@ -3,28 +3,98 @@
 
 [
     {
-        className: "TOC",
-        sources: ["TOC.js"]
+        className: "FlamingoMap",
+        name: "Flamingo Map",
+        shortName: "Fm",
+        restrictions: ["content"],
+
+        singleton: true,
+        linkedComponents: ["openlayers"]
+    },
+
+    {
+        className: "OpenLayersMap",
+        name: "OpenLayers Map",
+        shortName: "Om",
+
+        singleton: true,
+        restrictions: ["content"],
+        linkedComponents: ["flamingo"]
+    },
+
+    {
+        className: "Tabs",
+        name: "Tabs",
+        shortName: "Tb",
+
+        restrictions: ["leftmargin_top", "rightmargin_top"]
+    },
+
+    {
+        className: "PanTool",
+        name: "Pan",
+        shortName: "Pa",
+
+        singleton: true,
+        restrictions: ["top_menu"]
+    },
+
+    {
+        className: "OpenStreetViewTool",
+        name: "Streetview",
+        shortName: "Sv",
+
+        singleton: true,
+        restrictions: ["top_menu"]
+    },
+
+    {
+        className: "IdentifyTool",
+        name: "Identify",
+        shortName: "Id",
+
+        singleton: true,
+        restrictions: ["top_menu"]
+    },
+
+    {
+        className: "Zoom",
+        name: "Zoom",
+        shortName: "Zm",
+        sources: ["zoom.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+        addedToRegions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "Naam"}
+        }
     },
 
     {
         className: "TestComponent",
         sources: ["TestComponent.js", "TestComponentFile2.js"],
-        closureCompilerSafe: true,
         configSource: "TestComponent-config.js",
+        name: "Test Component",
+        shortName: "To",
 
-        // http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.property.Grid-method-setSource
-        extPropertyGridConfig: {
-            "stringfield": "",
-            "numfield": 0.0,
-            "boolfield": false
-        }
+        restrictions: ["top_menu", "leftmargin_top", "rightmargin_top"],
+        addedToRegions: ["top_menu"],
+        type: "popup"
     },
 
     {
-        className: "Zoom",
-        sources: ["zoom.js"],
-        closureCompilerSafe: true
-    }
+        className: "TOC",
+        name: "TOC",
+        sources: ["TOC.js"],
 
+        restrictions: ["rightmargin_top", "leftmargin_top"],
+        type: "popup",
+        extPropertyGridConfigs: {
+            propertyNames: {naam: "Naam"},
+            source: {naam: "asdf", kleur: "geel"}
+        }
+    }
 ]
