@@ -140,18 +140,21 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public Resolution config() {
         EntityManager em = Stripersist.getEntityManager();
 
-        metadata = ComponentRegistry.getInstance().getViewerComponent(className).getMetadata();
-        
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
         
-        Query q = em.createQuery("FROM ConfiguredComponent WHERE application = :application AND name = :name").setParameter("application", application).setParameter("name", name);
         try {
-            component = (ConfiguredComponent) q.getSingleResult();
-            groups = new ArrayList<String>(component.getReaders());
-            em.getTransaction().commit();
+            component = (ConfiguredComponent)em.createQuery(
+                    "from ConfiguredComponent where application = :application and name = :name")
+                    .setParameter("application", application)
+                    .setParameter("name", name)
+                    .getSingleResult();
         } catch (NoResultException ex) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
         }
+
+        groups = new ArrayList<String>(component.getReaders());
+        metadata = component.getViewerComponent().getMetadata();
+        
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
 
