@@ -71,3 +71,38 @@ function getConfig() {
     var configFormObject = Ext.get("configObject");
     configFormObject.dom.value = JSON.stringify(config);
 }
+
+Ext.onReady(function() {
+    Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-display');   
+    Ext.createWidget('tabpanel', {
+        renderTo: 'tabs',
+        width: '100%',
+        height: '100%',
+        activeTab: 0,
+        defaults :{
+            bodyPadding: 10
+        },
+        layoutOnTabChange: true,
+        items: [{
+            contentEl:'config', 
+            title: 'Configuratie'
+        },{
+            contentEl:'rights', 
+            title: 'Rechten'
+        },{
+            contentEl:'layout', 
+            title: 'Layout'
+        }],
+        bbar: ["->", {
+            xtype: 'button',
+            text: 'Opslaan',
+            iconCls: 'savebutton-icon',
+            listeners: {
+                click: function() {
+                    getConfig();
+                    document.getElementById('configForm').submit();
+                }
+            }
+        }]
+    });
+});

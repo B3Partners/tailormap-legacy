@@ -238,17 +238,8 @@ body {
             padding: 3px;
             border: 2px solid @maincolor;
             background-color: White;
-            text-align: left;
-            .title {
-                padding-left: 3px;
-            }
+            text-align: center;
             &.float-component {
-                float: left;
-                margin-right: 5px;
-                .title {
-                    float: left;
-                    padding-right: 3px;
-                }
                 .wrangler, .remove {
                     width: 16px;
                     height: 16px;
@@ -309,22 +300,21 @@ body {
             margin-left: 10px;
         }
         #center_center {
-            overflow: auto;
+            overflow: hidden;
             #layout_left_menu {
                 float: left;
                 margin-right: 10px;
             }
             #center_center_center {
-                overflow: auto;
+                overflow: hidden;
                 #layout_top_menu, #layout_content {
                     margin-bottom: 10px;
                 }
                 #layout_top_menu {
-                    //float: left;
-                    //width: 100%;
-                }
-                #layout_content {
-                    //clear: both;
+                    .floatwrapper {
+                        padding-right: 15px;
+                        overflow: auto;
+                    }
                 }
             }
         }
@@ -345,4 +335,7 @@ body {
         display: block;
         margin-top: 5px;
     }
+}
+.savebutton-icon {
+    background-image: url("/@{baseurl}/resources/images/save.png");
 }
