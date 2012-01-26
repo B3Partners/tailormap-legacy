@@ -66,7 +66,6 @@
 
         singleton: true,
         restrictions: ["top_menu"],
-        addedToRegions: ["top_menu"],
 
         extPropertyGridConfig: {
             propertyNames: {name: "Naam"}
@@ -81,7 +80,6 @@
         shortName: "To",
 
         restrictions: ["top_menu", "leftmargin_top", "rightmargin_top"],
-        addedToRegions: ["top_menu"],
         type: "popup"
     },
 
