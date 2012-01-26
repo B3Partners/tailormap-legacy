@@ -155,11 +155,7 @@ public class ApplicationActionBean implements ActionBean {
 
         // Sort components by classNames, so order is always the same for debugging
         List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
-        Collections.sort(comps, new Comparator<ConfiguredComponent>() {
-            public int compare(ConfiguredComponent lhs, ConfiguredComponent rhs) {
-                return lhs.getClassName().compareTo(rhs.getClassName());
-            }
-        });
+        Collections.sort(comps);
 
         Set<String> classNamesDone = new HashSet<String>();
 
@@ -183,23 +179,17 @@ public class ApplicationActionBean implements ActionBean {
                 }
             }
         } else {
-            // If not debugging, cat all source files in JSP so no extra HTTP requests
-            sb.append("        <script type=\"text/javascript\">\n");
-            sb.append("// JavaScript included inline and minified server-side to reduce HTTP requests; add debug=true parameter to disable");
+            // If not debugging, create a single script tag with all source
+            // for all components for the application for a minimal number of HTTP requests
 
-            for(ConfiguredComponent cc: comps) {
-                if(!classNamesDone.contains(cc.getClassName())) {
+            String url = new ForwardResolution(ComponentActionBean.class, "source")
+                    .addParameter("app", name)
+                    .addParameter("version", version)
+                    .getUrl(context.getLocale());
 
-                    for(File f: cc.getViewerComponent().getSources()) {
-
-                        sb.append("\n\n// Component: ").append(cc.getClassName()).append(", source file: ").append(f.getName()).append("\n\n");
-                        sb.append(IOUtils.toString(new FileInputStream(f)));
-                    }
-                    classNamesDone.add(cc.getClassName());
-                }
-            }
-
-            sb.append("</script\n");
+            sb.append("        <script type=\"text/javascript\" src=\"");
+            sb.append(HtmlUtil.encode(context.getServletContext().getContextPath() + url));
+            sb.append("\"></script>\n");
         }
 
         componentSourceHTML = sb.toString();

@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.util.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class ComponentActionBean implements ActionBean {
     @Validate
     private String file;
 
+    private Application application;
     private ViewerComponent component;
 
     private ActionBeanContext context;
@@ -97,11 +99,12 @@ public class ComponentActionBean implements ActionBean {
 
     @Before(stages=LifecycleStage.EventHandling)
     public void load() {
-        Application application = ApplicationActionBean.findApplication(app, version);
-        if(application != null) {
+        application = ApplicationActionBean.findApplication(app, version);
+        if(application != null && className != null) {
             for(ConfiguredComponent cc: application.getComponents()) {
                 if(cc.getClassName().equals(className)) {
 
+                    // TODO: check readers, return SC_FORBIDDEN if not authorized
                     component = cc.getViewerComponent();
                     break;
                 }
@@ -113,27 +116,48 @@ public class ComponentActionBean implements ActionBean {
     public Resolution source() throws IOException {
         // TODO use closure compiler
 
-        if(component == null) {
-            return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND, "Component " + className);
-        }
-
-        // TODO: check readers, return SC_FORBIDDEN if not authorized
-
         File[] files = null;
-        if(file != null) {
-            for(File f: component.getSources()) {
-                if(f.getName().equals(file)) {
-                    files = new File[] {f};
-                    break;
+
+        if(component == null) {
+            // All source files for all components for this application
+
+            // Sort list for consistency (error line numbers, cache, etc.)
+            List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
+            Collections.sort(comps);
+
+            Set<String> classNamesDone = new HashSet<String>();
+
+            List<File> fileList = new ArrayList<File>();
+
+            for(ConfiguredComponent cc: comps) {
+                if(!classNamesDone.contains(cc.getClassName())) {
+                    classNamesDone.add(cc.getClassName());
+
+                    // TODO: check readers, skip if not authorized
+
+                    fileList.addAll(Arrays.asList(cc.getViewerComponent().getSources()));
                 }
             }
-            if(files == null) {
-                return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND, file);
-            }
+            files = fileList.toArray(new File[] {});
         } else {
-            // No specific sourcefile requested, return all sourcefiles
-            // concatenated
-            files = component.getSources();
+            // Source files specific to a component
+
+            if(file != null) {
+                // Search for the specified file in the component sources
+                for(File f: component.getSources()) {
+                    if(f.getName().equals(file)) {
+                        files = new File[] {f};
+                        break;
+                    }
+                }
+                if(files == null) {
+                    return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND, file);
+                }
+            } else {
+                // No specific sourcefile requested, return all sourcefiles
+                // concatenated
+                files = component.getSources();
+            }
         }
 
         long lastModified = -1;
