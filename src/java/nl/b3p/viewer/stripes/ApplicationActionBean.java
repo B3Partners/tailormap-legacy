@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.io.File;
 import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -163,17 +164,19 @@ public class ApplicationActionBean implements ActionBean {
 
             for(ConfiguredComponent cc: comps) {
                 if(!classNamesDone.contains(cc.getClassName())) {
-                    String url = new ForwardResolution(ComponentActionBean.class, "source")
-                            .addParameter("appName", name)
-                            .addParameter("version", version)
-                            .addParameter("name", cc.getClassName())
-                            .getUrl(context.getLocale());
 
-                    // TODO make script tag per ViewerComponent.sourceFiles array element for debugging
+                    for(File f: cc.getViewerComponent().getSources()) {
+                        String url = new ForwardResolution(ComponentActionBean.class, "source")
+                                .addParameter("appName", name)
+                                .addParameter("version", version)
+                                .addParameter("className", cc.getClassName())
+                                .addParameter("file", f.getName())
+                                .getUrl(context.getLocale());
 
-                    sb.append("        <script type=\"text/javascript\" src=\"");
-                    sb.append(HtmlUtil.encode(context.getServletContext().getContextPath() + url));
-                    sb.append("\"></script>\n");
+                        sb.append("        <script type=\"text/javascript\" src=\"");
+                        sb.append(HtmlUtil.encode(context.getServletContext().getContextPath() + url));
+                        sb.append("\"></script>\n");
+                    }
                     classNamesDone.add(cc.getClassName());
                 }
             }

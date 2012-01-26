@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ViewerComponent;
@@ -33,24 +34,27 @@ import org.apache.commons.io.IOUtils;
  *
  * @author Matthijs Laan
  */
-@UrlBinding("/app/component/{appName}/v{version}/{name}{resource}/{$event}")
+@UrlBinding("/app/component/{className}/{$event}/{file}")
 @StrictBinding
 public class ComponentActionBean implements ActionBean {
 
     @Validate
-    private String appName;
+    private String app;
 
     @Validate
     private String version;
 
     @Validate
-    private String name;
+    private String className;
 
     @Validate
-    private String resource;
+    private String file;
+
+    private ViewerComponent component;
 
     private ActionBeanContext context;
 
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public void setContext(ActionBeanContext abc) {
         this.context = abc;
     }
@@ -59,20 +63,20 @@ public class ComponentActionBean implements ActionBean {
         return context;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getApp() {
+        return app;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setApp(String app) {
+        this.app = app;
     }
 
-    public String getName() {
-        return name;
+    public String getClassName() {
+        return className;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public String getVersion() {
@@ -83,44 +87,91 @@ public class ComponentActionBean implements ActionBean {
         this.version = version;
     }
 
-    public String getResource() {
-        return resource;
+    public String getFile() {
+        return file;
     }
 
-    public void setResource(String resource) {
-        this.resource = resource;
+    public void setFile(String file) {
+        this.file = file;
+    }
+    //</editor-fold>
+
+    @Before(stages= LifecycleStage.EventHandling)
+    public void load() {
+        Application application = ApplicationActionBean.findApplication(app, version);
+        if(application != null) {
+            for(ConfiguredComponent cc: application.getComponents()) {
+                if(cc.getClassName().equals(className)) {
+
+                    component = cc.getViewerComponent();
+                    break;
+                }
+            }
+        }
     }
 
     @DefaultHandler
     public Resolution source() throws IOException {
-        // TODO conditional HTTP request
         // TODO use closure compiler
-        // TODO support specific source files instead of all concatenated (for debugging)
 
-        Application app = ApplicationActionBean.findApplication(appName, version);
-        for(ConfiguredComponent cc: app.getComponents()) {
-            if(cc.getClassName().equals(name)) {
-                // TODO: check readers
+        if(component == null) {
+            return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND, "Component " + className);
+        }
 
-                final ViewerComponent vc = ComponentRegistry.getInstance().getViewerComponent(name);
+        // TODO: check readers, return SC_FORBIDDEN if not authorized
 
-                if(vc != null) {
-                    return new StreamingResolution("application/javascript") {
-                        public void stream(HttpServletResponse response) throws Exception {
-                            OutputStream out = response.getOutputStream();
-                            for(File f: vc.getSources()) {
-                                out.write(("\n\n// Source file: " + f.getName() + "\n\n").getBytes("UTF-8"));
-                                IOUtils.copy(new FileInputStream(f), out);
-                            }
-                        }
-                    };
+        File[] files = null;
+        if(file != null) {
+            for(File f: component.getSources()) {
+                if(f.getName().equals(file)) {
+                    files = new File[] {f};
+                    break;
                 }
-                break;
+            }
+            if(files == null) {
+                return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND, file);
+            }
+        } else {
+            // No specific sourcefile requested, return all sourcefiles
+            // concatenated
+            files = component.getSources();
+        }
+
+        long lastModified = -1;
+        for(File f: files) {
+            lastModified = Math.max(lastModified, f.lastModified());
+        }
+        if(lastModified != -1) {
+            long ifModifiedSince = context.getRequest().getDateHeader("If-Modified-Since");
+
+            if(ifModifiedSince != -1) {
+                if(ifModifiedSince >= lastModified) {
+                    return new ErrorResolution(HttpServletResponse.SC_NOT_MODIFIED);
+                }
             }
         }
 
-        getContext().getResponse().sendError(404);
-        return null;
+        final File[] theFiles = files;
+        StreamingResolution res = new StreamingResolution("application/javascript") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+
+                OutputStream out = response.getOutputStream();
+                for(File f: theFiles) {
+                    if(theFiles.length != 1) {
+                        out.write(("\n\n// Source file: " + f.getName() + "\n\n").getBytes("UTF-8"));
+                    }
+                    IOUtils.copy(new FileInputStream(f), out);
+                }
+            }
+        };
+        if(lastModified != -1) {
+            res.setLastModified(lastModified);
+        }
+        if(file != null) {
+            res.setFilename(files[0].getName());
+        }
+        return res;
     }
 
     public Resolution resource() throws IOException {
