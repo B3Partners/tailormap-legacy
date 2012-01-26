@@ -1,7 +1,7 @@
 /*JavaScript interface class file*/
 
 /**
- * MapViewer
+ * ViewerController
  * @class 
  * @constructor
  * @param viewerType The type of the viewer: flamingo/openlayers/etc..
@@ -10,17 +10,17 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 
-function MapViewer(viewerType,mapId){
+function ViewerController(viewerType,mapId){
     this.viewerType = viewerType;
     this.wmc = null;
     this.webMapController = null;
     this.mapDivId = mapId;
 }
 
-MapViewer.prototype.init = function (){
+ViewerController.prototype.init = function (){
     this.mapOptions = {};
     if (this.viewerType== "flamingo"){
-        this.webMapController=new FlamingoController(this.mapDivId); // aanpassen aan id van div
+        this.webMapController=new FlamingoMapComponent(this.mapDivId); // aanpassen aan id van div
     }/*else if (this.viewerType=="openlayers"){
         this.webMapController= new OpenLayersController();
         this.mapOptions = {
@@ -42,7 +42,7 @@ MapViewer.prototype.init = function (){
     this.wmc = this.webMapController;
 }
 
-MapViewer.prototype.createMap = function(opts){
+ViewerController.prototype.createMap = function(opts){
     var a= 0;
     for (var key in opts){
         this.mapOptions[key] = opts[key];
@@ -52,7 +52,7 @@ MapViewer.prototype.createMap = function(opts){
     return map;
 }
 
-MapViewer.prototype.zoomToExtent = function(minx,miny,maxx,maxy){
+ViewerController.prototype.zoomToExtent = function(minx,miny,maxx,maxy){
     this.webMapController.getMap().zoomToExtent({
         minx:minx,
         miny:miny,
@@ -68,7 +68,7 @@ MapViewer.prototype.zoomToExtent = function(minx,miny,maxx,maxy){
  *                                                                  *
  ********************************************************************/
 
-MapViewer.prototype.bind = function (event,object,handler){
+ViewerController.prototype.bind = function (event,object,handler){
     if(object.isComponent != undefined){
         object.bind(event,handler);
     }else{
@@ -76,7 +76,7 @@ MapViewer.prototype.bind = function (event,object,handler){
     }
 }
 
-MapViewer.prototype.unbind = function (event,object){
+ViewerController.prototype.unbind = function (event,object){
     this.webMapController.unRegisterEvent(event, object);
 }
 

@@ -9,7 +9,7 @@ Ext.define("Component",{
         options: "opt1"
     }, 
     constructor: function(config){
-        this.mapViewer = mapViewer;
+        this.viewerController = viewerController;
         this.initConfig(config);
         return this;
     },

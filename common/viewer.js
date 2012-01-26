@@ -1,16 +1,16 @@
 var viewerType = "flamingo";
-var mapViewer = null;
+var viewerController = null;
 var aaron = null;
 function initMapComponent(){
     
     if (window.location.href.indexOf("openlayers")>0){
         viewerType="openlayers";
     }
-    mapViewer = new MapViewer(viewerType,"map");
-    mapViewer.init();
+    viewerController = new ViewerController(viewerType,"map");
+    viewerController.init();
     
-    var map = mapViewer.createMap();   
-    mapViewer.bind(Event.ON_CONFIG_COMPLETE,mapViewer.wmc,onConfigComplete);
+    var map = viewerController.createMap();   
+    viewerController.bind(Event.ON_CONFIG_COMPLETE,viewerController.wmc,onConfigComplete);
 }
 
 
@@ -38,37 +38,37 @@ function initializeButtons(){
         }
     }
     
-    mapViewer.wmc.createPanel("toolGroup");
+    viewerController.wmc.createPanel("toolGroup");
 
-    mapViewer.wmc.addTool(mapViewer.wmc.createTool("loading",Tool.LOADING_BAR));
+    viewerController.wmc.addTool(viewerController.wmc.createTool("loading",Tool.LOADING_BAR));
 
-    zoomBox = mapViewer.wmc.createTool("toolZoomin",Tool.ZOOM_BOX, {
+    zoomBox = viewerController.wmc.createTool("toolZoomin",Tool.ZOOM_BOX, {
         title: 'Inzomen met selectie'
     });
-    mapViewer.wmc.addTool(zoomBox);
+    viewerController.wmc.addTool(zoomBox);
 
-    pan = webMapController.createTool("b_pan",Tool.PAN, {
+    pan = viewerController.wmc.createTool("b_pan",Tool.PAN, {
         title: 'Verschuiven'
     });
-    mapViewer.wmc.addTool(pan);
-    mapViewer.wmc.activateTool("b_pan");
+    viewerController.wmc.addTool(pan);
+    viewerController.wmc.activateTool("b_pan");
 
-    prevExtent = webMapController.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {
+    prevExtent = viewerController.wmc.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {
         title: 'Vorige extent'
     });
-    mapViewer.wmc.addTool(prevExtent);
+    viewerController.wmc.addTool(prevExtent);
 
-    var bu_measure = mapViewer.wmc.createTool("b_measure",Tool.MEASURE, {
+    var bu_measure = viewerController.wmc.createTool("b_measure",Tool.MEASURE, {
         title: 'Meten'
     });
    
-    mapViewer.wmc.addTool(bu_measure);
+    viewerController.wmc.addTool(bu_measure);
 
-    var scalebar = mapViewer.wmc.createTool("scalebar",Tool.SCALEBAR);
-    mapViewer.wmc.addTool(scalebar);
+    var scalebar = viewerController.wmc.createTool("scalebar",Tool.SCALEBAR);
+    viewerController.wmc.addTool(scalebar);
 
-    var zoombar= mapViewer.wmc.createTool("zoombar",Tool.ZOOM_BAR);
-    mapViewer.wmc.addTool(zoombar);
+    var zoombar= viewerController.wmc.createTool("zoombar",Tool.ZOOM_BAR);
+    viewerController.wmc.addTool(zoombar);
 }
 
 function loadTOC(){
@@ -86,7 +86,7 @@ function loadTOC(){
  * Alle ge�mplementeerde eventhandling functies
  */
 function b_removePolygons(id,params){
-    mapViewer.wmc.getMap().getLayer("editMap").removeAllFeatures();
+    viewerController.wmc.getMap().getLayer("editMap").removeAllFeatures();
 }
 
 function loadBaseLayers(){
@@ -115,8 +115,8 @@ function loadBaseLayers(){
     
     options["isBaseLayer"]=false;
     
-    var osmLayer = mapViewer.wmc.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-    mapViewer.wmc.getMap().addLayer(osmLayer);
+    var osmLayer = viewerController.wmc.createWMSLayer("OSM",layerUrl , ogcOptions, options);
+    viewerController.wmc.getMap().addLayer(osmLayer);
 }
 
 var mapInitialized = false;
@@ -131,5 +131,5 @@ function onFrameworkLoaded(){
 }
 
 function moveToExtent(minx,miny,maxx,maxy){
-    mapViewer.zoomToExtent(minx, miny, maxx, maxy);
+    viewerController.zoomToExtent(minx, miny, maxx, maxy);
 }

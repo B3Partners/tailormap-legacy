@@ -1,28 +1,28 @@
 /*JavaScript interface class file*/
 
 /**
- * Controller
+ * MapComponent
  * @class 
  * @constructor
  * @param viewerObject Het viewerObject
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-function Controller(viewerObject){
+function MapComponent(viewerObject){
     this.maps= new Array();
     this.tools= new Array();
     this.events = new Array();
     this.panel=null;
     this.eventList = new Array();
     this.addEvents(Event.ON_CONFIG_COMPLETE);
-    webMapController = this;
+    webMapMapComponent = this;
     
 }
-var webMapController = null;
+var webMapMapComponent = null;
 
-Ext.extend(Controller,Ext.util.Observable,{});
+Ext.extend(MapComponent,Ext.util.Observable,{});
 
-Controller.prototype.getId = function(){
+MapComponent.prototype.getId = function(){
     return "flamingo";
 }
 	
@@ -39,8 +39,8 @@ Controller.prototype.getId = function(){
      *@param options extra options for this wms layer
      *Must be implemented by subclass
      */
-Controller.prototype.createWMSLayer = function(name, url, ogcParams,options){
-    throw("Controller.createWMSLayer() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.createWMSLayer = function(name, url, ogcParams,options){
+    throw("MapComponent.createWMSLayer() Not implemented! Must be implemented in sub-class");
 }
 /**
  * @description Creates a OSGEO TMS layer.
@@ -50,8 +50,8 @@ Controller.prototype.createWMSLayer = function(name, url, ogcParams,options){
  * @param options extra options for this TMS layer
  * @returns Returns the TMSLayer
  */
-Controller.prototype.createTMSLayer = function (id,name,url, options){
-    throw("Controller.createTMSLayer() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.createTMSLayer = function (id,name,url, options){
+    throw("MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class");
 }
 /**
      *Creates a Map object for this framework
@@ -59,21 +59,21 @@ Controller.prototype.createTMSLayer = function (id,name,url, options){
      *@param options extra options for the map
      *Must be implemented by subclass
      */
-Controller.prototype.createMap = function(id, options){
-    throw("Controller.createMap(...) not implemented! Must be implemented in sub-class");
+MapComponent.prototype.createMap = function(id, options){
+    throw("MapComponent.createMap(...) not implemented! Must be implemented in sub-class");
 }
 /**
      *Must be implemented by the sub-class
      *This creates a tool.
      */
-Controller.prototype.createTool= function (){
-    throw("Controller.createTool(...) not implemented! Must be implemented in sub-class");
+MapComponent.prototype.createTool= function (){
+    throw("MapComponent.createTool(...) not implemented! Must be implemented in sub-class");
 }
 /**
      *Add a array of Tool objects. For every tool .addTool is called.
      *@param tools Array of Tool objects
      */
-Controller.prototype.addTools = function (tools){
+MapComponent.prototype.addTools = function (tools){
     for (var i=0; i < tools.length; i++){
         addTool(tools[i]);
     }
@@ -84,7 +84,7 @@ Controller.prototype.addTools = function (tools){
      *and call super to do some frameworks specific things.
      *@param tool The tool that needs to be added of type Tool
      */
-Controller.prototype.addTool = function(tool){
+MapComponent.prototype.addTool = function(tool){
     if (!(tool instanceof Tool)){
         throw("Given tool not of type 'Tool'");
     }
@@ -95,7 +95,7 @@ Controller.prototype.addTool = function(tool){
      *and call super to do some framework specific things.
      *@param tool The tool that needs to be removed.
      */
-Controller.prototype.removeTool = function (tool){
+MapComponent.prototype.removeTool = function (tool){
     if (!(tool instanceof Tool)){
         throw("Given tool not of type 'Tool'");
     }
@@ -111,7 +111,7 @@ Controller.prototype.removeTool = function (tool){
 * Helperfunction: Get a tool based on the given id
 * @param id The id of the Tool which must be retrieved
  **/
-Controller.prototype.getTool = function (id){
+MapComponent.prototype.getTool = function (id){
     for (var i = 0 ; i < this.tools.length ; i++){
         var tool = this.tools[i];
         if(tool.getId() == id){
@@ -125,7 +125,7 @@ Controller.prototype.getTool = function (id){
  *@param type The type of the tools wanted
  *@return A array of tools with the given type (or a empty array when no tool is found)
  */
-Controller.prototype.getToolsByType = function(type){
+MapComponent.prototype.getToolsByType = function(type){
     var foundTools=new Array();
     for(var i=0; i < this.tools.length; i++){
         if(this.tools[i].getType()==type){
@@ -139,33 +139,33 @@ Controller.prototype.getToolsByType = function(type){
      *Must be implemented by subclass
 	 * @param id Id of the which must be removed
      **/
-Controller.prototype.removeToolById = function (id){
-    throw("Controller.removeToolById() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.removeToolById = function (id){
+    throw("MapComponent.removeToolById() Not implemented! Must be implemented in sub-class");
 }
 
 /**
-     *Add a map to the controller
+     *Add a map to the MapComponent
      *Must be implemented by subclass
-	 * @param mapObject The map which must be added to the controller.
+	 * @param mapObject The map which must be added to the MapComponent.
      **/    
-Controller.prototype.addMap = function (mapObject){
-    throw("Controller.addMap() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.addMap = function (mapObject){
+    throw("MapComponent.addMap() Not implemented! Must be implemented in sub-class");
 }
 /**
      *Gets the map with mapId
      *Must be implemented by subclass
 	 * @param mapId The id of the map which must be returned.
      */
-Controller.prototype.getMap = function (mapId){
-    throw("Controller.getMap() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.getMap = function (mapId){
+    throw("MapComponent.getMap() Not implemented! Must be implemented in sub-class");
 }
 /**
-     *Removes the given map from the controller.
+     *Removes the given map from the MapComponent.
      *Must be implemented by subclass
 	 * @param removeMap The map which must be removed
      */
-Controller.prototype.removeMap = function (removeMap){
-    throw("Controller.removeMap() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.removeMap = function (removeMap){
+    throw("MapComponent.removeMap() Not implemented! Must be implemented in sub-class");
 }
 
 /**
@@ -174,8 +174,8 @@ Controller.prototype.removeMap = function (removeMap){
 	 * A vectorlayer is a layer on which features can be drawn by the user (a EditMap in Flamingo, a VectorLayer in OpenLayers)
 	 * @param name The name of this laye
      */
-Controller.prototype.createVectorLayer = function (name){
-    throw("Controller.createVectorLayer() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.createVectorLayer = function (name){
+    throw("MapComponent.createVectorLayer() Not implemented! Must be implemented in sub-class");
 }
 /**
  *Creates a layer of an image
@@ -187,15 +187,15 @@ Controller.prototype.createVectorLayer = function (name){
  * @param size The size of the image
  * @param options Hashtable of extra options to tag onto the layer
  */
-Controller.prototype.createImageLayer = function (name,url, bounds, size,options){
-    throw("Controller.createImageLayer() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.createImageLayer = function (name,url, bounds, size,options){
+    throw("MapComponent.createImageLayer() Not implemented! Must be implemented in sub-class");
 }
 
 /**
 * Creates a panel
 */
-Controller.prototype.createPanel = function (name){
-    throw("Controller.createPanel() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.createPanel = function (name){
+    throw("MapComponent.createPanel() Not implemented! Must be implemented in sub-class");
 }
 /**
  * Registers a function with a given event on the given object
@@ -206,16 +206,16 @@ Controller.prototype.createPanel = function (name){
  * handlerFunction(id,params).
  *
 */
-Controller.prototype.registerEvent = function(event, object, handler){
-    throw("Controller.registerEvent() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.registerEvent = function(event, object, handler){
+    throw("MapComponent.registerEvent() Not implemented! Must be implemented in sub-class");
 }
 /**
  *Unregisters a event.
  *@param event is the event that needs to be unregisterd
  *@param object is the object on which the event must be unregisterd.
  */
-Controller.prototype.unRegisterEvent = function (event, object){
-    throw("Controller.unRegisterEvent() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.unRegisterEvent = function (event, object){
+    throw("MapComponent.unRegisterEvent() Not implemented! Must be implemented in sub-class");
 }
  
 /**
@@ -223,15 +223,15 @@ Controller.prototype.unRegisterEvent = function (event, object){
  * Must be implemented by subclass
  * @param event The event to be handled
  */
-Controller.prototype.handleEvents = function(event){
-    throw("Controller.handleEvents() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.handleEvents = function(event){
+    throw("MapComponent.handleEvents() Not implemented! Must be implemented in sub-class");
 }
 
 /**
-* Initialize all the controller specific events.
+* Initialize all the MapComponent specific events.
 */
-Controller.prototype.initEvents = function(){
-    throw("Controller.initEvent() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.initEvents = function(){
+    throw("MapComponent.initEvent() Not implemented! Must be implemented in sub-class");
 }
 
 /**
@@ -239,7 +239,7 @@ Controller.prototype.initEvents = function(){
  * @param specific The specific name
  * @return The generic name.
  */
-Controller.prototype.getGenericEventName = function (specific){
+MapComponent.prototype.getGenericEventName = function (specific){
   //  console.log(specific);
     if (this.eventList.length==0){
         this.initEvents();
@@ -257,7 +257,7 @@ Controller.prototype.getGenericEventName = function (specific){
  * @param generic The generic name
  * @return The specific name.
  */
-Controller.prototype.getSpecificEventName = function (generic){
+MapComponent.prototype.getSpecificEventName = function (generic){
     return this.eventList[generic];
 }
 
@@ -265,6 +265,6 @@ Controller.prototype.getSpecificEventName = function (generic){
  * Activates the tool
  * @param id Id of the tool to be activated
  */
-Controller.prototype.activateTool = function (id){
-    throw("Controller.activateTool() Not implemented! Must be implemented in sub-class");
+MapComponent.prototype.activateTool = function (id){
+    throw("MapComponent.activateTool() Not implemented! Must be implemented in sub-class");
 }

@@ -1,26 +1,26 @@
 /**
  * @class
  * @constructor
- * @augments Controller
- * @description Controller subclass for OpenLayers
+ * @augments MapComponent
+ * @description MapComponent subclass for OpenLayers
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-function OpenLayersController(){
+function OpenLayersMapComponent(){
     this.pointButton = null;
     this.lineButton = null;
     this.polygonButton = null;
-    Controller.call(this,'');
+    MapComponent.call(this,'');
 }
-//extends Controller
-OpenLayersController.prototype = new Controller();
-OpenLayersController.prototype.constructor=OpenLayersController;
+//extends MapComponent
+OpenLayersMapComponent.prototype = new MapComponent();
+OpenLayersMapComponent.prototype.constructor=OpenLayersMapComponent;
 
 /**
  * @function
  * @description Initializes the events
  */
-OpenLayersController.prototype.initEvents = function(){
+OpenLayersMapComponent.prototype.initEvents = function(){
     this.eventList[Event.ON_EVENT_DOWN]                             = "activate";
     this.eventList[Event.ON_EVENT_UP]                               = "deactivate";
     this.eventList[Event.ON_GET_CAPABILITIES]                       = "onGetCapabilities";
@@ -40,7 +40,7 @@ OpenLayersController.prototype.initEvents = function(){
 * @description Gets the panel of this controller and OpenLayers.Map. If the panel is still null, the panel is created and added to the map.
 * @returns a OpenLayers.Control.Panel
 */
-OpenLayersController.prototype.getPanel = function(){
+OpenLayersMapComponent.prototype.getPanel = function(){
     if (this.panel==null){
         this.panel=new OpenLayers.Control.Panel();
         this.maps[0].getFrameworkMap().addControl(this.panel);
@@ -51,7 +51,7 @@ OpenLayersController.prototype.getPanel = function(){
 /**
 * @description Creates a OpenLayers.Control.Panel and adds it to the map
 */
-OpenLayersController.prototype.createPanel = function (id){
+OpenLayersMapComponent.prototype.createPanel = function (id){
     var paneel= new OpenLayers.Control.Panel();
     this.panel = paneel;
     this.maps[0].getFrameworkMap().addControl(this.panel);
@@ -62,7 +62,7 @@ OpenLayersController.prototype.createPanel = function (id){
  *@param options extra options for the map. See the OpenLayers.Map docs.
  *@returns a OpenLayersMap
  */
-OpenLayersController.prototype.createMap = function(id, options){
+OpenLayersMapComponent.prototype.createMap = function(id, options){
     //set some default options:
     if (!options["theme"])
         options["theme"]=OpenLayers._getScriptLocation()+'theme/b3p/style.css';
@@ -85,10 +85,10 @@ OpenLayersController.prototype.createMap = function(id, options){
     return new OpenLayersMap(map);
 }
 /**
-     *See @link Controller.createWMSLayer
+     *See @link MapComponent.createWMSLayer
      */
     
-OpenLayersController.prototype.createWMSLayer = function(name, wmsurl,ogcParams,options){
+OpenLayersMapComponent.prototype.createWMSLayer = function(name, wmsurl,ogcParams,options){
     options["id"]=null;
     options["isBaseLayer"]=false;
     options["singleTile"]=true;
@@ -124,17 +124,17 @@ OpenLayersController.prototype.createWMSLayer = function(name, wmsurl,ogcParams,
     return wmsLayer;
 }
 /**
- *see {@link Controller.createTMSLayer} sdf
+ *see {@link MapComponent.createTMSLayer} sdf
  */
-OpenLayersController.prototype.createTMSLayer = function (name,url, options){
+OpenLayersMapComponent.prototype.createTMSLayer = function (name,url, options){
     var tmsLayer= new OpenLayersTMSLayer(new OpenLayers.Layer.TMS(name,url,options),name);
     return tmsLayer;
 }
 
 /**
- *See @link Controller.createTMSLayer
+ *See @link MapComponent.createTMSLayer
  */
-OpenLayersController.prototype.createImageLayer = function (name,url, bounds, size,options){
+OpenLayersMapComponent.prototype.createImageLayer = function (name,url, bounds, size,options){
     var imageLayer = new OpenLayersImageLayer (new OpenLayers.Layer.Image( name,url,bounds,size,options ));
 
     return imageLayer;
@@ -152,7 +152,7 @@ OpenLayersController.prototype.createImageLayer = function (name,url, bounds, si
      *  layer: the layer that is needed for some drawing tools
      *  All other openlayer options.
      **/
-OpenLayersController.prototype.createTool= function (id,type, options){
+OpenLayersMapComponent.prototype.createTool= function (id,type, options){
     if (type==Tool.DRAW_FEATURE){
         //TODO: Deze crap weg! Afzonderlijke buttons aanmaken en niet in de controller plaatsen! Maar in lijst van tools
         //  var container = params["container"];
@@ -290,7 +290,7 @@ OpenLayersController.prototype.createTool= function (id,type, options){
     }
 }
 
-OpenLayersController.prototype.activateGetFeatureControls = function(){
+OpenLayersMapComponent.prototype.activateGetFeatureControls = function(){
     var layers=this.getMap().getAllWMSLayers();
     //var controls = webMapController.getMap().getGetFeatureInfoControl().controls;
     for (var i = 0 ; i< layers.length ; i++ ){
@@ -300,7 +300,7 @@ OpenLayersController.prototype.activateGetFeatureControls = function(){
     }
 }
 
-OpenLayersController.prototype.deactivateGetFeatureControls = function(){
+OpenLayersMapComponent.prototype.deactivateGetFeatureControls = function(){
     var layers=this.getMap().getAllWMSLayers();
     //var controls = webMapController.getMap().getGetFeatureInfoControl().controls;
     for (var i = 0 ; i< layers.length ; i++ ){
@@ -310,20 +310,20 @@ OpenLayersController.prototype.deactivateGetFeatureControls = function(){
     }
 }
 /**
-     *See @link Controller.addTool
+     *See @link MapComponent.addTool
      */
-OpenLayersController.prototype.addTool = function(tool){
+OpenLayersMapComponent.prototype.addTool = function(tool){
     /* if (!(tool instanceof OpenLayersTool)){
         throw("The given tool is not of type 'OpenLayersTool'");
     }*/
     if (this.maps.length==0){
-        throw("No map in Controller!");
+        throw("No map in MapComponent!");
     }
     if( tool instanceof Array){
         for(var i = 0 ; i < tool.length; i++){
             this.getMap().getFrameworkMap().addControl(tool[i].getFrameworkTool());
             this.addTool(tool[i]);
-            Controller.prototype.addTool.call(this,tool[i]);
+            MapComponent.prototype.addTool.call(this,tool[i]);
         }
     }else if (tool.getType()==Tool.NAVIGATION_HISTORY){
         this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
@@ -345,19 +345,19 @@ OpenLayersController.prototype.addTool = function(tool){
     }
 
     if(!(tool instanceof Array) ){
-        Controller.prototype.addTool.call(this,tool);
+        MapComponent.prototype.addTool.call(this,tool);
     }
 }
 
-OpenLayersController.prototype.removeToolById = function (id){
+OpenLayersMapComponent.prototype.removeToolById = function (id){
     var tool = this.getTool(id);
     this.removeTool(tool);
 }
 
 /**
-     *See @link Controller.removeTool
+     *See @link MapComponent.removeTool
      */
-OpenLayersController.prototype.removeTool = function (tool){
+OpenLayersMapComponent.prototype.removeTool = function (tool){
     if (!(tool instanceof OpenLayersTool)){
         throw("The given tool is not of type 'OpenLayersTool'");
     }    
@@ -375,12 +375,12 @@ OpenLayersController.prototype.removeTool = function (tool){
     }else{
         this.getPanel().redraw();
     }
-    Controller.prototype.removeTool.call(this,tool);
+    MapComponent.prototype.removeTool.call(this,tool);
 }
 /**Add a map to the controller.
      *For know only 1 map supported.
      */
-OpenLayersController.prototype.addMap = function (map){
+OpenLayersMapComponent.prototype.addMap = function (map){
     if (!(map instanceof OpenLayersMap)){
         throw("The given map is not of the type 'OpenLayersMap'");
     }
@@ -394,18 +394,18 @@ OpenLayersController.prototype.addMap = function (map){
      *@param mapId the mapId
      *@returns the Map with the id, or the only map.
      */
-OpenLayersController.prototype.getMap = function (mapId){
+OpenLayersMapComponent.prototype.getMap = function (mapId){
     return this.maps[0];
 }
 /**
      *Remove the map from the
      */
-OpenLayersController.prototype.removeMap = function (removeMap){
+OpenLayersMapComponent.prototype.removeMap = function (removeMap){
     removeMap.remove();
     this.maps=new Array();
 }
 
-OpenLayersController.prototype.createVectorLayer = function(id,options){
+OpenLayersMapComponent.prototype.createVectorLayer = function(id,options){
     if (options==undefined){
         options = new Object();
         options["isBaseLayer"]= false;
@@ -417,7 +417,7 @@ OpenLayersController.prototype.createVectorLayer = function(id,options){
     return new OpenLayersVectorLayer(new OpenLayers.Layer.Vector(id, options),id);
 }
 
-OpenLayersController.prototype.activateTool = function (id){
+OpenLayersMapComponent.prototype.activateTool = function (id){
     var tools = this.tools;
     for(var i = 0 ; i < tools.length ; i++){
         tools[i].getFrameworkTool().deactivate();
@@ -432,18 +432,18 @@ OpenLayersController.prototype.activateTool = function (id){
  * Registers an event to a handler, on a object. Flamingo doesn't implement per component eventhandling,
  * so this controller stores the event in one big array (Object..).
  */
-OpenLayersController.prototype.registerEvent = function (event,object,handler,thisObj){
+OpenLayersMapComponent.prototype.registerEvent = function (event,object,handler,thisObj){
     object.register(event,handler,thisObj);
 }
 
-OpenLayersController.prototype.unRegisterEvent= function (event,object,handler,thisObj){
+OpenLayersMapComponent.prototype.unRegisterEvent= function (event,object,handler,thisObj){
     object.unRegister(event,handler,thisObj);
 }
 /**
- * Register an event to the Controller. But only if the handler is not registerd for the
+ * Register an event to the MapComponent. But only if the handler is not registerd for the
  * event yet.
  */
-OpenLayersController.prototype.register = function (event,handler){
+OpenLayersMapComponent.prototype.register = function (event,handler){
     var specificName = this.getSpecificEventName(event);
     if(this.events[specificName] == null){
         this.events[specificName] = new Array();
@@ -463,7 +463,7 @@ OpenLayersController.prototype.register = function (event,handler){
  *@param event the event
  *@param handler the handler you want to remove
  */
-OpenLayersController.prototype.unRegister = function (event,handler){
+OpenLayersMapComponent.prototype.unRegister = function (event,handler){
     var specificName = this.getSpecificEventName(event);
     var newEventHandlers=new Array();
     for (var i=0; i < this.events[specificName].length; i++){
@@ -474,7 +474,7 @@ OpenLayersController.prototype.unRegister = function (event,handler){
     this.events[specificName]=newEventHandlers;
 }
 
-OpenLayersController.prototype.handleEvent = function(event){
+OpenLayersMapComponent.prototype.handleEvent = function(event){
     var handlers = this.events[event];
     for(var i = 0 ; i < handlers.length ; i++){
         var handler = handlers[i];
@@ -482,8 +482,8 @@ OpenLayersController.prototype.handleEvent = function(event){
     }
 }
 
-OpenLayersController.prototype.onMapTipHandler = function(data){
-    //this is the Layer not the Controller
+OpenLayersMapComponent.prototype.onMapTipHandler = function(data){
+    //this is the Layer not the MapComponent
     var allMaptips="";
     for( var i = 0 ; i < data.features.length ; i++){
         var featureType=null;
@@ -535,7 +535,7 @@ OpenLayersController.prototype.onMapTipHandler = function(data){
         }
     }
 }
-OpenLayersController.prototype.removeMaptip = function(object){
+OpenLayersMapComponent.prototype.removeMaptip = function(object){
     var maptipDiv=document.getElementById("olControlMapTip");
     if (maptipDiv!=undefined){
         maptipDiv.style.display="none";
@@ -544,7 +544,7 @@ OpenLayersController.prototype.removeMaptip = function(object){
     }
 }
 
-OpenLayersController.prototype.onIdentifyDataHandler = function(data){
+OpenLayersMapComponent.prototype.onIdentifyDataHandler = function(data){
     var obj = new Object();
     for( var i = 0 ; i < data.features.length ; i++){
         var featureType = data.features[i].gml.featureType;
@@ -563,7 +563,7 @@ OpenLayersController.prototype.onIdentifyDataHandler = function(data){
     }
 }
 // onIdentify event handling
-OpenLayersController.prototype.onIdentifyHandler = function(extent){
+OpenLayersMapComponent.prototype.onIdentifyHandler = function(extent){
     //get The identifyTool that is active to call the onIdentify handler
     var getFeatureTools=this.getToolsByType(Tool.GET_FEATURE_INFO);
     for (var i=0; i < getFeatureTools.length; i++){
@@ -578,7 +578,7 @@ OpenLayersController.prototype.onIdentifyHandler = function(extent){
 }
 
 Ext.onReady(function() {
-    if( webMapController instanceof OpenLayersController){
+    if( webMapController instanceof OpenLayersMapComponent){
         var specificName = webMapController.getSpecificEventName(Event.ON_CONFIG_COMPLETE);
         webMapController.handleEvent(specificName);
     }

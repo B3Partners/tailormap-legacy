@@ -14,7 +14,7 @@ Ext.define("Map",{
     },
     constructor: function(config){
         this.initConfig(config);
-        this.frameworkMap = mapViewer.wmc.viewerObject;
+        this.frameworkMap = viewerController.wmc.viewerObject;
         
         this.addEvents(Event.ON_ALL_LAYERS_LOADING_COMPLETE,Event.ON_CHANGE_EXTENT,Event.ON_GET_FEATURE_INFO,Event.ON_GET_FEATURE_INFO_DATA,Event.ON_FINISHED_CHANGE_EXTENT);    
         return this;

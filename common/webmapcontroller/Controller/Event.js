@@ -11,7 +11,7 @@
 Ext.define("Event",{
     statics:{
         //Events:
-        //Controller events:                        0 - 10
+        //MapComponent events:                        0 - 10
         /** @field */
         ON_CONFIG_COMPLETE                    : "ON_CONFIG_COMPLETE",
         /** @field */
