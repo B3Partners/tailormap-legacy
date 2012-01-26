@@ -276,7 +276,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         var addedLayers = '';
         me.selectedlayers.getRootNode().eachChild(function(record) {
             if(addedLayers != '') addedLayers += ',';
-            addedLayers += record.get('layerid');
+            addedLayers += record.get('id');
         });
         return addedLayers;
     }
