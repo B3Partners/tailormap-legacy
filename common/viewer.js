@@ -76,7 +76,8 @@ function loadTOC(){
     var  config = {
         name: "naam",
         div: "tree-div",
-        options: {}
+        options: {},
+        viewerController : viewerController
     };
     toc = new TOC(config);
     toc.addArcIMS();
