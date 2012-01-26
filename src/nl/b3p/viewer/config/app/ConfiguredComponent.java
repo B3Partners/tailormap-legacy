@@ -18,6 +18,8 @@ package nl.b3p.viewer.config.app;
 
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.components.ComponentRegistry;
+import nl.b3p.viewer.components.ViewerComponent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -110,6 +112,14 @@ public class ConfiguredComponent {
         this.application = application;
     }
     //</editor-fold>
+
+    /**
+     * Retrieve the metadata from the component registry for the class of this
+     * component
+     */
+    public ViewerComponent getViewerComponent() {
+        return ComponentRegistry.getInstance().getViewerComponent(className);
+    }
 
     public JSONObject toJSON() throws JSONException {
         JSONObject o = new JSONObject();
