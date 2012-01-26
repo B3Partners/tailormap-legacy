@@ -132,7 +132,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
             d.put(e.getKey(), e.getValue());
         }
 
-        o.put("config", new JSONObject(config));
+        o.put("config", config == null ? new JSONObject() : new JSONObject(config));
         return o;
     }
 
