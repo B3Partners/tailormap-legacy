@@ -17,6 +17,8 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -28,6 +30,7 @@ import net.sourceforge.stripes.validation.Validate;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 
 /**
@@ -132,7 +135,7 @@ public class ApplicationActionBean implements ActionBean {
         return null;
     }
 
-    public Resolution view() throws JSONException {
+    public Resolution view() throws JSONException, IOException {
         application = findApplication(name, version);
 
         if(application == null) {
@@ -146,22 +149,21 @@ public class ApplicationActionBean implements ActionBean {
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
 
-    private void buildComponentSourceHTML() {
+    private void buildComponentSourceHTML() throws IOException {
 
         StringBuilder sb = new StringBuilder();
 
-        //if(isDebug()) {
+        // Sort components by classNames, so order is always the same for debugging
+        List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
+        Collections.sort(comps, new Comparator<ConfiguredComponent>() {
+            public int compare(ConfiguredComponent lhs, ConfiguredComponent rhs) {
+                return lhs.getClassName().compareTo(rhs.getClassName());
+            }
+        });
 
-            // Sort components by classNames, so order is always the same for debugging
-            List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
-            Collections.sort(comps, new Comparator<ConfiguredComponent>() {
-                public int compare(ConfiguredComponent lhs, ConfiguredComponent rhs) {
-                    return lhs.getClassName().compareTo(rhs.getClassName());
-                }
-            });
+        Set<String> classNamesDone = new HashSet<String>();
 
-            Set<String> classNamesDone = new HashSet<String>();
-
+        if(isDebug()) {
             for(ConfiguredComponent cc: comps) {
                 if(!classNamesDone.contains(cc.getClassName())) {
 
@@ -180,9 +182,25 @@ public class ApplicationActionBean implements ActionBean {
                     classNamesDone.add(cc.getClassName());
                 }
             }
-        //}
+        } else {
+            // If not debugging, cat all source files in JSP so no extra HTTP requests
+            sb.append("        <script type=\"text/javascript\">\n");
+            sb.append("// JavaScript included inline and minified server-side to reduce HTTP requests; add debug=true parameter to disable");
 
-        // TODO if not debugging, cat all source files in JSP
+            for(ConfiguredComponent cc: comps) {
+                if(!classNamesDone.contains(cc.getClassName())) {
+
+                    for(File f: cc.getViewerComponent().getSources()) {
+
+                        sb.append("\n\n// Component: ").append(cc.getClassName()).append(", source file: ").append(f.getName()).append("\n\n");
+                        sb.append(IOUtils.toString(new FileInputStream(f)));
+                    }
+                    classNamesDone.add(cc.getClassName());
+                }
+            }
+
+            sb.append("</script\n");
+        }
 
         componentSourceHTML = sb.toString();
     }
