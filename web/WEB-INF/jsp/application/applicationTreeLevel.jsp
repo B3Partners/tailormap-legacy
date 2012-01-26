@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:submit name="cancel" value="Annuleren"/>
                 <br /><br />
                 <div id="tabs">
-                        <div id="tree-tab" class="x-hide-display">
+                        <div id="tree-tab" class="tabdiv">
                             <div id="tree" class="tree-selection-tree">
                                 <div id="servicetree-container"></div>
                             </div>
@@ -49,14 +49,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <stripes:hidden id="selectedlayersinput" name="selectedlayers" />
                         </div>
 
-                        <div id="rights-tab" class="x-hide-display">
+                        <div id="rights-tab" class="tabdiv">
                             <h1>Rechten:</h1>
                             <c:forEach var="group" items="${actionBean.allGroups}">
                                 <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
                             </c:forEach>
                         </div>
                     
-                        <div id="documents-tab" class="x-hide-display">
+                        <div id="documents-tab" class="tabdiv">
                             <div id="doctree" class="tree-selection-tree">
                                 <div id="documenttree-container"></div>
                             </div>
@@ -69,7 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <stripes:hidden id="selecteddocsinput" name="selecteddocs" />
                         </div>
 
-                        <div id="context-tab" class="x-hide-display">
+                        <div id="context-tab" class="tabdiv">
                             <h1>Context:</h1>
                             <stripes:textarea cols="150" rows="5" name="level.info"/><br>
                             Niveau naam: <stripes:text name="level.name"/>
@@ -101,6 +101,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var serviceokicon = '${contextPath}/resources/images/serviceok.png';
             var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
             var layericon = '${contextPath}/resources/images/map.png';
+            var documenticon = '${contextPath}/resources/images/document.png';
             var movelefticon = '${contextPath}/resources/images/move-left.gif';
             var moverighticon = '${contextPath}/resources/images/move-right.gif';
             var moveupicon = '${contextPath}/resources/images/move-up.gif';

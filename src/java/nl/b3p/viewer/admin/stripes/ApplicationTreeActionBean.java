@@ -195,7 +195,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             JSONObject j = new JSONObject();
             j.put("id", "d" + doc.getId());
             j.put("name", doc.getName());
-            j.put("type", "layer");
+            j.put("type", "document");
             j.put("isLeaf", true);
             j.put("parentid", nodeId);
             children.put(j);

@@ -17,13 +17,16 @@
 
 Ext.define('Ext.ux.b3p.TreeSelection', {
         
-    treeurl: treeurl || '',
-    selectedlayersurl: selectedlayersurl || '',
-    levelid: levelid || '',
-    moverighticon: moverighticon || '',
-    movelefticon: movelefticon || '',
-    moveupicon: moveupicon || '',
-    movedownicon: movedownicon || '',
+    treeUrl: treeurl || '',
+    defaultRootIdTree: 'c0',
+    nodeParamTree: 'nodeId',
+    selectedLayersUrl: selectedlayersurl || '',
+    defaultRootId: levelid || '',
+    nodeParamSelectedLayers: 'levelId',
+    moveRightIcon: moverighticon || '',
+    moveLeftIcon: movelefticon || '',
+    moveUpIcon: moveupicon || '',
+    moveDownIcon: movedownicon || '',
     treeContainer: 'servicetree-container',
     selectedLayersContainer: 'selected-layers',
     layerSelectionButtons: 'layerselection-buttons',
@@ -46,33 +49,31 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         var me = this;
         // Definition of the store, which takes care of loading the necessary json
         me.treeStore = Ext.create('Ext.data.TreeStore', {
+            model: 'TreeNode',
             autoLoad: true,
             proxy: {
                 type: 'ajax',
-                url: me.treeurl
+                url: me.treeUrl
             },
-            defaultRootId: 'c0',
+            defaultRootId: me.defaultRootIdTree,
             defaultRootProperty: 'children',
-            model: TreeNode,
-            nodeParam: 'nodeId'
+            nodeParam: me.nodeParamTree
         });
 
         // Definition of the store, which takes care of loading the necessary json
         me.selectedLayersStore = Ext.create('Ext.data.TreeStore', {
-            model: TreeNode,
-            nodeParam: 'levelId',
-            defaultRootId: me.levelid,
-            defaultRootProperty: 'children',
+            model: 'TreeNode',
             autoLoad: true,
-            folderSort: true,
             proxy: {
                 type: 'ajax',
-                url: me.selectedlayersurl
-            }
+                url: me.selectedLayersUrl
+            },
+            defaultRootId: me.defaultRootIdSelectedLayers,
+            defaultRootProperty: 'children',
+            nodeParam: me.nodeParamSelectedLayers
         });
 
         me.tree = Ext.create('Ext.tree.Panel', {
-            id: 'servicestree',
             store: me.treeStore,
             rootVisible: false,
             root: {
@@ -150,7 +151,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         });
 
         me.selectedlayers = Ext.create('Ext.tree.Panel', {
-            id: 'selectedlayerstree',
             store: me.selectedLayersStore,
             rootVisible: false,
             root: {
@@ -174,7 +174,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
         Ext.create('Ext.Button', {
             renderTo: me.layerSelectionButtons,
-            icon: me.moverighticon,
+            icon: me.moveRightIcon,
             width: 23,
             height: 22,
             listeners: {
@@ -188,7 +188,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
         Ext.create('Ext.Button', {
             renderTo: me.layerSelectionButtons,
-            icon: me.movelefticon,
+            icon: me.moveLeftIcon,
             width: 23,
             height: 22,
             listeners: {
@@ -202,7 +202,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         });
 
         Ext.create('Ext.Button', {
-            icon: me.moveupicon,
+            icon: me.moveUpIcon,
             width: 23,
             height: 22,
             renderTo: me.layerMoveButtons,
@@ -221,7 +221,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         });
 
         Ext.create('Ext.Button', {
-            icon: me.movedownicon,
+            icon: me.moveDownIcon,
             width: 23,
             height: 22,
             renderTo: me.layerMoveButtons,

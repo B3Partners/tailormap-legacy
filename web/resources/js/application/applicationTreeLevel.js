@@ -47,6 +47,7 @@ Ext.onReady(function() {
                 nodeType = this.get('type');
                 if(nodeType == "category") return foldericon;
                 if(nodeType == "layer") return layericon;
+                if(nodeType == "document") return documenticon;
                 if(nodeType == "service") {
                     var nodeStatus = this.get('status');
                     if(nodeStatus == "ok") return serviceokicon;
@@ -68,14 +69,21 @@ Ext.onReady(function() {
         moveupicon: moveupicon,
         movedownicon: movedownicon
     }
+    
     // Creation of TreeSelection component
     var kaartSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
         // URL of left tree (base tree)
-        treeurl: treeurl,
+        treeUrl: treeurl,
+        // ID used to get root node of the left tree
+        defaultRootIdTree: 'c0',
+        // Param name used in URL of the left tree
+        nodeParamTree: 'nodeId',
         // URL of right tree (tree where selection is build)
-        selectedlayersurl: selectedlayersurl,
+        selectedLayersUrl: selectedlayersurl,
         // ID used to get root node of the selection tree
-        levelid: levelid,
+        defaultRootId: levelid,
+        // Param name used in URL of the selection tree
+        nodeParamSelectedLayers: 'levelId',
         // DIV-ID to which the left tree is rendered
         treeContainer: 'servicetree-container',
         // DIV-ID to which the right tree is rendered
@@ -89,11 +97,17 @@ Ext.onReady(function() {
     // document tree
     var docsSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
         // URL of left tree (base tree)
-        treeurl: doctreeurl,
+        treeUrl: doctreeurl,
+        // ID used to get root node of the left tree
+        defaultRootIdTree: 'c0',
+        // Param name used in URL of the left tree
+        nodeParamTree: 'nodeId',
         // URL of right tree (tree where selection is build)
-        selectedlayersurl: selecteddocsurl,
+        selectedLayersUrl: selecteddocsurl,
         // ID used to get root node of the selection tree
-        levelid: documentid,
+        defaultRootId: documentid,
+        // Param name used in URL of the selection tree
+        nodeParamSelectedLayers: 'levelId',
         // DIV-ID to which the left tree is rendered
         treeContainer: 'documenttree-container',
         // DIV-ID to which the right tree is rendered
@@ -120,6 +134,8 @@ Ext.onReady(function() {
             title: 'Kaarten'
         });
     }
+    
+    Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-display');   
     Ext.createWidget('tabpanel', {
         renderTo: 'tabs',
         width: '100%',
