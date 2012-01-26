@@ -172,7 +172,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             listeners: {
                 click: function() {
                     Ext.Array.each(me.tree.getSelectionModel().getSelection(), function(record) {
-                        addToSelection(record);
+                        me.addToSelection(record);
                     });
                 }
             }
