@@ -179,7 +179,9 @@ public class Application  {
         JSONObject o = new JSONObject();
 
         o.put("name", name);
-        o.put("layout", new JSONObject(layout));
+        if(layout != null) {
+            o.put("layout", new JSONObject(layout));
+        }
 
         JSONObject d = new JSONObject();
         o.put("details", d);
@@ -194,7 +196,9 @@ public class Application  {
             o.put("maxExtent", maxExtent.toJSONObject());
         }
 
-        o.put("rootLevel", root.toJSONObject());
+        if(root != null) {
+            o.put("rootLevel", root.toJSONObject());
+        }
 
         JSONObject c = new JSONObject();
         o.put("components", c);
