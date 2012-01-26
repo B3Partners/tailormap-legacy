@@ -22,6 +22,7 @@ function onConfigComplete(){
         onFrameworkLoaded();
         eerste = false;
         loadTOC();
+        loadComponents(app.components);
     }
 }
 
@@ -71,6 +72,13 @@ function initializeButtons(){
     viewerController.wmc.addTool(zoombar);
 }
 
+function loadComponents(comps){
+    for ( var comp in comps){
+        var component = comps[comp];
+        viewerController.addComponent(component.className,component.config);   
+    }
+}
+
 function loadTOC(){
     loadAvo();
     var  config = {
@@ -78,9 +86,9 @@ function loadTOC(){
         div: "tree-div",
         options: {}
     };
-    var toc = viewerController.addComponent("TOC",config);
+   /* var toc = viewerController.addComponent("TOC",config);
     
-    toc.addArcIMS();
+    toc.addArcIMS();*/
 } 
 
 /**

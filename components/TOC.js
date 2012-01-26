@@ -9,6 +9,7 @@ Ext.define ("TOC",{
         this.addEvents(Event.ON_LAYER_SWITCHED_OFF,Event.ON_LAYER_SWITCHED_ON);
         this.initConfig(config);
         this.loadTree();
+        this.addArcIMS();
         return this;
     },
     loadTree : function(){
