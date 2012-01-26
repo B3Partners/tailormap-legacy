@@ -74,12 +74,12 @@ function initializeButtons(){
 function loadTOC(){
     loadAvo();
     var  config = {
-        name: "naam",
+        name: "toc1",
         div: "tree-div",
-        options: {},
-        viewerController : viewerController
+        options: {}
     };
-    toc = new TOC(config);
+    var toc = viewerController.addComponent("TOC",config);
+    
     toc.addArcIMS();
 } 
 

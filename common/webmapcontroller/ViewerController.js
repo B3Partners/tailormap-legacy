@@ -10,14 +10,13 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("ViewerController",{
-    //extend: "Map",
     constructor: function(viewerType,mapId){
         this.viewerType = viewerType;
         this.wmc = null;
         this.webMapController = null;
         this.mapDivId = mapId;
+        this.components = new Array();
     },
-
     init : function (){
         this.mapOptions = {};
         if (this.viewerType== "flamingo"){
@@ -58,6 +57,31 @@ Ext.define("ViewerController",{
             maxx:maxx,
             maxy:maxy
         }, 0);
+    },
+    addComponent : function (className,config){
+        config.viewerController = this;
+        var component = Ext.create(className,config);
+        this.components.push(component);
+        return component;
+    },
+    getComponentsByClassName : function(className){
+        var componentList = new Array();
+        for(var i = 0 ; i < this.components.length; i++){
+            var comp = this.components[i];
+            if(comp.$className == className){
+                componentList.push(comp);
+            }
+        }
+        return componentList;
+    },
+    getComponentByName : function (name){
+        for(var i = 0 ; i < this.components.length; i++){
+            var comp = this.components[i];
+            if(comp.getName() == name){
+                return comp;
+            }
+        }
+        return null;
     },
     /********************************************************************
      *                                                                  *
