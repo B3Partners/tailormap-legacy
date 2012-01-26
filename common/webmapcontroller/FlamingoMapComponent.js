@@ -8,6 +8,7 @@
  **/
 Ext.define("FlamingoMapComponent",{
     extend: "MapComponent",
+    viewerObject : null,
     constructor :function (domId){
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
