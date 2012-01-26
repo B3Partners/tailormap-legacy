@@ -7,6 +7,11 @@ Ext.define("Component",{
         div: "left_menu",
         //mapViewert: new Object(),
         options: "opt1"
+    }, 
+    constructor: function(config){
+        this.mapViewer = mapViewer;
+        this.initConfig(config);
+        return this;
     },
     velden: [
         {name: 'id', type: 'string'},
