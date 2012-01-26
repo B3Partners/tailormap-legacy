@@ -21,7 +21,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     defaultRootIdTree: 'c0',
     nodeParamTree: 'nodeId',
     selectedLayersUrl: selectedlayersurl || '',
-    defaultRootId: levelid || '',
+    defaultRootIdSelectedLayers: levelid || '',
     nodeParamSelectedLayers: 'levelId',
     moveRightIcon: moverighticon || '',
     moveLeftIcon: movelefticon || '',
@@ -96,14 +96,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                     emptyText : 'Type to search...',
                     enableKeyEvents : true,
                     listeners : {
-                        focus : {
-                            fn : function(view, record, item, index, even) {
-                                if(this.getValue("Type to search...")) {
-                                    this.setValue("");
-                                    me.setAllNodesVisible(true);
-                                }
-                            }
-                        },
                         keyup : {
                             fn : function() {
                                 var textvalue = this.getValue();

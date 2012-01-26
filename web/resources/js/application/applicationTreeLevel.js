@@ -81,7 +81,7 @@ Ext.onReady(function() {
         // URL of right tree (tree where selection is build)
         selectedLayersUrl: selectedlayersurl,
         // ID used to get root node of the selection tree
-        defaultRootId: levelid,
+        defaultRootIdSelectedLayers: levelid,
         // Param name used in URL of the selection tree
         nodeParamSelectedLayers: 'levelId',
         // DIV-ID to which the left tree is rendered
@@ -105,7 +105,7 @@ Ext.onReady(function() {
         // URL of right tree (tree where selection is build)
         selectedLayersUrl: selecteddocsurl,
         // ID used to get root node of the selection tree
-        defaultRootId: documentid,
+        defaultRootIdSelectedLayers: documentid,
         // Param name used in URL of the selection tree
         nodeParamSelectedLayers: 'levelId',
         // DIV-ID to which the left tree is rendered
@@ -149,5 +149,6 @@ Ext.onReady(function() {
     
     Ext.get('levelform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
+        Ext.fly('selecteddocsinput').set({value:docsSelectie.getSelection()});
     });
 });
