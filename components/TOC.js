@@ -1,5 +1,5 @@
 Ext.define ("TOC",{
-    extend: "Component",
+    //extend: "Component",
     panel: null,
     config: {
         name: "Table of Contents"
