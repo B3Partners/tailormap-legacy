@@ -129,18 +129,22 @@ public class ComponentRegistry implements ServletContextListener {
                 return;
             }
 
-            JSONArray sources = metadata.getJSONArray("sources");
+            File[] sourceFiles = new File[] {};
 
-            File[] sourceFiles = new File[sources.length()];
-            for(int i = 0; i < sources.length(); i++) {
-                File sourceFile = new File(path.getCanonicalPath() + File.separator + sources.getString(i));
-                if(!sourceFile.canRead()) {
-                    log.error(String.format("Cannot read sourcefile \"%s\" for component class \"%s\"",
-                            sources.getString(i),
-                            className));
-                    return;
+            JSONArray sources = metadata.optJSONArray("sources");
+
+            if(sources != null) {
+                sourceFiles = new File[sources.length()];
+                for(int i = 0; i < sources.length(); i++) {
+                    File sourceFile = new File(path.getCanonicalPath() + File.separator + sources.getString(i));
+                    if(!sourceFile.canRead()) {
+                        log.error(String.format("Cannot read sourcefile \"%s\" for component class \"%s\"",
+                                sources.getString(i),
+                                className));
+                        return;
+                    }
+                    sourceFiles[i] = sourceFile;
                 }
-                sourceFiles[i] = sourceFile;
             }
 
             components.put(className, new ViewerComponent(path.getCanonicalPath(), className, sourceFiles, metadata));
