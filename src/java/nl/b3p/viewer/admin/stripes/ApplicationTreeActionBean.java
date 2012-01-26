@@ -167,8 +167,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             int id = Integer.parseInt(levelId);
             Level l = em.find(Level.class, new Long(id));
             for(ApplicationLayer appl: l.getLayers()) {
+
                 JSONObject j = new JSONObject();
-                j.put("id", "l" + appl.getId());
+                j.put("id", "al" + appl.getId());
                 j.put("name", appl.getLayerName());
                 j.put("type", "layer");
                 j.put("isLeaf", true);
@@ -213,6 +214,18 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         EntityManager em = Stripersist.getEntityManager();
 
         final JSONArray children = new JSONArray();
+        if(!levelId.equals("")){
+            int id = Integer.parseInt(levelId);
+            Level l = em.find(Level.class, new Long(id));
+            for(Document doc: l.getDocuments()) {
+                JSONObject j = new JSONObject();
+                j.put("id", "d" + doc.getId());
+                j.put("name", doc.getName());
+                j.put("type", "document");
+                j.put("isLeaf", true);
+                children.put(j);
+            }
+        }
 
         return new StreamingResolution("application/json") {
             @Override

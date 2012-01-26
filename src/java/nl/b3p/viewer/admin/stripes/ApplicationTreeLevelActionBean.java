@@ -43,8 +43,6 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     })
     private Level level;
     
-    private String documentRoot = "d0";
-    
     private List<Group> allGroups;
     
     private boolean layersAllowed;
@@ -54,6 +52,9 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     
     @Validate
     private String selectedlayers;
+    
+    @Validate
+    private String selecteddocs;
     
     @DefaultHandler
     public Resolution view() {
@@ -97,19 +98,31 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         if(selectedlayers != null && selectedlayers.length() > 0){
             String[] layerIds = selectedlayers.split(",");
             for(int i = 0; i < layerIds.length; i++){
-                Long id = new Long(layerIds[i].substring(1));
-                Layer layer = Stripersist.getEntityManager().find(Layer.class, id);
                 ApplicationLayer appLayer = null;
-                if(layer == null){
+                if(layerIds[i].startsWith("al")){
+                    Long id = new Long(layerIds[i].substring(2));
                     appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
-                }else{
-                    appLayer = new ApplicationLayer();
-                    appLayer.setService(layer.getService());
-                    appLayer.setLayerName(layer.getName());
-                }
-                
+                }else if(layerIds[i].startsWith("l")){
+                    Long id = new Long(layerIds[i].substring(1));
+                    Layer layer = Stripersist.getEntityManager().find(Layer.class, id);
+                    if(layer == null){
+                        appLayer = new ApplicationLayer();
+                        appLayer.setService(layer.getService());
+                        appLayer.setLayerName(layer.getName());
+                    }
+                }                
                 level.getLayers().add(appLayer);
             }
+        }
+        
+        level.getDocuments().clear();
+        if(selecteddocs != null && selecteddocs.length() > 0){
+            String[] docIds = selecteddocs.split(",");
+             for(int i = 0; i < docIds.length; i++){
+                Long id = new Long(docIds[i].substring(1));
+                Document doc = Stripersist.getEntityManager().find(Document.class, id);
+                level.getDocuments().add(doc);
+             }
         }
         
         Stripersist.getEntityManager().persist(level);
@@ -153,12 +166,12 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         this.selectedlayers = selectedlayers;
     }
 
-    public String getDocumentRoot() {
-        return documentRoot;
+    public String getSelecteddocs() {
+        return selecteddocs;
     }
 
-    public void setDocumentRoot(String documentRoot) {
-        this.documentRoot = documentRoot;
+    public void setSelecteddocs(String selecteddocs) {
+        this.selecteddocs = selecteddocs;
     }
     
     public Level getLevel() {

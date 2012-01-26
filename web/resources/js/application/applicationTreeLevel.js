@@ -105,7 +105,7 @@ Ext.onReady(function() {
         // URL of right tree (tree where selection is build)
         selectedLayersUrl: selecteddocsurl,
         // ID used to get root node of the selection tree
-        defaultRootIdSelectedLayers: documentid,
+        defaultRootIdSelectedLayers: levelid,
         // Param name used in URL of the selection tree
         nodeParamSelectedLayers: 'levelId',
         // DIV-ID to which the left tree is rendered

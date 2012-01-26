@@ -94,7 +94,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var doctreeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadDocumentTree"/>';
             var selecteddocsurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedDocuments"/>';
             var levelid = '${actionBean.level.id}';
-            var documentid = '${actionBean.documentRoot}';
             var layersAllowed = ${actionBean.layersAllowed};
  
             var foldericon = '${contextPath}/resources/images/folder.png';
