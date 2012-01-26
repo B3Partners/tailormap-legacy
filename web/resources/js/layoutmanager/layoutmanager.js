@@ -62,9 +62,22 @@ Ext.onReady(function() {
            ]
        }
    };
+
+    Ext.define("DraggableViewerComponent",{
+        extend: "Ext.data.Model",
+        idProperty: 'id',       
+        fields: [
+            {name: 'className', type: 'string'},
+            {name: 'name', type: 'string'},
+            {name: 'shortName', type: 'string'},
+            {name: 'restrictions', type: 'array'},
+            {name: 'singleton', type: 'boolean'},
+            {name: 'linkedComponents', type: 'array'}
+        ]
+    });
     
     var componentStore = Ext.create('Ext.data.Store', {
-        model: 'Component',
+        model: 'DraggableViewerComponent',
         data: components
     });
     
@@ -347,7 +360,7 @@ Ext.onReady(function() {
             styleConfig = {};
         }
         var itemId = Ext.id();
-        var componentName = changeCaseFirstLetter(data.componentData.id, true) + (++data.componentData.componentsAdded);
+        var componentName = changeCaseFirstLetter(data.componentData.className, true) + (++data.componentData.componentsAdded);
         // used when loading existing conf
         if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
             componentName = data.componentName;
@@ -359,7 +372,7 @@ Ext.onReady(function() {
             contentEl: data.ddel,
             style: styleConfig,
             componentName: componentName,
-            componentClass: data.componentData.id
+            componentClass: data.componentData.className
         };
         container.add(addItem);
         if(!layoutRegion.get('floatComponents')) {
@@ -407,7 +420,7 @@ Ext.onReady(function() {
                 }
             );
         });
-        if(data.componentData.addOnce) {
+        if(data.componentData.singleton) {
             Ext.fly(data.sourceEl).addCls("component-added");
         }
 

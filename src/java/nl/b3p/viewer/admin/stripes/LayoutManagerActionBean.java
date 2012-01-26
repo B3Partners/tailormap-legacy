@@ -31,6 +31,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.io.IOUtils;
@@ -138,14 +139,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public Resolution config() {
         EntityManager em = Stripersist.getEntityManager();
-        try {
-            metadata = getMetadata(className);
-            if (metadata == null) {
-                getContext().getValidationErrors().addGlobalError(new SimpleError("Geen metadata gevonden bij componentclassname: " + className));
-            }
-        } catch (JSONException ex) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
-        }
+
+        metadata = ComponentRegistry.getInstance().getViewerComponent(className).getMetadata();
         
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
         
@@ -180,39 +175,10 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     }
 
     @Before(stages = {LifecycleStage.HandlerResolution})
-    private JSONArray getComponentList() {
-        InputStream fis = null;
-        HttpServletRequest request = context.getRequest();
-        try {
-            URL url = new URL(request.getScheme(), request.getServerName(), request.getServerPort(), context.getServletContext().getContextPath() + "/resources/config.json");
-            fis = url.openStream();
-            StringWriter sw = new StringWriter();
-            IOUtils.copy(fis, sw);
-            components = new JSONArray(sw.toString());
-            return components;
-        } catch (IOException ex) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
-        } catch (JSONException ex) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException ex) {
-                Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public void getComponentList() {
+        components = new JSONArray();
+        for(String cn: ComponentRegistry.getInstance().getSortedComponentClassNameList()) {
+            components.put(ComponentRegistry.getInstance().getViewerComponent(cn).getMetadata());
         }
-        return null;
-    }
-
-    private JSONObject getMetadata(String className) throws JSONException {
-        for (int i = 0; i < components.length(); i++) {
-            JSONObject ob = components.getJSONObject(i);
-            if (ob.has("className")) {
-                if (ob.get("className").equals(className)) {
-                    return ob;
-                }
-            }
-        }
-        return null;
     }
 }
