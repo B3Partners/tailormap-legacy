@@ -35,26 +35,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/MapViewer.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewer.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/jsonConfig.js"></script>
+        <%-- script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script --%>
 
 ${actionBean.componentSourceHTML}
     </head>
     <body>
 
-<script type="text/javascript">
-    ${actionBean.script}
+        <script type="text/javascript">
+            ${actionBean.script}
 
-    var contextPath = "${contextPath}";
+            var contextPath = "${contextPath}";
 
-    Ext.onReady(function(){
+            Ext.onReady(function(){
 
-        //initLayout();
+                //initLayout();
+
+                initMapComponent();
+            });
+
+        </script>
+
+        <div id="wrapper" style="width: 100%; height: 100%;">
+            
+        </div>
         
-        initMapComponent();
-    });
-
-</script>
-
-
         <%-- initLayout(); --%>
         <div id="map" style="height: 90%;width: 80%; float: left;">
             <font color="red"><strong>U heeft de Flash plugin nodig om de kaart te kunnen zien.<br/>Deze kunt u <a href="http://get.adobe.com/flashplayer/" target="_blank">hier</a> gratis downloaden.</strong></font>
