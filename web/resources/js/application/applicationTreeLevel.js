@@ -86,6 +86,24 @@ Ext.onReady(function() {
         layerMoveButtons: 'layermove-buttons'
     }));
     
+    // document tree
+    var docsSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
+        // URL of left tree (base tree)
+        treeurl: doctreeurl,
+        // URL of right tree (tree where selection is build)
+        selectedlayersurl: selecteddocsurl,
+        // ID used to get root node of the selection tree
+        levelid: documentid,
+        // DIV-ID to which the left tree is rendered
+        treeContainer: 'documenttree-container',
+        // DIV-ID to which the right tree is rendered
+        selectedLayersContainer: 'selected-doc',
+        // DIV-ID to which the selection buttons are rendered
+        layerSelectionButtons: 'docselection-buttons',
+        // DIV-ID to which the move buttons are rendered
+        layerMoveButtons: 'docmove-buttons'
+    }));
+    
     var tabconfig = [{
         contentEl:'rights-tab', 
         title: 'Rechten'

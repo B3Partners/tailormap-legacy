@@ -57,7 +57,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                     
                         <div id="documents-tab" class="x-hide-display">
-                            Documenten
+                            <div id="doctree" class="tree-selection-tree">
+                                <div id="documenttree-container"></div>
+                            </div>
+                            <div id="docselection-buttons" class="tree-selection-buttons"></div>
+                            <div id="docselection" class="tree-selection-tree">
+                                <div id="selected-doc"></div>
+                            </div>
+                                <div id="docmove-buttons" class="tree-selection-buttons"></div>
+                            <div style="clear: both;"></div>
+                            <stripes:hidden id="selecteddocsinput" name="selecteddocs" />
                         </div>
 
                         <div id="context-tab" class="x-hide-display">
@@ -82,7 +91,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             // Definition of URLS and icons... how are we going to do this?
             var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
             var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
+            var doctreeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadDocumentTree"/>';
+            var selecteddocsurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedDocuments"/>';
             var levelid = '${actionBean.level.id}';
+            var documentid = '${actionBean.documentRoot}';
             var layersAllowed = ${actionBean.layersAllowed};
  
             var foldericon = '${contextPath}/resources/images/folder.png';

@@ -43,6 +43,8 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     })
     private Level level;
     
+    private String documentRoot = "d0";
+    
     private List<Group> allGroups;
     
     private boolean layersAllowed;
@@ -149,6 +151,14 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
 
     public void setSelectedlayers(String selectedlayers) {
         this.selectedlayers = selectedlayers;
+    }
+
+    public String getDocumentRoot() {
+        return documentRoot;
+    }
+
+    public void setDocumentRoot(String documentRoot) {
+        this.documentRoot = documentRoot;
     }
     
     public Level getLevel() {

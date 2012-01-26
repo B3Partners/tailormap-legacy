@@ -16,13 +16,14 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.*;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
-import net.sourceforge.stripes.validation.SimpleError;
-import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.services.Document;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -181,6 +182,44 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                response.getWriter().print(children.toString());
            }
         };
+    }
+    
+    public Resolution loadDocumentTree() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
+        
+        final JSONArray children = new JSONArray();
+        
+        List documents = em.createQuery("from Document").getResultList();
+        for(Iterator it = documents.iterator(); it.hasNext();){
+            Document doc = (Document)it.next();
+            JSONObject j = new JSONObject();
+            j.put("id", "d" + doc.getId());
+            j.put("name", doc.getName());
+            j.put("type", "layer");
+            j.put("isLeaf", true);
+            j.put("parentid", nodeId);
+            children.put(j);
+        }
+        
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(children.toString());
+            }
+        }; 
+    }
+            
+    public Resolution loadSelectedDocuments() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
+
+        final JSONArray children = new JSONArray();
+
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(children.toString());
+            }
+        }; 
     }
     
     public Resolution addLevel() throws JSONException {
