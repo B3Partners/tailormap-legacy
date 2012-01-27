@@ -135,6 +135,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
     @DontValidate
     public Resolution newApplication(){
         application = null;
+        applicationId = -1L;
         return new ForwardResolution(JSP);
     }
     
