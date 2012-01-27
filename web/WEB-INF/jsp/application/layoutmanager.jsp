@@ -71,6 +71,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var activelink = 'menu_layout';
             var components = ${actionBean.components};
             var configPageLink = "<stripes:url beanclass='nl.b3p.viewer.admin.stripes.LayoutManagerActionBean' event='config'><stripes:param name="application" value="${actionBean.application}"/></stripes:url>";
+            var layoutSaveUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>';
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/layoutmanager.js"></script>
 

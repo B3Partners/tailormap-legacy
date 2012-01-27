@@ -475,8 +475,23 @@ Ext.onReady(function() {
             }
         });
         var response = {
-            "layout": layout
+            "layout": JSON.stringify(layout)
         };
+        
+        Ext.Ajax.request({ 
+            url: layoutSaveUrl, 
+            params: { 
+                layout: response
+            }, 
+            success: function ( result, request ) { 
+                var data = Ext.JSON.decode(result.responseText); 
+                // doe wat met data 
+            }, 
+            failure: function ( result, request) { 
+                Ext.MessageBox.alert('Foutmelding', result.responseText); 
+            } 
+        }); 
+
         // Save JSON data to backend, using AJAX, form post, etc?
         console.log('Saving data...', response);
     });

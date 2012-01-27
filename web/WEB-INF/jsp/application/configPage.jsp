@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden name="className" value="${actionBean.className}"/>
             <stripes:hidden name="name" value="${actionBean.name}"/>
             <stripes:hidden name="configObject" id="configObject"/>
-            <sripes:hidden name="saveComponentConfig" value="Opslaan" />
+            <stripes:hidden name="saveComponentConfig" value="Opslaan" />
 
             <div id="tabs" style="width: 100%; height: 100%;">
                 <div id ="config" class="tabdiv"></div>

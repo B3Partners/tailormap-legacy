@@ -16,17 +16,11 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -34,7 +28,6 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Group;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +44,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private JSONObject metadata;
     private JSONArray components;
     private List<Group> allGroups;
-    
     @Validate(on = "config")
     private String name;// = "testComponent1";
     @Validate(on = "config")
@@ -62,6 +54,9 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private String configObject;
     @Validate(on = "saveComponentConfig")
     private List<String> groups = new ArrayList<String>();
+    
+    @Validate(on="saveApplicationLayout")
+    private String layout;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
@@ -128,12 +123,20 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.groups = groups;
     }
 
+    public String getLayout() {
+        return layout;
+    }
+
+    public void setLayout(String layout) {
+        this.layout = layout;
+    }
+    
     //</editor-fold>
     
     @DefaultHandler
     public Resolution view() throws JSONException {
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
     }
 
@@ -141,20 +144,16 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         EntityManager em = Stripersist.getEntityManager();
 
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
-        
+
         try {
-            component = (ConfiguredComponent)em.createQuery(
-                    "from ConfiguredComponent where application = :application and name = :name")
-                    .setParameter("application", application)
-                    .setParameter("name", name)
-                    .getSingleResult();
+            component = (ConfiguredComponent) em.createQuery(
+                    "from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", name).getSingleResult();
+            groups = new ArrayList<String>(component.getReaders());
         } catch (NoResultException ex) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
         }
+        metadata = ComponentRegistry.getInstance().getViewerComponent(className).getMetadata();
 
-        groups = new ArrayList<String>(component.getReaders());
-        metadata = component.getViewerComponent().getMetadata();
-        
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
 
@@ -167,7 +166,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         component.setName(name);
         component.setClassName(className);
         component.setApplication(application);
-        
+
         component.getReaders().clear();
         component.setReaders(new HashSet<String>(groups));
 
@@ -176,11 +175,19 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
+    
+    public Resolution saveApplicationLayout(){
+        EntityManager em = Stripersist.getEntityManager();
+        application.setLayout(layout);
+        em.persist(application);
+        em.getTransaction().commit();
+        return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
+    }
 
     @Before(stages = {LifecycleStage.HandlerResolution})
     public void getComponentList() {
         components = new JSONArray();
-        for(String cn: ComponentRegistry.getInstance().getSortedComponentClassNameList()) {
+        for (String cn : ComponentRegistry.getInstance().getSortedComponentClassNameList()) {
             components.put(ComponentRegistry.getInstance().getViewerComponent(cn).getMetadata());
         }
     }
