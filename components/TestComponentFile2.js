@@ -1,3 +1,3 @@
 
 
-var testComponentFile2Loaded = true;
+var testComponentFile2Loaded2 = true;

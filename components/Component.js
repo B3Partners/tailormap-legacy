@@ -13,6 +13,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ */
+/**
+ * Abstract component
  */
 Ext.define("Component",{
     extend: "Ext.util.Observable", 
@@ -22,11 +27,25 @@ Ext.define("Component",{
         div: new Object(),
         viewerController: new Object()
     }, 
+    /**
+    * @constructs
+    * @param config.name {String} the unique name of the object
+    * @param config.div {DomElement} the div where the component must be placed
+    * @param config.viewerController {ViewerController} a reference to the ViewerController
+    */
     constructor: function(config){
         this.initConfig(config);
         return this;
     },
-    bind : function(event,handler){
-        this.addListener(event,handler);
+    /**
+     * Bind an event to this component
+     * @param event {String} The type of event to listen for
+     * @param handler {Function} The method the event invokes
+     * @param scope {Object}(optional) The scope in which to execute the handler function. The handler function's "this" context.
+     * @param options {Object} (optional) An object containing handler configuration properties.
+     * @see Ext.util.Observable
+     */
+    bind : function(event,handler,scope,options){
+        this.addListener(event,handler,options);
     }
 });
