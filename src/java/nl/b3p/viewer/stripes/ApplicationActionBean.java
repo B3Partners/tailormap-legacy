@@ -156,10 +156,10 @@ public class ApplicationActionBean implements ActionBean {
         // Sort components by classNames, so order is always the same for debugging
         List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
         Collections.sort(comps);
-
-        Set<String> classNamesDone = new HashSet<String>();
-
+        
         if(isDebug()) {
+            
+            Set<String> classNamesDone = new HashSet<String>();
             for(ConfiguredComponent cc: comps) {
                 if(!classNamesDone.contains(cc.getClassName())) {
 
@@ -182,10 +182,27 @@ public class ApplicationActionBean implements ActionBean {
             // If not debugging, create a single script tag with all source
             // for all components for the application for a minimal number of HTTP requests
 
+            // The ComponentActionBean supports conditional HTTP requests using
+            // Last-Modified.
+            // Create a hash value that will change when the classNames used
+            // in the application change, so that a browser will not use a
+            // previous version from cache with other contents.
+            
+            int hash = 0;
+            Set<String> classNamesDone = new HashSet<String>();
+            for(ConfiguredComponent cc: comps) {
+                if(!classNamesDone.contains(cc.getClassName())) {
+                    hash = hash ^ cc.getClassName().hashCode();
+                } else {
+                    classNamesDone.add(cc.getClassName());
+                }
+            }
+
             String url = new ForwardResolution(ComponentActionBean.class, "source")
                     .addParameter("app", name)
                     .addParameter("version", version)
                     .addParameter("minified", true)
+                    .addParameter("hash", hash)
                     .getUrl(context.getLocale());
 
             sb.append("        <script type=\"text/javascript\" src=\"");
