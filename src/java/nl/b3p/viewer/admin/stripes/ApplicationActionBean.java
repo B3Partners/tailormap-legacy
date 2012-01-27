@@ -16,26 +16,30 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.After;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import org.stripesstuff.plugin.session.Session;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
  * @author Meine Toonen
  */
-public class ApplicationActionBean implements ActionBean{
-    
+public class ApplicationActionBean implements ActionBean {
+
     protected ActionBeanContext context;
-    
-    @Session(key="application")
     @Validate
     protected Application application;
+    @Session(key = "applicationId")
+    protected Long applicationId;
 
     public void setContext(ActionBeanContext abc) {
-        this.context= abc;
+        this.context = abc;
     }
 
     public ActionBeanContext getContext() {
@@ -48,5 +52,13 @@ public class ApplicationActionBean implements ActionBean{
 
     public void setApplication(Application application) {
         this.application = application;
+        this.applicationId = application.getId();
+    }
+
+    @After(stages = {LifecycleStage.BindingAndValidation})
+    private void initApplication() {
+        EntityManager em = Stripersist.getEntityManager();
+        application = em.find(Application.class, applicationId);
+        em.getTransaction().commit();
     }
 }
