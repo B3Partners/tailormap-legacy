@@ -24,7 +24,7 @@ Ext.define ("TOC",{
         });
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.div,
-            title: 'Table of contents',
+            title: this.naam,
             //width: 330,
             height: "100%",
             frame: true,

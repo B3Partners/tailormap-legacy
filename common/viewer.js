@@ -22,7 +22,7 @@ function onConfigComplete(){
         onFrameworkLoaded();
         eerste = false;
         loadTOC();
-        loadComponents(app.components);
+        loadComponents();
     }
 }
 
@@ -72,10 +72,20 @@ function initializeButtons(){
     viewerController.wmc.addTool(zoombar);
 }
 
-function loadComponents(comps){
-    for ( var comp in comps){
-        var component = comps[comp];
-        viewerController.addComponent(component.className,component.config);   
+function loadComponents(){
+    var layouts = app.layout;
+    for ( var l in layouts){
+        var layout = layouts[l];
+        for ( var i = 0 ; i < layout.components.length ; i++){
+            var componentJson = layout.components[i];
+            var name = componentJson.name;
+            var className = componentJson.componentClass;
+            var config = app.components[name];
+    
+            config.div = l;
+            
+            viewerController.addComponent(className,config);  
+        } 
     }
 }
 
