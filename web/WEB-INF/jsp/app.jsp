@@ -32,38 +32,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/ViewerController.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/ViewerController.js"></script>
          <script type="text/javascript" src="${contextPath}/viewer-html/components/Component.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/components/TOC.js"></script>
 
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Controller/Map.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Controller/Layer.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Controller/MapTip.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Controller/Extent.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Controller/Feature.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Controller/Event.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Controller/Tool.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Map.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Layer.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/MapTip.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Extent.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Feature.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Event.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Tool.js"></script>
         
-        <!--script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersLayer.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersWMSLayer.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersVectorLayer.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersImageLayer.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersTMSLayer.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersTool.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersIdentifyTool.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/OpenLayersMap.js"></script>
-        <script type="text/javascript" src="scripts/viewer-html/common/webmapcontroller/OpenLayers/Utils.js"></script-->
+        <!--script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersLayer.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersWMSLayer.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersVectorLayer.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersImageLayer.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTMSLayer.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTool.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersIdentifyTool.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersMap.js"></script>
+        <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/Utils.js"></script-->
         
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Flamingo/FlamingoLayer.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Flamingo/FlamingoWMSLayer.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Flamingo/FlamingoArcIMSLayer.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Flamingo/FlamingoVectorLayer.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Flamingo/FlamingoMap.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/Flamingo/FlamingoTool.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoLayer.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoWMSLayer.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoArcIMSLayer.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoVectorLayer.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoMap.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoTool.js"></script>
         
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/MapComponent.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/webmapcontroller/FlamingoMapComponent.js"></script>
-        <!--script type="text/javascript" src="${contextPath}/viewer-html/webmapcontroller-compiled.js"></script-->
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>
+        <!--script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script-->
         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewer.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/jsonConfig.js"></script>
         <%-- script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script --%>
