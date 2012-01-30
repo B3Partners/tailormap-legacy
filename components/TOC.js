@@ -57,7 +57,7 @@ Ext.define ("viewer.components.TOC",{
             var laagObject = null;
             if(laag.visible){
                 laagObject = this.createLayer(laag);
-                this.viewerController.wmc.getMap().addLayer(laagObject);
+                this.viewerController.mc.getMap().addLayer(laagObject);
             }
             var treeNode = {
                 text: laag.name,
@@ -100,7 +100,7 @@ Ext.define ("viewer.components.TOC",{
         var server = JSONConfig.server;
         options["isBaseLayer"]=false;
         
-        return this.viewerController.wmc.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);
+        return this.viewerController.mc.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);
     },
 
     checkboxClicked : function(nodeObj,checked,toc){
@@ -112,12 +112,12 @@ Ext.define ("viewer.components.TOC",{
     
         if(checked){
             var laag = toc.toc.createLayer(node.layerConfig);
-            toc.toc.viewerController.wmc.getMap().addLayer(laag);
+            toc.toc.viewerController.mc.getMap().addLayer(laag);
             nodeObj.data.layerObj = laag;
             nodeObj.updateInfo();
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,laag);
         }else{
-            toc.toc.viewerController.wmc.getMap().removeLayer(layer)
+            toc.toc.viewerController.mc.getMap().removeLayer(layer)
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
         }
     }

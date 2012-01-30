@@ -14,7 +14,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     },
     constructor: function(config){
         this.initConfig(config);
-        this.frameworkMap = viewerController.wmc.viewerObject;
+        this.frameworkMap = viewerController.mc.viewerObject;
         
         this.addEvents(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT);    
         return this;

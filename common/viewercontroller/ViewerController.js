@@ -12,17 +12,17 @@
 Ext.define("viewer.viewercontroller.ViewerController",{
     constructor: function(viewerType,mapId){
         this.viewerType = viewerType;
-        this.wmc = null;
-        this.webMapController = null;
+        this.mc = null;
+        this.mapComponent = null;
         this.mapDivId = mapId;
         this.components = new Array();
     },
     init : function (){
         this.mapOptions = {};
         if (this.viewerType== "flamingo"){
-            this.webMapController=new viewer.viewercontroller.FlamingoMapComponent(this.mapDivId); // aanpassen aan id van div
+            this.mapComponent=new viewer.viewercontroller.FlamingoMapComponent(this.mapDivId); // aanpassen aan id van div
         }/*else if (this.viewerType=="openlayers"){
-        this.webMapController= new OpenLayersController();
+        this.mapComponent= new OpenLayersController();
         this.mapOptions = {
             projection: new OpenLayers.Projection("EPSG:28992"),
             allOverlays: true,
@@ -37,21 +37,21 @@ Ext.define("viewer.viewercontroller.ViewerController",{
     
         this.mapOptions.maxExtent =  new viewer.viewercontroller.controller.Extent(10000, 304000,280000,620000);
     
-        this.webMapController.initEvents();
-        // Convenience accessor for the webmapController
-        this.wmc = this.webMapController;
+        this.mapComponent.initEvents();
+        // Convenience accessor for the mapComponent
+        this.mc = this.mapComponent;
     },
     createMap : function(opts){
         var a= 0;
         for (var key in opts){
             this.mapOptions[key] = opts[key];
         }
-        var map=this.webMapController.createMap(this.mapDivId,this.mapOptions); // aanpassen aan config.xml
-        this.webMapController.addMap(map);
+        var map=this.mapComponent.createMap(this.mapDivId,this.mapOptions); // aanpassen aan config.xml
+        this.mapComponent.addMap(map);
         return map;
     },
     zoomToExtent : function(minx,miny,maxx,maxy){
-        this.webMapController.getMap().zoomToExtent({
+        this.mapComponent.getMap().zoomToExtent({
             minx:minx,
             miny:miny,
             maxx:maxx,
@@ -94,10 +94,10 @@ Ext.define("viewer.viewercontroller.ViewerController",{
         if(object.isComponent != undefined){
             object.bind(event,handler);
         }else{
-            this.webMapController.registerEvent(event, object, handler);
+            this.mapComponent.registerEvent(event, object, handler);
         }
     },
     unbind : function (event,object){
-        this.webMapController.unRegisterEvent(event, object);
+        this.mapComponent.unRegisterEvent(event, object);
     }
 });

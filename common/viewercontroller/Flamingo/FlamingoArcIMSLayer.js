@@ -68,7 +68,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     },
 
     reload : function (){
-        this.getFrameworkLayer().callMethod(webMapController.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
+        this.getFrameworkLayer().callMethod(mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
 
 

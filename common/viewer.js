@@ -10,7 +10,7 @@ function initMapComponent(){
     viewerController.init();
     
     var map = viewerController.createMap();   
-    viewerController.bind(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,viewerController.wmc,onConfigComplete);
+    viewerController.bind(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,viewerController.mc,onConfigComplete);
 }
 
 
@@ -39,37 +39,37 @@ function initializeButtons(){
         }
     }
     
-    viewerController.wmc.createPanel("toolGroup");
+    viewerController.mc.createPanel("toolGroup");
 
-    viewerController.wmc.addTool(viewerController.wmc.createTool("loading",Tool.LOADING_BAR));
+    viewerController.mc.addTool(viewerController.mc.createTool("loading",Tool.LOADING_BAR));
 
-    zoomBox = viewerController.wmc.createTool("toolZoomin",Tool.ZOOM_BOX, {
+    zoomBox = viewerController.mc.createTool("toolZoomin",Tool.ZOOM_BOX, {
         title: 'Inzomen met selectie'
     });
-    viewerController.wmc.addTool(zoomBox);
+    viewerController.mc.addTool(zoomBox);
 
-    pan = viewerController.wmc.createTool("b_pan",Tool.PAN, {
+    pan = viewerController.mc.createTool("b_pan",Tool.PAN, {
         title: 'Verschuiven'
     });
-    viewerController.wmc.addTool(pan);
-    viewerController.wmc.activateTool("b_pan");
+    viewerController.mc.addTool(pan);
+    viewerController.mc.activateTool("b_pan");
 
-    prevExtent = viewerController.wmc.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {
+    prevExtent = viewerController.mc.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {
         title: 'Vorige extent'
     });
-    viewerController.wmc.addTool(prevExtent);
+    viewerController.mc.addTool(prevExtent);
 
-    var bu_measure = viewerController.wmc.createTool("b_measure",Tool.MEASURE, {
+    var bu_measure = viewerController.mc.createTool("b_measure",Tool.MEASURE, {
         title: 'Meten'
     });
    
-    viewerController.wmc.addTool(bu_measure);
+    viewerController.mc.addTool(bu_measure);
 
-    var scalebar = viewerController.wmc.createTool("scalebar",Tool.SCALEBAR);
-    viewerController.wmc.addTool(scalebar);
+    var scalebar = viewerController.mc.createTool("scalebar",Tool.SCALEBAR);
+    viewerController.mc.addTool(scalebar);
 
-    var zoombar= viewerController.wmc.createTool("zoombar",Tool.ZOOM_BAR);
-    viewerController.wmc.addTool(zoombar);
+    var zoombar= viewerController.mc.createTool("zoombar",Tool.ZOOM_BAR);
+    viewerController.mc.addTool(zoombar);
 }
 
 function loadComponents(){
@@ -105,7 +105,7 @@ function loadTOC(){
  * Alle ge�mplementeerde eventhandling functies
  */
 function b_removePolygons(id,params){
-    viewerController.wmc.getMap().getLayer("editMap").removeAllFeatures();
+    viewerController.mc.getMap().getLayer("editMap").removeAllFeatures();
 }
 
 function loadBaseLayers(){
@@ -134,8 +134,8 @@ function loadBaseLayers(){
     
     options["isBaseLayer"]=false;
     
-    var osmLayer = viewerController.wmc.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-    viewerController.wmc.getMap().addLayer(osmLayer);
+    var osmLayer = viewerController.mc.createWMSLayer("OSM",layerUrl , ogcOptions, options);
+    viewerController.mc.getMap().addLayer(osmLayer);
 }
 
 var mapInitialized = false;

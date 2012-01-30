@@ -114,8 +114,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         };
         var tool = new viewer.viewercontroller.flamingo.FlamingoTool(config);
         if(type == Tool.GET_FEATURE_INFO){
-            webMapController.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, webMapController.getMap(), options["handlerBeforeGetFeatureHandler"]);
-            webMapController.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, webMapController.getMap(), options["handlerGetFeatureHandler"]);
+            mapComponent.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, mapComponent.getMap(), options["handlerBeforeGetFeatureHandler"]);
+            mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, mapComponent.getMap(), options["handlerGetFeatureHandler"]);
         }
         return tool;
     },
@@ -324,15 +324,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     }
 
     /**
-     * Entrypoint for flamingoevents. This function propagates the events to the webMapController (handleEvents).
+     * Entrypoint for flamingoevents. This function propagates the events to the mapComponent (handleEvents).
      */
     
 });
 
 function dispatchEventJS(event, comp) {
         if(comp [0]== null){
-            comp[0] = viewerController.wmc.getId();
+            comp[0] = viewerController.mc.getId();
             comp[1] = new Object();
         }
-        viewerController.wmc.handleEvents(event,comp);
+        viewerController.mc.handleEvents(event,comp);
     }
