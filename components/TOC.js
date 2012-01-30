@@ -2,7 +2,8 @@ Ext.define ("TOC",{
     extend: "Component",
     panel: null,
     config: {
-        name: "Table of Contents"
+        name: "Table of Contents",
+        naam: ""
     },
     constructor: function (config){
         TOC.superclass.constructor.call(this, config);
