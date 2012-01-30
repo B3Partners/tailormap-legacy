@@ -48,7 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <ul class="dropdownmenu">
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">Instellingen</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" id="menu_boomstructuur">Boomstructuur met kaarten</stripes:link></li>
-                            <li><a id="menu_boomstructuur" href="#" id="menu_startkaartbeeld">Startkaartbeeld</a></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="menu_startkaartbeeld">Startkaartbeeld</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="menu_layout">Layout met beschikbare componenten</stripes:link></li>
                         </ul>
                     </li>
