@@ -98,19 +98,11 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         if(application == null){
             getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
+        }else{
+            rootlevel = application.getRoot();
         }
         
         return new ForwardResolution(JSP);
-    }
-    
-    @Before(stages=LifecycleStage.BindingAndValidation)
-    @SuppressWarnings("unchecked")
-    public void load() {
-        if(application != null){
-            rootlevel = application.getRoot();
-        }else{
-            // melding geven
-        }
     }
     
     public Resolution loadApplicationTree() throws JSONException {
