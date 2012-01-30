@@ -8,7 +8,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
     layerName: "layer1",
     constructor: function(config){
-        FlamingoVectorLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.flamingo.FlamingoVectorLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },

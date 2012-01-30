@@ -13,7 +13,7 @@
 Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
     constructor :function (config){
-        FlamingoLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.flamingo.FlamingoLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },

@@ -20,19 +20,19 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      * @description Initializes the events
      */
     initEvents : function(){
-        this.eventList[Event.ON_EVENT_DOWN]                             = "activate";
-        this.eventList[Event.ON_EVENT_UP]                               = "deactivate";
-        this.eventList[Event.ON_GET_CAPABILITIES]                       = "onGetCapabilities";
-        this.eventList[Event.ON_CONFIG_COMPLETE]                        = "onConfigComplete";
-        this.eventList[Event.ON_FEATURE_ADDED]                          = "featureadded";
-        this.eventList[Event.ON_CLICK]                                  = "click";
-        this.eventList[Event.ON_SET_TOOL]                               = "activate";
-        this.eventList[Event.ON_ALL_LAYERS_LOADING_COMPLETE]            = "onUpdateComplete";
-        this.eventList[Event.ON_LOADING_START]                          = "loadstart";
-        this.eventList[Event.ON_LOADING_END]                            = "loadend";
-        this.eventList[Event.ON_MEASURE]                                = "measure";
-        this.eventList[Event.ON_FINISHED_CHANGE_EXTENT]                 = "zoomend";
-        this.eventList[Event.ON_CHANGE_EXTENT]                          = "move";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_DOWN]                             = "activate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_UP]                               = "deactivate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_CAPABILITIES]                       = "onGetCapabilities";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE]                        = "onConfigComplete";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]                          = "featureadded";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CLICK]                                  = "click";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                               = "activate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE]            = "onUpdateComplete";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_START]                          = "loadstart";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_END]                            = "loadend";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MEASURE]                                = "measure";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]                 = "zoomend";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]                          = "move";
     },
     /**
      * @description Gets the panel of this controller and OpenLayers.Map. If the panel is still null, the panel is created and added to the map.
@@ -563,7 +563,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
 
 Ext.onReady(function() {
     if( webMapController instanceof OpenLayersMapComponent){
-        var specificName = webMapController.getSpecificEventName(Event.ON_CONFIG_COMPLETE);
+        var specificName = webMapController.getSpecificEventName(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         webMapController.handleEvent(specificName);
     }
 });

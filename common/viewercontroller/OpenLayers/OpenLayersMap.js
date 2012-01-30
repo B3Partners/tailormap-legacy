@@ -90,9 +90,9 @@ OpenLayersMap.prototype.addLayer = function(layer){
             maptipControl.activate();
         }
 
-        if(webMapController.events[webMapController.getSpecificEventName(Event.ON_ALL_LAYERS_LOADING_COMPLETE)] != null){
-            layer.register(Event.ON_LOADING_END,this.layerFinishedLoading);
-            layer.register(Event.ON_LOADING_START,this.layerBeginLoading);
+        if(webMapController.events[webMapController.getSpecificEventName(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE)] != null){
+            layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_END,this.layerFinishedLoading);
+            layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_START,this.layerBeginLoading);
         }
     }
 
@@ -229,14 +229,14 @@ OpenLayersMap.prototype.register = function (event,handler,thisObj){
         this.getFrameworkMap().eventListeners = new Object();
     }
     
-    if(event == Event.ON_ALL_LAYERS_LOADING_COMPLETE){
+    if(event == viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE){
         var wmsLayers = this.getAllWMSLayers();
         for(var i = 0 ; i < wmsLayers.length ; i++){
             var layer = wmsLayers[i];
             layer.register(event,this.layerFinishedLoading);
-            layer.register(Event.ON_LOADING_START,this.layerBeginLoading);
+            layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_START,this.layerBeginLoading);
         }
-        webMapController.register(Event.ON_ALL_LAYERS_LOADING_COMPLETE, handler);
+        webMapController.register(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, handler);
     }else{
         //this.getFrameworkMap().eventListeners [specificName]= handler;        
         this.getFrameworkMap().events.register(specificName,thisObj,handler);
@@ -245,8 +245,8 @@ OpenLayersMap.prototype.register = function (event,handler,thisObj){
 
 OpenLayersMap.prototype.unRegister = function (event,handler,thisObj){
     var specificName = webMapController.getSpecificEventName(event);
-    if (event == Event.ON_ALL_LAYERS_LOADING_COMPLETE){
-        webMapController.unRegister(Event.ON_ALL_LAYERS_LOADING_COMPLETE, handler);
+    if (event == viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE){
+        webMapController.unRegister(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, handler);
     }
     this.getFrameworkMap().events.unregister(specificName,thisObj,handler);
 }
@@ -286,7 +286,7 @@ var layersLoading=0;
 OpenLayersMap.prototype.layerFinishedLoading = function (id,data,c,d){
     layersLoading--;    
     if (layersLoading==0){
-        webMapController.handleEvent(webMapController.eventList[Event.ON_ALL_LAYERS_LOADING_COMPLETE]);
+        webMapController.handleEvent(webMapController.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE]);
     }else if (layersLoading < 0){
         layersLoading=0;
     }

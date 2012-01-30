@@ -10,7 +10,7 @@ function initMapComponent(){
     viewerController.init();
     
     var map = viewerController.createMap();   
-    viewerController.bind(Event.ON_CONFIG_COMPLETE,viewerController.wmc,onConfigComplete);
+    viewerController.bind(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,viewerController.wmc,onConfigComplete);
 }
 
 

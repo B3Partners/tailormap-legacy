@@ -6,8 +6,8 @@ Ext.define ("viewer.components.TOC",{
         naam: ""
     },
     constructor: function (config){
-        TOC.superclass.constructor.call(this, config);
-        this.addEvents(Event.ON_LAYER_SWITCHED_OFF,Event.ON_LAYER_SWITCHED_ON);
+        viewer.components.TOC.superclass.constructor.call(this, config);
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON);
         this.initConfig(config);
         this.loadTree();
         this.addArcIMS();
@@ -115,10 +115,10 @@ Ext.define ("viewer.components.TOC",{
             toc.toc.viewerController.wmc.getMap().addLayer(laag);
             nodeObj.data.layerObj = laag;
             nodeObj.updateInfo();
-            toc.toc.fireEvent(Event.ON_LAYER_SWITCHED_ON,this,laag);
+            toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,laag);
         }else{
             toc.toc.viewerController.wmc.getMap().removeLayer(layer)
-            toc.toc.fireEvent(Event.ON_LAYER_SWITCHED_OFF,this,layer);
+            toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
         }
     }
 });

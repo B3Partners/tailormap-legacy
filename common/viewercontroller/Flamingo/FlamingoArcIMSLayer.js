@@ -6,7 +6,7 @@
 Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
     constructor: function(config){
-        FlamingoArcIMSLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.flamingo.FlamingoArcIMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },

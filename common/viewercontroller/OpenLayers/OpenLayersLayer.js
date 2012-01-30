@@ -41,13 +41,13 @@ OpenLayersLayer.prototype.setOption = function(optionKey,optionValue){
 /* Eventhandling for layers */
 OpenLayersLayer.prototype.register = function (event,handler){
     var specificName = webMapController.getSpecificEventName(event);
-    if(specificName == webMapController.eventList[Event.ON_FEATURE_ADDED]){
+    if(specificName == webMapController.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]){
         if( webMapController.events[event] == undefined){
             webMapController.events[event] = new Object();
         }
         webMapController.events[event][this.getFrameworkLayer().id] = handler;
         this.getFrameworkLayer().events.register(specificName, this.getFrameworkLayer(), layerFeatureHandler);
-    }else if(event == Event.ON_LOADING_START || event == Event.ON_LOADING_END){
+    }else if(event == viewer.viewercontroller.controller.Event.ON_LOADING_START || event == viewer.viewercontroller.controller.Event.ON_LOADING_END){
         this.getFrameworkLayer().events.register(specificName, this, handler);
     }else{
         this.getFrameworkLayer().events.register(specificName, this.getFrameworkLayer(), handler);

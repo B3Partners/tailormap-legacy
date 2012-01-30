@@ -20,7 +20,7 @@ OpenLayersTool.prototype.register = function (event,handler){
             var lonlat= this.map.getLonLatFromViewPortPx(evt.xy);
             handler.call(this,new Extent(lonlat.lat,lonlat.lon,lonlat.lat,lonlat.lon))
         };
-    }else if(Event.ON_SET_TOOL == event){
+    }else if(viewer.viewercontroller.controller.Event.ON_SET_TOOL == event){
         this.onActiveHandler = handler;
         this.getFrameworkTool().events.register(specificName,this,this.onSetActive);
     } else{

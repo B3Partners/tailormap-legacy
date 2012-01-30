@@ -23,7 +23,7 @@ Ext.define ("viewer.components.Zoom",{
         aap: "noot"
     },
     constructor: function (config){
-        Zoom.superclass.constructor.call(this, config);
+        viewer.components.Zoom.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     }

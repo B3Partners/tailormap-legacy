@@ -19,7 +19,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     constructor :function (viewerObject){
      
        // this.eventList = new Array();
-        this.addEvents(Event.ON_CONFIG_COMPLETE);
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
        // webMapMapComponent = this;
         //this.initConfig(config);
         return this;

@@ -18,7 +18,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
        this.frameworkTool=frameworkObject;
         this.type=type;*/
         this.initConfig(config);
-        this.addEvents(Event.ON_CLICK,Event.ON_EVENT_DOWN,Event.ON_EVENT_UP);
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_CLICK,viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,viewer.viewercontroller.controller.Event.ON_EVENT_UP);
         return this;
     },
     

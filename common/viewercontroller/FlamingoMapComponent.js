@@ -20,18 +20,18 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      * Initialize the events. These events are specific for flamingo.
      */
     initEvents : function(){
-        this.eventList[Event.ON_EVENT_DOWN]              	= "onEvent";
-        this.eventList[Event.ON_EVENT_UP]                	= "onEvent";
-        this.eventList[Event.ON_GET_CAPABILITIES]        	= "onGetCapabilities";
-        this.eventList[Event.ON_CONFIG_COMPLETE]         	= "onConfigComplete";
-        this.eventList[Event.ON_FEATURE_ADDED]		= "onGeometryDrawFinished";
-        this.eventList[Event.ON_REQUEST]			= "onRequest";
-        this.eventList[Event.ON_SET_TOOL]                   = "onSetTool";
-        this.eventList[Event.ON_GET_FEATURE_INFO]		= "onIdentify";
-        this.eventList[Event.ON_GET_FEATURE_INFO_DATA]	= "onIdentifyData";
-        this.eventList[Event.ON_ALL_LAYERS_LOADING_COMPLETE] = "onUpdateComplete";
-        this.eventList[Event.ON_FINISHED_CHANGE_EXTENT]     = "onReallyChangedExtent";
-        this.eventList[Event.ON_CHANGE_EXTENT]              = "onChangeExtent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_DOWN]              	= "onEvent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_UP]                	= "onEvent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_CAPABILITIES]        	= "onGetCapabilities";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE]         	= "onConfigComplete";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]		= "onGeometryDrawFinished";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_REQUEST]			= "onRequest";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                   = "onSetTool";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]		= "onIdentify";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA]	= "onIdentifyData";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE] = "onUpdateComplete";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]     = "onReallyChangedExtent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]              = "onChangeExtent";
 
     },
     /**
@@ -114,8 +114,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         };
         var tool = new viewer.viewercontroller.flamingo.FlamingoTool(config);
         if(type == Tool.GET_FEATURE_INFO){
-            webMapController.registerEvent(Event.ON_GET_FEATURE_INFO, webMapController.getMap(), options["handlerBeforeGetFeatureHandler"]);
-            webMapController.registerEvent(Event.ON_GET_FEATURE_INFO_DATA, webMapController.getMap(), options["handlerGetFeatureHandler"]);
+            webMapController.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, webMapController.getMap(), options["handlerBeforeGetFeatureHandler"]);
+            webMapController.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, webMapController.getMap(), options["handlerGetFeatureHandler"]);
         }
         return tool;
     },
@@ -274,16 +274,16 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         // onEvent is a general event, fired when a jsButton is hovered over, pressed or released. Here we specify which it was.
         if(event == "onEvent"){
             if(component[1]["down"]){
-                event = Event.ON_EVENT_DOWN;
+                event = viewer.viewercontroller.controller.Event.ON_EVENT_DOWN;
             }else{
                 // TODO: specify more events. This is not ONLY ON_EVENT_UP, but also hover.
-                event = Event.ON_EVENT_UP;
+                event = viewer.viewercontroller.controller.Event.ON_EVENT_UP;
             }
         }else{
             // Translate the specific name to the generic name. 
             event = this.getGenericEventName(event);
         }
-        if (event==Event.ON_REQUEST){
+        if (event==viewer.viewercontroller.controller.Event.ON_REQUEST){
             var obj=component[2];
             if (obj.requesttype=="GetMap"){
                 var tokens = component[0].split("_");
@@ -299,17 +299,17 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                     this.getMap(tokens[0]).getLayer(tokens[1]+"_"+tokens[2]).setURL(obj.url);
                 }
             }        
-        }else if(event==Event.ON_SET_TOOL){
+        }else if(event==viewer.viewercontroller.controller.Event.ON_SET_TOOL){
             //onchange tool is called for a tool group but event is registerd on the MapComponent
             id=this.getId();
         }else{
-            if(event == Event.ON_FEATURE_ADDED){
+            if(event == viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED){
                 // Make sure "component" is the drawn feature
                 var feature = new viewer.viewercontroller.controller.Feature(id,component[1]);
                 component = feature;
-            }else if( event == Event.ON_GET_FEATURE_INFO){
+            }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){
                 component = component[1];
-            }else if( event == Event.ON_GET_FEATURE_INFO_DATA){
+            }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){
                 component = component[2];
             }
         }
