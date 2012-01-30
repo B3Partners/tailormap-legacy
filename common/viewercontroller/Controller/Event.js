@@ -8,7 +8,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("Event",{
+Ext.define("viewer.viewercontroller.controller.Event",{
     statics:{
         //Events:
         //MapComponent events:                        0 - 10

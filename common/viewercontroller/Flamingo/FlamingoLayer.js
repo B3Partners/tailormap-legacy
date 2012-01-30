@@ -10,8 +10,8 @@
  * 
  */
 
-Ext.define("FlamingoLayer",{
-    extend: "Layer",
+Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
+    extend: "viewer.viewercontroller.controller.Layer",
     constructor :function (config){
         FlamingoLayer.superclass.constructor.call(this, config);
         this.initConfig(config);

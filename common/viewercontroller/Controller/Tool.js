@@ -6,7 +6,7 @@
  * @param frameworkObject The frameworkspecific object, to store as a reference
  * @param type The type of tool to be created
  */
-Ext.define("Tool",{
+Ext.define("viewer.viewercontroller.controller.Tool",{
     extend: "Ext.util.Observable",
     events: [],
     config :{

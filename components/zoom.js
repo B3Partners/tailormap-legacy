@@ -16,8 +16,8 @@
  */
 
 
-Ext.define ("Zoom",{
-    extend: "Component",
+Ext.define ("viewer.components.Zoom",{
+    extend: "viewer.components.Component",
     config:{
         name: "Zoom",
         aap: "noot"
@@ -27,4 +27,5 @@ Ext.define ("Zoom",{
         this.initConfig(config);
         return this;
     }
+    
 });

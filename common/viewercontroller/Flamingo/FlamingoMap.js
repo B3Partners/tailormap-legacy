@@ -6,10 +6,10 @@
  * 
  */
 
-Ext.define("FlamingoMap",{
-    extend: "Map",
+Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
+    extend: "viewer.viewercontroller.controller.Map",
     constructor: function(config){
-        FlamingoMap.superclass.constructor.call(this, config);
+        viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },
@@ -27,7 +27,7 @@ Ext.define("FlamingoMap",{
     getAllWMSLayers : function(){
         var lagen = new Array();
         for(var i = 0 ; i < this.layers.length;i++){
-            if(this.layers[i] instanceof FlamingoWMSLayer){
+            if(this.layers[i] instanceof viewer.viewercontroller.flamingo.FlamingoWMSLayer){
                 lagen.push(this.layers[i]);
             }
         }
@@ -39,7 +39,7 @@ Ext.define("FlamingoMap",{
     getAllVectorLayers : function(){
         var lagen = new Array();
         for(var i = 0 ; i < this.layers.length;i++){
-            if(this.layers[i] instanceof FlamingoVectorLayer){
+            if(this.layers[i] instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer){
                 lagen.push(this.layers[i]);
             }
         }
@@ -58,12 +58,12 @@ Ext.define("FlamingoMap",{
      *see @link Map.addLayer
      **/
     addLayer : function(layer){
-        if (!(layer instanceof FlamingoLayer))
+        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
             throw("FlamingoMap.addLayer(): Given layer not of type FlamingoLayer");
         //call super function
         //Map.prototype.addLayer.call(this,layer);
         this.superclass.addLayer.call(this,layer);
-        if (!(layer instanceof FlamingoVectorLayer)){
+        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'addLayer',layer.toXML());
         }
     },
@@ -72,11 +72,11 @@ Ext.define("FlamingoMap",{
      *remove the specific layer. See @link Map.removeLayer
      **/
     removeLayer:function(layer){
-        if (!(layer instanceof FlamingoLayer))
+        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
             throw("FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer");
         //call super function
         Map.prototype.removeLayer.call(this,layer);
-        if (!(layer instanceof FlamingoVectorLayer)){
+        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
         }
     },
@@ -85,11 +85,11 @@ Ext.define("FlamingoMap",{
      *see @link Map.setLayerIndex
      */
     setLayerIndex : function (layer, newIndex){
-        if (!(layer instanceof FlamingoLayer)){
+        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer)){
             throw("FlamingoMap.setLayerIndex(): Given layer not of type FlamingoLayer.");
         }
 
-        if (!(layer instanceof FlamingoVectorLayer)){
+        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),"swapLayer",this.getId()+'_'+layer.getId(),newIndex);
         }
         return Map.prototype.setLayerIndex(layer,newIndex);
@@ -133,7 +133,7 @@ Ext.define("FlamingoMap",{
      */
     getMaxExtent:function(){
         var extent=this.getFrameworkMap().callMethod(this.getId(), "getFullExtent");
-        return new Extent(extent.minx,extent.miny,extent.maxx,extent.maxy);
+        return new viewer.viewercontroller.controller.Extent(extent.minx,extent.miny,extent.maxx,extent.maxy);
     },
 
     /**
@@ -148,7 +148,7 @@ Ext.define("FlamingoMap",{
      */
     getExtent: function(){
         var extent= this.getFrameworkMap().callMethod(this.getId(),'getExtent');
-        return new Extent(extent.minx,extent.miny,extent.maxx,extent.maxy);
+        return new viewer.viewercontroller.controller.Extent(extent.minx,extent.miny,extent.maxx,extent.maxy);
     },
 
     /**

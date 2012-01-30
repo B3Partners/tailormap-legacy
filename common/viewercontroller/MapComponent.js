@@ -8,7 +8,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("MapComponent",{
+Ext.define("viewer.viewercontroller.MapComponent",{
     extend: "Ext.util.Observable",
     eventList: new Array(),
     webMapMapComponent :null,
@@ -87,7 +87,7 @@ Ext.define("MapComponent",{
  *@param tool The tool that needs to be added of type Tool
  */
     addTool : function(tool){
-        if (!(tool instanceof Tool)){
+        if (!(tool instanceof viewer.viewercontroller.controller.Tool)){
             throw("Given tool not of type 'Tool'");
         }
         this.tools.push(tool);
@@ -98,7 +98,7 @@ Ext.define("MapComponent",{
  *@param tool The tool that needs to be removed.
  */
     removeTool : function (tool){
-        if (!(tool instanceof Tool)){
+        if (!(tool instanceof viewer.viewercontroller.controller.Tool)){
             throw("Given tool not of type 'Tool'");
         }
         for (var i=0; i < this.tools; i++){

@@ -1,5 +1,5 @@
-Ext.define ("TOC",{
-    extend: "Component",
+Ext.define ("viewer.components.TOC",{
+    extend: "viewer.components.Component",
     panel: null,
     config: {
         name: "Table of Contents",

@@ -19,7 +19,7 @@
 /**
  * Abstract component
  */
-Ext.define("Component",{
+Ext.define("viewer.components.Component",{
     extend: "Ext.util.Observable", 
     events: [],
     config: {

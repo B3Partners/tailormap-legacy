@@ -4,8 +4,8 @@
  * @description Flamingo WMS layer class 
  **/
 
-Ext.define("FlamingoWMSLayer",{
-    extend: "FlamingoLayer",
+Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
+    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
     constructor: function(config){
         FlamingoWMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);

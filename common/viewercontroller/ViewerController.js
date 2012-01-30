@@ -9,7 +9,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("ViewerController",{
+Ext.define("viewer.viewercontroller.ViewerController",{
     constructor: function(viewerType,mapId){
         this.viewerType = viewerType;
         this.wmc = null;
@@ -20,7 +20,7 @@ Ext.define("ViewerController",{
     init : function (){
         this.mapOptions = {};
         if (this.viewerType== "flamingo"){
-            this.webMapController=new FlamingoMapComponent(this.mapDivId); // aanpassen aan id van div
+            this.webMapController=new viewer.viewercontroller.FlamingoMapComponent(this.mapDivId); // aanpassen aan id van div
         }/*else if (this.viewerType=="openlayers"){
         this.webMapController= new OpenLayersController();
         this.mapOptions = {
@@ -35,7 +35,7 @@ Ext.define("ViewerController",{
         };
     }*/
     
-        this.mapOptions.maxExtent =  new Extent(10000, 304000,280000,620000);
+        this.mapOptions.maxExtent =  new viewer.viewercontroller.controller.Extent(10000, 304000,280000,620000);
     
         this.webMapController.initEvents();
         // Convenience accessor for the webmapController

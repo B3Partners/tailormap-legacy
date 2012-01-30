@@ -6,8 +6,8 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("OpenLayersMapComponent",{
-    extend: "MapComponent",
+Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
+    extend: "viewer.viewercontroller.MapComponent",
     constructor :function (){
         this.pointButton = null;
         this.lineButton = null;

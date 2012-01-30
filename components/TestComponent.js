@@ -17,7 +17,7 @@
 
 
 Ext.define("TestComponent",{
-    extend: "Component",
+    extend: "viewer.components.Component",
    /* constructor: function(){
       var c = {"id":"flamingo","linkedComponents":["openlayers"],"restrictions":["content"],"addOnce":true,"name":"Flamingo Map","shortName":"Fm"}  
     },*/

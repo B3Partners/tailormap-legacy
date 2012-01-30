@@ -5,7 +5,7 @@
  * @param frameworkMap The frameworkspecific layer
  * Map object interface class
  * */
-Ext.define("Map",{
+Ext.define("viewer.viewercontroller.controller.Map",{
     extend: "Ext.util.Observable",
     events: [],
     layers: new Array(),
@@ -129,7 +129,7 @@ Ext.define("Map",{
      * @return the old index of this layer
      */
     setLayerIndex : function (layer, newIndex){
-        if(!(layer instanceof Layer)){
+        if(!(layer instanceof viewer.viewercontroller.controller.Layer)){
             throw("Given layer not of type Layer");
         }
         var currentIndex=this.getLayerIndex(layer);

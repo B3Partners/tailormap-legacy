@@ -8,7 +8,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("Layer",{
+Ext.define("viewer.viewercontroller.controller.Layer",{
     extend: "Ext.util.Observable",
     events: [],
     maptips: new Array(),

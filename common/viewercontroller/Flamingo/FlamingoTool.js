@@ -3,8 +3,8 @@
  * @constructor
  * @description The flamingo Tool Class 
  **/
-Ext.define("FlamingoTool",{
-    extend: "Tool",
+Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
+    extend: "viewer.viewercontroller.controller.Tool",
     constructor : function (config){
         FlamingoTool.superclass.constructor.call(this, config);
         this.initConfig(config);

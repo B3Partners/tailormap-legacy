@@ -6,7 +6,7 @@ function initMapComponent(){
     if (window.location.href.indexOf("openlayers")>0){
         viewerType="openlayers";
     }
-    viewerController = new ViewerController(viewerType,"map");
+    viewerController = new viewer.viewercontroller.ViewerController(viewerType,"map");
     viewerController.init();
     
     var map = viewerController.createMap();   

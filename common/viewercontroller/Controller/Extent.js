@@ -9,7 +9,7 @@
  * @param maxx The maximal x of the extent.
  * @param maxy The maximal y of the extent.
  **/
-Ext.define("Extent",{
+Ext.define("viewer.viewercontroller.controller.Extent",{
 
     constructor: function (minx,miny,maxx,maxy){
         if (minx!=undefined && miny==undefined && maxx==undefined && maxy==undefined){

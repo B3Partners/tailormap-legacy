@@ -3,8 +3,8 @@
  * @constructor
  * @description Flamingo ArcIMS layer class 
  **/
-Ext.define("FlamingoArcIMSLayer",{
-    extend: "FlamingoLayer",
+Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
+    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
     constructor: function(config){
         FlamingoArcIMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);

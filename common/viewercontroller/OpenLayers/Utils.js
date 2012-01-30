@@ -11,7 +11,7 @@ Utils.createBounds=function(extent){
     return new OpenLayers.Bounds(extent.minx,extent.miny,extent.maxx,extent.maxy);
 }
 Utils.createExtent=function(bounds){
-    return new Extent(bounds.left,bounds.bottom,bounds.right,bounds.top);
+    return new viewer.viewercontroller.controller.Extent(bounds.left,bounds.bottom,bounds.right,bounds.top);
 }
 
 OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {

@@ -4,8 +4,8 @@
  * @description The FlamingoVectorLayer class. In flamingo also known as EditMap. 
  **/
 
-Ext.define("FlamingoVectorLayer",{
-    extend: "FlamingoLayer",
+Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
+    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
     layerName: "layer1",
     constructor: function(config){
         FlamingoVectorLayer.superclass.constructor.call(this, config);
@@ -44,7 +44,7 @@ Ext.define("FlamingoVectorLayer",{
             return null;
         }
 
-        var featureObj = new Feature();
+        var featureObj = new viewer.viewercontroller.controller.Feature();
         var feature = featureObj.fromFlamingoFeature(flaFeature);
 
         return feature;
@@ -76,7 +76,7 @@ Ext.define("FlamingoVectorLayer",{
         var flamingoObj = viewerController.wmc.viewerObject;//this.getFrameworkLayer();
         var flamingoFeatures = flamingoObj.callMethod(this.getId(),"getAllFeaturesAsObject");
         var features = new Array();
-        var featureObj = new Feature();
+        var featureObj = new viewer.viewercontroller.controller.Feature();
         for(var i = 0 ; i< flamingoFeatures.length ; i++){
             var flFeature = flamingoFeatures[i];
             var feature = featureObj.fromFlamingoFeature(flFeature);

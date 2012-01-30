@@ -6,8 +6,8 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/
-Ext.define("FlamingoMapComponent",{
-    extend: "MapComponent",
+Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
+    extend: "viewer.viewercontroller.MapComponent",
     viewerObject : null,
     constructor :function (domId){
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
@@ -44,7 +44,7 @@ Ext.define("FlamingoMapComponent",{
         var config = {
             id: id
         };
-        var map = new FlamingoMap(config);
+        var map = new viewer.viewercontroller.flamingo.FlamingoMap(config);
         var maxExtent = options["maxExtent"];
         // map.setMaxExtent(maxExtent);
         return map;
@@ -75,7 +75,7 @@ Ext.define("FlamingoMapComponent",{
             options: object,
             frameworkObject : new Object() //this.viewerObject
         };
-        return new FlamingoWMSLayer(config);
+        return new viewer.viewercontroller.flamingo.FlamingoWMSLayer(config);
     },
     createArcIMSLayer : function(name,server,servlet,mapservice,ogcParams,options){
         var object=new Object();
@@ -99,7 +99,7 @@ Ext.define("FlamingoMapComponent",{
             id: ide,
             options: object
         };
-        return new FlamingoArcIMSLayer(config);
+        return new viewer.viewercontroller.flamingo.FlamingoArcIMSLayer(config);
     },
     /**
      * See @link MapComponent.createTool
@@ -112,7 +112,7 @@ Ext.define("FlamingoMapComponent",{
             id: ide,
             frameworkObject: new Object() //this.viewerObject
         };
-        var tool = new FlamingoTool(config);
+        var tool = new viewer.viewercontroller.flamingo.FlamingoTool(config);
         if(type == Tool.GET_FEATURE_INFO){
             webMapController.registerEvent(Event.ON_GET_FEATURE_INFO, webMapController.getMap(), options["handlerBeforeGetFeatureHandler"]);
             webMapController.registerEvent(Event.ON_GET_FEATURE_INFO_DATA, webMapController.getMap(), options["handlerGetFeatureHandler"]);
@@ -127,7 +127,7 @@ Ext.define("FlamingoMapComponent",{
             id:identification,
             frameworkObject: new Object()
         };
-        return new FlamingoVectorLayer(config);
+        return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
     /**
      * See @link MapComponent.createPanel
@@ -139,7 +139,7 @@ Ext.define("FlamingoMapComponent",{
      *See @link MapComponent.addTool
      */
     addTool : function(tool){
-        if (!(tool instanceof FlamingoTool)){
+        if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
             throw("The given tool is not of type 'FlamingoTool'");
         }
         this.viewerObject.callMethod(tool.getId(),'setVisible',true);
@@ -155,7 +155,7 @@ Ext.define("FlamingoMapComponent",{
      *See @link MapComponent.removeTool
      */
     removeTool : function (tool){
-        if (!(tool instanceof FlamingoTool)){
+        if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
             throw("The given tool is not of type 'FlamingoTool'");
         }
         this.viewerObject.callMethod(tool.getId(),'setVisible',false);
@@ -166,7 +166,7 @@ Ext.define("FlamingoMapComponent",{
      *For know only 1 map supported.
      */
     addMap : function (map){
-        if (!(map instanceof FlamingoMap)){
+        if (!(map instanceof viewer.viewercontroller.flamingo.FlamingoMap)){
             throw("FlamingoMapComponent.addMap(): The given map is not of the type 'FlamingoMap'");
         }
         this.maps.push(map);
@@ -176,7 +176,7 @@ Ext.define("FlamingoMapComponent",{
      */
     removeToolById : function (id){
         var tool = this.getTool(id);
-        if(tool == null || !(tool instanceof FlamingoTool)){
+        if(tool == null || !(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
             throw("The given tool is not of type 'FlamingoTool' or the given id does not exist");
         }
         this.removeTool(tool);
@@ -305,7 +305,7 @@ Ext.define("FlamingoMapComponent",{
         }else{
             if(event == Event.ON_FEATURE_ADDED){
                 // Make sure "component" is the drawn feature
-                var feature = new Feature(id,component[1]);
+                var feature = new viewer.viewercontroller.controller.Feature(id,component[1]);
                 component = feature;
             }else if( event == Event.ON_GET_FEATURE_INFO){
                 component = component[1];

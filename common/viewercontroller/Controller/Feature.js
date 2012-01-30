@@ -6,7 +6,7 @@
  * @description
  * The generic class for defining a feature. A feature consists of a id and a wkt. Convenience methods for converting from and to viewerspecific features.
  */
-Ext.define("Feature",{
+Ext.define("viewer.viewercontroller.controller.Feature",{
     constructor: function (id,wkt){
         
         this.id = id;
@@ -29,7 +29,7 @@ Ext.define("Feature",{
     toOpenLayersFeature : function(){
         throw ("Not yet implemented");
        // var olFeature = this.wktParser.read(this.getWkt());
-        return olFeature;
+       // return olFeature;
     },
 
     /**
@@ -38,7 +38,7 @@ Ext.define("Feature",{
      * @return The generic feature
      */
     fromOpenLayersFeature : function(openLayersFeature){
-        var feature = new Feature(openLayersFeature.id,openLayersFeature.geometry.toString());
+        var feature = new viewer.viewercontroller.controller.Feature(openLayersFeature.id,openLayersFeature.geometry.toString());
         return feature;
     },
 
@@ -59,7 +59,7 @@ Ext.define("Feature",{
      * @return The generic feature
      */
     fromFlamingoFeature : function(flamingoFeature){
-        var feature = new Feature(flamingoFeature["id"],flamingoFeature["wktgeom"]);
+        var feature = new viewer.viewercontroller.controller.Feature(flamingoFeature["id"],flamingoFeature["wktgeom"]);
         return feature;
     }
 
