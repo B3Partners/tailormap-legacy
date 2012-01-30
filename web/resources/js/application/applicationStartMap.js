@@ -93,4 +93,8 @@ Ext.onReady(function() {
         // DIV-ID to which the move buttons are rendered
         layerMoveButtons: 'layermove-buttons'
     }));
+    
+    Ext.get('startmapform').on('submit', function() {
+        Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
+    });
 });

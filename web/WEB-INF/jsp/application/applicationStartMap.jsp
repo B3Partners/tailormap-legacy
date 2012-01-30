@@ -26,11 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <p>
-            <stripes:errors/>
-            <stripes:messages/>
-        <p>
         <div id="content">
+            <p>
+                <stripes:errors/>
+                <stripes:messages/>
+            <p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="startmapform">
             
                 <h1>Startkaartbeeld</h1>
@@ -45,6 +45,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="layermove-buttons" class="tree-selection-buttons"></div>
             <div style="clear: both;"></div>
             <stripes:hidden id="selectedlayersinput" name="selectedlayers" />
+            
+            <stripes:submit name="save" value="Opslaan"/>
             
             </stripes:form>
         </div>

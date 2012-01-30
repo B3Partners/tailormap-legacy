@@ -53,6 +53,33 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
         return new ForwardResolution(JSP);
     }
+    
+    public Resolution save() {
+        rootlevel = application.getRoot();
+        
+        List<ApplicationLayer> checkedLayers = getSelectedLayers(rootlevel);
+        if(checkedLayers != null){
+            for (Iterator it = checkedLayers.iterator(); it.hasNext();) {
+                ApplicationLayer layer = (ApplicationLayer) it.next();
+                layer.setChecked(false);
+                Stripersist.getEntityManager().persist(layer);
+            }
+        }
+        
+        if(selectedlayers != null && selectedlayers.length() > 0){
+            String[] layers = selectedlayers.split(",");
+            for(int i = 0; i < layers.length; i++){
+                Long id = new Long(layers[i].substring(1));
+                ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
+                appLayer.setChecked(true);
+                Stripersist.getEntityManager().persist(appLayer);
+            }
+        }
+        Stripersist.getEntityManager().getTransaction().commit();
+        getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
+        
+        return new ForwardResolution(JSP);
+    }
 
     public Resolution loadApplicationTree() throws JSONException {
 
