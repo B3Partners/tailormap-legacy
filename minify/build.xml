@@ -1,0 +1,56 @@
+<project name="viewer-html" default="minify" basedir=".">
+
+    <!-- http://code.google.com/p/closure-compiler/wiki/BuildingWithAnt -->    
+    <property name="minify.output" value="${basedir}/build/web/viewer-html/viewercontroller-compiled.js"/>
+    <property name="viewerhtml.path" value="${basedir}/web/viewer-html"/>
+	<target name="minify" description="Minify source JavaScript files with Closure Compiler">
+        <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="../libs/GoogleClosureCompiler/compiler.jar"/>
+    
+        <!-- prettyPrint="true" -->
+        <jscomp compilationLevel="simple" prettyPrint="true" printInputDelimiter="true" debug="false" output="${minify.output}">
+			<!-- 				The Viewercontroller				-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller">
+            <file name="ViewerController.js"/>
+          </sources>
+          <!--					The Components               -->
+          <sources dir="${viewerhtml.path}/components">
+            <file name="Component.js"/>
+            <file name="TOC.js"/>
+          </sources>
+          <!--					The Tool Components				-->
+         <sources dir="${viewerhtml.path}/components/tools">
+            <file name="Tool.js"/>
+            <file name="ZoomIn.js"/>
+          </sources>
+		  <!--					The abstract MapComponent				-->         
+          <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
+            <file name="Map.js"/>
+            <file name="Layer.js"/>
+            <file name="Feature.js"/>
+            <file name="MapTip.js"/>
+            <file name="Extent.js"/>
+            <file name="Event.js"/>
+            <file name="Tool.js"/>
+          </sources>
+          <!--					The Flamingo-MC implementation		-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo">
+            <file name="FlamingoLayer.js"/>
+            <file name="FlamingoArcIMSLayer.js"/>
+            <file name="FlamingoWMSLayer.js"/>
+            <file name="FlamingoVectorLayer.js"/>
+            <file name="FlamingoMap.js"/>
+            <file name="FlamingoTool.js"/>
+          </sources>          
+          <!--					The Flamingo-mc component 				-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller">          
+            <file name="MapComponent.js"/>
+            <file name="FlamingoMapComponent.js"/>            
+          </sources>
+        </jscomp>
+	</target>
+
+	<target name="minify-clean">
+		<delete file="${minify.output}"/>
+	</target>
+</project>
+
