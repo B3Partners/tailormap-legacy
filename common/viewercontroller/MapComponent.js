@@ -86,9 +86,13 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  *and call super to do some frameworks specific things.
  *@param tool The tool that needs to be added of type Tool
  */
-    addTool : function(tool){
+    addTool : function(tool){        
         if (!(tool instanceof viewer.viewercontroller.controller.Tool)){
-            throw("Given tool not of type 'Tool'");
+            Ext.Error.raise({
+                msg: "Given tool not of type 'Tool'",
+                options: {tool: tool}
+            });
+            Ext.err();
         }
         this.tools.push(tool);
     },

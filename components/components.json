@@ -58,10 +58,10 @@
     },
 
     {
-        className: "Zoom",
-        name: "Zoom",
-        shortName: "Zm",
-        sources: ["zoom.js"],
+        className: "viewer.components.tools.ZoomIn",
+        name: "ZoomIn",
+        shortName: "ZmIn",
+        sources: ["tools/ZoomIn.js"],
         closureCompilerSafe: true,
 
         singleton: true,

@@ -16,13 +16,18 @@ function initMapComponent(){
 
 var eerste = true;
 function onConfigComplete(){
-    if(eerste){
-        loadBaseLayers();
-        initializeButtons();
-        onFrameworkLoaded();
-        eerste = false;
-        loadTOC();
-        loadComponents();
+    try{            
+        if(eerste){
+            loadBaseLayers();
+            initializeButtons();
+            onFrameworkLoaded();
+            eerste = false;
+            loadTOC();
+            loadComponents();
+            //testComponents();
+        }
+    }catch(e){
+        console.log(e);
     }
 }
 
@@ -37,40 +42,25 @@ function initializeButtons(){
         if (viewport){
             viewport.style.position="absolute";
         }
-    }
-    
-    viewerController.mc.createPanel("toolGroup");
-
-    viewerController.mc.addTool(viewerController.mc.createTool("loading",Tool.LOADING_BAR));
-
-    zoomBox = viewerController.mc.createTool("toolZoomin",Tool.ZOOM_BOX, {
-        title: 'Inzomen met selectie'
-    });
-    viewerController.mc.addTool(zoomBox);
-
-    pan = viewerController.mc.createTool("b_pan",Tool.PAN, {
-        title: 'Verschuiven'
-    });
-    viewerController.mc.addTool(pan);
-    viewerController.mc.activateTool("b_pan");
-
-    prevExtent = viewerController.mc.createTool("toolPrevExtent",Tool.NAVIGATION_HISTORY, {
-        title: 'Vorige extent'
-    });
-    viewerController.mc.addTool(prevExtent);
-
-    var bu_measure = viewerController.mc.createTool("b_measure",Tool.MEASURE, {
-        title: 'Meten'
-    });
-   
-    viewerController.mc.addTool(bu_measure);
-
-    var scalebar = viewerController.mc.createTool("scalebar",Tool.SCALEBAR);
-    viewerController.mc.addTool(scalebar);
-
-    var zoombar= viewerController.mc.createTool("zoombar",Tool.ZOOM_BAR);
-    viewerController.mc.addTool(zoombar);
+    }    
 }
+/**
+ *Test some components.
+ */
+function testComponents(){
+    var testComponents = new Array();
+    //test components
+    var zoomInJson= {
+        className: "viewer.components.tools.ZoomIn",
+        name: "ZoomIn",
+        shortName: "ZmIn",
+        tooltip: "Zoom in"
+    };
+    testComponents.push(zoomInJson);
+    for (var i=0; i < testComponents.length; i++){
+        viewerController.addComponent(testComponents[i].className,testComponents[i]);
+    }
+}    
 
 function loadComponents(){
     var layouts = app.layout;
@@ -81,9 +71,9 @@ function loadComponents(){
             var name = componentJson.name;
             var className = componentJson.componentClass;
             var config = app.components[name];
-    
-            config.div = l;
-            
+            if (config==undefined)
+                continue;            
+            config.div = l;            
             viewerController.addComponent(className,config);  
         } 
     }

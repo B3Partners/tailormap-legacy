@@ -11,12 +11,10 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     events: [],
     config :{
         id: "id",
-        frameworkObject: new Object()
+        frameworkObject: new Object(),
+        type: -1
     },
-    constructor: function (config/*id,frameworkObject,type*/){
-        /* this.id=id;
-       this.frameworkTool=frameworkObject;
-        this.type=type;*/
+    constructor: function (config){
         this.initConfig(config);
         this.addEvents(viewer.viewercontroller.controller.Event.ON_CLICK,viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,viewer.viewercontroller.controller.Event.ON_EVENT_UP);
         return this;
@@ -33,21 +31,22 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         // The different types of tools
         DRAW_FEATURE               : 0,
         NAVIGATION_HISTORY         : 1,
-        ZOOM_BOX                   : 2,
-        PAN                        : 3,
-        BUTTON                     : 4,
-        TOGGLE                     : 5,
-        CLICK                      : 6,
-        LOADING_BAR                : 7,
-        GET_FEATURE_INFO           : 8,
-        MEASURE                    : 9,
-        SCALEBAR                   : 10,
-        ZOOM_BAR                   : 11,
-        LAYER_SWITCH               : 12,
+        ZOOMIN_BOX                 : 2,
+        ZOOMOUT_BOX                : 3,
+        PAN                        : 4,
+        BUTTON                     : 5,
+        TOGGLE                     : 6,
+        CLICK                      : 7,
+        LOADING_BAR                : 8,
+        GET_FEATURE_INFO           : 9,
+        MEASURE                    : 10,
+        SCALEBAR                   : 11,
+        ZOOM_BAR                   : 12,
+        LAYER_SWITCH               : 13,
 
-        DRAW_FEATURE_POINT         : 13,
-        DRAW_FEATURE_LINE          : 14,
-        DRAW_FEATURE_POLYGON       : 15
+        DRAW_FEATURE_POINT         : 14,
+        DRAW_FEATURE_LINE          : 15,
+        DRAW_FEATURE_POLYGON       : 16
     },
     getFrameworkTool : function(){
         return this.frameworkTool;

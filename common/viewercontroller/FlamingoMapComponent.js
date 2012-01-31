@@ -9,6 +9,8 @@
 Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
     viewerObject : null,
+    toolGroupId: "toolgroup",
+    flamingoId: "flamingo",
     constructor :function (domId){
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
@@ -102,21 +104,16 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         return new viewer.viewercontroller.flamingo.FlamingoArcIMSLayer(config);
     },
     /**
-     * See @link MapComponent.createTool
-     * TODO: make the parameter layer part of the options. 
+     * Create a tool that is useable in Flamingo-mc
+     * @See MapComponent.createTool
+     * @param toolComponent the toolcomponent that must be created in flamingo as a useable tool 
      */
-    createTool: function (ide,type,options){
-    
-        // aaron = new FlamingoTool({id:"aapnootmis",frameworkObject: this});
-        var config = {
-            id: ide,
-            frameworkObject: new Object() //this.viewerObject
-        };
-        var tool = new viewer.viewercontroller.flamingo.FlamingoTool(config);
-        if(type == Tool.GET_FEATURE_INFO){
-            mapComponent.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, mapComponent.getMap(), options["handlerBeforeGetFeatureHandler"]);
-            mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, mapComponent.getMap(), options["handlerGetFeatureHandler"]);
-        }
+    createTool: function (conf){            
+        var tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
+        /*if(conf.type == Tool.GET_FEATURE_INFO){
+            this.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, this.getMap(), options["handlerBeforeGetFeatureHandler"]);
+            this.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, this.getMap(), options["handlerGetFeatureHandler"]);
+        }*/
         return tool;
     },
     /**
@@ -138,12 +135,18 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      *See @link MapComponent.addTool
      */
-    addTool : function(tool){
+    addTool : function(tool){        
         if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
-            throw("The given tool is not of type 'FlamingoTool'");
+            Ext.Error.raise({
+                msg: "The given tool is not of type 'FlamingoTool'"               
+            });
         }
-        this.viewerObject.callMethod(tool.getId(),'setVisible',true);
-        MapComponent.prototype.addTool.call(this,tool);
+        viewer.viewercontroller.FlamingoMapComponent.superclass.addTool.call(this,tool);
+        //this.viewerObject.callMethod(tool.getId(),'setVisible',true);
+        var toolXml="<fmc:ToolGroup id='"+this.toolGroupId+"'>";
+        toolXml+=tool.toXML();
+        toolXml+="</fmc:ToolGroup>";
+        this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
     },
     /**
      *See @link MapComponent.activateTool
