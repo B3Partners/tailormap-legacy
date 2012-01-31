@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<FLAMINGO xmlns:fmc="fmc" id="flamingo" lang="nl" languages="en,nl" tooltipdelay="300" commtojava="true" preloadtitle="Prototypemap" useexternalinterface="true" loglevel="debug">
+<FLAMINGO xmlns:fmc="fmc" id="flamingo" lang="en" tooltipdelay="300" commtojava="true" preloadtitle="Prototypemap" useexternalinterface="true" loglevel="debug">
 	<style id=".tooltip" font-family="arial, sans-serif" font-size="11" color="#880000" display="block"/>
 	<fmc:Container left="0" top="0" height="100%" width="100%">
 		<fmc:MonitorLayer id="monitorl" left="37%" top="50%" width="50%" listento="map">
 			<string id="waiting" en="Making... [layer] [percentage]%..." nl="Kaart aan het maken..."/>
 			<string id="loading" en="Making... [layer] [percentage]%..." nl="Kaart aan het laden. [percentage]%"/>
 		</fmc:MonitorLayer>
-		<fmc:ToolGroup tool="zoom" listento="map" width="100%" height="100" left="10" top="10">
-			<fmc:ToolIdentify skin="f2" id="identify" listento="map">
+		<fmc:ToolGroup id="toolgroup" tool="zoom" listento="map" width="100%" height="100" left="10" top="10">
+			<!--fmc:ToolZoomin skin="f2" id="zoom" listento="map" clickdelay="0">
+				<string id="tooltip" nl="Inzoomen" en="zoom in" du="bild vergrossern"/>
+			</fmc:ToolZoomin-->
+            <fmc:ToolIdentify skin="f2" id="identify" listento="map" left="30" >
 				<string id="tooltip" nl="Informatie opvragen: klik op een object op de kaart" en="identify" du="information aufvragen"/>
 			</fmc:ToolIdentify>
-			<fmc:ToolZoomin skin="f2" id="zoom" left="30" listento="map" clickdelay="0">
-				<string id="tooltip" nl="Inzoomen" en="zoom in" du="bild vergrossern"/>
-			</fmc:ToolZoomin>
 			<fmc:ToolZoomout skin="f2" left="65" listento="map" clickdelay="0">
 				<string id="tooltip" nl="Uitzoomen" en="zoom out" du="bild verkleinern"/>
 			</fmc:ToolZoomout>
