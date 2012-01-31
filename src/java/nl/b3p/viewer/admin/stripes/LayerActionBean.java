@@ -20,8 +20,9 @@ import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
-import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -40,6 +41,8 @@ public class LayerActionBean implements ActionBean{
     private String parentId;
     
     private List<Group> allGroups;
+    
+    private List<String> applicationsUsedIn = new ArrayList();
     
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
@@ -98,6 +101,14 @@ public class LayerActionBean implements ActionBean{
     public void setGroupsWrite(List<String> groupsWrite) {
         this.groupsWrite = groupsWrite;
     }
+
+    public List<String> getApplicationsUsedIn() {
+        return applicationsUsedIn;
+    }
+
+    public void setApplicationsUsedIn(List<String> applicationsUsedIn) {
+        this.applicationsUsedIn = applicationsUsedIn;
+    }
     
     public String getParentId() {
         return parentId;
@@ -125,8 +136,56 @@ public class LayerActionBean implements ActionBean{
             
             groupsRead.addAll(layer.getReaders());
             groupsWrite.addAll(layer.getWriters());
+            
+            findApplicationsUsedIn();
         }
         return new ForwardResolution(JSP);
+    }
+    
+    private void findApplicationsUsedIn(){
+        GeoService service = layer.getService();
+        String layerName = layer.getName();
+        
+        List<ApplicationLayer> applicationLayers = Stripersist.getEntityManager().createQuery("from ApplicationLayer where service = :service"
+                + " and layerName = :layerName").setParameter("service", service)
+                .setParameter("layerName", layerName).getResultList();
+        
+        for(Iterator it = applicationLayers.iterator(); it.hasNext();){
+            ApplicationLayer appLayer = (ApplicationLayer)it.next();
+            /*
+             * The parent level of the applicationLayer is needed to find out in which application the Layer is used.
+             * This solution is not good when there are many levels.
+             */
+            List<Level> levels = Stripersist.getEntityManager().createQuery("from Level").getResultList();
+            for(Iterator iter = levels.iterator(); iter.hasNext();){
+                Level level = (Level)iter.next();
+                if(level != null && level.getLayers().contains(appLayer)){
+                    String name = getApplicationName(level);
+                    if(!applicationsUsedIn.contains(name)){
+                        applicationsUsedIn.add(name);
+                    }
+                }
+            }
+        }
+    }
+    
+    private String getApplicationName(Level level){
+        String applicationName = null;
+        
+        if(level.getParent() == null){
+            Application application = (Application)Stripersist.getEntityManager().createQuery("from Application where root = :level")
+                    .setParameter("level", level).getSingleResult();
+            if(application.getVersion() != null){
+                applicationName = application.getName() +" V"+ application.getVersion();
+            }else{
+                applicationName = application.getName();
+            }
+            
+        }else{
+            applicationName = getApplicationName(level.getParent());
+        }
+        
+        return applicationName;
     }
     
     public Resolution save() {                

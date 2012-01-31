@@ -65,6 +65,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <h1>Kaartlaag word gebruit in de volgende applicaties:</h1>
+                    <c:if test="${not empty actionBean.applicationsUsedIn}">
+                        <c:forEach var="name" items="${actionBean.applicationsUsedIn}">
+                            <c:out value="${name}"/><br>
+                        </c:forEach>
+                    </c:if>
+                </td>
+            </tr>
         </table>
         
         <stripes:submit name="save" value="Kaartlaag opslaan"/>
