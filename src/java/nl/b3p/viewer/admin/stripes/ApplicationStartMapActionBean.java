@@ -57,22 +57,41 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     public Resolution save() {
         rootlevel = application.getRoot();
         
-        List<ApplicationLayer> checkedLayers = getSelectedLayers(rootlevel);
-        if(checkedLayers != null){
-            for (Iterator it = checkedLayers.iterator(); it.hasNext();) {
-                ApplicationLayer layer = (ApplicationLayer) it.next();
-                layer.setChecked(false);
-                Stripersist.getEntityManager().persist(layer);
+        List checkedMaps = getSelectedLayers(rootlevel);
+        if(checkedMaps != null){
+            for (Iterator it = checkedMaps.iterator(); it.hasNext();) {
+                Object map = it.next();
+                if(map instanceof ApplicationLayer){
+                    ApplicationLayer layer = (ApplicationLayer) map;
+                    layer.setChecked(false);
+                    Stripersist.getEntityManager().persist(layer);
+                }else if(map instanceof Level){
+                    Level level = (Level) map;
+                    level.setChecked(false);
+                    Stripersist.getEntityManager().persist(level);
+                }
             }
         }
         
         if(selectedlayers != null && selectedlayers.length() > 0){
             String[] layers = selectedlayers.split(",");
             for(int i = 0; i < layers.length; i++){
-                Long id = new Long(layers[i].substring(1));
-                ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
-                appLayer.setChecked(true);
-                Stripersist.getEntityManager().persist(appLayer);
+                if(layers[i].startsWith("n")){
+                    Long id = new Long(layers[i].substring(1));
+                    Level level = Stripersist.getEntityManager().find(Level.class, id);
+                    /*
+                     * Levels without layers can not be saved in te start map
+                     */
+                    if(level.getLayers() != null && level.getLayers().size() > 0){
+                        level.setChecked(true);
+                        Stripersist.getEntityManager().persist(level);
+                    }
+                }else if(layers[i].startsWith("s")){
+                    Long id = new Long(layers[i].substring(1));
+                    ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
+                    appLayer.setChecked(true);
+                    Stripersist.getEntityManager().persist(appLayer);
+                }
             }
         }
         Stripersist.getEntityManager().getTransaction().commit();
@@ -133,18 +152,31 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         rootlevel = application.getRoot();
 
-        List<ApplicationLayer> layers = getSelectedLayers(rootlevel);
-        if(layers != null){
-            for (Iterator it = layers.iterator(); it.hasNext();) {
-                ApplicationLayer layer = (ApplicationLayer) it.next();
-                
-                JSONObject j = new JSONObject();
-                j.put("id", "s" + layer.getId());
-                j.put("name", layer.getLayerName());
-                j.put("type", "layer");
-                j.put("isLeaf", true);
-                j.put("parentid", nodeId);
-                children.put(j);
+        List maps = getSelectedLayers(rootlevel);
+        if(maps != null){
+            for (Iterator it = maps.iterator(); it.hasNext();) {
+                Object map = it.next();
+                if(map instanceof ApplicationLayer){
+                    ApplicationLayer layer = (ApplicationLayer) map;
+                    
+                    JSONObject j = new JSONObject();
+                    j.put("id", "s" + layer.getId());
+                    j.put("name", layer.getLayerName());
+                    j.put("type", "layer");
+                    j.put("isLeaf", true);
+                    j.put("parentid", nodeId);
+                    children.put(j);
+                }else if(map instanceof Level){
+                    Level level = (Level) map;
+                    
+                    JSONObject j = new JSONObject();
+                    j.put("id", "n" + level.getId());
+                    j.put("name", level.getName());
+                    j.put("type", "category");
+                    j.put("isLeaf", true);
+                    j.put("parentid", nodeId);
+                    children.put(j);
+                }
             }
         }
 
@@ -157,8 +189,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         };
     }
 
-    private List<ApplicationLayer> getSelectedLayers(Level level) {
-        List<ApplicationLayer> children = new ArrayList();
+    private List getSelectedLayers(Level level) {
+        List children = new ArrayList();
         
         if (level.getLayers() != null) {
             List<ApplicationLayer> appLayers = level.getLayers();
@@ -178,6 +210,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
             for(Iterator it = childLevels.iterator(); it.hasNext();){
                 Level childLevel = (Level)it.next();
+                if(childLevel.isChecked()){
+                    children.add(childLevel);
+                }
                 children.addAll(getSelectedLayers(childLevel));
             }
         }
