@@ -30,62 +30,62 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     
 
     /**
- *Create functions. SubClass needs to implement these so the user can
- *create Framework specific objects.
- **/
+    *Create functions. SubClass needs to implement these so the user can
+    *create Framework specific objects.
+    **/
 
     /**
- *Creates a layer for this framework
- *@param name the showable name of the layer
- *@param url the url to the serviceProvider
- *@param ogcParams the params that are used in the OGC-WMS request
- *@param options extra options for this wms layer
- *Must be implemented by subclass
- */
+    *Creates a layer for this framework
+    *@param name the showable name of the layer
+    *@param url the url to the serviceProvider
+    *@param ogcParams the params that are used in the OGC-WMS request
+    *@param options extra options for this wms layer
+    *Must be implemented by subclass
+    */
     createWMSLayer : function(name, url, ogcParams,options){
         throw("MapComponent.createWMSLayer() Not implemented! Must be implemented in sub-class");
     },
     /**
- * @description Creates a OSGEO TMS layer.
- * @param id the id of the layer
- * @param name the showable name of the layer
- * @param url the url to the tms service
- * @param options extra options for this TMS layer
- * @returns Returns the TMSLayer
- */
+    * @description Creates a OSGEO TMS layer.
+    * @param id the id of the layer
+    * @param name the showable name of the layer
+    * @param url the url to the tms service
+    * @param options extra options for this TMS layer
+    * @returns Returns the TMSLayer
+    */
     createTMSLayer : function (id,name,url, options){
         throw("MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class");
     },
     /**
- *Creates a Map object for this framework
- *@param id the id of the map
- *@param options extra options for the map
- *Must be implemented by subclass
- */
+    *Creates a Map object for this framework
+    *@param id the id of the map
+    *@param options extra options for the map
+    *Must be implemented by subclass
+    */
     createMap : function(id, options){
         throw("MapComponent.createMap(...) not implemented! Must be implemented in sub-class");
     },
     /**
- *Must be implemented by the sub-class
- *This creates a tool.
- */
+    *Must be implemented by the sub-class
+    *This creates a tool.
+    */
     createTool: function (){
         throw("MapComponent.createTool(...) not implemented! Must be implemented in sub-class");
     },
     /**
- *Add a array of Tool objects. For every tool .addTool is called.
- *@param tools Array of Tool objects
- */
+    *Add a array of Tool objects. For every tool .addTool is called.
+    *@param tools Array of Tool objects
+    */
     addTools : function (tools){
         for (var i=0; i < tools.length; i++){
             addTool(tools[i]);
         }
     },
     /**
- *Adds the given tool to the list of tools. Sub-class needs to implement this
- *and call super to do some frameworks specific things.
- *@param tool The tool that needs to be added of type Tool
- */
+    *Adds the given tool to the list of tools. Sub-class needs to implement this
+    *and call super to do some frameworks specific things.
+    *@param tool The tool that needs to be added of type Tool
+    */
     addTool : function(tool){        
         if (!(tool instanceof viewer.viewercontroller.controller.Tool)){
             Ext.Error.raise({
@@ -97,10 +97,10 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         this.tools.push(tool);
     },
     /**
- *Removes a tool from the list of tools. Sub-class needs to implement this
- *and call super to do some framework specific things.
- *@param tool The tool that needs to be removed.
- */
+    *Removes a tool from the list of tools. Sub-class needs to implement this
+    *and call super to do some framework specific things.
+    *@param tool The tool that needs to be removed.
+    */
     removeTool : function (tool){
         if (!(tool instanceof viewer.viewercontroller.controller.Tool)){
             throw("Given tool not of type 'Tool'");
