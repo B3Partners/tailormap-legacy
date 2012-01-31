@@ -57,8 +57,10 @@ public class ApplicationActionBean implements ActionBean {
 
     @After(stages = {LifecycleStage.BindingAndValidation})
     private void initApplication() {
-        EntityManager em = Stripersist.getEntityManager();
-        application = em.find(Application.class, applicationId);
-        em.getTransaction().commit();
+        if(applicationId != null){
+            EntityManager em = Stripersist.getEntityManager();
+            application = em.find(Application.class, applicationId);
+            em.getTransaction().commit();
+        }
     }
 }
