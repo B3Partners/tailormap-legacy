@@ -57,6 +57,13 @@ function testComponents(){
         tooltip: "Zoom in"
     };
     testComponents.push(zoomInJson);
+    var zoomOutJson= {
+        className: "viewer.components.tools.ZoomOut",
+        name: "ZoomOut",
+        shortName: "ZmOut",
+        tooltip: "Zoom Out"
+    };
+    testComponents.push(zoomOutJson);
     for (var i=0; i < testComponents.length; i++){
         viewerController.addComponent(testComponents[i].className,testComponents[i]);
     }

@@ -71,6 +71,20 @@
             propertyNames: {name: "Naam"}
         }
     },
+    {
+        className: "viewer.components.tools.ZoomOut",
+        name: "ZoomOut",
+        shortName: "ZmOut",
+        sources: ["tools/ZoomOut.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "Naam"}
+        }
+    },
 
     {
         className: "TestComponent",

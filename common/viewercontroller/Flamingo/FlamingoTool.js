@@ -56,12 +56,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         if (this.getTooltip()!=null)
             xml+="<string id='tooltip' en='"+this.getTooltip()+"'/>";
         xml+="</fmc:"+this.getTagName(this.getType())+">"
-        console.log(xml);
         return xml;
     },    
     getTagName: function (toolType){
         if (toolType == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
             return "ToolZoomin"
+        }else if (toolType == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){
+            return "ToolZoomout"
         }else{
             return null;
         }

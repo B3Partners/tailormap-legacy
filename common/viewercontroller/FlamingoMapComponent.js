@@ -11,6 +11,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     viewerObject : null,
     toolGroupId: "toolgroup",
     flamingoId: "flamingo",
+    toolMargin: 30,
     constructor :function (domId){
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
@@ -141,8 +142,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 msg: "The given tool is not of type 'FlamingoTool'"               
             });
         }
+        //Set the left if no left or right is set
+        if (tool.getLeft()==null && tool.getRight()==null){
+            tool.setLeft(this.tools.length * this.toolMargin);
+        }        
         viewer.viewercontroller.FlamingoMapComponent.superclass.addTool.call(this,tool);
-        //this.viewerObject.callMethod(tool.getId(),'setVisible',true);
+        
         var toolXml="<fmc:ToolGroup id='"+this.toolGroupId+"'>";
         toolXml+=tool.toXML();
         toolXml+="</fmc:ToolGroup>";
