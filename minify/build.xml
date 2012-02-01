@@ -21,6 +21,7 @@
          <sources dir="${viewerhtml.path}/components/tools">
             <file name="Tool.js"/>
             <file name="ZoomIn.js"/>
+            <file name="ZoomOut.js"/>
           </sources>
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">

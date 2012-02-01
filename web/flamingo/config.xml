@@ -13,9 +13,9 @@
             <fmc:ToolIdentify skin="f2" id="identify" listento="map" left="30" >
 				<string id="tooltip" nl="Informatie opvragen: klik op een object op de kaart" en="identify" du="information aufvragen"/>
 			</fmc:ToolIdentify>
-			<fmc:ToolZoomout skin="f2" left="65" listento="map" clickdelay="0">
+			<!--fmc:ToolZoomout skin="f2" left="65" listento="map" clickdelay="0">
 				<string id="tooltip" nl="Uitzoomen" en="zoom out" du="bild verkleinern"/>
-			</fmc:ToolZoomout>
+			</fmc:ToolZoomout-->
 			<fmc:ToolPan skin="f2" left="100" pandelay="0" clickdelay="0">
 				<string id="tooltip" nl="Kaart verslepen: klik op de kaart en houd uw linkermuisknop ingedrukt" en="Drag map" du="Karte verschieben"/>
 			</fmc:ToolPan>
