@@ -122,7 +122,6 @@ function editObject(objId) {
 }
 
 function removeObject(objId) {
-    alert(objId);
     // How are we going to remove items? In the iframe or directly trough ajax?
     Ext.get('editFrame').dom.src = deleteurl + '?user=' + objId;
     var gridCmp = Ext.getCmp('editGrid')

@@ -279,10 +279,14 @@ public class UserActionBean implements ActionBean {
     
     @DontValidate
     public Resolution delete() {
-        Stripersist.getEntityManager().remove(user);
-        Stripersist.getEntityManager().getTransaction().commit();
-        
-        getContext().getMessages().add(new SimpleMessage("Gebruiker is verwijderd"));
+        String currentUser = context.getRequest().getUserPrincipal().getName();
+        if(currentUser.equals(user.getUsername())){
+            getContext().getMessages().add(new SimpleError("Het is niet mogelijk om de gebruiker waar u mee bent ingelogt te verwijderen."));
+        }else{
+            Stripersist.getEntityManager().remove(user);
+            Stripersist.getEntityManager().getTransaction().commit();
+            getContext().getMessages().add(new SimpleMessage("Gebruiker is verwijderd"));
+        }
         
         return new ForwardResolution(EDITJSP);
     }

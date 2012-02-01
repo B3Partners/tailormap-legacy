@@ -24,7 +24,6 @@ Ext.require([
 ]);
 
 Ext.onReady(function() {
-    //alert("blaa");
     Ext.define('TreeNode', {
         extend: 'Ext.data.Model',
         fields: [
@@ -67,8 +66,6 @@ Ext.onReady(function() {
         moveupicon: moveupicon,
         movedownicon: movedownicon
     }
-    
-    //alert(treeurl);
     
     // Creation of TreeSelection component
     var kaartSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
