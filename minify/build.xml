@@ -22,6 +22,10 @@
             <file name="Tool.js"/>
             <file name="ZoomIn.js"/>
             <file name="ZoomOut.js"/>
+            <file name="FeatureInfo.js"/>
+            <file name="Pan.js"/>
+            <file name="SuperPan.js"/>
+            <file name="Measure.js"/>
           </sources>
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
