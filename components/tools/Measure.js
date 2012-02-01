@@ -14,33 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * Abstract tool component
+ * Measure Tool component
  * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.tools.Tool",{
-    extend: "viewer.components.Component",    
-    tool: null,    
-    constructor: function (conf){        
-        viewer.components.tools.Tool.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        return this;
+Ext.define ("viewer.components.tools.Measure",{
+    extend: "viewer.components.tools.Tool",
+    config:{
+        name: "pan"
     },
-    /**
-     * Init the tool and add it to the mapcomponent
-     */
-    initTool: function(conf){ 
-        //MapComponent is working with ids instead of names
-        conf.id=conf.name;
-        //Let the Mapcomponent create the specific tool
-        tool = viewerController.mc.createTool(conf);   
-        if (tool==null){
-            throw new Error("Tool not initialized! Initialize the tool before the addTool");            
-        }
-        //Add the tool
-        viewerController.mc.addTool(tool);
-    }    
+    constructor: function (conf){        
+        viewer.components.tools.Measure.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        conf.type = viewer.viewercontroller.controller.Tool.MEASURE;        
+        this.initTool(conf);
+        return this;
+    }
 });

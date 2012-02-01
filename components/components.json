@@ -68,7 +68,7 @@
         restrictions: ["top_menu"],
 
         extPropertyGridConfig: {
-            propertyNames: {name: "Naam"}
+            propertyNames: {name: "ZoomIn"}
         }
     },
     {
@@ -82,9 +82,65 @@
         restrictions: ["top_menu"],
 
         extPropertyGridConfig: {
-            propertyNames: {name: "Naam"}
+            propertyNames: {name: "ZoomOut"}
         }
     },
+    {
+        className: "viewer.components.tools.FeatureInfo",
+        name: "FeatureInfo",
+        shortName: "info",
+        sources: ["tools/FeatureInfo.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "FeatureInfo"}
+        }
+    },
+    {
+        className: "viewer.components.tools.Pan",
+        name: "Pan",
+        shortName: "pan",
+        sources: ["tools/Pan.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "Pan"}
+        }
+    },
+    {
+        className: "viewer.components.tools.SuperPan",
+        name: "SuperPan",
+        shortName: "span",
+        sources: ["tools/SuperPan.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "SuperPan"}
+        }
+    },  
+    {
+        className: "viewer.components.tools.Measure",
+        name: "Measure",
+        shortName: "measure",
+        sources: ["tools/Measure.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "Measure"}
+        }
+    }, 
 
     {
         className: "TestComponent",

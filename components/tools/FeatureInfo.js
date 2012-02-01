@@ -14,33 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * Abstract tool component
+ * FeatureInfo component
  * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.tools.Tool",{
-    extend: "viewer.components.Component",    
-    tool: null,    
-    constructor: function (conf){        
-        viewer.components.tools.Tool.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        return this;
+Ext.define ("viewer.components.tools.FeatureInfo",{
+    extend: "viewer.components.tools.Tool",
+    config:{
+        name: "featureInfo"
     },
     /**
-     * Init the tool and add it to the mapcomponent
+     * @Constructor
+     * Creates a FeatureInfoTool
+     * @param conf configuration object that passes the configuration to the Tool
      */
-    initTool: function(conf){ 
-        //MapComponent is working with ids instead of names
-        conf.id=conf.name;
-        //Let the Mapcomponent create the specific tool
-        tool = viewerController.mc.createTool(conf);   
-        if (tool==null){
-            throw new Error("Tool not initialized! Initialize the tool before the addTool");            
-        }
-        //Add the tool
-        viewerController.mc.addTool(tool);
-    }    
+    constructor: function (conf){        
+        viewer.components.tools.FeatureInfo.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        conf.type = viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO;        
+        this.initTool(conf);
+        return this;
+    }
 });
+
+

@@ -34,19 +34,20 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         ZOOMIN_BOX                 : 2,
         ZOOMOUT_BOX                : 3,
         PAN                        : 4,
-        BUTTON                     : 5,
-        TOGGLE                     : 6,
-        CLICK                      : 7,
-        LOADING_BAR                : 8,
-        GET_FEATURE_INFO           : 9,
-        MEASURE                    : 10,
-        SCALEBAR                   : 11,
-        ZOOM_BAR                   : 12,
-        LAYER_SWITCH               : 13,
+        SUPERPAN                   : 5,
+        BUTTON                     : 6,
+        TOGGLE                     : 7,
+        CLICK                      : 8,
+        LOADING_BAR                : 9,
+        GET_FEATURE_INFO           : 10,
+        MEASURE                    : 11,
+        SCALEBAR                   : 12,
+        ZOOM_BAR                   : 13,
+        LAYER_SWITCH               : 14,
 
-        DRAW_FEATURE_POINT         : 14,
-        DRAW_FEATURE_LINE          : 15,
-        DRAW_FEATURE_POLYGON       : 16
+        DRAW_FEATURE_POINT         : 15,
+        DRAW_FEATURE_LINE          : 16,
+        DRAW_FEATURE_POLYGON       : 17
     },
     getFrameworkTool : function(){
         return this.frameworkTool;

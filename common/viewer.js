@@ -28,6 +28,7 @@ function onConfigComplete(){
         }
     }catch(e){
         console.log(e);
+        throw e;
     }
 }
 
@@ -64,6 +65,34 @@ function testComponents(){
         tooltip: "Zoom Out"
     };
     testComponents.push(zoomOutJson);
+    var featureInfoJson= {
+        className: "viewer.components.tools.FeatureInfo",
+        name: "FeatureInfo",
+        shortName: "FI",
+        tooltip: "Get Feature Info"
+    };
+    testComponents.push(featureInfoJson);
+    var panJson= {
+        className: "viewer.components.tools.Pan",
+        name: "Pan",
+        shortName: "Pan",
+        tooltip: "Pan the map"
+    };
+    testComponents.push(panJson);
+    var superPanJson= {
+        className: "viewer.components.tools.SuperPan",
+        name: "SuperPan",
+        shortName: "SP",
+        tooltip: "SuperPan"
+    };
+    testComponents.push(superPanJson);
+    var measureJson= {
+        className: "viewer.components.tools.Measure",
+        name: "Measure",
+        shortName: "Mes",
+        tooltip: "Measure"
+    };
+    testComponents.push(measureJson);
     for (var i=0; i < testComponents.length; i++){
         viewerController.addComponent(testComponents[i].className,testComponents[i]);
     }

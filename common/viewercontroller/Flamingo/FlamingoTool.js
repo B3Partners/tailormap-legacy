@@ -63,6 +63,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
             return "ToolZoomin"
         }else if (toolType == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){
             return "ToolZoomout"
+        }else if (toolType == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO){
+            return "ToolIdentify"
+        }else if (toolType == viewer.viewercontroller.controller.Tool.PAN){
+            return "ToolPan"
+        }else if (toolType == viewer.viewercontroller.controller.Tool.SUPERPAN){
+            return "ToolSuperPan"
+        }else if (toolType == viewer.viewercontroller.controller.Tool.MEASURE){
+            return "ToolMeasure"
         }else{
             return null;
         }
