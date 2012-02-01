@@ -153,7 +153,9 @@ public class ComponentActionBean implements ActionBean {
 
                     // TODO: check readers, skip if not authorized
 
-                    fileList.addAll(Arrays.asList(cc.getViewerComponent().getSources()));
+                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
+                        fileList.addAll(Arrays.asList(cc.getViewerComponent().getSources()));
+                    }
                 }
             }
             files = fileList.toArray(new File[] {});
