@@ -19,6 +19,8 @@ package nl.b3p.viewer.config.services;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -69,4 +71,14 @@ public class Document {
         this.category = category;
     }
 
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject o = new JSONObject();
+        
+        o.put("id", id);
+        o.put("name", name);
+        o.put("url", url);
+        o.put("category", category);
+        
+        return o;
+    }
 }

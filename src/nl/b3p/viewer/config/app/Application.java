@@ -178,6 +178,7 @@ public class Application  {
     public String toJSON() throws JSONException {
         JSONObject o = new JSONObject();
 
+        o.put("id", id);
         o.put("name", name);
         if(layout != null) {
             o.put("layout", new JSONObject(layout));

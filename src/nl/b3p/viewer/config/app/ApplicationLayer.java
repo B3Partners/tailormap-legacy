@@ -19,6 +19,8 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.services.GeoService;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -59,68 +61,70 @@ public class ApplicationLayer {
     @OrderColumn(name="list_index")
     private List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();
 
+    //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public List<ConfiguredAttribute> getAttributes() {
         return attributes;
     }
-
+    
     public void setAttributes(List<ConfiguredAttribute> attributes) {
         this.attributes = attributes;
     }
-
+    
     public boolean isChecked() {
         return checked;
     }
-
+    
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
-
+    
     public Map<String, String> getDetails() {
         return details;
     }
-
+    
     public void setDetails(Map<String, String> details) {
         this.details = details;
     }
-
+    
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     public Set<String> getReaders() {
         return readers;
     }
-
+    
     public void setReaders(Set<String> readers) {
         this.readers = readers;
     }
-
+    
     public Set<String> getWriters() {
         return writers;
     }
-
+    
     public void setWriters(Set<String> writers) {
         this.writers = writers;
     }
-
-
+    
+    
     public GeoService getService() {
         return service;
     }
-
+    
     public void setService(GeoService service) {
         this.service = service;
     }
-
+    
     public String getLayerName() {
         return layerName;
     }
-
+    
     public void setLayerName(String layerName) {
         this.layerName = layerName;
     }
- }
+    //</editor-fold> 
+}

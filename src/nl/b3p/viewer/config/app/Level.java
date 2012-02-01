@@ -19,6 +19,8 @@ package nl.b3p.viewer.config.app;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.services.Document;
+import nl.b3p.viewer.config.services.Layer;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -146,6 +148,76 @@ public class Level {
     }
 
     public JSONObject toJSONObject() throws JSONException {
-        return new JSONObject();
+        JSONObject o = new JSONObject();
+ 
+        /* TODO check readers */
+        
+        o.put("name", name);
+        o.put("checked", checked);
+        o.put("background", background);
+        o.put("info", info);
+        
+        if(!documents.isEmpty()) {
+            JSONArray docs = new JSONArray();
+            o.put("documents", docs);
+            for(Document d: documents) {
+                docs.put(d.toJSONObject());
+            }
+        }
+        
+        o.put("layers", createLayersJSON());
+        
+        if(!children.isEmpty()) {
+            JSONArray cs = new JSONArray();
+            o.put("children", cs);
+            for(Level l: children) {
+                cs.put(l.toJSONObject());
+            }
+        }
+        
+        return o;
+    }
+    
+    private JSONArray createLayersJSON() throws JSONException {
+        JSONArray ls = new JSONArray();
+
+        for(ApplicationLayer al: layers) {
+            /* TODO check readers */
+ 
+            JSONObject o = new JSONObject();
+            ls.put(o);
+            o.put("id", al.getId());
+            o.put("checked", al.isChecked());
+            o.put("layerName", al.getLayerName());
+            
+            if(al.getService() != null) {
+                JSONObject gs = new JSONObject();
+                o.put("service", gs);
+                gs.put("id", al.getService().getId());
+                gs.put("name", al.getService().getName());
+                gs.put("url", al.getService().getUrl());
+                gs.put("protocol", al.getService().getProtocol());
+            }
+            
+            /* TODO add attribute if writeable according to al.getWriters() */
+            
+            if(!al.getDetails().isEmpty()) {
+                JSONObject d = new JSONObject();
+                o.put("details", d);
+                for(Map.Entry<String,String> e: al.getDetails().entrySet()) {
+                    d.put(e.getKey(), e.getValue());
+                }
+            }
+            
+            if(!al.getAttributes().isEmpty()) {
+                JSONArray attributes = new JSONArray();
+                o.put("attributes", attributes);
+                for(ConfiguredAttribute ca: al.getAttributes()) {
+                    //attributes.put(ca.toJSONObject());
+                }
+            }
+
+        }
+        return ls;
     }
 }

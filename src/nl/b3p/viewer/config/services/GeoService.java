@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
@@ -130,4 +131,8 @@ public abstract class GeoService {
     }
 
     public abstract GeoService loadFromUrl(String url, WaitPageStatus waitStatus) throws Exception;
+    
+    public String getProtocol() {
+        return getClass().getAnnotation(DiscriminatorValue.class).value();
+    }
 }
