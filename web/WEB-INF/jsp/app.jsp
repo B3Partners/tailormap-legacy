@@ -92,140 +92,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <script type="text/javascript">
             ${actionBean.script}
-            var app = {'layout':
-                            {
-                                "header": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": []
-                                },
-                                "leftmargin_top": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": [{
-                                        "componentClass": "Tabs",
-                                        "name": "tabs1"
-                                    }]
-                                },
-                                "leftmargin_bottom": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": []
-                                },
-                                "left_menu": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": []
-                                },
-                                "top_menu": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": [{
-                                        "componentClass": "viewer.components.tools.NextExtent",
-                                        "name": "viewer.components.tools.NextExtent1"
-                                    }, {
-                                        "componentClass": "viewer.components.tools.Pan",
-                                        "name": "viewer.components.tools.Pan1"
-                                    }]
-                                },
-                                "content": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": [{
-                                        "componentClass": "FlamingoMap",
-                                        "name": "flamingoMap1"
-                                    }]
-                                },
-                                "popupwindow": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": []
-                                },
-                                "rightmargin_top": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": []
-                                },
-                                "rightmargin_bottom": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": []
-                                },
-                                "footer": {
-                                    "layout": {
-                                        "width": "",
-                                        "widthmeasure": "px",
-                                        "maxwidth": "",
-                                        "height": "",
-                                        "heightmeasure": "px",
-                                        "maxheight": ""
-                                    },
-                                    "components": []
-                                }
-                        }
-            };
-
+          
             var contextPath = "${contextPath}";
-
+            var viewerController;
             Ext.onReady(function(){
 
                 //initLayout();
+                viewerController = new viewer.viewercontroller.ViewerController("flamingo",mapId,app);
 
-                // initMapComponent();
+                initMapComponent();
             });
 
         </script>
