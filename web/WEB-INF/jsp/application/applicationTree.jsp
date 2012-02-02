@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Boomstructuur met kaarten</h1>
+            <h1>Boomstructuur met kaarten: <c:out value="${actionBean.application.name}"/> <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if></h1>
 
             <div id="tree-container"></div>
             <div id="form-container" class="services">
