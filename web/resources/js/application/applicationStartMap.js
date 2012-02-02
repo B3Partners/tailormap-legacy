@@ -88,7 +88,8 @@ Ext.onReady(function() {
         // DIV-ID to which the selection buttons are rendered
         layerSelectionButtons: 'layerselection-buttons',
         // DIV-ID to which the move buttons are rendered
-        layerMoveButtons: 'layermove-buttons'
+        layerMoveButtons: 'layermove-buttons',
+        useCheckboxes: true
     }));
     
     Ext.get('startmapform').on('submit', function() {

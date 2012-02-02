@@ -37,6 +37,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     @Validate
     private String selectedlayers;
     @Validate
+    private String checkedlayers;
+    @Validate
     private String nodeId;
     private Level rootlevel;
 
@@ -57,13 +59,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     public Resolution save() {
         rootlevel = application.getRoot();
         
-        List checkedMaps = getSelectedLayers(rootlevel);
-        if(checkedMaps != null){
-            for (Iterator it = checkedMaps.iterator(); it.hasNext();) {
+        List selectedMaps = getSelectedLayers(rootlevel);
+        if(selectedMaps != null){
+            for (Iterator it = selectedMaps.iterator(); it.hasNext();) {
                 Object map = it.next();
                 if(map instanceof ApplicationLayer){
                     ApplicationLayer layer = (ApplicationLayer) map;
                     layer.setToc(false);
+                    layer.setChecked(false);
                     Stripersist.getEntityManager().persist(layer);
                 }else if(map instanceof Level){
                     Level level = (Level) map;
@@ -71,6 +74,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     Stripersist.getEntityManager().persist(level);
                 }
             }
+        }
+        
+        String[] checked = checkedlayers.split(",");
+        List<String> checkedMaps = new ArrayList();
+        for(int i = 0; i < checked.length; i++){
+            checkedMaps.add(checked[i]);
         }
         
         if(selectedlayers != null && selectedlayers.length() > 0){
@@ -90,6 +99,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     Long id = new Long(layers[i].substring(1));
                     ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
                     appLayer.setToc(true);
+                    if(checkedMaps.contains(layers[i])){
+                        appLayer.setChecked(true);
+                    }
                     Stripersist.getEntityManager().persist(appLayer);
                 }
             }
@@ -165,7 +177,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
-                    j.put("checked", false);
+                    j.put("checked", layer.isChecked());
                     children.put(j);
                 }else if(map instanceof Level){
                     Level level = (Level) map;
@@ -228,6 +240,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     public void setSelectedlayers(String selectedlayers) {
         this.selectedlayers = selectedlayers;
+    }
+
+    public String getCheckedlayers() {
+        return checkedlayers;
+    }
+
+    public void setCheckedlayers(String checkedlayers) {
+        this.checkedlayers = checkedlayers;
     }
 
     public Level getRootlevel() {

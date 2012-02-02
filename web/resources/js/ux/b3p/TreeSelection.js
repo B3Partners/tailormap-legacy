@@ -32,6 +32,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     layerSelectionButtons: 'layerselection-buttons',
     layerMoveButtons: 'layermove-buttons',
     autoShow: true,
+    useCheckboxes: false,
 
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -262,6 +263,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                 objData.isLeaf = true;
                 objData.draggable = true;
+                if(me.useCheckboxes) objData.checked = false;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = me.selectedlayers.getRootNode();
                 if(treenode != null) {
@@ -283,7 +285,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     
     getCheckedLayers: function() {
         var me = this;
-        var records = me.selectedLayers.getView().getChecked();
+        var records = me.selectedlayers.getView().getChecked();
         var checkedLayers = '';
         Ext.Array.each(records, function(rec){
             if(checkedLayers != '') checkedLayers += ',';
