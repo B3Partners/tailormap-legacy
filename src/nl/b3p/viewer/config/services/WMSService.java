@@ -66,9 +66,6 @@ public class WMSService extends GeoService implements Serializable {
             }
 
             wms.getKeywords().addAll(si.getKeywords());
-            for(String s: wms.getKeywords()) {
-                System.out.println(s);
-            }
 
             status.setProgress(30);
             status.setCurrentAction("Inladen layers...");
