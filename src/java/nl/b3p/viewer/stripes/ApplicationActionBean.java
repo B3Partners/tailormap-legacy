@@ -17,7 +17,6 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.EntityManager;
@@ -30,7 +29,6 @@ import net.sourceforge.stripes.validation.Validate;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 
 /**
