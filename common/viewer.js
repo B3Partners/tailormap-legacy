@@ -45,10 +45,10 @@ function onConfigComplete (){
     try{            
         if(firstTime){
             firstTime = false;
-                initializeButtons();
-                onFrameworkLoaded();
-                viewerController.loadLayout(componentList);
-              /*   loadLayers();*/
+            initializeButtons();
+            onFrameworkLoaded();
+            viewerController.loadLayout(componentList);
+            viewerController.loadRootLevel(app.rootLevel);
             
         //testComponents();
         }

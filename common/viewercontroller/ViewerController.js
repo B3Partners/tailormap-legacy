@@ -91,13 +91,6 @@ Ext.define("viewer.viewercontroller.ViewerController",{
     },
     loadLayout : function(componentList){
         for( var i = 0 ; i < componentList.length ; i++){
-            
-            /*
-             *
-                htmlId: cmpId,
-                componentName: component.name,
-                componentClass: component.componentClass
-            */
             var component = componentList[i];
             var compConfig = app.components[component.componentName];
             compConfig.viewerController = this;
@@ -105,7 +98,9 @@ Ext.define("viewer.viewercontroller.ViewerController",{
             this.addComponent(component.componentClass,compConfig);
         }
     },
-    
+    loadRootLevel : function (root){
+        var a = 0;
+    },
     /********************************************************************
      *                                                                  *
      * EventHandling                                                    *

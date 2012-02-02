@@ -10,6 +10,7 @@ Ext.define ("viewer.components.TOC",{
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON);
         this.initConfig(config);
         this.loadTree();
+        this.loadInitLayers();
         return this;
     },
     loadTree : function(){
@@ -19,12 +20,12 @@ Ext.define ("viewer.components.TOC",{
                 text: 'Root',
                 expanded: true,
                 checked: false,
-                children: new Array()
+                children: []
             }
         });
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.div,
-            title: this.naam,
+            title: "Table of Contents",
             //width: 330,
             height: "100%",
             frame: true,
@@ -41,21 +42,52 @@ Ext.define ("viewer.components.TOC",{
             store: store
         });
     },
+    loadInitLayers : function(){
+        var layers = this.viewerController.app.rootLevel;
+        var b = this.loadChildren(layers.children);
+        this.insertLayer(b);
+        var a = 0;
+    },
+    loadChildren : function (child){
+        var boom = new Array();
+        
+        for ( var i = 0 ; i < child.length ; i++){
+            var level = child[i];
+            /*{ text: "homework", expanded: true, 
+                        children: [
+                            { text: "book report", leaf: true }] */
+            var configObj = {
+                text: level.name,
+                expanded: true,
+                checked: level.checked
+            }
+            if(level.layers.length != 0){
+                
+            }
+            
+            if(level.children != undefined){
+                configObj.children = this.loadChildren(level.children);
+            }
+          //  this.insertLayer(configObj);
+            
+            
+            boom.push(configObj);
+        }
+        return boom;
+    },
     insertLayer : function (laag){
-        var treeNode = {
-            text: laag.options.name,
-            checked: true,
-            expanded: true,
-            leaf: true,
-            id: laag.getId(),
-            layer: laag
-        };
+        /*var treeNode = {
+            text: laag.text,
+            checked: laag.checked,
+            expanded: laag.expanded,
+            leaf: true
+        };*/
        
         var root = this.panel.getRootNode();
-        root.appendChild(treeNode);
+        root.appendChild(laag);
         root.expand()
     },
-
+/*
     createLayer : function (JSONConfig){
         var ogcOptions = {
             exceptions: "application/vnd.ogc.se_inimage",
@@ -84,7 +116,7 @@ Ext.define ("viewer.components.TOC",{
         
         return this.viewerController.mc.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);
     },
-
+*/
     checkboxClicked : function(nodeObj,checked,toc){
         var node = nodeObj.raw;
         if(node ===undefined){
