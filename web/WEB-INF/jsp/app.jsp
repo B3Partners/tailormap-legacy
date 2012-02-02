@@ -84,14 +84,140 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        
         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewer.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/jsonConfig.js"></script>
-        <%-- script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script --%>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
-${actionBean.componentSourceHTML}
+<%-- ${actionBean.componentSourceHTML} --%>
     </head>
     <body>
 
         <script type="text/javascript">
             ${actionBean.script}
+            var app = {'layout':
+                            {
+                                "header": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": []
+                                },
+                                "leftmargin_top": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": [{
+                                        "componentClass": "Tabs",
+                                        "name": "tabs1"
+                                    }]
+                                },
+                                "leftmargin_bottom": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": []
+                                },
+                                "left_menu": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": []
+                                },
+                                "top_menu": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": [{
+                                        "componentClass": "viewer.components.tools.NextExtent",
+                                        "name": "viewer.components.tools.NextExtent1"
+                                    }, {
+                                        "componentClass": "viewer.components.tools.Pan",
+                                        "name": "viewer.components.tools.Pan1"
+                                    }]
+                                },
+                                "content": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": [{
+                                        "componentClass": "FlamingoMap",
+                                        "name": "flamingoMap1"
+                                    }]
+                                },
+                                "popupwindow": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": []
+                                },
+                                "rightmargin_top": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": []
+                                },
+                                "rightmargin_bottom": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": []
+                                },
+                                "footer": {
+                                    "layout": {
+                                        "width": "",
+                                        "widthmeasure": "px",
+                                        "maxwidth": "",
+                                        "height": "",
+                                        "heightmeasure": "px",
+                                        "maxheight": ""
+                                    },
+                                    "components": []
+                                }
+                        }
+            };
 
             var contextPath = "${contextPath}";
 
@@ -99,19 +225,19 @@ ${actionBean.componentSourceHTML}
 
                 //initLayout();
 
-                initMapComponent();
+                // initMapComponent();
             });
 
         </script>
 
         
-        <%-- initLayout(); --%>
+        <%-- initLayout();
         <div id="leftmargin_top" style="height: 90%;width: 15%;float:left;">sdfgsdfg</div>
         <div id="map" style="height: 90%;width: 60%;float:left;">
             <font color="red"><strong>U heeft de Flash plugin nodig om de kaart te kunnen zien.<br/>Deze kunt u <a href="http://get.adobe.com/flashplayer/" target="_blank">hier</a> gratis downloaden.</strong></font>
         </div>
         <div id="rightmargin_top" style="height: 90%;width: 15%; float: right;">rechts</div>
-        
+         --%>
         <div id="wrapper" style="width: 100%; height: 100%;">
             
         </div>
