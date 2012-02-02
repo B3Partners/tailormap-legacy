@@ -279,6 +279,17 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             addedLayers += record.get('id');
         });
         return addedLayers;
+    },
+    
+    getCheckedLayers: function() {
+        var me = this;
+        var records = me.selectedLayers.getView().getChecked();
+        var checkedLayers = '';
+        Ext.Array.each(records, function(rec){
+            if(checkedLayers != '') checkedLayers += ',';
+            checkedLayers += rec.get('id');
+        });
+        return checkedLayers;
     }
     
 });

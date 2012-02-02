@@ -165,6 +165,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
+                    j.put("checked", false);
                     children.put(j);
                 }else if(map instanceof Level){
                     Level level = (Level) map;

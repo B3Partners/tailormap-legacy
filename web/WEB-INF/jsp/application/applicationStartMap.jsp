@@ -45,6 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="layermove-buttons" class="tree-selection-buttons"></div>
             <div style="clear: both;"></div>
             <stripes:hidden id="selectedlayersinput" name="selectedlayers" />
+            <stripes:hidden id="checkedlayersinput" name="checkedlayers" />
             
             <stripes:submit name="save" value="Opslaan"/>
             

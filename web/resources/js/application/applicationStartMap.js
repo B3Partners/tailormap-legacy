@@ -93,5 +93,6 @@ Ext.onReady(function() {
     
     Ext.get('startmapform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
+        Ext.fly('checkedlayersinput').set({value:kaartSelectie.getCheckedLayers()});
     });
 });
