@@ -76,10 +76,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             }
         }
         
-        String[] checked = checkedlayers.split(",");
         List<String> checkedMaps = new ArrayList();
-        for(int i = 0; i < checked.length; i++){
-            checkedMaps.add(checked[i]);
+        if(checkedlayers != null) {
+            String[] checked = checkedlayers.split(",");
+            for(int i = 0; i < checked.length; i++){
+                checkedMaps.add(checked[i]);
+            }
         }
         
         if(selectedlayers != null && selectedlayers.length() > 0){
