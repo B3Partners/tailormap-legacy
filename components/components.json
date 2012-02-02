@@ -1,5 +1,22 @@
 
-/* JSON metadata describing components for viewer and viewer-admin webapps */
+/* JSON metadata describing components for viewer and viewer-admin webapps
+ * 
+ * Parameters:
+ * 
+ * className: The component's classname
+ * 
+ * name: The name as used in the layoutmanager
+ * 
+ * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
+ * 
+ * restrictions: Array with region-ids to which the component can be dragged
+ * 
+ * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
+ * 
+ * linkedComponents: Array with the classNames of other components. If a component from that array has
+ *                   already been added to a region, this component cannot be added to that region
+ * 
+ */
 
 [
     {
