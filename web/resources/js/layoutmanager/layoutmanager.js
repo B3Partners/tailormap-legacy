@@ -342,6 +342,7 @@ Ext.onReady(function() {
         }
         var itemId = Ext.id();
         var componentName = changeCaseFirstLetter(data.componentData.className, true) + (++data.componentData.componentsAdded);
+        componentName = componentName.replace('.', '_');
         // used when loading existing conf
         if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
             componentName = data.componentName;
