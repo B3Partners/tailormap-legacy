@@ -20,62 +20,138 @@ Ext.onReady(function() {
     
     // Default regions
     var defaultRegions = {
-        header: {region: 'north'},
-        leftmargin_top: {region:'west', subregion:'north'},
-        leftmargin_bottom: {region:'west', subregion:'south'},
-        left_menu: {region:'center', subregion:'west'},
-        top_menu: {region:'center', subregion:'north'},
-        center: {region:'center', subregion:'center'},
-        right: {region:'east'},
+        header: {region: 'north', defaultLayout: {
+                height: 150
+        }},
+        leftmargin_top: {region:'west', subregion:'center', defaultLayout: {
+                width: 250
+        }},
+        leftmargin_bottom: {region:'west', subregion:'south', defaultLayout: {
+                width: 250,
+                height: 250
+        }},
+        left_menu: {region:'center', subregion:'west', defaultLayout: {
+                width: 150
+        }},
+        content: {region:'center', subregion:'center', defaultLayout: {}},
         popupwindow: {},
-        rightmargin_top: {region:'east', subregion:'north'},
-        rightmargin_bottom: {region:'east', subregion:'south'},
-        footer: {region:'south'}
+        rightmargin_top: {region:'east', subregion:'center', defaultLayout: {
+                width: 250
+        }},
+        rightmargin_bottom: {region:'east', subregion:'south', defaultLayout: {
+                width: 250,
+                height: 250
+        }},
+        footer: {region:'south', defaultLayout: {
+                height: 150
+        }}
     };
     
     // State manager, disable in development, enable in production?
     // Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
+    
+    // Fetch the layout
     var layout = app.layout;
+    
+    // Used for keeping a list with enabled regions
     var layoutItems = {};
+    
+    // Used for mapmenu components (top_menu in layoutmanager)
+    var mapmenu_components = null;
+    
+    // Iterate over application layout
     Ext.Object.each(layout, function(regionid, regionconfig) {
-        console.log(regionid);
-        var defaultConfig = defaultRegions[regionid];
-        if(!Ext.isDefined(layoutItems[defaultConfig.region])) {
-            layoutItems[defaultRegions[regionid].region] = [];
+        if(regionid == "top_menu") {
+            // Topmenu needs special approach (config given to flamingo)
+            mapmenu_components = regionconfig;
+        } else {
+            // If region has components, add it to the list
+            if(regionconfig.components.length > 0) {
+                // Fetch default config
+                var defaultConfig = defaultRegions[regionid];
+                // Layoutregions are added throug array because 1 Ext region (e.g. west) can have multiple regions
+                if(!Ext.isDefined(layoutItems[defaultConfig.region])) {
+                    layoutItems[defaultConfig.region] = [];
+                }
+                // Push the layout to the array
+                layoutItems[defaultRegions[regionid].region].push({
+                    // Region holds the defaultConfig region
+                    region: defaultConfig,
+                    // Regionconfig holds the regionconfig from the layoutmanager
+                    regionconfig: regionconfig,
+                    // Region name
+                    name: regionid,
+                    // Layout of the region (widths, heights, etc.)
+                    layout: defaultRegions[regionid].defaultLayout
+                });
+            }
         }
-        layoutItems[defaultRegions[regionid].region].push({
-            region: defaultRegions[regionid],
-            layout: regionconfig,
-            name: regionid
-        });
     });
     
+    console.log(layoutItems);
+    console.log(mapmenu_components);
+    
+    // Function to create component block
+    function createComponentItems(components, componentList) {
+        var componentItems = [];
+        Ext.Array.each(components, function(component) {
+            var cmpId = Ext.id();
+            var cmpView = Ext.create('Ext.container.Container', {
+                cls: 'component-view',
+                tpl: '<tpl for="."><div class="component-block" id="{id}">{cmp_name}</div></tpl>',
+                data: {
+                    id: cmpId,
+                    cmp_name: component.name
+                },
+                layout: 'fit'
+            });
+            componentItems.push(cmpView);
+            componentList.push({
+                htmlId: cmpId,
+                componentName: component.name,
+                componentClass: component.componentClass
+            });
+        });
+        return {
+            componentItems: componentItems,
+            componentList: componentList
+        };
+    }
+    
     var viewportItems = [];
+    var componentList = [];
     Ext.Object.each(layoutItems, function(region, value) {
-        if(value.length > 1) {
+        if(Ext.isDefined(value.subregion)) {
             var items = [];
             Ext.Array.each(value, function(item, index) {
-                items.push({
+                var component = createComponentItems(item.regionconfig.components, componentList);
+                componentList = component.componentList;
+                items.push(Ext.apply({
                     xtype: 'container',
                     region: item.region.subregion,
                     html: item.name,
-                    layout: item.regionconfig
-                });
+                    items: component.componentItems
+                }, item.layout));
             });
             var container = Ext.create('Ext.container.Container', {
+                layout: 'border',
                 region: region,
                 items: items
             });
             viewportItems.push(container);
         } else {
-            viewportItems.push({
+            var component = createComponentItems(value[0].regionconfig.components, componentList);
+            componentList = component.componentList;
+            viewportItems.push(Ext.apply({
                 xtype: 'container',
                 region: region,
                 html: value[0].name,
-                layout: value[0].regionconfig
-            });
+                items: component.componentItems
+            }, value[0].layout));
         }
     });
+    
+    console.log(viewportItems);
     
     var viewport = Ext.create('Ext.container.Container', {
         layout: 'border',
