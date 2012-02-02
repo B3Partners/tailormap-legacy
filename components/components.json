@@ -13,7 +13,7 @@
  * 
  * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
  * 
- * linkedComponents: Array with the classNames of other components. If a component from that array has
+ * notInCombinationWith: Array with the classNames of other components. If a component from that array has
  *                   already been added to a region, this component cannot be added to that region
  * 
  */
@@ -26,7 +26,7 @@
         restrictions: ["content"],
 
         singleton: true,
-        linkedComponents: ["OpenLayersMap"]
+        notInCombinationWith: ["OpenLayersMap"]
     },
 
     {
@@ -36,7 +36,7 @@
 
         singleton: true,
         restrictions: ["content"],
-        linkedComponents: ["FlamingoMap"]
+        notInCombinationWith: ["FlamingoMap"]
     },
 
     {
@@ -171,7 +171,7 @@
         extPropertyGridConfig: {
             propertyNames: {name: "FullExtent"}
         },                
-        linkedComponents: ["OpenLayersMap"]
+        notInCombinationWith: ["OpenLayersMap"]
     }, 
     {
         className: "viewer.components.tools.PreviousExtent",
@@ -186,7 +186,7 @@
         extPropertyGridConfig: {
             propertyNames: {name: "PreviousExtent"}
         },      
-        linkedComponents: ["OpenLayersMap"]
+        notInCombinationWith: ["OpenLayersMap"]
     }, 
     {
         className: "viewer.components.tools.NextExtent",
@@ -201,7 +201,7 @@
         extPropertyGridConfig: {
             propertyNames: {name: "NextExtent"}
         },                
-        linkedComponents: ["OpenLayersMap"]
+        notInCombinationWith: ["OpenLayersMap"]
     }, 
 
     {
