@@ -9,7 +9,7 @@
         restrictions: ["content"],
 
         singleton: true,
-        linkedComponents: ["openlayers"]
+        linkedComponents: ["OpenLayersMap"]
     },
 
     {
@@ -19,7 +19,7 @@
 
         singleton: true,
         restrictions: ["content"],
-        linkedComponents: ["flamingo"]
+        linkedComponents: ["FlamingoMap"]
     },
 
     {
@@ -140,6 +140,51 @@
         extPropertyGridConfig: {
             propertyNames: {name: "Measure"}
         }
+    }, 
+    {
+        className: "viewer.components.tools.FullExtent",
+        name: "FullExtent",
+        shortName: "fext",
+        sources: ["tools/FullExtent.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "FullExtent"}
+        },                
+        linkedComponents: ["OpenLayersMap"]
+    }, 
+    {
+        className: "viewer.components.tools.PreviousExtent",
+        name: "PreviousExtent",
+        shortName: "pExt",
+        sources: ["tools/PreviousExtent.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "PreviousExtent"}
+        },      
+        linkedComponents: ["OpenLayersMap"]
+    }, 
+    {
+        className: "viewer.components.tools.NextExtent",
+        name: "NextExtent",
+        shortName: "nExt",
+        sources: ["tools/NextExtent.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfig: {
+            propertyNames: {name: "NextExtent"}
+        },                
+        linkedComponents: ["OpenLayersMap"]
     }, 
 
     {

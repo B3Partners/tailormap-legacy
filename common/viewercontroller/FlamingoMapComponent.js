@@ -109,7 +109,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      * @See MapComponent.createTool
      * @param toolComponent the toolcomponent that must be created in flamingo as a useable tool 
      */
-    createTool: function (conf){            
+    createTool: function (conf){   
+        if (Ext.isEmpty(conf.listenTo)){
+            conf.listenTo=this.getMap().getId();
+        }
         var tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
         /*if(conf.type == Tool.GET_FEATURE_INFO){
             this.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, this.getMap(), options["handlerBeforeGetFeatureHandler"]);

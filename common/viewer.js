@@ -93,6 +93,27 @@ function testComponents(){
         tooltip: "Measure"
     };
     testComponents.push(measureJson);
+    var fullExtentJson= {
+        className: "viewer.components.tools.FullExtent",
+        name: "FullExtent",
+        shortName: "fe",
+        tooltip: "FullExtent"
+    };
+    testComponents.push(fullExtentJson);
+    var prevExtentJson= {
+        className: "viewer.components.tools.PreviousExtent",
+        name: "PreviousExtent",
+        shortName: "pe",
+        tooltip: "PreviousExtent"
+    };
+    testComponents.push(prevExtentJson);
+    var nextExtentJson= {
+        className: "viewer.components.tools.NextExtent",
+        name: "NextExtent",
+        shortName: "ne",
+        tooltip: "NextExtent"
+    };
+    testComponents.push(nextExtentJson);
     for (var i=0; i < testComponents.length; i++){
         viewerController.addComponent(testComponents[i].className,testComponents[i]);
     }

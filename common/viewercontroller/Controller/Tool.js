@@ -47,7 +47,10 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
 
         DRAW_FEATURE_POINT         : 15,
         DRAW_FEATURE_LINE          : 16,
-        DRAW_FEATURE_POLYGON       : 17
+        DRAW_FEATURE_POLYGON       : 17,
+        PREVIOUS_EXTENT            : 18,
+        NEXT_EXTENT                : 19,
+        FULL_EXTENT                : 20
     },
     getFrameworkTool : function(){
         return this.frameworkTool;

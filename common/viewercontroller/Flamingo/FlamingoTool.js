@@ -13,7 +13,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         right: null,
         top: null,
         bottom: null,
-        tooltip: null
+        tooltip: null,
+        listenTo: null
     },       
     /** Create a new FlamingoTool
      *@construct
@@ -51,7 +52,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         if (this.getRight()!=null)
             xml+=" right='"+this.getRight()+"'";
         if (this.getBottom()!=null)
-            xml+=" bottom='"+this.getBottom()+"'";
+            xml+=" bottom='"+this.getBottom()+"'";        
+        if (this.getListenTo()!=null){
+            xml+=" listento='"+this.getListenTo()+"'";
+        }
         xml+=">";    
         if (this.getTooltip()!=null)
             xml+="<string id='tooltip' en='"+this.getTooltip()+"'/>";
@@ -60,17 +64,23 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     },    
     getTagName: function (toolType){
         if (toolType == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return "ToolZoomin"
+            return "ToolZoomin";
         }else if (toolType == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){
-            return "ToolZoomout"
+            return "ToolZoomout";
         }else if (toolType == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO){
-            return "ToolIdentify"
+            return "ToolIdentify";
         }else if (toolType == viewer.viewercontroller.controller.Tool.PAN){
             return "ToolPan"
         }else if (toolType == viewer.viewercontroller.controller.Tool.SUPERPAN){
-            return "ToolSuperPan"
+            return "ToolSuperPan";
         }else if (toolType == viewer.viewercontroller.controller.Tool.MEASURE){
-            return "ToolMeasure"
+            return "ToolMeasure";
+        }else if (toolType == viewer.viewercontroller.controller.Tool.FULL_EXTENT){
+            return "ButtonFull";
+        }else if (toolType == viewer.viewercontroller.controller.Tool.NEXT_EXTENT){
+            return "ButtonNext";
+        }else if (toolType == viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT){
+            return "ButtonPrev";
         }else{
             return null;
         }
