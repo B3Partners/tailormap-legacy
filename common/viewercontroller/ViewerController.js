@@ -63,10 +63,12 @@ Ext.define("viewer.viewercontroller.ViewerController",{
   
     
     addComponent : function (className,config){
-        config.viewerController = this;
-        var component = Ext.create(className,config);
-        this.components.push(component);
-        return component;
+        if(className != "FlamingoMap"){
+            config.viewerController = this;
+            var component = Ext.create(className,config);
+            this.components.push(component);
+            return component;
+        }
     },
     getComponentsByClassName : function(className){
         var componentList = new Array();
