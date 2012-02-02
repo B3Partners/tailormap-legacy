@@ -33,7 +33,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.getId()+"\"";
-        xml+=" initService=\""+this.getOption("initService")+"\"";
+     
         xml+=" url=\""+this.getOption("url");
         //fix for SLD support in flamingo
         if (this.getOption("sld") && this.getOption("url")){

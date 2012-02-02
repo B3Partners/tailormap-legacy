@@ -48,7 +48,7 @@ Ext.define("viewer.viewercontroller.ViewerController",{
             this.mapOptions[key] = opts[key];
         }
         this.mapOptions.viewerController = this;
-        var map=this.mapComponent.createMap(this.mapDivId,this.mapOptions); // aanpassen aan config.xml
+        var map=this.mapComponent.createMap("map",this.mapOptions); // aanpassen aan config.xml
         this.mapComponent.addMap(map);
         return map;
     },

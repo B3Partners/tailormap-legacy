@@ -49,7 +49,7 @@ function onConfigComplete (){
             onFrameworkLoaded();
             viewerController.loadLayout(componentList);
             viewerController.loadRootLevel(app.rootLevel);
-            
+           loadBaseLayers();
         //testComponents();
         }
     }catch(e){

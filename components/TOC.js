@@ -45,7 +45,7 @@ Ext.define ("viewer.components.TOC",{
     loadInitLayers : function(){
         var layers = this.viewerController.app.rootLevel;
         var b = this.loadChildren(layers.children);
-        this.insertLayer(b);
+       // this.insertLayer(b);
         var a = 0;
     },
     loadChildren : function (child){
@@ -53,27 +53,27 @@ Ext.define ("viewer.components.TOC",{
         
         for ( var i = 0 ; i < child.length ; i++){
             var level = child[i];
-            /*{ text: "homework", expanded: true, 
-                        children: [
-                            { text: "book report", leaf: true }] */
-            var configObj = {
-                text: level.name,
-                expanded: true,
-                checked: level.checked
+            for ( var j = 0 ; j < level.layers.length; j++){
+                var laag = level.layers[j];
+                var a = 0;
+                var treeNode = {
+                    text: laag.layerName,
+                    checked: laag.checked,
+                    id: laag.id,
+                    expanded: true,
+                    leaf: true,
+                    layerObj: {
+                        service: laag.service,
+                        layerName : laag.layerName
+                    }
+                };
+                this.insertLayer(treeNode);
+        
             }
-            if(level.layers.length != 0){
-                
+            if( level.children != undefined){
+                this.loadChildren (level.children);
             }
-            
-            if(level.children != undefined){
-                configObj.children = this.loadChildren(level.children);
-            }
-          //  this.insertLayer(configObj);
-            
-            
-            boom.push(configObj);
         }
-        return boom;
     },
     insertLayer : function (laag){
         /*var treeNode = {
@@ -87,13 +87,14 @@ Ext.define ("viewer.components.TOC",{
         root.appendChild(laag);
         root.expand()
     },
-/*
+    
     createLayer : function (JSONConfig){
-        var ogcOptions = {
+        
+        /*var ogcOptions = {
             exceptions: "application/vnd.ogc.se_inimage",
             srs: "EPSG:28992",
             version: "1.1.1",
-            name: JSONConfig.name,
+            name: JSONConfig.layerName,
             server:JSONConfig.server, 
             servlet:JSONConfig.servlet,
             mapservice:JSONConfig.mapservice,
@@ -114,9 +115,39 @@ Ext.define ("viewer.components.TOC",{
         var server = JSONConfig.server;
         options["isBaseLayer"]=false;
         
-        return this.viewerController.mc.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);
+        return this.viewerController.mc.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);*/
+        
+        var layerUrl = JSONConfig.service.url;// "http://osm.kaartenbalie.nl/wms/mapserver?";
+    
+        var options={
+            timeout: 30,
+            retryonerror: 10,
+            getcapabilitiesurl: JSONConfig.service.url,// layerUrl,
+            ratio: 1,
+        
+            showerrors: true,
+            initService: true
+        };
+
+        var ogcOptions={
+            format: "image/png",
+            transparent: true,
+            exceptions: "application/vnd.ogc.se_inimage",
+            srs: "EPSG:28992",
+            version: "1.1.1",
+            layers:JSONConfig.layerName,//  "OpenStreetMap",
+            styles: "",
+            noCache: false // TODO: Voor achtergrond kaartlagen wel cache gebruiken
+        };
+    
+        options["isBaseLayer"]=false;
+    
+        
+        return this.viewerController.mc.createWMSLayer(JSONConfig.layerName,layerUrl , ogcOptions, options);
+            
+    
     },
-*/
+
     checkboxClicked : function(nodeObj,checked,toc){
         var node = nodeObj.raw;
         if(node ===undefined){
@@ -125,7 +156,7 @@ Ext.define ("viewer.components.TOC",{
         var layer = node.layerObj;
     
         if(checked){
-            var laag = toc.toc.createLayer(node.layerConfig);
+            var laag = toc.toc.createLayer(layer);
             toc.toc.viewerController.mc.getMap().addLayer(laag);
             nodeObj.data.layerObj = laag;
             nodeObj.updateInfo();
