@@ -42,26 +42,6 @@ Ext.onReady(function() {
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false, addedComponents:[]},
         {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false, addedComponents:[]}
     ];
-    
-    var layoutJson = {
-       top_menu: {
-           layout: {
-               width: 300,
-               widthmeasure: '%',
-               height: 200
-           },
-           components:[
-               {
-                   className: "Zoom",
-                   name: "zoom1"
-               },
-               {
-                   className: "OpenStreetViewTool",
-                   name: "streetview1"
-               }
-           ]
-       }
-   };
 
     Ext.define("DraggableViewerComponent",{
         extend: "Ext.data.Model",
@@ -303,9 +283,11 @@ Ext.onReady(function() {
         });
     }
     
+    var layoutJson = {};
+    
     // Initial config. Adds all previously added components to the right regions
     function initConfig(view) {
-        if(Ext.isDefined(layoutJson)) {
+        if(layoutJson && Ext.isDefined(layoutJson)) {
             layoutRegionsStore.each(function(layoutRegion){
                 var regionId = layoutRegion.get('id');
                 if(Ext.isDefined(layoutJson[regionId])) {
@@ -401,15 +383,16 @@ Ext.onReady(function() {
                     if(btnClicked == 'yes') {
                         Ext.fly(data.sourceEl).removeCls("component-added");
                         container.remove(itemId);
-                        var addedToRegions = data.componentData.addedToRegions;
-                        if(!Ext.isEmpty(addedToRegions) && Ext.isArray(addedToRegions)) {
-                            Ext.Array.remove(addedToRegions, layoutRegion.get('id'));
-                        }
                         var addedComponents = layoutRegion.get('addedComponents');
                         if(!Ext.isEmpty(addedComponents) && Ext.isArray(addedComponents)) {
-                            Ext.Array.remove(addedToRegions, data.componentData.id);
+                            var newAddedComponents = [];
+                            Ext.Array.each(addedComponents, function(comp) {
+                                if(comp.name != addItem.componentName) {
+                                    newAddedComponents.push(comp);
+                                }
+                            });
+                            layoutRegion.set('addedComponents', newAddedComponents);
                         }
-                        
                         if(!layoutRegion.get('floatComponents')) {
                             container.setHeight(getTotalChildHeight(container, '.' + addItem.cls));
                         } else {
