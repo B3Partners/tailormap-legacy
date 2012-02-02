@@ -40,15 +40,16 @@ function testComponents(){
         viewerController.addComponent(testComponents[i].className,testComponents[i]);
     }
 }    
-var eerste = true;
+var firstTime = true;
 function onConfigComplete (){
     try{            
-        if(eerste){
+        if(firstTime){
+            firstTime = false;
                 initializeButtons();
                 onFrameworkLoaded();
                 viewerController.loadLayout(componentList);
               /*   loadLayers();*/
-            eerste = false;
+            
         //testComponents();
         }
     }catch(e){

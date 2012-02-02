@@ -103,7 +103,6 @@ Ext.define("viewer.viewercontroller.ViewerController",{
             compConfig.viewerController = this;
             compConfig.div = component.htmlId;
             this.addComponent(component.componentClass,compConfig);
-            var b = 0;
         }
     },
     
