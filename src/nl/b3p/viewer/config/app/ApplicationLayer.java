@@ -19,8 +19,6 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.services.GeoService;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *

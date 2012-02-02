@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.services.Document;
+import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -195,12 +196,7 @@ public class Level {
             o.put("layerName", al.getLayerName());
             
             if(al.getService() != null) {
-                JSONObject gs = new JSONObject();
-                o.put("service", gs);
-                gs.put("id", al.getService().getId());
-                gs.put("name", al.getService().getName());
-                gs.put("url", al.getService().getUrl());
-                gs.put("protocol", al.getService().getProtocol());
+                o.put("service", al.getService().toJSONObject());
             }
             
             /* TODO add attribute if writeable according to al.getWriters() */

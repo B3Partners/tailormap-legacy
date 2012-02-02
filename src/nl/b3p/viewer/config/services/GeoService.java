@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -134,5 +136,14 @@ public abstract class GeoService {
     
     public String getProtocol() {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
+    }
+    
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("id", id);
+        o.put("name", name);
+        o.put("url", url);
+        o.put("protocol", getProtocol());
+        return o;
     }
 }
