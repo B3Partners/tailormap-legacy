@@ -63,11 +63,11 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 Object map = it.next();
                 if(map instanceof ApplicationLayer){
                     ApplicationLayer layer = (ApplicationLayer) map;
-                    layer.setChecked(false);
+                    layer.setToc(false);
                     Stripersist.getEntityManager().persist(layer);
                 }else if(map instanceof Level){
                     Level level = (Level) map;
-                    level.setChecked(false);
+                    level.setToc(false);
                     Stripersist.getEntityManager().persist(level);
                 }
             }
@@ -83,13 +83,13 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                      * Levels without layers can not be saved in te start map
                      */
                     if(level.getLayers() != null && level.getLayers().size() > 0){
-                        level.setChecked(true);
+                        level.setToc(true);
                         Stripersist.getEntityManager().persist(level);
                     }
                 }else if(layers[i].startsWith("s")){
                     Long id = new Long(layers[i].substring(1));
                     ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
-                    appLayer.setChecked(true);
+                    appLayer.setToc(true);
                     Stripersist.getEntityManager().persist(appLayer);
                 }
             }
@@ -198,7 +198,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             for (Iterator it = appLayers.iterator(); it.hasNext();) {
                 ApplicationLayer layer = (ApplicationLayer) it.next();
 
-                if(layer.isChecked()){
+                if(layer.isToc()){
                     
                     children.add(layer);
                 }
@@ -210,7 +210,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
             for(Iterator it = childLevels.iterator(); it.hasNext();){
                 Level childLevel = (Level)it.next();
-                if(childLevel.isChecked()){
+                if(childLevel.isToc()){
                     children.add(childLevel);
                 }
                 children.addAll(getSelectedLayers(childLevel));
