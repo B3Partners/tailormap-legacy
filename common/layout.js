@@ -83,8 +83,6 @@ Ext.onReady(function() {
         }
     });
     
-    console.log(layoutItems);
-    
     // Function to create component block
     function createComponentItems(components, componentList) {
         var componentItems = [];
@@ -92,12 +90,16 @@ Ext.onReady(function() {
             var cmpId = Ext.id();
             var cmpView = Ext.create('Ext.container.Container', {
                 cls: 'component-view',
-                tpl: '<tpl for="."><div class="component-block" id="{id}">{cmp_name}</div></tpl>',
+                tpl: '<tpl for="."><div class="viewer-component-block" id="{id}"></div></tpl>',
                 data: {
                     id: cmpId,
                     cmp_name: component.name
                 },
-                layout: 'fit'
+                layout: 'fit',
+                style: {
+                    width: '100%',
+                    height: '100%'
+                }
             });
             componentItems.push(cmpView);
             componentList.push({
@@ -117,6 +119,10 @@ Ext.onReady(function() {
     
     var viewportItems = [];
     Ext.Object.each(layoutItems, function(region, value) {
+        var layout = {
+            width: 0,
+            height: 0
+        };
         if(Ext.isDefined(value.subregion)) {
             var items = [];
             Ext.Array.each(value, function(item, index) {
@@ -126,10 +132,10 @@ Ext.onReady(function() {
                     items.push(Ext.apply({
                         xtype: 'container',
                         region: item.region.subregion,
-                        html: item.name,
                         items: component.componentItems
                     }, item.layout));
                 }
+                
             });
             if(items.length > 0) {
                 var container = Ext.create('Ext.container.Container', {
@@ -143,17 +149,28 @@ Ext.onReady(function() {
             var component = createComponentItems(value[0].regionconfig.components, componentList);
             componentList = component.componentList;
             if(value[0].region != "none") {
+                layout = value[0].layout;
+                if(value[0].regionconfig.layout) {
+                    var regionlayout = value[0].regionconfig.layout;
+                    if(regionlayout.width != '' && regionlayout.widthmeasure == 'px') {
+                        layout.width = parseInt(regionlayout.width);
+                    } else if(regionlayout.width != '' && regionlayout.widthmeasure == '%') {
+                        // Percentage, how? Flex?
+                    }
+                    if(regionlayout.height != '' && regionlayout.heightmeasure == 'px') {
+                        layout.height = parseInt(regionlayout.height);
+                    } else if(regionlayout.height != '' && regionlayout.heightmeasure == '%') {
+                        // Percentage, how? Flex?
+                    }
+                }
                 viewportItems.push(Ext.apply({
                     xtype: 'container',
                     region: region,
-                    html: value[0].name,
                     items: component.componentItems
-                }, value[0].layout));
+                }, layout));
             }
         }
     });
-    
-    console.log(viewportItems);
     
     var viewport = Ext.create('Ext.container.Container', {
         layout: 'border',
