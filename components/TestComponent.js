@@ -19,7 +19,7 @@
 Ext.define("TestComponent",{
     extend: "viewer.components.Component",
    /* constructor: function(){
-      var c = {"id":"flamingo","linkedComponents":["openlayers"],"restrictions":["content"],"addOnce":true,"name":"Flamingo Map","shortName":"Fm"}  
+      var c = {"id":"flamingo","notInCombinationWith":["openlayers"],"restrictions":["content"],"addOnce":true,"name":"Flamingo Map","shortName":"Fm"}  
     },*/
     aap: function(){
         alert("TestComponent");
