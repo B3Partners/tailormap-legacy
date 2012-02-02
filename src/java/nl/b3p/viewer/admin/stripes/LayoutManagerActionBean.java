@@ -18,9 +18,13 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -28,6 +32,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,8 +59,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private String configObject;
     @Validate(on = "saveComponentConfig")
     private List<String> groups = new ArrayList<String>();
-    
-    @Validate(on="saveApplicationLayout")
+    @Validate(on = "saveApplicationLayout")
     private String layout;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -130,9 +134,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public void setLayout(String layout) {
         this.layout = layout;
     }
-    
+
     //</editor-fold>
-    
     @DefaultHandler
     public Resolution view() throws JSONException {
         Stripersist.getEntityManager().getTransaction().commit();
@@ -175,12 +178,42 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
-    
-    public Resolution saveApplicationLayout(){
-        EntityManager em = Stripersist.getEntityManager();
-        application.setLayout(layout);
-        em.persist(application);
-        em.getTransaction().commit();
+
+    public Resolution saveApplicationLayout() {
+        try {
+            EntityManager em = Stripersist.getEntityManager();
+            JSONObject jsonLayout = new JSONObject(layout);
+
+            for (Iterator it = jsonLayout.keys(); it.hasNext();) {
+                String key = (String) it.next();
+                JSONObject layoutItem = jsonLayout.getJSONObject(key);
+                if (layoutItem.has("components")) {
+                    JSONArray layoutItemComponents = layoutItem.getJSONArray("components");
+                    for (int i = 0; i < layoutItemComponents.length(); i++) {
+                        JSONObject layoutComponent = layoutItemComponents.getJSONObject(i);
+                        String compName = layoutComponent.getString("name");
+                        String compClassName = layoutComponent.getString("componentClass");
+                        Query q = em.createQuery("from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", compName);
+                        // Check if the component is already saved. If not, return error
+                        try {
+                            q.getSingleResult();
+                        } catch (NoResultException nre) {
+                            ConfiguredComponent cc = new ConfiguredComponent();
+                            cc.setClassName(compClassName);
+                            cc.setName(compName);
+                            cc.setApplication(application);
+                            em.persist(cc);                            
+                        }
+                    }
+                }
+            }
+
+            application.setLayout(layout);
+            em.persist(application);
+            em.getTransaction().commit();
+        } catch (JSONException ex) {
+            Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
     }
 

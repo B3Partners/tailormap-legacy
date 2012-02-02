@@ -282,9 +282,7 @@ Ext.onReady(function() {
             layoutRegion.regionContainer = regionContainer;
         });
     }
-    
-    var layoutJson = {};
-    
+      
     // Initial config. Adds all previously added components to the right regions
     function initConfig(view) {
         if(layoutJson && Ext.isDefined(layoutJson)) {
@@ -307,7 +305,8 @@ Ext.onReady(function() {
                     }
                     if(Ext.isDefined(layoutJson[regionId]['components'])) {
                         Ext.Array.each(layoutJson[regionId]['components'], function(componentref, index) {
-                            var component = componentStore.findRecord('className', componentref.className);
+                            
+                            var component = componentStore.findRecord('className', componentref.componentClass);
                             var sourceEl = view.getNode(component);
                             if(sourceEl && layoutRegion) {
                                 var d = sourceEl.cloneNode(true);
@@ -467,7 +466,7 @@ Ext.onReady(function() {
                 layout: response
             }, 
             success: function ( result, request ) { 
-                var data = Ext.JSON.decode(result.responseText); 
+                Ext.MessageBox.alert("Gelukt", "De layout is opgeslagen.");
                 // doe wat met data 
             }, 
             failure: function ( result, request) { 
