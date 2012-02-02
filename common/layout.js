@@ -128,7 +128,7 @@ Ext.onReady(function() {
             Ext.Array.each(value, function(item, index) {
                 var component = createComponentItems(item.regionconfig.components, componentList);
                 componentList = component.componentList;
-                if(item.region.subregion != "none") {
+                if(item.region.subregion.region != "none") {
                     items.push(Ext.apply({
                         xtype: 'container',
                         region: item.region.subregion,
@@ -148,7 +148,7 @@ Ext.onReady(function() {
         } else {
             var component = createComponentItems(value[0].regionconfig.components, componentList);
             componentList = component.componentList;
-            if(value[0].region != "none") {
+            if(value[0].region.region != "none") {
                 layout = value[0].layout;
                 if(value[0].regionconfig.layout) {
                     var regionlayout = value[0].regionconfig.layout;
