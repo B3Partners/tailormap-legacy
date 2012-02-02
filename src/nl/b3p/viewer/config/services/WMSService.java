@@ -70,10 +70,8 @@ public class WMSService extends GeoService implements Serializable {
                 System.out.println(s);
             }
 
-            Thread.sleep(2000);
             status.setProgress(30);
             status.setCurrentAction("Inladen layers...");
-            Thread.sleep(2000);
             status.setProgress(70);
 
             org.geotools.data.ows.Layer l = gtwms.getCapabilities().getLayer();
@@ -85,11 +83,6 @@ public class WMSService extends GeoService implements Serializable {
             status.setProgress(100);
             status.setFinished(true);
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(new WMSService().loadFromUrl("http://mapserver.openwion.nl/cgi-bin/mapserv?map=/srv/b3p-wion/maps/gemeentes_cbs_2010_test.map", new WaitPageStatus(), true));
-
     }
 
     @Override
