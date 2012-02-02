@@ -7,15 +7,7 @@
 			<string id="loading" en="Making... [layer] [percentage]%..." nl="Kaart aan het laden. [percentage]%"/>
 		</fmc:MonitorLayer>
 		<fmc:ToolGroup id="toolgroup" tool="zoom" listento="map" width="100%" height="100" left="10" top="10">		   			
-			<fmc:ButtonPrev skin="f2" left="135" listento="map">
-				<string id="tooltip" en="previous extent" nl="Stap terug" du="vorigem bereich"/>
-			</fmc:ButtonPrev>
-			<fmc:ButtonNext skin="f2" left="170" listento="map">
-				<string id="tooltip" en="next extent" nl="Stap vooruit" du="nachsten bereich"/>
-			</fmc:ButtonNext>
-			<fmc:ButtonFull skin="f2" left="205" top="2" listento="map">
-				<string id="tooltip" du="zoom zum vollem bereich" en="zoom to extent" nl="Zoom naar volledig kaartbeeld"/>
-			</fmc:ButtonFull>			
+			
 		</fmc:ToolGroup>
 		<fmc:Coordinates listento="map" left="80%" top="95%" decimals="6">
 			<style id=".xy" font-family="arial, sans-serif" font-size="11"/>

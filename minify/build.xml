@@ -26,6 +26,9 @@
             <file name="Pan.js"/>
             <file name="SuperPan.js"/>
             <file name="Measure.js"/>
+            <file name="FullExtent.js"/>
+            <file name="NextExtent.js"/>
+            <file name="PreviousExtent.js"/>
           </sources>
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
