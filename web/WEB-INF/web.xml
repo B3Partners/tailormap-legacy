@@ -4,6 +4,9 @@
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistry</listener-class>
     </listener>
+    <listener>
+        <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
+    </listener>    
 
     <!-- Localization context voor o.a. de <fmt:message> JSTL tag -->
     <context-param>
