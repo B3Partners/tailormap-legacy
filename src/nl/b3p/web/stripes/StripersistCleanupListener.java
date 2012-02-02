@@ -50,10 +50,8 @@ public class StripersistCleanupListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        Method cleanup;
         try {
-            cleanup = Stripersist.class.getDeclaredMethod("retrieveItems");
-            cleanup.invoke(null);
+            Stripersist.class.getDeclaredMethod("retrieveItems").invoke(null);
         } catch(Exception ex) {
         }
     }
