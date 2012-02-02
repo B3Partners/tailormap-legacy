@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
-    
+
     <stripes:layout-component name="head">
         <title>Layoutmanager</title>
     </stripes:layout-component>
@@ -27,13 +27,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
-        
+
     <stripes:layout-component name="body">
         <div id="content">
             <h1>Layoutmanager: ${actionBean.application.name} <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if></h1>
 
             <div id="component-container">
-                
+
             </div>
             <div id="layout-container">
                 <div id="layout-north">
@@ -66,16 +66,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
             <button id="savebutton">Opslaan</button>
         </div>
-        
+
         <script type="text/javascript">            
             var activelink = 'menu_layout';
             var components = ${actionBean.components};
             var configPageLink = "<stripes:url beanclass='nl.b3p.viewer.admin.stripes.LayoutManagerActionBean' event='config'><stripes:param name="application" value="${actionBean.application}"/></stripes:url>";
             var layoutSaveUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>';
-            var layoutJson = ${actionBean.application.layout};
+            <c:choose>    
+                <c:when test="${!empty actionBean.application.layout}">
+                    var layoutJson = ${actionBean.application.layout};
+                </c:when>
+                <c:otherwise>
+                    var layoutJson = {};
+                </c:otherwise>
+            </c:choose>
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/layoutmanager.js"></script>
 
     </stripes:layout-component>
-        
+
 </stripes:layout-render>
