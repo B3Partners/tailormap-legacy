@@ -52,7 +52,7 @@ Ext.onReady(function() {
             {name: 'shortName', type: 'string'},
             {name: 'restrictions', type: 'array'},
             {name: 'singleton', type: 'boolean'},
-            {name: 'linkedComponents', type: 'array'}
+            {name: 'notInCombinationWith', type: 'array'}
         ]
     });
     
@@ -257,13 +257,13 @@ Ext.onReady(function() {
                             },
                             checkDropAllowed: function(data) {
                                 var restrictions = data.componentData.restrictions;
-                                var linkedComponents = data.componentData.linkedComponents;
+                                var notInCombinationWith = data.componentData.notInCombinationWith;
                                 var dropId = layoutRegion.get('id');
                                 if(Ext.isEmpty(restrictions) || (Ext.isArray(restrictions) && Ext.Array.contains(restrictions, dropId))) {
-                                    if(!Ext.isEmpty(linkedComponents)) {
-                                        if(Ext.isArray(linkedComponents)) {
+                                    if(!Ext.isEmpty(notInCombinationWith)) {
+                                        if(Ext.isArray(notInCombinationWith)) {
                                             var linkedComponentAdded = false;
-                                            Ext.Array.each(linkedComponents, function(comp, index) {
+                                            Ext.Array.each(notInCombinationWith, function(comp, index) {
                                                 if(layoutRegion.isComponentAdded(comp)) {
                                                     linkedComponentAdded = true;
                                                 }
