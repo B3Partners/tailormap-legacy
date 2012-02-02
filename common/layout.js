@@ -16,6 +16,8 @@
  */
 
 Ext.require(['*']);
+var componentList = [];
+var mapId = "";
 Ext.onReady(function() {
     
     // Default regions
@@ -33,6 +35,7 @@ Ext.onReady(function() {
         left_menu: {region:'center', subregion:'west', defaultLayout: {
                 width: 150
         }},
+        top_menu: {region:'none'},
         content: {region:'center', subregion:'center', defaultLayout: {}},
         popupwindow: {},
         rightmargin_top: {region:'east', subregion:'center', defaultLayout: {
@@ -56,40 +59,31 @@ Ext.onReady(function() {
     // Used for keeping a list with enabled regions
     var layoutItems = {};
     
-    // Used for mapmenu components (top_menu in layoutmanager)
-    var mapmenu_components = null;
-    
     // Iterate over application layout
     Ext.Object.each(layout, function(regionid, regionconfig) {
-        if(regionid == "top_menu") {
-            // Topmenu needs special approach (config given to flamingo)
-            mapmenu_components = regionconfig;
-        } else {
-            // If region has components, add it to the list
-            if(regionconfig.components.length > 0) {
-                // Fetch default config
-                var defaultConfig = defaultRegions[regionid];
-                // Layoutregions are added throug array because 1 Ext region (e.g. west) can have multiple regions
-                if(!Ext.isDefined(layoutItems[defaultConfig.region])) {
-                    layoutItems[defaultConfig.region] = [];
-                }
-                // Push the layout to the array
-                layoutItems[defaultRegions[regionid].region].push({
-                    // Region holds the defaultConfig region
-                    region: defaultConfig,
-                    // Regionconfig holds the regionconfig from the layoutmanager
-                    regionconfig: regionconfig,
-                    // Region name
-                    name: regionid,
-                    // Layout of the region (widths, heights, etc.)
-                    layout: defaultRegions[regionid].defaultLayout
-                });
+        // If region has components, add it to the list
+        if(regionconfig.components.length > 0) {
+            // Fetch default config
+            var defaultConfig = defaultRegions[regionid];
+            // Layoutregions are added throug array because 1 Ext region (e.g. west) can have multiple regions
+            if(!Ext.isDefined(layoutItems[defaultConfig.region])) {
+                layoutItems[defaultConfig.region] = [];
             }
+            // Push the layout to the array
+            layoutItems[defaultRegions[regionid].region].push({
+                // Region holds the defaultConfig region
+                region: defaultConfig,
+                // Regionconfig holds the regionconfig from the layoutmanager
+                regionconfig: regionconfig,
+                // Region name
+                name: regionid,
+                // Layout of the region (widths, heights, etc.)
+                layout: defaultRegions[regionid].defaultLayout
+            });
         }
     });
     
     console.log(layoutItems);
-    console.log(mapmenu_components);
     
     // Function to create component block
     function createComponentItems(components, componentList) {
@@ -111,6 +105,9 @@ Ext.onReady(function() {
                 componentName: component.name,
                 componentClass: component.componentClass
             });
+            if(component.componentClass == "FlamingoMap") {
+                mapId = cmpId;
+            }
         });
         return {
             componentItems: componentItems,
@@ -119,35 +116,40 @@ Ext.onReady(function() {
     }
     
     var viewportItems = [];
-    var componentList = [];
     Ext.Object.each(layoutItems, function(region, value) {
         if(Ext.isDefined(value.subregion)) {
             var items = [];
             Ext.Array.each(value, function(item, index) {
                 var component = createComponentItems(item.regionconfig.components, componentList);
                 componentList = component.componentList;
-                items.push(Ext.apply({
-                    xtype: 'container',
-                    region: item.region.subregion,
-                    html: item.name,
-                    items: component.componentItems
-                }, item.layout));
+                if(item.region.subregion != "none") {
+                    items.push(Ext.apply({
+                        xtype: 'container',
+                        region: item.region.subregion,
+                        html: item.name,
+                        items: component.componentItems
+                    }, item.layout));
+                }
             });
-            var container = Ext.create('Ext.container.Container', {
-                layout: 'border',
-                region: region,
-                items: items
-            });
+            if(items.length > 0) {
+                var container = Ext.create('Ext.container.Container', {
+                    layout: 'border',
+                    region: region,
+                    items: items
+                });
+            }
             viewportItems.push(container);
         } else {
             var component = createComponentItems(value[0].regionconfig.components, componentList);
             componentList = component.componentList;
-            viewportItems.push(Ext.apply({
-                xtype: 'container',
-                region: region,
-                html: value[0].name,
-                items: component.componentItems
-            }, value[0].layout));
+            if(value[0].region != "none") {
+                viewportItems.push(Ext.apply({
+                    xtype: 'container',
+                    region: region,
+                    html: value[0].name,
+                    items: component.componentItems
+                }, value[0].layout));
+            }
         }
     });
     

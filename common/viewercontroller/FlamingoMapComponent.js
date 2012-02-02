@@ -47,6 +47,9 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var config = {
             id: id
         };
+        for (var key in options){
+            config[key] = options[key];
+        }
         var map = new viewer.viewercontroller.flamingo.FlamingoMap(config);
         var maxExtent = options["maxExtent"];
         // map.setMaxExtent(maxExtent);
@@ -333,17 +336,18 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     fire : function (event,options){
         this.fireEvent (event,this,options);
     }
-
-    /**
-     * Entrypoint for flamingoevents. This function propagates the events to the mapComponent (handleEvents).
-     */
-    
 });
 
+/**
+    * Entrypoint for flamingoevents. This function propagates the events to the webMapController (handleEvents).
+    */
 function dispatchEventJS(event, comp) {
-        if(comp [0]== null){
+    if(comp [0]== null){
             comp[0] = viewerController.mc.getId();
-            comp[1] = new Object();
-        }
-        viewerController.mc.handleEvents(event,comp);
+        comp[1] = new Object();
     }
+    if(event == "onConfigComplete"){
+        var a = 0;
+    }
+        viewerController.mc.handleEvents(event,comp);
+}

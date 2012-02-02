@@ -1,39 +1,10 @@
 var viewerType = "flamingo";
-var viewerController = null;
+
 var aaron = null;
-function initMapComponent(){
-    
-    if (window.location.href.indexOf("openlayers")>0){
-        viewerType="openlayers";
-    }
-    viewerController = new viewer.viewercontroller.ViewerController(viewerType,"map");
-    viewerController.init();
-    
-    var map = viewerController.createMap();   
-    viewerController.bind(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,viewerController.mc,onConfigComplete);
-}
 
-
-var eerste = true;
-function onConfigComplete(){
-    try{            
-        if(eerste){
-            loadBaseLayers();
-            initializeButtons();
-            onFrameworkLoaded();
-            eerste = false;
-            loadTOC();
-            loadComponents();
-            //testComponents();
-        }
-    }catch(e){
-        console.log(e);
-        throw e;
-    }
-}
-
-
-
+Ext.Loader.setConfig({
+    enabled:true
+});
 var toc = null;
 var bu_removePolygons;
 function initializeButtons(){
@@ -65,89 +36,33 @@ function testComponents(){
         tooltip: "Zoom Out"
     };
     testComponents.push(zoomOutJson);
-    var featureInfoJson= {
-        className: "viewer.components.tools.FeatureInfo",
-        name: "FeatureInfo",
-        shortName: "FI",
-        tooltip: "Get Feature Info"
-    };
-    testComponents.push(featureInfoJson);
-    var panJson= {
-        className: "viewer.components.tools.Pan",
-        name: "Pan",
-        shortName: "Pan",
-        tooltip: "Pan the map"
-    };
-    testComponents.push(panJson);
-    var superPanJson= {
-        className: "viewer.components.tools.SuperPan",
-        name: "SuperPan",
-        shortName: "SP",
-        tooltip: "SuperPan"
-    };
-    testComponents.push(superPanJson);
-    var measureJson= {
-        className: "viewer.components.tools.Measure",
-        name: "Measure",
-        shortName: "Mes",
-        tooltip: "Measure"
-    };
-    testComponents.push(measureJson);
-    var fullExtentJson= {
-        className: "viewer.components.tools.FullExtent",
-        name: "FullExtent",
-        shortName: "fe",
-        tooltip: "FullExtent"
-    };
-    testComponents.push(fullExtentJson);
-    var prevExtentJson= {
-        className: "viewer.components.tools.PreviousExtent",
-        name: "PreviousExtent",
-        shortName: "pe",
-        tooltip: "PreviousExtent"
-    };
-    testComponents.push(prevExtentJson);
-    var nextExtentJson= {
-        className: "viewer.components.tools.NextExtent",
-        name: "NextExtent",
-        shortName: "ne",
-        tooltip: "NextExtent"
-    };
-    testComponents.push(nextExtentJson);
     for (var i=0; i < testComponents.length; i++){
         viewerController.addComponent(testComponents[i].className,testComponents[i]);
     }
 }    
-
-function loadComponents(){
-    var layouts = app.layout;
-    for ( var l in layouts){
-        var layout = layouts[l];
-        for ( var i = 0 ; i < layout.components.length ; i++){
-            var componentJson = layout.components[i];
-            var name = componentJson.name;
-            var className = componentJson.componentClass;
-            var config = app.components[name];
-            if (config==undefined)
-                continue;            
-            config.div = l;            
-            viewerController.addComponent(className,config);  
-        } 
+var eerste = true;
+function onConfigComplete (){
+    try{            
+        if(eerste){
+                initializeButtons();
+                onFrameworkLoaded();
+                viewerController.loadLayout(componentList);
+              /*   loadLayers();*/
+            eerste = false;
+        //testComponents();
+        }
+    }catch(e){
+        console.log(e);
     }
 }
 
-function loadTOC(){
-    loadAvo();
-    var  config = {
-        name: "toc1",
-        div: "tree-div",
-        options: {}
-    };
-   /* var toc = viewerController.addComponent("TOC",config);
+function initMapComponent  (){
     
-    toc.addArcIMS();*/
-} 
-
+    viewerController.init();
+    
+    var map = viewerController.createMap();   
+    viewerController.bind(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,viewerController.mc,onConfigComplete);
+}
 /**
  * Alle ge�mplementeerde eventhandling functies
  */

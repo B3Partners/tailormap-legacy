@@ -10,12 +10,13 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("viewer.viewercontroller.ViewerController",{
-    constructor: function(viewerType,mapId){
+    constructor: function(viewerType,mapId,app){
         this.viewerType = viewerType;
         this.mc = null;
         this.mapComponent = null;
         this.mapDivId = mapId;
         this.components = new Array();
+        this.app = app;
     },
     init : function (){
         this.mapOptions = {};
@@ -35,7 +36,7 @@ Ext.define("viewer.viewercontroller.ViewerController",{
         };
     }*/
     
-        this.mapOptions.maxExtent =  new viewer.viewercontroller.controller.Extent(10000, 304000,280000,620000);
+        //   this.mapOptions.maxExtent =  new viewer.viewercontroller.controller.Extent(10000, 304000,280000,620000);
     
         this.mapComponent.initEvents();
         // Convenience accessor for the mapComponent
@@ -46,6 +47,7 @@ Ext.define("viewer.viewercontroller.ViewerController",{
         for (var key in opts){
             this.mapOptions[key] = opts[key];
         }
+        this.mapOptions.viewerController = this;
         var map=this.mapComponent.createMap(this.mapDivId,this.mapOptions); // aanpassen aan config.xml
         this.mapComponent.addMap(map);
         return map;
@@ -58,6 +60,8 @@ Ext.define("viewer.viewercontroller.ViewerController",{
             maxy:maxy
         }, 0);
     },
+  
+    
     addComponent : function (className,config){
         config.viewerController = this;
         var component = Ext.create(className,config);
@@ -83,6 +87,24 @@ Ext.define("viewer.viewercontroller.ViewerController",{
         }
         return null;
     },
+    loadLayout : function(componentList){
+        for( var i = 0 ; i < componentList.length ; i++){
+            
+            /*
+             *
+                htmlId: cmpId,
+                componentName: component.name,
+                componentClass: component.componentClass
+            */
+            var component = componentList[i];
+            var compConfig = app.components[component.componentName];
+            compConfig.viewerController = this;
+            compConfig.div = component.htmlId;
+            this.addComponent(component.componentClass,compConfig);
+            var b = 0;
+        }
+    },
+    
     /********************************************************************
      *                                                                  *
      * EventHandling                                                    *

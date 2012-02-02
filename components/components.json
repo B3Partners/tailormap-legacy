@@ -216,7 +216,7 @@
     },
 
     {
-        className: "TOC",
+        className: "viewer.components.TOC",
         name: "TOC",
         sources: ["TOC.js"],
 

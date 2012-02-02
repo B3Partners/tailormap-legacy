@@ -9,12 +9,16 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     extend: "Ext.util.Observable",
     events: [],
     layers: new Array(),
+  //  
     config :{
-        id: "id" 
+        id: "id" ,
+        viewerController: new Object()
+        //maxExtent : new Object()
     },
     constructor: function(config){
+        //this.viewerController = config.viewerController;
         this.initConfig(config);
-        this.frameworkMap = viewerController.mc.viewerObject;
+        this.frameworkMap = this.viewerController.mc.viewerObject;
         
         this.addEvents(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT);    
         return this;
@@ -106,7 +110,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass to add the layer to the frameworkmap
      **/
     addLayer: function(layer){
-      /*  if (!(layer instanceof Layer)){
+        /*  if (!(layer instanceof Layer)){
             throw("Map.addLayer: Given layer is not of type Layer");
         }*/
         this.layers.push(layer);

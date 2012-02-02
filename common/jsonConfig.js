@@ -23,4 +23,5 @@ function loadAvo(){
         };
         layerJSON.layers.push(laag);
     }
+    viewerController.addArcIMS();
 }

@@ -10,7 +10,6 @@ Ext.define ("viewer.components.TOC",{
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON);
         this.initConfig(config);
         this.loadTree();
-        this.addArcIMS();
         return this;
     },
     loadTree : function(){
@@ -42,33 +41,16 @@ Ext.define ("viewer.components.TOC",{
             store: store
         });
     },
-    addArcIMS : function(){
-        var services = layerJSON.layers;
-        for (var i = 0 ; i < services.length; i++){
-            var layer = services[i];
-       
-            this.insertLayer(layer);   
-        }
-        this.panel.showVerticalScroller();
-    },
     insertLayer : function (laag){
-    
-        if(laag.type == "ArcIMS"){
-            var laagObject = null;
-            if(laag.visible){
-                laagObject = this.createLayer(laag);
-                this.viewerController.mc.getMap().addLayer(laagObject);
-            }
-            var treeNode = {
-                text: laag.name,
-                checked: laag.visible,
-                expanded: true,
-                leaf: true,
-                id: laag.id,
-                layerConfig: laag,
-                layerObj: laagObject
-            };
-        }
+        var treeNode = {
+            text: laag.options.name,
+            checked: true,
+            expanded: true,
+            leaf: true,
+            id: laag.getId(),
+            layer: laag
+        };
+       
         var root = this.panel.getRootNode();
         root.appendChild(treeNode);
         root.expand()
