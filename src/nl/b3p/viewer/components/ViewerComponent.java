@@ -29,13 +29,10 @@ public class ViewerComponent {
     private File[] sources;
     private JSONObject metadata;
 
-    private String[] compiledSourceCache;
-
     public ViewerComponent(String path, String className, File[] sources, JSONObject metadata) {
         this.path = path;
         this.className = className;
         this.sources = sources;
-        compiledSourceCache = new String[sources.length];
         this.metadata = metadata;
     }
 
