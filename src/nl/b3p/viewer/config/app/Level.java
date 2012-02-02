@@ -40,7 +40,10 @@ public class Level {
     @Basic(optional=false)
     private String name;
 
-    private boolean checked;
+    /**
+     * Whether this level should be shown in a table of contents by default
+     */
+    private boolean toc;
 
     @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
     @JoinTable(name="level_children", inverseJoinColumns=@JoinColumn(name="child"))
@@ -75,12 +78,12 @@ public class Level {
         this.id = id;
     }
 
-    public boolean isChecked() {
-        return checked;
+    public boolean isToc() {
+        return toc;
     }
 
-    public void setChecked(boolean checked) {
-        this.checked = checked;
+    public void setToc(boolean toc) {
+        this.toc = toc;
     }
 
     public List<Level> getChildren() {
@@ -153,7 +156,7 @@ public class Level {
         /* TODO check readers */
         
         o.put("name", name);
-        o.put("checked", checked);
+        o.put("toc", toc);
         o.put("background", background);
         o.put("info", info);
         
@@ -187,6 +190,7 @@ public class Level {
             JSONObject o = new JSONObject();
             ls.put(o);
             o.put("id", al.getId());
+            o.put("toc", al.isToc());
             o.put("checked", al.isChecked());
             o.put("layerName", al.getLayerName());
             

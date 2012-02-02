@@ -31,7 +31,15 @@ public class ApplicationLayer {
     @Id
     private Long id;
 
+    /**
+     * Should this app layer be visible in the application by default
+     */    
     private boolean checked;
+    
+    /**
+     * Should this app layer be shown in a table of contents by default
+     */    
+    private boolean toc;
 
     @ManyToOne
     private GeoService service;
@@ -76,6 +84,14 @@ public class ApplicationLayer {
     
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public boolean isToc() {
+        return toc;
+    }
+
+    public void setToc(boolean toc) {
+        this.toc = toc;
     }
     
     public Map<String, String> getDetails() {

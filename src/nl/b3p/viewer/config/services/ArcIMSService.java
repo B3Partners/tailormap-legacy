@@ -27,6 +27,16 @@ import nl.b3p.web.WaitPageStatus;
 @DiscriminatorValue("arcims")
 public class ArcIMSService extends GeoService {
 
+    private String serviceName;
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
     @Override
     public GeoService loadFromUrl(String url, WaitPageStatus status) {
         throw new UnsupportedOperationException("Not supported yet.");
