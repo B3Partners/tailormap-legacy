@@ -205,6 +205,17 @@
     }, 
 
     {
+        className: "viewer.components.BorderNavigation",
+        name: "BorderNavigation",
+        shortName: "bn",
+        sources: ["BorderNavigation.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"]        
+    },
+
+    {
         className: "TestComponent",
         sources: ["TestComponent.js", "TestComponentFile2.js"],
         configSource: "TestComponent-config.js",

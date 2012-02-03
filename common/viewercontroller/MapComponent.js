@@ -15,6 +15,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     maps: new Array(),
     tools : new Array(),
     events: new Array(),
+    components: new Array(),
     panel : null,
     constructor :function (viewerObject){
      
@@ -71,6 +72,15 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     createTool: function (){
         throw("MapComponent.createTool(...) not implemented! Must be implemented in sub-class");
+    },
+    /**
+     *Must be implemented by sub-class
+     *Creates a new component
+     */
+    createComponent: function(){
+        Ext.Error.raise({
+            msg: "MapComponent.createComponent() not implemented! Must be implemented in the sub-class"
+        });
     },
     /**
     *Add a array of Tool objects. For every tool .addTool is called.
@@ -147,6 +157,17 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  **/
     removeToolById : function (id){
         throw("MapComponent.removeToolById() Not implemented! Must be implemented in sub-class");
+    },
+    
+    addComponent: function(component){
+        if (!(tool instanceof viewer.viewercontroller.controller.Component)){
+            Ext.Error.raise({
+                msg: "Given tool not of type 'Tool'",
+                options: {tool: tool}
+            });
+            Ext.err();
+        }
+        this.components.push(component);
     },
 
     /**

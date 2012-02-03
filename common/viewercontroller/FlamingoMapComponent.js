@@ -124,6 +124,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         return tool;
     },
     /**
+     *Create a flamingo component.
+     *@param Configuration object
+     *@see viewer.viewercontroller.flamingo.FlamingoComponent#constructor
+     */
+    createComponent: function (conf){        
+        var component = new viewer.viewercontroller.flamingo.FlamingoComponent(conf);        
+        return component;
+    },
+    /**
      * See @link MapComponent.createVectorLayer
      */
     createVectorLayer : function (identification){
@@ -158,6 +167,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         toolXml+=tool.toXML();
         toolXml+="</fmc:ToolGroup>";
         this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
+    },
+    addComponent: function(component){
+        if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
+            Ext.Error.raise({
+                msg: "The given tool is not of type 'FlamingoComponent'"               
+            });
+        }
+        viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
+        this.viewerObject.callMethod(this.flamingoId,'addComponent',component.toXML()); 
     },
     /**
      *See @link MapComponent.activateTool

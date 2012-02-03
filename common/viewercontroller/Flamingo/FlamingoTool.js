@@ -18,11 +18,20 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     },       
     /** Create a new FlamingoTool
      *@construct
+     *@param config.id id of this object
+     *@param config.type the type name of the component
+     *@param config.width the width of the component
+     *@param config.height the height of the component
+     *@param config.left margin at the left side
+     *@param config.right margin of the right side
+     *@param config.bottom margin at the bottom side
+     *@param config.tooltip the tool tip of this component
+     *@param config.listenTo the component id to listen to
      */
     constructor : function (config){
         //replace the . for flamingo
         if (config.id){
-            config.id=config.id=config.name.replace(/\./g,"_");
+            config.id=config.id.replace(/\./g,"_");
         }
         viewer.viewercontroller.flamingo.FlamingoTool.superclass.constructor.call(this, config);
         this.initConfig(config);
