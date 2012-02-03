@@ -160,20 +160,22 @@ public class ApplicationActionBean implements ActionBean {
             Set<String> classNamesDone = new HashSet<String>();
             for(ConfiguredComponent cc: comps) {
                 if(!classNamesDone.contains(cc.getClassName())) {
-
-                    for(File f: cc.getViewerComponent().getSources()) {
-                        String url = new ForwardResolution(ComponentActionBean.class, "source")
-                                .addParameter("app", name)
-                                .addParameter("version", version)
-                                .addParameter("className", cc.getClassName())
-                                .addParameter("file", f.getName())
-                                .getUrl(context.getLocale());
-
-                        sb.append("        <script type=\"text/javascript\" src=\"");
-                        sb.append(HtmlUtil.encode(context.getServletContext().getContextPath() + url));
-                        sb.append("\"></script>\n");
-                    }
                     classNamesDone.add(cc.getClassName());
+
+                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
+                        for(File f: cc.getViewerComponent().getSources()) {
+                            String url = new ForwardResolution(ComponentActionBean.class, "source")
+                                    .addParameter("app", name)
+                                    .addParameter("version", version)
+                                    .addParameter("className", cc.getClassName())
+                                    .addParameter("file", f.getName())
+                                    .getUrl(context.getLocale());
+
+                            sb.append("        <script type=\"text/javascript\" src=\"");
+                            sb.append(HtmlUtil.encode(context.getServletContext().getContextPath() + url));
+                            sb.append("\"></script>\n");
+                        }
+                    }
                 }
             }
         } else {
