@@ -94,7 +94,7 @@ public class ArcIMSService extends GeoService {
     private Layer parseAxlLayerInfo(AxlLayerInfo axl, GeoService service) {
         Layer l = new Layer();
         l.setService(service);
-        l.setFilterable(true);
+        l.setFilterable(AxlLayerInfo.TYPE_FEATURECLASS.equals(axl.getType()));
         l.setQueryable(true);
         l.setName(axl.getId());
         l.setTitle(axl.getName());

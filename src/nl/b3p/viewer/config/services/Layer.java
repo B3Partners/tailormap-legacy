@@ -19,6 +19,8 @@ package nl.b3p.viewer.config.services;
 import java.util.*;
 import javax.persistence.*;
 import org.geotools.data.ows.CRSEnvelope;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -127,6 +129,43 @@ public class Layer {
         for(org.geotools.data.ows.Layer child: l.getLayerChildren()) {
             children.add(new Layer(child, service));
         }
+    }
+    
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject o = new JSONObject();
+        
+        o.put("id", id);
+        o.put("name", name);
+        
+        o.put("virtual", virtual);
+        o.put("queryable", queryable);
+        o.put("filterable", filterable);       
+        
+        if(title != null) {
+            o.put("title", title);
+        }
+        if(titleAlias != null) {
+            o.put("titleAlias", titleAlias);
+        }
+        if(legendImageUrl != null) {
+            o.put("legendImageUrl", legendImageUrl);
+        }
+        if(minScale != null) {
+            o.put("minScale", minScale);
+        }
+        if(maxScale != null) {
+            o.put("maxScale", maxScale);
+        }
+        
+        if(!details.isEmpty()) {
+            JSONObject d = new JSONObject();
+            o.put("details", d);
+            for(Map.Entry<String,String> e: details.entrySet()) {
+                d.put(e.getKey(), e.getValue());
+            }        
+        }
+        
+        return o;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">

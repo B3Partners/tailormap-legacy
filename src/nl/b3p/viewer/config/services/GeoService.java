@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.lang.annotation.Annotation;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
@@ -138,12 +137,44 @@ public abstract class GeoService {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }
     
-    public JSONObject toJSONObject() throws JSONException {
+    public JSONObject toJSONObject(boolean includeLayers) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
+        
+        if(includeLayers) {
+            /* TODO check readers */
+
+            if(topLayer != null) {
+                JSONObject layers = new JSONObject();
+                o.put("layers", layers);
+                addLayerJSON(topLayer, layers);
+            }
+        }
         return o;
     }
+    
+    private static void addLayerJSON(Layer l, JSONObject layers) throws JSONException {
+        
+        /* Flatten tree structure, currently depth-first - later traversed layers
+         * do not overwrite earlier layers with the same name - do not include
+         * virtual layers
+         */
+        
+        if(!l.isVirtual() && !layers.has(l.getName())) {
+            layers.put(l.getName(), l.toJSONObject());
+        }
+                
+        for(Layer child: l.getChildren()) {
+            addLayerJSON(child, layers);
+        }
+    }
+    
+    public JSONObject toJSONObject() throws JSONException {
+        return toJSONObject(false);
+    }
+    
+
 }

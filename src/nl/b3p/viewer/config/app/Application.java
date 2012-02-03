@@ -20,7 +20,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
-import org.json.JSONArray;
+import nl.b3p.viewer.config.services.GeoService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -196,9 +196,15 @@ public class Application  {
         if(maxExtent != null) {
             o.put("maxExtent", maxExtent.toJSONObject());
         }
-
+        
+        /* TODO check readers */
+        
         if(root != null) {
             o.put("rootLevel", root.toJSONObject());
+            
+            JSONObject services = new JSONObject();
+            o.put("services", services);
+            addLevelServicesJSON(root, services);
         }
 
         JSONObject c = new JSONObject();
@@ -208,5 +214,18 @@ public class Application  {
         }
 
         return o.toString(4);
+    }
+    
+    private static void addLevelServicesJSON(Level l, JSONObject services) throws JSONException {
+        for(ApplicationLayer al: l.getLayers()) {
+            GeoService gs = al.getService();
+            if(!services.has(gs.getId().toString())) {
+                services.put(gs.getId().toString(), gs.toJSONObject(true));
+            }
+        }
+        
+        for(Level child: l.getChildren()) {
+            addLevelServicesJSON(child, services);
+        }
     }
 }
