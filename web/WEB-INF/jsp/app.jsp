@@ -89,7 +89,7 @@ ${actionBean.componentSourceHTML}
             Ext.onReady(function(){
 
                 //initLayout();
-                viewerController = new viewer.viewercontroller.ViewerController("flamingo",mapId,app);
+                viewerController = new viewer.viewercontroller.ViewerController("flamingo",layoutManager.getMapId(),app);
 
                 initMapComponent();
             });
