@@ -70,7 +70,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var contextPath = "${contextPath}";
                 var configObject = null;
             <c:if test="${!empty actionBean.component.config}">
-                configObject= JSON.parse ('${actionBean.component.config}');
+                configObject= ${actionBean.component.config};
             </c:if>
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
