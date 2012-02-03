@@ -75,7 +75,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
             throw("FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer");
         //call super function
-        Map.prototype.removeLayer.call(this,layer);
+        viewer.viewercontroller.controller.Map.prototype.removeLayer.call(this,layer);
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
         }

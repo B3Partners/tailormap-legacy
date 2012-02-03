@@ -44,18 +44,13 @@ Ext.define ("viewer.components.TOC",{
     },
     loadInitLayers : function(){
         var layers = this.viewerController.app.rootLevel;
-        var b = this.loadChildren(layers.children);
-       // this.insertLayer(b);
-        var a = 0;
+        this.loadChildren(layers.children);
     },
-    loadChildren : function (child){
-        var boom = new Array();
-        
+    loadChildren : function (child){        
         for ( var i = 0 ; i < child.length ; i++){
             var level = child[i];
             for ( var j = 0 ; j < level.layers.length; j++){
                 var laag = level.layers[j];
-                var a = 0;
                 var treeNode = {
                     text: laag.layerName,
                     checked: laag.checked,
@@ -68,23 +63,17 @@ Ext.define ("viewer.components.TOC",{
                     }
                 };
                 this.insertLayer(treeNode);
-        
             }
             if( level.children != undefined){
                 this.loadChildren (level.children);
             }
         }
     },
-    insertLayer : function (laag){
-        /*var treeNode = {
-            text: laag.text,
-            checked: laag.checked,
-            expanded: laag.expanded,
-            leaf: true
-        };*/
-       
+    insertLayer : function (config){
+        var layer = this.createLayer(config.layerObj);
+        config.layerObj = layer;
         var root = this.panel.getRootNode();
-        root.appendChild(laag);
+        root.appendChild(config);
         root.expand()
     },
     
@@ -156,11 +145,9 @@ Ext.define ("viewer.components.TOC",{
         var layer = node.layerObj;
     
         if(checked){
-            var laag = toc.toc.createLayer(layer);
-            toc.toc.viewerController.mc.getMap().addLayer(laag);
-            nodeObj.data.layerObj = laag;
+            toc.toc.viewerController.mc.getMap().addLayer(layer);
             nodeObj.updateInfo();
-            toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,laag);
+            toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,layer);
         }else{
             toc.toc.viewerController.mc.getMap().removeLayer(layer)
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
