@@ -40,7 +40,7 @@
     },
 
     {
-        className: "Tabs",
+        className: "viewer.components.tools.Tabs",
         name: "Tabs",
         shortName: "Tb",
 
@@ -48,7 +48,7 @@
     },
 
     {
-        className: "PanTool",
+        className: "viewer.components.tools.PanTool",
         name: "Pan",
         shortName: "Pa",
 
@@ -57,7 +57,7 @@
     },
 
     {
-        className: "OpenStreetViewTool",
+        className: "viewer.components.tools.OpenStreetViewTool",
         name: "Streetview",
         shortName: "Sv",
 
@@ -65,14 +65,6 @@
         restrictions: ["top_menu"]
     },
 
-    {
-        className: "IdentifyTool",
-        name: "Identify",
-        shortName: "Id",
-
-        singleton: true,
-        restrictions: ["top_menu"]
-    },
 
     {
         className: "viewer.components.tools.ZoomIn",
