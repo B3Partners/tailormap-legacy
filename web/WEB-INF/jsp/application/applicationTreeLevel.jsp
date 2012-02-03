@@ -34,6 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:if test="${actionBean.context.eventName == 'edit'}">
                 <stripes:submit name="save" value="Opslaan" />
                 <stripes:submit name="cancel" value="Annuleren"/>
+                <stripes:submit name="delete" value="Verwijderen"/>
                 <br /><br />
                 <div id="tabs">
                         <div id="tree-tab" class="tabdiv">

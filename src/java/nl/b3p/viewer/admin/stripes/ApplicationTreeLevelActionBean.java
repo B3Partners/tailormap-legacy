@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.*;
@@ -58,6 +59,35 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     
     @DefaultHandler
     public Resolution view() {
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        return new ForwardResolution(JSP);
+    }
+    
+    public Resolution delete() {
+        boolean inUse = false;
+        
+        if(level.getChildren().size() > 0){
+            inUse = true;
+            getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft."));
+        }
+        if(level.isToc()){
+            inUse = true;
+            getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen"));
+        }
+        if(level.getLayers().size() > 0){
+            inUse = true;
+            getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat."));
+        }
+        
+        if(!inUse){
+            Level parent = level.getParent();
+            parent.getChildren().remove(level);
+            Stripersist.getEntityManager().persist(parent);
+            Stripersist.getEntityManager().remove(level);
+            getContext().getMessages().add(new SimpleMessage("Het niveau is verwijderd"));
+        }
+        
         Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);
