@@ -29,6 +29,7 @@
             <file name="Extent.js"/>
             <file name="Event.js"/>
             <file name="Tool.js"/>
+            <file name="Component.js"/>
           </sources>
           <!--					The Flamingo-MC implementation		-->
           <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo">
@@ -38,6 +39,7 @@
             <file name="FlamingoVectorLayer.js"/>
             <file name="FlamingoMap.js"/>
             <file name="FlamingoTool.js"/>
+            <file name="FlamingoComponent.js"/>
           </sources>          
           <!--					The Flamingo-mc component 				-->
           <sources dir="${viewerhtml.path}/common/viewercontroller">          
