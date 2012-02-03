@@ -279,10 +279,20 @@ public class UserActionBean implements ActionBean {
     
     @DontValidate
     public Resolution delete() {
+        boolean inUse = false;
         String currentUser = context.getRequest().getUserPrincipal().getName();
         if(currentUser.equals(user.getUsername())){
+            inUse = true;
             getContext().getMessages().add(new SimpleError("Het is niet mogelijk om de gebruiker waar u mee bent ingelogt te verwijderen."));
-        }else{
+        }
+        List applications = Stripersist.getEntityManager().createQuery("from Application where owner = :owner")
+                .setParameter("owner", user).getResultList();
+        if(applications != null && applications.size() > 0){
+            inUse = true;
+            getContext().getMessages().add(new SimpleError("Het is niet mogelijk om de gebruiker te verwijderen, omdat deze eigenaar is van een of meerdere applicaties."));
+        }
+                
+        if(!inUse){
             Stripersist.getEntityManager().remove(user);
             Stripersist.getEntityManager().getTransaction().commit();
             getContext().getMessages().add(new SimpleMessage("Gebruiker is verwijderd"));
