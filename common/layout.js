@@ -15,190 +15,115 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.require(['*']);
-var componentList = [];
-var mapId = "";
-Ext.onReady(function() {
-    
-    // Default regions
-    var defaultRegions = {
-        header: {region: 'north', defaultLayout: {
-                height: 150
-        }},
-        leftmargin_top: {region:'west', subregion:'center', columnOrientation: 'horizontal', defaultLayout: {
-                width: 250
-        }},
-        leftmargin_bottom: {region:'west', subregion:'south', columnOrientation: 'horizontal', defaultLayout: {
-                height: 250
-        }},
-        left_menu: {region:'center', subregion:'west', columnOrientation: 'vertical', defaultLayout: {
-                width: 150
-        }},
+Ext.define('viewer.LayoutManager', {
+    defaultRegionSettings: {
+        header: {region: 'north', useTabs: false, defaultLayout: {height: 150}},
+        leftmargin_top: {region:'west', subregion:'center', columnOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
+        leftmargin_bottom: {region:'west', subregion:'south', columnOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
+        left_menu: {region:'center', subregion:'west', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {width: 150}},
         top_menu: {region:'none'},
-        content: {region:'center', subregion:'center', columnOrientation: 'vertical', defaultLayout: {}},
+        content: {region:'center', subregion:'center', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {}},
         popupwindow: {},
-        rightmargin_top: {region:'east', subregion:'center', columnOrientation: 'horizontal', defaultLayout: {
-                width: 250
-        }},
-        rightmargin_bottom: {region:'east', subregion:'south', columnOrientation: 'horizontal', defaultLayout: {
-                height: 250
-        }},
-        footer: {region:'south', defaultLayout: {
-                height: 150
-        }}
-    };
+        rightmargin_top: {region:'east', subregion:'center', columnOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
+        rightmargin_bottom: {region:'east', subregion:'south', columnOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
+        footer: {region:'south', useTabs: false, defaultLayout: {height: 150}}
+    },
+    layout: {},
+    layoutItems: {},
+    mapId: '',
+    componentList: [],
+    wrapperId: 'wrapper',
+    autoRender: true,
     
-    // State manager, disable in development, enable in production?
-    // Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
-    
-    // Fetch the layout
-    var layout = app.layout;
-    
-    // Used for keeping a list with enabled regions
-    var layoutItems = {};
-    
-    // Iterate over application layout
-    Ext.Object.each(layout, function(regionid, regionconfig) {
-        // If region has components, add it to the list
-        if(regionconfig.components.length > 0) {
-            // Fetch default config
-            var defaultConfig = defaultRegions[regionid];
-            // Layoutregions are added throug array because 1 Ext region (e.g. west) can have multiple regions
-            if(!Ext.isDefined(layoutItems[defaultConfig.region])) {
-                layoutItems[defaultConfig.region] = [];
-            }
-            // Push the layout to the array
-            layoutItems[defaultRegions[regionid].region].push({
-                // Region holds the defaultConfig region
-                region: defaultConfig,
-                // Regionconfig holds the regionconfig from the layoutmanager
-                regionconfig: regionconfig,
-                // Region name
-                name: regionid,
-                // Layout of the region (widths, heights, etc.)
-                layout: defaultConfig.defaultLayout
-            });
+    constructor: function(config) {
+        Ext.apply(this, config || {});
+        if(this.autoRender) {
+            this.createLayout();
         }
-    });
-    
-    // Function to create component block
-    function createComponentItems(components, componentList) {
-        var componentItems = [];
-        var hasTabComponent = false;
-        Ext.Array.each(components, function(component) {
-            if(component.componentClass == "Tabs") {
-                hasTabComponent = true;
-            }
-        });
-        Ext.Array.each(components, function(component) {
-            var cmpId = Ext.id();
-            var cmpView = Ext.create('Ext.container.Container', {
-                cls: 'component-view',
-                tpl: '<tpl for="."><div class="viewer-component-block" id="{id}"></div></tpl>',
-                data: {
-                    id: cmpId,
-                    cmp_name: component.name
-                },
-                layout: 'fit',
-                style: {
-                    width: '100%',
-                    height: '100%'
+    },
+
+    createLayout: function() {
+        var me = this;
+        console.log('LAYOUTMANAGER: ', me);
+        var regionList = me.createRegionList();
+        console.log('REGIONLIST: ', regionList);
+        var viewportItems = me.buildLayoutRegions(regionList);
+        console.log('VIEWPORTITEMS: ', viewportItems);
+        me.renderLayout(viewportItems);
+    },
+
+    createRegionList: function() {
+        var me = this;
+        var layoutItems = {};
+
+        Ext.Object.each(me.layout, function(regionid, regionconfig) {
+            // If region has components, add it to the list
+            if(regionconfig.components.length > 0) {
+                // Fetch default config
+                var defaultConfig = me.defaultRegionSettings[regionid];
+                // Layoutregions are added throug array because 1 Ext region (e.g. west) can have multiple regions
+                if(!Ext.isDefined(layoutItems[defaultConfig.region])) {
+                    layoutItems[defaultConfig.region] = [];
                 }
-            });
-            componentItems.push(cmpView);
-            componentList.push({
-                htmlId: cmpId,
-                componentName: component.name,
-                componentClass: component.componentClass
-            });
-            if(component.componentClass == "FlamingoMap") {
-                mapId = cmpId;
+                // Push the layout to the array
+                layoutItems[me.defaultRegionSettings[regionid].region].push({
+                    // Region holds the defaultConfig region
+                    region: defaultConfig,
+                    // Regionconfig holds the regionconfig from the layoutmanager
+                    regionconfig: regionconfig,
+                    // Region name
+                    name: regionid,
+                    // Layout of the region (widths, heights, etc.)
+                    layout: defaultConfig.defaultLayout
+                });
             }
         });
-        return {
-            componentItems: componentItems,
-            componentList: componentList
-        };
-    }
+        return layoutItems;
+    },
+
+    buildLayoutRegions: function(regionList) {
+        var viewportItems = [];
+        var me = this;
+        Ext.Object.each(regionList, function(region, value) {
+            viewportItems.push(me.getLayoutRegion(region, value));
+        });
+        return viewportItems;
+    },
     
-    var viewportItems = [];
-    Ext.Object.each(layoutItems, function(region, value) {
+    getLayoutRegion: function(region, value) {
+        var me = this;
         var layout = {
             width: 0,
             height: 0
         };
         var regionlayout = null;
         if(value.length > 1) {
-            var items = [];
-            var centerItem = null;
-            Ext.Array.each(value, function(item, index) {
-                var component = createComponentItems(item.regionconfig.components, componentList);
-                componentList = component.componentList;
-                var sublayout = Ext.apply({
-                    width: 0,
-                    height: 0
-                }, item.layout);
-                if(item.region.subregion == 'center') {
-                    centerItem = item;
-                    console.log('INITCENTER: ', centerItem);
-                }
-                if(item.regionconfig.layout) {
-                    var regionlayout = item.regionconfig.layout;
-                    if(item.region.columnOrientation == 'horizontal') {
-                        if(item.region.subregion != 'center') {
-                            if(regionlayout.height != '' && regionlayout.heightmeasure == 'px') {
-                                sublayout.height = parseInt(regionlayout.height);
-                            } else if(regionlayout.height != '' && regionlayout.heightmeasure == '%') {
-                                sublayout.flex = parseInt(regionlayout.height) / 100;
-                            }
-                        }
-                        sublayout.width = '100%';
-                    }
-                    if(item.region.columnOrientation == 'vertical') {
-                        if(item.region.subregion != 'center') {
-                            if(regionlayout.width != '' && regionlayout.widthmeasure == 'px') {
-                                sublayout.width = parseInt(regionlayout.width);
-                            } else if(regionlayout.width != '' && regionlayout.widthmeasure == '%') {
-                                sublayout.flex = parseInt(regionlayout.width) / 100;
-                            }
-                        }
-                        sublayout.height = '100%';
-                    }
-                }
-                if(item.region.subregion != "none") {
-                    items.push(Ext.apply({
-                        xtype: 'container',
-                        items: component.componentItems
-                    }, sublayout));
-                }                
-            });
+            var items = me.getSubLayoutRegion(value);
+            var centerItem = me.getSubRegionCenterItem(value);
             if(items.length > 0 && centerItem != null) {
                 var extLayout = 'vbox';
-                if(centerItem.region.columnOrientation == 'vertical') extLayout = 'hbox';
+                if(centerItem.region.columnOrientation == 'horizontal') extLayout = 'hbox';
                 if(region != 'center') {
                     layout.width = centerItem.layout.width;
-                    console.log('CENTERITEM: ', centerItem);
                     if(centerItem.regionconfig.layout) {
                         regionlayout = centerItem.regionconfig.layout;
                         if(regionlayout.width != '' && regionlayout.widthmeasure == 'px') {
                             layout.width = parseInt(regionlayout.width);
-                            console.log('Setting width', layout);
                         } else if(regionlayout.width != '' && regionlayout.widthmeasure == '%') {
                             layout.flex = parseInt(regionlayout.width) / 100;
                         }
                     }
                 }
-                var container = Ext.apply({
+                return Ext.apply({
                     xtype: 'container',
-                    layout: extLayout,
                     region: region,
+                    layout: extLayout,
                     items: items
                 }, layout);
-                viewportItems.push(container);
             }
         } else {
-            var component = createComponentItems(value[0].regionconfig.components, componentList);
-            componentList = component.componentList;
+            var componentItems = me.createComponents(value[0].regionconfig.components, value[0].region);
+            componentItems = me.getRegionContent(value[0].region, componentItems);
             if(value[0].region.region != "none") {
                 layout = value[0].layout;
                 if(value[0].regionconfig.layout) {
@@ -214,24 +139,172 @@ Ext.onReady(function() {
                         layout.flex = parseInt(regionlayout.height) / 100;
                     }
                 }
-                viewportItems.push(Ext.apply({
+                return Ext.apply({
                     xtype: 'container',
                     region: region,
                     layout: 'vbox',
-                    items: component.componentItems
-                }, layout));
+                    items: componentItems
+                }, layout);
             }
         }
-    });
+        return {};
+    },
     
-    console.log("VIEWPORTITEMS: ", {viewport:viewportItems});
-    console.log("COMPONENTLIST: ", componentList);
+    getSubLayoutRegion: function(value) {
+        var me = this;
+        var items = [];
+        Ext.Array.each(value, function(item, index) {
+            var sublayout = {};
+            var componentItems = me.createComponents(item.regionconfig.components, item.region);
+            componentItems = me.getRegionContent(item.region, componentItems);
+            if(item.regionconfig.layout) {
+                var regionlayout = item.regionconfig.layout;
+                if(item.region.columnOrientation == 'vertical') {
+                    if(item.region.subregion != 'center') {
+                        sublayout = Ext.apply({
+                            width: 0
+                        }, item.layout);
+                        if(regionlayout.height != '' && regionlayout.heightmeasure == 'px') {
+                            sublayout.height = parseInt(regionlayout.height);
+                        } else if(regionlayout.height != '' && regionlayout.heightmeasure == '%') {
+                            sublayout.flex = parseInt(regionlayout.height) / 100;
+                        }
+                    } else {
+                        sublayout.flex = 1;
+                    }
+                    sublayout.width = '100%';
+                }
+                if(item.region.columnOrientation == 'horizontal') {
+                    if(item.region.subregion != 'center') {
+                        sublayout = Ext.apply({
+                            height: 0
+                        }, item.layout);
+                        if(regionlayout.width != '' && regionlayout.widthmeasure == 'px') {
+                            sublayout.width = parseInt(regionlayout.width);
+                        } else if(regionlayout.width != '' && regionlayout.widthmeasure == '%') {
+                            sublayout.flex = parseInt(regionlayout.width) / 100;
+                        }
+                    } else {
+                        sublayout.flex = 1;
+                    }
+                    sublayout.height = '100%';
+                }
+            }
+            var extLayout = 'fit';
+            if(item.region.useTabs == false && componentItems.length > 1) {
+                extLayout = 'vbox';
+                if(item.region.orientation == 'horizontal') {
+                    extLayout = 'hbox';
+                }
+            }
+            if(item.region.subregion != "none") {
+                items.push(Ext.apply({
+                    xtype: 'container',
+                    items: componentItems,
+                    layout: extLayout
+                }, sublayout));
+            }
+        });
+        return items;
+    },
     
-    var viewport = Ext.create('Ext.container.Container', {
-        layout: 'border',
-        items: viewportItems,
-        renderTo: 'wrapper',
-        height: '100%',
-        width: '100%'
+    getSubRegionCenterItem: function(value) {
+        var centerItem = null;
+        Ext.Array.each(value, function(item, index) {
+            if(item.region.subregion == 'center') {
+                centerItem =  item;
+            }
+        });
+        return centerItem;
+    },
+
+    createComponents: function(components, region) {
+        var componentItems = [];
+        var cmpId = null;
+        var me = this;
+
+        Ext.Array.each(components, function(component) {
+            cmpId = Ext.id();
+            var compStyle = {width: '100%',height: '100%'};
+            var compFlex = 0;
+            if(region.useTabs == false) {
+                compStyle = {width: '100%'};
+                if(region.orientation == 'horizontal') {
+                    compStyle = {height: '100%'};
+                }
+                compFlex = 1;
+            }
+            var cmpView = {
+                xtype: 'container',
+                // Title is used in tabs
+                title: component.name,
+                cls: 'component-view',
+                tpl: '<tpl for="."><div class="viewer-component-block" id="{id}"></div></tpl>',
+                data: {
+                    id: cmpId,
+                    cmp_name: component.name
+                },
+                layout: 'fit',
+                hideMode: 'offsets',
+                style: compStyle,
+                flex: compFlex
+            };
+            componentItems.push(cmpView);
+            me.componentList.push({
+                htmlId: cmpId,
+                componentName: component.name,
+                componentClass: component.componentClass
+            });
+            if(component.componentClass == "FlamingoMap") {
+                me.mapId = cmpId;
+            }
+        });
+
+        return componentItems;
+    },
+
+    getRegionContent: function(region, componentItems) {
+        if(Ext.isDefined(region.useTabs) && region.useTabs && componentItems.length > 1) {
+            var cmpId = Ext.id();
+            var tabcomponent = {
+                xtype: 'tabpanel',
+                id: cmpId,
+                activeTab: 0,
+                deferredRender: false,
+                defaults: {
+                    hideMode: 'offsets'
+                },
+                items: componentItems
+            };
+            return tabcomponent;
+        }
+        return componentItems;
+    },
+
+    renderLayout: function(viewportItems) {
+        var me = this;
+        Ext.create('Ext.container.Container', {
+            layout: 'border',
+            items: viewportItems,
+            renderTo: me.wrapperId,
+            height: '100%',
+            width: '100%'
+        });
+    },
+
+    getMapId: function() {
+        return this.mapId;
+    },
+
+    getComponentList: function() {
+        console.log(this.componentList);
+        return this.componentList;
+    }
+});
+
+var layoutManager = null;
+Ext.onReady(function() {
+    layoutManager = Ext.create('viewer.LayoutManager', {
+        layout: app.layout
     });
 });

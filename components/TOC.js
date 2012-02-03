@@ -28,10 +28,10 @@ Ext.define ("viewer.components.TOC",{
             title: "Table of Contents",
             //width: 330,
             height: "100%",
-            frame: true,
+            //frame: true,
             useArrows: true,
             rootVisible: false,
-            resizable: true,
+            //resizable: true,
             floating: false,
             listeners:{
                 checkchange:{

@@ -2,9 +2,6 @@ var viewerType = "flamingo";
 
 var aaron = null;
 
-Ext.Loader.setConfig({
-    enabled:true
-});
 var toc = null;
 var bu_removePolygons;
 function initializeButtons(){
@@ -47,7 +44,7 @@ function onConfigComplete (){
             firstTime = false;
             initializeButtons();
             onFrameworkLoaded();
-            viewerController.loadLayout(componentList);
+            viewerController.loadLayout(layoutManager.getComponentList());
             viewerController.loadRootLevel(app.rootLevel);
            loadBaseLayers();
         //testComponents();
