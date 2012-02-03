@@ -171,7 +171,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                     if(sublayer.getTitleAlias() != null){
                         j.put("name", sublayer.getTitleAlias());
                     }else{
-                        j.put("name", sublayer.getName());
+                        j.put("name", sublayer.getTitle());
                     }
                     j.put("type", "layer");
                     j.put("isLeaf", sublayer.getChildren().isEmpty());
@@ -188,7 +188,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 if(sublayer.getTitleAlias() != null){
                     j.put("name", sublayer.getTitleAlias());
                 }else{
-                    j.put("name", sublayer.getName());
+                    j.put("name", sublayer.getTitle());
                 }
                 j.put("type", "layer");
                 j.put("isLeaf", sublayer.getChildren().isEmpty());
