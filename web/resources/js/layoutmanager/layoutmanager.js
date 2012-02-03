@@ -341,8 +341,12 @@ Ext.onReady(function() {
             };
         }
         var itemId = Ext.id();
-        var componentName = changeCaseFirstLetter(data.componentData.className, true) + (++data.componentData.componentsAdded);
-        componentName = componentName.replace('.', '_');
+        var componentName = data.componentData.className;
+        var i = componentName.lastIndexOf('.');
+        if(i != -1) {
+            componentName = componentName.substring((i+1));
+        }
+        componentName = changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);
         // used when loading existing conf
         if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
             componentName = data.componentName;
@@ -473,10 +477,7 @@ Ext.onReady(function() {
             failure: function ( result, request) { 
                 Ext.MessageBox.alert('Foutmelding', result.responseText); 
             } 
-        }); 
-
-        // Save JSON data to backend, using AJAX, form post, etc?
-        console.log('Saving data...', response);
+        });
     });
     
     var popupWin = Ext.create('Ext.window.Window', {
