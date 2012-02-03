@@ -138,6 +138,10 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     //</editor-fold>
     @DefaultHandler
     public Resolution view() throws JSONException {
+        if(application == null){
+            getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
+            return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
+        }
         Stripersist.getEntityManager().getTransaction().commit();
 
         return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
