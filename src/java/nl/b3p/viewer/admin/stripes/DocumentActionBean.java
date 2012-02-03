@@ -16,14 +16,13 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.services.Document;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
+import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
@@ -146,6 +145,11 @@ public class DocumentActionBean implements ActionBean {
 
     @DontValidate
     public Resolution delete() {
+        if(documentInUse()){
+            getContext().getValidationErrors().add("document", new SimpleError("Het document kan niet worden verwijderd omdat deze nog in gebruik is."));
+            return new ForwardResolution(EDITJSP);
+        }
+        
         Stripersist.getEntityManager().remove(document);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -154,8 +158,22 @@ public class DocumentActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution save() {
+    private boolean documentInUse(){
+        boolean inUse = false;
+        List<Level> levels = Stripersist.getEntityManager().createQuery("from Level").getResultList();
         
+        for(Iterator it = levels.iterator(); it.hasNext();){
+            Level level = (Level)it.next();
+            if(level.getDocuments().contains(document)){
+                inUse = true;
+                break;
+            }
+        }
+
+        return inUse;
+    }
+    
+    public Resolution save() {   
         Stripersist.getEntityManager().persist(document);
         Stripersist.getEntityManager().getTransaction().commit();
         
