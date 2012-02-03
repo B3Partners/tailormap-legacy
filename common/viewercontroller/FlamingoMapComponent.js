@@ -169,7 +169,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
     },
     addComponent: function(component){
-        if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
+        if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
             Ext.Error.raise({
                 msg: "The given tool is not of type 'FlamingoComponent'"               
             });

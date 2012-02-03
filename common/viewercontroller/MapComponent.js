@@ -160,10 +160,10 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     },
     
     addComponent: function(component){
-        if (!(tool instanceof viewer.viewercontroller.controller.Component)){
+        if (!(component instanceof viewer.viewercontroller.controller.Component)){
             Ext.Error.raise({
-                msg: "Given tool not of type 'Tool'",
-                options: {tool: tool}
+                msg: "Given tool not of type 'Component'",
+                options: {tool: component}
             });
             Ext.err();
         }

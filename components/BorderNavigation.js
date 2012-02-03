@@ -23,14 +23,14 @@
 Ext.define ("viewer.components.BorderNavigation",{
     extend: "viewer.components.Component",    
     constructor: function (conf){        
-        viewer.components.tools.BorderNavigation.superclass.constructor.call(this, conf);
+        viewer.components.BorderNavigation.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.BORDER_NAVIGATION;
         
-        var comp = viewerController.getMapController().createComponent(conf);
-        viewerController.getMapController().addComponent(comp);
+        var comp = viewerController.mapComponent.createComponent(conf);
+        viewerController.mapComponent.addComponent(comp);
         
         return this;
     }      
