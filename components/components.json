@@ -16,6 +16,14 @@
  * notInCombinationWith: Array with the classNames of other components. If a component from that array has
  *                   already been added to a region, this component cannot be added to that region
  * 
+ * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
+ *  
+ * extPropertyGridConfigs.propertyNames: here you can set the objects with the 
+ *   label that is shown while configuring this component.
+ *   For example: {name: "The name", tooltip: "Tool tip"}
+ * 
+ * extPropertyGridConfigs.source: defaults for the extra properties. For example:
+ *   {name: "a name", tooltip: "a tool tip"}
  */
 
 [
@@ -48,15 +56,6 @@
     },
 
     {
-        className: "viewer.components.tools.PanTool",
-        name: "Pan",
-        shortName: "Pa",
-
-        singleton: true,
-        restrictions: ["top_menu"]
-    },
-
-    {
         className: "viewer.components.tools.OpenStreetViewTool",
         name: "Streetview",
         shortName: "Sv",
@@ -76,8 +75,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "ZoomIn", tooltip: "Zoom in"}
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Zoom In"}
         }
     },
     {
@@ -90,8 +90,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "ZoomOut", tooltip: "Zoom out"}
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Zoom out"}
         }
     },
     {
@@ -104,8 +105,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "FeatureInfo", tooltip: "FeatureInfo"}
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Feature info"}
         }
     },
     {
@@ -118,8 +120,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "Pan", tooltip: "Pan"}
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Pan"}
         }
     },
     {
@@ -132,8 +135,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "SuperPan", tooltip: "SuperPan"}
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "SuperPan"}
         }
     },  
     {
@@ -146,8 +150,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "Measure", tooltip: "Measure"}
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Measure"}
         }
     }, 
     {
@@ -160,8 +165,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "FullExtent", tooltip: "FullExtent"}
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Full extent"}
         },                
         notInCombinationWith: ["OpenLayersMap"]
     }, 
@@ -175,8 +181,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "PreviousExtent"}
+        extPropertyGridConfigs: {
+            propertyNames: {name: "PreviousExtent"},
+            source: {tooltip: "Previous Extent"}
         },      
         notInCombinationWith: ["OpenLayersMap"]
     }, 
@@ -190,8 +197,9 @@
         singleton: true,
         restrictions: ["top_menu"],
 
-        extPropertyGridConfig: {
-            propertyNames: {name: "NextExtent"}
+        extPropertyGridConfigs: {
+            propertyNames: {name: "NextExtent"},
+            source: {tooltip: "Next Extent"}
         },                
         notInCombinationWith: ["OpenLayersMap"]
     }, 

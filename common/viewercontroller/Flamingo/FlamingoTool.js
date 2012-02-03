@@ -20,6 +20,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
      *@construct
      */
     constructor : function (config){
+        //replace the . for flamingo
+        if (config.id){
+            config.id=config.id=config.name.replace(/\./g,"_");
+        }
         viewer.viewercontroller.flamingo.FlamingoTool.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
