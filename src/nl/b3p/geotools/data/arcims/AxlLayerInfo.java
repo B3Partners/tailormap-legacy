@@ -27,6 +27,10 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AxlLayerInfo {
+    public static final String TYPE_FEATURECLASS    = "featureclass";
+    public static final String TYPE_IMAGE           = "image";
+    public static final String TYPE_ACETATE         = "acetate";
+    
     @XmlAttribute
     private String id;
     
