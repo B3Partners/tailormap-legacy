@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FLAMINGO xmlns:fmc="fmc" id="flamingo" lang="en" tooltipdelay="300" commtojava="true" preloadtitle="Prototypemap" useexternalinterface="true" loglevel="debug">
 	<style id=".tooltip" font-family="arial, sans-serif" font-size="11" color="#880000" display="block"/>
-	<fmc:Container left="0" top="0" height="100%" width="100%">
+	<fmc:Container id="mainContainer" left="0" top="0" height="100%" width="100%">
 		<fmc:MonitorLayer id="monitorl" left="37%" top="50%" width="50%" listento="map">
 			<string id="waiting" en="Making... [layer] [percentage]%..." nl="Kaart aan het maken..."/>
 			<string id="loading" en="Making... [layer] [percentage]%..." nl="Kaart aan het laden. [percentage]%"/>
 		</fmc:MonitorLayer>
 		<fmc:ToolGroup id="toolgroup" tool="zoom" listento="map" width="100%" height="100" left="10" top="10">		   			
-			
 		</fmc:ToolGroup>
 		<fmc:Coordinates listento="map" left="80%" top="95%" decimals="6">
 			<style id=".xy" font-family="arial, sans-serif" font-size="11"/>
 			<string id="xy" nl="X: [x]     Y: [y]"/>
 		</fmc:Coordinates>
-		<fmc:BorderNavigation listento="map" top="0%" width="100%" height="100%" skin="f1"/>
 		<fmc:Map id="map" left="0" top="0%" height="100%" width="100%" bottom="bottom" visible="true" fullextent="12000,304000,280000,620000" extent="12000,304000,280000,620000" resolutions="156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505" extenthistory="10">
 			<fmc:LayerIdentifyIcon id="identifyicon"/>
 			<fmc:TilingLayer id="osm" serviceurl="http://a.tile.openstreetmap.org/" extension="png" resolutions="156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505" serviceenvelope="-20037507.0671618,-20313886.4749848,20037507.0671618,20313886.4749848" type="OSM" tileheight="256" tilewidth="256">
