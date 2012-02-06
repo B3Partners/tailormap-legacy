@@ -24,8 +24,8 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         return this;
     },
     
-    registerEvent : function (event,handler){
-        this.addListener(event,handler);
+    registerEvent : function (event,handler,scope){
+        this.addListener(event,handler,scope);
     },
 
     fire : function (event,options){
@@ -114,6 +114,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
             throw("Map.addLayer: Given layer is not of type Layer");
         }*/
         this.layers.push(layer);
+//        this.viewerController.mc.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
     },
     /**
      *Removes a specifice layer from the map.

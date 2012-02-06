@@ -2,8 +2,8 @@ Ext.define ("viewer.components.TOC",{
     extend: "viewer.components.Component",
     panel: null,
     config: {
-        name: "Table of Contents",
-        naam: ""
+        name: "",
+        naam: "Table of Contents"
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -14,7 +14,7 @@ Ext.define ("viewer.components.TOC",{
         return this;
     },
     loadTree : function(){
-   
+        Ext.QuickTips.init();
         var store = Ext.create('Ext.data.TreeStore', {
             root: {
                 text: 'Root',
@@ -25,7 +25,7 @@ Ext.define ("viewer.components.TOC",{
         });
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.div,
-            title: "Table of Contents",
+            title: this.naam,
             //width: 330,
             height: "100%",
             //frame: true,
@@ -37,6 +37,10 @@ Ext.define ("viewer.components.TOC",{
                 checkchange:{
                     toc: this,
                     fn: this.checkboxClicked
+                },
+                itemclick:{
+                    toc: this,
+                    fn: this.itemClicked
                 }
             },
             store: store
@@ -60,7 +64,8 @@ Ext.define ("viewer.components.TOC",{
                     layerObj: {
                         service: laag.service,
                         layerName : laag.layerName
-                    }
+                    },
+                    qtip: laag.layerName
                 };
                 this.insertLayer(treeNode);
             }
@@ -113,7 +118,6 @@ Ext.define ("viewer.components.TOC",{
             retryonerror: 10,
             getcapabilitiesurl: JSONConfig.service.url,// layerUrl,
             ratio: 1,
-        
             showerrors: true,
             initService: true
         };
@@ -124,17 +128,13 @@ Ext.define ("viewer.components.TOC",{
             exceptions: "application/vnd.ogc.se_inimage",
             srs: "EPSG:28992",
             version: "1.1.1",
-            layers:JSONConfig.layerName,//  "OpenStreetMap",
+            layers:JSONConfig.layerName,
+            query_layers: JSONConfig.layerName,
             styles: "",
-            noCache: false // TODO: Voor achtergrond kaartlagen wel cache gebruiken
+            noCache: false
         };
-    
         options["isBaseLayer"]=false;
-    
-        
         return this.viewerController.mc.createWMSLayer(JSONConfig.layerName,layerUrl , ogcOptions, options);
-            
-    
     },
 
     checkboxClicked : function(nodeObj,checked,toc){
@@ -152,5 +152,8 @@ Ext.define ("viewer.components.TOC",{
             toc.toc.viewerController.mc.getMap().removeLayer(layer)
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
         }
+    },
+    itemClicked: function(thisObj, record, item, index, e, eOpts){
+        var layerName = record.data.text;
     }
 });

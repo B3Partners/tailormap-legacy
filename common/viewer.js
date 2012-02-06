@@ -1,8 +1,5 @@
 var viewerType = "flamingo";
 
-var aaron = null;
-
-var toc = null;
 var bu_removePolygons;
 function initializeButtons(){
     /*ie bug fix*/
@@ -47,6 +44,7 @@ function onConfigComplete (){
             viewerController.loadLayout(layoutManager.getComponentList());
             viewerController.loadRootLevel(app.rootLevel);
            loadBaseLayers();
+           
         //testComponents();
         }
     }catch(e){

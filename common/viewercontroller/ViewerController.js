@@ -108,11 +108,11 @@ Ext.define("viewer.viewercontroller.ViewerController",{
      *                                                                  *
      ********************************************************************/
 
-    bind : function (event,object,handler){
+    bind : function (event,object,handler,scope){
         if(object.isComponent != undefined){
-            object.bind(event,handler);
+            object.bind(event,handler,scope);
         }else{
-            this.mapComponent.registerEvent(event, object, handler);
+            this.mapComponent.registerEvent(event, object, handler,scope);
         }
     },
     unbind : function (event,object){

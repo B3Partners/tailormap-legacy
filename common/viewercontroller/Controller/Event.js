@@ -28,6 +28,8 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_CHANGE_EXTENT                      : "ON_CHANGE_EXTENT",
         /** @field */
         ON_FINISHED_CHANGE_EXTENT             : "ON_FINISHED_CHANGE_EXTENT",
+        /** @field */
+        ON_LAYER_ADDED                        : "ON_LAYER_ADDED",
 
 
         // Layer events:                            50 - 100

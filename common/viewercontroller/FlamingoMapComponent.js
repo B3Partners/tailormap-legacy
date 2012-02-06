@@ -36,6 +36,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE] = "onUpdateComplete";
         this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]     = "onReallyChangedExtent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]              = "onChangeExtent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                = "onAddLayer";
 
     },
     /**
@@ -250,12 +251,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      * This array is a two-dimensional array: the first index is the eventname (the generic one! Actually, not a name, but the given id).
      * The second index is the id of the object. 
      */
-    registerEvent : function (event,object,handler){
+    registerEvent : function (event,object,handler,scope){
         if(object instanceof Ext.util.Observable){
             if(object == this){
-                this.addListener(event,handler);
+                this.addListener(event,handler,scope);
             }else{
-                object.registerEvent(event,handler);
+                object.registerEvent(event,handler,scope);
             }
         }else{
             alert("Unmapped event:",event);
@@ -356,7 +357,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     
         var object = this.getObject(id);
         if(object != undefined){
-            object.fire(event);
+            object.fire(event,component);
         }
     },
     fire : function (event,options){
@@ -372,8 +373,8 @@ function dispatchEventJS(event, comp) {
             comp[0] = viewerController.mc.getId();
         comp[1] = new Object();
     }
-    if(event == "onConfigComplete"){
+    if(event == "onAddLayer"){
         var a = 0;
     }
-        viewerController.mc.handleEvents(event,comp);
+    viewerController.mc.handleEvents(event,comp);
 }
