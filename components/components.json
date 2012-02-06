@@ -213,11 +213,15 @@
         extPropertyGridConfigs: {
             propertyNames: {
                 width: "Width",
-                height: "Height"
+                height: "Height",
+                top: "Top",
+                left: "Left"
             },
             source: {
                 width: "100%",
-                height: "100%"
+                height: "100%",
+                top: "0",
+                left: "0"
             }
         },
         singleton: true,

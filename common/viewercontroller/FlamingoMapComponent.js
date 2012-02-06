@@ -11,6 +11,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     viewerObject : null,
     toolGroupId: "toolgroup",
     flamingoId: "flamingo",
+    mainContainerId: "mainContainer",
     toolMargin: 30,
     constructor :function (domId){
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
@@ -128,7 +129,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      *@param Configuration object
      *@see viewer.viewercontroller.flamingo.FlamingoComponent#constructor
      */
-    createComponent: function (conf){        
+    createComponent: function (conf){  
+        if (Ext.isEmpty(conf.listenTo)){
+            conf.listenTo=this.getMap().getId();
+        }
         var component = new viewer.viewercontroller.flamingo.FlamingoComponent(conf);        
         return component;
     },
@@ -168,6 +172,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         toolXml+="</fmc:ToolGroup>";
         this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
     },
+    /**
+     * Adds a container to flamingo.
+     * @param component the FlamingoComponent that must be added.
+     */
     addComponent: function(component){
         if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
             Ext.Error.raise({
@@ -175,7 +183,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             });
         }
         viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
-        this.viewerObject.callMethod(this.flamingoId,'addComponent',component.toXML()); 
+        this.viewerObject.callMethod(this.mainContainerId,'addComponent',component.toXML()); 
     },
     /**
      *See @link MapComponent.activateTool
