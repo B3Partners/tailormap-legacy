@@ -228,7 +228,16 @@
             }
         },
         singleton: true,
-        restrictions: ["top_menu","content"]        
+        restrictions: ["content"]        
+    },
+    {
+        className: "viewer.components.Coordinates",
+        name: "Coordinates",
+        shortName: "Coörd",
+        sources: ["Coordinates.js"],
+        closureCompilerSafe: true,        
+        singleton: true,
+        restrictions: ["content"]        
     },
 
     {

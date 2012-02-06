@@ -63,10 +63,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         }else if(config.type==viewer.viewercontroller.controller.Component.SCALEBAR){
             this.setTagName("Scalebar");
             this.setBottom("bottom");
-            this.setRight("right -40");
+            this.setRight("right -50");
             this.setWidth("200");
             if (this.getUnits()==null)
                 this.setUnits("m");                
+        }else if(config.type==viewer.viewercontroller.controller.Component.COORDINATES){
+            this.setTagName("Coordinates");
+            this.setBottom("bottom");
+            this.setLeft("left");            
         }else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
         }    
