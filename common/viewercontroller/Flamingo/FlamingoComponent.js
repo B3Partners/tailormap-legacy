@@ -22,7 +22,7 @@
   **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
     extend: "viewer.viewercontroller.controller.Component",
-    
+    strings: new Object(),
     config: {
         tagName: null,
         width: null,
@@ -70,7 +70,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         }else if(config.type==viewer.viewercontroller.controller.Component.COORDINATES){
             this.setTagName("Coordinates");
             this.setBottom("bottom");
-            this.setLeft("left");            
+            this.setLeft("left");
+            this.addString("xy","X: [x] Y: [y]");
         }else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
         }    
@@ -92,7 +93,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         var xml="<fmc:";
         xml+=this.getTagName();
         xml+=" "+this.getParamsAsXml();        
-        xml+=">";            
+        xml+=">";
+        for (var key in this.strings){
+            xml+="<string id='"+key+"' en='"+this.strings[key]+"'/>"
+        }
         xml+="</fmc:"+this.getTagName()+">"
         return xml;
     }, 
@@ -117,6 +121,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         if (this.getUnits()!=null)
             xml+=" units='"+this.getUnits()+"'";
         return xml;
-    }   
+    },
+    /**
+     * Adds a string to the FlamingoComponent.
+     * @param key the name of the string
+     * @param string the string
+     */
+    addString: function(key,string){
+        this.strings[key]=string;
+    },
+    /**
+     * Get the string
+     * @param key the key of the string
+     * @return the string that is set for the given key
+     */
+    getString: function(key){
+        return this.strings[key];
+    }    
 });
 

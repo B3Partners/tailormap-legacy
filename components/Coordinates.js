@@ -20,7 +20,7 @@
  * of the MapComponent. Shows the mouse coords when hovering the map
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.Coordiantes",{
+Ext.define ("viewer.components.Coordinates",{
     extend: "viewer.components.Component",    
     constructor: function (conf){        
         viewer.components.Coordinates.superclass.constructor.call(this, conf);
