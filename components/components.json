@@ -182,7 +182,7 @@
         restrictions: ["top_menu"],
 
         extPropertyGridConfigs: {
-            propertyNames: {name: "PreviousExtent"},
+            propertyNames: {tooltip: "PreviousExtent"},
             source: {tooltip: "Previous Extent"}
         },      
         notInCombinationWith: ["OpenLayersMap"]
@@ -198,7 +198,7 @@
         restrictions: ["top_menu"],
 
         extPropertyGridConfigs: {
-            propertyNames: {name: "NextExtent"},
+            propertyNames: {tooltip: "NextExtent"},
             source: {tooltip: "Next Extent"}
         },                
         notInCombinationWith: ["OpenLayersMap"]
@@ -210,7 +210,16 @@
         shortName: "bn",
         sources: ["BorderNavigation.js"],
         closureCompilerSafe: true,
-
+        extPropertyGridConfigs: {
+            propertyNames: {
+                width: "Width",
+                height: "Height"
+            },
+            source: {
+                width: "100%",
+                height: "100%"
+            }
+        },
         singleton: true,
         restrictions: ["top_menu"]        
     },

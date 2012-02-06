@@ -15,6 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ /**
+  *FlamingoComponent. Implementation of Component.
+  *@see viewer.viewercontroller.controller.Component
+  *@author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
     extend: "viewer.viewercontroller.controller.Component",
     
@@ -48,7 +53,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         this.initConfig(config);
         //translate type to tagName
         if(viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
-            tagName="BorderNavigation";
+            this.tagName="BorderNavigation";
         }else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
         }    
@@ -93,6 +98,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         if (this.getListenTo()!=null){
             xml+=" listento='"+this.getListenTo()+"'";
         }
+        return xml;
     }   
 });
 
