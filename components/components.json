@@ -210,7 +210,7 @@
         shortName: "bn",
         sources: ["BorderNavigation.js"],
         closureCompilerSafe: true,
-        extPropertyGridConfigs: {
+        /*extPropertyGridConfigs: {
             propertyNames: {
                 width: "Width",
                 height: "Height",
@@ -223,9 +223,26 @@
                 top: "0",
                 left: "0"
             }
+        },*/
+        singleton: true,
+        restrictions: ["top_menu","content"]        
+    },
+    {
+        className: "viewer.components.ScaleBar",
+        name: "ScaleBar",
+        shortName: "sb",
+        sources: ["ScaleBar.js"],
+        closureCompilerSafe: true,
+        extPropertyGridConfigs: {
+            propertyNames: {               
+                units: "Units"
+            },
+            source: {
+                units: "m"
+            }
         },
         singleton: true,
-        restrictions: ["top_menu"]        
+        restrictions: ["top_menu","content"]        
     },
 
     {

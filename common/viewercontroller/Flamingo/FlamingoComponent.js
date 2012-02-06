@@ -31,7 +31,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         right: null,
         top: null,
         bottom: null,
-        listenTo: null
+        listenTo: null,
+        //for scalebar:
+        units: null
     },       
     /** Create a new FlamingoTool
      *@construct
@@ -52,8 +54,18 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         viewer.viewercontroller.flamingo.FlamingoComponent.superclass.constructor.call(this, config);
         this.initConfig(config);
         //translate type to tagName
-        if(viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
-            this.tagName="BorderNavigation";
+        if(config.type==viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
+            this.setTagName("BorderNavigation");
+            this.setWidth("100%");
+            this.setHeight("100%");
+            this.setTop("0");
+            this.setLeft("0");           
+        }else if(config.type==viewer.viewercontroller.controller.Component.SCALEBAR){
+            this.setTagName("ScaleBar");
+            this.setWidth("200");
+            this.setRight("25");
+            if (this.getUnits()==null)
+                this.setUnits("m");                
         }else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
         }    
@@ -95,9 +107,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             xml+=" right='"+this.getRight()+"'";
         if (this.getBottom()!=null)
             xml+=" bottom='"+this.getBottom()+"'";        
-        if (this.getListenTo()!=null){
+        if (this.getListenTo()!=null)
             xml+=" listento='"+this.getListenTo()+"'";
-        }
+        if (this.getUnits()!=null)
+            xml+=" units='"+this.getUnits()+"'";
         return xml;
     }   
 });

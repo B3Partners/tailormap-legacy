@@ -15,29 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Abstract component to add to the MapComponent.
-  *@author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ * ScaleBar
+ * Creates a ScaleBar component in the framework 
+ * of the MapComponent
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("viewer.viewercontroller.controller.Component",{
-    extend: "Ext.util.Observable",
-    config :{
-        id: "id",
-        frameworkObject: new Object(),
-        type: -1
-    },
-    constructor: function (config){
-        this.initConfig(config);
+Ext.define ("viewer.components.ScaleBar",{
+    extend: "viewer.components.Component",    
+    constructor: function (conf){        
+        viewer.components.ScaleBar.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        
+        conf.id=conf.name;
+        conf.type=viewer.viewercontroller.controller.Component.SCALEBAR;
+        
+        var comp = viewerController.mapComponent.createComponent(conf);
+        viewerController.mapComponent.addComponent(comp);
+        
         return this;
-    },
-    statics:{
-        // The different types of tools
-        LOADING_BAR                : 1,
-        SCALEBAR                   : 2,
-        BORDER_NAVIGATION          : 3
-    },
-    setVisible: function (vis){
-        Ext.Error.raise({msg: "setVisible() function must be implemented in implementation"});
-    }
-    
+    }      
 });
+
 
