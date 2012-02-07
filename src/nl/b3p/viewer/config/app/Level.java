@@ -20,7 +20,6 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.services.Document;
 import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -156,6 +155,7 @@ public class Level {
  
         /* TODO check readers */
         
+        o.put("id", id);
         o.put("name", name);
         o.put("toc", toc);
         o.put("background", background);
@@ -184,7 +184,7 @@ public class Level {
     
     private JSONArray createLayersJSON() throws JSONException {
         JSONArray ls = new JSONArray();
-
+        
         for(ApplicationLayer al: layers) {
             /* TODO check readers */
  
@@ -194,9 +194,8 @@ public class Level {
             o.put("toc", al.isToc());
             o.put("checked", al.isChecked());
             o.put("layerName", al.getLayerName());
-            
             if(al.getService() != null) {
-                o.put("service", al.getService().toJSONObject());
+                o.put("serviceId", al.getService().getId());
             }
             
             /* TODO add attribute if writeable according to al.getWriters() */

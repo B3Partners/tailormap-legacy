@@ -201,10 +201,19 @@ public class Application  {
         
         if(root != null) {
             o.put("rootLevel", root.toJSONObject());
-            
-            JSONObject services = new JSONObject();
-            o.put("services", services);
-            addLevelServicesJSON(root, services);
+
+            Map<GeoService,Set<String>> usedLayersByService = new HashMap<GeoService,Set<String>>();
+            visitLevelForUsedServicesLayers(root, usedLayersByService);
+
+            if(!usedLayersByService.isEmpty()) {
+                JSONObject services = new JSONObject();
+                o.put("services", services);
+                for(Map.Entry<GeoService,Set<String>> entry: usedLayersByService.entrySet()) {
+                    GeoService gs = entry.getKey();
+                    Set<String> usedLayers = entry.getValue();
+                    services.put(gs.getId().toString(), gs.toJSONObject(usedLayers));
+                }
+            }            
         }
 
         JSONObject c = new JSONObject();
@@ -216,16 +225,20 @@ public class Application  {
         return o.toString(4);
     }
     
-    private static void addLevelServicesJSON(Level l, JSONObject services) throws JSONException {
+    private static void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService) {
+                
         for(ApplicationLayer al: l.getLayers()) {
             GeoService gs = al.getService();
-            if(!services.has(gs.getId().toString())) {
-                services.put(gs.getId().toString(), gs.toJSONObject(true));
+            
+            Set<String> usedLayers = usedLayersByService.get(gs);
+            if(usedLayers == null) {
+                usedLayers = new HashSet<String>();
+                usedLayersByService.put(gs, usedLayers);
             }
+            usedLayers.add(al.getLayerName());
         }
-        
         for(Level child: l.getChildren()) {
-            addLevelServicesJSON(child, services);
-        }
+            visitLevelForUsedServicesLayers(child, usedLayersByService);
+        }        
     }
 }

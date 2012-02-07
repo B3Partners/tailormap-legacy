@@ -137,43 +137,43 @@ public abstract class GeoService {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }
     
-    public JSONObject toJSONObject(boolean includeLayers) throws JSONException {
+    public JSONObject toJSONObject(Set<String> layersToInclude) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
         
-        if(includeLayers) {
-            /* TODO check readers */
-
-            if(topLayer != null) {
-                JSONObject layers = new JSONObject();
-                o.put("layers", layers);
-                addLayerJSON(topLayer, layers);
-            }
+        if(topLayer != null) {
+            JSONObject layers = new JSONObject();
+            o.put("layers", layers);
+            addLayerJSON(topLayer, layers, layersToInclude);
         }
         return o;
     }
     
-    private static void addLayerJSON(Layer l, JSONObject layers) throws JSONException {
+    private static void addLayerJSON(Layer l, JSONObject layers, Set<String> layersToInclude) throws JSONException {
+
+        /* TODO check readers */
         
         /* Flatten tree structure, currently depth-first - later traversed layers
          * do not overwrite earlier layers with the same name - do not include
          * virtual layers
          */
         
-        if(!l.isVirtual() && !layers.has(l.getName())) {
-            layers.put(l.getName(), l.toJSONObject());
+        if(layersToInclude == null || layersToInclude.contains(l.getName())) {
+            if(!l.isVirtual() && !layers.has(l.getName())) {
+                layers.put(l.getName(), l.toJSONObject());
+            }
         }
                 
         for(Layer child: l.getChildren()) {
-            addLayerJSON(child, layers);
+            addLayerJSON(child, layers, layersToInclude);
         }
     }
     
     public JSONObject toJSONObject() throws JSONException {
-        return toJSONObject(false);
+        return toJSONObject(null);
     }
     
 
