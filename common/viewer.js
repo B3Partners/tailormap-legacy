@@ -57,13 +57,13 @@ function initMapComponent  (){
     viewerController.init();
     
     var map = viewerController.createMap();   
-    viewerController.bind(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,viewerController.mc,onConfigComplete);
+    viewerController.bind(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,viewerController.mapComponent,onConfigComplete);
 }
 /**
  * Alle ge�mplementeerde eventhandling functies
  */
 function b_removePolygons(id,params){
-    viewerController.mc.getMap().getLayer("editMap").removeAllFeatures();
+    viewerController.mapComponent.getMap().getLayer("editMap").removeAllFeatures();
 }
 
 function loadBaseLayers(){
@@ -92,8 +92,8 @@ function loadBaseLayers(){
     
     options["isBaseLayer"]=false;
     
-    var osmLayer = viewerController.mc.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-    viewerController.mc.getMap().addLayer(osmLayer);
+    var osmLayer = viewerController.mapComponent.createWMSLayer("OSM",layerUrl , ogcOptions, options);
+    viewerController.mapComponent.getMap().addLayer(osmLayer);
 }
 
 var mapInitialized = false;

@@ -297,14 +297,6 @@ Ext.define('viewer.LayoutManager', {
     },
 
     getComponentList: function() {
-        console.log(this.componentList);
         return this.componentList;
     }
-});
-
-var layoutManager = null;
-Ext.onReady(function() {
-    layoutManager = Ext.create('viewer.LayoutManager', {
-        layout: app.layout
-    });
 });

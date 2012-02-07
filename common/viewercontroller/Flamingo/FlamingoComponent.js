@@ -70,7 +70,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         }else if(config.type==viewer.viewercontroller.controller.Component.COORDINATES){
             this.setTagName("Coordinates");
             this.setBottom("bottom");
-            this.setLeft("left");
+            this.setLeft("left +10");
             this.addString("xy","X: [x] Y: [y]");
         }else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});

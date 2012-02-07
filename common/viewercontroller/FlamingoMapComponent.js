@@ -13,7 +13,9 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     flamingoId: "flamingo",
     mainContainerId: "mainContainer",
     toolMargin: 30,
-    constructor :function (domId){
+    viewerController: null,
+    constructor :function (viewerController, domId){
+        this.viewerController = viewerController;
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);
@@ -370,11 +372,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     */
 function dispatchEventJS(event, comp) {
     if(comp [0]== null){
-            comp[0] = viewerController.mc.getId();
+            comp[0] = viewerController.mapComponent.getId();
         comp[1] = new Object();
     }
     if(event == "onAddLayer"){
         var a = 0;
     }
-    viewerController.mc.handleEvents(event,comp);
+    viewerController.mapComponent.handleEvents(event,comp);
 }

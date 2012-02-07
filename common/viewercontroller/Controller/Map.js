@@ -18,7 +18,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     constructor: function(config){
         //this.viewerController = config.viewerController;
         this.initConfig(config);
-        this.frameworkMap = this.viewerController.mc.viewerObject;
+        this.frameworkMap = this.viewerController.mapComponent.viewerObject;
         
         this.addEvents(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT);    
         return this;
@@ -114,7 +114,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
             throw("Map.addLayer: Given layer is not of type Layer");
         }*/
         this.layers.push(layer);
-//        this.viewerController.mc.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
+//        this.viewerController.mapComponent.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
     },
     /**
      *Removes a specifice layer from the map.

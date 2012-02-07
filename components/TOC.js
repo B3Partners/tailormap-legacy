@@ -109,7 +109,7 @@ Ext.define ("viewer.components.TOC",{
         var server = JSONConfig.server;
         options["isBaseLayer"]=false;
         
-        return this.viewerController.mc.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);*/
+        return this.viewerController.mapComponent.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);*/
         
         var layerUrl = JSONConfig.service.url;// "http://osm.kaartenbalie.nl/wms/mapserver?";
     
@@ -134,7 +134,7 @@ Ext.define ("viewer.components.TOC",{
             noCache: false
         };
         options["isBaseLayer"]=false;
-        return this.viewerController.mc.createWMSLayer(JSONConfig.layerName,layerUrl , ogcOptions, options);
+        return this.viewerController.mapComponent.createWMSLayer(JSONConfig.layerName,layerUrl , ogcOptions, options);
     },
 
     checkboxClicked : function(nodeObj,checked,toc){
@@ -145,11 +145,11 @@ Ext.define ("viewer.components.TOC",{
         var layer = node.layerObj;
     
         if(checked){
-            toc.toc.viewerController.mc.getMap().addLayer(layer);
+            toc.toc.viewerController.mapComponent.getMap().addLayer(layer);
             nodeObj.updateInfo();
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,layer);
         }else{
-            toc.toc.viewerController.mc.getMap().removeLayer(layer)
+            toc.toc.viewerController.mapComponent.getMap().removeLayer(layer)
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
         }
     },
