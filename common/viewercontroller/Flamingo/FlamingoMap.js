@@ -94,6 +94,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         }
         return Map.prototype.setLayerIndex(layer,newIndex);
     },
+    setLayerVisible : function (layer, visible){
+        this.getFrameworkMap(). callMethod(this.id + "_" + layer.getId(), "setVisible", visible);
+    },
     /**
      * See @link Map.zoomToExtent
      */

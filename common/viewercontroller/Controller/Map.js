@@ -178,7 +178,12 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     getAllVectorLayers : function(){
         throw("Map.getAllVectorLayers() Not implemented! Must be implemented in sub-class");
     },
-
+    /**
+     * Sets a layer visible/invisible
+     */
+    setLayerVisible : function (layer, visible){
+        throw("Map.setLayerVisible() Not implemented! Must be implemented in sub-class");
+    },
     /**
      *Remove this map
      *Must be implemented by subclass
