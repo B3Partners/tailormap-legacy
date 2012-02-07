@@ -27,19 +27,15 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue("jdbc")
 public class JDBCFeatureSource extends FeatureSource {
-    @Basic(optional=false)
-    private String typeName;
 
-    public String getTypeName() {
-        return typeName;
+    @Column(name="db_schema")
+    private String schema;
+
+    public String getSchema() {
+        return schema;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    @Override
-    public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 }

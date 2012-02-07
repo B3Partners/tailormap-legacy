@@ -16,8 +16,6 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.IOException;
-import java.util.List;
 import javax.persistence.*;
 /**
  *
@@ -26,19 +24,4 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue("arcgis")
 public class ArcGISFeatureSource extends FeatureSource {
-    @Basic(optional=false)
-    private String typeName;
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    @Override
-    public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

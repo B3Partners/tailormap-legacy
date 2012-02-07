@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
 
@@ -25,13 +26,18 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="feature_type")
-public class SimpleFeatureType {
+public abstract class SimpleFeatureType {
+    public static final int MAX_FEATURES_DEFAULT = 0;
+    public static final int MAX_FEATURES_UNBOUNDED = -1;
+    
     @Id
     private Long id;
 
     @ManyToOne
-    private FeatureSource featureSource;
-
+    private FeatureSource featureSource;    
+    
+    private String typeName;
+    
     private boolean writeable;
 
     private String geometryAttribute;
@@ -81,6 +87,20 @@ public class SimpleFeatureType {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
     //</editor-fold>
+    
+    public List<String> calculateUniqueValues(String attributeName) throws IOException {
+        return calculateUniqueValues(attributeName, MAX_FEATURES_DEFAULT);
+    }
+    
+    public abstract List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException;    
 }
 

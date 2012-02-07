@@ -27,8 +27,6 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorColumn(name="protocol")
 public abstract class FeatureSource {
-    public static final int MAX_FEATURES_DEFAULT = 0;
-    public static final int MAX_FEATURES_UNBOUNDED = -1;
     
     @Id
     private Long id;
@@ -99,9 +97,8 @@ public abstract class FeatureSource {
     }
     //</editor-fold>
 
-    public List<String> calculateUniqueValues(String attributeName) throws IOException {
-        return calculateUniqueValues(attributeName, MAX_FEATURES_DEFAULT);
-    }
-    
-    public abstract List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException;
+    public String getProtocol() {
+        return getClass().getAnnotation(DiscriminatorValue.class).value();
+    }    
+
 }
