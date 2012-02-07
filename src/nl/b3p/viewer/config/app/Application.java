@@ -208,9 +208,40 @@ public class Application  {
             JSONObject appLayers = new JSONObject();
             o.put("appLayers", appLayers);
             JSONArray selectedContent = new JSONArray();
-            o.put("selectedContent", selectedContent);            
+            o.put("selectedContent", selectedContent);         
+            
+            List selectedObjects = new ArrayList();
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root);
 
-            putLevelJSON(levels, appLayers, root);
+            Collections.sort(selectedObjects, new Comparator() {
+
+                @Override
+                public int compare(Object lhs, Object rhs) {
+                    Integer lhsIndex, rhsIndex;
+                    if(lhs instanceof Level) {
+                        lhsIndex = ((Level)lhs).getSelectedIndex();
+                    } else {
+                        lhsIndex = ((ApplicationLayer)lhs).getSelectedIndex();
+                    }
+                    if(rhs instanceof Level) {
+                        rhsIndex = ((Level)rhs).getSelectedIndex();
+                    } else {
+                        rhsIndex = ((ApplicationLayer)rhs).getSelectedIndex();
+                    }
+                    return lhsIndex.compareTo(rhsIndex);
+                }
+            });
+            for(Object obj: selectedObjects) {
+                JSONObject j = new JSONObject();
+                if(obj instanceof Level) {
+                    j.put("type", "level");
+                    j.put("id", ((Level)obj).getId().toString());
+                } else {
+                    j.put("type", "appLayer");
+                    j.put("id", ((ApplicationLayer)obj).getId().toString());
+                }
+                selectedContent.put(j);
+            }
            
             Map<GeoService,Set<String>> usedLayersByService = new HashMap<GeoService,Set<String>>();
             visitLevelForUsedServicesLayers(root, usedLayersByService);
@@ -235,15 +266,23 @@ public class Application  {
         return o.toString(4);
     }
     
-    private static void putLevelJSON(JSONObject levels, JSONObject appLayers, Level l) throws JSONException {
+    private static void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l) throws JSONException {
         levels.put(l.getId().toString(), l.toJSONObject());
+        
+        if(l.getSelectedIndex() != null) {
+            selectedContent.add(l);
+        }
         
         for(ApplicationLayer al: l.getLayers()) {
             appLayers.put(al.getId().toString(), al.toJSONObject());
+            
+            if(al.getSelectedIndex() != null) {
+                selectedContent.add(al);
+            }
         }
         
         for(Level child: l.getChildren()) {
-            putLevelJSON(levels, appLayers, child);
+            walkAppTreeForJSON(levels, appLayers, selectedContent, child);
         }
     }
     

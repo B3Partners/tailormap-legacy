@@ -183,42 +183,4 @@ public class Level {
         
         return o;
     }
-    /*
-    private JSONArray createLayersJSON() throws JSONException {
-        JSONArray ls = new JSONArray();
-        
-        for(ApplicationLayer al: layers) {
-            / * TODO check readers * /
- 
-            JSONObject o = new JSONObject();
-            ls.put(o);
-            o.put("id", al.getId());
-            o.put("toc", al.isToc());
-            o.put("checked", al.isChecked());
-            o.put("layerName", al.getLayerName());
-            if(al.getService() != null) {
-                o.put("serviceId", al.getService().getId());
-            }
-            
-            /* TODO add attribute if writeable according to al.getWriters() * /
-            
-            if(!al.getDetails().isEmpty()) {
-                JSONObject d = new JSONObject();
-                o.put("details", d);
-                for(Map.Entry<String,String> e: al.getDetails().entrySet()) {
-                    d.put(e.getKey(), e.getValue());
-                }
-            }
-            
-            if(!al.getAttributes().isEmpty()) {
-                JSONArray attributes = new JSONArray();
-                o.put("attributes", attributes);
-                for(ConfiguredAttribute ca: al.getAttributes()) {
-                    //attributes.put(ca.toJSONObject());
-                }
-            }
-
-        }
-        return ls;
-    }*/
 }
