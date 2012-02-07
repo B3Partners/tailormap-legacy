@@ -16,26 +16,15 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.validation.SimpleError;
-import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.services.ArcGISFeatureSource;
-import nl.b3p.viewer.config.services.ArcXMLFeatureSource;
-import nl.b3p.viewer.config.services.FeatureSource;
-import nl.b3p.viewer.config.services.JDBCFeatureSource;
-import nl.b3p.viewer.config.services.WFSFeatureSource;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.services.*;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
+import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -128,6 +117,44 @@ public class AttributeSourceActionBean implements ActionBean {
         getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
         
         return new ForwardResolution(EDITJSP);
+    }
+    
+    @ValidationMethod(on="save")
+    public void validate(ValidationErrors errors) throws Exception {
+        if(name == null) {
+            errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
+            return;
+        }
+        
+        if(featureSource == null){
+            try {
+                Object o = Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name")
+                        .setMaxResults(1)
+                        .setParameter("name", name)
+                        .getSingleResult();
+
+                errors.add("name", new SimpleError("Naam bestaat al. Kies een unieke naam."));
+                return;
+
+            } catch(NoResultException nre) {
+                // name is unique
+            }
+        }else{
+            try {
+                Object o = Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name "
+                        + "and id != :id")
+                        .setMaxResults(1)
+                        .setParameter("name", name)
+                        .setParameter("id", featureSource.getId())
+                        .getSingleResult();
+
+                errors.add("name", new SimpleError("Naam bestaat al. Kies een unieke naam."));
+                return;
+
+            } catch(NoResultException nre) {
+                // name is unique
+            }
+        }
     }
     
     public Resolution getGridData() throws JSONException { 
