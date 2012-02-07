@@ -21,6 +21,7 @@ import javax.persistence.*;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -200,8 +201,17 @@ public class Application  {
         /* TODO check readers */
         
         if(root != null) {
-            o.put("rootLevel", root.toJSONObject());
+            o.put("rootLevel", root.getId().toString());
 
+            JSONObject levels = new JSONObject();
+            o.put("levels", levels);
+            JSONObject appLayers = new JSONObject();
+            o.put("appLayers", appLayers);
+            JSONArray selectedContent = new JSONArray();
+            o.put("selectedContent", selectedContent);            
+
+            putLevelJSON(levels, appLayers, root);
+           
             Map<GeoService,Set<String>> usedLayersByService = new HashMap<GeoService,Set<String>>();
             visitLevelForUsedServicesLayers(root, usedLayersByService);
 
@@ -223,6 +233,18 @@ public class Application  {
         }
 
         return o.toString(4);
+    }
+    
+    private static void putLevelJSON(JSONObject levels, JSONObject appLayers, Level l) throws JSONException {
+        levels.put(l.getId().toString(), l.toJSONObject());
+        
+        for(ApplicationLayer al: l.getLayers()) {
+            appLayers.put(al.getId().toString(), al.toJSONObject());
+        }
+        
+        for(Level child: l.getChildren()) {
+            putLevelJSON(levels, appLayers, child);
+        }
     }
     
     private static void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService) {

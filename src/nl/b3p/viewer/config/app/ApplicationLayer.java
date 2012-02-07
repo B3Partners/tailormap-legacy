@@ -19,6 +19,9 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.services.GeoService;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -138,4 +141,35 @@ public class ApplicationLayer {
         this.layerName = layerName;
     }
     //</editor-fold> 
+    
+    public JSONObject toJSONObject() throws JSONException {
+
+        JSONObject o = new JSONObject();
+        o.put("id", getId());
+        o.put("checked", isChecked());
+        o.put("layerName", getLayerName());
+        if(getService() != null) {
+            o.put("serviceId", getService().getId());
+        }
+
+        /* TODO add attribute if writeable according to al.getWriters() */
+
+        if(!getDetails().isEmpty()) {
+            JSONObject d = new JSONObject();
+            o.put("details", d);
+            for(Map.Entry<String,String> e: getDetails().entrySet()) {
+                d.put(e.getKey(), e.getValue());
+            }
+        }
+
+        if(!getAttributes().isEmpty()) {
+            JSONArray attributes = new JSONArray();
+            o.put("attributes", attributes);
+            for(ConfiguredAttribute ca: getAttributes()) {
+                //attributes.put(ca.toJSONObject());
+            }
+        }
+        
+        return o;
+    }
 }
