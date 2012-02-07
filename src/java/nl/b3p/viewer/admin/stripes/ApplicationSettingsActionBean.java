@@ -205,6 +205,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
         
         getContext().getMessages().add(new SimpleMessage("Applicatie is opgeslagen"));
         
+        applicationId = application.getId();
+        
         return new ForwardResolution(JSP);
     }
     
