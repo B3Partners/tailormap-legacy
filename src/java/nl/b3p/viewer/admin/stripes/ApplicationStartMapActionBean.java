@@ -65,12 +65,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 Object map = it.next();
                 if(map instanceof ApplicationLayer){
                     ApplicationLayer layer = (ApplicationLayer) map;
-                    layer.setToc(false);
+                    //layer.setToc(false);
                     layer.setChecked(false);
                     Stripersist.getEntityManager().persist(layer);
                 }else if(map instanceof Level){
                     Level level = (Level) map;
-                    level.setToc(false);
+                    //level.setToc(false);
                     Stripersist.getEntityManager().persist(level);
                 }
             }
@@ -94,13 +94,13 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                      * Levels without layers can not be saved in te start map
                      */
                     if(level.getLayers() != null && level.getLayers().size() > 0){
-                        level.setToc(true);
+                        //level.setToc(true);
                         Stripersist.getEntityManager().persist(level);
                     }
                 }else if(layers[i].startsWith("s")){
                     Long id = new Long(layers[i].substring(1));
                     ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
-                    appLayer.setToc(true);
+                    //appLayer.setToc(true);
                     if(checkedMaps.contains(layers[i])){
                         appLayer.setChecked(true);
                     }
@@ -213,10 +213,10 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             for (Iterator it = appLayers.iterator(); it.hasNext();) {
                 ApplicationLayer layer = (ApplicationLayer) it.next();
 
-                if(layer.isToc()){
+                /*if(layer.isToc()){
                     
                     children.add(layer);
-                }
+                }*/
             }
         }
         
@@ -225,9 +225,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
             for(Iterator it = childLevels.iterator(); it.hasNext();){
                 Level childLevel = (Level)it.next();
-                if(childLevel.isToc()){
+                /*if(childLevel.isToc()){
                     children.add(childLevel);
-                }
+                }*/
                 children.addAll(getSelectedLayers(childLevel));
             }
         }
