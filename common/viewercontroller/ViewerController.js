@@ -1,5 +1,3 @@
-/*JavaScript interface class file*/
-
 /**
  * ViewerController
  * @class Controller for a GIS application
