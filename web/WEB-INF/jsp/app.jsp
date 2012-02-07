@@ -82,17 +82,19 @@ ${actionBean.componentSourceHTML}
     <body>
 
         <script type="text/javascript">
-            ${actionBean.script}
-          
+            
             var contextPath = "${contextPath}";
+            var absoluteURIPrefix = "${absoluteURIPrefix}";
             var viewerController;
-            Ext.onReady(function(){
 
-                //initLayout();
-                viewerController = new viewer.viewercontroller.ViewerController("flamingo",layoutManager.getMapId(),app);
-
-                initMapComponent();
-            });
+            (function() {
+                var config = ${actionBean.appConfigJSON}
+          
+                Ext.onReady(function() {
+                    viewerController = new viewer.viewercontroller.ViewerController("flamingo", null, config);
+                    
+                });
+            }());
 
         </script>
 

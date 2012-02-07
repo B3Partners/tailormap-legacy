@@ -53,7 +53,7 @@ public class ApplicationActionBean implements ActionBean {
     private Application application;
 
     private String componentSourceHTML;
-    private String script;
+    private String appConfigJSON;
 
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
@@ -105,12 +105,12 @@ public class ApplicationActionBean implements ActionBean {
         this.componentSourceHTML = componentSourceHTML;
     }
 
-    public String getScript() {
-        return script;
+    public String getAppConfigJSON() {
+        return appConfigJSON;
     }
 
-    public void setScript(String script) {
-        this.script = script;
+    public void setAppConfigJSON(String appConfigJSON) {
+        this.appConfigJSON = appConfigJSON;
     }
     //</editor-fold>
 
@@ -142,7 +142,8 @@ public class ApplicationActionBean implements ActionBean {
         }
 
         buildComponentSourceHTML();
-        buildScript();
+        
+        appConfigJSON = application.toJSON();
         
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
@@ -211,17 +212,5 @@ public class ApplicationActionBean implements ActionBean {
         }
 
         componentSourceHTML = sb.toString();
-    }
-
-    private void buildScript() throws JSONException {
-
-        // Define JSON variable with application data model
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("var app = ");
-        sb.append(application.toJSON());
-        sb.append(";\n\n");
-
-        script = sb.toString();
     }
 }
