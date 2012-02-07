@@ -19,7 +19,6 @@ package nl.b3p.viewer.config.app;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.services.Document;
-import nl.b3p.viewer.config.services.GeoService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,10 +39,7 @@ public class Level {
     @Basic(optional=false)
     private String name;
 
-    /**
-     * Whether this level should be shown in a table of contents by default
-     */
-    private boolean toc;
+    private Integer selectedIndex;
 
     @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
     @JoinTable(name="level_children", inverseJoinColumns=@JoinColumn(name="child"))
@@ -78,12 +74,12 @@ public class Level {
         this.id = id;
     }
 
-    public boolean isToc() {
-        return toc;
+    public Integer getSelectedIndex() {
+        return selectedIndex;
     }
 
-    public void setToc(boolean toc) {
-        this.toc = toc;
+    public void setSelectedIndex(Integer selectedIndex) {
+        this.selectedIndex = selectedIndex;
     }
 
     public List<Level> getChildren() {
@@ -157,7 +153,7 @@ public class Level {
         
         o.put("id", id);
         o.put("name", name);
-        o.put("toc", toc);
+        o.put("selectedIndex", selectedIndex);
         o.put("background", background);
         o.put("info", info);
         
@@ -169,24 +165,30 @@ public class Level {
             }
         }
         
-        o.put("layers", createLayersJSON());
+        if(!layers.isEmpty()) {
+            JSONArray ls = new JSONArray();
+            o.put("layers", ls);
+            for(ApplicationLayer l: layers) {
+                ls.put(l.getId().toString());
+            }            
+        }
         
         if(!children.isEmpty()) {
             JSONArray cs = new JSONArray();
             o.put("children", cs);
             for(Level l: children) {
-                cs.put(l.toJSONObject());
+                cs.put(l.getId().toString());
             }
         }
         
         return o;
     }
-    
+    /*
     private JSONArray createLayersJSON() throws JSONException {
         JSONArray ls = new JSONArray();
         
         for(ApplicationLayer al: layers) {
-            /* TODO check readers */
+            / * TODO check readers * /
  
             JSONObject o = new JSONObject();
             ls.put(o);
@@ -198,7 +200,7 @@ public class Level {
                 o.put("serviceId", al.getService().getId());
             }
             
-            /* TODO add attribute if writeable according to al.getWriters() */
+            /* TODO add attribute if writeable according to al.getWriters() * /
             
             if(!al.getDetails().isEmpty()) {
                 JSONObject d = new JSONObject();
@@ -218,5 +220,5 @@ public class Level {
 
         }
         return ls;
-    }
+    }*/
 }

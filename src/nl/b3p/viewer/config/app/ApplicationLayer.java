@@ -34,10 +34,7 @@ public class ApplicationLayer {
      */    
     private boolean checked;
     
-    /**
-     * Should this app layer be shown in a table of contents by default
-     */    
-    private boolean toc;
+    private Integer selectedIndex;   
 
     @ManyToOne
     private GeoService service;
@@ -84,12 +81,12 @@ public class ApplicationLayer {
         this.checked = checked;
     }
 
-    public boolean isToc() {
-        return toc;
+    public Integer getSelectedIndex() {
+        return selectedIndex;
     }
 
-    public void setToc(boolean toc) {
-        this.toc = toc;
+    public void setSelectedIndex(Integer selectedIndex) {
+        this.selectedIndex = selectedIndex;
     }
     
     public Map<String, String> getDetails() {
