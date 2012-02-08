@@ -45,6 +45,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     @Validate
     private String nodeId;
+    @Validate
+    private String levelId;
     private Level rootlevel;
 
     @DefaultHandler
@@ -177,52 +179,84 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         final JSONArray children = new JSONArray();
         
         rootlevel = application.getRoot();
-        
-        List selectedObjects = new ArrayList();
-        walkAppTreeForStartMap(selectedObjects, rootlevel);
-        
-        Collections.sort(selectedObjects, new Comparator() {
 
-            @Override
-            public int compare(Object lhs, Object rhs) {
-                Integer lhsIndex, rhsIndex;
-                if(lhs instanceof Level) {
-                    lhsIndex = ((Level)lhs).getSelectedIndex();
-                } else {
-                    lhsIndex = ((ApplicationLayer)lhs).getSelectedIndex();
+        if(levelId != null && levelId.substring(1).equals(rootlevel.getId().toString())){
+            List selectedObjects = new ArrayList();
+            walkAppTreeForStartMap(selectedObjects, rootlevel);
+
+            Collections.sort(selectedObjects, new Comparator() {
+
+                @Override
+                public int compare(Object lhs, Object rhs) {
+                    Integer lhsIndex, rhsIndex;
+                    if(lhs instanceof Level) {
+                        lhsIndex = ((Level)lhs).getSelectedIndex();
+                    } else {
+                        lhsIndex = ((ApplicationLayer)lhs).getSelectedIndex();
+                    }
+                    if(rhs instanceof Level) {
+                        rhsIndex = ((Level)rhs).getSelectedIndex();
+                    } else {
+                        rhsIndex = ((ApplicationLayer)rhs).getSelectedIndex();
+                    }
+                    return lhsIndex.compareTo(rhsIndex);
                 }
-                if(rhs instanceof Level) {
-                    rhsIndex = ((Level)rhs).getSelectedIndex();
-                } else {
-                    rhsIndex = ((ApplicationLayer)rhs).getSelectedIndex();
+            });
+
+            if(selectedObjects != null){
+                for (Iterator it = selectedObjects.iterator(); it.hasNext();) {
+                    Object map = it.next();
+                    if(map instanceof ApplicationLayer){
+                        ApplicationLayer layer = (ApplicationLayer) map;
+
+                        JSONObject j = new JSONObject();
+                        j.put("id", "s" + layer.getId());
+                        j.put("name", layer.getLayerName());
+                        j.put("type", "layer");
+                        j.put("isLeaf", true);
+                        j.put("parentid", "n0");
+                        j.put("checked", layer.isChecked());
+                        children.put(j);
+                    }else if(map instanceof Level){
+                        Level level = (Level) map;
+
+                        JSONObject j = new JSONObject();
+                        j.put("id", "n" + level.getId());
+                        j.put("name", level.getName());
+                        j.put("type", "level");
+                        j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
+                        j.put("parentid", "n0");
+                        j.put("checked", false);
+                        children.put(j);
+                    }
                 }
-                return lhsIndex.compareTo(rhsIndex);
             }
-        });
+        }else{
+            String type = levelId.substring(0, 1);
+            int id = Integer.parseInt(levelId.substring(1));
+            if (type.equals("n")) {
+                Level l = em.find(Level.class, new Long(id));
+                for (Level sub : l.getChildren()) {
+                    JSONObject j = new JSONObject();
+                    j.put("id", "n" + sub.getId());
+                    j.put("name", sub.getName());
+                    j.put("type", "level");
+                    j.put("isLeaf", sub.getChildren().isEmpty() && sub.getLayers().isEmpty());
+                    if (sub.getParent() != null) {
+                        j.put("parentid", sub.getParent().getId());
+                    }
+                    j.put("checked", false);
+                    children.put(j);
+                }
 
-        if(selectedObjects != null){
-            for (Iterator it = selectedObjects.iterator(); it.hasNext();) {
-                Object map = it.next();
-                if(map instanceof ApplicationLayer){
-                    ApplicationLayer layer = (ApplicationLayer) map;
-                    
+                for (ApplicationLayer layer : l.getLayers()) {
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
                     j.put("name", layer.getLayerName());
                     j.put("type", "layer");
                     j.put("isLeaf", true);
-                    j.put("parentid", "n0");
+                    j.put("parentid", levelId);
                     j.put("checked", layer.isChecked());
-                    children.put(j);
-                }else if(map instanceof Level){
-                    Level level = (Level) map;
-                    
-                    JSONObject j = new JSONObject();
-                    j.put("id", "n" + level.getId());
-                    j.put("name", level.getName());
-                    j.put("type", "level");
-                    j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
-                    j.put("parentid", "n0");
                     children.put(j);
                 }
             }
@@ -278,6 +312,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     public void setRootlevel(Level rootlevel) {
         this.rootlevel = rootlevel;
+    }
+
+    public String getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(String levelId) {
+        this.levelId = levelId;
     }
 
     public String getNodeId() {
