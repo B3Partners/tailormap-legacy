@@ -330,14 +330,14 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 })
             }, 
             success: function ( result, request ) {
-                if(result) {
+                if(result.result) {
                     me.addToSelection(record)
                 } else {
-                    console.log('node cannot be added');
+                    Ext.MessageBox.alert("Foutmelding", result.message);
                 }
             },
             failure: function() {
-                console.log('node cannot be added');
+                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de laag niet kan worden toegevoegd");
             }
         });
     },
