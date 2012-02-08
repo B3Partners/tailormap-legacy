@@ -56,12 +56,18 @@
     },
 
     {
-        className: "viewer.components.tools.OpenStreetViewTool",
+        className: "viewer.components.tools.StreetViewTool",
         name: "Streetview",
         shortName: "Sv",
+        sources: ["tools/StreetView.js"],
 
         singleton: true,
-        restrictions: ["top_menu"]
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Hoover tekst",title: "Titel",titlebarIcon : "Titelbalk icoon"}
+            ,source: {tooltip: "",title: "",titlebarIcon : ""}
+        }
     },
 
 
@@ -72,7 +78,7 @@
         sources: ["tools/ZoomIn.js"],
         closureCompilerSafe: true,
 
-        singleton: true,
+        singleton: true, 
         restrictions: ["top_menu"],
 
         extPropertyGridConfigs: {
@@ -243,7 +249,7 @@
     {
         className: "TestComponent",
         sources: ["TestComponent.js", "TestComponentFile2.js"],
-        configSource: "TestComponent-config.js",
+        configSource: "/viewer-html/components/TestComponent-config.js",
         name: "Test Component",
         shortName: "To",
 
@@ -262,5 +268,23 @@
             propertyNames: {naam: "Naam"},
             source: {naam: "asdf", kleur: "geel"}
         }
+    },
+    {
+        className: "viewer.components.GoogleNavigation",
+        name: "GoogleNavigation",
+        shortName: "Gn",
+        sources: ["tools/GoogleNavigation.js"],
+        closureCompilerSafe: true,
+        extPropertyGridConfigs: {
+            propertyNames: {               
+                navigationPanel: "Navigatiepaneel"
+            },
+            source: {
+                navigationPanel: true
+            }
+        },
+        singleton: true,
+        restrictions: ["top_menu"]        
     }
+    
 ]

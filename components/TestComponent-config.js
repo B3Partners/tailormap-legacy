@@ -18,7 +18,7 @@
 // bouw van componentspecifieke configuratievelden
 var form;
 function ConfigSource(parentId, config){
-    if(config === undefined){
+    if(config == undefined || config == null){
         config = new Object();
     }
     form = new Ext.form.FormPanel({ //(1)
