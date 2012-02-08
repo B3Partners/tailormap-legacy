@@ -43,6 +43,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     private String checkedLayersString;
     private List<Long> checkedLayers = new ArrayList();
     
+    private JSONArray allCheckedLayers = new JSONArray();
+    
     @Validate
     private String nodeId;
     @Validate
@@ -52,12 +54,13 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
-    public Resolution view() {
+    public Resolution view() throws JSONException {
         if (application == null) {
             getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
         } else {
             rootlevel = application.getRoot();
+            getCheckedLayerList(allCheckedLayers, rootlevel);
         }
 
         return new ForwardResolution(JSP);
@@ -81,6 +84,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
+        
+        getCheckedLayerList(allCheckedLayers, rootlevel);
         
         return new ForwardResolution(JSP);
     }
@@ -287,6 +292,20 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             walkAppTreeForStartMap(selectedContent, child);
         }
     }
+    
+    private static void getCheckedLayerList(JSONArray layers, Level l) throws JSONException{
+        for(ApplicationLayer al: l.getLayers()) {
+            
+            if(al.isChecked()) {
+                JSONObject j = new JSONObject();
+                j.put("id", al.getId());
+                layers.put(j);
+            }
+        }
+        for(Level child: l.getChildren()) {
+            getCheckedLayerList(layers, child);
+        }
+    }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
 
@@ -320,6 +339,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     public void setLevelId(String levelId) {
         this.levelId = levelId;
+    }
+
+    public JSONArray getAllCheckedLayers() {
+        return allCheckedLayers;
+    }
+
+    public void setAllCheckedLayers(JSONArray allCheckedLayers) {
+        this.allCheckedLayers = allCheckedLayers;
     }
 
     public String getNodeId() {
