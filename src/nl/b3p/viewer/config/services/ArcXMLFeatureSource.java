@@ -26,4 +26,19 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue("arcxml")
 public class ArcXMLFeatureSource extends FeatureSource {
+    @Basic
+    private String serviceName;
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    @Override
+    List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

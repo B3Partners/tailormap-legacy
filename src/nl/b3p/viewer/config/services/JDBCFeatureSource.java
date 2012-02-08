@@ -38,4 +38,9 @@ public class JDBCFeatureSource extends FeatureSource {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+
+    @Override
+    List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

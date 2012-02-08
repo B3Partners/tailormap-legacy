@@ -26,7 +26,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="feature_type")
-public abstract class SimpleFeatureType {
+public class SimpleFeatureType {
     public static final int MAX_FEATURES_DEFAULT = 0;
     public static final int MAX_FEATURES_UNBOUNDED = -1;
     
@@ -38,11 +38,13 @@ public abstract class SimpleFeatureType {
     
     private String typeName;
     
+    private String description;
+    
     private boolean writeable;
 
     private String geometryAttribute;
 
-    @OneToMany(orphanRemoval=true)
+    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL)
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
     @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
@@ -95,12 +97,22 @@ public abstract class SimpleFeatureType {
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
     //</editor-fold>
     
     public List<String> calculateUniqueValues(String attributeName) throws IOException {
-        return calculateUniqueValues(attributeName, MAX_FEATURES_DEFAULT);
-    }
+        return featureSource.calculateUniqueValues(this, attributeName, MAX_FEATURES_DEFAULT);
+    }    
     
-    public abstract List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException;    
+    public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException {
+        return featureSource.calculateUniqueValues(this, attributeName, maxFeatures);
+    }    
 }
 

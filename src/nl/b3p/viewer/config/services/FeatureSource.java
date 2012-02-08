@@ -34,14 +34,21 @@ public abstract class FeatureSource {
     @Column(unique=true)
     @Basic(optional=false)
     private String name;
-
+    
     @Basic(optional=false)
     private String url;
 
     private String username;
     private String password;
     
-    @OneToMany(orphanRemoval=true)
+    /**
+     * GeoService for which this FeatureSource was automatically created - to
+     * enable updating of both at the same time
+     */
+    @ManyToOne
+    private GeoService linkedService;
+    
+    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL)
     @JoinTable(inverseJoinColumns=@JoinColumn(name="feature_type"))
     @OrderColumn(name="list_index")
     private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();
@@ -95,10 +102,19 @@ public abstract class FeatureSource {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public GeoService getLinkedService() {
+        return linkedService;
+    }
+
+    public void setLinkedService(GeoService linkedService) {
+        this.linkedService = linkedService;
+    }
     //</editor-fold>
 
     public String getProtocol() {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }    
-
+    
+    /* package */ abstract List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException;    
 }

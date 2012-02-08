@@ -19,11 +19,13 @@ package nl.b3p.viewer.config.services;
 import java.net.URL;
 import javax.persistence.*;
 import nl.b3p.geotools.data.arcims.ArcIMSServer;
+import nl.b3p.geotools.data.arcims.AxlField;
 import nl.b3p.geotools.data.arcims.AxlLayerInfo;
 import nl.b3p.web.WaitPageStatus;
 import org.geotools.data.ServiceInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -33,6 +35,7 @@ import org.json.JSONObject;
 @DiscriminatorValue("arcims")
 public class ArcIMSService extends GeoService {
 
+    @Basic
     private String serviceName;
 
     public String getServiceName() {
@@ -48,6 +51,7 @@ public class ArcIMSService extends GeoService {
         try {
             status.setCurrentAction("Ophalen informatie...");
             
+            // XXX ServiceName should be a parameter to this method
             
             ArcIMSServer gtims = new ArcIMSServer(new URL(url), serviceName);
 
@@ -55,12 +59,42 @@ public class ArcIMSService extends GeoService {
 
             ServiceInfo si = gtims.getInfo();
             ims.setName(si.getTitle());
+            ims.setServiceName(gtims.getServiceName());
             ims.setUrl(url);
 
             status.setProgress(30);
             status.setCurrentAction("Inladen layers...");
             status.setProgress(70);
-
+            
+            /* Automatically create featuresource */
+            ArcXMLFeatureSource fs = new ArcXMLFeatureSource();
+            fs.setLinkedService(ims);
+            fs.setServiceName(ims.getServiceName());
+            
+            String fsName = ims.getName();
+            int uniqueCounter = 0;
+            while(true) {
+                String testName;
+                if(uniqueCounter == 0) {
+                    testName = fsName;
+                } else {
+                    testName = fsName + " (" + uniqueCounter + ")";
+                }
+                try {
+                    Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name")
+                        .setParameter("name", testName)
+                        .setMaxResults(1)
+                        .getSingleResult();
+                    
+                    uniqueCounter++;
+                } catch(NoResultException nre) {
+                    fsName = testName;
+                    break;
+                }
+            }
+            fs.setName(fsName);
+            fs.setUrl(url);
+            
             /* ArcIMS has a flat layer structure, create a virtual top layer */
             
             Layer top = new Layer();
@@ -70,9 +104,13 @@ public class ArcIMSService extends GeoService {
             top.setService(ims);
 
             for(AxlLayerInfo axlLayerInfo: gtims.getAxlServiceInfo().getLayers()) {
-                top.getChildren().add(parseAxlLayerInfo(axlLayerInfo, ims));
+                top.getChildren().add(parseAxlLayerInfo(axlLayerInfo, ims, fs));
             }
             ims.setTopLayer(top);
+            
+            if(!fs.getFeatureTypes().isEmpty()) {
+                Stripersist.getEntityManager().persist(fs);
+            }
             
             return ims;
         } finally {
@@ -91,7 +129,7 @@ public class ArcIMSService extends GeoService {
         return o;
     }
     
-    private Layer parseAxlLayerInfo(AxlLayerInfo axl, GeoService service) {
+    private Layer parseAxlLayerInfo(AxlLayerInfo axl, GeoService service, ArcXMLFeatureSource fs) {
         Layer l = new Layer();
         l.setService(service);
         l.setFilterable(AxlLayerInfo.TYPE_FEATURECLASS.equals(axl.getType()));
@@ -113,6 +151,54 @@ public class ArcIMSService extends GeoService {
             } catch(NumberFormatException nfe) {
             }
         }
+        
+        if(axl.getFclass() != null) {
+            SimpleFeatureType sft = new SimpleFeatureType();
+            sft.setFeatureSource(fs);
+            sft.setTypeName(axl.getId());
+            sft.setWriteable(false);
+            sft.setDescription(axl.getName());
+
+            for(AxlField axlField: axl.getFclass().getFields()) {
+                AttributeDescriptor att = new AttributeDescriptor();
+                sft.getAttributes().add(att);
+                att.setName(axlField.getName());
+
+                String type;
+                switch(axlField.getType()) {
+                    case AxlField.TYPE_SHAPE: 
+                        if(sft.getGeometryAttribute() == null) {
+                            sft.setGeometryAttribute(att.getName());
+                        }
+                        type = AttributeDescriptor.TYPE_GEOMETRY;
+                        break;
+                    case AxlField.TYPE_BOOLEAN:
+                        type = AttributeDescriptor.TYPE_BOOLEAN;
+                        break;
+                    case AxlField.TYPE_ROW_ID:
+                    case AxlField.TYPE_BIG_INTEGER:
+                    case AxlField.TYPE_SMALL_INTEGER:
+                    case AxlField.TYPE_INTEGER:
+                        type = AttributeDescriptor.TYPE_INTEGER;
+                        break;
+                    case AxlField.TYPE_DOUBLE:
+                    case AxlField.TYPE_FLOAT:
+                        type = AttributeDescriptor.TYPE_DOUBLE;
+                        break;
+                    case AxlField.TYPE_DATE:
+                        type = AttributeDescriptor.TYPE_DATE;
+                        break;
+                    case AxlField.TYPE_CHAR:
+                    case AxlField.TYPE_STRING:
+                    default:
+                        type = AttributeDescriptor.TYPE_STRING;
+                }
+                att.setType(type);
+            }
+            fs.getFeatureTypes().add(sft);
+            l.setFeatureType(sft);
+        }
+                        
         return l;
     }
 }

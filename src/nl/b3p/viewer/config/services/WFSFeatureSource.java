@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.io.IOException;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -25,4 +27,9 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue("wfs")
 public class WFSFeatureSource extends FeatureSource {
+
+    @Override
+    List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
