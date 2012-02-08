@@ -170,12 +170,15 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                     j.put("id", "l" + sublayer.getId());
                     if(sublayer.getTitleAlias() != null){
                         j.put("name", sublayer.getTitleAlias());
+                    }else if(sublayer.getName() != null){
+                        j.put("name", sublayer.getName());
                     }else{
                         j.put("name", sublayer.getTitle());
                     }
                     j.put("type", "layer");
                     j.put("isLeaf", sublayer.getChildren().isEmpty());
                     j.put("parentid", nodeId);
+                    j.put("isVirtual", sublayer.isVirtual());
                     children.put(j);
                 }
             }
@@ -187,12 +190,15 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 j.put("id", "l" + sublayer.getId());
                 if(sublayer.getTitleAlias() != null){
                     j.put("name", sublayer.getTitleAlias());
+                }else if(sublayer.getName() != null){
+                    j.put("name", sublayer.getName());
                 }else{
                     j.put("name", sublayer.getTitle());
                 }
                 j.put("type", "layer");
                 j.put("isLeaf", sublayer.getChildren().isEmpty());
                 j.put("parentid", nodeId);
+                j.put("isVirtual", sublayer.isVirtual());
                 children.put(j);
             }
         }
