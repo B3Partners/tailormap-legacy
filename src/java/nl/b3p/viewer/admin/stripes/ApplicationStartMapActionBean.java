@@ -16,12 +16,14 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.StringReader;
 import java.util.*;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -38,6 +40,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     @Validate
     private String selectedContent;
     private JSONArray jsonContent;
+    
+    @Validate
+    private String contentToBeSelected;
     
     @Validate
     private String checkedLayersString;
@@ -88,6 +93,31 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         getCheckedLayerList(allCheckedLayers, rootlevel);
         
         return new ForwardResolution(JSP);
+    }
+    
+    public Resolution canContentBeSelected() {
+        try {
+            jsonContent = new JSONArray(selectedContent);
+            JSONObject o = new JSONObject(contentToBeSelected);        
+
+            Integer id = o.getInt("id");
+            if(o.get("type").equals("appLayer")) {
+                /* An appLayer can only be selected if:
+                 * - selectedContent does not contain the appLayer
+                 * - the appLayer is a layer of any level or its children in selectedContent 
+                 */
+            } else {
+                /* A level can not be selected if:
+                 * any level in selectedContent is the level is a sublevel of the level
+                 * any level in selectedContent is a parent (recursive) of the level
+                 */
+            }
+            Boolean result = true;
+            return new StreamingResolution("application/json", new StringReader(result.toString()));
+
+        } catch(Exception e) {
+            return new ErrorMessageResolution("Exception " + e.getClass() + ": " + e.getMessage());
+        }
     }
     
     private void walkAppTreeForSave(Level l) throws JSONException{ 
@@ -356,6 +386,14 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
+    }
+
+    public String getContentToBeSelected() {
+        return contentToBeSelected;
+    }
+
+    public void setContentToBeSelected(String contentToBeSelected) {
+        this.contentToBeSelected = contentToBeSelected;
     }
     //</editor-fold>
 }
