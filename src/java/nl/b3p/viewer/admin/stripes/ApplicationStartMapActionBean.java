@@ -219,18 +219,22 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         j.put("name", layer.getLayerName());
                         j.put("type", "layer");
                         j.put("isLeaf", true);
-                        j.put("parentid", "n0");
+                        j.put("parentid", "");
                         j.put("checked", layer.isChecked());
                         children.put(j);
                     }else if(map instanceof Level){
                         Level level = (Level) map;
+                        
+                        JSONArray checked = new JSONArray();
+                        getCheckedLayerList(checked, level);
 
                         JSONObject j = new JSONObject();
                         j.put("id", "n" + level.getId());
                         j.put("name", level.getName());
                         j.put("type", "level");
                         j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
-                        j.put("parentid", "n0");
+                        j.put("parentid", "");
+                        j.put("checkedlayers", checked);
                         j.put("checked", false);
                         children.put(j);
                     }
