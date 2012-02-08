@@ -183,4 +183,43 @@ public class Level {
         
         return o;
     }
+
+    public boolean containsLayerInSubtree(ApplicationLayer appLayer) {
+        
+        for(ApplicationLayer al: layers) {
+            if(al.equals(appLayer)) {
+                return true;
+            }
+        }
+        
+        for(Level child: children) {
+            if(child.containsLayerInSubtree(appLayer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsLevelInSubtree(Level level) {
+        for(Level child: children) {
+            if(child.equals(level)) {
+                return true;
+            }
+            if(child.containsLevelInSubtree(level)) {
+                return true;
+            }
+        }        
+        return false;
+    }
+
+    public boolean isInSubtreeOf(Level level) {
+        Level parentLevel = parent;
+        do {
+            if(parentLevel.equals(level)) {
+                return true;
+            }
+            parentLevel = parent.getParent();
+        } while(parentLevel != null);
+        return false;
+    }
 }
