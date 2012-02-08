@@ -92,22 +92,99 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     public Resolution canContentBeSelected() {
         try {
             jsonContent = new JSONArray(selectedContent);
+            
+            if(jsonContent.length() == 0) {
+                JSONObject obj = new JSONObject();
+                obj.put("result", true);
+                return new StreamingResolution("application/json", new StringReader(obj.toString()));
+            }
+            
             JSONObject o = new JSONObject(contentToBeSelected);        
 
-            Integer id = o.getInt("id");
-            if(o.get("type").equals("appLayer")) {
-                /* An appLayer can only be selected if:
-                 * - selectedContent does not contain the appLayer
-                 * - the appLayer is a layer of any level or its children in selectedContent 
-                 */
-            } else {
-                /* A level can not be selected if:
-                 * any level in selectedContent is the level is a sublevel of the level
-                 * any level in selectedContent is a parent (recursive) of the level
-                 */
-            }
             Boolean result = true;
-            return new StreamingResolution("application/json", new StringReader(result.toString()));
+            String message = null;
+
+            String id = o.getString("id");
+            if(o.get("type").equals("appLayer")) {
+                
+                ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(id));
+                if(appLayer == null) {
+                    message = "Kaartlaag met id " + id + " is onbekend!";
+                    result = false;
+                } else {
+                    /* An appLayer can not be selected if:
+                     * - selectedContent contains the appLayer
+                     * - the appLayer is a layer of any level or its children in selectedContent 
+                     */
+
+                    for(int i = 0; i < jsonContent.length(); i++) {
+                        JSONObject content = jsonContent.getJSONObject(i);
+
+                        if(content.getString("type").equals("appLayer")) {
+                            if(id.equals(content.getString("id"))) {
+                                result = false;
+                                break;
+                            }
+                        } else {
+                            Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
+                            if(l == null) {
+                                result = false;
+                                break;
+                            }
+                            Level parent = l;
+                            while(parent.getParent() != null) {
+                                parent = parent.getParent();
+                            }
+                            if(!application.getRoot().equals(parent)) {
+                                // Level supplied is not from this app!
+                                result = false;
+                                break;
+                            }
+
+                            if(l.containsLayerInSubtree(appLayer)) {
+                                result = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                Level level = Stripersist.getEntityManager().find(Level.class, new Long(id));
+                if(level == null) {
+                    result = false;
+                } else {
+                    /* A level can not be selected if:
+                    * any level in selectedContent is the level is a sublevel of the level
+                    * any level in selectedContent is a parent (recursive) of the level
+                    */
+                    for(int i = 0; i < jsonContent.length(); i++) {
+                        JSONObject content = jsonContent.getJSONObject(i);
+
+                        if(content.getString("type").equals("level")) {
+                            if(id.equals(content.getString("id"))) {
+                                result = false;
+                                break;
+                            }
+
+                            Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
+                            if(l != null) {
+                                if(l.containsLevelInSubtree(level)) {
+                                    result = false;
+                                    break;
+                                }
+                                if(l.isInSubtreeOf(level)) {
+                                    result = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            JSONObject obj = new JSONObject();
+            obj.put("result", result);
+            obj.put("message", message);
+            return new StreamingResolution("application/json", new StringReader(obj.toString()));
 
         } catch(Exception e) {
             return new ErrorMessageResolution("Exception " + e.getClass() + ": " + e.getMessage());
