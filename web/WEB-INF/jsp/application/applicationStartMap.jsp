@@ -58,6 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
             var rootid = 'n${actionBean.rootlevel.id}';
             var levelid = 'n${actionBean.rootlevel.id}';
+            var checkedLayers = ${actionBean.allCheckedLayers};
  
             var foldericon = '${contextPath}/resources/images/folder.png';
             //var serviceokicon = '${contextPath}/resources/images/serviceok.png';
