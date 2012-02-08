@@ -346,7 +346,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
                         j.put("parentid", "");
                         j.put("checkedlayers", checked);
-                        j.put("checked", false);
+                        // j.put("checked", false);
                         children.put(j);
                     }
                 }
@@ -365,7 +365,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     if (sub.getParent() != null) {
                         j.put("parentid", sub.getParent().getId());
                     }
-                    j.put("checked", false);
+                    // j.put("checked", false);
                     children.put(j);
                 }
 

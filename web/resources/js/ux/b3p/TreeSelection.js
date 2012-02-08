@@ -330,6 +330,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 })
             }, 
             success: function ( result, request ) {
+                result = JSON.parse(result.responseText);
                 if(result.result) {
                     me.addToSelection(record)
                 } else {
@@ -355,7 +356,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                     objData.isLeaf = false;
                     objData.checkedlayers = [];
                 }
-                if(me.useCheckboxes) objData.checked = false;
+                if(me.useCheckboxes && nodeType != "level") objData.checked = false;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = me.selectedlayers.getRootNode();
                 if(treenode != null) {
