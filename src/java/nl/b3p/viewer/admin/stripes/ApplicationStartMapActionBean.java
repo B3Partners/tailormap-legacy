@@ -105,7 +105,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             String message = null;
 
             String id = o.getString("id");
-            if(o.get("type").equals("appLayer")) {
+            if(o.get("type").equals("layer")) {
                 
                 ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(id));
                 if(appLayer == null) {
@@ -120,7 +120,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     for(int i = 0; i < jsonContent.length(); i++) {
                         JSONObject content = jsonContent.getJSONObject(i);
 
-                        if(content.getString("type").equals("appLayer")) {
+                        if(content.getString("type").equals("layer")) {
                             if(id.equals(content.getString("id"))) {
                                 result = false;
                                 message = "Kaartlaag is al geselecteerd";
@@ -162,12 +162,12 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                             if(l != null) {
                                 if(l.containsLevelInSubtree(level)) {
                                     result = false;
-                                    message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
+                                    message = "Niveau kan niet worden geselecteerd omdat een bovenliggend niveau al geselecteerd is";
                                     break;
                                 }
                                 if(l.isInSubtreeOf(level)) {
                                     result = false;
-                                    message = "Niveau kan niet worden geselecteerd omdat een bovenliggend niveau al geselecteerd is";
+                                    message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
                                     break;
                                 }
                             }
