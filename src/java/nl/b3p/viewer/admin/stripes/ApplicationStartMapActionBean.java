@@ -34,10 +34,15 @@ import org.stripesstuff.stripersist.Stripersist;
 public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationStartMap.jsp";
+    
     @Validate
-    private String selectedlayers;
+    private String selectedContent;
+    private JSONArray jsonContent;
+    
     @Validate
-    private String checkedlayers;
+    private String checkedLayersString;
+    private List<Long> checkedLayers = new ArrayList();
+    
     @Validate
     private String nodeId;
     private Level rootlevel;
@@ -56,62 +61,69 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution save() {
+    public Resolution save() throws JSONException {
         rootlevel = application.getRoot();
         
-        List selectedMaps = getSelectedLayers(rootlevel);
-        if(selectedMaps != null){
-            for (Iterator it = selectedMaps.iterator(); it.hasNext();) {
-                Object map = it.next();
-                if(map instanceof ApplicationLayer){
-                    ApplicationLayer layer = (ApplicationLayer) map;
-                    //layer.setToc(false);
-                    layer.setChecked(false);
-                    Stripersist.getEntityManager().persist(layer);
-                }else if(map instanceof Level){
-                    Level level = (Level) map;
-                    //level.setToc(false);
-                    Stripersist.getEntityManager().persist(level);
-                }
-            }
-        }
+        jsonContent = new JSONArray(selectedContent);
         
-        List<String> checkedMaps = new ArrayList();
-        if(checkedlayers != null) {
-            String[] checked = checkedlayers.split(",");
+        if(checkedLayersString != null) {
+            String[] checked = checkedLayersString.split(",");
             for(int i = 0; i < checked.length; i++){
-                checkedMaps.add(checked[i]);
-            }
-        }
-        
-        if(selectedlayers != null && selectedlayers.length() > 0){
-            String[] layers = selectedlayers.split(",");
-            for(int i = 0; i < layers.length; i++){
-                if(layers[i].startsWith("n")){
-                    Long id = new Long(layers[i].substring(1));
-                    Level level = Stripersist.getEntityManager().find(Level.class, id);
-                    /*
-                     * Levels without layers can not be saved in te start map
-                     */
-                    if(level.getLayers() != null && level.getLayers().size() > 0){
-                        //level.setToc(true);
-                        Stripersist.getEntityManager().persist(level);
-                    }
-                }else if(layers[i].startsWith("s")){
-                    Long id = new Long(layers[i].substring(1));
-                    ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, id);
-                    //appLayer.setToc(true);
-                    if(checkedMaps.contains(layers[i])){
-                        appLayer.setChecked(true);
-                    }
-                    Stripersist.getEntityManager().persist(appLayer);
+                if(checked[i].startsWith("s")){
+                    checkedLayers.add(new Long(checked[i].substring(1)));
                 }
             }
         }
+        
+        walkAppTreeForSave(rootlevel);
+        
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("Het startkaartbeeld is opgeslagen"));
         
         return new ForwardResolution(JSP);
+    }
+    
+    private void walkAppTreeForSave(Level l) throws JSONException{ 
+        l.setSelectedIndex(getSelectedContentIndex(l));
+        
+        for(ApplicationLayer al: l.getLayers()) {
+            al.setSelectedIndex(getSelectedContentIndex(al));
+            al.setChecked(checkedLayers.contains(al.getId()));
+        }
+        
+        for(Level child: l.getChildren()) {
+            walkAppTreeForSave(child);
+        }
+    }
+    
+    private Integer getSelectedContentIndex(Level l) throws JSONException{
+        Integer index = null;
+        
+        for(int i = 0; i < jsonContent.length(); i++){
+            JSONObject js = jsonContent.getJSONObject(i);
+            String id = js.get("id").toString();
+            String type = js.get("type").toString();
+            if(id.equals(l.getId().toString()) && type.equals("level")){
+                index = i;
+            }
+        }
+        
+        return index;
+    }
+    
+    private Integer getSelectedContentIndex(ApplicationLayer al) throws JSONException{
+        Integer index = null;
+        
+        for(int i = 0; i < jsonContent.length(); i++){
+            JSONObject js = jsonContent.getJSONObject(i);
+            String id = js.get("id").toString();
+            String type = js.get("type").toString();
+            if(id.equals(al.getId().toString()) && type.equals("layer")){
+                index = i;
+            }
+        }
+        
+        return index;
     }
 
     public Resolution loadApplicationTree() throws JSONException {
@@ -165,10 +177,31 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         final JSONArray children = new JSONArray();
         
         rootlevel = application.getRoot();
+        
+        List selectedObjects = new ArrayList();
+        walkAppTreeForStartMap(selectedObjects, rootlevel);
+        
+        Collections.sort(selectedObjects, new Comparator() {
 
-        List maps = getSelectedLayers(rootlevel);
-        if(maps != null){
-            for (Iterator it = maps.iterator(); it.hasNext();) {
+            @Override
+            public int compare(Object lhs, Object rhs) {
+                Integer lhsIndex, rhsIndex;
+                if(lhs instanceof Level) {
+                    lhsIndex = ((Level)lhs).getSelectedIndex();
+                } else {
+                    lhsIndex = ((ApplicationLayer)lhs).getSelectedIndex();
+                }
+                if(rhs instanceof Level) {
+                    rhsIndex = ((Level)rhs).getSelectedIndex();
+                } else {
+                    rhsIndex = ((ApplicationLayer)rhs).getSelectedIndex();
+                }
+                return lhsIndex.compareTo(rhsIndex);
+            }
+        });
+
+        if(selectedObjects != null){
+            for (Iterator it = selectedObjects.iterator(); it.hasNext();) {
                 Object map = it.next();
                 if(map instanceof ApplicationLayer){
                     ApplicationLayer layer = (ApplicationLayer) map;
@@ -178,7 +211,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     j.put("name", layer.getLayerName());
                     j.put("type", "layer");
                     j.put("isLeaf", true);
-                    j.put("parentid", nodeId);
+                    j.put("parentid", "n0");
                     j.put("checked", layer.isChecked());
                     children.put(j);
                 }else if(map instanceof Level){
@@ -187,9 +220,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     JSONObject j = new JSONObject();
                     j.put("id", "n" + level.getId());
                     j.put("name", level.getName());
-                    j.put("type", "category");
-                    j.put("isLeaf", true);
-                    j.put("parentid", nodeId);
+                    j.put("type", "level");
+                    j.put("isLeaf", level.getChildren().isEmpty() && level.getLayers().isEmpty());
+                    j.put("parentid", "n0");
                     children.put(j);
                 }
             }
@@ -203,53 +236,40 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             }
         };
     }
-
-    private List getSelectedLayers(Level level) {
-        List children = new ArrayList();
+    
+    private static void walkAppTreeForStartMap(List selectedContent, Level l){       
+        if(l.getSelectedIndex() != null) {
+            selectedContent.add(l);
+        }
         
-        if (level.getLayers() != null) {
-            List<ApplicationLayer> appLayers = level.getLayers();
-        
-            for (Iterator it = appLayers.iterator(); it.hasNext();) {
-                ApplicationLayer layer = (ApplicationLayer) it.next();
-
-                /*if(layer.isToc()){
-                    
-                    children.add(layer);
-                }*/
+        for(ApplicationLayer al: l.getLayers()) {
+            
+            if(al.getSelectedIndex() != null) {
+                selectedContent.add(al);
             }
         }
         
-        if(level.getChildren() != null){
-            List<Level> childLevels = level.getChildren();
-        
-            for(Iterator it = childLevels.iterator(); it.hasNext();){
-                Level childLevel = (Level)it.next();
-                /*if(childLevel.isToc()){
-                    children.add(childLevel);
-                }*/
-                children.addAll(getSelectedLayers(childLevel));
-            }
+        for(Level child: l.getChildren()) {
+            walkAppTreeForStartMap(selectedContent, child);
         }
-
-        return children;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
-    public String getSelectedlayers() {
-        return selectedlayers;
+
+    public String getCheckedLayersString() {
+        return checkedLayersString;
     }
 
-    public void setSelectedlayers(String selectedlayers) {
-        this.selectedlayers = selectedlayers;
+    public void setCheckedLayersString(String checkedLayersString) {
+        this.checkedLayersString = checkedLayersString;
     }
 
-    public String getCheckedlayers() {
-        return checkedlayers;
+    public String getSelectedContent() {
+        return selectedContent;
     }
 
-    public void setCheckedlayers(String checkedlayers) {
-        this.checkedlayers = checkedlayers;
+    public void setSelectedContent(String selectedContent) {
+        this.selectedContent = selectedContent;
     }
 
     public Level getRootlevel() {
