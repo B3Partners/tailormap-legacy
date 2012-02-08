@@ -300,7 +300,9 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 var objData = record.raw;
                 objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                 objData.isLeaf = true;
-                if(nodeType == "level") objData.isLeaf = false;
+                if(nodeType == "level") {
+                    objData.isLeaf = false;
+                }
                 if(me.useCheckboxes) objData.checked = false;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = me.selectedlayers.getRootNode();
@@ -337,7 +339,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 addedLayers += record.get('id');
             } else {
                 addedLayers.push({
-                    'id': record.get('id'),
+                    'id': record.get('id').substring(1),
                     'type': record.get('type')
                 });
             }
