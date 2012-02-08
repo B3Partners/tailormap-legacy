@@ -123,27 +123,17 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         if(content.getString("type").equals("appLayer")) {
                             if(id.equals(content.getString("id"))) {
                                 result = false;
+                                message = "Kaartlaag is al geselecteerd";
                                 break;
                             }
                         } else {
                             Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
-                            if(l == null) {
-                                result = false;
-                                break;
-                            }
-                            Level parent = l;
-                            while(parent.getParent() != null) {
-                                parent = parent.getParent();
-                            }
-                            if(!application.getRoot().equals(parent)) {
-                                // Level supplied is not from this app!
-                                result = false;
-                                break;
-                            }
-
-                            if(l.containsLayerInSubtree(appLayer)) {
-                                result = false;
-                                break;
+                            if(l != null) {
+                                if(l.containsLayerInSubtree(appLayer)) {
+                                    result = false;
+                                    message = "Kaartlaag is al geselecteerd als onderdeel van een niveau";
+                                    break;
+                                }
                             }
                         }
                     }
@@ -152,6 +142,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 Level level = Stripersist.getEntityManager().find(Level.class, new Long(id));
                 if(level == null) {
                     result = false;
+                    message = "Niveau met id " + id + " is onbekend!";
                 } else {
                     /* A level can not be selected if:
                     * any level in selectedContent is the level is a sublevel of the level
@@ -163,6 +154,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                         if(content.getString("type").equals("level")) {
                             if(id.equals(content.getString("id"))) {
                                 result = false;
+                                message = "Niveau is al geselecteerd";
                                 break;
                             }
 
@@ -170,12 +162,21 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                             if(l != null) {
                                 if(l.containsLevelInSubtree(level)) {
                                     result = false;
+                                    message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
                                     break;
                                 }
                                 if(l.isInSubtreeOf(level)) {
                                     result = false;
+                                    message = "Niveau kan niet worden geselecteerd omdat een bovenliggend niveau al geselecteerd is";
                                     break;
                                 }
+                            }
+                        } else {
+                            ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(content.getString("id")));
+                            if(level.containsLayerInSubtree(appLayer)) {
+                                result = false;
+                                message = "Niveau kan niet worden geselecteerd omdat een kaartlaag uit dit (of onderliggend) niveau al is geselecteerd";
+                                break;
                             }
                         }
                     }
