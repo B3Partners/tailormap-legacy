@@ -26,23 +26,23 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AxlField {
-    public static String TYPE_ROW_ID        = "-99";
-    public static String TYPE_SHAPE         = "-98";
-    public static String TYPE_BOOLEAN       = "-7";
-    public static String TYPE_BIG_INTEGER   = "-5"; 
-    public static String TYPE_CHAR          = "1";
-    public static String TYPE_INTEGER       = "4";
-    public static String TYPE_SMALL_INTEGER = "5";
-    public static String TYPE_FLOAT         = "6";
-    public static String TYPE_DOUBLE        = "8";
-    public static String TYPE_STRING        = "12";
-    public static String TYPE_DATE          = "91";
+    public static final int TYPE_ROW_ID        = -99;
+    public static final int TYPE_SHAPE         = -98;
+    public static final int TYPE_BOOLEAN       = -7;
+    public static final int TYPE_BIG_INTEGER   = -5; 
+    public static final int TYPE_CHAR          = 1;
+    public static final int TYPE_INTEGER       = 4;
+    public static final int TYPE_SMALL_INTEGER = 5;
+    public static final int TYPE_FLOAT         = 6;
+    public static final int TYPE_DOUBLE        = 8;
+    public static final int TYPE_STRING        = 12;
+    public static final int TYPE_DATE          = 91;
    
     @XmlAttribute
     private String name;
     
     @XmlAttribute
-    private String type;
+    private Integer type;
     
     @XmlAttribute
     private String value;
@@ -85,11 +85,11 @@ public class AxlField {
         this.value = value;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 }

@@ -42,6 +42,10 @@ public class ArcIMSServer {
     private AxlServiceInfo axlServiceInfo;
     
     private ServiceInfo info = new ArcIMSInfo();
+
+    public String getServiceName() {
+        return serviceName;
+    }
     
     protected class ArcIMSInfo implements org.geotools.data.ServiceInfo {
 
@@ -85,13 +89,34 @@ public class ArcIMSServer {
         this(serverURL, serviceName, buildHttpClient(timeout));
     }
     
-    public ArcIMSServer(final URL serverURL, final String serviceName, final HTTPClient httpClient) throws Exception {
+    public ArcIMSServer(final URL serverURL, String serviceName, final HTTPClient httpClient) throws Exception {
         if (serverURL == null) {
             throw new NullPointerException("serverURL");
         }
-/*        if (serviceName == null) {
+        
+        if(serviceName == null) {
+            /* try to find ServiceName=thename parameter in url */
+
+            // XXX use httpClient 4.0 URLEncodedUtils or similar
+            String q = serverURL.getQuery();
+            if(q != null) {
+                String needle = "servicename=";
+                int i = q.toLowerCase().indexOf(needle);
+                if(i != -1) {
+                    q = q.substring(i+needle.length());
+                    i = q.indexOf("&");
+                    if(i != -1) {
+                        serviceName = q.substring(0, i);
+                    } else {
+                        serviceName = q;
+                    }
+                }
+            }        
+        }
+        
+        if (serviceName == null) {
             throw new NullPointerException("serviceName");
-        }        */
+        }        
         if (httpClient == null) {
             throw new NullPointerException("httpClient");
         }
