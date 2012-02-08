@@ -295,11 +295,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     private static void getCheckedLayerList(JSONArray layers, Level l) throws JSONException{
         for(ApplicationLayer al: l.getLayers()) {
-            
             if(al.isChecked()) {
-                JSONObject j = new JSONObject();
-                j.put("id", al.getId());
-                layers.put(j);
+                layers.put(al.getId());
             }
         }
         for(Level child: l.getChildren()) {
