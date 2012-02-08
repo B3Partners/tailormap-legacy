@@ -51,7 +51,6 @@
         className: "viewer.components.tools.Tabs",
         name: "Tabs",
         shortName: "Tb",
-
         restrictions: ["leftmargin_top", "rightmargin_top", "leftmargin_bottom", "rightmargin_bottom"]
     },
 
@@ -59,17 +58,14 @@
         className: "viewer.components.tools.StreetViewTool",
         name: "Streetview",
         shortName: "Sv",
-        sources: ["tools/StreetView.js"],
-
+        sources: ["StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
-
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "Hoover tekst",title: "Titel",titlebarIcon : "Titelbalk icoon"}
-            ,source: {tooltip: "",title: "",titlebarIcon : ""}
+            propertyNames: {tooltip: "Hoover tekst",title: "Titel",titlebarIcon : "Titelbalk icoon"},
+            source: {tooltip: "",title: "",titlebarIcon : ""}
         }
     },
-
 
     {
         className: "viewer.components.tools.ZoomIn",
@@ -77,10 +73,8 @@
         shortName: "ZmIn",
         sources: ["tools/ZoomIn.js"],
         closureCompilerSafe: true,
-
         singleton: true, 
         restrictions: ["top_menu"],
-
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Zoom In"}
@@ -89,13 +83,11 @@
     {
         className: "viewer.components.tools.ZoomOut",
         name: "ZoomOut",
-        shortName: "ZmOut",
+        shortName: "ZmOu",
         sources: ["tools/ZoomOut.js"],
         closureCompilerSafe: true,
-
         singleton: true,
         restrictions: ["top_menu"],
-
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Zoom out"}
@@ -252,7 +244,6 @@
         configSource: "/viewer-html/components/TestComponent-config.js",
         name: "Test Component",
         shortName: "To",
-
         restrictions: ["top_menu", "leftmargin_top", "rightmargin_top"],
         type: "popup"
     },
@@ -265,8 +256,8 @@
         restrictions: ["rightmargin_top", "leftmargin_top"],
         type: "popup",
         extPropertyGridConfigs: {
-            propertyNames: {naam: "Naam"},
-            source: {naam: "asdf", kleur: "geel"}
+            propertyNames: {naam: "Titel", groupsCheck : "Kaarten en kaartlaagroupen krijgen een vinkvak", layersCheck: "Kaartlagen krijgen een vinkvak", baseLayersCheck: "Achtergrondkaarten tonen"},
+            source: {naam: "Titel", groupsCheck: true, layersCheck: true, baseLayersCheck: true}
         }
     },
     {
@@ -285,6 +276,60 @@
         },
         singleton: true,
         restrictions: ["top_menu"]        
-    }
-    
+    },
+    {
+        className: "viewer.components.Legend",
+        name: "Legend",
+        shortName: "Ln",
+        sources: ["Legend.js"],
+        closureCompilerSafe: true,
+        extPropertyGridConfigs: {
+            propertyNames: {               
+                name: "Naam"
+            },
+            source: {
+                name: "Legenda"
+            }
+        },
+        singleton: true,
+        restrictions: ["leftmargin_top", "rightmargin_top"]        
+    },
+    {
+        className: "viewer.components.RelatedDocuments",
+        name: "Related Documents",
+        shortName: "Rd",
+        sources: ["RelatedDocuments.js"],
+        singleton: true,
+        restrictions: ["left_menu"],
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Hoover tekst",title: "Titel",titlebarIcon : "Titelbalk icoon"},
+            source: {tooltip: "",title: "",titlebarIcon : ""}
+        }
+    },
+    {
+        className: "viewer.components.SelectionModule",
+        name: "Selection Module",
+        shortName: "Rd",
+        sources: ["SelectionModule.js"],
+        singleton: true,
+        restrictions: ["left_menu"],
+        extPropertyGridConfigs: {
+            propertyNames: {
+                tooltip: "Hoover tekst",
+                title: "Titel",
+                titlebarIcon : "Titelbalk icoon",
+                selectGroups: "Kaarten selecteren",
+                selectLayers: "Kaartlagen selecteren",
+                selectOwnServices: "Eigen services selecteren"
+            },
+            source: {
+                tooltip: "",
+                title: "",
+                titlebarIcon : "",
+                selectGroups: true,
+                selectLayers: true,
+                selectOwnServices: true
+            }
+        }
+    }    
 ]

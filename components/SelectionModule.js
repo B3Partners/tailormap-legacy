@@ -20,19 +20,17 @@
  * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.tools.StreetView",{
-    extend: "viewer.components.tools.Tool",
+Ext.define ("viewer.components.tools.SelectionModule",{
+    extend: "viewer.components.tools.Component",
     config:{
-        name: "Street View",
+        name: "Selection Module",
         title: "",
         titlebarIcon : "",
         tooltip : ""
     },
     constructor: function (conf){        
-        viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.MEASURE;        
-        this.initTool(conf);
+        viewer.components.tools.SelectionModule.superclass.constructor.call(this, conf);
+        this.initConfig(conf);   
         return this;
     }
 });
