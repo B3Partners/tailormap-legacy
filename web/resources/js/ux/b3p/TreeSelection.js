@@ -33,6 +33,12 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     layerMoveButtons: 'layermove-buttons',
     autoShow: true,
     useCheckboxes: false,
+    allowLevelMove: false,
+    copyChildren: true,
+    returnJson: false,
+    checkBackendOnMove: false,
+    backendCheckUrl: '',
+    
 
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -88,7 +94,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             height: 400,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
-                    me.addToSelection(record);
+                    me.addNode(record);
                 }
             },
             tbar: [
@@ -157,10 +163,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             height: 400,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
-                    var rootNode = me.selectedlayers.getRootNode();
-                    Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
-                        rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
-                    });
+                    me.removeLayers();
                 }
             }
         });
@@ -172,9 +175,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             height: 22,
             listeners: {
                 click: function() {
-                    Ext.Array.each(me.tree.getSelectionModel().getSelection(), function(record) {
-                        me.addToSelection(record);
-                    });
+                    me.addSelectedLayers()
                 }
             }
         });
@@ -186,10 +187,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             height: 22,
             listeners: {
                 click: function() {
-                    var rootNode = me.selectedlayers.getRootNode();
-                    Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
-                        rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
-                    });
+                    me.removeLayers();
                 }
             }
         });
@@ -201,14 +199,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.layerMoveButtons,
             listeners: {
                 click: function() {
-                    var rootNode = me.selectedlayers.getRootNode();
-                    Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
-                        var node = rootNode.findChild('id', record.get('id'), true);
-                        var sib = node.previousSibling;
-                        if(sib !== null) {
-                            rootNode.insertBefore(node, sib);
-                        }
-                    });
+                    me.moveNode('up');
                 }
             }
         });
@@ -220,14 +211,27 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.layerMoveButtons,
             listeners: {
                 click: function() {
-                    var rootNode = me.selectedlayers.getRootNode();
-                    Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
-                        var node = rootNode.findChild('id', record.get('id'), true);
-                        var sib = node.nextSibling;
-                        if(sib !== null) {
-                            rootNode.insertBefore(sib, node);
-                        }
-                    });
+                    me.moveNode('down');
+                }
+            }
+        });
+    },
+    
+    moveNode: function(direction) {
+        var me = this;
+        var rootNode = me.selectedlayers.getRootNode();
+        Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
+            var node = rootNode.findChild('id', record.get('id'), true);
+            var sib = null;
+            if(direction == 'down') {
+                sib = node.nextSibling;
+                if(sib !== null) {
+                    rootNode.insertBefore(sib, node);
+                }
+            } else {
+                sib = node.previousSibling;
+                if(sib !== null) {
+                    rootNode.insertBefore(node, sib);
                 }
             }
         });
@@ -254,15 +258,49 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         me.filteredNodes = [];
     },
 
+    addSelectedLayers: function() {
+        var me = this;
+        Ext.Array.each(me.tree.getSelectionModel().getSelection(), function(record) {
+            me.addNode(record);
+        });
+    },
+    
+    addNode: function(record) {
+        var me = this;
+        if(me.checkBackendOnMove && me.backendCheckUrl != '') {
+            me.addToSelectionWithBackendCheck(record);
+        } else {
+            me.addToSelection(record);
+        }
+    },
+        
+    addToSelectionWithBackendCheck: function(record) {
+        var me = this;
+        Ext.Ajax.request({ 
+            url: me.backendCheckUrl, 
+            params: { 
+                selectedLayers: me.getSelection(),
+                nodeId: record.get('id'),
+                nodeType: record.get('type')
+            }, 
+            success: function ( result, request ) {
+                if(result.allowed) {
+                    me.addToSelection(record)
+                }
+            }
+        });
+    },
+
     addToSelection: function(record) {
         var me = this;
-        if(record.get('type') == "layer" || record.get('type') == "document") {
+        var nodeType = record.get('type');
+        if(((nodeType == "layer" || nodeType == "document") && record.get('isLeaf')) || (me.allowLevelMove && nodeType == "level" && !me.onRootLevel(record, me.tree))) {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
                 var objData = record.raw;
                 objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                 objData.isLeaf = true;
-                objData.draggable = true;
+                if(nodeType == "level") objData.isLeaf = false;
                 if(me.useCheckboxes) objData.checked = false;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = me.selectedlayers.getRootNode();
@@ -272,14 +310,41 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         }
     },
+    
+    onRootLevel: function(record, tree) {
+        var foundNode = tree.getRootNode().findChild('id', record.get('id'), false);
+        if(foundNode !== null) return true;
+        return false;
+    },
+    
+    removeLayers: function() {
+        var me = this;
+        var rootNode = me.selectedlayers.getRootNode();
+        Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
+            rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
+        });
+    },
 
     getSelection: function() {
         var me = this;
         var addedLayers = '';
+        if(me.returnJson) {
+            addedLayers = [];
+        }
         me.selectedlayers.getRootNode().eachChild(function(record) {
-            if(addedLayers != '') addedLayers += ',';
-            addedLayers += record.get('id');
+            if(!me.returnJson) {
+                if(addedLayers != '') addedLayers += ',';
+                addedLayers += record.get('id');
+            } else {
+                addedLayers.push({
+                    'id': record.get('id'),
+                    'type': record.get('type')
+                });
+            }
         });
+        if(me.returnJson) {
+            addedLayers = JSON.stringify(addedLayers);
+        }
         return addedLayers;
     },
     

@@ -42,7 +42,7 @@ Ext.onReady(function() {
             var nodeType = '';
             if(fieldName == "icon") {
                 nodeType = this.get('type');
-                if(nodeType == "category") return foldericon;
+                if(nodeType == "category" || nodeType == "level") return foldericon;
                 if(nodeType == "layer") return layericon;
                 /*if(nodeType == "document") return documenticon;
                 if(nodeType == "service") {
@@ -78,7 +78,7 @@ Ext.onReady(function() {
         // URL of right tree (tree where selection is build)
         selectedLayersUrl: selectedlayersurl,
         // ID used to get root node of the selection tree
-        defaultRootIdSelectedLayers: 'levelid',
+        defaultRootIdSelectedLayers: levelid,
         // Param name used in URL of the selection tree
         nodeParamSelectedLayers: 'levelId',
         // DIV-ID to which the left tree is rendered
@@ -89,7 +89,9 @@ Ext.onReady(function() {
         layerSelectionButtons: 'layerselection-buttons',
         // DIV-ID to which the move buttons are rendered
         layerMoveButtons: 'layermove-buttons',
-        useCheckboxes: true
+        useCheckboxes: true,
+        allowLevelMove: true,
+        returnJson: true
     }));
     
     Ext.get('startmapform').on('submit', function() {
