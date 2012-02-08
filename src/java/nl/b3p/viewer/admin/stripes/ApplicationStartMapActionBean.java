@@ -46,7 +46,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     @Validate
     private String checkedLayersString;
-    private List<Long> checkedLayers = new ArrayList();
+    private JSONArray jsonCheckedLayers;
+    //private List<Long> checkedLayers = new ArrayList();
     
     private JSONArray allCheckedLayers = new JSONArray();
     
@@ -75,15 +76,8 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         rootlevel = application.getRoot();
         
         jsonContent = new JSONArray(selectedContent);
+        jsonCheckedLayers = new JSONArray(checkedLayersString);
         
-        if(checkedLayersString != null) {
-            String[] checked = checkedLayersString.split(",");
-            for(int i = 0; i < checked.length; i++){
-                if(checked[i].startsWith("s")){
-                    checkedLayers.add(new Long(checked[i].substring(1)));
-                }
-            }
-        }
         
         walkAppTreeForSave(rootlevel);
         
@@ -125,12 +119,21 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
         
         for(ApplicationLayer al: l.getLayers()) {
             al.setSelectedIndex(getSelectedContentIndex(al));
-            al.setChecked(checkedLayers.contains(al.getId()));
+            al.setChecked(getCheckedForLayerId(al.getId()));
         }
         
         for(Level child: l.getChildren()) {
             walkAppTreeForSave(child);
         }
+    }
+    
+    private boolean getCheckedForLayerId(Long levelid) throws JSONException {
+        for(int i = 0; i < jsonCheckedLayers.length(); i++){
+            if(levelid.equals(Long.parseLong(jsonCheckedLayers.getString(i)))) {
+                return true;
+            }
+        }
+        return false;
     }
     
     private Integer getSelectedContentIndex(Level l) throws JSONException{

@@ -55,6 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             // Definition of URLS and icons... how are we going to do this?
             var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" event="loadApplicationTree"/>';
             var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" event="loadSelectedLayers"/>';
+            var backendCheckUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" event="canContentBeSelected"/>';
  
             var rootid = 'n${actionBean.rootlevel.id}';
             var levelid = 'n${actionBean.rootlevel.id}';

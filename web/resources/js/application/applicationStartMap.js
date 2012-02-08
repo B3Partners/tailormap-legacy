@@ -35,6 +35,7 @@ Ext.onReady(function() {
             {name: 'class', type: 'string'},
             {name: 'parentid', type: 'string'},
             {name: 'isLeaf', type: 'boolean'},
+            {name: 'checkedlayers', type: 'array'},
             // Text is used by tree, mapped to name
             {name: 'text', type: 'string', mapping: 'name'}
         ],
@@ -91,7 +92,10 @@ Ext.onReady(function() {
         layerMoveButtons: 'layermove-buttons',
         useCheckboxes: true,
         allowLevelMove: true,
-        returnJson: true
+        returnJson: true,
+        checkBackendOnMove: true,
+        backendCheckUrl: backendCheckUrl,
+        checkedLayers: checkedLayers
     }));
     
     Ext.get('startmapform').on('submit', function() {
