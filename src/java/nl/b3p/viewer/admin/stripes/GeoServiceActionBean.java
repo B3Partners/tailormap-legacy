@@ -24,6 +24,8 @@ import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.plugin.waitpage.WaitPage;
@@ -36,6 +38,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @UrlBinding("/action/geoservice/{$event}/{service}")
 public class GeoServiceActionBean implements ActionBean{
+    private static final Log log = LogFactory.getLog(GeoServiceActionBean.class);
+    
     private static final String JSP = "/WEB-INF/jsp/services/geoservice.jsp";
     
     private ActionBeanContext context;
@@ -286,6 +290,7 @@ public class GeoServiceActionBean implements ActionBean{
             }
         } catch(Exception e) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(e.getClass().getName() + ": " + e.getMessage()));
+            log.error("Exception loading " + protocol + " service from url " + url, e);
             return new ForwardResolution(JSP);
         }
 
