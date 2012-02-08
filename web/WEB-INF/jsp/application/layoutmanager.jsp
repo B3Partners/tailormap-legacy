@@ -70,8 +70,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript">            
             var activelink = 'menu_layout';
             var components = ${actionBean.components};
-            var configPageLink = "<stripes:url beanclass='nl.b3p.viewer.admin.stripes.LayoutManagerActionBean' event='config'><stripes:param name="application" value="${actionBean.application}"/></stripes:url>";
+            var configPageLink = "<stripes:url beanclass='nl.b3p.viewer.admin.stripes.LayoutManagerActionBean' event='config'/>";
             var layoutSaveUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>';
+            var removeComponentUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="removeComponent"/>';
             <c:choose>    
                 <c:when test="${!empty actionBean.application.layout}">
                     var layoutJson = ${actionBean.application.layout};

@@ -32,7 +32,6 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Group;
-import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,8 +48,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private JSONObject metadata;
     private JSONArray components;
     private List<Group> allGroups;
-    @Validate(on = "config")
-    private String name;// = "testComponent1";
+    @Validate(on = {"config", "removeComponent"})
+    private String name;
     @Validate(on = "config")
     private String className;
     @Validate(on = "saveComponentConfig")
@@ -134,11 +133,11 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public void setLayout(String layout) {
         this.layout = layout;
     }
-
     //</editor-fold>
+
     @DefaultHandler
     public Resolution view() throws JSONException {
-        if(application == null){
+        if (application == null) {
             getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
         }
@@ -183,6 +182,22 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
 
+    public Resolution removeComponent() {
+
+        EntityManager em = Stripersist.getEntityManager();
+
+        try {
+            component = (ConfiguredComponent) em.createQuery(
+                    "from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", name).getSingleResult();
+
+            em.remove(component);
+        } catch (NoResultException e) {
+            
+        }
+        em.getTransaction().commit();
+        return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
+    }
+
     public Resolution saveApplicationLayout() {
         try {
             EntityManager em = Stripersist.getEntityManager();
@@ -206,7 +221,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
                             cc.setClassName(compClassName);
                             cc.setName(compName);
                             cc.setApplication(application);
-                            em.persist(cc);                            
+                            em.persist(cc);
                         }
                     }
                 }
