@@ -223,8 +223,14 @@ public class AttributeActionBean implements ActionBean {
     public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
         
+        if(simpleFeatureTypeId != null){
+            SimpleFeatureType sft = (SimpleFeatureType)Stripersist.getEntityManager().find(SimpleFeatureType.class, simpleFeatureTypeId);
+            
+        }
+        
         String filterAlias = "";
         String filterAttribuut = "";
+        String filterType = "";
         boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
@@ -242,6 +248,9 @@ public class AttributeActionBean implements ActionBean {
                 }
                 if(property.equals("attribute")) {
                     filterAttribuut = value;
+                }
+                if(property.equals("type")) {
+                    filterType = value;
                 }
             }
         }
@@ -274,13 +283,17 @@ public class AttributeActionBean implements ActionBean {
             Criterion attribuutCrit = Restrictions.ilike("name", filterAttribuut, MatchMode.ANYWHERE);
             c.add(attribuutCrit);
         }
+        if(filterType != null && filterType.length() > 0){
+            Criterion typeCrit = Restrictions.ilike("type", filterType, MatchMode.ANYWHERE);
+            c.add(typeCrit);
+        }
         
         List attributes = c.list();
 
         for(Iterator it = attributes.iterator(); it.hasNext();){
             AttributeDescriptor attr = (AttributeDescriptor)it.next();
             
-            JSONObject j = this.getGridRow(attr.getId().intValue(), attr.getAlias(), attr.getName());
+            JSONObject j = this.getGridRow(attr.getId().intValue(), attr.getAlias(), attr.getName(), attr.getType());
             jsonData.put(j);
         }
         
@@ -303,11 +316,12 @@ public class AttributeActionBean implements ActionBean {
         };
     }
     
-    private JSONObject getGridRow(int i, String alias, String attribute) throws JSONException {       
+    private JSONObject getGridRow(int i, String alias, String attribute, String type) throws JSONException {       
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("alias", alias);
         j.put("attribute", attribute);
+        j.put("type", type);
         return j;
     }
 }

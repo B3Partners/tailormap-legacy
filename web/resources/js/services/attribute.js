@@ -32,7 +32,8 @@ Ext.onReady(function(){
         fields: [
             {name: 'id', type: 'int' },
             {name: 'alias', type: 'string'},
-            {name: 'attribute', type: 'string'}
+            {name: 'attribute', type: 'string'},
+            {name: 'type', type: 'string'}
         ]
     });
 
@@ -70,6 +71,14 @@ Ext.onReady(function(){
                 id: 'attribute',
                 text: "Attribuut",
                 dataIndex: 'attribute',
+                flex: 1,
+                filter: {
+                    xtype: 'textfield'
+                }
+            },{
+                id: 'type',
+                text: "Type",
+                dataIndex: 'type',
                 flex: 1,
                 filter: {
                     xtype: 'textfield'
