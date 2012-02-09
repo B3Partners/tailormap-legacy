@@ -64,7 +64,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var name = "${actionBean.name}";
             var metadata = new Object();
             <c:if test="${!empty actionBean.metadata}">
-                metadata = JSON.parse ('${actionBean.metadata}');
+                metadata = ${actionBean.metadata};
                 var className = metadata.className;
             </c:if>
                 var contextPath = "${contextPath}";
@@ -72,6 +72,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:if test="${!empty actionBean.component.config}">
                 configObject= ${actionBean.component.config};
             </c:if>
+                
+            <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">
+                <stripes:param name="className" value="${actionBean.className}"/> 
+            </stripes:url>
+            var configSourceUrl = "${configSource}";
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>

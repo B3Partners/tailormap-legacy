@@ -17,7 +17,7 @@
 var propertyGrid;
 
 if(metadata.configSource != undefined) {
-    loadConfigSource(metadata.configSource);
+    loadConfigSource(configSourceUrl);
     Ext.onReady(function(){
         ConfigSource("config", configObject);
     });
@@ -50,7 +50,7 @@ if(metadata.configSource != undefined) {
 function loadConfigSource(url){
     var fileref=document.createElement('script')
     fileref.setAttribute("type","text/javascript")
-    fileref.setAttribute("src", contextPath +url)
+    fileref.setAttribute("src", url)
    
     document.getElementsByTagName("head")[0].appendChild(fileref)
 }
