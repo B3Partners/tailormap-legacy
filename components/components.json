@@ -236,7 +236,22 @@
         closureCompilerSafe: true,        
         singleton: true,
         restrictions: ["content"]        
-    },
+    }, 
+    {
+        className: "viewer.components.FlamingoComponent",
+        name: "Flamingo Component",
+        shortName: "fmc",
+        sources: ["FlamingoComponent.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["content"],        
+        notInCombinationWith: ["OpenLayersMap"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {xml: "Xml Configuratie"}            
+        }
+    }, 
 
     {
         className: "TestComponent",
