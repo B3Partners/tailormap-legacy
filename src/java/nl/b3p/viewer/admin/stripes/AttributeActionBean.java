@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.*;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
@@ -57,7 +57,6 @@ public class AttributeActionBean implements ActionBean {
     private String simpleFeatureTypeId;
     
     private List featureSources;
-    private JSONArray simpleFeatureTypes;
     
     @Validate
     private AttributeDescriptor attribute;
@@ -96,14 +95,6 @@ public class AttributeActionBean implements ActionBean {
 
     public void setSimpleFeatureTypeId(String simpleFeatureTypeId) {
         this.simpleFeatureTypeId = simpleFeatureTypeId;
-    }
-
-    public JSONArray getSimpleFeatureTypes() {
-        return simpleFeatureTypes;
-    }
-
-    public void setSimpleFeatureTypes(JSONArray simpleFeatureTypes) {
-        this.simpleFeatureTypes = simpleFeatureTypes;
     }
 
     public String getFeatureSourceId() {
@@ -201,6 +192,32 @@ public class AttributeActionBean implements ActionBean {
     
     public Resolution selectBron() throws JSONException {
         return new ForwardResolution(JSP);
+    }
+    
+    public Resolution getFeatureTypes() throws JSONException {
+        final JSONArray simpleFeatureTypes = new JSONArray();
+        
+        if(featureSourceId != null){
+            FeatureSource fc = (FeatureSource)Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
+            
+            List<SimpleFeatureType> sftList = fc.getFeatureTypes();
+            for(Iterator it = sftList.iterator(); it.hasNext();){
+                SimpleFeatureType sft = (SimpleFeatureType)it.next();
+                
+                JSONObject j = new JSONObject();
+                j.put("id", sft.getId());
+                j.put("name", sft.getTypeName());
+                simpleFeatureTypes.put(j);
+            }
+        }
+        
+        return new StreamingResolution("application/json") {
+
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(simpleFeatureTypes.toString());
+            }
+        };
     }
     
     public Resolution getGridData() throws JSONException { 
