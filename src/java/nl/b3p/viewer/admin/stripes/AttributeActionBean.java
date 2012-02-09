@@ -54,10 +54,10 @@ public class AttributeActionBean implements ActionBean {
     @Validate
     private String featureSourceId;
     @Validate
-    private JSONArray simpleFeatureTypeId;
+    private String simpleFeatureTypeId;
     
     private List featureSources;
-    private List simpleFeatureTypes;
+    private JSONArray simpleFeatureTypes;
     
     @Validate
     private AttributeDescriptor attribute;
@@ -90,11 +90,19 @@ public class AttributeActionBean implements ActionBean {
         this.featureSources = featureSources;
     }
 
-    public List getSimpleFeatureTypes() {
+    public String getSimpleFeatureTypeId() {
+        return simpleFeatureTypeId;
+    }
+
+    public void setSimpleFeatureTypeId(String simpleFeatureTypeId) {
+        this.simpleFeatureTypeId = simpleFeatureTypeId;
+    }
+
+    public JSONArray getSimpleFeatureTypes() {
         return simpleFeatureTypes;
     }
 
-    public void setSimpleFeatureTypes(List simpleFeatureTypes) {
+    public void setSimpleFeatureTypes(JSONArray simpleFeatureTypes) {
         this.simpleFeatureTypes = simpleFeatureTypes;
     }
 
@@ -104,14 +112,6 @@ public class AttributeActionBean implements ActionBean {
 
     public void setFeatureSourceId(String featureSourceId) {
         this.featureSourceId = featureSourceId;
-    }
-
-    public String getSimpleFeatureTypeId() {
-        return simpleFeatureTypeId;
-    }
-
-    public void setSimpleFeatureTypeId(String simpleFeatureTypeId) {
-        this.simpleFeatureTypeId = simpleFeatureTypeId;
     }
 
     public String getAlias() {
