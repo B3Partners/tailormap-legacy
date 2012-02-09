@@ -56,12 +56,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <tr>
                         <td>Attribuutbron:</td>
                         <td>
-                            <select name="featureSourceId" id="featureSourceId">
-                                <option value="1">Kies..</option>
+                            <stripes:select name="featureSourceId" id="featureSourceId">
+                                <stripes:option value="1">Kies..</stripes:option>
                                 <c:forEach var="source" items="${actionBean.featureSources}">
-                                    <option value="${source.id}"><c:out value="${source.name}"/></option>
+                                    <stripes:option value="${source.id}"><c:out value="${source.name}"/></stripes:option>
                                 </c:forEach>
-                            </select>
+                            </stripes:select>
                         </td>
                     </tr>
                     <tr>
@@ -98,6 +98,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <stripes:submit name="save" value="Kaartlaag opslaan"/>
                 <stripes:submit name="cancel" value="Annuleren"/>
+                
+                <script type="text/javascript">
+                    Ext.onReady(function() {
+                        var featureSourceId = Ext.get('featureSourceId');
+                        var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
+                        featureSourceId.on('change', function() {
+                            featureSourceChange(featureSourceId);
+                        });
+                        function getOption(value, text, selected) {
+                            var selectedtext = '';
+                            if(selected) {
+                                selectedtext = ' selected="selected"'
+                            }
+                            return '<option value="' + value + '"' + selectedtext + '>' + text + '</option>';
+                        }
+                        function featureSourceChange(featureSourceId) {
+                            var selectedValue = parseInt(featureSourceId.getValue());
+
+                            var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
+                            // We are now emptying dom and adding options manully, don't know if this is optimal
+                            simpleFeatureTypeId.dom.innerHTML = '';
+                            simpleFeatureTypeId.insertHtml('beforeEnd', getOption(-1, 'Kies...', false));
+
+                                if(selectedValue != 1) {
+                                Ext.Ajax.request({ 
+                                    url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
+                                    params: { 
+                                        featureSourceId: selectedValue
+                                    }, 
+                                    success: function ( result, request ) {
+                                        result = JSON.parse(result.responseText);
+                                        Ext.Array.each(result, function(item) {
+                                            var selected = false;
+                                            if(item.id == '${actionBean.simpleFeatureType.id}') selected = true;
+                                            simpleFeatureTypeId.insertHtml('beforeEnd', getOption(item.id, item.name, selected));
+                                        });                              
+                                    },
+                                    failure: function() {
+                                        Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                                    }
+                                });
+                            }
+                        }
+                        // Init with change, because a certain select value can be preselected
+                        featureSourceChange(featureSourceId);
+                    });
+                </script>
+                
             </c:if>
         </stripes:form>
 
@@ -110,52 +158,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </script>
         </c:if>
 
-        <script type="text/javascript">
-            Ext.onReady(function() {
-                var featureSourceId = Ext.get('featureSourceId');
-                var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
-                featureSourceId.on('change', function() {
-                    featureSourceChange(featureSourceId);
-                });
-                simpleFeatureTypeId.on('change', function() {
-                    simpleFeatureTypeChange(simpleFeatureTypeId);
-                });
-                function getOption(value, text, selected) {
-                    var selectedtext = '';
-                    if(selected) {
-                        selectedtext = ' selected="selected"'
-                    }
-                    return '<option value="' + value + '"' + selectedtext + '>' + text + '</option>';
-                }
-                function featureSourceChange(featureSourceId) {
-                    var selectedValue = parseInt(featureSourceId.getValue());
-                    
-                    var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
-                    // We are now emptying dom and adding options manully, don't know if this is optimal
-                    simpleFeatureTypeId.dom.innerHTML = '';
-                    simpleFeatureTypeId.insertHtml('beforeEnd', getOption(-1, 'Kies...', true));
-                    
-                        if(selectedValue != 1) {
-                        Ext.Ajax.request({ 
-                            url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
-                            params: { 
-                                featureSourceId: selectedValue
-                            }, 
-                            success: function ( result, request ) {
-                                result = JSON.parse(result.responseText);
-                                Ext.Array.each(result, function(item) {
-                                    simpleFeatureTypeId.insertHtml('beforeEnd', getOption(item.id, item.name, false));
-                                });                              
-                            },
-                            failure: function() {
-                                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
-                            }
-                        });
-                    }
-                }
-                // Init with change, because a certain select value can be preselected
-                featureSourceChange(featureSourceId);
-            });
-        </script>
     </stripes:layout-component>
 </stripes:layout-render>
