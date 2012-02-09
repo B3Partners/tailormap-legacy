@@ -20,8 +20,8 @@
  * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.tools.SelectionModule",{
-    extend: "viewer.components.tools.Component",
+Ext.define ("viewer.components.SelectionModule",{
+    extend: "viewer.components.Component",
     config:{
         name: "Selection Module",
         title: "",
@@ -29,7 +29,7 @@ Ext.define ("viewer.components.tools.SelectionModule",{
         tooltip : ""
     },
     constructor: function (conf){        
-        viewer.components.tools.SelectionModule.superclass.constructor.call(this, conf);
+        viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
         return this;
     }

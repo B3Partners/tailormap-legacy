@@ -22,7 +22,7 @@
  * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.tools.Legend",{
+Ext.define ("viewer.components.Legend",{
     extend: "viewer.components.Component",
     config:{
         name: "Street View",
@@ -31,7 +31,7 @@ Ext.define ("viewer.components.tools.Legend",{
         tooltip : ""
     },
     constructor: function (conf){        
-        viewer.components.tools.Legend.superclass.constructor.call(this, conf);
+        viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         return this;
     }

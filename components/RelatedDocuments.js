@@ -22,8 +22,8 @@
  * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.tools.RelatedDocuments",{
-    extend: "viewer.components.tools.Component",
+Ext.define ("viewer.components.RelatedDocuments",{
+    extend: "viewer.components.Component",
     config:{
         name: "Related Documents",
         title: "",
@@ -31,7 +31,7 @@ Ext.define ("viewer.components.tools.RelatedDocuments",{
         tooltip : ""
     },
     constructor: function (conf){        
-        viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
+        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
         return this;
     }

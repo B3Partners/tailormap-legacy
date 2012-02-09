@@ -20,8 +20,8 @@
  * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.tools.Bookmark",{
-    extend: "viewer.components.tools.Component",
+Ext.define ("viewer.components.Bookmark",{
+    extend: "viewer.components.Component",
     config:{
         name: "Street View",
         title: "",
@@ -29,7 +29,7 @@ Ext.define ("viewer.components.tools.Bookmark",{
         tooltip : ""
     },
     constructor: function (conf){        
-        viewer.components.tools.Bookmark.superclass.constructor.call(this, conf);
+        viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
         return this;
     }
