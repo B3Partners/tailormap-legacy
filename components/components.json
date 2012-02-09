@@ -273,11 +273,7 @@
         sources: ["TOC.js"],
         configSource: "TOC-config.js",
         restrictions: ["rightmargin_top", "leftmargin_top"],
-        type: "popup",
-        extPropertyGridConfigs: {
-            propertyNames: {naam: "Titel", groupsCheck : "Kaarten en kaartlaagroupen krijgen een vinkvak", layersCheck: "Kaartlagen krijgen een vinkvak", baseLayersCheck: "Achtergrondkaarten tonen"},
-            source: {naam: "Titel", groupsCheck: true, layersCheck: true, baseLayersCheck: true}
-        }
+        type: "popup"
     },
     {
         className: "viewer.components.GoogleNavigation",

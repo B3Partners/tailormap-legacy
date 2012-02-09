@@ -15,36 +15,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// bouw van componentspecifieke configuratievelden
 var form;
 function ConfigSource(parentId, config){
     if(config == undefined || config == null){
         config = new Object();
     }
+    var labelWidth = 300;
     form = new Ext.form.FormPanel({ //(1)
-        renderTo: parentId, //(2)
         url: 'Home/SubmitForm',
         frame: false,
         title: 'Configureer dit component',
-        width: 300,
+        width: 480,
+      /*  layout: {
+            type: 'vbox',
+            align: 'right'
+        },*/
         items: [{ //(3)
-            xtype: 'textfield',
-            fieldLabel: 'Naam',
-            name: 'naam',
-            value: config.naam
-        }, {
-            xtype: 'numberfield',
-            fieldLabel: 'Nummer',
-            name: 'nummer',
-            value: config.nummer
-        }, {
-            xtype: 'checkbox',
-            fieldLabel: 'Aan',
-            inputValue: true,
-            name: 'aan',
-            checked: config.aan,
-            value: config.aan
-        }]
+                xtype: 'textfield',
+                fieldLabel: 'Naam',
+                name: 'naam',
+                value: config.naam,
+                labelWidth:labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
+                inputValue: true,
+                name: 'groupCheck',
+                checked: config.groupCheck,
+                value: config.groupCheck,
+                labelWidth:labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Kaartlagen krijgen een vinkvak',
+                inputValue: true,
+                name: 'layersChecked',
+                checked: config.layersChecked,
+                value: config.layersChecked,
+                labelWidth:labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Achtergrondkaarten tonen',
+                inputValue: true,
+                name: 'showBaselayers',
+                checked: config.showBaselayers,
+                value: config.showBaselayers,
+                labelWidth:labelWidth
+            }],
+        
+        renderTo: parentId//(2)
     });      
 }
 
