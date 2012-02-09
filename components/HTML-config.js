@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**/
-
+/**
+ * Custom configuration object for HTML configuration
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     htmlEditor: null,
@@ -23,8 +25,8 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         //create html Editor
         var value="";
-        if (config && config.xml){
-            value=config.xml;
+        if (config && config.html){
+            value=config.html;
         }
         
         Ext.tip.QuickTipManager.init();  // enable tooltips
@@ -34,11 +36,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: value,
             renderTo: Ext.get(parentid)
         });  
-        
+        return this;
     },
     getConfiguration: function(){
         var config = new Object();
-        config.xml= this.htmlEditor.getValue();
+        config.html= this.htmlEditor.getValue();
         return config;
     }
 });
