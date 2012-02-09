@@ -23,7 +23,6 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
-import org.hibernate.criterion.Order;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -138,14 +137,12 @@ public class ChooseApplicationActionBean implements ActionBean {
         String filterName = "";
         String filterPublished = "";
         String filterOwner = "";
-        boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
          */
         if(this.getFilter() != null) {
-            hasFilter = true;
             for(int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
@@ -164,8 +161,6 @@ public class ChooseApplicationActionBean implements ActionBean {
         
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(Application.class);   
-        c.setMaxResults(limit);
-        c.setFirstResult(start);
         
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
@@ -203,6 +198,11 @@ public class ChooseApplicationActionBean implements ActionBean {
             c.add(ownerCrit);
         }
         
+        int rowCount = c.list().size();
+        
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
+        
         List applications = c.list();
 
         for(Iterator it = applications.iterator(); it.hasNext();){
@@ -221,13 +221,6 @@ public class ChooseApplicationActionBean implements ActionBean {
             }
             JSONObject j = this.getGridRow(app.getId().intValue(), appName, published ,ownername);
             jsonData.put(j);
-        }
-        
-        int rowCount;
-        if(!hasFilter){
-            rowCount = Stripersist.getEntityManager().createQuery("from Application").getResultList().size();
-        }else{
-            rowCount = applications.size();
         }
         
         final JSONObject grid = new JSONObject();

@@ -21,9 +21,9 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
+import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
@@ -205,6 +205,10 @@ public class GroupActionBean implements ActionBean {
             getContext().getValidationErrors().add("group", new SimpleError("De groep kan niet worden verwijderd omdat deze nog gebruikers heeft."));
             return new ForwardResolution(EDITJSP);
         }
+        if(groupInUse()){
+            getContext().getValidationErrors().add("group", new SimpleError("De groep kan niet worden verwijderd omdat deze nog in gebruik is."));
+            return new ForwardResolution(EDITJSP);
+        }
         Stripersist.getEntityManager().remove(group);
         Stripersist.getEntityManager().getTransaction().commit();
 
@@ -219,14 +223,12 @@ public class GroupActionBean implements ActionBean {
 
         String filterName = "";
         String filterDescription = "";
-        boolean hasFilter = false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
          */
         if (this.getFilter() != null) {
-            hasFilter = true;
             for (int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
@@ -242,8 +244,6 @@ public class GroupActionBean implements ActionBean {
 
         Session sess = (Session) Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(Group.class);
-        c.setMaxResults(limit);
-        c.setFirstResult(start);
 
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
@@ -268,19 +268,17 @@ public class GroupActionBean implements ActionBean {
             Criterion urlCrit = Restrictions.ilike("description", filterDescription, MatchMode.ANYWHERE);
             c.add(urlCrit);
         }
+        
+        int rowCount = c.list().size();
+        
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
 
         List groups = c.list();
         for (Iterator it = groups.iterator(); it.hasNext();) {
             Group gr = (Group) it.next();
             JSONObject j = this.getGridRow(gr.getName(), gr.getDescription());
             jsonData.put(j);
-        }
-
-        int rowCount;
-        if (!hasFilter) {
-            rowCount = Stripersist.getEntityManager().createQuery("from Group").getResultList().size();
-        } else {
-            rowCount = groups.size();
         }
 
         final JSONObject grid = new JSONObject();
@@ -294,6 +292,25 @@ public class GroupActionBean implements ActionBean {
                 response.getWriter().print(grid.toString());
             }
         };
+    }
+    
+    private boolean groupInUse(){
+        boolean inUse = false;
+        List<Level> levels = Stripersist.getEntityManager().createQuery("from Level").getResultList();
+        
+        for(Iterator it = levels.iterator(); it.hasNext();){
+            Level level = (Level)it.next();
+            if(level.getReaders().contains(group.getName())){
+                inUse = true;
+                break;
+            }
+        }
+        
+        /*
+         * not only a check on level.readers, but on every readers or writers
+         */
+
+        return inUse;
     }
 
     private JSONObject getGridRow(String name, String description) throws JSONException {

@@ -177,14 +177,12 @@ public class AttributeSourceActionBean implements ActionBean {
         String filterName = "";
         String filterUrl = "";
         String filterType = "";
-        boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
          */
         if(this.getFilter() != null) {
-            hasFilter = true;
             for(int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
@@ -203,8 +201,6 @@ public class AttributeSourceActionBean implements ActionBean {
         
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(FeatureSource.class);
-        c.setMaxResults(limit);
-        c.setFirstResult(start);
         
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
@@ -237,6 +233,11 @@ public class AttributeSourceActionBean implements ActionBean {
             c.add(protocolCrit);
         }
         
+        int rowCount = c.list().size();
+        
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
+        
         List sources = c.list();
 
         for(Iterator it = sources.iterator(); it.hasNext();){
@@ -253,13 +254,6 @@ public class AttributeSourceActionBean implements ActionBean {
             }
             JSONObject j = this.getGridRow(source.getId().intValue(), source.getName(), source.getUrl(), protocolType);
             jsonData.put(j);
-        }
-        
-        int rowCount;
-        if(!hasFilter){
-            rowCount = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList().size();
-        }else{
-            rowCount = sources.size();
         }
         
         final JSONObject grid = new JSONObject();

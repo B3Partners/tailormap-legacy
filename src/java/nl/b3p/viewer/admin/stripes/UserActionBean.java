@@ -303,14 +303,12 @@ public class UserActionBean implements ActionBean {
         
         String filterName = "";
         //String filterDescription = "";
-        boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
          */
         if(this.getFilter() != null) {
-            hasFilter = true;
             for(int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
@@ -326,8 +324,6 @@ public class UserActionBean implements ActionBean {
         
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(User.class);
-        c.setMaxResults(limit);
-        c.setFirstResult(start);
         
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
@@ -353,18 +349,16 @@ public class UserActionBean implements ActionBean {
             c.add(urlCrit);
         }*/
         
+        int rowCount = c.list().size();
+        
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
+        
         List users = c.list();
         for(Iterator it = users.iterator(); it.hasNext();){
             User us = (User)it.next();
             JSONObject j = this.getGridRow(us.getUsername(), us.getDetails());
             jsonData.put(j);
-        }
-        
-        int rowCount;
-        if(!hasFilter){
-            rowCount = Stripersist.getEntityManager().createQuery("from User").getResultList().size();
-        }else{
-            rowCount = users.size();
         }
         
         final JSONObject grid = new JSONObject();
