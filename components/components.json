@@ -271,9 +271,8 @@
         className: "viewer.components.TOC",
         name: "TOC",
         sources: ["TOC.js"],
-        configSource: "TOC-config.js",
+        configSource: ["TOC-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top"],
-        type: "popup"
     },
     {
         className: "viewer.components.GoogleNavigation",
@@ -328,6 +327,7 @@
         sources: ["SelectionModule.js"],
         singleton: true,
         restrictions: ["left_menu"],
+        type: "popup",
         extPropertyGridConfigs: {
             propertyNames: {
                 tooltip: "Hoover tekst",
