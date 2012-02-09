@@ -52,7 +52,7 @@ public class AttributeActionBean implements ActionBean {
     private JSONArray filter;
     
     @Validate
-    private String featureSourceId;
+    private Long featureSourceId;
     @Validate
     private String simpleFeatureTypeId;
     
@@ -97,11 +97,11 @@ public class AttributeActionBean implements ActionBean {
         this.simpleFeatureTypeId = simpleFeatureTypeId;
     }
 
-    public String getFeatureSourceId() {
+    public Long getFeatureSourceId() {
         return featureSourceId;
     }
 
-    public void setFeatureSourceId(String featureSourceId) {
+    public void setFeatureSourceId(Long featureSourceId) {
         this.featureSourceId = featureSourceId;
     }
 

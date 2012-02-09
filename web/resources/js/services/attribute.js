@@ -45,6 +45,9 @@ Ext.onReady(function(){
         proxy: {
             type: 'ajax',
             url: gridurl,
+            extraParams: {
+                simpleFeatureTypeId: -1
+            },
             reader: {
                 type: 'json',
                 root: 'gridrows',

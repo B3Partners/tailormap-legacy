@@ -28,36 +28,86 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
 
     <stripes:layout-component name="body">
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean">
-            <div id="content">
-                <h1>Attributen</h1><br />
+        <div id="content">
+            <h1>Attributen</h1><br />
 
-                <p>Attributen beheren voor</p>
-                <stripes:select name="featureSourceId">
-                    <stripes:option value="1">Kies..</stripes:option>
-                    <c:forEach var="source" items="${actionBean.featureSources}">
-                        <stripes:option value="${source.id}"><c:out value="${source.name}"/></stripes:option>
-                    </c:forEach>
-                </stripes:select>
-                <stripes:select name="simpleFeatureTypeId">
-                    <stripes:option value="1">Kies..</stripes:option>
-                </stripes:select>
-                <stripes:submit name="selectBron" value="Beheren"/>
+            <p>Attributen beheren voor</p>
+            <select name="featureSourceId" id="featureSourceId">
+                <option value="1">Kies..</option>
+                <c:forEach var="source" items="${actionBean.featureSources}">
+                    <option value="${source.id}"><c:out value="${source.name}"/></option>
+                </c:forEach>
+            </select>
+            <select name="simpleFeatureTypeId" id="simpleFeatureTypeId">
+                <option value="1">Kies..</option>
+            </select>
 
-
-
-                <div id="grid-container" class="attribute">
-
-                </div>
-                <div id="form-container" class="attribute">
-                    <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
-                </div>
+            <div id="grid-container" class="attribute"></div>
+            <div id="form-container" class="attribute">
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
-        </stripes:form>
+        </div>
+        
         <script type="text/javascript">
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="edit"/>';
             var activelink = 'menu_attributen';
+            
+            Ext.onReady(function() {
+                var featureSourceId = Ext.get('featureSourceId');
+                var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
+                featureSourceId.on('change', function() {
+                    featureSourceChange(featureSourceId);
+                });
+                simpleFeatureTypeId.on('change', function() {
+                    simpleFeatureTypeChange(simpleFeatureTypeId);
+                });
+                function getOption(value, text, selected) {
+                    var selectedtext = '';
+                    if(selected) {
+                        selectedtext = ' selected="selected"'
+                    }
+                    return '<option value="' + value + '"' + selectedtext + '>' + text + '</option>';
+                }
+                function featureSourceChange(featureSourceId) {
+                    var selectedValue = parseInt(featureSourceId.getValue());
+                    
+                    var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
+                    // We are now emptying dom and adding options manully, don't know if this is optimal
+                    simpleFeatureTypeId.dom.innerHTML = '';
+                    simpleFeatureTypeId.insertHtml('beforeEnd', getOption(-1, 'Kies...', true));
+                    
+                    if(selectedValue != 1) {
+                        Ext.Ajax.request({ 
+                            url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
+                            params: { 
+                                featureSourceId: selectedValue
+                            }, 
+                            success: function ( result, request ) {
+                                result = JSON.parse(result.responseText);
+                                Ext.Array.each(result, function(item) {
+                                    simpleFeatureTypeId.insertHtml('beforeEnd', getOption(item.id, item.name, false));
+                                });                              
+                            },
+                            failure: function() {
+                                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                            }
+                        });
+                    }
+                }
+                function simpleFeatureTypeChange(simpleFeatureTypeId) {
+                    var gridStore = Ext.getCmp('editGrid').getStore();
+                    gridStore.proxy.extraParams.simpleFeatureTypeId = simpleFeatureTypeId.getValue();
+                    // Go back to page 1 and reload store
+                    gridStore.load({params: {
+                        start: 0,
+                        page: 1,
+                        limit: 10
+                    }});
+                }
+                // Init with change, because a certain select value can be preselected
+                featureSourceChange(featureSourceId);
+            });
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>
     </stripes:layout-component>
