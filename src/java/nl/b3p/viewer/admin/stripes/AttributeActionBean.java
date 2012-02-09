@@ -54,7 +54,7 @@ public class AttributeActionBean implements ActionBean {
     @Validate
     private Long featureSourceId;
     @Validate
-    private String simpleFeatureTypeId;
+    private Long simpleFeatureTypeId;
     
     private List featureSources;
     
@@ -89,14 +89,14 @@ public class AttributeActionBean implements ActionBean {
         this.featureSources = featureSources;
     }
 
-    public String getSimpleFeatureTypeId() {
+    public Long getSimpleFeatureTypeId() {
         return simpleFeatureTypeId;
     }
 
-    public void setSimpleFeatureTypeId(String simpleFeatureTypeId) {
+    public void setSimpleFeatureTypeId(Long simpleFeatureTypeId) {
         this.simpleFeatureTypeId = simpleFeatureTypeId;
     }
-
+    
     public Long getFeatureSourceId() {
         return featureSourceId;
     }
@@ -190,10 +190,6 @@ public class AttributeActionBean implements ActionBean {
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
     
-    public Resolution selectBron() throws JSONException {
-        return new ForwardResolution(JSP);
-    }
-    
     public Resolution getFeatureTypes() throws JSONException {
         final JSONArray simpleFeatureTypes = new JSONArray();
         
@@ -223,22 +219,27 @@ public class AttributeActionBean implements ActionBean {
     public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
         
-        if(simpleFeatureTypeId != null){
+        List<Long> selectedAttributeIds = new ArrayList();
+        if(simpleFeatureTypeId != null && simpleFeatureTypeId != -1){
             SimpleFeatureType sft = (SimpleFeatureType)Stripersist.getEntityManager().find(SimpleFeatureType.class, simpleFeatureTypeId);
             
+            List<AttributeDescriptor> selectedAttributes = sft.getAttributes();
+            
+            for(Iterator it = selectedAttributes.iterator(); it.hasNext();){
+                AttributeDescriptor ad = (AttributeDescriptor)it.next();
+                selectedAttributeIds.add(ad.getId());
+            }
         }
         
         String filterAlias = "";
         String filterAttribuut = "";
         String filterType = "";
-        boolean hasFilter= false;
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
          * query be built to filter the right records
          */
         if(this.getFilter() != null) {
-            hasFilter = true;
             for(int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
@@ -257,8 +258,6 @@ public class AttributeActionBean implements ActionBean {
         
         Session sess = (Session)Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(AttributeDescriptor.class);
-        c.setMaxResults(limit);
-        c.setFirstResult(start);
         
         /* Sorting is delivered by the frontend
          * as two variables: sort which holds the column name and dir which
@@ -288,6 +287,15 @@ public class AttributeActionBean implements ActionBean {
             c.add(typeCrit);
         }
         
+        if(selectedAttributeIds != null && selectedAttributeIds.size() > 0){
+            Criterion attrCrit = Restrictions.in("id", selectedAttributeIds);
+            c.add(attrCrit);
+        }
+        int rowCount = c.list().size();
+        
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
+        
         List attributes = c.list();
 
         for(Iterator it = attributes.iterator(); it.hasNext();){
@@ -295,13 +303,6 @@ public class AttributeActionBean implements ActionBean {
             
             JSONObject j = this.getGridRow(attr.getId().intValue(), attr.getAlias(), attr.getName(), attr.getType());
             jsonData.put(j);
-        }
-        
-        int rowCount;
-        if(!hasFilter){
-            rowCount = Stripersist.getEntityManager().createQuery("from AttributeDescriptor").getResultList().size();
-        }else{
-            rowCount = attributes.size();
         }
         
         final JSONObject grid = new JSONObject();
