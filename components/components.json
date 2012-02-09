@@ -372,7 +372,7 @@
         name: "HTML",
         shortName: "HTML",
         sources: ["HTML.js"],
-        configSource: ["ConfigObject.js","HTML-config.js"],
+        configSource: ["HTML-config.js"],
         //restrictions: ["rightmargin_top", "leftmargin_top"],                
     }
 ]

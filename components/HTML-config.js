@@ -22,15 +22,23 @@ Ext.define("viewer.components.CustomConfiguration",{
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         //create html Editor
+        var value="";
+        if (config && config.xml){
+            value=config.xml;
+        }
+        
         Ext.tip.QuickTipManager.init();  // enable tooltips
         this.htmlEditor=Ext.create('Ext.form.HtmlEditor', {
-            width: 580,
-            height: 250,
+            width: 750,
+            height: 490,
+            value: value,
             renderTo: Ext.get(parentid)
         });  
+        
     },
     getConfiguration: function(){
         var config = new Object();
         config.xml= this.htmlEditor.getValue();
+        return config;
     }
 });
