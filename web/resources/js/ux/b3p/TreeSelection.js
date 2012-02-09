@@ -225,18 +225,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 }
             }
         });
-        
-        Ext.create('Ext.Button', {
-            icon: me.moveDownIcon,
-            width: 23,
-            height: 22,
-            renderTo: me.layerMoveButtons,
-            listeners: {
-                click: function() {
-                    console.log(me.getCheckedLayers());
-                }
-            }
-        });
     },
     
     handleLayerCheckChange: function(record, recordid, checked) {
