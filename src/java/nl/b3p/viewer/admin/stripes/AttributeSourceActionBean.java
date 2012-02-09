@@ -72,6 +72,7 @@ public class AttributeSourceActionBean implements ActionBean {
     }
     
     public Resolution edit() {
+        protocol = featureSource.getProtocol();
         return new ForwardResolution(EDITJSP);
     }
     
