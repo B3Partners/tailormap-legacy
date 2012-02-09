@@ -33,8 +33,8 @@ function ConfigSource(parentId, config){
         items: [{ //(3)
                 xtype: 'textfield',
                 fieldLabel: 'Naam',
-                name: 'naam',
-                value: config.naam,
+                name: 'title',
+                value: config.title,
                 labelWidth:labelWidth
             },{
                 xtype: 'checkbox',

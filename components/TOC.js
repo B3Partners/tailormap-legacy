@@ -3,7 +3,7 @@ Ext.define ("viewer.components.TOC",{
     panel: null,
     config: {
         name: "",
-        naam: "Table of Contents"
+        title: "Table of Contents"
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -25,7 +25,7 @@ Ext.define ("viewer.components.TOC",{
         });
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.div,
-            title: this.naam,
+            title: this.title,
             //width: 330,
             height: "100%",
             //frame: true,
