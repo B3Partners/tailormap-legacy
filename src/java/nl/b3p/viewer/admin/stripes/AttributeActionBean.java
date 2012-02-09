@@ -16,28 +16,15 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.ActionBean;
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
-import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
+import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -65,13 +52,18 @@ public class AttributeActionBean implements ActionBean {
     private JSONArray filter;
     
     @Validate
-    private String attribuutbron;
-    
+    private String featureSourceId;
     @Validate
-    private String attribuutLijst;
+    private JSONArray simpleFeatureTypeId;
+    
+    private List featureSources;
+    private List simpleFeatureTypes;
     
     @Validate
     private AttributeDescriptor attribute;
+    
+    @Validate
+    private String alias;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -90,20 +82,44 @@ public class AttributeActionBean implements ActionBean {
         this.attribute = attribute;
     }
 
-    public String getAttribuutLijst() {
-        return attribuutLijst;
+    public List getFeatureSources() {
+        return featureSources;
     }
 
-    public void setAttribuutLijst(String attribuutLijst) {
-        this.attribuutLijst = attribuutLijst;
+    public void setFeatureSources(List featureSources) {
+        this.featureSources = featureSources;
     }
 
-    public String getAttribuutbron() {
-        return attribuutbron;
+    public List getSimpleFeatureTypes() {
+        return simpleFeatureTypes;
     }
 
-    public void setAttribuutbron(String attribuutbron) {
-        this.attribuutbron = attribuutbron;
+    public void setSimpleFeatureTypes(List simpleFeatureTypes) {
+        this.simpleFeatureTypes = simpleFeatureTypes;
+    }
+
+    public String getFeatureSourceId() {
+        return featureSourceId;
+    }
+
+    public void setFeatureSourceId(String featureSourceId) {
+        this.featureSourceId = featureSourceId;
+    }
+
+    public String getSimpleFeatureTypeId() {
+        return simpleFeatureTypeId;
+    }
+
+    public void setSimpleFeatureTypeId(String simpleFeatureTypeId) {
+        this.simpleFeatureTypeId = simpleFeatureTypeId;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
     
     public String getDir() {
@@ -166,6 +182,25 @@ public class AttributeActionBean implements ActionBean {
     
     public Resolution cancel() {
         return new ForwardResolution(EDITJSP);
+    }
+    
+    public Resolution save() {
+        attribute.setAlias(alias);
+        Stripersist.getEntityManager().persist(attribute);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Attribuut is opgeslagen"));
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    @Before(stages=LifecycleStage.BindingAndValidation)
+    @SuppressWarnings("unchecked")
+    public void load() {
+        featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
+    }
+    
+    public Resolution selectBron() throws JSONException {
+        return new ForwardResolution(JSP);
     }
     
     public Resolution getGridData() throws JSONException { 

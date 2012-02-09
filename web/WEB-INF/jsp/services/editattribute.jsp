@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <table>
                     <tr>
                         <td>Alias:</td>
-                        <td><stripes:text name="attribute.alias" maxlength="255" size="30"/></td>
+                        <td><stripes:text name="alias" value="${actionBean.attribute.alias}" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Attribuut:</td>

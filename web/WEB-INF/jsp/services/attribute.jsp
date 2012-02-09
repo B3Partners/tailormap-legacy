@@ -28,39 +28,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
 
     <stripes:layout-component name="body">
-        <div id="content">
-            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean">
+        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean">
+            <div id="content">
                 <h1>Attributen</h1><br />
-                
+
                 <p>Attributen beheren voor</p>
-                <stripes:select name="attribuutbron">
-                    <stripes:option>Attribuutbron 1</stripes:option>
-                    <stripes:option>Attribuutbron 2</stripes:option>
-                    <stripes:option>Attribuutbron 3</stripes:option>
+                <stripes:select name="featureSourceId">
+                    <stripes:option value="1">Kies..</stripes:option>
+                    <c:forEach var="source" items="${actionBean.featureSources}">
+                        <stripes:option value="${source.id}"><c:out value="${source.name}"/></stripes:option>
+                    </c:forEach>
                 </stripes:select>
-                <stripes:select name="attribuutLijst">
-                    <stripes:option>Attribuutlijst 1</stripes:option>
-                    <stripes:option>Attribuutlijst 2</stripes:option>
-                    <stripes:option>Attribuutlijst 3</stripes:option>
-                    <stripes:option>Attribuutlijst 4</stripes:option>
-                    <stripes:option>Attribuutlijst 5</stripes:option>
+                <stripes:select name="simpleFeatureTypeId">
+                    <stripes:option value="1">Kies..</stripes:option>
                 </stripes:select>
                 <stripes:submit name="selectBron" value="Beheren"/>
 
-            </stripes:form>
 
-            <div id="grid-container" class="attribute">
 
+                <div id="grid-container" class="attribute">
+
+                </div>
+                <div id="form-container" class="attribute">
+                    <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                </div>
             </div>
-            <div id="form-container" class="attribute">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
-            </div>
-        </div>
-
+        </stripes:form>
         <script type="text/javascript">
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="edit"/>';
-            var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="delete"/>';
             var activelink = 'menu_attributen';
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>
