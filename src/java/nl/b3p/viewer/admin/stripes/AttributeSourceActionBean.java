@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
@@ -81,8 +82,15 @@ public class AttributeSourceActionBean implements ActionBean {
     }
     
     public Resolution delete() {
-        //Stripersist.getEntityManager().remove(featureSource);
-        //Stripersist.getEntityManager().getTransaction().commit();
+        EntityManager em = Stripersist.getEntityManager();
+
+        em.createQuery("update Layer set featureType = null where featureType in :fts")
+            .setParameter("fts", featureSource.getFeatureTypes())
+            .executeUpdate();
+
+        em.remove(featureSource);
+
+        Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
         return new ForwardResolution(EDITJSP);
