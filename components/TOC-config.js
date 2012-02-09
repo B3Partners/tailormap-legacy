@@ -42,11 +42,16 @@ function ConfigSource(parentId, config){
             fieldLabel: 'Aan',
             inputValue: true,
             name: 'aan',
+            checked: config.aan,
             value: config.aan
         }]
     });      
 }
 
 function getConfigObject() {
-    return form.getValues();
+    var config = new Object();
+    for( var i = 0 ; i < form.items.length ; i++){
+        config[form.items.get(i).name] = form.items.get(i).value;
+    }
+    return config;
 }

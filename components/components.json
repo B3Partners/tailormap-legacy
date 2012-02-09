@@ -271,7 +271,7 @@
         className: "viewer.components.TOC",
         name: "TOC",
         sources: ["TOC.js"],
-        configSource: "/viewer-html/components/TOC-config.js",
+        configSource: "TOC-config.js",
         restrictions: ["rightmargin_top", "leftmargin_top"],
         type: "popup",
         extPropertyGridConfigs: {
