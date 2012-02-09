@@ -196,6 +196,7 @@ public class GeoServiceActionBean implements ActionBean{
     }
     
     public Resolution editGeoService() {
+        protocol = service.getProtocol();
         return new ForwardResolution(JSP);
     }
     
@@ -277,7 +278,7 @@ public class GeoServiceActionBean implements ActionBean{
                 service = new WMSService().loadFromUrl(url, status, overrideUrl);
             } else if(protocol.equals("arcgis")) {
                 service = new ArcGISService().loadFromUrl(url, status);
-            } else if(protocol.equals("arcxml")) {
+            } else if(protocol.equals("arcims")) {
                 service = new ArcIMSService().loadFromUrl(url, status);
             } else {
                 getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
