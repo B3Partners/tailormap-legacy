@@ -18,9 +18,7 @@ var propertyGrid;
 var customConfiguration;
 
 if(metadata.configSource != undefined) {
-    for (var i=0; i < configSourceUrls.length; i++){
-        loadConfigSource(configSourceUrls[i]);
-    }
+    loadConfigSource(configSourceUrl);    
     Ext.onReady(function(){
         customConfiguration= new Ext.create("viewer.components.CustomConfiguration","config", configObject);
     });
@@ -50,12 +48,11 @@ if(metadata.configSource != undefined) {
     });
 }
 
-function loadConfigSource(url){
-    var fileref=document.createElement('script')
-    fileref.setAttribute("type","text/javascript")
-    fileref.setAttribute("src", url)
-   
-    document.getElementsByTagName("head")[0].appendChild(fileref)
+function loadConfigSource(url){    
+    var fileref=document.createElement('script');
+    fileref.setAttribute("type","text/javascript");
+    fileref.setAttribute("src", url);   
+    document.getElementsByTagName("head")[0].appendChild(fileref);
 }
 
 function getConfig() {

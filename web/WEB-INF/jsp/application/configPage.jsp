@@ -75,12 +75,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 
             <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">
                 <stripes:param name="className" value="${actionBean.className}"/> 
-            </stripes:url>
-            var configSourceUrls = new Array();
-            configSourceUrls.push("${configSource}");
-            //configSourceUrls.push("${contextPath}/viewer-html/components/ConfigObject.js");
-        </script>
+            </stripes:url>              
+            var configSourceUrl ="${configSource}";
+        </script>       
+        <script type="text/javascript" src="${contextPath}/viewer-html/components/ConfigObject.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>
-
 </stripes:layout-render>
