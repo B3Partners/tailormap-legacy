@@ -17,13 +17,16 @@
  *                   already been added to a region, this component cannot be added to that region
  * 
  * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
- *  
- * extPropertyGridConfigs.propertyNames: here you can set the objects with the 
- *   label that is shown while configuring this component.
- *   For example: {name: "The name", tooltip: "Tool tip"}
- * 
- * extPropertyGridConfigs.source: defaults for the extra properties. For example:
- *   {name: "a name", tooltip: "a tool tip"}
+ *   
+ * extPropertyGridConfigs.source: Set the object that must be configurable with defaults 
+ * For example:
+ *   {name: "a name", tooltip: "a tool tip", happy: true}
+ *   
+ * extPropertyGridConfigs.propertyNames: here you can set the labels for the object configured
+ * in extPropertyGridConfigs.source *   l
+ * For example: 
+ *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
+ *
  */
 
 [
@@ -249,7 +252,8 @@
         notInCombinationWith: ["OpenLayersMap"],
 
         extPropertyGridConfigs: {
-            propertyNames: {xml: "Xml Configuratie"}            
+            propertyNames: {xml: "Xml Configuratie"},
+            source: {xml: ""}
         }
     }, 
 
