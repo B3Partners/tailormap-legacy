@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
-                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save'}"> 
+                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save' || actionBean.context.eventName == 'saveEdit'}"> 
                         <c:choose>
                             <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}">
                             <h1>Attribuutbron bewerken: ${actionBean.featureSource.id}</h1>
@@ -47,17 +47,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                         <tr>
                             <td>Bron URL:</td>
-                            <td><stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30"/></td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}"> 
+                                        <stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30" disabled="true"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30"/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                         </tr>
                         <tr>
                             <td>Type:</td>
                             <td>
-                                <stripes:select name="protocol">
-                                    <stripes:option value="wfs">WFS</stripes:option>
-                                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
-                                    <stripes:option value="arcxml">ArcXml</stripes:option>
-                                    <stripes:option value="jdbc">JDBC</stripes:option>
-                                </stripes:select>
+                                <c:choose>
+                                    <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}"> 
+                                        <stripes:select name="protocol" disabled="true">
+                                            <stripes:option value="wfs">WFS</stripes:option>
+                                            <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                                            <stripes:option value="arcxml">ArcXml</stripes:option>
+                                            <stripes:option value="jdbc">JDBC</stripes:option>
+                                        </stripes:select>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <stripes:select name="protocol">
+                                            <stripes:option value="wfs">WFS</stripes:option>
+                                            <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                                            <stripes:option value="arcxml">ArcXml</stripes:option>
+                                            <stripes:option value="jdbc">JDBC</stripes:option>
+                                        </stripes:select>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                         </tr>
                         <tr>
@@ -69,7 +90,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td><stripes:text name="password" value="${actionBean.featureSource.password}" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
-                    <stripes:submit name="save" value="Opslaan"/>
+                    <c:choose>
+                        <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}"> 
+                            <stripes:submit name="saveEdit" value="Opslaan"/>
+                        </c:when>
+                        <c:otherwise>
+                            <stripes:submit name="save" value="Opslaan"/>
+                        </c:otherwise>
+                    </c:choose>
                     <stripes:submit name="cancel" value="Annuleren"/>
                 </c:when>
                 <c:otherwise>

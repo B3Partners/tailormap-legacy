@@ -52,11 +52,11 @@ public class AttributeSourceActionBean implements ActionBean {
     @Validate
     private JSONArray filter;
     
-    @Validate(on="saveAttributeSource", required=true)
+    @Validate(on={"save","saveEdit"}, required=true)
     private String name;
-    @Validate(on="saveAttributeSource", required=true)
+    @Validate(on="save", required=true)
     private String url;
-    @Validate(on="saveAttributeSource", required=true)
+    @Validate(on="save", required=true)
     private String protocol;
     @Validate
     private String username;
@@ -80,8 +80,8 @@ public class AttributeSourceActionBean implements ActionBean {
     }
     
     public Resolution delete() {
-        Stripersist.getEntityManager().remove(featureSource);
-        Stripersist.getEntityManager().getTransaction().commit();
+        //Stripersist.getEntityManager().remove(featureSource);
+        //Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
         return new ForwardResolution(EDITJSP);
@@ -119,7 +119,20 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    @ValidationMethod(on="save")
+    public Resolution saveEdit() {
+        featureSource.setName(name);
+        featureSource.setUsername(username);
+        featureSource.setPassword(password);
+        
+        Stripersist.getEntityManager().persist(featureSource);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+        
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    @ValidationMethod(on={"save","saveEdit"})
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
             errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
