@@ -1,0 +1,49 @@
+/* 
+ * Copyright (C) 2012 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * Custom configuration object for HTML configuration
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ */
+Ext.define("viewer.components.CustomConfiguration",{
+    extend: "viewer.components.ConfigObject",
+    form: null,
+    checkBoxes: null,
+    requestPath: contextPath+"/action/componentConfigLayerList",
+    constructor: function (parentId,configObject){
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        //createForm();
+        var layerListContainer=Ext.get(parentId).insertHtml("beforeEnd","<div id=\"layerListContainer\" style=\"width: 100%;height: 400px;\"></div>");
+        this.createCheckBoxes("layerListContainer");
+    },
+    createCheckBoxes: function (renderTo,checked){
+        if (checked==undefined)
+            checked=[];
+        checkBoxes=Ext.create("Ext.ux.b3p.FilterableCheckboxes",{
+            requestUrl: this.requestPath,
+            requestParams: {bufferAble:true, appId:applicationId},
+            renderTo: renderTo,
+            checked: checked
+        });
+        
+    },
+    getConfiguration: function(){
+        var config = new Object();
+        config.html= this.htmlEditor.getValue();
+        return config;
+    }
+});
+

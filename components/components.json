@@ -383,5 +383,13 @@
         configSource: ["TransparencySlider-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top"],
         
-    }
+    },
+    {
+        className: "viewer.components.Buffer",
+        name: "Buffer",
+        shortName: "Bf",
+        sources: ["Buffer.js"],
+        configSource: ["Buffer-config.js"],
+        //restrictions: ["rightmargin_top", "leftmargin_top"],                
+     }
 ]
