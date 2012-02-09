@@ -34,7 +34,7 @@ Ext.onReady(function() {
         {id:'header', htmlId:'layout_header', useShortName:false, floatComponents: false, addedComponents:[]},
         {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false, addedComponents:[]},
         {id:'leftmargin_bottom', htmlId:'layout_left_bottom', useShortName:false, floatComponents: false, addedComponents:[]},
-        {id:'left_menu', htmlId:'layout_left_menu', useShortName:false, floatComponents: false, addedComponents:[]},
+        {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, addedComponents:[]},
         {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, addedComponents:[]},
         {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, addedComponents:[]},
         {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, addedComponents:[]},

@@ -179,7 +179,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         em.persist(component);
         em.getTransaction().commit();
 
-        return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
+        return config();
     }
 
     public Resolution removeComponent() {
