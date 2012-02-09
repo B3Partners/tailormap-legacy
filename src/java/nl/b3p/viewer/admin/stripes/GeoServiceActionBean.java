@@ -18,16 +18,10 @@ package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
-import nl.b3p.viewer.config.services.ArcGISService;
-import nl.b3p.viewer.config.services.ArcIMSService;
-import nl.b3p.viewer.config.services.Category;
-import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.WMSService;
+import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.logging.*;
+import org.json.*;
 import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 

@@ -71,10 +71,10 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft."));
         }
-        /*if(level.isToc()){
+        if(level.getSelectedIndex() != null){
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen"));
-        }*/
+        }
         if(level.getLayers().size() > 0){
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat."));

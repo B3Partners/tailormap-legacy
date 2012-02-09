@@ -22,14 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
-import nl.b3p.viewer.config.security.Group;
-import nl.b3p.viewer.config.security.User;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
+import nl.b3p.viewer.config.security.*;
+import org.hibernate.*;
 import org.hibernate.criterion.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
