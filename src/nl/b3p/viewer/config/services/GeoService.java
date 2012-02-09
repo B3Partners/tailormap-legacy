@@ -175,6 +175,36 @@ public abstract class GeoService {
     public JSONObject toJSONObject() throws JSONException {
         return toJSONObject(null);
     }
+
+    /**
+     * Returns the layer with the given name in this server
+     * @param layerName The layer name
+     * @return the Layer or null if not found
+     */
+    public Layer getLayer(String layerName) {
+        return getLayer(layerName,topLayer);
+    }
+    /**
+     * Returns the layer in the given Layer (inLayer) with the given layerName
+     * @param layerName the name of the layer
+     * @param inLayer the layer to search in
+     * @return the Layer with name == layerName or null if not found
+     */
+    private Layer getLayer(String layerName,Layer inLayer){  
+        if (layerName==null)
+            return null;
+        if(layerName.equals(inLayer.getName()))
+            return inLayer;
+        //walk through layers
+        Layer returnLayer=null;        
+        for (Layer layer : inLayer.getChildren()){
+            returnLayer= getLayer(layerName,layer);
+            if(returnLayer!=null){
+                return returnLayer;
+            }
+        }
+        return returnLayer;            
+    }
     
 
 }
