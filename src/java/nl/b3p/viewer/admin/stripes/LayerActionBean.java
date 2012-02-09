@@ -17,12 +17,14 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -52,6 +54,13 @@ public class LayerActionBean implements ActionBean{
     
     @Validate
     private Map<String,String> details = new HashMap<String,String>();
+    
+    @Validate
+    private SimpleFeatureType simpleFeatureType;
+    @Validate
+    private Long featureSourceId;
+    
+    private List featureSources;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -109,6 +118,30 @@ public class LayerActionBean implements ActionBean{
     public void setApplicationsUsedIn(List<String> applicationsUsedIn) {
         this.applicationsUsedIn = applicationsUsedIn;
     }
+
+    public SimpleFeatureType getSimpleFeatureType() {
+        return simpleFeatureType;
+    }
+
+    public void setSimpleFeatureType(SimpleFeatureType simpleFeatureType) {
+        this.simpleFeatureType = simpleFeatureType;
+    }
+
+    public Long getFeatureSourceId() {
+        return featureSourceId;
+    }
+
+    public void setFeatureSourceId(Long featureSourceId) {
+        this.featureSourceId = featureSourceId;
+    }
+
+    public List getFeatureSources() {
+        return featureSources;
+    }
+
+    public void setFeatureSources(List featureSources) {
+        this.featureSources = featureSources;
+    }
     
     public String getParentId() {
         return parentId;
@@ -128,6 +161,7 @@ public class LayerActionBean implements ActionBean{
     @SuppressWarnings("unchecked")
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+        featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
     
     public Resolution edit() {
@@ -136,6 +170,11 @@ public class LayerActionBean implements ActionBean{
             
             groupsRead.addAll(layer.getReaders());
             groupsWrite.addAll(layer.getWriters());
+            
+            if(layer.getFeatureType() != null){
+                simpleFeatureType = layer.getFeatureType();
+                featureSourceId = simpleFeatureType.getFeatureSource().getId();
+            }
             
             findApplicationsUsedIn();
         }
@@ -200,6 +239,10 @@ public class LayerActionBean implements ActionBean{
         layer.getWriters().clear();
         for(String groupName: groupsWrite) {
             layer.getWriters().add(groupName);
+        }
+        
+        if(simpleFeatureType != null){
+           layer.setFeatureType(simpleFeatureType); 
         }
         
         Stripersist.getEntityManager().persist(layer);
