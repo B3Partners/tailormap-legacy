@@ -32,11 +32,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:hidden name="level" value="${actionBean.level.id}"/>
 
                 <c:if test="${actionBean.context.eventName == 'edit'}">
-                <stripes:submit name="save" value="Opslaan" />
-                <stripes:submit name="cancel" value="Annuleren"/>
-                <stripes:submit name="delete" value="Verwijderen"/>
-                <br /><br />
-                <div id="tabs">
+                    <stripes:submit name="save" value="Opslaan" />
+                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <stripes:submit name="delete" value="Verwijderen"/>
+                    <br /><br />
+                    <div id="tabs">
                         <div id="tree-tab" class="tabdiv">
                             <div id="tree" class="tree-selection-tree">
                                 <div id="servicetree-container"></div>
@@ -56,7 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <stripes:checkbox name="groupsRead" value="${group.name}"/>${group.name}<br>
                             </c:forEach>
                         </div>
-                    
+
                         <div id="documents-tab" class="tabdiv">
                             <div id="doctree" class="tree-selection-tree">
                                 <div id="documenttree-container"></div>
@@ -65,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <div id="docselection" class="tree-selection-tree">
                                 <div id="selected-doc"></div>
                             </div>
-                                <div id="docmove-buttons" class="tree-selection-buttons"></div>
+                            <div id="docmove-buttons" class="tree-selection-buttons"></div>
                             <div style="clear: both;"></div>
                             <stripes:hidden id="selecteddocsinput" name="selecteddocs" />
                         </div>
@@ -75,41 +75,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <stripes:textarea cols="150" rows="5" name="level.info"/><br>
                             Niveau naam: <stripes:text name="level.name"/>
                         </div>
-                </div>
+                    </div>
             </c:if>
-        <c:if test="${actionBean.context.eventName == 'save'}">
-            <script type="text/javascript">
-                var frameParent = getParent();
-                if(frameParent && frameParent.renameNode && '${actionBean.level.name}' != '') {
-                    frameParent.renameNode('n${actionBean.level.id}','${actionBean.level.name}');
-                    frameParent.refreshNode('n${actionBean.level.id}');
-                }
-            </script>
-        </c:if>
+            <c:if test="${actionBean.context.eventName == 'save'}">
+                <script type="text/javascript">
+                    var frameParent = getParent();
+                    if(frameParent && frameParent.renameNode && '${actionBean.level.name}' != '') {
+                        frameParent.renameNode('n${actionBean.level.id}','${actionBean.level.name}');
+                        frameParent.refreshNode('n${actionBean.level.id}');
+                    }
+                </script>
+            </c:if>
 
         </stripes:form>
-        <script type="text/javascript">
-            // Definition of URLS and icons... how are we going to do this?
-            var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
-            var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
-            var doctreeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadDocumentTree"/>';
-            var selecteddocsurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedDocuments"/>';
-            var levelid = '${actionBean.level.id}';
-            var layersAllowed = ${actionBean.layersAllowed};
- 
-            var foldericon = '${contextPath}/resources/images/folder.png';
-            var serviceokicon = '${contextPath}/resources/images/serviceok.png';
-            var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
-            var layericon = '${contextPath}/resources/images/map.png';
-            var documenticon = '${contextPath}/resources/images/document.png';
-            var movelefticon = '${contextPath}/resources/images/move-left.gif';
-            var moverighticon = '${contextPath}/resources/images/move-right.gif';
-            var moveupicon = '${contextPath}/resources/images/move-up.gif';
-            var movedownicon = '${contextPath}/resources/images/move-down.gif';
-            
-            var activelink = 'menu_boomstructuur';
-        </script>
-        <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/TreeSelection.js"></script>
-        <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLevel.js"></script>
+        <c:if test="${actionBean.context.eventName == 'edit'}">
+            <script type="text/javascript">
+                // Definition of URLS and icons... how are we going to do this?
+                var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
+                var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
+                var doctreeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadDocumentTree"/>';
+                var selecteddocsurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedDocuments"/>';
+                var levelid = '${actionBean.level.id}';
+                var layersAllowed = ${actionBean.layersAllowed};
+
+                var foldericon = '${contextPath}/resources/images/folder.png';
+                var serviceokicon = '${contextPath}/resources/images/serviceok.png';
+                var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
+                var layericon = '${contextPath}/resources/images/map.png';
+                var documenticon = '${contextPath}/resources/images/document.png';
+                var movelefticon = '${contextPath}/resources/images/move-left.gif';
+                var moverighticon = '${contextPath}/resources/images/move-right.gif';
+                var moveupicon = '${contextPath}/resources/images/move-up.gif';
+                var movedownicon = '${contextPath}/resources/images/move-down.gif';
+
+                var activelink = 'menu_boomstructuur';
+            </script>
+            <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/TreeSelection.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLevel.js"></script>
+        </c:if>
     </stripes:layout-component>
 </stripes:layout-render>
