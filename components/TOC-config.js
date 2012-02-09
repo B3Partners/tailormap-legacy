@@ -15,22 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-var form;
-function ConfigSource(parentId, config){
-    if(config == undefined || config == null){
-        config = new Object();
-    }
-    var labelWidth = 300;
-    form = new Ext.form.FormPanel({ //(1)
-        url: 'Home/SubmitForm',
-        frame: false,
-        title: 'Configureer dit component',
-        width: 480,
-      /*  layout: {
-            type: 'vbox',
-            align: 'right'
-        },*/
-        items: [{ //(3)
+Ext.define("viewer.components.CustomConfiguration",{
+    extend: "viewer.components.ConfigObject",
+    form: null,
+    constructor: function (parentid,config){
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+        if(config == undefined || config == null){
+            config = new Object();
+        }
+        var labelWidth = 300;
+        this.form = new Ext.form.FormPanel({
+            url: 'Home/SubmitForm',
+            frame: false,
+            title: 'Configureer dit component',
+            width: 480,
+            items: [{ 
                 xtype: 'textfield',
                 fieldLabel: 'Naam',
                 name: 'title',
@@ -62,14 +61,14 @@ function ConfigSource(parentId, config){
                 labelWidth:labelWidth
             }],
         
-        renderTo: parentId//(2)
-    });      
-}
-
-function getConfigObject() {
-    var config = new Object();
-    for( var i = 0 ; i < form.items.length ; i++){
-        config[form.items.get(i).name] = form.items.get(i).value;
+            renderTo: parentid//(2)
+        });      
+    },
+    getConfiguration: function(){
+        var config = new Object();
+        for( var i = 0 ; i < this.form.items.length ; i++){
+            config[this.form.items.get(i).name] = this.form.items.get(i).value;
+        }
+        return config;
     }
-    return config;
-}
+});

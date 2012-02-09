@@ -374,5 +374,14 @@
         sources: ["HTML.js"],
         configSource: ["HTML-config.js"],
         //restrictions: ["rightmargin_top", "leftmargin_top"],                
+    },
+
+    {
+        className: "viewer.components.TransparencySlider",
+        name: "Tranparantie",
+        sources: ["TransparencySlider.js"],
+        configSource: ["TransparencySlider-config.js"],
+        restrictions: ["rightmargin_top", "leftmargin_top"],
+        
     }
 ]
