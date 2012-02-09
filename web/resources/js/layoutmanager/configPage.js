@@ -15,11 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 var propertyGrid;
+var customConfiguration;
 
 if(metadata.configSource != undefined) {
-    loadConfigSource(configSourceUrl);
+    for (var i=0; i < configSourceUrls.length; i++){
+        loadConfigSource(configSourceUrls[i]);
+    }
     Ext.onReady(function(){
-        ConfigSource("config", configObject);
+        customConfiguration= new Ext.create("viewer.components.CustomConfiguration","config", configObject);
     });
 } else {
     Ext.onReady(function() {
@@ -58,7 +61,7 @@ function loadConfigSource(url){
 function getConfig() {
     var config;
     if(metadata.configSource != undefined){
-        config = getConfigObject();
+        config = customConfiguration.getConfiguration();
     }else{
         config = propertyGrid.getSource();
     }
