@@ -18,7 +18,7 @@ var propertyGrid;
 var customConfiguration;
 
 if(metadata.configSource != undefined) {
-    loadConfigSource(configSourceUrl);    
+    createLayoutTab();
     Ext.onReady(function(){
         customConfiguration= new Ext.create("viewer.components.CustomConfiguration","config", configObject);
     });
@@ -47,12 +47,112 @@ if(metadata.configSource != undefined) {
         }
     });
 }
-
-function loadConfigSource(url){    
-    var fileref=document.createElement('script');
-    fileref.setAttribute("type","text/javascript");
-    fileref.setAttribute("src", url);   
-    document.getElementsByTagName("head")[0].appendChild(fileref);
+var layoutForm;
+function createLayoutTab(){
+    var labelWidth = 300;
+    layoutForm = new Ext.form.FormPanel({
+        frame: false,
+        width: 480,
+        border: 0,
+        items: [{
+            xtype:'fieldset',
+            columnWidth: 0.5,
+            title: 'Vensterpositie',
+            collapsible: false,
+            defaultType: 'textfield',
+            layout: 'anchor',
+            items:[
+            {
+                xtype: 'radiogroup',
+                columns: 1,
+                vertical: true,
+                labelWidth:350,
+                items: [
+                {
+                    boxLabel: 'Gecentreerd', 
+                    name: 'position', 
+                    inputValue: 'center' , 
+                    checked: true
+                },
+                {
+                    boxLabel: 'Vaste Positie', 
+                    name: 'position', 
+                    inputValue: 'fixed',
+                    listeners:{
+                        change:function(el) {
+                            if(this.getValue()==true){
+                                Ext.getCmp('x').show();
+                                Ext.getCmp('y').show();
+                            }else{
+                                Ext.getCmp('x').hide();
+                                Ext.getCmp('y').hide();
+                            }
+                        }
+                    }
+                }
+                ]
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: 'x',
+                id: "x",
+                name: 'x',
+                value: "",
+                hidden : true,
+                labelWidth:100
+            },
+            { 
+                xtype: 'textfield',
+                fieldLabel: 'y',
+                id: "y",
+                name: 'y',
+                value: "",
+                hidden : true,
+                labelWidth:100
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
+                inputValue: true,
+                name: 'changeablePosition',
+                checked: true,
+                value: true,
+                labelWidth:labelWidth
+            }]
+        },
+        { 
+            xtype:'fieldset',
+            columnWidth: 0.5,
+            title: 'Venstergrootte',
+            collapsible: false,
+            defaultType: 'textfield',
+            layout: 'anchor',
+            items:[{
+                xtype: 'textfield',
+                fieldLabel: 'Breedte',
+                name: 'width',
+                value: "",
+                labelWidth:100
+            },
+            { 
+                xtype: 'textfield',
+                fieldLabel: 'Hoogte',
+                name: 'Height',
+                value: "",
+                labelWidth:100
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Gebruiker kan de grootte van de popup aanpassen',
+                inputValue: true,
+                name: 'changeableSize',
+                checked: true,
+                value: true,
+                labelWidth:labelWidth
+            }]
+        }],
+        
+        renderTo: "layout"//(2)
+    });      
 }
 
 function getConfig() {
@@ -69,6 +169,20 @@ function getConfig() {
 
 Ext.onReady(function() {
     Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-display');   
+    var tabs = [];
+    tabs = [{
+        contentEl:'config', 
+        title: 'Configuratie'
+    },{
+        contentEl:'rights', 
+        title: 'Rechten'
+    }];
+    if(metadata.type != undefined && metadata.type != "popup"){
+        tabs.push({
+            contentEl:'layout', 
+            title: 'Layout'
+        });
+    }
     Ext.createWidget('tabpanel', {
         renderTo: 'tabs',
         width: '100%',
@@ -78,16 +192,7 @@ Ext.onReady(function() {
             bodyPadding: 10
         },
         layoutOnTabChange: true,
-        items: [{
-            contentEl:'config', 
-            title: 'Configuratie'
-        },{
-            contentEl:'rights', 
-            title: 'Rechten'
-        },{
-            contentEl:'layout', 
-            title: 'Layout'
-        }],
+        items: tabs,
         bbar: ["->", {
             xtype: 'button',
             text: 'Opslaan',
@@ -95,6 +200,16 @@ Ext.onReady(function() {
             listeners: {
                 click: function() {
                     getConfig();
+                    var layout = new Object();
+                    for( var i = 0 ; i < layoutForm.items.length ; i++){
+                        var items = layoutForm.items.get(i);
+                        for ( var j = 0 ; j < items.items.length ; j ++){
+                            layout[items.items.get(j).name] = items.items.get(j).value;
+                        }
+                    }
+                    var layoutFormObject = Ext.get("componentLayout");
+                    layoutFormObject.dom.value = JSON.stringify(layout);
+                    
                     document.getElementById('configForm').submit();
                 }
             }

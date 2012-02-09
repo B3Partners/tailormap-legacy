@@ -33,6 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden name="component" value="${actionBean.component.id}"/>
             <stripes:hidden name="className" value="${actionBean.className}"/>
             <stripes:hidden name="name" value="${actionBean.name}"/>
+            <stripes:hidden name="componentLayout"/>
             <stripes:hidden name="configObject" id="configObject"/>
             <stripes:hidden name="saveComponentConfig" value="Opslaan" />
 
@@ -47,15 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:forEach>
                 </div>
                 <div id="layout" class="tabdiv">
-                    <h1>Vensterpositie</h1>
-                    <input type="radio" name="positie" value="center">Gecentreerd <br/>
-                    <input type="radio"  name="positie" value="fixed">Vaste positie (van linker bovenhoek popup t.o.v. linker bovenhoek scherm)<br/>
-                    <input type="checkbox" value="changeablePosition">Gebruiker kan de positie van de popup aanpassen<br/>
 
-                    <h1>Venstergrootte</h1>
-                    Breedte <stripes:text name="breedte" id="breedte"/><br/>
-                    Hoogte<stripes:text name="hoogte" id="hoogte"/><br/>
-                    <input type="checkbox" value="changeableSize">Gebruiker kan de grootte van de popup aanpassen<br/>
                 </div>
             </div>
         </stripes:form>
@@ -76,9 +69,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">
                 <stripes:param name="className" value="${actionBean.className}"/> 
             </stripes:url>              
-            var configSourceUrl ="${configSource}";
         </script>       
         <script type="text/javascript" src="${contextPath}/viewer-html/components/ConfigObject.js"></script>
+        <c:if test="${!empty configSource}">
+            <script type="text/javascript" src="${configSource}"></script>
+        </c:if>
+
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>
 </stripes:layout-render>

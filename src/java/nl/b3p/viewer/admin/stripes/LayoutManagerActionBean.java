@@ -17,9 +17,11 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -60,6 +62,9 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private List<String> groups = new ArrayList<String>();
     @Validate(on = "saveApplicationLayout")
     private String layout;
+    
+    @Validate(on="saveComponentConfig")
+    private String componentLayout;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
@@ -133,6 +138,15 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public void setLayout(String layout) {
         this.layout = layout;
     }
+
+    public String getComponentLayout() {
+        return componentLayout;
+    }
+
+    public void setComponentLayout(String componentLayout) {
+        this.componentLayout = componentLayout;
+    }
+    
     //</editor-fold>
 
     @DefaultHandler
@@ -172,6 +186,9 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         component.setName(name);
         component.setClassName(className);
         component.setApplication(application);
+        Map<String,String> details = new HashMap<String,String>();
+        details.put("layout",componentLayout);
+        component.setDetails(details);
 
         component.getReaders().clear();
         component.setReaders(new HashSet<String>(groups));
