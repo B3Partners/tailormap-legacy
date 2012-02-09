@@ -14,22 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * FlamingoComponent
- * Creates a Custom Flamingo component with the given xml.
- * With this all custom Flamingo-mc objects can be added.
- * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
- */
-Ext.define ("viewer.components.FlamingoComponent",{
-    extend: "viewer.components.Component",
-    config:{
-        name: "FlamingoComponent",
-        xml : ""
+/**/
+
+Ext.define("viewer.components.CustomConfiguration",{
+    extend: "viewer.components.ConfigObject",
+    htmlEditor: null,
+    constructor: function (parentid,config){
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+        //create html Editor
+        Ext.tip.QuickTipManager.init();  // enable tooltips
+        this.htmlEditor=Ext.create('Ext.form.HtmlEditor', {
+            width: 580,
+            height: 250,
+            renderTo: Ext.get(parentid)
+        });  
     },
-    constructor: function (conf){        
-        viewer.components.FlamingoComponent.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        return this;
+    getConfiguration: function(){
+        var config = new Object();
+        config.xml= this.htmlEditor.getValue();
     }
 });
-

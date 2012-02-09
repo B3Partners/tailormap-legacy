@@ -15,21 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * FlamingoComponent
- * Creates a Custom Flamingo component with the given xml.
- * With this all custom Flamingo-mc objects can be added.
+ * HTML component
+ * Creates a html component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.FlamingoComponent",{
-    extend: "viewer.components.Component",
-    config:{
-        name: "FlamingoComponent",
-        xml : ""
-    },
+Ext.define ("viewer.components.HTML",{
+    extend: "viewer.components.Component",    
     constructor: function (conf){        
-        viewer.components.FlamingoComponent.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        viewer.components.ScaleBar.superclass.constructor.call(this, conf);
+        this.initConfig(conf);        
         return this;
-    }
+    }      
 });
-

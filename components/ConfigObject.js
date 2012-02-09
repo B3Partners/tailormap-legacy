@@ -15,21 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * FlamingoComponent
- * Creates a Custom Flamingo component with the given xml.
- * With this all custom Flamingo-mc objects can be added.
- * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ * Superclass for the classes that create configuration elements for a component.
  */
-Ext.define ("viewer.components.FlamingoComponent",{
-    extend: "viewer.components.Component",
-    config:{
-        name: "FlamingoComponent",
-        xml : ""
+Ext.define("viewer.components.ConfigObject",{
+    parentId: null,
+    configObject: null,
+    constructor: function (parentId,configObject){
+        this.parentId=parentId;
+        this.configObject=configObject;
     },
-    constructor: function (conf){        
-        viewer.components.FlamingoComponent.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        return this;
+    /**
+     * Must return the configuration that is set by the user.
+     */
+    getConfiguration: function(){
+        Ext.Error.raise("getConfigObject() must be implemented in subclass of \"viewer.components.ConfigObject\" ");
     }
 });
 
