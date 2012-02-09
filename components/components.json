@@ -252,7 +252,7 @@
         className: "viewer.components.TOC",
         name: "TOC",
         sources: ["TOC.js"],
-
+        configSource: "/viewer-html/components/TOC-config.js",
         restrictions: ["rightmargin_top", "leftmargin_top"],
         type: "popup",
         extPropertyGridConfigs: {
@@ -309,7 +309,7 @@
     {
         className: "viewer.components.SelectionModule",
         name: "Selection Module",
-        shortName: "Rd",
+        shortName: "Sm",
         sources: ["SelectionModule.js"],
         singleton: true,
         restrictions: ["left_menu"],
@@ -331,5 +331,25 @@
                 selectOwnServices: true
             }
         }
-    }    
+    }    ,
+    {
+        className: "viewer.components.Bookmark",
+        name: "Bookmark",
+        shortName: "Bm",
+        sources: ["Bookmark.js"],
+        singleton: true,
+        restrictions: ["left_menu"],
+        extPropertyGridConfigs: {
+            propertyNames: {
+                tooltip: "Hoover tekst",
+                title: "Titel",
+                titlebarIcon : "Titelbalk icoon"
+            },
+            source: {
+                tooltip: "",
+                title: "",
+                titlebarIcon : ""
+            }
+        }
+    }  
 ]
