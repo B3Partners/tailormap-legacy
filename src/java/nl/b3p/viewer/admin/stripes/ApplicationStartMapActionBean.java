@@ -207,7 +207,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
     
     private boolean getCheckedForLayerId(Long levelid) throws JSONException {
         for(int i = 0; i < jsonCheckedLayers.length(); i++){
-            if(levelid.equals(Long.parseLong(jsonCheckedLayers.getString(i)))) {
+            if(levelid.equals(new Long(jsonCheckedLayers.getInt(i)))) {
                 return true;
             }
         }

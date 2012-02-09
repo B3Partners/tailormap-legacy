@@ -225,10 +225,23 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 }
             }
         });
+        
+        Ext.create('Ext.Button', {
+            icon: me.moveDownIcon,
+            width: 23,
+            height: 22,
+            renderTo: me.layerMoveButtons,
+            listeners: {
+                click: function() {
+                    console.log(me.getCheckedLayers());
+                }
+            }
+        });
     },
     
     handleLayerCheckChange: function(record, recordid, checked) {
         var me = this;
+        recordid = parseInt(recordid);
         if(!checked) {
             me.selectedlayers.getRootNode().eachChild(function(rootlevel) {
                 if(rootlevel.get('type') == 'level') {
