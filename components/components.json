@@ -256,17 +256,6 @@
             source: {xml: ""}
         }
     }, 
-
-    {
-        className: "TestComponent",
-        sources: ["TestComponent.js", "TestComponentFile2.js"],
-        configSource: "TestComponent-config.js",
-        name: "Test Component",
-        shortName: "To",
-        restrictions: ["top_menu", "leftmargin_top", "rightmargin_top"],
-        type: "popup"
-    },
-
     {
         className: "viewer.components.TOC",
         name: "TOC",
