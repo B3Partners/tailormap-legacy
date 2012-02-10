@@ -155,6 +155,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                             if(slider.id == me.currentSlider.id) {
                                 slider.name = Ext.getCmp('sliderName').getValue();
                                 slider.initialTransparency = parseInt(Ext.getCmp('sliderTransparency').getValue());
+                                me.adjustSliderHeader(slider.id,slider.name);
                             }
                         });
                     }
@@ -175,7 +176,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             url: me.requestUrl, 
             params: me.requestParams, 
             success: function ( result, request ) {
-                me.itemList = JSON.parse(result.responseText);
+                me.itemList = result.responseText;
                 me.render();
             },
             failure: function() {
@@ -273,6 +274,10 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         return divobject;
     },
     
+    adjustSliderHeader : function (sliderid, slidername){
+        var span = document.getElementById('sliderheader-link-' + sliderid);
+        span.innerHTML = slidername;
+    },
     initSelection: function() {
         var me = this;
         Ext.Array.each(me.sliders, function(slider) {
