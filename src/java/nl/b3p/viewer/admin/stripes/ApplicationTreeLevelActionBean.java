@@ -139,6 +139,16 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                         appLayer = new ApplicationLayer();
                         appLayer.setService(layer.getService());
                         appLayer.setLayerName(layer.getName());
+                        
+                        if(layer.getFeatureType() != null){
+                            SimpleFeatureType sft = layer.getFeatureType();
+                            for(Iterator it = sft.getAttributes().iterator(); it.hasNext();){
+                                AttributeDescriptor ad = (AttributeDescriptor)it.next();
+                                ConfiguredAttribute confAttribute = new ConfiguredAttribute();
+                                confAttribute.setAttributeName(ad.getName());
+                                appLayer.getAttributes().add(confAttribute);
+                            }
+                        }
                     }
                 }                
                 level.getLayers().add(appLayer);
