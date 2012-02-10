@@ -18,12 +18,20 @@
 
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
+    filterableCheckboxes:null,
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-      
+        filterableCheckboxes = Ext.create('Ext.ux.b3p.SelectionGrid', {
+            requestUrl: contextPath+"/action/componentConfigLayerList",
+            requestParams: {
+                appId:applicationId
+            },
+            renderTo: 'config',
+            sliders: config
+        });
     },
     getConfiguration: function(){
-        var config = new Object();
+        var config = filterableCheckboxes.getSliders();
         return config;
     }
 });
