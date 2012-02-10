@@ -21,28 +21,52 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     form: null,
-    checkBoxes: null,
-    requestPath: contextPath+"/action/componentConfigLayerList",
     constructor: function (parentId,configObject){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        //createForm();
-        var layerListContainer=Ext.get(parentId).insertHtml("beforeEnd","<div id=\"layerListContainer\" style=\"width: 100%;height: 400px;\"></div>");
-        this.createCheckBoxes("layerListContainer");
+        //createForm();                
+        this.createForm(this.configObject);
+        //
+        this.createCheckBoxes(this.configObject.layers);
     },
-    createCheckBoxes: function (renderTo,checked){
-        if (checked==undefined)
-            checked=[];
-        checkBoxes=Ext.create("Ext.ux.b3p.FilterableCheckboxes",{
-            requestUrl: this.requestPath,
-            requestParams: {bufferAble:true, appId:applicationId},
-            renderTo: renderTo,
-            checked: checked
-        });
-        
+    createForm: function(config){
+        //to make this accessible in object
+        var me=this;
+        this.form=new Ext.form.FormPanel({
+            frame: false,
+            bodyPadding: me.formPadding,
+            width: me.formWidth,
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{ 
+                xtype: 'textfield',
+                fieldLabel: 'Titel',
+                name: 'title',
+                value: config.title,
+                labelWidth:me.labelWidth
+            },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Titelbalk icoon',
+                name: 'iconUrl',
+                value: config.iconUrl,
+                labelWidth:me.labelWidth
+            },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Hoover tekst',
+                name: 'toolTip',
+                value: config.toolTip,
+                labelWidth:me.labelWidth
+            }],
+            renderTo: this.parentId//(2)
+        });     
     },
+       
     getConfiguration: function(){
         var config = new Object();
-        config.html= this.htmlEditor.getValue();
+        config.layers=this.checkBoxes.getChecked();        
+        for( var i = 0 ; i < this.form.items.length ; i++){
+            config[this.form.items.get(i).name] = this.form.items.get(i).value;
+        }
         return config;
     }
 });

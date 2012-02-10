@@ -23,6 +23,12 @@ Ext.define("viewer.components.ConfigObject",{
     formWidth: 760,
     labelWidth: 300,
     formPadding: 5,
+    //options for checkboxes
+    checkBoxes: null,
+    checkPanel: null,
+    checkPanelHeight: 300,
+    //URL for getting Layers
+    requestPath: contextPath+"/action/componentConfigLayerList",
     constructor: function (parentId,configObject){
         this.parentId=parentId;
         this.configObject=configObject;
@@ -35,6 +41,39 @@ Ext.define("viewer.components.ConfigObject",{
      */
     getConfiguration: function(){
         Ext.Error.raise("getConfigObject() must be implemented in subclass of \"viewer.components.ConfigObject\" ");
+    },
+    /**
+     *Create a layer list with checkboxes.
+     *@param checkedIds a array of id's that need to be checked at init.
+     *@param requestParams the params that are send with the ajax request.
+     */
+    createCheckBoxes: function (checkedIds,requestParams){
+        if (requestParams==undefined || requestParams==null){
+            requestParams=new Object();
+        }
+        //add the application id that needs to be send with the ajax
+        requestParams.appId=applicationId;
+        
+        if (checkedIds==undefined)
+            checkedIds=[];
+        //create the formpanel
+        var me=this;                
+        this.checkPanel=Ext.create("Ext.form.FormPanel",{
+            title: "Selecteer de kaartlagen waarop deze tool van toepassing is",
+            id: "layerListContainer",
+            style: {marginTop: "10px"},
+            frame: false,
+            bodyPadding: me.formPadding,
+            width: me.formWidth,
+            height: me.checkPanelHeight,
+            renderTo: this.parentId
+        });        
+        this.checkBoxes=Ext.create("Ext.ux.b3p.FilterableCheckboxes",{
+            requestUrl: me.requestPath,
+            requestParams: requestParams,
+            renderTo: "layerListContainer-body",
+            checked: checkedIds
+        });   
     }
 });
 
