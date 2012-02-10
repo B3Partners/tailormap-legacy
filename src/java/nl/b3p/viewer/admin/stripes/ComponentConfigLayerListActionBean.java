@@ -105,9 +105,10 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         //get all the layers of this level
         for (ApplicationLayer appLayer: level.getLayers()){
             Layer l=appLayer.getService().getLayer(appLayer.getLayerName());
-            if (filterAble && !l.isFilterable()){
+            if (filterAble && !l.isFilterable() ||
+                    bufferAble && !l.isBufferable()){                    
                 continue;
-            }
+            }                
             layers.add(l);
         }
         //get all the layers of the level children.
