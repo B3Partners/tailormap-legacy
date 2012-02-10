@@ -108,6 +108,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 // Init with change, because a certain select value can be preselected
                 featureSourceChange(featureSourceId);
             });
+            
+            function reloadGrid(){
+                Ext.getCmp('editGrid').getStore().load();
+            }
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>
     </stripes:layout-component>

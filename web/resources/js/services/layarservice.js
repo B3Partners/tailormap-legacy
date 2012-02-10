@@ -109,3 +109,6 @@ function removeObject(objId) {
     return false;
 }
 
+function reloadGrid(){
+    Ext.getCmp('editGrid').getStore().load();
+}

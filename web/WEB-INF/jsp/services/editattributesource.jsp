@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
-                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save' || actionBean.context.eventName == 'saveEdit'}"> 
+                    <c:when test="${actionBean.context.eventName == 'edit'}"> 
                         <c:choose>
                             <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}">
                             <h1>Attribuutbron bewerken: ${actionBean.featureSource.id}</h1>
@@ -99,6 +99,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </c:otherwise>
                     </c:choose>
                     <stripes:submit name="cancel" value="Annuleren"/>
+                </c:when>
+                <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'saveEdit'}">
+                    <script type="text/javascript">
+                        var frameParent = getParent();
+                        if(frameParent && frameParent.reloadGrid) {
+                            frameParent.reloadGrid();
+                        }
+                    </script>
+                    <!--<stripes:submit name="edit" value="Nieuwe attribuutbron"/>-->
                 </c:when>
                 <c:otherwise>
                     <!--<stripes:submit name="edit" value="Nieuwe attribuutbron"/>-->

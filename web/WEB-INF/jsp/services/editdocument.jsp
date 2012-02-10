@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean">
                 <c:choose>
-                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save'}">
+                    <c:when test="${actionBean.context.eventName == 'edit'}">
                     <h1>bewerken</h1>
                     <stripes:hidden name="document" value="${actionBean.document.id}"/>
                     <table>
@@ -50,6 +50,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                     <stripes:submit name="save" value="Opslaan"/>
                     <stripes:submit name="cancel" value="Annuleren"/>
+                </c:when>
+                <c:when test="${actionBean.context.eventName == 'save'}">
+                    <script type="text/javascript">
+                        var frameParent = getParent();
+                        if(frameParent && frameParent.reloadGrid) {
+                            frameParent.reloadGrid();
+                        }
+                    </script>
+                    <stripes:submit name="edit" value="Nieuw document"/>
                 </c:when>
                 <c:otherwise>
                     <stripes:submit name="edit" value="Nieuw document"/>

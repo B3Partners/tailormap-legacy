@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean">
                 <stripes:hidden name="attribute" value="${actionBean.attribute.id}"/>
-                <c:if test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save'}">
+                <c:if test="${actionBean.context.eventName == 'edit'}">
                 <table>
                     <tr>
                         <td>Alias:</td>
@@ -43,6 +43,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <stripes:submit name="save" value="Opslaan"/>
                 <stripes:submit name="cancel" value="Annuleren"/>
+            </c:if>
+            <c:if test="${actionBean.context.eventName == 'save'}">
+                <script type="text/javascript">
+                    var frameParent = getParent();
+                    if(frameParent && frameParent.reloadGrid) {
+                        frameParent.reloadGrid();
+                    }
+                </script>
             </c:if>
         </stripes:form>
 

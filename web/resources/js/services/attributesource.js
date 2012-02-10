@@ -121,3 +121,7 @@ function removeObject(objId) {
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
     return false;
 }
+
+function reloadGrid(){
+    Ext.getCmp('editGrid').getStore().load();
+}
