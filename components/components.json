@@ -409,5 +409,15 @@
         sources: ["AttributeList.js"],
         configSource: ["AttributeList-config.js"],
         restrictions: ["leftmargin_top","leftmargin_bottom"]         
+     },
+    {
+        className: "viewer.components.Edit",
+        name: "Edit",
+        shortName: "Ed",
+        sources: ["Edit.js"],
+        configSource: ["Edit-config.js"],
+        restrictions: ["left_menu"],        
+        type: "popup",
+        singleton: true,        
      }
 ]
