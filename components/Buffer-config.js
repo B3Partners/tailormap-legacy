@@ -26,7 +26,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         //createForm();                
         this.createForm(this.configObject);
         //
-        this.createCheckBoxes(this.configObject.layers,{bufferAble:true});
+        this.createCheckBoxes(this.configObject.layers,{bufferable:true});
     },
     createForm: function(config){
         //to make this accessible in object
