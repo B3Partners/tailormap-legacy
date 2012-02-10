@@ -20,11 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -167,6 +163,22 @@ public class ComponentRegistry implements ServletContextListener {
         Collections.sort(names);
         return names;
     }
+    
+    public List<String> getClassNameListSortedByDisplayName() {
+        List<String> names = new ArrayList<String>(components.keySet());
+        Collections.sort(names, new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                ViewerComponent vcLhs = components.get(lhs);
+                ViewerComponent vcRhs = components.get(rhs);
+                
+                lhs = vcLhs.getMetadata().optString("name", lhs);
+                rhs = vcRhs.getMetadata().optString("name", rhs);
+                return lhs.compareTo(rhs);
+            }
+        });
+        return names;
+    }    
 
     public ViewerComponent getViewerComponent(String className) {
         return components.get(className);
