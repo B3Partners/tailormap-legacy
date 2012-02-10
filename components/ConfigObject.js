@@ -20,9 +20,15 @@
 Ext.define("viewer.components.ConfigObject",{
     parentId: null,
     configObject: null,
+    formWidth: 760,
+    labelWidth: 300,
+    formPadding: 5,
     constructor: function (parentId,configObject){
         this.parentId=parentId;
         this.configObject=configObject;
+        if (configObject==null || configObject==undefined){
+            this.configObject=new Object();
+        }
     },
     /**
      * Must return the configuration that is set by the user.

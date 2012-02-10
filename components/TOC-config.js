@@ -23,18 +23,22 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(config == undefined || config == null){
             config = new Object();
         }
-        var labelWidth = 300;
+        var me=this;
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
             title: 'Configureer dit component',
-            width: 480,
+            bodyPadding: me.formPadding,
+            defaults: {
+                anchor: '100%'
+            },
+            width: me.formWidth,
             items: [{ 
                 xtype: 'textfield',
                 fieldLabel: 'Naam',
                 name: 'title',
                 value: config.title,
-                labelWidth:labelWidth
+                labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
@@ -42,7 +46,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'groupCheck',
                 checked: config.groupCheck,
                 value: config.groupCheck,
-                labelWidth:labelWidth
+                labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Kaartlagen krijgen een vinkvak',
@@ -50,7 +54,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'layersChecked',
                 checked: config.layersChecked,
                 value: config.layersChecked,
-                labelWidth:labelWidth
+                labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Achtergrondkaarten tonen',
@@ -58,7 +62,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'showBaselayers',
                 checked: config.showBaselayers,
                 value: config.showBaselayers,
-                labelWidth:labelWidth
+                labelWidth:me.labelWidth
             }],
         
             renderTo: parentid//(2)
