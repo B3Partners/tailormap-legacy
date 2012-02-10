@@ -45,7 +45,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </c:forEach>
                     </div>
                     <div id="attributes-tab" class="x-hide-display">
-                        Attributen
+                        <c:choose>
+                            <c:when test="${not empty actionBean.attributesList}">
+                                <c:forEach var="attribute" items="${actionBean.attributesList}">
+                                    <stripes:checkbox name="selectedAttributes" value="${attribute.name}"/> 
+                                    <c:choose>
+                                        <c:when test="${not empty attribute.alias}">
+                                            ${attribute.alias}
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${attribute.name}
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <br>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                            </c:otherwise>
+                        </c:choose>
+                        
                     </div>
                     <div id="settings-tab" class="x-hide-display">
                         <table>

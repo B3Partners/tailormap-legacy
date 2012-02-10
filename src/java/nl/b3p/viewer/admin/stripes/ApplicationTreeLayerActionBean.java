@@ -20,8 +20,9 @@ import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -47,6 +48,11 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     @Validate
     private Map<String,String> details = new HashMap<String,String>();
     
+    private List<AttributeDescriptor> attributesList = new ArrayList<AttributeDescriptor>();
+    
+    @Validate
+    private List<String> selectedAttributes = new ArrayList<String>();
+    
     @DefaultHandler
     public Resolution view() {
         Stripersist.getEntityManager().getTransaction().commit();
@@ -61,6 +67,25 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
                     
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
+            
+            Layer layer = (Layer)Stripersist.getEntityManager().createQuery("from Layer "
+                    + "where service = :service "
+                    + "and name = :name")
+                    .setParameter("service", applicationLayer.getService())
+                    .setParameter("name", applicationLayer.getLayerName())
+                    .getSingleResult();
+            
+            if(layer.getFeatureType() != null){
+                SimpleFeatureType sft = layer.getFeatureType();
+                attributesList = sft.getAttributes();
+                
+                for(Iterator it = applicationLayer.getAttributes().iterator(); it.hasNext();){
+                    ConfiguredAttribute ca = (ConfiguredAttribute)it.next();
+                    if(ca.isVisible()){
+                        selectedAttributes.add(ca.getAttributeName());
+                    }
+                }
+            }
         }
         
         return new ForwardResolution(JSP);
@@ -84,6 +109,18 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
         applicationLayer.getWriters().clear();
         for(String groupName: groupsWrite) {
             applicationLayer.getWriters().add(groupName);
+        }
+        
+        if(selectedAttributes != null){
+            List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
+            for(Iterator it = appAttributes.iterator(); it.hasNext();){
+                ConfiguredAttribute appAttribute = (ConfiguredAttribute)it.next();
+                if(selectedAttributes.contains(appAttribute.getAttributeName())){
+                    appAttribute.setVisible(true);
+                }else{
+                    appAttribute.setVisible(false);
+                }
+            }
         }
         
         Stripersist.getEntityManager().persist(applicationLayer);
@@ -116,6 +153,22 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
 
     public void setDetails(Map<String, String> details) {
         this.details = details;
+    }
+
+    public List<String> getSelectedAttributes() {
+        return selectedAttributes;
+    }
+
+    public void setSelectedAttributes(List<String> selectedAttributes) {
+        this.selectedAttributes = selectedAttributes;
+    }
+
+    public List<AttributeDescriptor> getAttributesList() {
+        return attributesList;
+    }
+
+    public void setAttributesList(List<AttributeDescriptor> attributesList) {
+        this.attributesList = attributesList;
     }
 
     public List<String> getGroupsWrite() {
