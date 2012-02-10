@@ -160,6 +160,21 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                         });
                     }
                 }
+            },{
+                xtype: 'button',
+                id: 'sliderRemoveButton',
+                text: 'Verwijder',
+                disabled: true,
+                listeners: {
+                    click: function() {
+                        Ext.Array.each(me.sliders, function(slider) {
+                            if(slider.id == me.currentSlider.id) {
+                                me.removeSlider(slider.id);
+                                me.resetSliderForm();
+                            }
+                        });
+                    }
+                }
             }]
         });
         if(me.sliders.length > 0) {
@@ -195,6 +210,14 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         Ext.getCmp('sliderName').setValue(me.currentSlider.name);
         Ext.getCmp('sliderTransparency').setValue(me.currentSlider.initialTransparency);
         Ext.getCmp('sliderSaveButton').setDisabled(false);
+        Ext.getCmp('sliderRemoveButton').setDisabled(false);
+    },
+    
+    resetSliderForm : function(){
+        Ext.getCmp('sliderName').setValue("");
+        Ext.getCmp('sliderTransparency').setValue("");
+        Ext.getCmp('sliderSaveButton').setDisabled(true);
+        Ext.getCmp('sliderRemoveButton').setDisabled(true);
     },
     
     appendNewSlider: function() {
@@ -278,6 +301,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         var span = document.getElementById('sliderheader-link-' + sliderid);
         span.innerHTML = slidername;
     },
+    
     initSelection: function() {
         var me = this;
         Ext.Array.each(me.sliders, function(slider) {
