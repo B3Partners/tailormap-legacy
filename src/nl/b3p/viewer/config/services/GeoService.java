@@ -127,11 +127,11 @@ public abstract class GeoService {
     }
     //</editor-fold>
 
-    public GeoService loadFromUrl(String url) throws Exception {
-        return loadFromUrl(url, new WaitPageStatus());
+    public GeoService loadFromUrl(String url, Map params) throws Exception {
+        return loadFromUrl(url, params, new WaitPageStatus());
     }
 
-    public abstract GeoService loadFromUrl(String url, WaitPageStatus waitStatus) throws Exception;
+    public abstract GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus) throws Exception;
     
     public String getProtocol() {
         return getClass().getAnnotation(DiscriminatorValue.class).value();

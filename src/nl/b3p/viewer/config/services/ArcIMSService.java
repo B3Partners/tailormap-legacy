@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.services;
 
 import java.net.URL;
+import java.util.Map;
 import javax.persistence.*;
 import nl.b3p.geotools.data.arcims.ArcIMSServer;
 import nl.b3p.geotools.data.arcims.AxlField;
@@ -35,6 +36,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @DiscriminatorValue("arcims")
 public class ArcIMSService extends GeoService {
 
+    public static final String PARAM_SERVICENAME = "ServiceName";
+    
     @Basic
     private String serviceName;
 
@@ -47,12 +50,11 @@ public class ArcIMSService extends GeoService {
     }
 
     @Override
-    public GeoService loadFromUrl(String url, WaitPageStatus status) throws Exception {
+    public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
             
-            // XXX ServiceName should be a parameter to this method
-            
+            serviceName = (String)params.get(PARAM_SERVICENAME);
             ArcIMSServer gtims = new ArcIMSServer(new URL(url), serviceName);
 
             ArcIMSService ims = new ArcIMSService();

@@ -16,9 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.Serializable;
 import java.net.URL;
-import java.util.Iterator;
+import java.util.Map;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
 import org.geotools.data.ServiceInfo;
@@ -30,8 +29,9 @@ import org.geotools.data.wms.*;
  */
 @Entity
 @DiscriminatorValue("wms")
-public class WMSService extends GeoService implements Serializable {
-
+public class WMSService extends GeoService {
+    public static final String PARAM_OVERRIDE_URL = "overrideUrl";
+    
     private Boolean overrideUrl;
 
     public Boolean getOverrideUrl() {
@@ -43,11 +43,7 @@ public class WMSService extends GeoService implements Serializable {
     }
 
     @Override
-    public WMSService loadFromUrl(String url, WaitPageStatus status) throws Exception {
-        return loadFromUrl(url, status, false);
-    }
-    
-    public WMSService loadFromUrl(String url, WaitPageStatus status, boolean overrideUrl) throws Exception {
+    public WMSService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
             
@@ -58,7 +54,7 @@ public class WMSService extends GeoService implements Serializable {
             ServiceInfo si = gtwms.getInfo();
             wms.setName(si.getTitle());
 
-            wms.setOverrideUrl(overrideUrl);
+            wms.setOverrideUrl(Boolean.TRUE.equals(params.get(PARAM_OVERRIDE_URL)));
             if(overrideUrl) {
                 wms.setUrl(url);
             } else {

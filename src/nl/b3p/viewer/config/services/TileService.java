@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.util.Map;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
 
@@ -37,7 +38,7 @@ public class TileService extends GeoService {
     }
 
     @Override
-    public GeoService loadFromUrl(String url, WaitPageStatus status) {
+    public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
