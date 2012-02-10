@@ -207,8 +207,10 @@ Ext.onReady(function() {
                             layout[items.items.get(j).name] = items.items.get(j).value;
                         }
                     }
-                    var layoutFormObject = Ext.get("componentLayout");
-                    layoutFormObject.dom.value = JSON.stringify(layout);
+                    if(metadata.type != undefined && metadata.type != "popup"){
+                        var layoutFormObject = Ext.get("componentLayout");
+                        layoutFormObject.dom.value = JSON.stringify(layout);
+                    }
                     
                     document.getElementById('configForm').submit();
                 }
