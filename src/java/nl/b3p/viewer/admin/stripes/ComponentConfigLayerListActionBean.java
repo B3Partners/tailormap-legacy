@@ -52,8 +52,8 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     
     @Validate
     private Long appId;
-    private Boolean filterAble=false;
-    private Boolean bufferAble=false;
+    private Boolean filterable=false;
+    private Boolean bufferable=false;
     
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getAppId() {
@@ -63,16 +63,16 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         this.appId = appId;
     }
     public Boolean getFilterAble() {
-        return filterAble;
+        return filterable;
     }
     public void setFilterAble(Boolean filterAble) {
-        this.filterAble = filterAble;
+        this.filterable = filterAble;
     }
     public Boolean getBufferAble() {
-        return bufferAble;
+        return bufferable;
     }
     public void setBufferAble(Boolean bufferAble) {
-        this.bufferAble = bufferAble;
+        this.bufferable = bufferAble;
     }
     //</editor-fold>
     
@@ -105,8 +105,8 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         //get all the layers of this level
         for (ApplicationLayer appLayer: level.getLayers()){
             Layer l=appLayer.getService().getLayer(appLayer.getLayerName());
-            if (filterAble && !l.isFilterable() ||
-                    bufferAble && !l.isBufferable()){                    
+            if (filterable && !l.isFilterable() ||
+                    bufferable && !l.isBufferable()){                    
                 continue;
             }                
             layers.add(l);
