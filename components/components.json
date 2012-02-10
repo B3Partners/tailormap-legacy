@@ -10,6 +10,8 @@
  * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
  * 
  * restrictions: Array with region-ids to which the component can be dragged
+ *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,
+ *   popupwindow,rightmargin_top,rightmargin_bottom,footer
  * 
  * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
  * 
@@ -386,6 +388,7 @@
         name: "Maptip",
         shortName: "Mt",
         sources: ["Maptip.js"],
+        restrictions: ["content"],
         extPropertyGridConfigs: {
             propertyNames: {
                 tooltip: "Hoover tekst",
@@ -398,5 +401,13 @@
                 titlebarIcon : ""
             }
         }             
+     },
+    {
+        className: "viewer.components.AttributeList",
+        name: "AttributeList",
+        shortName: "AL",
+        sources: ["AttributeList.js"],
+        configSource: ["AttributeList-config.js"],
+        restrictions: ["leftmargin_top","leftmargin_bottom"]         
      }
 ]
