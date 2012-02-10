@@ -66,6 +66,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     @Validate(on="saveComponentConfig")
     private String componentLayout;
 
+    private Boolean loadCustomConfig=false;
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
         return components;
@@ -147,6 +148,13 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.componentLayout = componentLayout;
     }
     
+    public Boolean getLoadCustomConfig() {
+        return loadCustomConfig;
+    }
+
+    public void setLoadCustomConfig(Boolean loadCustomConfig) {
+        this.loadCustomConfig = loadCustomConfig;
+    }
     //</editor-fold>
 
     @DefaultHandler
@@ -173,7 +181,10 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
         }
         metadata = ComponentRegistry.getInstance().getViewerComponent(className).getMetadata();
-
+        
+        if (metadata.has("configSource")){
+            loadCustomConfig= true;
+        }
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
 
@@ -260,4 +271,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             components.put(ComponentRegistry.getInstance().getViewerComponent(cn).getMetadata());
         }
     }
+
+    
 }
