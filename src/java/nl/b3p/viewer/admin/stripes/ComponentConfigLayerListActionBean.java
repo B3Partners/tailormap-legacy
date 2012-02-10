@@ -52,8 +52,12 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     
     @Validate
     private Long appId;
+    @Validate
     private Boolean filterable=false;
+    @Validate
     private Boolean bufferable=false;
+    @Validate
+    private Boolean editable=false;
     
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getAppId() {
@@ -74,6 +78,15 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     public void setBufferAble(Boolean bufferAble) {
         this.bufferable = bufferAble;
     }
+
+    public Boolean getEditable() {
+        return editable;
+    }
+
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
+    }
+    
     //</editor-fold>
     
     public Resolution source() {
@@ -109,6 +122,9 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
                     bufferable && !l.isBufferable()){                    
                 continue;
             }                
+            if (editable && l.getFeatureType() == null &&!l.getFeatureType().isWriteable()){
+                continue;
+            }
             layers.add(l);
         }
         //get all the layers of the level children.
