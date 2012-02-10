@@ -25,8 +25,9 @@ import nl.b3p.web.WaitPageStatus;
  * @author Matthijs Laan
  */
 @Entity
-@DiscriminatorValue("tiled")
+@DiscriminatorValue(TileService.PROTOCOL)
 public class TileService extends GeoService {
+    public static final String PROTOCOL = "tiled";           
     private String tilingProtocol;
 
     public String getTilingProtocol() {

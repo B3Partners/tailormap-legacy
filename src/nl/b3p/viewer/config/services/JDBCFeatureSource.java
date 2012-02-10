@@ -25,8 +25,9 @@ import javax.persistence.*;
  * @author jytte
  */
 @Entity
-@DiscriminatorValue("jdbc")
+@DiscriminatorValue(JDBCFeatureSource.PROTOCOL)
 public class JDBCFeatureSource extends FeatureSource {
+    public static final String PROTOCOL = "jdbc";
 
     @Column(name="db_schema")
     private String schema;

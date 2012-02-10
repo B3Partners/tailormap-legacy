@@ -25,8 +25,9 @@ import javax.persistence.*;
  * @author Matthijs Laan
  */
 @Entity
-@DiscriminatorValue("wfs")
+@DiscriminatorValue(WFSFeatureSource.PROTOCOL)
 public class WFSFeatureSource extends FeatureSource {
+    public static final String PROTOCOL = "wfs";
 
     @Override
     List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {

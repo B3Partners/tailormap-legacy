@@ -24,8 +24,10 @@ import javax.persistence.*;
  * @author jytte
  */
 @Entity
-@DiscriminatorValue("arcxml")
+@DiscriminatorValue(ArcXMLFeatureSource.PROTOCOL)
 public class ArcXMLFeatureSource extends FeatureSource {
+    public static final String PROTOCOL = "arcxml";
+    
     @Basic
     private String serviceName;
 

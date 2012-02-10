@@ -33,9 +33,10 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Matthijs Laan
  */
 @Entity
-@DiscriminatorValue("arcims")
+@DiscriminatorValue(ArcIMSService.PROTOCOL)
 public class ArcIMSService extends GeoService {
-
+    public static final String PROTOCOL = "arcims";
+    
     public static final String PARAM_SERVICENAME = "ServiceName";
     
     @Basic

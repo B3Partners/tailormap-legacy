@@ -28,8 +28,10 @@ import org.geotools.data.wms.*;
  * @author Matthijs Laan
  */
 @Entity
-@DiscriminatorValue("wms")
+@DiscriminatorValue(WMSService.PROTOCOL)
 public class WMSService extends GeoService {
+    public static final String PROTOCOL = "wms";
+
     public static final String PARAM_OVERRIDE_URL = "overrideUrl";
     
     private Boolean overrideUrl;

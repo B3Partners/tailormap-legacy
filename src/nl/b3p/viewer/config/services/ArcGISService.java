@@ -25,8 +25,9 @@ import nl.b3p.web.WaitPageStatus;
  * @author Matthijs Laan
  */
 @Entity
-@DiscriminatorValue("arcgis")
+@DiscriminatorValue(ArcGISService.PROTOCOL)
 public class ArcGISService extends GeoService {
+    public static final String PROTOCOL = "arcgis";
 
     @Override
     public GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus) {

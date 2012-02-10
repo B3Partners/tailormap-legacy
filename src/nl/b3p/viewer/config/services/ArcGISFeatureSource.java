@@ -24,8 +24,9 @@ import javax.persistence.*;
  * @author jytte
  */
 @Entity
-@DiscriminatorValue("arcgis")
+@DiscriminatorValue(ArcGISFeatureSource.PROTOCOL)
 public class ArcGISFeatureSource extends FeatureSource {
+    public static final String PROTOCOL = "arcgis";
 
     @Override
     List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
