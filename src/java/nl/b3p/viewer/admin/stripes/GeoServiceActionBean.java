@@ -16,8 +16,11 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.*;
@@ -66,6 +69,9 @@ public class GeoServiceActionBean implements ActionBean{
 
     @Validate
     private boolean overrideUrl;
+    
+    @Validate
+    private String serviceName;
 
     private WaitPageStatus status;
     
@@ -78,6 +84,14 @@ public class GeoServiceActionBean implements ActionBean{
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public GeoService getService() {
@@ -268,18 +282,31 @@ public class GeoServiceActionBean implements ActionBean{
         return new ForwardResolution(JSP);
     }
 
+    @ValidationMethod(on="add")
+    public void validateParams(ValidationErrors errors) {
+        if(protocol.equals("arcims")) {
+            if(serviceName == null) {
+                errors.add("serviceName", new LocalizableError("validation.required.valueNotPresent"));
+            }
+        }
+    }
+    
     @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=0, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution add() throws JSONException {
 
         status = new WaitPageStatus();
+        
+        Map params = new HashMap();
 
         try {
             if(protocol.equals("wms")) {
-                service = new WMSService().loadFromUrl(url, status, overrideUrl);
+                params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
+                service = new WMSService().loadFromUrl(url, params, status);
             } else if(protocol.equals("arcgis")) {
-                service = new ArcGISService().loadFromUrl(url, status);
+                service = new ArcGISService().loadFromUrl(url, params, status);
             } else if(protocol.equals("arcims")) {
-                service = new ArcIMSService().loadFromUrl(url, status);
+                params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
+                service = new ArcIMSService().loadFromUrl(url, params, status);
             } else {
                 getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
             }

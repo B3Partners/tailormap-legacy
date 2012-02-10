@@ -88,7 +88,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }
     </script>
 </c:if>
-
+    
 <%-- Bestaande service --%>
 <c:if test="${actionBean.context.eventName == 'editGeoService'}">   
     <h1>Service wijzigen</h1>
@@ -107,12 +107,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </stripes:select>
             </td>
         </tr>
+        <c:if test="${actionBean.protocol == 'arcims'}">
+            <tr>
+                <td>Service name:</td>
+                <td>
+                    <stripes:text name="serviceName"  value="${actionBean.service.serviceName}" disabled="true" size="30"/>
+                </label>
+                </td>
+            </tr>          
+        </c:if>
         <tr>
             <td>Weergavenaam:</td>
             <td><stripes:text name="name" value="${actionBean.service.name}" maxlength="255" size="30"/></td>
         </tr>
         <tr>
-            <td>gebruikersnaam:</td>
+            <td>Gebruikersnaam:</td>
             <td><stripes:text name="username" value="${actionBean.service.username}" maxlength="255" size="30"/></td>
         </tr>
         <tr>
@@ -138,10 +147,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         function checkProtocol() {
             var protocol = Ext.query("select[name='protocol']")[0].value;
             Ext.fly('useUrlTr').setVisible(protocol == "wms");
+            Ext.fly('serviceNameTr').setVisible(protocol == "arcims");            
         }
 
         Ext.onReady(checkProtocol);
-    </script>
+    </script>    
     <table>
         <tr>
             <td>URL van de service:</td>
@@ -163,12 +173,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </label>
             </td>
         </tr>
+        <tr id="serviceNameTr">
+            <td>Service name:</td>
+            <td>
+            <label>
+                <stripes:text name="serviceName" maxlength="255" size="30"/>
+            </label>
+            </td>
+        </tr>        
         <tr>
             <td>Weergavenaam:</td>
             <td><stripes:text name="name" maxlength="255" size="30"/></td>
         </tr>
         <tr>
-            <td>gebruikersnaam:</td>
+            <td>Gebruikersnaam:</td>
             <td><stripes:text name="username" maxlength="255" size="30"/></td>
         </tr>
         <tr>
