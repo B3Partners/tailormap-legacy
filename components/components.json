@@ -361,7 +361,7 @@
         name: "HTML",
         shortName: "HTML",
         sources: ["HTML.js"],
-        configSource: ["HTML-config.js"],
+        configSource: ["HTML-config.js"]
         //restrictions: ["rightmargin_top", "leftmargin_top"],                
     },
 
@@ -370,7 +370,7 @@
         name: "Tranparantie",
         sources: ["TransparencySlider.js"],
         configSource: ["TransparencySlider-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top"],
+        restrictions: ["rightmargin_top", "leftmargin_top"]
         
     },
     {
@@ -380,5 +380,23 @@
         sources: ["Buffer.js"],
         configSource: ["Buffer-config.js"],
         //restrictions: ["rightmargin_top", "leftmargin_top"],                
+     },
+    {
+        className: "viewer.components.Maptip",
+        name: "Maptip",
+        shortName: "Mt",
+        sources: ["Maptip.js"],
+        extPropertyGridConfigs: {
+            propertyNames: {
+                tooltip: "Hoover tekst",
+                title: "Titel",
+                titlebarIcon : "Titelbalk icoon"
+            },
+            source: {
+                tooltip: "",
+                title: "",
+                titlebarIcon : ""
+            }
+        }             
      }
 ]
