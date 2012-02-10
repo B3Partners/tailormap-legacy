@@ -16,17 +16,13 @@
  */
 var propertyGrid;
 var customConfiguration;
-
-if(metadata.configSource != undefined) {
+var layoutForm;
+Ext.onReady(function(){
     createLayoutTab();
-    Ext.onReady(function(){
+    if(metadata.configSource != undefined) {
         customConfiguration= new Ext.create("viewer.components.CustomConfiguration","config", configObject);
-    });
-} else {
-    Ext.onReady(function() {
-
+    } else {
         var source = configObject;
-
         if(source == null && metadata.extPropertyGridConfigs) {
             /* set source to from component metadata  (default config) */
             source = metadata.extPropertyGridConfigs.source;
@@ -45,10 +41,13 @@ if(metadata.configSource != undefined) {
                 propertyNames: propertyNames
             });
         }
-    });
-}
-var layoutForm;
+    
+    }
+});
 function createLayoutTab(){
+    if(metadata.type == undefined && metadata.type != "popup"){
+        return;
+    }
     var labelWidth = 300;
     layoutForm = new Ext.form.FormPanel({
         frame: false,
@@ -177,7 +176,7 @@ Ext.onReady(function() {
         contentEl:'rights', 
         title: 'Rechten'
     }];
-    if(metadata.type != undefined && metadata.type != "popup"){
+    if(metadata.type != undefined && metadata.type == "popup"){
         tabs.push({
             contentEl:'layout', 
             title: 'Layout'
@@ -200,14 +199,14 @@ Ext.onReady(function() {
             listeners: {
                 click: function() {
                     getConfig();
-                    var layout = new Object();
-                    for( var i = 0 ; i < layoutForm.items.length ; i++){
-                        var items = layoutForm.items.get(i);
-                        for ( var j = 0 ; j < items.items.length ; j ++){
-                            layout[items.items.get(j).name] = items.items.get(j).value;
-                        }
-                    }
                     if(metadata.type != undefined && metadata.type != "popup"){
+                        var layout = new Object();
+                        for( var i = 0 ; i < layoutForm.items.length ; i++){
+                            var items = layoutForm.items.get(i);
+                            for ( var j = 0 ; j < items.items.length ; j ++){
+                                layout[items.items.get(j).name] = items.items.get(j).value;
+                            }
+                        }
                         var layoutFormObject = Ext.get("componentLayout");
                         layoutFormObject.dom.value = JSON.stringify(layout);
                     }
