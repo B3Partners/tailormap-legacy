@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * HTML component
- * Creates a html component
+ * Buffer component
+ * Creates a Buffer component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.Buffer",{
     extend: "viewer.components.Component",    
     constructor: function (conf){        
-        viewer.components.ScaleBar.superclass.constructor.call(this, conf);
+        viewer.components.Buffer.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         return this;
     }      
