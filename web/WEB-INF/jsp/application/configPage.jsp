@@ -33,12 +33,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden name="component" value="${actionBean.component.id}"/>
             <stripes:hidden name="className" value="${actionBean.className}"/>
             <stripes:hidden name="name" value="${actionBean.name}"/>
-            <stripes:hidden name="componentLayout"/>
+            <stripes:hidden id="componentLayout" name="componentLayout"/>
             <stripes:hidden name="configObject" id="configObject"/>
             <stripes:hidden name="saveComponentConfig" value="Opslaan" />
 
             <div id="tabs" style="width: 100%; height: 100%;">
-                <div id ="config" class="tabdiv"></div>
+                <div id ="config" style="width: 100%; height: 100%;" class="tabdiv">
+                </div>
                 <div id="rights" class="tabdiv"> 
                     <h1>Groepen:</h1>
                     De volgende gebruikersgroepen hebben recht op dit component:<br/>
@@ -76,6 +77,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript" src="${configSource}"></script>
         </c:if>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/FilterableCheckboxes.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/SelectionGrid.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>
 </stripes:layout-render>
