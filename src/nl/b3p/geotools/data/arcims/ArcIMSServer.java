@@ -141,7 +141,12 @@ public class ArcIMSServer {
     }
     
     private void loadServiceInfo() throws Exception {
-        axlServiceInfo = (AxlServiceInfo) internalIssueRequest(createRequest(new AxlGetServiceInfo()));
+        AxlResponse response = internalIssueRequest(createRequest(new AxlGetServiceInfo()));
+        
+        if(response.getError() != null) {
+            throw new AxlException(response.getError());
+        }
+        axlServiceInfo = response.getServiceInfo();
     }    
     
     protected AxlResponse internalIssueRequest(ArcXMLRequest request) throws Exception {
@@ -169,7 +174,8 @@ public class ArcIMSServer {
         ArcIMSServer s = new ArcIMSServer(new URL("http://gisopenbaar.toverijs3.nl/GeoJuli2008/ims"), "ondergrond_lf");
         
         ArcXML axl = new ArcXML();
-        axl.responses = Collections.singleton((AxlResponse)s.axlServiceInfo);
+        axl.response = new AxlResponse();
+        axl.response.setServiceInfo(s.getAxlServiceInfo());
         ArcXML.getJaxbContext().createMarshaller().marshal(axl, System.out);
         
         System.out.println("");

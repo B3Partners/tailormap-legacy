@@ -49,11 +49,8 @@ public class ArcXML {
     })
     protected Set<AxlRequest> requests;
     
-    @XmlElementWrapper(name="RESPONSE")
-    @XmlElements({
-        @XmlElement(name = "SERVICEINFO", type=AxlServiceInfo.class)
-    })
-    protected Set<AxlResponse> responses;
+    @XmlElement(name="RESPONSE")
+    protected AxlResponse response;
     
     public ArcXML() {
     }
@@ -63,7 +60,7 @@ public class ArcXML {
     }
     
     public AxlResponse getResponse() {
-        return responses.iterator().next();
+        return response;
     }
 
     public static JAXBContext getJaxbContext() {

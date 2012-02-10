@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author matthijsln
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlServiceInfo implements AxlResponse {
+public class AxlServiceInfo {
     @XmlElement(name="PROPERTIES")
     AxlProperties properties;
     

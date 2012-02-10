@@ -16,10 +16,35 @@
  */
 package nl.b3p.geotools.data.arcims;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  *
  * @author matthijsln
  */
-public interface AxlResponse {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class AxlResponse {
+    @XmlElement(name="SERVICEINFO")
+    private AxlServiceInfo serviceInfo;
     
+    @XmlElement(name="ERROR")
+    private String error;
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public AxlServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public void setServiceInfo(AxlServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
+    }
 }
