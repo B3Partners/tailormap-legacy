@@ -102,13 +102,13 @@
         shortName: "info",
         sources: ["tools/FeatureInfo.js"],
         closureCompilerSafe: true,
-
+        type : "popup",
         singleton: true,
         restrictions: ["top_menu"],
 
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "Tooltip"},
-            source: {tooltip: "Feature info"}
+            propertyNames: {tooltip: "Tooltip", title: "Titel", titlebarIcon:"Titelbalk icoon"},
+            source: {tooltip: "Feature info", title : "", titlebarIcon:""}
         }
     },
     {
