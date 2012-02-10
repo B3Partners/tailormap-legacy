@@ -284,7 +284,7 @@ public class GeoServiceActionBean implements ActionBean{
 
     @ValidationMethod(on="add")
     public void validateParams(ValidationErrors errors) {
-        if(protocol.equals("arcims")) {
+        if(protocol.equals(ArcIMSService.PROTOCOL)) {
             if(serviceName == null) {
                 errors.add("serviceName", new LocalizableError("validation.required.valueNotPresent"));
             }
@@ -299,12 +299,12 @@ public class GeoServiceActionBean implements ActionBean{
         Map params = new HashMap();
 
         try {
-            if(protocol.equals("wms")) {
+            if(protocol.equals(WMSService.PROTOCOL)) {
                 params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
                 service = new WMSService().loadFromUrl(url, params, status);
-            } else if(protocol.equals("arcgis")) {
+            } else if(protocol.equals(ArcGISService.PROTOCOL)) {
                 service = new ArcGISService().loadFromUrl(url, params, status);
-            } else if(protocol.equals("arcims")) {
+            } else if(protocol.equals(ArcIMSService.PROTOCOL)) {
                 params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
                 service = new ArcIMSService().loadFromUrl(url, params, status);
             } else {
