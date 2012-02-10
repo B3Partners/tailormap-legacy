@@ -53,6 +53,7 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     @Validate
     private Long appId;
     private Boolean filterAble=false;
+    private Boolean bufferAble=false;
     
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getAppId() {
@@ -66,6 +67,12 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     }
     public void setFilterAble(Boolean filterAble) {
         this.filterAble = filterAble;
+    }
+    public Boolean getBufferAble() {
+        return bufferAble;
+    }
+    public void setBufferAble(Boolean bufferAble) {
+        this.bufferAble = bufferAble;
     }
     //</editor-fold>
     
@@ -109,7 +116,4 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         }
         return layers;
     }
-
-    
-   
 }
