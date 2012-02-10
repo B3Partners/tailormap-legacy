@@ -130,6 +130,15 @@ public class Layer {
             children.add(new Layer(child, service));
         }
     }
+    /**
+     * Checks if the layer is bufferable.
+     * if service type of this layer is ArcIms or ArcGis or if the layer has a featuretype
+     * return true, otherwise return false
+     */
+    public boolean isBufferable(){
+        return getService().getProtocol().startsWith("arc") || 
+                this.getFeatureType() != null;
+    }
     
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();
