@@ -380,7 +380,7 @@
         name: "Buffer",
         shortName: "Bf",
         sources: ["Buffer.js"],
-        configSource: ["Buffer-config.js"],
+        configSource: ["SelectionWindowConfig.js","Buffer-config.js"],
         //restrictions: ["rightmargin_top", "leftmargin_top"],                
      },
     {
@@ -407,15 +407,16 @@
         name: "AttributeList",
         shortName: "AL",
         sources: ["AttributeList.js"],
-        configSource: ["AttributeList-config.js"],
-        restrictions: ["leftmargin_top","leftmargin_bottom"]         
+        configSource: ["SelectionWindowConfig.js","AttributeList-config.js"],
+        restrictions: ["leftmargin_top","leftmargin_bottom"] ,        
+        type: "popup"        
      },
     {
         className: "viewer.components.Edit",
         name: "Edit",
         shortName: "Ed",
         sources: ["Edit.js"],
-        configSource: ["Edit-config.js"],
+        configSource: ["SelectionWindowConfig.js","Edit-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        
@@ -436,6 +437,7 @@
         shortName: "DS",
         sources: ["DataSelection.js"],
         configSource: ["SelectionWindowConfig.js","DataSelection-config.js"],
-        restrictions: ["left_menu"]         
+        restrictions: ["left_menu"],        
+        type: "popup"         
      }
 ]
