@@ -292,7 +292,7 @@ public class GeoServiceActionBean implements ActionBean{
         }
     }
     
-    @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=0, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
+    @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=2000, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution add() throws JSONException {
 
         status = new WaitPageStatus();

@@ -117,7 +117,7 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=0, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
+    @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=2000, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution save() throws JSONException, Exception {
         if(protocol.equals("jdbc")) {
             
@@ -314,7 +314,7 @@ public class AttributeSourceActionBean implements ActionBean {
     private JSONObject getGridRow(int i, String name, String url, String type) throws JSONException {       
         JSONObject j = new JSONObject();
         j.put("id", i);
-        j.put("status", Math.random() > 0.5 ? "ok" : "error");
+        j.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
         j.put("name", name);
         j.put("url", url);
         j.put("protocol", type);
