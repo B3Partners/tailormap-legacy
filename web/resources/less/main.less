@@ -221,6 +221,9 @@ body {
     .content-container {
         border: 2px dashed @graycolor;
         padding: 10px;
+        &.dropallowed {
+            background-color: #EEEEEE;
+        }
         .regionconfig {
             margin: 5px;
             border: 1px solid @maincolor;
@@ -268,7 +271,7 @@ body {
                     cursor: pointer;
                     width: 16px;
                     height: 16px;
-                    float: right;
+                    float: left;
                     margin-left: 5px;
                 }
                 .remove {
@@ -287,7 +290,7 @@ body {
         margin-left: 10px;
         margin-right: 10px;
         #center_left, #center_right {
-            width: 200px;
+            width: 150px;
             float: left;
             margin-right: 10px;
             .top {
@@ -308,6 +311,7 @@ body {
             #layout_left_menu {
                 float: left;
                 margin-right: 10px;
+                width: 100px;
             }
             #center_center_center {
                 overflow: hidden;

@@ -80,7 +80,7 @@ Ext.onReady(function() {
         isComponentAdded: function(compid) {
             var isAdded = false;
             Ext.Array.each(this.get('addedComponents'), function(comp, index) {
-                if(comp == compid) {
+                if(comp.componentClass == compid) {
                     isAdded = true;
                 }
             });
@@ -97,9 +97,9 @@ Ext.onReady(function() {
         cls: 'component-view',
         tpl: '<tpl for=".">' +
         '<div class="component-block">' +
-        '<span class="title">{name}</span>' +
         '<div class="remove"></div>' +
         '<div class="wrangler"></div>' +
+        '<span class="title">{name}</span>' +
         '<div style="clear: both;"></div>' +
         '</div>' +
         '</tpl>',
@@ -128,6 +128,17 @@ Ext.onReady(function() {
                     },
                     getRepairXY: function() {
                         return this.dragData.repairXY;
+                    },
+                    onStartDrag: function() {
+                        var data = v.dragData;
+                        layoutRegionsStore.each(function(region) {
+                            if(checkDropAllowed(region, data)) Ext.fly(region.get('htmlId')).addCls('dropallowed');
+                        });
+                    },
+                    endDrag: function() {
+                        layoutRegionsStore.each(function(region) {
+                            Ext.fly(region.get('htmlId')).removeCls('dropallowed');
+                        });
                     }
                 });
             },
@@ -273,24 +284,7 @@ Ext.onReady(function() {
                                 return false;
                             },
                             checkDropAllowed: function(data) {
-                                var restrictions = data.componentData.restrictions;
-                                var notInCombinationWith = data.componentData.notInCombinationWith;
-                                var dropId = layoutRegion.get('id');
-                                if(Ext.isEmpty(restrictions) || (Ext.isArray(restrictions) && Ext.Array.contains(restrictions, dropId))) {
-                                    if(!Ext.isEmpty(notInCombinationWith)) {
-                                        if(Ext.isArray(notInCombinationWith)) {
-                                            var linkedComponentAdded = false;
-                                            Ext.Array.each(notInCombinationWith, function(comp, index) {
-                                                if(layoutRegion.isComponentAdded(comp)) {
-                                                    linkedComponentAdded = true;
-                                                }
-                                            });
-                                            if(linkedComponentAdded) return false;
-                                        }
-                                    }
-                                    return true;
-                                }
-                                return false;
+                                return checkDropAllowed(layoutRegion, data);
                             }
                         });
                     }
@@ -298,6 +292,27 @@ Ext.onReady(function() {
             });
             layoutRegion.regionContainer = regionContainer;
         });
+    }
+    
+    function checkDropAllowed(layoutRegion, data) {
+        var restrictions = data.componentData.restrictions;
+        var notInCombinationWith = data.componentData.notInCombinationWith;
+        var dropId = layoutRegion.get('id');
+        if(Ext.isEmpty(restrictions) || (Ext.isArray(restrictions) && Ext.Array.contains(restrictions, dropId))) {
+            if(!Ext.isEmpty(notInCombinationWith)) {
+                if(Ext.isArray(notInCombinationWith)) {
+                    var linkedComponentAdded = false;
+                    Ext.Array.each(notInCombinationWith, function(comp, index) {
+                        if(layoutRegion.isComponentAdded(comp)) {
+                            linkedComponentAdded = true;
+                        }
+                    });
+                    return !linkedComponentAdded;
+                }
+            }
+            return true;
+        }
+        return false;
     }
       
     // Initial config. Adds all previously added components to the right regions
@@ -398,6 +413,13 @@ Ext.onReady(function() {
             componentPrettyName: data.componentData.name
         };
         container.add(addItem);
+        var tooltip = Ext.create('Ext.tip.ToolTip', {
+            target: itemId,
+            html: data.componentData.name,
+            showDelay: 0,
+            hideDelay: 0,
+            anchor: 'top'
+        });
         if(!layoutRegion.get('floatComponents')) {
             container.setHeight(getTotalChildHeight(container, '.' + addItem.cls));
         } else {
@@ -438,6 +460,7 @@ Ext.onReady(function() {
                         } else {
                             container.setWidth(getTotalChildWidth(container, '.' + addItem.cls));
                         }
+                        tooltip.destroy();
                         Ext.Ajax.request({ 
                             url: removeComponentUrl, 
                             params: { 
@@ -466,7 +489,6 @@ Ext.onReady(function() {
             "componentClass": addItem.componentClass,
             "name": addItem.componentName
         });
-        layoutRegion.set('somethingElse', 'something');
         layoutRegion.set('addedComponents', addComp);
     }
     
