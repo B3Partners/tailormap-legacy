@@ -35,6 +35,8 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Group;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +50,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @RolesAllowed("ApplicationAdmin")
 public class LayoutManagerActionBean extends ApplicationActionBean {
-
+    private static final Log log = LogFactory.getLog(LayoutManagerActionBean.class);
+    
     private JSONObject metadata;
     private JSONArray components;
     private List<Group> allGroups;
@@ -160,7 +163,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     //</editor-fold>
 
     @DefaultHandler
-    public Resolution view() throws JSONException {
+    public Resolution view() throws JSONException {    
         if (application == null) {
             getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
@@ -186,6 +189,28 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         
         if (metadata.has("configSource")){
             loadCustomConfig= true;
+        }
+        /* if there is a configXML and no Ext Property Grid settings. Get the settings from the xml*/
+        if (metadata.has("configXML") && !metadata.has("extPropertyGridConfigs")){
+            try{
+                String xml=metadata.getString("configXML");
+                JSONObject properties=new JSONObject();
+                int beginIndex=xml.indexOf("[");
+                int endIndex=-1;
+                while(beginIndex!=-1 && beginIndex<xml.length()){
+                    endIndex=xml.indexOf("]",beginIndex);
+                    if (endIndex==-1)
+                        break;
+                    String name=xml.substring(beginIndex+1, endIndex);
+                    properties.put(name,"");
+                    beginIndex=xml.indexOf("[",endIndex);
+                }
+                JSONObject pgConfig = new JSONObject();
+                pgConfig.put("source", properties);
+                metadata.put("extPropertyGridConfigs",pgConfig);                
+            }catch(JSONException je){
+                log.error("Error while making 'extPropertyGridConfigs' properties for xml object",je);
+            }
         }
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
     }
