@@ -134,25 +134,5 @@ Ext.define("viewer.components.CustomConfiguration",{
             }],
             renderTo: this.parentId//(2)
         });     
-    },
-    /**
-     * Must return the configuration that is set by the user.
-     * 
-     */
-    getConfiguration: function(){
-        var config=viewer.components.CustomConfiguration.superclass.getConfiguration.call(this); 
-        for( var i = 0 ; i < this.form.items.length ; i++){
-            //if its a radiogroup get the values with the function and apply the values to the config.
-            if ("container"==this.form.items.get(i).xtype){
-                var c = this.form.items.get(i);
-                for( var j = 0 ; j < c.items.length ; j ++){
-                    var cname = c.items.get(j).name;
-                    var cval = c.items.get(j).value;
-                    config[cname] = cval;
-                }
-            }
-        }
-        return config;
-    }
-            
+    }    
 });
