@@ -338,7 +338,7 @@ public class GeoServiceActionBean implements ActionBean{
         newService.put("name", service.getName());
         newService.put("type", "service");
         newService.put("isLeaf", service.getTopLayer() == null);
-        newService.put("status", Math.random() > 0.5 ? "ok" : "error");
+        newService.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
         newService.put("parentid", "c"+category.getId());
 
         getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
