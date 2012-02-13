@@ -46,12 +46,22 @@ Ext.define("viewer.components.ConfigObject",{
         if (this.checkBoxes!=null){
             config.layers=this.checkBoxes.getChecked();  
         }
-        for( var i = 0 ; i < this.form.items.length ; i++){
+        Ext.apply(config,this.getValuesFromContainer(this.form));
+        return config;
+    },
+    /**
+     * Get the item values of the given container.
+     */
+    getValuesFromContainer: function(container){
+        var config=new Object();
+        for( var i = 0 ; i < container.items.length ; i++){
             //if its a radiogroup get the values with the function and apply the values to the config.
-            if ("radiogroup"==this.form.items.get(i).xtype){
-                Ext.apply(config, this.form.items.get(i).getValue());       
-            }else if (this.form.items.get(i).name!=undefined)
-                config[this.form.items.get(i).name] = this.form.items.get(i).value;
+            if ("radiogroup"==container.items.get(i).xtype){
+                Ext.apply(config, container.items.get(i).getValue());       
+            }else if ("container"==container.items.get(i).xtype){
+                Ext.apply(config,this.getValuesFromContainer(container.items.get(i)));
+            }else if (container.items.get(i).name!=undefined)
+                config[container.items.get(i).name] = container.items.get(i).value;
         }
         return config;
     },
