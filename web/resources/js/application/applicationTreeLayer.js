@@ -51,4 +51,18 @@ Ext.onReady(function() {
         layoutOnTabChange: true,
         items: tabconfig
     });
+    
+    /*Ext.select('.accordiondiv', true).removeCls('accordiondiv').addCls('x-panel-default-collapsed');
+    Ext.create('Ext.panel.Panel', {
+        width: '100%',
+        height: '100%',
+        layout:'accordion',
+        layoutConfig: {
+            titleCollapse: false,
+            animate: true,
+            activeOnTop: true
+        },
+        items: items,
+        renderTo: 'accordionDiv'
+    });*/
 });

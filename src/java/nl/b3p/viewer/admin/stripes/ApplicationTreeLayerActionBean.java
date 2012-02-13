@@ -24,6 +24,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -54,6 +55,13 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     @Validate
     private List<String> selectedAttributes = new ArrayList<String>();
     
+    //private List editAttributes = new ArrayList();
+    
+    private boolean editable;
+    
+    @Validate
+    private JSONArray attributesJSON = new JSONArray();
+    
     @DefaultHandler
     public Resolution view() {
         Stripersist.getEntityManager().getTransaction().commit();
@@ -62,7 +70,7 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     }
     
     @DontValidate
-    public Resolution edit() {
+    public Resolution edit() throws JSONException {
         if(applicationLayer != null){
             details = applicationLayer.getDetails();
                     
@@ -78,14 +86,19 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
             
             if(layer.getFeatureType() != null){
                 SimpleFeatureType sft = layer.getFeatureType();
+                editable = sft.isWriteable();
                 attributesList = sft.getAttributes();
                 
                 for(Iterator it = applicationLayer.getAttributes().iterator(); it.hasNext();){
                     ConfiguredAttribute ca = (ConfiguredAttribute)it.next();
+                    //set visible
                     if(ca.isVisible()){
                         selectedAttributes.add(ca.getAttributeName());
                     }
                 }
+                //set editable
+                //makeAttributeMap(editAttributes);
+                makeAttributeJSONArray(attributesJSON);
             }
         }
         
@@ -98,7 +111,7 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
     }
     
-    public Resolution save() {
+    public Resolution save() throws JSONException {
         applicationLayer.getDetails().clear();
         applicationLayer.getDetails().putAll(details);
         
@@ -112,15 +125,44 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
             applicationLayer.getWriters().add(groupName);
         }
         
-        if(selectedAttributes != null){
+        if(applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0){
             List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
+            int i = 0;
+            
             for(Iterator it = appAttributes.iterator(); it.hasNext();){
                 ConfiguredAttribute appAttribute = (ConfiguredAttribute)it.next();
+                //save visible
                 if(selectedAttributes.contains(appAttribute.getAttributeName())){
                     appAttribute.setVisible(true);
                 }else{
                     appAttribute.setVisible(false);
                 }
+                
+                //save editable
+                JSONObject attribute = attributesJSON.getJSONObject(i);
+                
+                if(attribute.get("editable") != null){
+                    appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
+                }
+                if(attribute.get("editalias") != null){
+                    appAttribute.setEditAlias(attribute.get("editalias").toString());
+                }
+                if(attribute.get("editvalues") != null){
+                    appAttribute.setEditValues(attribute.get("editvalues").toString());
+                }
+                if(attribute.get("editheight") != null){
+                    appAttribute.setEditHeight(attribute.get("editheight").toString());
+                }
+
+                //save selectable
+                if(attribute.get("selectable") != null){
+                    appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
+                }
+                if(attribute.get("filterable") != null){
+                    appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
+                }
+                
+                i++;
             }
         }
         
@@ -129,6 +171,44 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
         
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
         return new ForwardResolution(JSP);
+    }
+    
+    /*private void makeAttributeMap(List attributes) {
+        List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
+        for(Iterator it = appAttributes.iterator(); it.hasNext();){
+            ConfiguredAttribute appAttribute = (ConfiguredAttribute)it.next();
+            
+            Map m = new HashMap();
+            m.put("id", appAttribute.getId());
+            m.put("name", appAttribute.getAttributeName());
+            m.put("editable", appAttribute.isEditable());
+            m.put("editalias", appAttribute.getEditAlias());
+            m.put("editvalues", appAttribute.getEditValues());
+            m.put("editheight", appAttribute.getEditHeight());
+            attributes.add(m);
+        }
+    }*/
+    
+    private void makeAttributeJSONArray(JSONArray array) throws JSONException{
+        List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
+        int i = 0;
+        for(Iterator it = appAttributes.iterator(); it.hasNext();){
+            ConfiguredAttribute appAttribute = (ConfiguredAttribute)it.next();
+            
+            JSONObject j = new JSONObject();
+            j.put("id", appAttribute.getId());
+            j.put("name", appAttribute.getAttributeName());
+            j.put("alias", attributesList.get(i).getAlias());
+            j.put("editable", appAttribute.isEditable());
+            j.put("editalias", appAttribute.getEditAlias());
+            j.put("editvalues", appAttribute.getEditValues());
+            j.put("editheight", appAttribute.getEditHeight());
+            j.put("filterable", appAttribute.isFilterable());
+            j.put("selectable", appAttribute.isSelectable());
+            array.put(j);
+            
+            i++;
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
@@ -170,6 +250,30 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
 
     public void setAttributesList(List<AttributeDescriptor> attributesList) {
         this.attributesList = attributesList;
+    }
+
+    /*public List getEditAttributes() {
+        return editAttributes;
+    }
+
+    public void setEditAttributes(List editAttributes) {
+        this.editAttributes = editAttributes;
+    }*/
+
+    public JSONArray getAttributesJSON() {
+        return attributesJSON;
+    }
+
+    public void setAttributesJSON(JSONArray attributesJSON) {
+        this.attributesJSON = attributesJSON;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     public List<String> getGroupsWrite() {

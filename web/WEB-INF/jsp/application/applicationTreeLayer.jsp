@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean">
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
+            <stripes:hidden name="attributesJSON" value="${actionBean.attributesJSON}"/>
             <c:if test="${actionBean.context.eventName == 'edit'}">
                 <stripes:submit name="save" value="Opslaan" />
                 <stripes:submit name="cancel" value="Annuleren"/>
@@ -64,7 +65,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 Er zijn geen attributen voor deze kaartlaag geconfigureerd.
                             </c:otherwise>
                         </c:choose>
-                        
                     </div>
                     <div id="settings-tab" class="x-hide-display">
                         <table>
@@ -99,10 +99,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </table>
                     </div>
                     <div id="edit-tab" class="x-hide-display">
-                        Edit
+                        <script type="text/javascript">
+                            var items = [];
+                        </script>
+                        <div id="accordionDiv"></div>
+                        <c:choose>
+                            <c:when test="${not empty actionBean.attributesList && editable}">
+                                <c:forEach var="attribute" items="${actionBean.attributesList}">
+                                    <div id="attribuut${attribute.id}" class="accordiondiv">
+                                        ${attribute.name}<br>
+                                    </div>
+                                <script type="text/javascript">
+                                    var attributes = '${actionBean.attributesJSON}';
+
+                                    items.push({
+                                        contentEl:'attribuut${attribute.id}',
+                                        title: '${attribute.name}'
+                                    });
+                                </script>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <c:choose>
+                                    <c:when test="${!editable}">
+                                        De attribuutbron van deze kaartlaag is niet van het type JDBC en is daarom niet editbaar.
+                                    </c:when>
+                                    <c:otherwise>
+                                        Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div id="filter-tab" class="x-hide-display">
-                        Selectie en filter
+                        <c:choose>
+                            <c:when test="${not empty actionBean.attributesList}">
+
+                            </c:when>
+                            <c:otherwise>
+                                Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </c:if>
