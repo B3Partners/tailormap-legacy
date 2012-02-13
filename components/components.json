@@ -429,5 +429,13 @@
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        
+     },
+    {
+        className: "viewer.components.DataSelection",
+        name: "DataSelection",
+        shortName: "DS",
+        sources: ["DataSelection.js"],
+        configSource: ["SelectionWindowConfig.js","DataSelection-config.js"],
+        restrictions: ["left_menu"]         
      }
 ]

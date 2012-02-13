@@ -19,55 +19,10 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("viewer.components.CustomConfiguration",{
-    extend: "viewer.components.ConfigObject",
-    form: null,
+    extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId,configObject){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        //createForm();                
-        this.createForm(this.configObject);
-        //
         this.createCheckBoxes(this.configObject.layers,{editable: true});
-    },
-    createForm: function(config){
-        //to make this accessible in object
-        var me=this;
-        this.form=new Ext.form.FormPanel({
-            frame: false,
-            bodyPadding: me.formPadding,
-            width: me.formWidth,
-            defaults: {
-                anchor: '100%'
-            },
-            items: [{ 
-                xtype: 'textfield',
-                fieldLabel: 'Titel',
-                name: 'title',
-                value: config.title,
-                labelWidth:me.labelWidth
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Titelbalk icoon',
-                name: 'iconUrl',
-                value: config.iconUrl,
-                labelWidth:me.labelWidth
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Tooltip',
-                name: 'toolTip',
-                value: config.toolTip,
-                labelWidth:me.labelWidth
-            }],
-            renderTo: this.parentId//(2)
-        });     
-    },
-       
-    getConfiguration: function(){
-        var config = new Object();
-        config.layers=this.checkBoxes.getChecked();        
-        for( var i = 0 ; i < this.form.items.length ; i++){
-            config[this.form.items.get(i).name] = this.form.items.get(i).value;
-        }
-        return config;
     }
 });
 

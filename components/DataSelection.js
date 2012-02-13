@@ -15,16 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Custom configuration object for AttributeList configuration
+ * DataSelection and Filter component
+ * Creates a dialog where filter and selection settings can be set.
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("viewer.components.CustomConfiguration",{
-    extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        this.createCheckBoxes(this.configObject.layers);
-    }
+Ext.define ("viewer.components.DataSelection",{
+    extend: "viewer.components.Component",    
+    constructor: function (conf){        
+        viewer.components.DataSelection.superclass.constructor.call(this, conf);
+        this.initConfig(conf);        
+        return this;
+    }      
 });
-
-
 

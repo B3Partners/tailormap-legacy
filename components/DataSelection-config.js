@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /**
  * Custom configuration object for AttributeList configuration
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
@@ -25,6 +26,4 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.createCheckBoxes(this.configObject.layers);
     }
 });
-
-
 

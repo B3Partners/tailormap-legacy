@@ -38,9 +38,13 @@ Ext.define("viewer.components.ConfigObject",{
     },
     /**
      * Must return the configuration that is set by the user.
+     * 
      */
     getConfiguration: function(){
-        Ext.Error.raise("getConfigObject() must be implemented in subclass of \"viewer.components.ConfigObject\" ");
+        var config=new Object();        
+        if (this.checkBoxes!=null)
+            config.layers=this.checkBoxes.getChecked();  
+        return config;
     },
     /**
      *Create a layer list with checkboxes.
