@@ -53,13 +53,19 @@ Ext.define("viewer.components.CustomConfiguration",{
             ]
 		});
     
-        if(config != null && config.searchconfigs != null) {
-            for(var i in config.searchconfigs) {
-                me.appendSearchField(config.searchconfigs[i]);
+        if(config != null) {
+            if(config.nextSearchConfigId != null) {
+                me.nextId = config.nextSearchConfigId;
+            }
+            if(config.searchconfigs != null) {
+                Ext.Array.each(config.searchconfigs, function(searchconfig) {
+                    me.appendSearchField(searchconfig);
+                });
             }
         }
     },
     appendSearchField: function(config) {
+        console.log(config);
         var me = this;
         var nextId = me.nextId;
         var newconfig = config || {
@@ -163,6 +169,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var me = this;
         var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
         config['searchconfigs'] = me.searchconfigs;
+        config['nextSearchConfigId'] = me.nextId;
         return config;
     }
 });
