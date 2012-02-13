@@ -53,7 +53,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <a href="#">Applicatiebeheer</a>
                 <ul class="slideoutmenu">
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" id="menu_kiesapplicatie">Kies een applicatie</stripes:link></li>
-                    <c:if test="${!empty sessionScope['applicationId']}">
+                    <c:if test="${!empty sessionScope['applicationId'] && sessionScope['applicationId'] != -1}">
                         <li>
                             <a href="#">Applicatie: </a>
                             <ul class="dropdownmenu">
@@ -72,8 +72,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ingelogd als: <b><c:out value="${pageContext.request.remoteUser}"/> | </b>
             <stripes:link style="color: white" href="/logout.jsp">Uitloggen</stripes:link>
         </div>
-        <c:if test="${!empty sessionScope['applicationId']}">
-            <div id="appinfo" style="color: white; float: right;">
+        <c:if test="${!empty sessionScope['applicationId'] && sessionScope['applicationId'] != -1}">
+            <div id="appinfo" style="color: white; float: right; margin-right: 5px">
                 Geselecteerde applicatie: <b><c:out value="${sessionScope['applicationName']}"/> | </b>
             </div>
         </c:if>

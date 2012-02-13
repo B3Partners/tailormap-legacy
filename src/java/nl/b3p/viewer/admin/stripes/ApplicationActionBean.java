@@ -71,10 +71,15 @@ public class ApplicationActionBean implements ActionBean {
     
     public void setApplication(Application application) {
         this.application = application;
-        this.applicationId = application.getId();
-        this.applicationName = application.getName();
-        if(application.getVersion() != null) {
-            this.applicationName += " v" + application.getVersion();
+        if(application != null) {
+            this.applicationId = application.getId();
+            this.applicationName = application.getName();
+            if(application.getVersion() != null) {
+                this.applicationName += " v" + application.getVersion();
+            }
+        } else {
+            this.applicationId = null;
+            this.applicationName = null;
         }
     }
 
