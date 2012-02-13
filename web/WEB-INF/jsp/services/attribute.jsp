@@ -63,19 +63,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     simpleFeatureTypeChange(simpleFeatureTypeId);
                 });
                 function getOption(value, text, selected) {
-                    var selectedtext = '';
+                    var option = document.createElement('option');
+                    option.value = value;
+                    option.innerHTML = text;
                     if(selected) {
-                        selectedtext = ' selected="selected"'
+                        option.selected = true;
                     }
-                    return '<option value="' + value + '"' + selectedtext + '>' + text + '</option>';
+                    return option;
+                }
+                function removeChilds(el) {
+                    if (el.hasChildNodes()) {
+                        while (el.childNodes.length >= 1) {
+                            el.removeChild(el.firstChild);       
+                        } 
+                    }
                 }
                 function featureSourceChange(featureSourceId) {
                     var selectedValue = parseInt(featureSourceId.getValue());
                     
-                    var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
+                    var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
                     // We are now emptying dom and adding options manully, don't know if this is optimal
-                    simpleFeatureTypeId.dom.innerHTML = '';
-                    simpleFeatureTypeId.insertHtml('beforeEnd', getOption(-1, 'Kies...', true));
+                    removeChilds(simpleFeatureTypeId);
+                    simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', true));
                     
                     if(selectedValue != 1) {
                         Ext.Ajax.request({ 
@@ -86,7 +95,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             success: function ( result, request ) {
                                 result = JSON.parse(result.responseText);
                                 Ext.Array.each(result, function(item) {
-                                    simpleFeatureTypeId.insertHtml('beforeEnd', getOption(item.id, item.name, false));
+                                    simpleFeatureTypeId.appendChild(getOption(item.id, item.name, false));
                                 });                              
                             },
                             failure: function() {

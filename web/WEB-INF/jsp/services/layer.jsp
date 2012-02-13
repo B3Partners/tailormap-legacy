@@ -107,19 +107,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             featureSourceChange(featureSourceId);
                         });
                         function getOption(value, text, selected) {
-                            var selectedtext = '';
+                            var option = document.createElement('option');
+                            option.value = value;
+                            option.innerHTML = text;
                             if(selected) {
-                                selectedtext = ' selected="selected"'
+                                option.selected = true;
                             }
-                            return '<option value="' + value + '"' + selectedtext + '>' + text + '</option>';
+                            return option;
+                        }
+                        function removeChilds(el) {
+                            if (el.hasChildNodes()) {
+                                while (el.childNodes.length >= 1) {
+                                    el.removeChild(el.firstChild);       
+                                } 
+                            }
                         }
                         function featureSourceChange(featureSourceId) {
                             var selectedValue = parseInt(featureSourceId.getValue());
 
-                            var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
+                            var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
                             // We are now emptying dom and adding options manully, don't know if this is optimal
-                            simpleFeatureTypeId.dom.innerHTML = '';
-                            simpleFeatureTypeId.insertHtml('beforeEnd', getOption(-1, 'Kies...', false));
+                            removeChilds(simpleFeatureTypeId);
+                            simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', false));
 
                                 if(selectedValue != 1) {
                                 Ext.Ajax.request({ 
@@ -132,7 +141,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         Ext.Array.each(result, function(item) {
                                             var selected = false;
                                             if(item.id == '${actionBean.simpleFeatureType.id}') selected = true;
-                                            simpleFeatureTypeId.insertHtml('beforeEnd', getOption(item.id, item.name, selected));
+                                            simpleFeatureTypeId.appendChild(getOption(item.id, item.name, selected));
                                         });                              
                                     },
                                     failure: function() {
