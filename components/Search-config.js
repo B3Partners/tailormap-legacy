@@ -53,9 +53,9 @@ Ext.define("viewer.components.CustomConfiguration",{
             ]
 		});
     
-        if(config != null) {
-            for(var i in config) {
-                appendSearchField(config[i]);
+        if(config != null && config.searchconfigs != null) {
+            for(var i in config.searchconfigs) {
+                me.appendSearchField(config.searchconfigs[i]);
             }
         }
     },
@@ -160,8 +160,9 @@ Ext.define("viewer.components.CustomConfiguration",{
         me.searchconfigs = newSearchconfigs;
     },
     getConfiguration: function(){
+        var me = this;
         var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
-        config[searchconfigs] = me.searchconfigs;
+        config['searchconfigs'] = me.searchconfigs;
         return config;
     }
 });

@@ -31,6 +31,8 @@ Ext.define("viewer.components.SelectionWindowConfig",{
     createForm: function(config){
         //to make this accessible in object
         var me=this;
+        var iconurl = config.iconUrl;
+        if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
         this.form=new Ext.form.FormPanel({
             frame: false,
             bodyPadding: me.formPadding,
@@ -67,7 +69,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                     },{
                         xtype: "image",
                         id: "iconImage",
-                        src: config.iconUrl,
+                        src: iconurl,
                         style: {"margin-left": "100px"}
                     }]
             },{ 
