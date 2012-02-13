@@ -138,7 +138,7 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
                     bufferable && !l.isBufferable()){                    
                 continue;
             }                
-            if (editable && l.getFeatureType() == null &&!l.getFeatureType().isWriteable()){
+            if (editable && (l.getFeatureType() == null &&!l.getFeatureType().isWriteable())){
                 continue;
             }
             if(influence && !appLayer.getDetails().containsKey("straalinvloedsgebied")){
