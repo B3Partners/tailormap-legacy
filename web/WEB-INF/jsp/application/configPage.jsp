@@ -77,6 +77,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:if>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/FilterableCheckboxes.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/SelectionGrid.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/ColorField.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>
     </stripes:layout-component>
 </stripes:layout-render>
