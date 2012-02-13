@@ -18,10 +18,8 @@ package nl.b3p.viewer.config.services;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
@@ -36,6 +34,7 @@ import org.opengis.feature.type.AttributeType;
 /**
  *
  * @author jytte
+ * @author Matthijs Laan
  */
 @Entity
 @DiscriminatorValue(JDBCFeatureSource.PROTOCOL)
@@ -55,8 +54,13 @@ public class JDBCFeatureSource extends FeatureSource {
         this.schema = schema;
     }
 
+    public JDBCFeatureSource() {
+        super();
+    }
+    
     public JDBCFeatureSource(Map params) throws JSONException {
-
+        super();
+        
         JSONObject urlObj = new JSONObject();
         urlObj.put("dbtype", params.get("dbtype"));
         urlObj.put("host", params.get("host"));
@@ -72,8 +76,6 @@ public class JDBCFeatureSource extends FeatureSource {
     public void loadFeatureTypes() throws Exception {
         loadFeatureTypes(new WaitPageStatus());
     }
-    
-    public static final Set<String> bindings = new HashSet<String>();
     
     public void loadFeatureTypes(WaitPageStatus status) throws Exception {
         status.setCurrentAction("Databaseverbinding maken...");
