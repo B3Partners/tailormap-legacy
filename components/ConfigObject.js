@@ -27,6 +27,7 @@ Ext.define("viewer.components.ConfigObject",{
     checkBoxes: null,
     checkPanel: null,
     checkPanelHeight: 300,
+    form: null,
     //URL for getting Layers
     requestPath: contextPath+"/action/componentConfigLayerList",
     constructor: function (parentId,configObject){
@@ -42,8 +43,16 @@ Ext.define("viewer.components.ConfigObject",{
      */
     getConfiguration: function(){
         var config=new Object();        
-        if (this.checkBoxes!=null)
+        if (this.checkBoxes!=null){
             config.layers=this.checkBoxes.getChecked();  
+        }
+        for( var i = 0 ; i < this.form.items.length ; i++){
+            //if its a radiogroup get the values with the function and apply the values to the config.
+            if ("radiogroup"==this.form.items.get(i).xtype){
+                Ext.apply(config, this.form.items.get(i).getValue());       
+            }else if (this.form.items.get(i).name!=undefined)
+                config[this.form.items.get(i).name] = this.form.items.get(i).value;
+        }
         return config;
     },
     /**
@@ -65,7 +74,9 @@ Ext.define("viewer.components.ConfigObject",{
         this.checkPanel=Ext.create("Ext.form.FormPanel",{
             title: "Selecteer de kaartlagen waarop deze tool van toepassing is",
             id: "layerListContainer",
-            style: {marginTop: "10px"},
+            style: {
+                marginTop: "10px"
+            },
             frame: false,
             bodyPadding: me.formPadding,
             width: me.formWidth,

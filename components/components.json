@@ -458,6 +458,14 @@
         type: "popup"         
     },
     {
+        className: "viewer.components.Overview",
+        name: "Overzichtskaart",
+        shortName: "Oz",
+        sources: ["Overview.js"],
+        configSource: ["Overview-config.js"],
+        restrictions: ["top_menu"]
+     },
+    {
         className: "viewer.components.Print",
         name: "Print",
         shortName: "Pr",
