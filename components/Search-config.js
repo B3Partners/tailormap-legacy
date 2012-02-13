@@ -20,9 +20,149 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
+    panel: null,
+    panelHeight: 120,
+    searchconfigs: [],
+    nextId: 1,
     constructor: function (parentId,configObject){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        //this.createCheckBoxes(this.configObject.layers);     
+        this.initSearchconfigs(configObject);
+    },
+    initSearchconfigs: function(config) {
+        var me = this;
+        me.panel = Ext.create('Ext.panel.Panel', {
+		    width: me.formWidth,
+            margin: '15 0 0 0',
+		    height: 250,
+		    layout: 'auto',
+            autoScroll: true,
+		    items: [],
+		    renderTo: 'config',
+            tbar: [
+                "->",
+                {
+                    xtype:'button',
+                    iconCls: 'addbutton-icon',
+                    text: 'Zoekingang toevoegen',
+                    listeners: {
+                        click: function() {
+                            me.appendSearchField();
+                        }
+                    }
+                }
+            ]
+		});
+    
+        if(config != null) {
+            for(var i in config) {
+                appendSearchField(config[i]);
+            }
+        }
+    },
+    appendSearchField: function(config) {
+        var me = this;
+        var nextId = me.nextId;
+        var newconfig = config || {
+            id: 'search' + nextId,
+            name: 'Zoekingang ' + nextId,
+            url: ''
+        };
+        me.searchconfigs.push(newconfig);
+        var collapsed = true;
+        if(nextId == 1) collapsed = false;
+        me.panel.add(me.newSearchField(newconfig, collapsed));
+        me.nextId++;
+    },
+    newSearchField: function(config, collapsed) {
+        var me = this;
+        return {
+            xtype: 'panel',
+            id: config.id,
+            layout: 'anchor',
+            anchor: '100%',
+            width: '100%',
+            title: config.name,
+            animCollapse: false,
+            collapsible: true,
+            collapsed: collapsed,
+            titleCollapse: true,
+            hideCollapseTool: true,
+            items: [
+                { 
+                    xtype: 'fieldset',
+                    defaultType: 'textfield',
+                    border: 0,
+                    padding: 10,
+                    style: {
+                        border: '0px none',
+                        marginBottom: '0px'
+                    },
+                    items: [
+                        { fieldLabel: 'Naam', name: 'name', value: config.name, id: 'name'+config.id },
+                        { fieldLabel: 'URL', name: 'url', value: config.url, id: 'url'+config.id },
+                        {
+                            xtype:'button',
+                            iconCls: 'savebutton-icon',
+                            text: 'Zoekingang opslaan',
+                            listeners: {
+                                click: function(button) {
+                                    me.saveConfig(config.id);
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            tbar: ["->", {
+                xtype:'button',
+                iconCls: 'removebutton-icon',
+                text: 'Zoekingang verwijderen',
+                listeners: {
+                    click: function() {
+                        me.removeConfig(config.id);
+                    }
+                }
+            }],
+            listeners: {
+                beforeexpand: function(){
+                    Ext.Array.each(me.panel.items.items, function(item) {
+                        item.collapse();
+                    });
+                }
+            }
+        };
+    },
+    saveConfig: function(configid) {
+        var me = this;
+        var panel = Ext.getCmp(configid);
+        var newname = Ext.getCmp('name' + configid).getValue();
+        var newurl = Ext.getCmp('url' + configid).getValue();
+        panel.setTitle(newname);
+        var newSearchconfigs = [];
+        Ext.Array.each(me.searchconfigs, function(searchconfig) {
+            if(searchconfig.id == configid) {
+                searchconfig.name = newname;
+                searchconfig.url = newurl;
+            }
+            newSearchconfigs.push(searchconfig);
+        });
+        me.searchconfigs = newSearchconfigs;
+    },
+    removeConfig: function(configid) {
+        var me = this;
+        me.panel.remove(configid);
+        var newSearchconfigs = [];
+        Ext.Array.each(me.searchconfigs, function(searchconfig) {
+            if(searchconfig.id != configid) {
+                newSearchconfigs.push(searchconfig);
+            }
+        });
+        me.searchconfigs = newSearchconfigs;
+    },
+    getConfiguration: function(){
+        var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
+        config[searchconfigs] = me.searchconfigs;
+        return config;
     }
 });
 
