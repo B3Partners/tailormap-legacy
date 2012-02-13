@@ -27,7 +27,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur',
                 name: 'color',
-                value: configObject.color,
+                value: this.configObject.color,
                 labelWidth:this.labelWidth
             });
     }

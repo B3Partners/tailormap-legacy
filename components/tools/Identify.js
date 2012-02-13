@@ -20,10 +20,10 @@
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.tools.FeatureInfo",{
+Ext.define ("viewer.components.tools.Identify",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "featureInfo"
+        name: "identify"
     },
     /**
      * @Constructor
@@ -31,7 +31,7 @@ Ext.define ("viewer.components.tools.FeatureInfo",{
      * @param conf configuration object that passes the configuration to the Tool
      */
     constructor: function (conf){        
-        viewer.components.tools.FeatureInfo.superclass.constructor.call(this, conf);
+        viewer.components.tools.Identify.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         conf.type = viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO;        
         this.initTool(conf);

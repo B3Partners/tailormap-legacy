@@ -19,10 +19,10 @@
  * Monitor's the loading with a loadingbar
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.LoadMonitor",{
+Ext.define ("viewer.components.FeatureInfo",{
     extend: "viewer.components.Component",    
     constructor: function (conf){        
-        viewer.components.LoadMonitor.superclass.constructor.call(this, conf);
+        viewer.components.FeatureInfo.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         return this;
     }      

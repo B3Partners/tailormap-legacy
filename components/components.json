@@ -68,7 +68,7 @@
     {
         className: "viewer.components.tools.ZoomIn",
         name: "ZoomIn",
-        shortName: "ZmIn",
+        shortName: "ZI",
         sources: ["tools/ZoomIn.js"],
         closureCompilerSafe: true,
         singleton: true, 
@@ -81,7 +81,7 @@
     {
         className: "viewer.components.tools.ZoomOut",
         name: "ZoomOut",
-        shortName: "ZmOu",
+        shortName: "ZO",
         sources: ["tools/ZoomOut.js"],
         closureCompilerSafe: true,
         singleton: true,
@@ -92,14 +92,14 @@
         }
     },
     {
-        className: "viewer.components.tools.FeatureInfo",
-        name: "FeatureInfo",
-        shortName: "info",
-        sources: ["tools/FeatureInfo.js"],
+        className: "viewer.components.FeatureInfo",
+        name: "Feature info",
+        shortName: "Fi",
+        sources: ["FeatureInfo.js"],
         closureCompilerSafe: true,
         type : "popup",
         singleton: true,
-        restrictions: ["top_menu"],
+        restrictions: ["popupwindow"],
 
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip", title: "Titel", titlebarIcon:"Titelbalk icoon"},
@@ -107,9 +107,24 @@
         }
     },
     {
+        className: "viewer.components.tools.Identify",
+        name: "Identify",
+        shortName: "Id",
+        sources: ["tools/Identify.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Identify"}
+        }
+    },
+    {
         className: "viewer.components.tools.Pan",
         name: "Pan",
-        shortName: "pan",
+        shortName: "pa",
         sources: ["tools/Pan.js"],
         closureCompilerSafe: true,
 
@@ -124,7 +139,7 @@
     {
         className: "viewer.components.tools.SuperPan",
         name: "SuperPan",
-        shortName: "span",
+        shortName: "Sp",
         sources: ["tools/SuperPan.js"],
         closureCompilerSafe: true,
 
@@ -362,7 +377,7 @@
 
     {
         className: "viewer.components.TransparencySlider",
-        name: "Tranparantie",
+        name: "Transparantie",
         sources: ["TransparencySlider.js"],
         configSource: ["TransparencySlider-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top"]
@@ -461,8 +476,8 @@
      },
      {
         className: "viewer.components.fmc.Window",
-        name: "FMC-Window 3th Party",
-        shortName: "window",
+        name: "FMC-Window 3rd Party",
+        shortName: "Wi",
         sources: ["FlamingoComponent.js"],
         configXML: "<fmc:Window id=\"[id]\" left=\"[left]\" top=\"[top]\" width=\"[width]\" height=\"[height]\"/>",
         restrictions: ["content"]
