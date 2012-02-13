@@ -154,6 +154,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
             if(application.getMaxExtent() != null){
                 maxExtent = application.getMaxExtent();
             }
+            authenticatedRequired = application.isAuthenticatedRequired();
         }
         
         return new ForwardResolution(JSP);
