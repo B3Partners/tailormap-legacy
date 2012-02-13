@@ -170,7 +170,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>
                 <stripes:select name="protocol" onchange="checkProtocol()" onkeyup="checkProtocol()">
                     <stripes:option value="wms">WMS</stripes:option>
-                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                    <stripes:option value="arcgis">ArcGIS MapServer (REST)</stripes:option>
                     <stripes:option value="arcims">ArcIMS</stripes:option>
                 </stripes:select>
             </td>
