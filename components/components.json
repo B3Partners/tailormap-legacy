@@ -448,5 +448,14 @@
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
+     },
+    {
+        className: "viewer.components.Print",
+        name: "Print",
+        shortName: "Pr",
+        sources: ["DataSelection.js"],
+        configSource: ["SelectionWindowConfig.js","Print-config.js"],
+        restrictions: ["left_menu"],        
+        type: "popup"         
      }
 ]

@@ -36,27 +36,30 @@ Ext.define("viewer.components.SelectionWindowConfig",{
             frame: false,
             bodyPadding: me.formPadding,
             width: me.formWidth,
-            defaults: {
+            /*defaults: {
                 anchor: '100%'
-            },
+            },*/
             items: [{ 
                 xtype: 'textfield',
                 fieldLabel: 'Titel',
                 name: 'title',
                 value: config.title,
-                labelWidth:me.labelWidth
+                labelWidth:me.labelWidth,
+                width: 500
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Titelbalk icoon',
                 name: 'iconUrl',
                 value: config.iconUrl,
-                labelWidth:me.labelWidth
+                labelWidth:me.labelWidth,
+                width: 500
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Tooltip',
                 name: 'tooltip',
                 value: config.tooltip,
-                labelWidth:me.labelWidth
+                labelWidth:me.labelWidth,
+                width: 700
             }],
             renderTo: this.parentId//(2)
         });     
@@ -65,7 +68,11 @@ Ext.define("viewer.components.SelectionWindowConfig",{
     getConfiguration: function(){
         var config=viewer.components.SelectionWindowConfig.superclass.getConfiguration.call(this);
         for( var i = 0 ; i < this.form.items.length ; i++){
-            config[this.form.items.get(i).name] = this.form.items.get(i).value;
+            //if its a radiogroup get the values with the function and apply the values to the config.
+            if ("radiogroup"==this.form.items.get(i).xtype){
+                Ext.apply(config, this.form.items.get(i).getValue());       
+            }else if (this.form.items.get(i).name!=undefined)
+                config[this.form.items.get(i).name] = this.form.items.get(i).value;
         }
         return config;
     }
