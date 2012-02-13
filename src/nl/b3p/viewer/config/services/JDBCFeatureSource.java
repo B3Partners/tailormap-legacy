@@ -54,10 +54,6 @@ public class JDBCFeatureSource extends FeatureSource {
         this.schema = schema;
     }
     
-    public JDBCFeatureSource(){
-        
-    }
-    
     public JDBCFeatureSource(Map params) throws JSONException {
         super();
         
@@ -80,88 +76,93 @@ public class JDBCFeatureSource extends FeatureSource {
     public void loadFeatureTypes(WaitPageStatus status) throws Exception {
         status.setCurrentAction("Databaseverbinding maken...");
 
-        DataStore store = createDataStore();
-        status.setProgress(10);
-        status.setCurrentAction("Ophalen met lijst van tabellen met geo-informatie...");
-        String[] typeNames = store.getTypeNames();
-        status.setProgress(20);
+        DataStore store = null;
+        try {
+            store = createDataStore();
+            status.setProgress(10);
+            status.setCurrentAction("Ophalen met lijst van tabellen met geo-informatie...");
+            String[] typeNames = store.getTypeNames();
+            status.setProgress(20);
 
-        if(typeNames.length != 0) {
-            double progress = 20.0;
-            double progressPerTypeName = (80.0/typeNames.length);
-            for(String typeName: typeNames) {
-                status.setCurrentAction("Inladen schema van tabel \"" + typeName + "\"...");
-                log.debug("Loading feature source " + typeName + " for JDBCFeatureSource " + getName());
+            if(typeNames.length != 0) {
+                double progress = 20.0;
+                double progressPerTypeName = (80.0/typeNames.length);
+                for(String typeName: typeNames) {
+                    status.setCurrentAction("Inladen schema van tabel \"" + typeName + "\"...");
+                    log.debug("Loading feature source " + typeName + " for JDBCFeatureSource " + getName());
 
-                SimpleFeatureSource gtFs = store.getFeatureSource(typeName);
+                    SimpleFeatureSource gtFs = store.getFeatureSource(typeName);
 
-                SimpleFeatureType sft = new SimpleFeatureType();
-                sft.setTypeName(typeName);
-                sft.setFeatureSource(this);
-                sft.setWriteable(true);
-                if(gtFs.getInfo() != null) {
-                    sft.setDescription(gtFs.getInfo().getDescription());
-                }
-
-                org.opengis.feature.simple.SimpleFeatureType gtFt = gtFs.getSchema();
-
-                for(org.opengis.feature.type.AttributeDescriptor gtAtt: gtFt.getAttributeDescriptors()) {
-                    AttributeDescriptor att = new AttributeDescriptor();
-                    sft.getAttributes().add(att);
-                    att.setName(gtAtt.getLocalName());
-
-                    AttributeType gtType = gtAtt.getType();
-                    String binding = gtType.getBinding().getName();
-
-                    // XXX convert binding to AttributeDescriptor final  
-                    String type = "";
-                    if(binding.equals("com.vividsolutions.jts.geom.MultiPolygon")){
-                        type = AttributeDescriptor.TYPE_GEOMETRY_MPOLYGON;
-                    }else if(binding.equals("com.vividsolutions.jts.geom.Polygon")){
-                        type = AttributeDescriptor.TYPE_GEOMETRY_POLYGON;
-                    }else if(binding.equals("com.vividsolutions.jts.geom.Geometry")){
-                        type = AttributeDescriptor.TYPE_GEOMETRY;
-                    }else if(binding.equals("com.vividsolutions.jts.geom.LineString")){
-                        type = AttributeDescriptor.TYPE_GEOMETRY_LINESTRING;
-                    }else if(binding.equals("com.vividsolutions.jts.geom.Point")){
-                        type = AttributeDescriptor.TYPE_GEOMETRY_POINT;
-                    }else if(binding.equals("com.vividsolutions.jts.geom.MultiLineString")){
-                        type = AttributeDescriptor.TYPE_GEOMETRY_MLINESTRING;
-                    }else if(binding.equals("com.vividsolutions.jts.geom.MultiPoint")){
-                        type = AttributeDescriptor.TYPE_GEOMETRY_MPOINT;
-                    }else if(binding.equals("java.lang.Boolean")){
-                        type = AttributeDescriptor.TYPE_BOOLEAN;
-                    }else if(binding.equals("java.lang.Long")){
-                        type = AttributeDescriptor.TYPE_INTEGER;
-                    }else if(binding.equals("java.lang.String")){
-                        type = AttributeDescriptor.TYPE_STRING;
-                    }else if(binding.equals("java.lang.Integer")){
-                        type = AttributeDescriptor.TYPE_INTEGER;
-                    }else if(binding.equals("java.lang.Short")){
-                        type = AttributeDescriptor.TYPE_INTEGER;
-                    }else if(binding.equals("java.lang.Double")){
-                        type = AttributeDescriptor.TYPE_DOUBLE;
-                    }else if(binding.equals("java.lang.Float")){
-                        type = AttributeDescriptor.TYPE_DOUBLE;
-                    }else if(binding.equals("java.sql.Timestamp")){
-                        type = AttributeDescriptor.TYPE_TIMESTAMP;
-                    }else if(binding.equals("java.sql.Date")){
-                        type = AttributeDescriptor.TYPE_DATE;
-                    }else if(binding.equals("java.math.BigDecimal")){
-                        type = AttributeDescriptor.TYPE_DOUBLE;
+                    SimpleFeatureType sft = new SimpleFeatureType();
+                    sft.setTypeName(typeName);
+                    sft.setFeatureSource(this);
+                    sft.setWriteable(true);
+                    if(gtFs.getInfo() != null) {
+                        sft.setDescription(gtFs.getInfo().getDescription());
                     }
-                    
-                    att.setType(type);
+
+                    org.opengis.feature.simple.SimpleFeatureType gtFt = gtFs.getSchema();
+
+                    for(org.opengis.feature.type.AttributeDescriptor gtAtt: gtFt.getAttributeDescriptors()) {
+                        AttributeDescriptor att = new AttributeDescriptor();
+                        sft.getAttributes().add(att);
+                        att.setName(gtAtt.getLocalName());
+
+                        AttributeType gtType = gtAtt.getType();
+                        String binding = gtType.getBinding().getName();
+
+                        String type = "";
+                        if(binding.equals("com.vividsolutions.jts.geom.MultiPolygon")){
+                            type = AttributeDescriptor.TYPE_GEOMETRY_MPOLYGON;
+                        }else if(binding.equals("com.vividsolutions.jts.geom.Polygon")){
+                            type = AttributeDescriptor.TYPE_GEOMETRY_POLYGON;
+                        }else if(binding.equals("com.vividsolutions.jts.geom.Geometry")){
+                            type = AttributeDescriptor.TYPE_GEOMETRY;
+                        }else if(binding.equals("com.vividsolutions.jts.geom.LineString")){
+                            type = AttributeDescriptor.TYPE_GEOMETRY_LINESTRING;
+                        }else if(binding.equals("com.vividsolutions.jts.geom.Point")){
+                            type = AttributeDescriptor.TYPE_GEOMETRY_POINT;
+                        }else if(binding.equals("com.vividsolutions.jts.geom.MultiLineString")){
+                            type = AttributeDescriptor.TYPE_GEOMETRY_MLINESTRING;
+                        }else if(binding.equals("com.vividsolutions.jts.geom.MultiPoint")){
+                            type = AttributeDescriptor.TYPE_GEOMETRY_MPOINT;
+                        }else if(binding.equals("java.lang.Boolean")){
+                            type = AttributeDescriptor.TYPE_BOOLEAN;
+                        }else if(binding.equals("java.lang.Long")){
+                            type = AttributeDescriptor.TYPE_INTEGER;
+                        }else if(binding.equals("java.lang.String")){
+                            type = AttributeDescriptor.TYPE_STRING;
+                        }else if(binding.equals("java.lang.Integer")){
+                            type = AttributeDescriptor.TYPE_INTEGER;
+                        }else if(binding.equals("java.lang.Short")){
+                            type = AttributeDescriptor.TYPE_INTEGER;
+                        }else if(binding.equals("java.lang.Double")){
+                            type = AttributeDescriptor.TYPE_DOUBLE;
+                        }else if(binding.equals("java.lang.Float")){
+                            type = AttributeDescriptor.TYPE_DOUBLE;
+                        }else if(binding.equals("java.sql.Timestamp")){
+                            type = AttributeDescriptor.TYPE_TIMESTAMP;
+                        }else if(binding.equals("java.sql.Date")){
+                            type = AttributeDescriptor.TYPE_DATE;
+                        }else if(binding.equals("java.math.BigDecimal")){
+                            type = AttributeDescriptor.TYPE_DOUBLE;
+                        }
+
+                        att.setType(type);
+                    }
+                    this.getFeatureTypes().add(sft);         
+                    progress += progressPerTypeName;
+                    status.setProgress((int)progress);
                 }
-                this.getFeatureTypes().add(sft);         
-                progress += progressPerTypeName;
-                status.setProgress((int)progress);
+            }
+        } finally {
+            status.setProgress(100);
+            status.setCurrentAction("Databasegegevens ingeladen");
+            status.setFinished(true);
+            if(store != null) {
+                store.dispose();
             }
         }
-        status.setProgress(100);
-        status.setCurrentAction("Databasegegevens ingeladen");
-        status.setFinished(true);
-        store.dispose();
     }
     
     public DataStore createDataStore() throws Exception {
