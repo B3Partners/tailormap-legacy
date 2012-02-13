@@ -16,8 +16,6 @@
  */
 /**
  * GoogleNavigation component
- * Creates a MapComponent Tool with the given configuration by calling createTool 
- * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.tools.GoogleNavigation",{
@@ -28,8 +26,7 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
     },
     constructor: function (conf){        
         viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.MEASURE;        
+        this.initConfig(conf); 
         this.initTool(conf);
         return this;
     }
