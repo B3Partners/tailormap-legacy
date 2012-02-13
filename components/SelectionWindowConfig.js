@@ -22,7 +22,6 @@
  */
 Ext.define("viewer.components.SelectionWindowConfig",{
     extend: "viewer.components.ConfigObject",
-    form: null,
     constructor: function (parentId,configObject){
         viewer.components.SelectionWindowConfig.superclass.constructor.call(this, parentId,configObject);        
         //Create the form.              
@@ -63,18 +62,6 @@ Ext.define("viewer.components.SelectionWindowConfig",{
             }],
             renderTo: this.parentId//(2)
         });     
-    },
-       
-    getConfiguration: function(){
-        var config=viewer.components.SelectionWindowConfig.superclass.getConfiguration.call(this);
-        for( var i = 0 ; i < this.form.items.length ; i++){
-            //if its a radiogroup get the values with the function and apply the values to the config.
-            if ("radiogroup"==this.form.items.get(i).xtype){
-                Ext.apply(config, this.form.items.get(i).getValue());       
-            }else if (this.form.items.get(i).name!=undefined)
-                config[this.form.items.get(i).name] = this.form.items.get(i).value;
-        }
-        return config;
     }
 });
 
