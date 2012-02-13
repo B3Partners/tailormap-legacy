@@ -102,11 +102,17 @@ function editObject(objId) {
 }
 
 function removeObject(objId) {
-    // How are we going to remove items? In the iframe or directly trough ajax?
-    Ext.get('editFrame').dom.src = deleteurl + '?layarservice=' + objId;
-    var gridCmp = Ext.getCmp('editGrid')
-    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-    return false;
+    if(deleteConfirm()){
+        // How are we going to remove items? In the iframe or directly trough ajax?
+        Ext.get('editFrame').dom.src = deleteurl + '?layarservice=' + objId;
+        var gridCmp = Ext.getCmp('editGrid')
+        gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
+        return false;
+    }
+}
+
+function deleteConfirm() {
+    return confirm('Weet u zeker dat u deze layarservice wilt verwijderen?');
 }
 
 function reloadGrid(){

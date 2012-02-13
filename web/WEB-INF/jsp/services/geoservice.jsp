@@ -41,11 +41,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 window.location.href = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="addForm"><stripes:param name="category" value="${actionBean.category}"/></stripes:url>';
             }
         });
+        
+        function deleteConfirm() {
+            return confirm('Weet u zeker dat u deze categorie wilt verwijderen?');
+        }
     </script>
     <stripes:hidden name="category" value="${actionBean.category.id}"/>
     Naam: <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
     <stripes:submit name="editCategory" value="Opslaan"/>
-    <stripes:submit name="deleteCategory" value="Verwijder categorie"/>
+    <stripes:submit name="deleteCategory" onclick="deleteConfirm();" value="Verwijder categorie"/>
     <stripes:submit name="cancel" value="Annuleren"/><br />
     
     <script type="text/javascript">
@@ -132,8 +136,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <stripes:submit name="saveService" value="Opslaan"/>
     <stripes:hidden name="service" value="${actionBean.service.id}"/>
-    <stripes:submit name="deleteService" value="Verwijder service"/>
+    <stripes:submit name="deleteService" onclick="deleteServiceConfirm();" value="Verwijder service"/>
     <stripes:submit name="cancel" value="Annuleren"/>
+    <script type="text/javascript">
+        function deleteServiceConfirm() {
+            return confirm('Weet u zeker dat u deze service wilt verwijderen?');
+        }
+    </script>
 </c:if>
 
 <%-- Nieuwe service --%>
