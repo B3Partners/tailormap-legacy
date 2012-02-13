@@ -74,28 +74,7 @@ public class ArcIMSService extends GeoService {
             fs.setLinkedService(ims);
             fs.setServiceName(ims.getServiceName());
             
-            String fsName = ims.getName();
-            int uniqueCounter = 0;
-            while(true) {
-                String testName;
-                if(uniqueCounter == 0) {
-                    testName = fsName;
-                } else {
-                    testName = fsName + " (" + uniqueCounter + ")";
-                }
-                try {
-                    Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name")
-                        .setParameter("name", testName)
-                        .setMaxResults(1)
-                        .getSingleResult();
-                    
-                    uniqueCounter++;
-                } catch(NoResultException nre) {
-                    fsName = testName;
-                    break;
-                }
-            }
-            fs.setName(fsName);
+            fs.setName(FeatureSource.findUniqueName(ims.getName()));
             fs.setUrl(url);
             
             /* ArcIMS has a flat layer structure, create a virtual top layer */

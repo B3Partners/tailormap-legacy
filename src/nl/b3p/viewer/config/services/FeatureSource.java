@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -117,4 +118,43 @@ public abstract class FeatureSource {
     }    
     
     /* package */ abstract List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException;    
+    
+    public SimpleFeatureType getFeatureType(String typeName) {
+        for(SimpleFeatureType sft: getFeatureTypes()) {
+            if(sft.getTypeName().equals(typeName)) {
+                return sft;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Checks if a FeatureSource with given name already exists and if needed
+     * returns name with sequence number in brackets added to make it unique.
+     * @param name Name to make unique
+     * @return A unique name for a FeatureSource
+     */
+    public static String findUniqueName(String name) {
+        int uniqueCounter = 0;
+        while(true) {
+            String testName;
+            if(uniqueCounter == 0) {
+                testName = name;
+            } else {
+                testName = name + " (" + uniqueCounter + ")";
+            }
+            try {
+                Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name")
+                    .setParameter("name", testName)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+                uniqueCounter++;
+            } catch(NoResultException nre) {
+                name = testName;
+                break;
+            }
+        }  
+        return name;
+    }
 }
