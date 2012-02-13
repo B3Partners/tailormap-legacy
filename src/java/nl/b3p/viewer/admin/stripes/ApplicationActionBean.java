@@ -83,7 +83,7 @@ public class ApplicationActionBean implements ActionBean {
         if(applicationId != null){
             EntityManager em = Stripersist.getEntityManager();
             application = em.find(Application.class, applicationId);
-            em.getTransaction().commit();
+            setApplication(application);
         }
     }
 }
