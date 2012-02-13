@@ -22,9 +22,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
     constructor: function (parentId,configObject){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        //createForm();                
-        //this.createForm(this.configObject);
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.form.add({ 
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur',
@@ -32,15 +30,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: configObject.color,
                 labelWidth:this.labelWidth
             });
-    },
-    
-       
-    getConfiguration: function(){
-        var config = new Object();    
-        for( var i = 0 ; i < this.form.items.length ; i++){
-            config[this.form.items.get(i).name] = this.form.items.get(i).value;
-        }
-        return config;
     }
 });
 
