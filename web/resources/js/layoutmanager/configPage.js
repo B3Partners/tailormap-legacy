@@ -32,7 +32,6 @@ Ext.onReady(function(){
             if(metadata.extPropertyGridConfigs && metadata.extPropertyGridConfigs.propertyNames) {
                 propertyNames = metadata.extPropertyGridConfigs.propertyNames;
             }
-            console.log(source,propertyNames);
             propertyGrid = Ext.create('Ext.grid.property.Grid', {
                 title: 'Pas de instellingen aan',
                 renderTo: "config",
