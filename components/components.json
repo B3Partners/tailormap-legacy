@@ -153,7 +153,7 @@
     }, 
     {
         className: "viewer.components.tools.FullExtent",
-        name: "FullExtent",
+        name: "Full Extent",
         shortName: "fext",
         sources: ["tools/FullExtent.js"],
         closureCompilerSafe: true,
@@ -169,7 +169,7 @@
     }, 
     {
         className: "viewer.components.tools.PreviousExtent",
-        name: "PreviousExtent",
+        name: "Previous Extent",
         shortName: "pExt",
         sources: ["tools/PreviousExtent.js"],
         closureCompilerSafe: true,
@@ -185,7 +185,7 @@
     }, 
     {
         className: "viewer.components.tools.NextExtent",
-        name: "NextExtent",
+        name: "Next Extent",
         shortName: "nExt",
         sources: ["tools/NextExtent.js"],
         closureCompilerSafe: true,
@@ -202,7 +202,7 @@
 
     {
         className: "viewer.components.BorderNavigation",
-        name: "BorderNavigation",
+        name: "Border Navigation",
         shortName: "bn",
         sources: ["BorderNavigation.js"],
         closureCompilerSafe: true,        
@@ -260,7 +260,7 @@
     },
     {
         className: "viewer.components.GoogleNavigation",
-        name: "GoogleNavigation",
+        name: "Google Navigation",
         shortName: "Gn",
         sources: ["tools/GoogleNavigation.js"],
         closureCompilerSafe: true,
@@ -397,7 +397,7 @@
     },
     {
         className: "viewer.components.LoadMonitor",
-        name: "LoadMonitor",
+        name: "Load Monitor",
         shortName: "Mon",
         sources: ["LoadMonitor.js"],
         restrictions: ["content"],
@@ -414,7 +414,7 @@
     },
     {
         className: "viewer.components.AttributeList",
-        name: "AttributeList",
+        name: "Attributen Lijst",
         shortName: "AL",
         sources: ["AttributeList.js"],
         configSource: ["SelectionWindowConfig.js","AttributeList-config.js"],
@@ -443,7 +443,7 @@
     },
     {
         className: "viewer.components.DataSelection",
-        name: "DataSelection",
+        name: "Data Selectie",
         shortName: "DS",
         sources: ["DataSelection.js"],
         configSource: ["SelectionWindowConfig.js","DataSelection-config.js"],
