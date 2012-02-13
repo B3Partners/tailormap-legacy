@@ -419,5 +419,15 @@
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        
+     },
+    {
+        className: "viewer.components.Drawing",
+        name: "Tekenen",
+        shortName: "Te",
+        sources: ["Drawing.js"],
+        configSource: ["Drawing-config.js"],
+        restrictions: ["left_menu"],        
+        type: "popup",
+        singleton: true,        
      }
 ]
