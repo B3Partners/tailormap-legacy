@@ -30,14 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}"> 
-                        <c:choose>
-                            <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}">
-                            <h1>Attribuutbron bewerken: ${actionBean.featureSource.id}</h1>
-                        </c:when>
-                        <c:otherwise>
-                            <h1>Nieuwe attribuutbron toevoegen</h1>
-                        </c:otherwise>
-                    </c:choose>
+                    <h1>Attribuutbron bewerken</h1>
 
                     <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
                     <table>
@@ -48,37 +41,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <tr>
                             <td>Bron URL:</td>
                             <td>
-                                <c:choose>
-                                    <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}"> 
-                                        <stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30" disabled="true"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30"/>
-                                    </c:otherwise>
-                                </c:choose>
+                                <stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30" disabled="true"/>
                             </td>
                         </tr>
                         <tr>
                             <td>Type:</td>
                             <td>
-                                <c:choose>
-                                    <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}"> 
-                                        <stripes:select name="protocol" disabled="true">
-                                            <stripes:option value="wfs">WFS</stripes:option>
-                                            <stripes:option value="arcgis">ArcGIS Server</stripes:option>
-                                            <stripes:option value="arcxml">ArcXml</stripes:option>
-                                            <stripes:option value="jdbc">JDBC</stripes:option>
-                                        </stripes:select>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <stripes:select name="protocol">
-                                            <stripes:option value="wfs">WFS</stripes:option>
-                                            <stripes:option value="arcgis">ArcGIS Server</stripes:option>
-                                            <stripes:option value="arcxml">ArcXml</stripes:option>
-                                            <stripes:option value="jdbc">JDBC</stripes:option>
-                                        </stripes:select>
-                                    </c:otherwise>
-                                </c:choose>
+                                <stripes:select name="protocol" disabled="true">
+                                    <stripes:option value="wfs">WFS</stripes:option>
+                                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
+                                    <stripes:option value="arcxml">ArcXml</stripes:option>
+                                    <stripes:option value="jdbc">JDBC</stripes:option>
+                                </stripes:select>
                             </td>
                         </tr>
                         <tr>
@@ -90,15 +64,82 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td><stripes:text name="password" value="${actionBean.featureSource.password}" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
+
+                    <stripes:submit name="saveEdit" value="Opslaan"/>
+                    <stripes:submit name="cancel" value="Annuleren"/>
+                </c:when>
+                <c:when test="${actionBean.context.eventName == 'newAttributeSource' || actionBean.context.eventName == 'save'}">
                     <c:choose>
-                        <c:when test="${!empty actionBean.featureSource.id && actionBean.featureSource.id != 0}"> 
-                            <stripes:submit name="saveEdit" value="Opslaan"/>
+                        <c:when test="${empty actionBean.featureSource.id || actionBean.featureSource.id == 0}">
+                            <h1>Nieuwe attribuutbron toevoegen</h1>
+
+                            <table>
+                                <tr>
+                                    <td>Naam:</td>
+                                    <td><stripes:text name="name" maxlength="255" size="30"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Bron host:</td>
+                                    <td>
+                                        <stripes:text name="host" maxlength="255" size="30"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bron poort:</td>
+                                    <td>
+                                        <stripes:text name="port" maxlength="255" size="30"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Type:</td>
+                                    <td>
+                                        <stripes:text name="protocol" value="jdbc" readonly="true"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Database type:</td>
+                                    <td>
+                                        <stripes:select name="dbtype">
+                                            <stripes:option value="oracle">Oracle</stripes:option>
+                                            <stripes:option value="postgis">Postgis</stripes:option>
+                                        </stripes:select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Database:</td>
+                                    <td>
+                                        <stripes:text name="database" maxlength="255" size="30"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Schema:</td>
+                                    <td>
+                                        <stripes:text name="schema" maxlength="255" size="30"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Gebruikersnaam:</td>
+                                    <td><stripes:text name="username" maxlength="255" size="30"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Wachtwoord:</td>
+                                    <td><stripes:text name="password" maxlength="255" size="30"/></td>
+                                </tr>
+                            </table>
+
+                            <stripes:submit name="save" value="Opslaan"/>
+                            <stripes:submit name="cancel" value="Annuleren"/>
                         </c:when>
                         <c:otherwise>
-                            <stripes:submit name="save" value="Opslaan"/>
+                            <script type="text/javascript">
+                                var frameParent = getParent();
+                                if(frameParent && frameParent.reloadGrid) {
+                                    frameParent.reloadGrid();
+                                }
+                            </script>
+                            <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                         </c:otherwise>
                     </c:choose>
-                    <stripes:submit name="cancel" value="Annuleren"/>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'saveEdit'}">
                     <script type="text/javascript">
@@ -107,10 +148,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             frameParent.reloadGrid();
                         }
                     </script>
-                    <!--<stripes:submit name="edit" value="Nieuwe attribuutbron"/>-->
+                    <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
+                </c:when>
+                <c:when test="${actionBean.context.eventName == 'delete'}">
+                    <script type="text/javascript">
+                        var frameParent = getParent();
+                        if(frameParent && frameParent.reloadGrid) {
+                            frameParent.reloadGrid();
+                        }
+                    </script>
+                    <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                 </c:when>
                 <c:otherwise>
-                    <!--<stripes:submit name="edit" value="Nieuwe attribuutbron"/>-->
+                    <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

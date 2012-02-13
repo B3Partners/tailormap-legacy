@@ -24,9 +24,11 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.web.WaitPageStatus;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
+import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -57,7 +59,7 @@ public class AttributeSourceActionBean implements ActionBean {
     
     @Validate(on={"save","saveEdit"}, required=true)
     private String name;
-    @Validate(on="save", required=true)
+    @Validate
     private String url;
     @Validate(on="save", required=true)
     private String protocol;
@@ -65,6 +67,18 @@ public class AttributeSourceActionBean implements ActionBean {
     private String username;
     @Validate
     private String password;
+    @Validate(on="save", required=true)
+    private String host;
+    @Validate(on="save", required=true)
+    private String port;
+    @Validate(on="save", required=true)
+    private String dbtype;
+    @Validate(on="save", required=true)
+    private String database;
+    @Validate(on="save", required=true)
+    private String schema;
+    
+    private WaitPageStatus status = new WaitPageStatus();
     
     @Validate
     private FeatureSource featureSource;
@@ -76,6 +90,10 @@ public class AttributeSourceActionBean implements ActionBean {
     
     public Resolution edit() {
         protocol = featureSource.getProtocol();
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    public Resolution newAttributeSource() {
         return new ForwardResolution(EDITJSP);
     }
     
@@ -98,35 +116,35 @@ public class AttributeSourceActionBean implements ActionBean {
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution save() {
+    @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=0, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
+    public Resolution save() throws JSONException, Exception {
+        if(protocol.equals("jdbc")) {
+            
+            Map params = new HashMap();
+            params.put("dbtype", dbtype);
+            params.put("host", host);
+            params.put("port", port);
+            params.put("database", database);
+            params.put("schema", schema);
+            params.put("user", username);
+            params.put("passwd", password);
         
-        try {
-            if(protocol.equals("wfs")) {
-                featureSource = new WFSFeatureSource();
-            } else if(protocol.equals("arcgis")) {
-                featureSource = new ArcGISFeatureSource();
-            } else if(protocol.equals("arcxml")) {
-                featureSource = new ArcXMLFeatureSource();
-            } else if(protocol.equals("jdbc")) {
-                featureSource = new JDBCFeatureSource();
-            } else {
-                getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
-            }
-        } catch(Exception e) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError(e.getClass().getName() + ": " + e.getMessage()));
-            return new ForwardResolution(EDITJSP);
+            
+            JDBCFeatureSource fs = new JDBCFeatureSource(params);
+            fs.setName(name);
+            
+            fs.loadFeatureTypes(status);
+        
+            Stripersist.getEntityManager().persist(fs);
+            Stripersist.getEntityManager().getTransaction().commit();
+            
+            featureSource = fs;
+
+            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+        
+        } else {
+            getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
         }
-        
-        featureSource.setName(name);
-        featureSource.setUrl(url);
-        featureSource.setUsername(username);
-        featureSource.setPassword(password);
-        
-        Stripersist.getEntityManager().persist(featureSource);
-        Stripersist.getEntityManager().getTransaction().commit();
-        
-        getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-        
         return new ForwardResolution(EDITJSP);
     }
     
@@ -375,6 +393,54 @@ public class AttributeSourceActionBean implements ActionBean {
 
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+    }
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
+
+    public String getDbtype() {
+        return dbtype;
+    }
+
+    public void setDbtype(String dbtype) {
+        this.dbtype = dbtype;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public WaitPageStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(WaitPageStatus status) {
+        this.status = status;
     }
 
     public String getUrl() {
