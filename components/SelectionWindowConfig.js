@@ -24,8 +24,8 @@ Ext.define("viewer.components.SelectionWindowConfig",{
     extend: "viewer.components.ConfigObject",
     constructor: function (parentId,configObject){
         viewer.components.SelectionWindowConfig.superclass.constructor.call(this, parentId,configObject);        
-        //Create the form.              
-        this.createForm(this.configObject);        
+        //Create the form.                 
+        this.createForm(this.configObject);    
         //this.createCheckBoxes(this.configObject.layers);*/
     },
     createForm: function(config){
@@ -39,19 +39,37 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                 anchor: '100%'
             },*/
             items: [{ 
-                xtype: 'textfield',
-                fieldLabel: 'Titel',
-                name: 'title',
-                value: config.title,
-                labelWidth:me.labelWidth,
-                width: 500
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Titelbalk icoon',
-                name: 'iconUrl',
-                value: config.iconUrl,
-                labelWidth:me.labelWidth,
-                width: 500
+                xtype: 'container',
+                layout: {type: 'hbox'},
+                items: [{
+                        xtype: 'container',
+                        //layout: {type: 'vbox'},
+                        items: [{                     
+                            xtype: 'textfield',
+                            fieldLabel: 'Titel',
+                            name: 'title',
+                            value: config.title,
+                            labelWidth:me.labelWidth,
+                            width: 500
+                        },{                        
+                            xtype: 'textfield',
+                            fieldLabel: 'Titelbalk icoon',
+                            name: 'iconUrl',
+                            value: config.iconUrl,
+                            labelWidth:me.labelWidth,
+                            width: 500,
+                            listeners: {
+                                blur: function(textField,options){
+                                    me.onIconChange(textField,options);
+                                }
+                            }
+                        }]                    
+                    },{
+                        xtype: "image",
+                        id: "iconImage",
+                        src: config.iconUrl,
+                        style: {"margin-left": "100px"}
+                    }]
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Tooltip',
@@ -61,7 +79,11 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                 width: 700
             }],
             renderTo: this.parentId//(2)
-        });     
+        });
+    },
+    onIconChange: function(textField,options){
+        //Ext.get("#iconImage").el.dom.src = textField.getValue();
+        Ext.getCmp("iconImage").el.dom.src = textField.getValue()
     }
 });
 
