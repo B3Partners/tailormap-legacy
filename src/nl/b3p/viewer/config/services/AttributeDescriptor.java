@@ -31,6 +31,7 @@ public class AttributeDescriptor {
     public static final String TYPE_BOOLEAN = "boolean";
     public static final String TYPE_GEOMETRY = "geometry";    
     public static final String TYPE_DATE = "date";
+    public static final String TYPE_TIMESTAMP = "timestamp";
     public static final String TYPE_GEOMETRY_POINT = "point";
     public static final String TYPE_GEOMETRY_MPOINT = "multipoint";
     public static final String TYPE_GEOMETRY_LINESTRING = "linestring";
