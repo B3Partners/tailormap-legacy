@@ -80,7 +80,7 @@ public class JDBCFeatureSource extends FeatureSource {
         try {
             store = createDataStore();
             status.setProgress(10);
-            status.setCurrentAction("Ophalen met lijst van tabellen met geo-informatie...");
+            status.setCurrentAction("Lijst van tabellen met geo-informatie ophalen...");
             String[] typeNames = store.getTypeNames();
             status.setProgress(20);
 
