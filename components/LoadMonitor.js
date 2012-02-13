@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-Ext.define ("viewer.components.Zoom",{
-    extend: "viewer.components.Component",
-    config:{
-        name: "Zoom",
-        aap: "noot"
-    },
-    constructor: function (config){
-        viewer.components.Zoom.superclass.constructor.call(this, config);
-        this.initConfig(config);
+/**
+ * LoadMonitor object.
+ * Monitor's the loading with a loadingbar
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ */
+Ext.define ("viewer.components.LoadMonitor",{
+    extend: "viewer.components.Component",    
+    constructor: function (conf){        
+        viewer.components.Buffer.superclass.constructor.call(this, conf);
+        this.initConfig(conf);        
         return this;
-    }
-    
+    }      
 });
+

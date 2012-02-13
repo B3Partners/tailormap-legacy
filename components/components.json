@@ -396,6 +396,23 @@
         }             
     },
     {
+        className: "viewer.components.LoadMonitor",
+        name: "LoadMonitor",
+        shortName: "Mon",
+        sources: ["LoadMonitor.js"],
+        restrictions: ["content"],
+        extPropertyGridConfigs: {
+            propertyNames: {
+                loadingText: "Laad tekst",
+                doneLoadingText: "'Klaar met laden' tekst"
+            },
+            source: {
+                loadingText: "Bezig met laden...",
+                doneLoadingText: "Laden gereed."
+            }
+        }             
+    },
+    {
         className: "viewer.components.AttributeList",
         name: "AttributeList",
         shortName: "AL",
@@ -444,7 +461,7 @@
      },
      {
         className: "viewer.components.fmc.Window",
-        name: "FMC-Window",
+        name: "FMC-Window 3th Party",
         shortName: "window",
         sources: ["FlamingoComponent.js"],
         configXML: "<fmc:Window id=\"[id]\" left=\"[left]\" top=\"[top]\" width=\"[width]\" height=\"[height]\"/>",
