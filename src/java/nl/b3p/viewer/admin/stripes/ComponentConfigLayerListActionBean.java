@@ -60,6 +60,8 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     private Boolean bufferable=false;
     @Validate
     private Boolean editable=false;
+    @Validate
+    private Boolean influence=false;
     
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getAppId() {
@@ -68,17 +70,13 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     public void setAppId(Long appId) {
         this.appId = appId;
     }
-    public Boolean getFilterAble() {
-        return filterable;
-    }
-    public void setFilterAble(Boolean filterAble) {
-        this.filterable = filterAble;
-    }
-    public Boolean getBufferAble() {
+
+    public Boolean getBufferable() {
         return bufferable;
     }
-    public void setBufferAble(Boolean bufferAble) {
-        this.bufferable = bufferAble;
+
+    public void setBufferable(Boolean bufferable) {
+        this.bufferable = bufferable;
     }
 
     public Boolean getEditable() {
@@ -88,7 +86,23 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     public void setEditable(Boolean editable) {
         this.editable = editable;
     }
-    
+
+    public Boolean getFilterable() {
+        return filterable;
+    }
+
+    public void setFilterable(Boolean filterable) {
+        this.filterable = filterable;
+    }
+
+    public Boolean getInfluence() {
+        return influence;
+    }
+
+    public void setInfluence(Boolean influence) {
+        this.influence = influence;
+    }
+ 
     //</editor-fold>
     
     public Resolution source() {
@@ -125,6 +139,9 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
                 continue;
             }                
             if (editable && l.getFeatureType() == null &&!l.getFeatureType().isWriteable()){
+                continue;
+            }
+            if(influence && !appLayer.getDetails().containsKey("straalinvloedsgebied")){
                 continue;
             }
             layers.add(l);
