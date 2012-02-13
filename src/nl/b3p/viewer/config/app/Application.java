@@ -76,7 +76,7 @@ public class Application  {
 
     private boolean authenticatedRequired;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private Level root;
 
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
