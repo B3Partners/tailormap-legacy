@@ -426,7 +426,7 @@
         name: "Tekenen",
         shortName: "Te",
         sources: ["Drawing.js"],
-        configSource: ["Drawing-config.js"],
+        configSource: ["SelectionWindowConfig.js","Drawing-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        

@@ -19,55 +19,21 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("viewer.components.CustomConfiguration",{
-    extend: "viewer.components.ConfigObject",
+    extend: "viewer.components.SelectionWindowConfig",
     form: null,
     constructor: function (parentId,configObject){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
         //createForm();                
-        this.createForm(this.configObject);
-
-    },
-    createForm: function(config){
-        //to make this accessible in object
-        var colorPicker = Ext.create('Ext.menu.ColorPicker', {
-    value: '000000'
-});
-        var me=this;
-        this.form=new Ext.form.FormPanel({
-            frame: false,
-            bodyPadding: me.formPadding,
-            width: me.formWidth,
-            defaults: {
-                anchor: '100%'
-            },
-            items: [{ 
-                xtype: 'textfield',
-                fieldLabel: 'Titel',
-                name: 'title',
-                value: config.title,
-                labelWidth:me.labelWidth
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Titelbalk icoon',
-                name: 'iconUrl',
-                value: config.iconUrl,
-                labelWidth:me.labelWidth
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Tooltip',
-                name: 'toolTip',
-                value: config.toolTip,
-                labelWidth:me.labelWidth
-            },{ 
+        //this.createForm(this.configObject);
+        this.form.add({ 
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur',
                 name: 'color',
-                value: config.color,
-                labelWidth:me.labelWidth
-            }],
-            renderTo: this.parentId//(2)
-        });     
+                value: configObject.color,
+                labelWidth:this.labelWidth
+            });
     },
+    
        
     getConfiguration: function(){
         var config = new Object();    
