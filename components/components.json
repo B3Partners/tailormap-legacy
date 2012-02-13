@@ -382,7 +382,7 @@
         sources: ["Buffer.js"],
         configSource: ["SelectionWindowConfig.js","Buffer-config.js"],
         //restrictions: ["rightmargin_top", "leftmargin_top"],                
-     },
+    },
     {
         className: "viewer.components.Maptip",
         name: "Maptip",
@@ -401,7 +401,7 @@
                 titlebarIcon : ""
             }
         }             
-     },
+    },
     {
         className: "viewer.components.AttributeList",
         name: "AttributeList",
@@ -410,7 +410,7 @@
         configSource: ["SelectionWindowConfig.js","AttributeList-config.js"],
         restrictions: ["leftmargin_top","leftmargin_bottom"] ,        
         type: "popup"        
-     },
+    },
     {
         className: "viewer.components.Edit",
         name: "Edit",
@@ -420,7 +420,7 @@
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        
-     },
+    },
     {
         className: "viewer.components.Drawing",
         name: "Tekenen",
@@ -430,7 +430,7 @@
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        
-     },
+    },
     {
         className: "viewer.components.DataSelection",
         name: "DataSelection",
@@ -439,7 +439,15 @@
         configSource: ["SelectionWindowConfig.js","DataSelection-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
-     },
+    },
+    {
+        className: "viewer.components.fmc.Window",
+        name: "FMC-Window",
+        shortName: "window",
+        sources: ["FlamingoComponent.js"],
+        configXML: "<fmc:Window id=\"[id]\" left=\"[left]\" top=\"[top]\" width=\"[width]\" height=\"[height]\"/>",
+        restrictions: ["content"]
+    },
     {
         className: "viewer.components.Influence",
         name: "Invloedsgebied",
@@ -448,7 +456,7 @@
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
-     },
+    },
     {
         className: "viewer.components.Print",
         name: "Print",
@@ -457,5 +465,5 @@
         configSource: ["SelectionWindowConfig.js","Print-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
-     }
+    }
 ]

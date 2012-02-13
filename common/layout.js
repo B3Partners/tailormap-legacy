@@ -44,11 +44,11 @@ Ext.define('viewer.LayoutManager', {
 
     createLayout: function() {
         var me = this;
-        console.log('LAYOUTMANAGER: ', me);
+        //console.log('LAYOUTMANAGER: ', me);
         var regionList = me.createRegionList();
-        console.log('REGIONLIST: ', regionList);
+        //console.log('REGIONLIST: ', regionList);
         var viewportItems = me.buildLayoutRegions(regionList);
-        console.log('VIEWPORTITEMS: ', viewportItems);
+        //console.log('VIEWPORTITEMS: ', viewportItems);
         me.renderLayout(viewportItems);
     },
 

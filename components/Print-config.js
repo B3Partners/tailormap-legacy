@@ -26,8 +26,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.addFormItems(configObject);
     },
     addFormItems: function(){
-        var me =this;
-        console.log("me.configObject.orientation:  "+me.configObject.orientation);
+        var me =this;        
         this.form.add([{
                 xtype: "label",
                 text: "Standaard Oriëntatie",

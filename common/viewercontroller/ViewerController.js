@@ -45,7 +45,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
          * before instantiating a ViewerController.
          */
         if(app.layout) {
-            console.log("Creating layout");
+            //console.log("Creating layout");
             this.layoutManager = Ext.create('viewer.LayoutManager', {
                 layout: app.layout
             });            
@@ -55,7 +55,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if(mapId == null && this.layoutManager != null) {
                 mapId = this.layoutManager.getMapId();
             }
-            console.log("Creating FlamingoMapComponent, mapId = " + mapId);
+            //console.log("Creating FlamingoMapComponent, mapId = " + mapId);
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId);
         } else if(viewerType == "openlayers") {
             throw "OpenLayers currently not supported!";
@@ -85,7 +85,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // XXX how to setup options before creating the map container - and keep
         // them general...
         
-        console.log("Creating map");
+        //console.log("Creating map");
         var map = this.mapComponent.createMap("map", {viewerController: this});
         // ??? why doesn't MapContainer keep track of references to maps itself?
         this.mapComponent.addMap(map);
@@ -106,11 +106,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** @private Event handler for when the MapContainer is loaded */
     onMapContainerLoaded: function() {
         if(this.configCompleted) {
-            console.log("onMapContainerLoaded; dupe");
+            //console.log("onMapContainerLoaded; dupe");
             return;
         }
         this.configCompleted = true;
-        console.log("onMapContainerLoaded()");
+        //console.log("onMapContainerLoaded()");
 
         try {            
             // XXX viewer.js: initializeButtons();
@@ -125,7 +125,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
             //testComponents();
         } catch(e) {
-            console.log(e);
+            //console.log(e);
         }  
     },
     
@@ -160,7 +160,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         config.viewerController = this;
 
-        console.log("Creating component " + name + " class  " + className + " with config", config);
+        //console.log("Creating component " + name + " class  " + className + " with config", config);
         
         // XXX do something with details - maybe integrate into config server side
         var instance = Ext.create(className, config);
@@ -195,7 +195,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     /** @deprecated To be replaced by loading layers from rootLevel */
     loadBaseLayers: function() {
-        console.log("Loading base layers");
+        //console.log("Loading base layers");
         
         var layerUrl = "http://osm.kaartenbalie.nl/wms/mapserver?";
 
