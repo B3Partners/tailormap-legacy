@@ -65,9 +65,8 @@ public class ArcIMSService extends GeoService {
             ims.setServiceName(gtims.getServiceName());
             ims.setUrl(url);
 
-            status.setProgress(30);
+            status.setProgress(50);
             status.setCurrentAction("Inladen layers...");
-            status.setProgress(70);
             
             /* Automatically create featuresource */
             ArcXMLFeatureSource fs = new ArcXMLFeatureSource();
