@@ -35,8 +35,9 @@ Ext.onReady(function(){
             console.log(source,propertyNames);
             propertyGrid = Ext.create('Ext.grid.property.Grid', {
                 title: 'Pas de instellingen aan',
-                width: 300,
                 renderTo: "config",
+                hideHeaders:true,
+                nameColumnWidth: 300,
                 source: source,
                 propertyNames: propertyNames
             });
