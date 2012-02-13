@@ -34,9 +34,10 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/chooseapplication/{$event}")
 @StrictBinding
 @RolesAllowed("ApplicationAdmin")       
-public class ChooseApplicationActionBean implements ActionBean {
+public class ChooseApplicationActionBean extends ApplicationActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/application/chooseApplicationEdit.jsp";
     
     @Validate
     private int page;
@@ -125,12 +126,19 @@ public class ChooseApplicationActionBean implements ActionBean {
         return new ForwardResolution(JSP);
     }
     
+    public Resolution viewEdit() {
+        return new ForwardResolution(EDITJSP);
+    }
+    
     public Resolution deleteApplication() {
         Stripersist.getEntityManager().remove(application);
         Stripersist.getEntityManager().getTransaction().commit();
         
+        application = null;
+        applicationId = -1L;
+        
         getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
-        return new ForwardResolution(JSP);
+        return new ForwardResolution(EDITJSP);
     }
     
     public Resolution getGridData() throws JSONException { 

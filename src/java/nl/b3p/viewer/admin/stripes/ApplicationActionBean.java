@@ -85,7 +85,7 @@ public class ApplicationActionBean implements ActionBean {
 
     @After(stages = {LifecycleStage.BindingAndValidation})
     public void initApplication() {
-        if(applicationId != null){
+        if(applicationId != null && applicationId != -1L ){
             EntityManager em = Stripersist.getEntityManager();
             application = em.find(Application.class, applicationId);
             setApplication(application);
