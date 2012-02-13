@@ -53,43 +53,47 @@ Ext.onReady(function() {
         filterAllowed = true;
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
-            editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
-                id: 'edit' + attribute.id,
-                title: name + (attribute.editable ? ' (&times;)' : ''),
-                collapsed: collapsed,
-                items: [
-                    { fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
-                        change: function(field, newval) {
-                            editPanelTitle(field.findParentByType('form'), name, newval)
-                        }
-                    }},
-                    { fieldLabel: 'Alias', name: 'editalias', value: attribute.editalias, xtype: 'textfield' },
-                    {
-                        xtype: 'container',
-                        layout: 'hbox',
-                        items: [
-                            { fieldLabel: 'Mogelijke waarden', name: 'editvalues', id: 'editvalues' + attribute.id, value: attribute.editvalues, xtype: 'textfield', size: 100 },
-                            { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {
-                                click: function() {
-                                    getDBValues(attribute.id);
-                                }
-                            }},
-                        ]
-                    },
-                    { fieldLabel: 'Hoogte', name: 'editheight', value: attribute.editheight, xtype: 'textfield' }
-                ]
-            })));
+            if(editable) {
+                editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
+                    id: 'edit' + attribute.id,
+                    title: name + (attribute.editable ? ' (&times;)' : ''),
+                    collapsed: collapsed,
+                    items: [
+                        { fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
+                            change: function(field, newval) {
+                                editPanelTitle(field.findParentByType('form'), name, newval)
+                            }
+                        }},
+                        { fieldLabel: 'Alias', name: 'editalias', value: attribute.editalias, xtype: 'textfield' },
+                        {
+                            xtype: 'container',
+                            layout: 'hbox',
+                            items: [
+                                { fieldLabel: 'Mogelijke waarden', name: 'editvalues', id: 'editvalues' + attribute.id, value: attribute.editvalues, xtype: 'textfield', size: 100 },
+                                { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {
+                                    click: function() {
+                                        getDBValues(attribute.id);
+                                    }
+                                }},
+                            ]
+                        },
+                        { fieldLabel: 'Hoogte', name: 'editheight', value: attribute.editheight, xtype: 'textfield' }
+                    ]
+                })));
+            }
             var isEnabled = (attribute.filterable || attribute.selectable) || false;
             filterPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                 id: 'filter' + attribute.id,
-                title: name,
+                title: name + (isEnabled ? ' (&times;)' : ''),
                 collapsed: collapsed,
                 items: [
                     { fieldLabel: 'Filterbaar / Selecteerbaar', name: 'filterable_selectable', inputValue: 1, checked: isEnabled, xtype: 'checkbox',  labelWidth: 150, listeners: {
                         change: function(field, newval) {
                             var panel = field.findParentByType('form');
-                            Ext.getCmp('filterable' + attribute.id).setDisabled(!newval);
-                            Ext.getCmp('selectable' + attribute.id).setDisabled(!newval);
+                            var filterRadio = Ext.getCmp('filterable' + attribute.id);
+                            filterRadio.setDisabled(!newval); filterRadio.setValue(false);
+                            var selectRadio = Ext.getCmp('selectable' + attribute.id);
+                            selectRadio.setDisabled(!newval); selectRadio.setValue(false);
                             editPanelTitle(panel, name, newval);
                         }
                     }},
@@ -117,7 +121,7 @@ Ext.onReady(function() {
         contentEl:'settings-tab', 
         title: 'Instellingen'
     }];
-    if(editAllowed) {
+    if(editAllowed && editable) {
         tabconfig.push({
             xtype: 'container',
             width: '100%',

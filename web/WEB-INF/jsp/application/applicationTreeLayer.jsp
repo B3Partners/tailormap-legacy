@@ -99,7 +99,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </table>
                     </div>
                     <div id="edit-tab" class="x-hide-display">
-                        Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                        <c:choose>
+                            <c:when test="${actionBean.editable}">
+                                Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                            </c:when>
+                            <c:otherwise>
+                                De attribuutbron van deze kaartlaag is niet van het type JDBC en is daarom niet editbaar.
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div id="filter-tab" class="x-hide-display">
                         Er zijn geen attributen voor deze kaartlaag geconfigureerd.
@@ -108,6 +115,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript">
                     var attributes = ${actionBean.attributesJSON};
                     var getDBValuesUrl = '';
+                    var editable = ${actionBean.editable};
                 </script>
                 <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
             </c:if>
