@@ -115,6 +115,7 @@ public class JDBCFeatureSource extends FeatureSource {
                         AttributeType gtType = gtAtt.getType();
                         String binding = gtType.getBinding().getName();
 
+                        /* XXX use instanceof... */
                         String type = "";
                         if(binding.equals("com.vividsolutions.jts.geom.MultiPolygon")){
                             type = AttributeDescriptor.TYPE_GEOMETRY_MPOLYGON;
@@ -150,6 +151,10 @@ public class JDBCFeatureSource extends FeatureSource {
                             type = AttributeDescriptor.TYPE_DATE;
                         }else if(binding.equals("java.math.BigDecimal")){
                             type = AttributeDescriptor.TYPE_DOUBLE;
+                        }
+                        
+                        if(sft.getGeometryAttribute() == null && type.startsWith("com.vividsolutions.jts.geom")) {
+                            sft.setGeometryAttribute(att.getName());
                         }
 
                         att.setType(type);
