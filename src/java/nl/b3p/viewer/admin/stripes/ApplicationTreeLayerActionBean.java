@@ -199,6 +199,7 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
             j.put("id", appAttribute.getId());
             j.put("name", appAttribute.getAttributeName());
             j.put("alias", attributesList.get(i).getAlias());
+            j.put("visible", appAttribute.isVisible());
             j.put("editable", appAttribute.isEditable());
             j.put("editalias", appAttribute.getEditAlias());
             j.put("editvalues", appAttribute.getEditValues());
