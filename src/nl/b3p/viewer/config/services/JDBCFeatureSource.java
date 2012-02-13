@@ -57,10 +57,6 @@ public class JDBCFeatureSource extends FeatureSource {
     public JDBCFeatureSource(){
         
     }
-
-    public JDBCFeatureSource() {
-        super();
-    }
     
     public JDBCFeatureSource(Map params) throws JSONException {
         super();
