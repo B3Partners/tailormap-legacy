@@ -30,6 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <body>
         <h1>Uitgelogd</h1>
 
-        <b>U bent uitgelogd.</b>
+        <b>U bent uitgelogd. <stripes:link beanclass="nl.b3p.viewer.admin.stripes.IndexActionBean">Opnieuw inloggen</stripes:link></b>
     </body>
 </html>

@@ -18,8 +18,8 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.OutputStream;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -35,6 +35,7 @@ import org.json.JSONException;
  */
 @UrlBinding("/action/componentConfigSource")
 @StrictBinding
+@RolesAllowed("ApplicationAdmin") 
 public class ComponentConfigSourceActionBean implements ActionBean {
     
     private ActionBeanContext context;

@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/attributesource/{$event}")
 @StrictBinding
+@RolesAllowed("RegistryAdmin")
 public class AttributeSourceActionBean implements ActionBean {
 
     private ActionBeanContext context;

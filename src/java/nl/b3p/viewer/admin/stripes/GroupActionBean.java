@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
@@ -34,6 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/group/{$event}/{service}")
+@RolesAllowed("UserAdmin")
 public class GroupActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";

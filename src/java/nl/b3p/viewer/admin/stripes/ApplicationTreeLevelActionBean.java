@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -34,6 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtreelevel/{$event}")
 @StrictBinding
+@RolesAllowed("ApplicationAdmin") 
 public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLevel.jsp";
     

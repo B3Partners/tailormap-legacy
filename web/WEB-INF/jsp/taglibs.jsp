@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <%@taglib prefix="stripes" uri="http://stripes.sourceforge.net/stripes.tld" %>
 <%@taglib prefix="stripes-dynattr" uri="http://stripes.sourceforge.net/stripes-dynattr.tld" %>
+<%@taglib prefix="security" uri="http://www.stripes-stuff.org/security.tld" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 

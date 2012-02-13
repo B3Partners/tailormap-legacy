@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
@@ -31,9 +32,9 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Jytte Schaeffer
  */
-
 @StrictBinding
 @UrlBinding("/action/layarservice/{$event}/{service}")
+@RolesAllowed("RegistryAdmin")
 public class LayarServiceActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/layarservice.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarservice.jsp";

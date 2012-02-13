@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
@@ -34,6 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/geoserviceregistry/{$event}")
 @StrictBinding
+@RolesAllowed("RegistryAdmin")
 public class GeoServiceRegistryActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/geoserviceregistry.jsp";
     private ActionBeanContext context;

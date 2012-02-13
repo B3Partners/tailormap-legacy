@@ -28,7 +28,7 @@
             <param-value>UTF-8</param-value>
         </init-param>
     </filter>
-
+    
     <filter>
         <display-name>Stripes Filter</display-name>
         <filter-name>StripesFilter</filter-name>
@@ -39,7 +39,7 @@
         </init-param>
         <init-param>
             <param-name>Extension.Packages</param-name>
-            <param-value>org.stripesstuff.stripersist,org.stripesstuff.plugin.session</param-value>
+            <param-value>org.stripesstuff.stripersist,org.stripesstuff.plugin.session,org.stripesstuff.plugin.security</param-value>
         </init-param>
         <init-param>
             <param-name>MultipartWrapper.Class</param-name>
@@ -64,6 +64,10 @@
         <init-param>
             <param-name>LocalizationBundleFactory.FieldNameBundle</param-name>
             <param-value>ViewerResources</param-value>
+        </init-param>
+        <init-param>
+            <param-name>SecurityManager.Class</param-name>
+            <param-value>org.stripesstuff.plugin.security.J2EESecurityManager</param-value>
         </init-param>
     </filter>
 

@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -32,6 +33,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/chooseapplication/{$event}")
 @StrictBinding
+@RolesAllowed("ApplicationAdmin")       
 public class ChooseApplicationActionBean implements ActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";

@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
@@ -31,6 +32,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationsettings/{$event}")
 @StrictBinding
+@RolesAllowed("ApplicationAdmin") 
 public class ApplicationSettingsActionBean extends ApplicationActionBean{
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
    
@@ -204,8 +206,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Applicatie is opgeslagen"));
-        
-        applicationId = application.getId();
+
+        setApplication(application);
         
         return new ForwardResolution(JSP);
     }

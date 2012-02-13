@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
@@ -33,6 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/document/{$event}/{service}")
+@RolesAllowed("RegistryAdmin")
 public class DocumentActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/document.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editdocument.jsp";

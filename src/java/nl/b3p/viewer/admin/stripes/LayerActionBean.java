@@ -17,7 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
-import javax.servlet.http.HttpServletResponse;
+import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
@@ -31,6 +31,9 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Jytte Schaeffer
  */
+@UrlBinding("/action/layer")
+@StrictBinding
+@RolesAllowed("RegistryAdmin")
 public class LayerActionBean implements ActionBean{
     private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";
     

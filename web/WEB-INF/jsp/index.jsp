@@ -18,14 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
-<stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.IndexActionBean"/>
-<html>
-    <head>
-        <%-- We need to redirect to a JSP page which was forwarded to from Stripes
-             for the Stripesstuff SecurityManager to work
-        --%>
-        <meta http-equiv="refresh" content="0;url=${url}">
-    </head>
-    <body>
-    </body>
-</html>        
+<stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
+    <stripes:layout-component name="head">
+        <title>Beheeromgeving geo-viewers</title>
+    </stripes:layout-component>
+    <stripes:layout-component name="header">
+        <jsp:include page="/WEB-INF/jsp/header.jsp"/>
+    </stripes:layout-component>    
+    <stripes:layout-component name="body">
+        
+    </stripes:layout-component>
+</stripes:layout-render>

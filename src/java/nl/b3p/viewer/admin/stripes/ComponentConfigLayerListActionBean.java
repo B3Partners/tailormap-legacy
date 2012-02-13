@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -38,6 +39,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/componentConfigLayerList")
 @StrictBinding
+@RolesAllowed("ApplicationAdmin") 
 public class ComponentConfigLayerListActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(ComponentConfigLayerListActionBean.class);
     private ActionBeanContext context;

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -45,6 +46,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/layoutmanager/{$event}")
 @StrictBinding
+@RolesAllowed("ApplicationAdmin")
 public class LayoutManagerActionBean extends ApplicationActionBean {
 
     private JSONObject metadata;

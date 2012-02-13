@@ -17,10 +17,10 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
-import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.services.Document;
@@ -34,6 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtree/{$event}")
 @StrictBinding
+@RolesAllowed("ApplicationAdmin") 
 public class ApplicationTreeActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTree.jsp";
     

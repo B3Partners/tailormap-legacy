@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <div id="header">
     <div id="menu">
         <ul>
+<stripes:useActionBean var="bean1" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean"/>
+<security:allowed bean="bean1">
             <li class="menu-level1">
                 <a href="#">Gegevensregister</a>
                 <ul class="slideoutmenu">
@@ -32,6 +34,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <li><a href="#" id="menu_layer">Layar</a></li>
                 </ul>
             </li>
+</security:allowed>
+            
+<stripes:useActionBean var="bean2" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean"/>
+<security:allowed bean="bean2">            
             <li class="menu-level1">
                 <a href="#">Beheer toegang</a>
                 <ul class="slideoutmenu">
@@ -39,21 +45,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" id="menu_gebruikers">Gebruikers</stripes:link></li>
                 </ul>
             </li>
+</security:allowed>            
+            
+<stripes:useActionBean var="bean3" beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean"/>
+<security:allowed bean="bean3">            
             <li class="menu-level1">
                 <a href="#">Applicatiebeheer</a>
                 <ul class="slideoutmenu">
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" id="menu_kiesapplicatie">Kies een applicatie</stripes:link></li>
-                    <li>
-                        <a href="#">Applicatie: </a>
-                        <ul class="dropdownmenu">
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">Instellingen</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" id="menu_boomstructuur">Boomstructuur met kaarten</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="menu_startkaartbeeld">Startkaartbeeld</stripes:link></li>
-                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="menu_layout">Layout met beschikbare componenten</stripes:link></li>
-                        </ul>
-                    </li>
+                    <c:if test="${!empty sessionScope['applicationId']}">
+                        <li>
+                            <a href="#">Applicatie: </a>
+                            <ul class="dropdownmenu">
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">Instellingen</stripes:link></li>
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" id="menu_boomstructuur">Boomstructuur met kaarten</stripes:link></li>
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationStartMapActionBean" id="menu_startkaartbeeld">Startkaartbeeld</stripes:link></li>
+                                <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="menu_layout">Layout met beschikbare componenten</stripes:link></li>
+                            </ul>
+                        </li>
+                    </c:if>
                 </ul>
+</security:allowed>                            
             </li>
         </ul>
+        <div id="userinfo" style="color: white; float: right">
+            Ingelogd als: <b><c:out value="${pageContext.request.remoteUser}"/> | </b>
+            <stripes:link style="color: white" href="/logout.jsp">Uitloggen</stripes:link>
+        </div>
+        <c:if test="${!empty sessionScope['applicationId']}">
+            <div id="appinfo" style="color: white; float: right;">
+                Geselecteerde applicatie: <b><c:out value="${sessionScope['applicationName']}"/> | </b>
+            </div>
+        </c:if>
+
     </div>
+
 </div>

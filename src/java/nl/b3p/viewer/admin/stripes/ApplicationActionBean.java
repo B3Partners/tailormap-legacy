@@ -16,10 +16,13 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
+import net.sourceforge.stripes.action.StrictBinding;
+import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
@@ -30,13 +33,21 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Meine Toonen
  */
+@UrlBinding("/action/application")
+@StrictBinding
+@RolesAllowed("ApplicationAdmin") 
 public class ApplicationActionBean implements ActionBean {
 
     protected ActionBeanContext context;
+    
     @Validate
     protected Application application;
+    
     @Session(key = "applicationId")
     protected Long applicationId;
+    
+    @Session(key = "applicationName")
+    private String applicationName;
 
     public void setContext(ActionBeanContext abc) {
         this.context = abc;
@@ -50,13 +61,25 @@ public class ApplicationActionBean implements ActionBean {
         return application;
     }
 
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+    
     public void setApplication(Application application) {
         this.application = application;
         this.applicationId = application.getId();
+        this.applicationName = application.getName();
+        if(application.getVersion() != null) {
+            this.applicationName += " v" + application.getVersion();
+        }
     }
 
     @After(stages = {LifecycleStage.BindingAndValidation})
-    private void initApplication() {
+    public void initApplication() {
         if(applicationId != null){
             EntityManager em = Stripersist.getEntityManager();
             application = em.find(Application.class, applicationId);

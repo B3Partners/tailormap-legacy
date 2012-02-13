@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
@@ -33,7 +34,8 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Jytte Schaeffer
  */
 @StrictBinding
-@UrlBinding("/action/user/{$event}/{service}")
+@UrlBinding("/action/user/{$event}")
+@RolesAllowed("UserAdmin")
 public class UserActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/security/user.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/edituser.jsp";
