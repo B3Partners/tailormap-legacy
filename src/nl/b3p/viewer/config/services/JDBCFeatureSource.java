@@ -53,6 +53,10 @@ public class JDBCFeatureSource extends FeatureSource {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+    
+    public JDBCFeatureSource(){
+        
+    }
 
     public JDBCFeatureSource() {
         super();
@@ -111,16 +115,56 @@ public class JDBCFeatureSource extends FeatureSource {
                     att.setName(gtAtt.getLocalName());
 
                     AttributeType gtType = gtAtt.getType();
-                    Class binding = gtType.getBinding();
+                    String binding = gtType.getBinding().getName();
 
-                    // XXX convert binding to AttributeDescriptor final                    
-                    att.setType(null);
+                    // XXX convert binding to AttributeDescriptor final  
+                    String type = "";
+                    if(binding.equals("com.vividsolutions.jts.geom.MultiPolygon")){
+                        type = AttributeDescriptor.TYPE_GEOMETRY_MPOLYGON;
+                    }else if(binding.equals("com.vividsolutions.jts.geom.Polygon")){
+                        type = AttributeDescriptor.TYPE_GEOMETRY_POLYGON;
+                    }else if(binding.equals("com.vividsolutions.jts.geom.Geometry")){
+                        type = AttributeDescriptor.TYPE_GEOMETRY;
+                    }else if(binding.equals("com.vividsolutions.jts.geom.LineString")){
+                        type = AttributeDescriptor.TYPE_GEOMETRY_LINESTRING;
+                    }else if(binding.equals("com.vividsolutions.jts.geom.Point")){
+                        type = AttributeDescriptor.TYPE_GEOMETRY_POINT;
+                    }else if(binding.equals("com.vividsolutions.jts.geom.MultiLineString")){
+                        type = AttributeDescriptor.TYPE_GEOMETRY_MLINESTRING;
+                    }else if(binding.equals("com.vividsolutions.jts.geom.MultiPoint")){
+                        type = AttributeDescriptor.TYPE_GEOMETRY_MPOINT;
+                    }else if(binding.equals("java.lang.Boolean")){
+                        type = AttributeDescriptor.TYPE_BOOLEAN;
+                    }else if(binding.equals("java.lang.Long")){
+                        type = AttributeDescriptor.TYPE_INTEGER;
+                    }else if(binding.equals("java.lang.String")){
+                        type = AttributeDescriptor.TYPE_STRING;
+                    }else if(binding.equals("java.lang.Integer")){
+                        type = AttributeDescriptor.TYPE_INTEGER;
+                    }else if(binding.equals("java.lang.Short")){
+                        type = AttributeDescriptor.TYPE_INTEGER;
+                    }else if(binding.equals("java.lang.Double")){
+                        type = AttributeDescriptor.TYPE_DOUBLE;
+                    }else if(binding.equals("java.lang.Float")){
+                        type = AttributeDescriptor.TYPE_DOUBLE;
+                    }else if(binding.equals("java.sql.Timestamp")){
+                        type = AttributeDescriptor.TYPE_TIMESTAMP;
+                    }else if(binding.equals("java.sql.Date")){
+                        type = AttributeDescriptor.TYPE_DATE;
+                    }else if(binding.equals("java.math.BigDecimal")){
+                        type = AttributeDescriptor.TYPE_DOUBLE;
+                    }
+                    
+                    att.setType(type);
                 }
                 this.getFeatureTypes().add(sft);         
                 progress += progressPerTypeName;
                 status.setProgress((int)progress);
             }
         }
+        status.setProgress(100);
+        status.setCurrentAction("Databasegegevens ingeladen");
+        status.setFinished(true);
         store.dispose();
     }
     
