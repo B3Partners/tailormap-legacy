@@ -85,7 +85,9 @@ Ext.define("viewer.components.SelectionWindowConfig",{
     },
     onIconChange: function(textField,options){
         //Ext.get("#iconImage").el.dom.src = textField.getValue();
-        Ext.getCmp("iconImage").el.dom.src = textField.getValue()
+        var iconurl = textField.getValue();
+        if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
+        Ext.getCmp("iconImage").el.dom.src = iconurl;
     }
 });
 
