@@ -50,13 +50,7 @@ public class WFSFeatureSource extends FeatureSource {
     public WFSFeatureSource(Map params) throws JSONException {
         super();
 
-        String wfsUrl = params.get(WFSDataStoreFactory.URL.key).toString();
-        if(!wfsUrl.endsWith("&") && !wfsUrl.endsWith("?")){
-            wfsUrl += wfsUrl.indexOf("?") >= 0 ? "&" : "?";
-        }                    
-        wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS&VERSION=1.0.0";        
-        
-        setUrl(wfsUrl);
+        setUrl(params.get(WFSDataStoreFactory.URL.key).toString());
         // XXX username and password keys
     }    
 
@@ -164,7 +158,14 @@ public class WFSFeatureSource extends FeatureSource {
     
     public DataStore createDataStore() throws Exception {
         Map params = new HashMap();
-        params.put(WFSDataStoreFactory.URL.key, getUrl());
+        
+        String wfsUrl = getUrl();
+        if(!wfsUrl.endsWith("&") && !wfsUrl.endsWith("?")){
+            wfsUrl += wfsUrl.indexOf("?") >= 0 ? "&" : "?";
+        }                    
+        wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS&VERSION=1.0.0";        
+        
+        params.put(WFSDataStoreFactory.URL.key, wfsUrl);
         
         log.debug("Opening datastore using parameters: " + params);
         try {
