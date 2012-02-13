@@ -69,8 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:submit name="cancel" value="Annuleren"/>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'newAttributeSource' || actionBean.context.eventName == 'save'}">
-                    <c:choose>
-                        <c:when test="${empty actionBean.featureSource.id || actionBean.featureSource.id == 0}">
+                    
                             <h1>Nieuwe attribuutbron toevoegen</h1>
 
                             <table>
@@ -129,17 +128,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                             <stripes:submit name="save" value="Opslaan"/>
                             <stripes:submit name="cancel" value="Annuleren"/>
-                        </c:when>
-                        <c:otherwise>
-                            <script type="text/javascript">
-                                var frameParent = getParent();
-                                if(frameParent && frameParent.reloadGrid) {
-                                    frameParent.reloadGrid();
-                                }
-                            </script>
-                            <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
-                        </c:otherwise>
-                    </c:choose>
+                        
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'saveEdit'}">
                     <script type="text/javascript">
@@ -160,6 +149,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                 </c:when>
                 <c:otherwise>
+                    <script type="text/javascript">
+                        var frameParent = getParent();
+                        if(frameParent && frameParent.reloadGrid) {
+                            frameParent.reloadGrid();
+                        }
+                    </script>
                     <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                 </c:otherwise>
             </c:choose>
