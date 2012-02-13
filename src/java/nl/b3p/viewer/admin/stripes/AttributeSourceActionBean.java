@@ -25,6 +25,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
@@ -62,20 +63,20 @@ public class AttributeSourceActionBean implements ActionBean {
     @Validate
     private String url;
     @Validate(on="save", required=true)
-    private String protocol;
+    private String protocol = "jdbc";
     @Validate
     private String username;
     @Validate
     private String password;
-    @Validate(on="save", required=true)
+    @Validate(on="save")
     private String host;
-    @Validate(on="save", required=true)
+    @Validate(on="save")
     private String port;
-    @Validate(on="save", required=true)
+    @Validate(on="save")
     private String dbtype;
-    @Validate(on="save", required=true)
+    @Validate(on="save")
     private String database;
-    @Validate(on="save", required=true)
+    @Validate(on="save")
     private String schema;
     
     private WaitPageStatus status = new WaitPageStatus();
@@ -142,6 +143,20 @@ public class AttributeSourceActionBean implements ActionBean {
 
             getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
         
+        } else if(protocol.equals("wfs")) {
+            Map params = new HashMap();
+            params.put(WFSDataStoreFactory.URL.key, url);
+            WFSFeatureSource fs = new WFSFeatureSource(params);
+            fs.setName(name);
+            fs.loadFeatureTypes(status);
+            Stripersist.getEntityManager().persist(fs);
+            Stripersist.getEntityManager().getTransaction().commit();
+            
+            featureSource = fs;
+
+            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+            
+            
         } else {
             getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
         }

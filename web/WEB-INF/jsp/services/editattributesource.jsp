@@ -71,46 +71,85 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:when test="${actionBean.context.eventName == 'newAttributeSource' || actionBean.context.eventName == 'save'}">
                     
                             <h1>Nieuwe attribuutbron toevoegen</h1>
+                            <p>
+                            <script type="text/javascript">
+                                function checkProtocol() {
+                                    var protocol = Ext.query("select[name='protocol']")[0].value;
+                                                                        
+                                    Ext.query("*[class='dbTr']").forEach(function(e) {
+                                        e.style.visibility = protocol == "jdbc" ? "visible" : "hidden";
+                                    });
+                                    Ext.query("*[class='wfsTr']").forEach(function(e) {
+                                        e.style.visibility = protocol == "wfs" ? "visible" : "hidden";
+                                    });
 
+                                    checkDefaults();
+                                }
+
+                                function checkDefaults() {
+                                    // XXX impossible to use a Oracle server on PostgreSQL port 
+                                    // and vice versa, but automatic filling in of port is useful
+                                    var dbType = Ext.query("select[name='dbtype']")[0].value;
+                                    var port = Ext.query("input[name='port']")[0];
+                                    if(dbType == "oracle") {
+                                        if(port.value == "" || port.value == "5432") {
+                                            port.value = "1521";
+                                        }
+                                    } else if(dbType == "postgis") {
+                                        if(port.value == "" || port.value == "1521") {
+                                            port.value = "5432";
+                                        }
+                                    }
+                                }
+                                
+                                Ext.onReady(checkProtocol);
+                            </script>    
                             <table>
+                                <tr>
+                                    <td>Type:</td>
+                                    <td>
+                                        <stripes:select name="protocol" onchange="checkProtocol()" onkeyup="checkProtocol()">
+                                            <stripes:option value="jdbc">Database (JDBC)</stripes:option>
+                                            <stripes:option value="wfs">WFS</stripes:option>
+                                        </stripes:select>
+                                    </td>
+                                </tr>                                
                                 <tr>
                                     <td>Naam:</td>
                                     <td><stripes:text name="name" maxlength="255" size="30"/></td>
                                 </tr>
-                                <tr>
-                                    <td>Bron host:</td>
+                                <tr class="wfsTr">
+                                    <td>URL:</td>
+                                    <td><stripes:text name="url" maxlength="255" size="30"/></td>
+                                </tr>                                
+                                <tr class="dbTr">
+                                    <td>Database type:</td>
+                                    <td>
+                                        <stripes:select name="dbtype" onchange="checkDefaults()" onkeyup="checkDefaults()">
+                                            <stripes:option value="oracle">Oracle</stripes:option>
+                                            <stripes:option value="postgis">PostGIS</stripes:option>
+                                        </stripes:select>
+                                    </td>
+                                </tr>
+                                <tr class="dbTr">
+                                    <td>Adres database server:</td>
                                     <td>
                                         <stripes:text name="host" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>Bron poort:</td>
+                                <tr class="dbTr">
+                                    <td>Poort database server:</td>
                                     <td>
                                         <stripes:text name="port" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>Type:</td>
-                                    <td>
-                                        <stripes:text name="protocol" value="jdbc" readonly="true"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Database type:</td>
-                                    <td>
-                                        <stripes:select name="dbtype">
-                                            <stripes:option value="oracle">Oracle</stripes:option>
-                                            <stripes:option value="postgis">Postgis</stripes:option>
-                                        </stripes:select>
-                                    </td>
-                                </tr>
-                                <tr>
+                                <tr class="dbTr">
                                     <td>Database:</td>
                                     <td>
                                         <stripes:text name="database" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="dbTr">
                                     <td>Schema:</td>
                                     <td>
                                         <stripes:text name="schema" maxlength="255" size="30"/>
