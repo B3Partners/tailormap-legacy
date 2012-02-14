@@ -34,6 +34,7 @@ Ext.define('viewer.LayoutManager', {
     componentList: [],
     wrapperId: 'wrapper',
     autoRender: true,
+    tabComponents: {},
     
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -44,11 +45,11 @@ Ext.define('viewer.LayoutManager', {
 
     createLayout: function() {
         var me = this;
-        console.log('LAYOUTMANAGER: ', me);
+        // console.log('LAYOUTMANAGER: ', me);
         var regionList = me.createRegionList();
-        console.log('REGIONLIST: ', regionList);
+        // console.log('REGIONLIST: ', regionList);
         var viewportItems = me.buildLayoutRegions(regionList);
-        console.log('VIEWPORTITEMS: ', viewportItems);
+        // console.log('VIEWPORTITEMS: ', viewportItems);
         me.renderLayout(viewportItems);
     },
 
@@ -283,7 +284,7 @@ Ext.define('viewer.LayoutManager', {
                 componentName: component.name,
                 componentClass: component.componentClass
             });
-            if(component.componentClass == "FlamingoMap") {
+            if(component.componentClass == "FlamingoMap" || component.componentClass == "OpenLayersMap") {
                 me.mapId = cmpId;
             }
             first = false;
@@ -293,8 +294,15 @@ Ext.define('viewer.LayoutManager', {
     },
 
     getRegionContent: function(componentItems, regionlayout) {
+        var me = this;
         if(Ext.isDefined(regionlayout.useTabs) && regionlayout.useTabs && componentItems.length > 1) {
             var cmpId = Ext.id();
+            Ext.Array.each(componentItems, function(component, index) {
+                me.tabComponents[component.data.cmp_name] = {
+                    tabId: cmpId,
+                    tabNo: index
+                }
+            });
             var tabcomponent = {
                 xtype: 'tabpanel',
                 id: cmpId,
@@ -327,5 +335,13 @@ Ext.define('viewer.LayoutManager', {
 
     getComponentList: function() {
         return this.componentList;
+    },
+    
+    setTabTitle: function(componentId, title) {
+        // Not sure if this works, don't know for sure how to set a tab title
+        var me = this;
+        if(Ext.isDefined(me.tabComponents[componentId])) {
+            Ext.getCmp(me.tabComponents[componentId].tabId).getComponent(me.tabComponents[componentId].tabNo).setText(title);
+        }
     }
 });
