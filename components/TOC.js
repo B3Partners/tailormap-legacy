@@ -1,3 +1,24 @@
+/* 
+ * Copyright (C) 2012 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * Overview component
+ * Creates a overview map
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ */
 Ext.define ("viewer.components.TOC",{
     extend: "viewer.components.Component",
     panel: null,
@@ -45,13 +66,13 @@ Ext.define ("viewer.components.TOC",{
             //resizable: true,
             floating: false,
             listeners:{
-                checkchange:{
-                    toc: this,
-                    fn: this.checkboxClicked
-                },
                 itemclick:{
                     toc: this,
                     fn: this.itemClicked
+                },
+                checkchange:{
+                    toc: this,
+                    fn: this.checkboxClicked
                 }
             },
             store: store
@@ -72,7 +93,6 @@ Ext.define ("viewer.components.TOC",{
         this.insertLayer(nodes);
     },
     addLevel : function (levelId){
-      
         var nodes = new Array();
         var level = this.levels[levelId];
         var treeNodeLayer = {
@@ -82,12 +102,14 @@ Ext.define ("viewer.components.TOC",{
             leaf: false,
             layerObj: {
                 serviceId: level.id
-            },
-                    
-            qtip: level.name
+            }
         };
         if(this.groupCheck){
             treeNodeLayer.checked=  false; // Todo: find children checkboxes
+        }
+        if(level.info != undefined){
+            treeNodeLayer.qtip= "Informatie over de kaart";
+            treeNodeLayer.layerObj.info = level.info;
         }
         
         if(level.children != undefined ){
@@ -105,23 +127,28 @@ Ext.define ("viewer.components.TOC",{
         treeNodeLayer.children= nodes;
         return treeNodeLayer;
     },
+    
     addLayer : function (layerId){
         var appLayerObj = this.appLayers[layerId];
         var service = this.services[appLayerObj.serviceId];
-        
+        var serviceLayer = service.layers[appLayerObj.layerName];
+        var layerTitle = this.viewerController.getLayerTitle(service.id, appLayerObj.layerName); // TODO: Search title
         var treeNodeLayer = {
-            text: appLayerObj.layerName, // TODO: Search title
+            text: layerTitle,
             id: appLayerObj.id,
             expanded: true,
             leaf: true,
             layerObj: {
                 service: service.id,
                 layerName : appLayerObj.layerName
-            },
-            qtip: appLayerObj.layerName// TODO: Search title
+            }
         };
+        if(serviceLayer.details != undefined && serviceLayer.details ["metadata.stylesheet"] != undefined){
+            treeNodeLayer.qtip= "Metadata voor de kaartlaag";
+            treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
+        }
         if(this.layersChecked){
-            treeNodeLayer.checked=  appLayerObj.checked; // Todo: find children checkboxes
+            treeNodeLayer.checked = appLayerObj.checked; // Todo: find children checkboxes
         }
         return treeNodeLayer;        
     },
@@ -133,12 +160,6 @@ Ext.define ("viewer.components.TOC",{
     },
 
     checkboxClicked : function(nodeObj,checked,toc){
-        
-        if(nodeObj.data.leaf){
-            toc.toc.updateParent(nodeObj,checked);
-        }else{
-            
-        }
         var node = nodeObj.raw;
         if(node ===undefined){
             node = nodeObj.data;
@@ -154,21 +175,17 @@ Ext.define ("viewer.components.TOC",{
         }
     },
     
-    updateParent : function (node, checked){
-        var parent = node.parentNode;
-        if(parent != null){
-            parent.data.checked = checked;
-            parent.updateInfo();
-            this.updateParent(parent,checked);
-        }
-    },
     itemClicked: function(thisObj, record, item, index, e, eOpts){
         // TODO don't fire when checkbox is clicked
         var layerName = record.data.text;
         if(record.data.leaf){
-        // get metadata
+            if(record.data.layerObj.metadata!= undefined){
+                Ext.Msg.alert('Metadata', record.data.layerObj.metadata);
+            }
         }else if(!record.data.leaf){
-        // get info
+            if(record.data.layerObj.info!= undefined){
+                Ext.Msg.alert('Info', record.data.layerObj.info);
+            }
         }
     }
 });
