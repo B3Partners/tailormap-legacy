@@ -17,6 +17,7 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
@@ -232,12 +233,23 @@ public class GeoServiceActionBean implements ActionBean{
     }
     
     public Resolution deleteService(){
-        /* Als een service layers heeft die toegevoegt zijn aan een applicatie 
+        /* Als een service layers heeft die toegevoegd zijn aan een applicatie 
          * mag de service niet verwijderd worden */
         this.setServiceId("s" + service.getId());
         Category c = service.getCategory();
         c.getServices().remove(service);
-        Stripersist.getEntityManager().persist(c);
+        
+        List<FeatureSource> linkedSources = Stripersist.getEntityManager().createQuery(
+                "from FeatureSource where linkedService = :service")
+                .setParameter("service", service)
+                .getResultList();
+        for(FeatureSource fs: linkedSources) {
+            fs.setLinkedService(null);
+            getContext().getMessages().add(
+                    new SimpleMessage("De bij deze service automatisch aangemaakte attribuutbron \"{0}\" moet apart worden verwijderd", fs.getName()));
+                              
+        }
+        
         Stripersist.getEntityManager().remove(service);
         Stripersist.getEntityManager().getTransaction().commit();
         
