@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Bookmark component
+ * ScreenPopup
+ * A generic component to which can render itself
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.Bookmark",{
-    extend: "viewer.components.Component",
+Ext.define ("viewer.components.ScreenPopup",{
+    popupWin:null,
     config:{
-        name: "Street View",
-        title: "",
-        titlebarIcon : "",
-        tooltip : ""
+        title: ""
     },
     constructor: function (conf){        
-        viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
+        var con = document.createElement('div');
+        con.style.height=  "100%";
+        con.style.width=  "100%";
+        this.popupWin = Ext.create('Ext.window.Window', {
+            title: this.title || 'Titel',
+            closable: true,
+            closeAction: 'hide',
+            width: 400,
+            height: 600,
+            layout: 'fit',
+            modal: false,
+            renderTo: Ext.getBody(),
+            contentEl : con
+        });
         return this;
+    },
+    show : function(){
+        this.popupWin.show();
+    },
+    hide : function(){
+        this.popupWin.hide();
     }
 });

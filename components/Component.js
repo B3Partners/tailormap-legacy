@@ -22,6 +22,8 @@
 Ext.define("viewer.components.Component",{
     extend: "Ext.util.Observable", 
     events: [],
+    isPopup : false,
+    popup: null,
     config: {
         name: "naam",
         div: new Object(),
@@ -35,6 +37,10 @@ Ext.define("viewer.components.Component",{
     */
     constructor: function(config){
         this.initConfig(config);
+        if(this.popup){
+            this.popup = Ext.create("viewer.components.ScreenPopup",config);
+            this.div = this.popup.popupWin.contentEl.id;
+        }
         return this;
     },
     /**
