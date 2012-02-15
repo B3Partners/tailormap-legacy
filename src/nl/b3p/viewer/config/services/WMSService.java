@@ -137,9 +137,11 @@ public class WMSService extends GeoService {
                             Layer l = wms.getLayer(ld.getName());
                             if(l != null) {
                                 SimpleFeatureType sft = wfsFs.getFeatureType(ld.getQueries()[0]);
-                                l.setFeatureType(sft);
-                                log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
-                                used = true;
+                                if(sft != null) {
+                                    l.setFeatureType(sft);
+                                    log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
+                                    used = true;
+                                }
                             }                            
                         }
                         if(used) {
