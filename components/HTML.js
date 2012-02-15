@@ -20,10 +20,27 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.HTML",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
+    container: null,
+    config: {
+        html: ""
+    },
     constructor: function (conf){        
-        viewer.components.ScaleBar.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
+        viewer.components.HTML.superclass.constructor.call(this, conf);
+        this.initConfig(conf); 
+        this.loadHtml();
         return this;
-    }      
+    },
+    loadHtml : function(){
+        var parentDiv = Ext.get(this.div);
+        var height = parentDiv.getHeight();
+        var width = parentDiv.getWidth();
+        this.container = Ext.create('Ext.container.Container', {
+            width: width,
+            height: height,
+            html: this.html,
+            renderTo: this.div,
+            autoScroll: true
+        });
+    }
 });
