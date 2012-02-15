@@ -55,8 +55,6 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     @Validate
     private List<String> selectedAttributes = new ArrayList<String>();
     
-    //private List editAttributes = new ArrayList();
-    
     private boolean editable;
     
     @Validate
@@ -97,7 +95,6 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
                     }
                 }
                 //set editable
-                //makeAttributeMap(editAttributes);
                 makeAttributeJSONArray(attributesJSON);
             }
         }
@@ -141,24 +138,24 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
                 //save editable
                 JSONObject attribute = attributesJSON.getJSONObject(i);
                 
-                if(attribute.get("editable") != null){
+                if(attribute.has("editable")){
                     appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
                 }
-                if(attribute.get("editalias") != null){
+                if(attribute.has("editalias")){
                     appAttribute.setEditAlias(attribute.get("editalias").toString());
                 }
-                if(attribute.get("editvalues") != null){
+                if(attribute.has("editvalues")){
                     appAttribute.setEditValues(attribute.get("editvalues").toString());
                 }
-                if(attribute.get("editheight") != null){
+                if(attribute.has("editheight")){
                     appAttribute.setEditHeight(attribute.get("editheight").toString());
                 }
 
                 //save selectable
-                if(attribute.get("selectable") != null){
+                if(attribute.has("selectable")){
                     appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
                 }
-                if(attribute.get("filterable") != null){
+                if(attribute.has("filterable")){
                     appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
                 }
                 
@@ -172,22 +169,6 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
         return new ForwardResolution(JSP);
     }
-    
-    /*private void makeAttributeMap(List attributes) {
-        List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
-        for(Iterator it = appAttributes.iterator(); it.hasNext();){
-            ConfiguredAttribute appAttribute = (ConfiguredAttribute)it.next();
-            
-            Map m = new HashMap();
-            m.put("id", appAttribute.getId());
-            m.put("name", appAttribute.getAttributeName());
-            m.put("editable", appAttribute.isEditable());
-            m.put("editalias", appAttribute.getEditAlias());
-            m.put("editvalues", appAttribute.getEditValues());
-            m.put("editheight", appAttribute.getEditHeight());
-            attributes.add(m);
-        }
-    }*/
     
     private void makeAttributeJSONArray(JSONArray array) throws JSONException{
         List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
@@ -252,14 +233,6 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     public void setAttributesList(List<AttributeDescriptor> attributesList) {
         this.attributesList = attributesList;
     }
-
-    /*public List getEditAttributes() {
-        return editAttributes;
-    }
-
-    public void setEditAttributes(List editAttributes) {
-        this.editAttributes = editAttributes;
-    }*/
 
     public JSONArray getAttributesJSON() {
         return attributesJSON;
