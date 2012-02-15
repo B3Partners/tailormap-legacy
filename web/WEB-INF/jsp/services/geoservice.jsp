@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:hidden name="category" value="${actionBean.category.id}"/>
     Naam: <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
     <stripes:submit name="editCategory" value="Opslaan"/>
-    <stripes:submit name="deleteCategory" onclick="deleteConfirm();" value="Verwijder categorie"/>
+    <stripes:submit name="deleteCategory" onclick="return deleteConfirm();" value="Verwijder categorie"/>
     <stripes:submit name="cancel" value="Annuleren"/><br />
     
     <script type="text/javascript">
@@ -136,7 +136,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     
     <stripes:submit name="saveService" value="Opslaan"/>
     <stripes:hidden name="service" value="${actionBean.service.id}"/>
-    <stripes:submit name="deleteService" onclick="deleteServiceConfirm();" value="Verwijder service"/>
+    <stripes:submit name="deleteService" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
     <stripes:submit name="cancel" value="Annuleren"/>
     <script type="text/javascript">
         function deleteServiceConfirm() {
