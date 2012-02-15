@@ -97,16 +97,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // ??? why doesn't MapContainer keep track of references to maps itself?
         this.mapComponent.addMap(map);
         
-        this.mapComponent.registerEvent(
-            viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, 
-            this.mapComponent, 
-            // XXX In the event handler "this" is set to the object firing 
-            // the event, cannot specify this.onMapContainerLoaded and use
-            //  normal "this" to refer to the ViewerController...
-            function() {
-                this.viewerController.onMapContainerLoaded()
-            }
-            );
+        this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
         
     },
     
