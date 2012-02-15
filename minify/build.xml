@@ -16,6 +16,10 @@
           <sources dir="${viewerhtml.path}/components">
             <file name="Component.js"/>
           </sources>
+		    <!--					The Screenpopup-->
+          <sources dir="${viewerhtml.path}/common">
+            <file name="ScreenPopup.js"/>
+          </sources>
           <!--					The Tool Components				-->
          <sources dir="${viewerhtml.path}/components/tools">
             <file name="Tool.js"/>            

@@ -68,6 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
             </c:when>
             <c:otherwise>
                  <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -86,13 +87,11 @@ ${actionBean.componentSourceHTML}
             var contextPath = "${contextPath}";
             var absoluteURIPrefix = "${absoluteURIPrefix}";
             var viewerController;
-
             (function() {
                 var config = ${actionBean.appConfigJSON}
           
                 Ext.onReady(function() {
                     viewerController = new viewer.viewercontroller.ViewerController("flamingo", null, config);
-                    
                 });
             }());
 
