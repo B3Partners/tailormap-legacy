@@ -23,6 +23,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
     /** Optional the layout manager if layout specified in app configuration */
     layoutManager: null,
+    
+    /** A map which stores the current instantiated layerObjects */
+    layers : null,
+    
     /**
      * Creates a ViewerController and initializes the map container. 
      * 
@@ -50,6 +54,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layout: app.layout
             });            
         }
+        this.layers = {};
         
         if(viewerType == "flamingo") {
             if(mapId == null && this.layoutManager != null) {
@@ -59,7 +64,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId);
         } else if(viewerType == "openlayers") {
             throw "OpenLayers currently not supported!";
-            /*
+        /*
             this.mapComponent= new OpenLayersController();
             this.mapOptions = {
                 projection: new OpenLayers.Projection("EPSG:28992"),
@@ -86,18 +91,22 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // them general...
         
         //console.log("Creating map");
-        var map = this.mapComponent.createMap("map", {viewerController: this});
+        var map = this.mapComponent.createMap("map", {
+            viewerController: this
+        });
         // ??? why doesn't MapContainer keep track of references to maps itself?
         this.mapComponent.addMap(map);
         
         this.mapComponent.registerEvent(
-                viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, 
-                this.mapComponent, 
-                // XXX In the event handler "this" is set to the object firing 
-                // the event, cannot specify this.onMapContainerLoaded and use
-                //  normal "this" to refer to the ViewerController...
-                function() { this.viewerController.onMapContainerLoaded() }
-        );
+            viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, 
+            this.mapComponent, 
+            // XXX In the event handler "this" is set to the object firing 
+            // the event, cannot specify this.onMapContainerLoaded and use
+            //  normal "this" to refer to the ViewerController...
+            function() {
+                this.viewerController.onMapContainerLoaded()
+            }
+            );
         
     },
     
@@ -123,7 +132,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             
             loadBaseLayers();
 
-            //testComponents();
+        //testComponents();
         } catch(e) {
             //console.log(e);
         }  
@@ -172,11 +181,61 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         return instance;
     },
+    setLayerVisible : function (serviceId, layerName, visible){
+        var layer = this.getLayer(serviceId, layerName);
+        this.mapComponent.getMap().setLayerVisible(layer, visible);
+        var a = 0;
+    },
+    getLayer : function (serviceId, layerName){
+        var id = serviceId + "_" + layerName;
+        if(this.layers[id] == undefined){
+            var service = this.app.services[serviceId];
+            var layer = service.layers[layerName];
+            var layerUrl = service.url;
     
+            var options={
+                timeout: 30,
+                retryonerror: 10,
+                getcapabilitiesurl: service.url,
+                ratio: 1,
+                showerrors: true,
+                initService: true
+            };
+
+            var ogcOptions={
+                format: "image/png",
+                transparent: true,
+                exceptions: "application/vnd.ogc.se_inimage",
+                srs: "EPSG:28992",
+                version: "1.1.1",
+                layers:layer.name,
+                query_layers: layer.name,
+                styles: "",
+                noCache: false
+            };
+            options["isBaseLayer"]=false;
+            var layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options);
+            this.mapComponent.getMap().addLayer(layerObj);
+            this.layers[id] = layerObj;
+        }
+        return this.layers[id];
+    },
+    getLayerTitle : function (serviceId, layerName){
+        var layer = this.app.services[serviceId].layers[layerName];
+        if(layer.titleAlias != undefined){
+            return layer.titleAlias;
+        }else{
+            return layer.title;
+        }
+    },
+    getLayerMetadata : function (serviceId, layerName){  
+        var layer = this.app.services[serviceId].layers[layerName];
+        return layer.details["metadata.stylesheet"];
+    },
     getComponentsByClassName : function(className) {
         var result = [];
-        for(var name in this.app.components) {
-            var component = this.app.components[name];
+        for(var name in this.components) {
+            var component = this.components[name];
             if(component.className == className) {
                 result.push(component.instance);
             }
@@ -185,7 +244,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     
     getComponentByName : function (name){
-        var component = this.app.components[name];
+        var component = this.components[name];
         if(component != undefined) {
             return component.instance;
         } else {

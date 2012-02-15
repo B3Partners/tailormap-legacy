@@ -1,14 +1,25 @@
 Ext.define ("viewer.components.TOC",{
     extend: "viewer.components.Component",
     panel: null,
+    selectedContent : null,
+    appLayers :  null,
+    service : null,
+    levels : null,
     config: {
-        name: "",
+        groupCheck:true,
+        layersChecked:true,
+        showBaselayers:true,
         title: "Table of Contents"
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON);
         this.initConfig(config);
+        
+        this.selectedContent = this.viewerController.app.selectedContent,
+        this.appLayers = this.viewerController.app.appLayers,
+        this.levels = this.viewerController.app.levels,
+        this.services = this.viewerController.app.services,
         this.loadTree();
         this.loadInitLayers();
         return this;
@@ -47,97 +58,87 @@ Ext.define ("viewer.components.TOC",{
         });
     },
     loadInitLayers : function(){
-        var layers = this.viewerController.app.rootLevel;
-        this.loadChildren(layers.children);
-    },
-    loadChildren : function (child){        
-        for ( var i = 0 ; i < child.length ; i++){
-            var level = child[i];
-            for ( var j = 0 ; j < level.layers.length; j++){
-                var laag = level.layers[j];
-                var treeNode = {
-                    text: laag.layerName,
-                    checked: laag.checked,
-                    id: laag.id,
-                    expanded: true,
-                    leaf: true,
-                    layerObj: {
-                        service: laag.service,
-                        layerName : laag.layerName
-                    },
-                    qtip: laag.layerName
-                };
-                this.insertLayer(treeNode);
-            }
-            if( level.children != undefined){
-                this.loadChildren (level.children);
+        var nodes = new Array();
+        for ( var i = 0 ; i < this.selectedContent.length ; i ++){
+            var contentItem = this.selectedContent[i];
+            if(contentItem.type ==  "level"){
+                var level = this.addLevel(contentItem.id);
+                nodes.push(level);
+            }else if(contentItem.type == "appLayer"){
+                var layer = this.addLayer(contentItem.id);
+                nodes.push(layer);
             }
         }
+        this.insertLayer(nodes);
     },
+    addLevel : function (levelId){
+      
+        var nodes = new Array();
+        var level = this.levels[levelId];
+        var treeNodeLayer = {
+            text: level.name, 
+            id: level.id,
+            expanded: true,
+            leaf: false,
+            layerObj: {
+                serviceId: level.id
+            },
+                    
+            qtip: level.name
+        };
+        if(this.groupCheck){
+            treeNodeLayer.checked=  false; // Todo: find children checkboxes
+        }
+        
+        if(level.children != undefined ){
+            for(var i = 0 ; i < level.children.length; i++){
+                nodes.push(this.addLevel(level.children[i]));
+            }
+        }
+        
+        if(level.layers != undefined ){
+            for(var j = 0 ; j < level.layers.length ; j ++){
+                nodes.push(this.addLayer(level.layers[j]));
+            }
+        }
+        
+        treeNodeLayer.children= nodes;
+        return treeNodeLayer;
+    },
+    addLayer : function (layerId){
+        var appLayerObj = this.appLayers[layerId];
+        var service = this.services[appLayerObj.serviceId];
+        
+        var treeNodeLayer = {
+            text: appLayerObj.layerName, // TODO: Search title
+            id: appLayerObj.id,
+            expanded: true,
+            leaf: true,
+            layerObj: {
+                service: service.id,
+                layerName : appLayerObj.layerName
+            },
+            qtip: appLayerObj.layerName// TODO: Search title
+        };
+        if(this.layersChecked){
+            treeNodeLayer.checked=  appLayerObj.checked; // Todo: find children checkboxes
+        }
+        return treeNodeLayer;        
+    },
+   
     insertLayer : function (config){
-        var layer = this.createLayer(config.layerObj);
-        config.layerObj = layer;
         var root = this.panel.getRootNode();
         root.appendChild(config);
         root.expand()
     },
-    
-    createLayer : function (JSONConfig){
-        
-        /*var ogcOptions = {
-            exceptions: "application/vnd.ogc.se_inimage",
-            srs: "EPSG:28992",
-            version: "1.1.1",
-            name: JSONConfig.layerName,
-            server:JSONConfig.server, 
-            servlet:JSONConfig.servlet,
-            mapservice:JSONConfig.mapservice,
-            visibleids:JSONConfig.name,
-            noCache: false // TODO: Voor achtergrond kaartlagen wel cache gebruiken
-        };
-        var options = {
-            timeout: 30,
-            retryonerror: 10,
-            id:JSONConfig.id,
-            ratio: 1,
-            showerrors: true,
-            initService: true
-        }; 
-        var mapservice = JSONConfig.mapservice;
-        var servlet = JSONConfig.servlet;
-        var name = JSONConfig.name;
-        var server = JSONConfig.server;
-        options["isBaseLayer"]=false;
-        
-        return this.viewerController.mapComponent.createArcIMSLayer(name,server,servlet,mapservice, ogcOptions, options);*/
-        
-        var layerUrl = JSONConfig.service.url;// "http://osm.kaartenbalie.nl/wms/mapserver?";
-    
-        var options={
-            timeout: 30,
-            retryonerror: 10,
-            getcapabilitiesurl: JSONConfig.service.url,// layerUrl,
-            ratio: 1,
-            showerrors: true,
-            initService: true
-        };
-
-        var ogcOptions={
-            format: "image/png",
-            transparent: true,
-            exceptions: "application/vnd.ogc.se_inimage",
-            srs: "EPSG:28992",
-            version: "1.1.1",
-            layers:JSONConfig.layerName,
-            query_layers: JSONConfig.layerName,
-            styles: "",
-            noCache: false
-        };
-        options["isBaseLayer"]=false;
-        return this.viewerController.mapComponent.createWMSLayer(JSONConfig.layerName,layerUrl , ogcOptions, options);
-    },
 
     checkboxClicked : function(nodeObj,checked,toc){
+        
+        if(nodeObj.data.leaf){
+            toc.toc.updateParent(nodeObj,checked);
+        }else{
+            
+        }
         var node = nodeObj.raw;
         if(node ===undefined){
             node = nodeObj.data;
@@ -145,15 +146,29 @@ Ext.define ("viewer.components.TOC",{
         var layer = node.layerObj;
     
         if(checked){
-            toc.toc.viewerController.mapComponent.getMap().addLayer(layer);
-            nodeObj.updateInfo();
+            toc.toc.viewerController.setLayerVisible(layer.service, layer.layerName, true);
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,layer);
         }else{
-            toc.toc.viewerController.mapComponent.getMap().removeLayer(layer)
+            toc.toc.viewerController.setLayerVisible(layer.service, layer.layerName, false);
             toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
         }
     },
+    
+    updateParent : function (node, checked){
+        var parent = node.parentNode;
+        if(parent != null){
+            parent.data.checked = checked;
+            parent.updateInfo();
+            this.updateParent(parent,checked);
+        }
+    },
     itemClicked: function(thisObj, record, item, index, e, eOpts){
+        // TODO don't fire when checkbox is clicked
         var layerName = record.data.text;
+        if(record.data.leaf){
+        // get metadata
+        }else if(!record.data.leaf){
+        // get info
+        }
     }
 });
