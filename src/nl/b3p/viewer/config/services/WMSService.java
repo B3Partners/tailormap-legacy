@@ -148,6 +148,7 @@ public class WMSService extends GeoService {
                             log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS, persisting after finding unique name");
                             
                             wfsFs.setName(FeatureSource.findUniqueName(wms.getName()));
+                            wfsFs.setLinkedService(wms);
                             log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
 
                             Stripersist.getEntityManager().persist(wfsFs);
