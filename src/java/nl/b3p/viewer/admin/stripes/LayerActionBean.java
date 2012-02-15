@@ -21,6 +21,7 @@ import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
@@ -34,42 +35,37 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/layer")
 @StrictBinding
 @RolesAllowed("RegistryAdmin")
-public class LayerActionBean implements ActionBean{
+public class LayerActionBean implements ActionBean {
+
     private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";
-    
     private ActionBeanContext context;
-    
     @Validate
+    @ValidateNestedProperties({
+        @Validate(field = "titleAlias"),
+        @Validate(field = "legendImageUrl")
+    })
     private Layer layer;
-    
     @Validate
     private String parentId;
-    
     private List<Group> allGroups;
-    
     private List<String> applicationsUsedIn = new ArrayList();
-    
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
-    
     @Validate
     private List<String> groupsWrite = new ArrayList<String>();
-    
     @Validate
-    private Map<String,String> details = new HashMap<String,String>();
-    
+    private Map<String, String> details = new HashMap<String, String>();
     @Validate
     private SimpleFeatureType simpleFeatureType;
     @Validate
     private Long featureSourceId;
-    
     private List featureSources;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -145,114 +141,113 @@ public class LayerActionBean implements ActionBean{
     public void setFeatureSources(List featureSources) {
         this.featureSources = featureSources;
     }
-    
+
     public String getParentId() {
         return parentId;
     }
-    
+
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
     }
-    
-    @Before(stages=LifecycleStage.BindingAndValidation)
+
+    @Before(stages = LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
-    
+
     public Resolution edit() {
-        if(layer != null){
+        if (layer != null) {
             details = layer.getDetails();
-            
+
             groupsRead.addAll(layer.getReaders());
             groupsWrite.addAll(layer.getWriters());
-            
-            if(layer.getFeatureType() != null){
+
+            if (layer.getFeatureType() != null) {
                 simpleFeatureType = layer.getFeatureType();
                 featureSourceId = simpleFeatureType.getFeatureSource().getId();
             }
-            
+
             findApplicationsUsedIn();
         }
         return new ForwardResolution(JSP);
     }
-    
-    private void findApplicationsUsedIn(){
+
+    private void findApplicationsUsedIn() {
         GeoService service = layer.getService();
         String layerName = layer.getName();
-        
+
         List<ApplicationLayer> applicationLayers = Stripersist.getEntityManager().createQuery("from ApplicationLayer where service = :service"
-                + " and layerName = :layerName").setParameter("service", service)
-                .setParameter("layerName", layerName).getResultList();
-        
-        for(Iterator it = applicationLayers.iterator(); it.hasNext();){
-            ApplicationLayer appLayer = (ApplicationLayer)it.next();
+                + " and layerName = :layerName").setParameter("service", service).setParameter("layerName", layerName).getResultList();
+
+        for (Iterator it = applicationLayers.iterator(); it.hasNext();) {
+            ApplicationLayer appLayer = (ApplicationLayer) it.next();
             /*
-             * The parent level of the applicationLayer is needed to find out in which application the Layer is used.
-             * This solution is not good when there are many levels.
+             * The parent level of the applicationLayer is needed to find out in
+             * which application the Layer is used. This solution is not good
+             * when there are many levels.
              */
             List<Level> levels = Stripersist.getEntityManager().createQuery("from Level").getResultList();
-            for(Iterator iter = levels.iterator(); iter.hasNext();){
-                Level level = (Level)iter.next();
-                if(level != null && level.getLayers().contains(appLayer)){
+            for (Iterator iter = levels.iterator(); iter.hasNext();) {
+                Level level = (Level) iter.next();
+                if (level != null && level.getLayers().contains(appLayer)) {
                     String name = getApplicationName(level);
-                    if(!applicationsUsedIn.contains(name)){
+                    if (!applicationsUsedIn.contains(name)) {
                         applicationsUsedIn.add(name);
                     }
                 }
             }
         }
     }
-    
-    private String getApplicationName(Level level){
+
+    private String getApplicationName(Level level) {
         String applicationName = null;
-        
-        if(level.getParent() == null){
-            Application application = (Application)Stripersist.getEntityManager().createQuery("from Application where root = :level")
-                    .setParameter("level", level).getSingleResult();
-            if(application.getVersion() != null){
-                applicationName = application.getName() +" V"+ application.getVersion();
-            }else{
+
+        if (level.getParent() == null) {
+            Application application = (Application) Stripersist.getEntityManager().createQuery("from Application where root = :level").setParameter("level", level).getSingleResult();
+            if (application.getVersion() != null) {
+                applicationName = application.getName() + " V" + application.getVersion();
+            } else {
                 applicationName = application.getName();
             }
-            
-        }else{
+
+        } else {
             applicationName = getApplicationName(level.getParent());
         }
-        
+
         return applicationName;
     }
-    
-    public Resolution save() {                
+
+    public Resolution save() {
         layer.getDetails().clear();
         layer.getDetails().putAll(details);
-        
+
         layer.getReaders().clear();
-        for(String groupName: groupsRead) {
+        for (String groupName : groupsRead) {
             layer.getReaders().add(groupName);
         }
-        
+
         layer.getWriters().clear();
-        for(String groupName: groupsWrite) {
+        for (String groupName : groupsWrite) {
             layer.getWriters().add(groupName);
         }
-        
-        if(simpleFeatureType != null){
-           layer.setFeatureType(simpleFeatureType); 
+
+        if (simpleFeatureType != null) {
+            layer.setFeatureType(simpleFeatureType);
         }
-        
+
         Stripersist.getEntityManager().persist(layer);
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
-        
+
         return new ForwardResolution(JSP);
     }
 }
