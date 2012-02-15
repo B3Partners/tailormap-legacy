@@ -34,7 +34,6 @@ Ext.define ("viewer.components.TOC",{
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON);
         this.initConfig(config);
         
         this.selectedContent = this.viewerController.app.selectedContent,
@@ -43,6 +42,7 @@ Ext.define ("viewer.components.TOC",{
         this.services = this.viewerController.app.services,
         this.loadTree();
         this.loadInitLayers();
+        
         return this;
     },
     loadTree : function(){
@@ -152,13 +152,18 @@ Ext.define ("viewer.components.TOC",{
         }
         return treeNodeLayer;        
     },
-   
     insertLayer : function (config){
         var root = this.panel.getRootNode();
         root.appendChild(config);
         root.expand()
     },
-
+    
+    /*************************  Event handlers ***********************************************************/
+    
+    syncLayers : function (layer, visible){
+        alert("awerw");
+    },
+    
     checkboxClicked : function(nodeObj,checked,toc){
         var node = nodeObj.raw;
         if(node ===undefined){
@@ -177,14 +182,18 @@ Ext.define ("viewer.components.TOC",{
     
     itemClicked: function(thisObj, record, item, index, e, eOpts){
         // TODO don't fire when checkbox is clicked
-        var layerName = record.data.text;
-        if(record.data.leaf){
-            if(record.data.layerObj.metadata!= undefined){
-                Ext.Msg.alert('Metadata', record.data.layerObj.metadata);
+        var node = record.raw;
+        if(node ===undefined){
+            node = record.data;
+        }
+        var layerName = node.text;
+        if(node.leaf){
+            if(node.layerObj.metadata!= undefined){
+                Ext.Msg.alert('Metadata', node.layerObj.metadata);
             }
-        }else if(!record.data.leaf){
-            if(record.data.layerObj.info!= undefined){
-                Ext.Msg.alert('Info', record.data.layerObj.info);
+        }else if(!node.leaf){
+            if(node.layerObj.info!= undefined){
+                Ext.Msg.alert('Info', node.layerObj.info);
             }
         }
     }

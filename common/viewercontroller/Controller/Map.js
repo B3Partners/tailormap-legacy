@@ -20,7 +20,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         this.initConfig(config);
         this.frameworkMap = this.viewerController.mapComponent.viewerObject;
         
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT);    
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED);
         return this;
     },
     
@@ -155,6 +155,12 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         this.layers=newLayerArray;
         return currentIndex;
     },
+        /**
+     * Sets a layer visible/invisible
+     */
+    setLayerVisible : function (layer, visible){
+        this.fire(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,[ visible]);
+    },
 
     /*****************These functions need to be overwritten*****************/
     /**
@@ -177,12 +183,6 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     getAllVectorLayers : function(){
         throw("Map.getAllVectorLayers() Not implemented! Must be implemented in sub-class");
-    },
-    /**
-     * Sets a layer visible/invisible
-     */
-    setLayerVisible : function (layer, visible){
-        throw("Map.setLayerVisible() Not implemented! Must be implemented in sub-class");
     },
     /**
      *Remove this map

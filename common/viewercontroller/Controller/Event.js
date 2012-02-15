@@ -58,6 +58,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_ONIT                               : "ON_ONIT",  // Shared by
 
         ON_LAYER_SWITCHED_OFF                 : "ON_LAYER_SWITCHED_OFF",
-        ON_LAYER_SWITCHED_ON                  : "ON_LAYER_SWITCHED_ON"
+        ON_LAYER_SWITCHED_ON                  : "ON_LAYER_SWITCHED_ON",
+        ON_LAYER_VISIBILITY_CHANGED           : "ON_LAYER_VISIBILITY_CHANGED"
     }
 });
