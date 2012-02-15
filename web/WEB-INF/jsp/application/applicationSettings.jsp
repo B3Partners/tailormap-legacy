@@ -91,7 +91,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </td>
                     </tr>
                 </table>   
-                    <stripes:checkbox name="authenticatedRequired" value="${actionBean.application.authenticatedRequired}"/> Inloggen verplicht<br>
+                    <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht<br>
                     <stripes:submit name="save" value="Opslaan"/>
                     <stripes:submit name="cancel" value="Annuleren"/>
                 </stripes:form>
