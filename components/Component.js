@@ -41,7 +41,7 @@ Ext.define("viewer.components.Component",{
     */
     constructor: function(config){
         this.initConfig(config);
-        if(this.popup){
+        if(this.isPopup){
             this.popup = Ext.create("viewer.components.ScreenPopup",config);
         }
         return this;
