@@ -20,6 +20,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.LayerSelector",{
+    extend: "viewer.components.Component",    
     popupWin:null,
     layerList : null,
     combobox : null,
@@ -30,6 +31,7 @@ Ext.define ("viewer.components.LayerSelector",{
     }, 
     constructor: function (conf,div){        
         this.initConfig(conf);   
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE);
         this.div = div;
         var layerList = this.viewerController.app.appLayers;
         var layerArray = new Array();
@@ -49,9 +51,18 @@ Ext.define ("viewer.components.LayerSelector",{
             queryMode: 'local',
             displayField: 'layerName',
             valueField: 'layer',
+            listeners :{
+                change:{
+                    fn: this.changed,
+                    scope: this
+                }
+            },
             renderTo: this.div
         });
         return this;
+    },
+    changed :function (combobox,item,previousSelected){
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,item,this);
     },
     getValue : function (){
         return this.combobox.getValue();
