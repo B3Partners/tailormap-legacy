@@ -29,19 +29,39 @@ Ext.define ("viewer.components.LayerSelector",{
         viewerController: new Object(),
         restriction : null
     }, 
-    constructor: function (conf,div){        
+    constructor: function (conf){        
         this.initConfig(conf);   
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE);
-        this.div = div;
-        var layerList = this.viewerController.app.appLayers;
+        var requestPath=  contextPath+"/action/componentConfigLayerList";
+        var requestParams = {};
+        
+        requestParams[this.restriction]= true;
+        requestParams["appId"]= appId;
+        var me = this;
+        Ext.Ajax.request({ 
+            url: requestPath, 
+            params: requestParams, 
+            success: function ( result, request ) {
+                me.layerList = JSON.parse(result.responseText);
+                me.initLayers();
+            },
+            failure: function(a,b,c) {
+                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+            }
+        });
+       
+        return this;
+    },
+    initLayers : function (){
         var layerArray = new Array();
-        for (var layer in layerList){
-            var l = layerList[layer];
+        for (var i = 0 ; i < this.layerList.length ;i++){
+            var l = this.layerList[i];
+            l.title = l.titleAlias || l.title ;
             l.layer = l;
             layerArray.push(l);
         }
         var layers = Ext.create('Ext.data.Store', {
-            fields: ['id', 'layerName','layer'],
+            fields: ['id', 'title','layer'],
             data : layerArray
         });
 
@@ -49,7 +69,7 @@ Ext.define ("viewer.components.LayerSelector",{
             fieldLabel: 'Kies kaartlaag',
             store: layers,
             queryMode: 'local',
-            displayField: 'layerName',
+            displayField: 'title',
             valueField: 'layer',
             listeners :{
                 change:{
@@ -59,7 +79,6 @@ Ext.define ("viewer.components.LayerSelector",{
             },
             renderTo: this.div
         });
-        return this;
     },
     changed :function (combobox,item,previousSelected){
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,item,this);

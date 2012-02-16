@@ -59,6 +59,8 @@ Ext.define("viewer.viewercontroller.controller.Event",{
 
         ON_LAYER_SWITCHED_OFF                 : "ON_LAYER_SWITCHED_OFF",
         ON_LAYER_SWITCHED_ON                  : "ON_LAYER_SWITCHED_ON",
-        ON_LAYER_VISIBILITY_CHANGED           : "ON_LAYER_VISIBILITY_CHANGED"
+        ON_LAYER_VISIBILITY_CHANGED           : "ON_LAYER_VISIBILITY_CHANGED",
+        
+        ON_LAYERSELECTOR_CHANGE                 : "ON_LAYERSELECTOR_CHANGE"
     }
 });
