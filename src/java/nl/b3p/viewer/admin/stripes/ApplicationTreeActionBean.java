@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
-import nl.b3p.viewer.config.services.Document;
+import nl.b3p.viewer.config.services.*;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -131,9 +131,19 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                 }
 
                 for(ApplicationLayer layer: l.getLayers()) {
+                    Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
+                            .setParameter("service", layer.getService()).setParameter("name", layer.getLayerName())
+                            .getSingleResult();
+                    
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
-                    j.put("name", layer.getLayerName());
+                    if(realLayer.getTitleAlias() != null){
+                        j.put("name", realLayer.getTitleAlias());
+                    }else if(realLayer.getTitle() != null){
+                        j.put("name", realLayer.getTitle());
+                    }else{
+                        j.put("name", layer.getLayerName());
+                    }
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
@@ -160,10 +170,19 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             int id = Integer.parseInt(levelId);
             Level l = em.find(Level.class, new Long(id));
             for(ApplicationLayer appl: l.getLayers()) {
-
+                Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
+                            .setParameter("service", appl.getService()).setParameter("name", appl.getLayerName())
+                            .getSingleResult();
+                
                 JSONObject j = new JSONObject();
                 j.put("id", "al" + appl.getId());
-                j.put("name", appl.getLayerName());
+                if(realLayer.getTitleAlias() != null){
+                    j.put("name", realLayer.getTitleAlias());
+                }else if(realLayer.getTitle() != null){
+                    j.put("name", realLayer.getTitle());
+                }else{
+                    j.put("name", appl.getLayerName());
+                }
                 j.put("type", "layer");
                 j.put("isLeaf", true);
                 children.put(j);

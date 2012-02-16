@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
@@ -271,9 +272,19 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 }
 
                 for (ApplicationLayer layer : l.getLayers()) {
+                    Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
+                            .setParameter("service", layer.getService()).setParameter("name", layer.getLayerName())
+                            .getSingleResult();
+                    
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
-                    j.put("name", layer.getLayerName());
+                    if(realLayer.getTitleAlias() != null){
+                        j.put("name", realLayer.getTitleAlias());
+                    }else if(realLayer.getTitle() != null){
+                        j.put("name", realLayer.getTitle());
+                    }else{
+                        j.put("name", layer.getLayerName());
+                    }
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
@@ -326,10 +337,19 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     Object map = it.next();
                     if(map instanceof ApplicationLayer){
                         ApplicationLayer layer = (ApplicationLayer) map;
+                        Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
+                            .setParameter("service", layer.getService()).setParameter("name", layer.getLayerName())
+                            .getSingleResult();
 
                         JSONObject j = new JSONObject();
                         j.put("id", "s" + layer.getId());
-                        j.put("name", layer.getLayerName());
+                        if(realLayer.getTitleAlias() != null){
+                            j.put("name", realLayer.getTitleAlias());
+                        }else if(realLayer.getTitle() != null){
+                            j.put("name", realLayer.getTitle());
+                        }else{
+                            j.put("name", layer.getLayerName());
+                        }
                         j.put("type", "layer");
                         j.put("isLeaf", true);
                         j.put("parentid", "");
@@ -372,9 +392,19 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                 }
 
                 for (ApplicationLayer layer : l.getLayers()) {
+                    Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
+                            .setParameter("service", layer.getService()).setParameter("name", layer.getLayerName())
+                            .getSingleResult();
+                    
                     JSONObject j = new JSONObject();
                     j.put("id", "s" + layer.getId());
-                    j.put("name", layer.getLayerName());
+                    if(realLayer.getTitleAlias() != null){
+                        j.put("name", realLayer.getTitleAlias());
+                    }else if(realLayer.getTitle() != null){
+                        j.put("name", realLayer.getTitle());
+                    }else{
+                        j.put("name", layer.getLayerName());
+                    }
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", levelId);
