@@ -100,7 +100,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <table>
         <tr>
             <td>URL van de service:</td>
-            <td><stripes:text name="url" value="${actionBean.service.url}" maxlength="255" size="80" disabled="true"/></td>
+            <td><stripes:text name="url" maxlength="255" size="80" disabled="true"/></td>
         </tr>
         <tr><td>Protocol:</td>
             <td>
@@ -115,22 +115,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <tr>
                 <td>Service name:</td>
                 <td>
-                    <stripes:text name="serviceName"  value="${actionBean.service.serviceName}" disabled="true" size="30"/>
+                    <stripes:text name="serviceName" disabled="true" size="30"/>
                 </label>
                 </td>
             </tr>          
         </c:if>
         <tr>
             <td>Weergavenaam:</td>
-            <td><stripes:text name="name" value="${actionBean.service.name}" maxlength="255" size="30"/></td>
+            <td><stripes:text name="name" maxlength="255" size="30"/></td>
         </tr>
         <tr>
             <td>Gebruikersnaam:</td>
-            <td><stripes:text name="username" value="${actionBean.service.username}" maxlength="255" size="30"/></td>
+            <td><stripes:text name="username" maxlength="255" size="30"/></td>
         </tr>
         <tr>
             <td>Wachtwoord:</td>
-            <td><stripes-dynattr:password name="password" autocomplete="off" value="${actionBean.service.password}" maxlength="255" size="30"/></td>
+            <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
         </tr>
     </table>
     

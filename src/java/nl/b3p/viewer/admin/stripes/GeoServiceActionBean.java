@@ -204,6 +204,9 @@ public class GeoServiceActionBean implements ActionBean{
     @DefaultHandler
     @HandlesEvent("default")
     public Resolution defaultResolution() {
+        if(category != null){
+            categoryName = category.getName();
+        }
         return new ForwardResolution(JSP);
     }
     
@@ -212,7 +215,17 @@ public class GeoServiceActionBean implements ActionBean{
     }
     
     public Resolution editGeoService() {
-        protocol = service.getProtocol();
+        if(service != null){
+           protocol = service.getProtocol();
+           url = service.getUrl();
+           if(protocol.equals(ArcIMSService.PROTOCOL)) {
+               ArcIMSService ser = (ArcIMSService)service;
+               serviceName = ser.getServiceName();
+           }
+           name = service.getName();
+           username = service.getUsername();
+           password = service.getPassword();
+        }
         return new ForwardResolution(JSP);
     }
     

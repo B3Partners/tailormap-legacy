@@ -93,7 +93,13 @@ public class AttributeSourceActionBean implements ActionBean {
     }
     
     public Resolution edit() {
-        protocol = featureSource.getProtocol();
+        if(featureSource != null){
+            protocol = featureSource.getProtocol();
+            name = featureSource.getName();
+            url = featureSource.getUrl();
+            username = featureSource.getUsername();
+            password = featureSource.getPassword();
+        }
         return new ForwardResolution(EDITJSP);
     }
     

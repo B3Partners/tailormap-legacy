@@ -36,12 +36,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <table>
                         <tr>
                             <td>Naam:</td>
-                            <td><stripes:text name="name" value="${actionBean.featureSource.name}" maxlength="255" size="30"/></td>
+                            <td><stripes:text name="name" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
                             <td>Bron URL:</td>
                             <td>
-                                <stripes:text name="url" value="${actionBean.featureSource.url}" maxlength="255" size="30" disabled="true"/>
+                                <stripes:text name="url" maxlength="255" size="30" disabled="true"/>
                             </td>
                         </tr>
                         <tr>
@@ -57,11 +57,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                         <tr>
                             <td>Gebruikersnaam:</td>
-                            <td><stripes:text name="username" value="${actionBean.featureSource.username}" maxlength="255" size="30"/></td>
+                            <td><stripes:text name="username"  maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
                             <td>Wachtwoord:</td>
-                            <td><stripes-dynattr:password name="password" value="${actionBean.featureSource.password}" autocomplete="off" maxlength="255" size="30"/></td>
+                            <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
 

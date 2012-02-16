@@ -157,6 +157,10 @@ public class GroupActionBean implements ActionBean {
 
     @DontValidate
     public Resolution edit() {
+        if(group != null){
+            name = group.getName();
+            description = group.getDescription();
+        }
         return new ForwardResolution(EDITJSP);
     }
 

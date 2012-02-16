@@ -154,6 +154,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
             if(application.getMaxExtent() != null){
                 maxExtent = application.getMaxExtent();
             }
+            name = application.getName();
+            version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
         }
         

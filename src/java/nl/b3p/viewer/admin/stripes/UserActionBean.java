@@ -199,6 +199,7 @@ public class UserActionBean implements ActionBean {
                 groups.add(g.getName());
             }
             details = user.getDetails();
+            username = user.getUsername();
         }
         
         return new ForwardResolution(EDITJSP);

@@ -61,10 +61,10 @@ public class AttributeActionBean implements ActionBean {
     private List featureSources;
     
     @Validate
+    @ValidateNestedProperties({
+                @Validate(field="alias", maxlength=255)
+    })
     private AttributeDescriptor attribute;
-    
-    @Validate
-    private String alias;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -105,14 +105,6 @@ public class AttributeActionBean implements ActionBean {
 
     public void setFeatureSourceId(Long featureSourceId) {
         this.featureSourceId = featureSourceId;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
     }
     
     public String getDir() {
@@ -178,7 +170,6 @@ public class AttributeActionBean implements ActionBean {
     }
     
     public Resolution save() {
-        attribute.setAlias(alias);
         Stripersist.getEntityManager().persist(attribute);
         Stripersist.getEntityManager().getTransaction().commit();
         

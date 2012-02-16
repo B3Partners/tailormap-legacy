@@ -68,7 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </tr>
                                     <tr>
                                         <td>Gebruikersnaam:</td>
-                                        <td><stripes:text name="username" disabled="${!empty actionBean.user.username}" maxlength="255" size="30" value="${actionBean.user.username}"/></td>
+                                        <td><stripes:text name="username" disabled="${!empty actionBean.user.username}" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
                                         <td>Wachtwoord:</td>
