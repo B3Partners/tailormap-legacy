@@ -18,6 +18,10 @@
  */
 /**
  * Abstract component
+ * For using a popup, set this.isPopup = true.
+ * For rendering to the popup, use the this.popup.getContentId() function
+ * The icon can be rendered to this.getDiv() 
+ * 
  */
 Ext.define("viewer.components.Component",{
     extend: "Ext.util.Observable", 
