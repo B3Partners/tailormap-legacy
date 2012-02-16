@@ -69,6 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/LayerSelector.js"></script>
             </c:when>
             <c:otherwise>
                  <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -86,6 +87,7 @@ ${actionBean.componentSourceHTML}
             
             var contextPath = "${contextPath}";
             var absoluteURIPrefix = "${absoluteURIPrefix}";
+            var appId = "${actionBean.application.id}";
             var viewerController;
             (function() {
                 var config = ${actionBean.appConfigJSON}
