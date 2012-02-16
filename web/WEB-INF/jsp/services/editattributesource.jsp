@@ -61,7 +61,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                         <tr>
                             <td>Wachtwoord:</td>
-                            <td><stripes:text name="password" value="${actionBean.featureSource.password}" maxlength="255" size="30"/></td>
+                            <td><stripes-dynattr:password name="password" value="${actionBean.featureSource.password}" autocomplete="off" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
 
@@ -161,7 +161,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </tr>
                                 <tr>
                                     <td>Wachtwoord:</td>
-                                    <td><stripes:text name="password" maxlength="255" size="30"/></td>
+                                    <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
                                 </tr>
                             </table>
 

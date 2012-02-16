@@ -25,6 +25,8 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -40,6 +42,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @RolesAllowed("RegistryAdmin")
 public class AttributeSourceActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);
 
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/attributesource.jsp";
@@ -119,47 +122,55 @@ public class AttributeSourceActionBean implements ActionBean {
     
     @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=2000, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution save() throws JSONException, Exception {
-        if(protocol.equals("jdbc")) {
-            
-            Map params = new HashMap();
-            params.put("dbtype", dbtype);
-            params.put("host", host);
-            params.put("port", port);
-            params.put("database", database);
-            params.put("schema", schema);
-            params.put("user", username);
-            params.put("passwd", password);
+        Map params = new HashMap();
         
-            
-            JDBCFeatureSource fs = new JDBCFeatureSource(params);
-            fs.setName(name);
-            
-            fs.loadFeatureTypes(status);
-        
-            Stripersist.getEntityManager().persist(fs);
-            Stripersist.getEntityManager().getTransaction().commit();
-            
-            featureSource = fs;
+        try {
+            if(protocol.equals("jdbc")) {            
+                params.put("dbtype", dbtype);
+                params.put("host", host);
+                params.put("port", port);
+                params.put("database", database);
+                params.put("schema", schema);
+                params.put("user", username);
+                params.put("passwd", password);
 
-            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-        
-        } else if(protocol.equals("wfs")) {
-            Map params = new HashMap();
-            params.put(WFSDataStoreFactory.URL.key, url);
-            WFSFeatureSource fs = new WFSFeatureSource(params);
-            fs.setName(name);
-            fs.loadFeatureTypes(status);
-            Stripersist.getEntityManager().persist(fs);
-            Stripersist.getEntityManager().getTransaction().commit();
-            
-            featureSource = fs;
+                JDBCFeatureSource fs = new JDBCFeatureSource(params);
+                fs.setName(name);
+                fs.loadFeatureTypes(status);
 
-            getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-            
-            
-        } else {
-            getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
+                Stripersist.getEntityManager().persist(fs);
+                Stripersist.getEntityManager().getTransaction().commit();
+
+                featureSource = fs;
+
+                getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+                
+            } else if(protocol.equals("wfs")) {
+                params.put(WFSDataStoreFactory.URL.key, url);
+                params.put(WFSDataStoreFactory.USERNAME.key, username);
+                params.put(WFSDataStoreFactory.PASSWORD.key, password);
+                WFSFeatureSource fs = new WFSFeatureSource(params);
+                fs.setName(name);
+                fs.loadFeatureTypes(status);
+                Stripersist.getEntityManager().persist(fs);
+                Stripersist.getEntityManager().getTransaction().commit();
+
+                featureSource = fs;
+
+                getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
+                
+            } else {
+                getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
+            }
+        } catch(Exception e) {
+            log.error("Error loading new feauture source", e);
+            String s = e.toString();
+            if(e.getCause() != null) {
+                s += "; cause: " + e.getCause().toString();
+            }
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het laden van de attribuutbron: {2}", s));
         }
+
         return new ForwardResolution(EDITJSP);
     }
     

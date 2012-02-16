@@ -314,18 +314,28 @@ public class GeoServiceActionBean implements ActionBean{
         try {
             if(protocol.equals(WMSService.PROTOCOL)) {
                 params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
+                params.put(WMSService.PARAM_USERNAME, username);
+                params.put(WMSService.PARAM_PASSWORD, password);
                 service = new WMSService().loadFromUrl(url, params, status);
             } else if(protocol.equals(ArcGISService.PROTOCOL)) {
+                params.put(ArcGISService.PARAM_USERNAME, username);
+                params.put(ArcGISService.PARAM_PASSWORD, password);
                 service = new ArcGISService().loadFromUrl(url, params, status);
             } else if(protocol.equals(ArcIMSService.PROTOCOL)) {
                 params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
+                params.put(ArcIMSService.PARAM_USERNAME, username);
+                params.put(ArcIMSService.PARAM_PASSWORD, password);
                 service = new ArcIMSService().loadFromUrl(url, params, status);
             } else {
                 getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
             }
         } catch(Exception e) {
-            getContext().getValidationErrors().addGlobalError(new SimpleError(e.getClass().getName() + ": " + e.getMessage()));
             log.error("Exception loading " + protocol + " service from url " + url, e);
+            String s = e.toString();
+            if(e.getCause() != null) {
+                s += "; cause: " + e.getCause().toString();
+            }
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het laden van de service: {2}", s));
             return new ForwardResolution(JSP);
         }
 

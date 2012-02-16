@@ -130,7 +130,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </tr>
         <tr>
             <td>Wachtwoord:</td>
-            <td><stripes:text name="password" value="${actionBean.service.password}" maxlength="255" size="30"/></td>
+            <td><stripes-dynattr:password name="password" autocomplete="off" value="${actionBean.service.password}" maxlength="255" size="30"/></td>
         </tr>
     </table>
     
@@ -200,7 +200,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </tr>
         <tr>
             <td>Wachtwoord:</td>
-            <td><stripes:text name="password" maxlength="255" size="30"/></td>
+            <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
         </tr>
         <tr>
             <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service
