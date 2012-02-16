@@ -51,7 +51,8 @@ public class WFSFeatureSource extends FeatureSource {
         super();
 
         setUrl(params.get(WFSDataStoreFactory.URL.key).toString());
-        // XXX username and password keys
+        setUsername((String)params.get(WFSDataStoreFactory.USERNAME.key));
+        setPassword((String)params.get(WFSDataStoreFactory.PASSWORD.key));
     }    
 
     public void loadFeatureTypes() throws Exception {
@@ -166,6 +167,8 @@ public class WFSFeatureSource extends FeatureSource {
         wfsUrl = wfsUrl + "REQUEST=GetCapabilities&SERVICE=WFS&VERSION=1.0.0";        
         
         params.put(WFSDataStoreFactory.URL.key, wfsUrl);
+        params.put(WFSDataStoreFactory.USERNAME.key, getUsername());
+        params.put(WFSDataStoreFactory.PASSWORD.key, getPassword());
         
         log.debug("Opening datastore using parameters: " + params);
         try {

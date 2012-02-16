@@ -24,6 +24,8 @@ import nl.b3p.geotools.data.arcims.AxlField;
 import nl.b3p.geotools.data.arcims.AxlLayerInfo;
 import nl.b3p.web.WaitPageStatus;
 import org.geotools.data.ServiceInfo;
+import org.geotools.data.ows.HTTPClient;
+import org.geotools.data.ows.SimpleHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -38,6 +40,8 @@ public class ArcIMSService extends GeoService {
     public static final String PROTOCOL = "arcims";
     
     public static final String PARAM_SERVICENAME = "ServiceName";
+    public static final String PARAM_USERNAME = "username";
+    public static final String PARAM_PASSWORD = "password";    
     
     @Basic
     private String serviceName;
@@ -54,11 +58,18 @@ public class ArcIMSService extends GeoService {
     public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
-            
-            serviceName = (String)params.get(PARAM_SERVICENAME);
-            ArcIMSServer gtims = new ArcIMSServer(new URL(url), serviceName);
 
             ArcIMSService ims = new ArcIMSService();
+            ims.setUsername((String)params.get(PARAM_USERNAME));
+            ims.setPassword((String)params.get(PARAM_PASSWORD));            
+           
+            HTTPClient client = new SimpleHttpClient();
+            client.setUser(ims.getUsername());
+            client.setPassword(ims.getPassword());
+            
+            serviceName = (String)params.get(PARAM_SERVICENAME);
+           
+            ArcIMSServer gtims = new ArcIMSServer(new URL(url), serviceName, client);
 
             ServiceInfo si = gtims.getInfo();
             ims.setName(si.getTitle());
@@ -72,6 +83,8 @@ public class ArcIMSService extends GeoService {
             ArcXMLFeatureSource fs = new ArcXMLFeatureSource();
             fs.setLinkedService(ims);
             fs.setServiceName(ims.getServiceName());
+            fs.setUsername(ims.getUsername());
+            fs.setPassword(ims.getPassword());
             
             fs.setName(FeatureSource.findUniqueName(ims.getName()));
             fs.setUrl(url);

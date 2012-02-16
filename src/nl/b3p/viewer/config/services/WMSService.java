@@ -23,7 +23,10 @@ import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.ServiceInfo;
+import org.geotools.data.ows.HTTPClient;
 import org.geotools.data.ows.LayerDescription;
+import org.geotools.data.ows.SimpleHttpClient;
+import org.geotools.data.ows.Specification;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.data.wms.*;
 import org.geotools.data.wms.request.DescribeLayerRequest;
@@ -42,6 +45,8 @@ public class WMSService extends GeoService {
     public static final String PROTOCOL = "wms";
 
     public static final String PARAM_OVERRIDE_URL = "overrideUrl";
+    public static final String PARAM_USERNAME = "username";
+    public static final String PARAM_PASSWORD = "password";
     
     private Boolean overrideUrl;
 
@@ -57,11 +62,29 @@ public class WMSService extends GeoService {
     public WMSService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
-            
-            // XXX username / password by overriding HTTPClient?
-            WebMapServer gtwms = new WebMapServer(new URL(url));
 
             WMSService wms = new WMSService();
+            wms.setUsername((String)params.get(PARAM_USERNAME));
+            wms.setPassword((String)params.get(PARAM_PASSWORD));
+            
+            HTTPClient client = new SimpleHttpClient();
+            client.setUser(wms.getUsername());
+            client.setPassword(wms.getPassword());
+        
+            WebMapServer gtwms = new WebMapServer(new URL(url), client) {
+                @Override
+                protected void setupSpecifications() {
+                    specs = new Specification[] {
+                        new WMS1_0_0(),
+                        new WMS1_1_0(),
+                        new WMS1_1_1()
+                        // No WMS 1.3.0, GeoTools GetCaps parser cannot handle 
+                        // ExtendedCapabilities such as inspire_common:MetadataUrl,
+                        // for example PDOK. See:
+                        // http://sourceforge.net/mailarchive/message.php?msg_id=28640690
+                    };
+                }
+            };
 
             ServiceInfo si = gtwms.getInfo();
             wms.setName(si.getTitle());
@@ -126,7 +149,8 @@ public class WMSService extends GeoService {
                     
                     Map p = new HashMap();
                     p.put(WFSDataStoreFactory.URL.key, wfsUrl);
-                    // XXX use same password for WMS, maybe only if URLs have same hostname?
+                    p.put(WFSDataStoreFactory.USERNAME.key, wms.getUsername());
+                    p.put(WFSDataStoreFactory.PASSWORD.key, wms.getPassword());
                     
                     try {
                         WFSFeatureSource wfsFs = new WFSFeatureSource(p);

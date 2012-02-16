@@ -21,6 +21,8 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.io.IOUtils;
+import org.geotools.data.ows.HTTPClient;
+import org.geotools.data.ows.SimpleHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,9 +37,11 @@ import org.stripesstuff.stripersist.Stripersist;
 public class ArcGISService extends GeoService {
     public static final String PROTOCOL = "arcgis";
 
-    private static JSONObject issueRequest(String url) throws Exception {
-        /* XXX */
-        return new JSONObject(IOUtils.toString(new URL(url+"?f=json").openStream(), "UTF-8"));
+    public static final String PARAM_USERNAME = "username";
+    public static final String PARAM_PASSWORD = "password";    
+    
+    private static JSONObject issueRequest(String url, HTTPClient client) throws Exception {
+        return new JSONObject(IOUtils.toString(client.get(new URL(url)).getResponseStream(), "UTF-8"));
     }
     
     @Override
@@ -52,7 +56,11 @@ public class ArcGISService extends GeoService {
                 throw new IllegalArgumentException("URL moet \"/rest/\" bevatten");
             }   
             
-            JSONObject info = issueRequest(url + "/layers");
+            HTTPClient client = new SimpleHttpClient();
+            client.setUser((String)params.get(PARAM_USERNAME));
+            client.setPassword((String)params.get(PARAM_PASSWORD));
+            
+            JSONObject info = issueRequest(url + "/layers?f=json", client);
 
             ArcGISService s = new ArcGISService();
             
@@ -72,6 +80,8 @@ public class ArcGISService extends GeoService {
             fs.setLinkedService(s);
             fs.setUrl(url);
             fs.setName(FeatureSource.findUniqueName(s.getName()));
+            fs.setUsername(client.getUser());
+            fs.setPassword(client.getPassword());
             
             Layer top = new Layer();
             
