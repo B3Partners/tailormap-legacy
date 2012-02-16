@@ -39,7 +39,6 @@ Ext.define("viewer.components.Component",{
         this.initConfig(config);
         if(this.popup){
             this.popup = Ext.create("viewer.components.ScreenPopup",config);
-            this.div = this.popup.popupWin.contentEl.id;
         }
         return this;
     },

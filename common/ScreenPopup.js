@@ -42,6 +42,9 @@ Ext.define ("viewer.components.ScreenPopup",{
         });
         return this;
     },
+    getContentId : function (){
+        return this.popupWin.contentEl.id
+    },
     show : function(){
         this.popupWin.show();
     },
