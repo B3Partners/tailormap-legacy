@@ -34,15 +34,13 @@ Ext.define ("viewer.components.TOC",{
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
-        this.initConfig(config);
-        
+        this.initConfig(config);        
         this.selectedContent = this.viewerController.app.selectedContent,
         this.appLayers = this.viewerController.app.appLayers,
         this.levels = this.viewerController.app.levels,
         this.services = this.viewerController.app.services,
         this.loadTree();
         this.loadInitLayers();
-        
         return this;
     },
     loadTree : function(){
@@ -58,21 +56,20 @@ Ext.define ("viewer.components.TOC",{
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.div,
             title: this.title,
-            //width: 330,
             height: "100%",
-            //frame: true,
             useArrows: true,
             rootVisible: false,
-            //resizable: true,
             floating: false,
             listeners:{
                 itemclick:{
                     toc: this,
-                    fn: this.itemClicked
+                    fn: this.itemClicked,
+                    scope: this
                 },
                 checkchange:{
                     toc: this,
-                    fn: this.checkboxClicked
+                    fn: this.checkboxClicked,
+                    scope: this
                 }
             },
             store: store
@@ -157,12 +154,23 @@ Ext.define ("viewer.components.TOC",{
         root.appendChild(config);
         root.expand()
     },
-    
-    /*************************  Event handlers ***********************************************************/
-    
-    syncLayers : function (layer, visible){
-        alert("awerw");
+    selectLayers : function (layers,checked){
+        for(var i = 0 ; i< layers.length;i++){
+            this.selectLayer(layers[i],checked);
+        }
     },
+    selectLayer : function (layer,checked){
+        var node = this.panel.getStore().getNodeById(layer);
+        if(node != null){
+            node.data.checked= checked;
+            if(node.raw != undefined){
+                node.raw.checked = checked;
+            }
+            this.checkboxClicked (node,checked,this);
+            node.updateInfo();
+        }
+    },
+    /*************************  Event handlers ***********************************************************/
     
     checkboxClicked : function(nodeObj,checked,toc){
         var node = nodeObj.raw;
@@ -172,11 +180,11 @@ Ext.define ("viewer.components.TOC",{
         var layer = node.layerObj;
     
         if(checked){
-            toc.toc.viewerController.setLayerVisible(layer.service, layer.layerName, true);
-            toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,layer);
+            this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,layer);
         }else{
-            toc.toc.viewerController.setLayerVisible(layer.service, layer.layerName, false);
-            toc.toc.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
+            this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
         }
     },
     
