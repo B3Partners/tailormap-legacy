@@ -19,6 +19,7 @@
 		    <!--					The Screenpopup-->
           <sources dir="${viewerhtml.path}/common">
             <file name="ScreenPopup.js"/>
+			<file name="LayerSelector.js"/>
           </sources>
           <!--					The Tool Components				-->
          <sources dir="${viewerhtml.path}/components/tools">

@@ -17,15 +17,13 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -140,7 +138,7 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         if (appId != null) {
             Application app = em.find(Application.class, appId);
 
-            List<Layer> layers = getLayers(app.getRoot());
+            List<Layer> layers = LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute);
 
             for (Layer layer : layers) {
                 try {
@@ -153,43 +151,5 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(jsonArray.toString()));
     }
 
-    /**
-     * Get a list of Layers from the level and its subLevels
-     *
-     * @param level
-     * @return A list of Layer objects
-     */
-    private List<Layer> getLayers(Level level) {
-        List<Layer> layers = new ArrayList<Layer>();
-        //get all the layers of this level
-        for (ApplicationLayer appLayer : level.getLayers()) {
-            Layer l = appLayer.getService().getLayer(appLayer.getLayerName());
-            if (filterable && !l.isFilterable()
-                    || bufferable && !l.isBufferable()) {
-                continue;
-            }
-            if (editable && (l.getFeatureType() == null || !l.getFeatureType().isWriteable())) {
-                continue;
-            }
-            if (influence && !appLayer.getDetails().containsKey("straalinvloedsgebied")) {
-                continue;
-            }
-            if (arc && !l.getService().getProtocol().startsWith("arc")) {
-                continue;
-            }
-            if (wfs && ( l.getFeatureType() == null|| !l.getFeatureType().getFeatureSource().getProtocol().equals("wfs"))) {
-                continue;
-            }
-            if(attribute && appLayer.getAttributes().isEmpty()){
-                continue;
-            }
-
-            layers.add(l);
-        }
-        //get all the layers of the level children.
-        for (Level childLevel : level.getChildren()) {
-            layers.addAll(getLayers(childLevel));
-        }
-        return layers;
-    }
+   
 }
