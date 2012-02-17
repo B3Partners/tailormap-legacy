@@ -27,6 +27,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -39,8 +40,9 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/componentConfigLayerList")
 @StrictBinding
-@RolesAllowed("ApplicationAdmin") 
+@RolesAllowed("ApplicationAdmin")
 public class ComponentConfigLayerListActionBean implements ActionBean {
+
     private static final Log log = LogFactory.getLog(ComponentConfigLayerListActionBean.class);
     private ActionBeanContext context;
 
@@ -51,22 +53,28 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
     @Validate
     private Long appId;
     @Validate
-    private Boolean filterable=false;
+    private Boolean filterable = false;
     @Validate
-    private Boolean bufferable=false;
+    private Boolean bufferable = false;
     @Validate
-    private Boolean editable=false;
+    private Boolean editable = false;
     @Validate
-    private Boolean influence=false;
-    
+    private Boolean influence = false;
+    @Validate
+    private Boolean arc = false;
+    @Validate
+    private Boolean wfs = false;
+    @Validate
+    private Boolean attribute = false;
+
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getAppId() {
         return appId;
     }
+
     public void setAppId(Long appId) {
         this.appId = appId;
     }
@@ -102,54 +110,50 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     public void setInfluence(Boolean influence) {
         this.influence = influence;
     }
- 
+
+    public Boolean getArc() {
+        return arc;
+    }
+
+    public void setArc(Boolean arc) {
+        this.arc = arc;
+    }
+
+    public Boolean getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(Boolean attribute) {
+        this.attribute = attribute;
+    }
+
+    public Boolean getWfs() {
+        return wfs;
+    }
+
+    public void setWfs(Boolean wfs) {
+        this.wfs = wfs;
+    }
+
     //</editor-fold>
-    
     public Resolution source() {
         EntityManager em = Stripersist.getEntityManager();
         JSONArray jsonArray = new JSONArray();
-        
-        if (appId!=null){
+
+        if (appId != null) {
             Application app = em.find(Application.class, appId);
 
-            List<Layer> layers= getLayers(app.getRoot());
+            List<Layer> layers =LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute);
 
-            for (Layer layer : layers){
-                try{
+            for (Layer layer : layers) {
+                try {
                     jsonArray.put(layer.toJSONObject());
-                }catch(JSONException je){
-                    log.error("Error while getting JSONObject of Layer with id: "+layer.getId(),je);
+                } catch (JSONException je) {
+                    log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
                 }
-            }           
-        }
-        return new StreamingResolution("application/json",new StringReader(jsonArray.toString()));        
-    }
-    /**
-     * Get a list of Layers from the level and its subLevels
-     * @param level 
-     * @return A list of Layer objects
-     */
-    private List<Layer> getLayers(Level level) {
-        List<Layer> layers= new ArrayList<Layer>();
-        //get all the layers of this level
-        for (ApplicationLayer appLayer: level.getLayers()){
-            Layer l=appLayer.getService().getLayer(appLayer.getLayerName());
-            if (filterable && !l.isFilterable() ||
-                    bufferable && !l.isBufferable()){                    
-                continue;
-            }                
-            if (editable &&( l.getFeatureType() == null || !l.getFeatureType().isWriteable())){
-                continue;
             }
-            if(influence && !appLayer.getDetails().containsKey("straalinvloedsgebied")){
-                continue;
-            }
-            layers.add(l);
         }
-        //get all the layers of the level children.
-        for (Level childLevel: level.getChildren()){
-            layers.addAll(getLayers(childLevel));
-        }
-        return layers;
+        return new StreamingResolution("application/json", new StringReader(jsonArray.toString()));
     }
+
 }
