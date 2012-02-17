@@ -211,6 +211,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return this.layers[id];
     },
+    getVisibleLayerIds : function (){
+        var layers = this.layers;
+        var layerArray = new Array();
+        for ( var i in layers){
+            layerArray.push(i);
+        }
+        return layerArray;
+    },
+    /** 
+     * Receives an array with serviceId_layerId entries
+     **/
+    setLayersVisible : function (layers,checked){
+        for ( var i = 0 ; i < layers.length ; i++){
+            var layer = layers[i];
+            var index = layer.indexOf("_");
+            var serviceId = layer.substring(0,index);
+            var layerId = layer.substring(index +1);
+            this.setLayerVisible(serviceId,layerId,checked);
+        }
+    },
     getLayerTitle : function (serviceId, layerName){
         var layer = this.app.services[serviceId].layers[layerName];
         if(layer.titleAlias != undefined){
