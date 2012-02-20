@@ -27,11 +27,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 appId:applicationId
             },
             renderTo: 'config',
-            sliders: config
+            sliders: [] || config.sliders
         });
     },
     getConfiguration: function(){
-        var config = filterableCheckboxes.getSliders();
+        var config = new Object();
+        config.sliders = filterableCheckboxes.getSliders();
         return config;
     }
 });
