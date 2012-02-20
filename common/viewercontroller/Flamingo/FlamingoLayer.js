@@ -39,5 +39,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     },
     getId : function(){
         return this.id;
+    },
+    setAlpha : function (alpha){
+        viewerController.mapComponent.getMap().getFrameworkMap().callMethod(viewerController.mapComponent.getMap().getId() +"_"+ this.getId(),"setAlpha",alpha)
     }
 });

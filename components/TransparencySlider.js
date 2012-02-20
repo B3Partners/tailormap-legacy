@@ -19,11 +19,24 @@
  * Creates a html component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
+
 Ext.define ("viewer.components.TransparencySlider",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
+    config:{
+        sliders : []
+    },
+    sliderObjects : [],
     constructor: function (conf){        
         viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
+        
+        for(var i = 0 ; i < this.sliders.length ; i ++){
+            
+            var config = Ext.Object.merge(conf, this.sliders[i]);
+            var slider =Ext.create("viewer.components.Slider", config);
+            this.sliderObjects.push(slider);
+        }
         return this;
     }      
 });
+

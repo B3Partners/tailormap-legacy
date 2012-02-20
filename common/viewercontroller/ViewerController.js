@@ -199,6 +199,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 srs: "EPSG:28992",
                 version: "1.1.1",
                 layers:layer.name,
+                visible: false,
                 query_layers: layer.name,
                 styles: "",
                 noCache: false
@@ -209,6 +210,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.layers[id] = layerObj;
         }
         return this.layers[id];
+    },
+    
+    getLayerByLayerId : function (id){
+        for (var i in this.app.services){
+            var service = this.app.services[i];
+            
+            for(var j in service.layers){
+                var layer = service.layers[j];
+                if(id == layer.id){
+                    return this.getLayer(service.id,layer.name);
+                }
+            }
+        }
+        return null;
     },
     getVisibleLayerIds : function (){
         var layers = this.layers;

@@ -378,7 +378,7 @@
     {
         className: "viewer.components.TransparencySlider",
         name: "Transparantie",
-        sources: ["TransparencySlider.js"],
+        sources: ["Slider.js","TransparencySlider.js"],
         configSource: ["TransparencySlider-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top"]
         

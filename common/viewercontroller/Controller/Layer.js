@@ -78,7 +78,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         }
         return null;
     },
-
+    setAlpha : function (alpha){
+        throw("Layer.setAlpha() Not implemented! Must be implemented in sub-class");
+    },
     fire : function (event,options){
         this.fireEvent(event,this,options);
     },

@@ -20,6 +20,10 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     filterableCheckboxes:null,
     constructor: function (parentid,config){
+        var sliders = [];
+        if(config != null && config.sliders != null){
+            sliders = config.sliders;
+        }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         filterableCheckboxes = Ext.create('Ext.ux.b3p.SelectionGrid', {
             requestUrl: contextPath+"/action/componentConfigLayerList",
@@ -27,7 +31,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 appId:applicationId
             },
             renderTo: 'config',
-            sliders: [] || config.sliders
+            sliders: sliders
         });
     },
     getConfiguration: function(){
