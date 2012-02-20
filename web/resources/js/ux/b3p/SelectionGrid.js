@@ -51,6 +51,9 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
 
     constructor: function(config) {
         Ext.apply(this, config || {});
+        if(this.sliders == null){
+            this.sliders = [];
+        }
         if(this.requestUrl != '' && this.renderTo != '') {
             this.getList();
         }
