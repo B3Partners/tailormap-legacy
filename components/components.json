@@ -274,7 +274,7 @@
         restrictions: ["rightmargin_top", "leftmargin_top"],
     },
     {
-        className: "viewer.components.GoogleNavigation",
+        className: "viewer.components.tools.GoogleNavigation",
         name: "Google Navigation",
         shortName: "Gn",
         sources: ["tools/GoogleNavigation.js"],
