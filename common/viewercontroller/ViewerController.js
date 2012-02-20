@@ -175,7 +175,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     setLayerVisible : function (serviceId, layerName, visible){
         var layer = this.getLayer(serviceId, layerName);
         this.mapComponent.getMap().setLayerVisible(layer, visible);
-        var a = 0;
     },
     getLayer : function (serviceId, layerName){
         var id = serviceId + "_" + layerName;

@@ -41,6 +41,7 @@ Ext.define ("viewer.components.TOC",{
         this.services = this.viewerController.app.services,
         this.loadTree();
         this.loadInitLayers();
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
         return this;
     },
     loadTree : function(){
@@ -162,16 +163,33 @@ Ext.define ("viewer.components.TOC",{
     selectLayer : function (layer,checked){
         var node = this.panel.getStore().getNodeById(layer);
         if(node != null){
-            node.data.checked= checked;
-            if(node.raw != undefined){
-                node.raw.checked = checked;
+            if( node.data.checked != checked){
+                node.data.checked= checked;
+                if(node.raw != undefined){
+                    node.raw.checked = checked;
+                }
+                this.checkboxClicked (node,checked,this);
+                node.updateInfo();
             }
-            this.checkboxClicked (node,checked,this);
-            node.updateInfo();
         }
     },
-    /*************************  Event handlers ***********************************************************/
     
+    getAppLayerId : function (name){
+        for ( var i in this.appLayers){
+            var appLayer = this.appLayers[i];
+            if(appLayer.layerName== name){
+                return appLayer.id;
+            }
+        }
+        return null;
+    },
+    /*************************  Event handlers ***********************************************************/
+    syncLayers : function (map,object){
+        var layer = object.layer;
+        var visible = object.visible;
+        var id = this.getAppLayerId(layer.id);
+        this.selectLayer (id,visible);
+    },
     checkboxClicked : function(nodeObj,checked,toc){
         var node = nodeObj.raw;
         if(node ===undefined){
@@ -181,10 +199,8 @@ Ext.define ("viewer.components.TOC",{
     
         if(checked){
             this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
-            this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_ON,this,layer);
         }else{
             this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
-            this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SWITCHED_OFF,this,layer);
         }
     },
     
