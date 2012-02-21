@@ -218,7 +218,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 options["isBaseLayer"]=false;
                 layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options);
                 
-                this.mapComponent.getMap().addLayer(layerObj);
                 this.layers[id] = layerObj;
             }else if(service.protocol == "arcims"){
                 // Process the url so the MapComponent can handle it
@@ -238,9 +237,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 ogcOptions.type= "ArcIMS";
                 ogcOptions.visibleids = layerName;
                 layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.name, ogcOptions, options);
-                this.mapComponent.getMap().addLayer(layerObj);
                 this.layers[id] = layerObj;
             }
+            this.mapComponent.getMap().addLayer(layerObj);
         }
         return this.layers[id];
     },
@@ -288,6 +287,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }else{
             return layer.title;
         }
+    },
+    getLayerLegendImage :function (serviceId, layerName){
+        var layer = this.app.services[serviceId].layers[layerName];
+        if(layer.legendImageUrl != undefined){
+            return layer.legendImageUrl;
+        }else{
+            // Make GetLegendGraphic request
+            var url = this.app.services[serviceId].url;
+            var request = url + "request=GetLegendGraphic&layer="+layerName+"&version=1.1.1&format=png";
+            return request;
+        }
+        
     },
     getLayerMetadata : function (serviceId, layerName){  
         var layer = this.app.services[serviceId].layers[layerName];
