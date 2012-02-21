@@ -211,7 +211,7 @@ public class Application  {
             o.put("selectedContent", selectedContent);         
             
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false);
 
             Collections.sort(selectedObjects, new Comparator() {
 
@@ -266,15 +266,19 @@ public class Application  {
         return o.toString(4);
     }
     
-    private static void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l) throws JSONException {
-        levels.put(l.getId().toString(), l.toJSONObject());
+    private static void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground) throws JSONException {
+        JSONObject o = l.toJSONObject();
+        o.put("background", l.isBackground() || parentIsBackground);
+        levels.put(l.getId().toString(), o);
         
         if(l.getSelectedIndex() != null) {
             selectedContent.add(l);
         }
         
         for(ApplicationLayer al: l.getLayers()) {
-            appLayers.put(al.getId().toString(), al.toJSONObject());
+            o = al.toJSONObject();
+            o.put("background", l.isBackground() || parentIsBackground);
+            appLayers.put(al.getId().toString(), o);
             
             if(al.getSelectedIndex() != null) {
                 selectedContent.add(al);
@@ -282,7 +286,7 @@ public class Application  {
         }
         
         for(Level child: l.getChildren()) {
-            walkAppTreeForJSON(levels, appLayers, selectedContent, child);
+            walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground());
         }
     }
     
