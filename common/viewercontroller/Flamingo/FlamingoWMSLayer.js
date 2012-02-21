@@ -78,5 +78,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
     setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
+        this.visible = visible;
     }
 });

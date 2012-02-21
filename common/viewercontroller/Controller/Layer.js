@@ -13,6 +13,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     events: [],
     maptips: new Array(),
     map:null,
+    visible: false,
     config :{
         id: "id",
         frameworkObject: new Object(),

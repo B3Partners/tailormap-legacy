@@ -92,6 +92,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     },
     
     setVisible : function (visible){
+        this.visible = visible;
         if(visible){
             this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "show");
         }else{

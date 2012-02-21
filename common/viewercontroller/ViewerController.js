@@ -262,7 +262,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layers = this.layers;
         var layerArray = new Array();
         for ( var i in layers){
-            layerArray.push(i);
+            var layer = layers[i];
+            if(layer.visible){
+                layerArray.push(i);
+            }
         }
         return layerArray;
     },
