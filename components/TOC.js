@@ -154,7 +154,7 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
         }
         if(this.layersChecked){
-            treeNodeLayer.checked = appLayerObj.checked; // Todo: find children checkboxes
+            treeNodeLayer.checked = appLayerObj.checked;
         }
         return treeNodeLayer;        
     },

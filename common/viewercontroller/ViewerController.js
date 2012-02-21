@@ -117,6 +117,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
 
             this.initializeConfiguredComponents();
+            this.initLayers();
         // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
             
         // XXX viewer.js: viewerController.loadRootLevel(app.rootLevel);
@@ -171,6 +172,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         };
 
         return instance;
+    },
+    
+    initLayers : function (){
+        var appLayers = this.app.appLayers;
+        for ( var i in appLayers){
+            var appLayer = appLayers[i];
+            if(appLayer.checked){
+                this.setLayerVisible(appLayer.serviceId, appLayer.layerName, true);
+            }
+        }
     },
     setLayerVisible : function (serviceId, layerName, visible){
         var layer = this.getLayer(serviceId, layerName);
