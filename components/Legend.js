@@ -35,32 +35,7 @@ Ext.define ("viewer.components.Legend",{
     constructor: function (conf){        
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        /*legends.push({
-            src:"http://wallshq.com/wp-content/uploads/original/2011_06/19_764-green-abstract-background_WallsHQ.com_.jpg", 
-            title: "1"
-        });
-        legends.push({
-            src:"http://www.chakraplein.nl/images/aap.jpg",
-            title: "2"
-        });
-        legends.push({
-            src:"http://blog.hipenhandig.nl/wp-content/uploads/2011/02/doutzen-kroes.jpg", 
-            title: "3"
-        });
-        legends.push({
-            src:"http://www.corvanvliet.nl/wp-content/uploads/2011/10/boom1.jpg",
-            title: "4"
-        });
-        legends.push({
-            src:"http://2.bp.blogspot.com/-h7vM7nbVnSs/TjAFE7TwvsI/AAAAAAAABOo/FdXHbIW3HPY/s1600/Background-Images-1.jpg",
-            title: "5"
-        });
-        legends.push({
-            src:"http://www.dvd-ppt-slideshow.com/images/ppt-background/background-3.jpg",
-            title: "6"
-        });
-        */
-        
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGE,this.layerVisibilityChanged,this);
         return this;
     },
     makeLegendList : function (){
@@ -73,10 +48,38 @@ Ext.define ("viewer.components.Legend",{
             var url = this.viewerController.getLayerLegendImage(service,layerName);
             var legend = {
                 src: url,
-                title: layerName
+                title: layerName,
+                id: id
             };
             this.legends.push(legend);
         }
+    },
+    layerVisibilityChanged : function (object ){
+        var layer = object.layer;
+        var vis = object.visible;
+        if(vis){
+            this.addLayer(layer);
+        }else{
+            this.removeLayer(layer);
+        }
+    },
+    addLayer : function (layer){
+        var serviceId = layer.options.serviceId;
+        var layerName = layer.id;
+        var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
+        var legend = {
+            src: url,
+            title: layerName,
+            id: serviceId  + "_"+ layerName
+        };
+        this.queue.addItem(legend);
+    },
+    removeLayer: function (layer){
+        var serviceId = layer.options.serviceId;
+        var layerName = layer.id;
+        var id = serviceId  + "_"+ layerName+"-div";
+        var node =document.getElementById(id);
+        document.removeChild(node);
     },
     start : function (){
         this.makeLegendList();
@@ -86,7 +89,7 @@ Ext.define ("viewer.components.Legend",{
             div: this.div
         };
         this.queue = Ext.create("viewer.components.ImageQueue",config);
-        this.queue.startLoading();
+        this.queue.load();
     }
 });
 
@@ -100,9 +103,13 @@ Ext.define ("viewer.components.ImageQueue",{
     constructor : function (config){
         this.initConfig(config);
     },
-    
-    startLoading : function (){
-        for( var i = 0 ;i < this.queueSize; i++){
+    addItem : function (item){
+        this.legends.push(item);
+        this.load();
+    },
+    load : function (){
+        while(this.queueSize > 0){
+            this.queueSize--;
             var item = this.legends[i];
             if(item == undefined){
                 return;
@@ -119,8 +126,8 @@ Ext.define ("viewer.components.ImageQueue",{
         }
     },
     imageLoaded : function (img,item){
-        // update legends
-        this.startLoading();
+        this.queueSize++;
+        this.load();
     },
     
     removeLegend : function (item){
@@ -147,9 +154,14 @@ Ext.define("viewer.components.Image",{
     loadImage: function (){
         console.log("start loading" + this.item.title);
         var plek = document.getElementById(this.div);
+        var div = document.createElement("div");
+        div.id = this.item.id + "-div";
+        div.innerHTML = "<h3>"+ this.item.title+"</h3><br/>";
+        plek.appendChild(div);
         this.legendimg = document.createElement("img");
-        plek.appendChild(this.legendimg);
-        this.legendimg.name = this.item.title;        
+        div.appendChild(this.legendimg);
+        this.legendimg.name = this.item.title;
+        this.legendimg.id = this.item.id;
         this.legendimg.alt = "Legenda " + this.item.title;
         this.legendimg.onerror=this.treeImageError;
         this.legendimg.imgObj = this;

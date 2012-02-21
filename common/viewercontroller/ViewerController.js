@@ -202,7 +202,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 styles: "",
                 format: "image/png",
                 transparent: true,
-                noCache: false
+                noCache: false,
+                serviceId : serviceId
             };
             var options={
                 timeout: 30,
