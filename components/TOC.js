@@ -82,7 +82,9 @@ Ext.define ("viewer.components.TOC",{
             var contentItem = this.selectedContent[i];
             if(contentItem.type ==  "level"){
                 var level = this.addLevel(contentItem.id);
-                nodes.push(level);
+                if(level != null){
+                    nodes.push(level);
+                }
             }else if(contentItem.type == "appLayer"){
                 var layer = this.addLayer(contentItem.id);
                 nodes.push(layer);
@@ -93,6 +95,9 @@ Ext.define ("viewer.components.TOC",{
     addLevel : function (levelId){
         var nodes = new Array();
         var level = this.levels[levelId];
+        if(level.background && !this.showBaselayers ){
+            return null;
+        }
         var treeNodeLayer = {
             text: level.name, 
             id: level.id,
@@ -112,7 +117,10 @@ Ext.define ("viewer.components.TOC",{
         
         if(level.children != undefined ){
             for(var i = 0 ; i < level.children.length; i++){
-                nodes.push(this.addLevel(level.children[i]));
+                var l = this.addLevel(level.children[i]);
+                if(l != null){
+                    nodes.push(l);
+                }
             }
         }
         
