@@ -72,6 +72,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setBottom("bottom");
             this.setLeft("left +10");
             this.addString("xy","X: [x] Y: [y]");
+        }else if(config.type==viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
+            this.setTagName("NavigationControl");
+            this.setTop("50");
+            this.setLeft("20");
+            this.setHeight("300");
         }else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
         }    

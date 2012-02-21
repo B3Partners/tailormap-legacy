@@ -15,25 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * GoogleNavigation component
- * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * Navigation Panel
+ * Creates a Navigation Panel component in the framework 
+ * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.tools.GoogleNavigation",{
-    extend: "viewer.components.tools.Tool",
-    config:{
-        name: "Google Navigation",
-        navigationPanel : true
-    },
-    navComp: null,
+Ext.define ("viewer.components.NavigationPanel",{
+    extend: "viewer.components.Component",    
     constructor: function (conf){        
-        viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, conf);
-        this.initConfig(conf); 
-        conf.type = viewer.viewercontroller.controller.Tool.DEFAULT;
-        this.initTool(conf);
-        if (this.getNavigationPanel()){
-            navComp=Ext.create("viewer.components.NavigationPanel",{});
-        }
+        viewer.components.NavigationPanel.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        
+        conf.id=conf.name;
+        conf.type=viewer.viewercontroller.controller.Component.NAVIGATIONPANEL;
+        
+        var comp = viewerController.mapComponent.createComponent(conf);
+        viewerController.mapComponent.addComponent(comp);
+        
         return this;
-    }
+    }      
 });
+

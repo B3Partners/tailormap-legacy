@@ -217,14 +217,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     createImageLayer : function (name,url, bounds, size,options){
         throw("MapComponent.createImageLayer() Not implemented! Must be implemented in sub-class");
     },
-
-    /**
- * Creates a panel
- */
-    createPanel : function (name){
-        throw("MapComponent.createPanel() Not implemented! Must be implemented in sub-class");
-    },
-    /**
+ /**
  * Registers a function with a given event on the given object
  * Must be implemented by subclass
  * @param event The generic name for the event. Possible values declared as Event.ON_EVENT, etc. See the constructor of this class for the complete list of events.

@@ -44,13 +44,14 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         SCALEBAR                   : 12,
         ZOOM_BAR                   : 13,
         LAYER_SWITCH               : 14,
+        DEFAULT                    : 15,
 
-        DRAW_FEATURE_POINT         : 15,
-        DRAW_FEATURE_LINE          : 16,
-        DRAW_FEATURE_POLYGON       : 17,
-        PREVIOUS_EXTENT            : 18,
-        NEXT_EXTENT                : 19,
-        FULL_EXTENT                : 20
+        DRAW_FEATURE_POINT         : 16,
+        DRAW_FEATURE_LINE          : 17,
+        DRAW_FEATURE_POLYGON       : 18,
+        PREVIOUS_EXTENT            : 19,
+        NEXT_EXTENT                : 20,
+        FULL_EXTENT                : 21
     },
     getFrameworkTool : function(){
         return this.frameworkTool;

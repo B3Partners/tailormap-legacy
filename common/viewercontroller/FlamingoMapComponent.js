@@ -10,6 +10,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
     viewerObject : null,
     toolGroupId: "toolgroup",
+    toolGroupCreated: false,
     flamingoId: "flamingo",
     mainContainerId: "mainContainer",
     toolMargin: 30,
@@ -150,10 +151,17 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
     /**
-     * See @link MapComponent.createPanel
+     * Creates a ToolGroup that is needed to add tools.
+     * @param configuration has all the xml configurations that are passed to the flamingo call.
      */
-    createPanel : function (name){
-        this.panel = name;
+    createToolGroup : function(configuration){
+        var xml="";
+        xml+="<fmc:ToolGroup ";
+        for (var key in configuration){
+            xml+=key+"=\""+configuration[key]+"\" ";
+        }
+        xml+="></fmc:ToolGroup>";
+        this.viewerObject.callMethod(this.mainContainerId,'addComponent',xml);        
     },
     /**
      *See @link MapComponent.addTool
@@ -169,11 +177,29 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             tool.setLeft(this.tools.length * this.toolMargin);
         }        
         viewer.viewercontroller.FlamingoMapComponent.superclass.addTool.call(this,tool);
-        
+        //var isToolGroup=this.viewerObject.callMethod(this.flamingoId,'isLoaded',this.toolGroupId,true);        
+        if (!this.toolGroupCreated){
+            var lt = this.getMap().id;
+            if ( lt==undefined || lt==null ){
+                var lt=tool.getListenTo();
+            }
+            this.createToolGroup({
+                id: this.toolGroupId,
+                listento: lt,
+                width: "100%",
+                height: "100",
+                left: "10",
+                top: "10"                
+            });
+            this.toolGroupCreated=true;
+        }
         var toolXml="<fmc:ToolGroup id='"+this.toolGroupId+"'>";
         toolXml+=tool.toXML();
-        toolXml+="</fmc:ToolGroup>";
+        toolXml+="</fmc:ToolGroup>";        
         this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
+        if (this.tools.length ==1){
+            this.activateTool(tool.getId());
+        }
     },
     /**
      * Adds a container to flamingo.
@@ -192,7 +218,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      *See @link MapComponent.activateTool
      */
     activateTool : function (id){
-        this.viewerObject.call(this.panel, "setTool", id);
+        this.viewerObject.call(this.toolGroupId, "setTool", id);
     },
     /**
      *See @link MapComponent.removeTool

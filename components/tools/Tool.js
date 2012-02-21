@@ -34,7 +34,7 @@ Ext.define ("viewer.components.tools.Tool",{
      */
     initTool: function(conf){ 
         //MapComponent is working with ids instead of names
-        conf.id=conf.name;
+        conf.id=this.name;
         //Let the Mapcomponent create the specific tool
         tool = viewerController.mapComponent.createTool(conf);   
         if (tool==null){
