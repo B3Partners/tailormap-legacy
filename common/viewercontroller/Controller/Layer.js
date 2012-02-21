@@ -12,6 +12,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     extend: "Ext.util.Observable",
     events: [],
     maptips: new Array(),
+    map:null,
     config :{
         id: "id",
         frameworkObject: new Object(),
@@ -87,6 +88,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
 
     registerEvent : function (event,handler){
         this.addListener(event,handler);
+    },
+    setVisible : function (visible){
+        throw("Layer.setVisible() Not implemented! Must be implemented in sub-class");
     }
 
 });

@@ -114,6 +114,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
             throw("Map.addLayer: Given layer is not of type Layer");
         }*/
         this.layers.push(layer);
+        layer.map = this;
 //        this.viewerController.mapComponent.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
     },
     /**

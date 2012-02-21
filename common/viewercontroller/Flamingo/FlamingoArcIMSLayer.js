@@ -71,7 +71,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         this.getFrameworkLayer().callMethod(mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
 
-
     getName : function (){
         return this.options["name"];
     },
@@ -80,7 +79,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         return this.options["server"];
     },
 
-   getService : function (){
+    getService : function (){
         return this.options["service"];
     },
 
@@ -90,6 +89,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
 
     getMapservice : function (){
         return this.options["mapservice"];
+    },
+    
+    setVisible : function (visible){
+        if(visible){
+            this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "show");
+        }else{
+            this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "hide");
+        }
     }
 
 });

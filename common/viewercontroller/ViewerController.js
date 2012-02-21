@@ -117,15 +117,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
 
             this.initializeConfiguredComponents();
-            // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
+        // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
             
-            // XXX viewer.js: viewerController.loadRootLevel(app.rootLevel);
+        // XXX viewer.js: viewerController.loadRootLevel(app.rootLevel);
             
-            loadBaseLayers();
+        //  loadBaseLayers();
 
         //testComponents();
         } catch(e) {
-            //console.log(e);
+        //console.log(e);
         }  
     },
     
@@ -181,20 +181,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(this.layers[id] == undefined){
             var service = this.app.services[serviceId];
             var layer = service.layers[layerName];
-            var layerUrl = service.url;
-    
-            var options={
-                timeout: 30,
-                retryonerror: 10,
-                getcapabilitiesurl: service.url,
-                ratio: 1,
-                showerrors: true,
-                initService: true
-            };
-
             var ogcOptions={
-                format: "image/png",
-                transparent: true,
                 exceptions: "application/vnd.ogc.se_inimage",
                 srs: "EPSG:28992",
                 version: "1.1.1",
@@ -202,12 +189,47 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 visible: false,
                 query_layers: layer.name,
                 styles: "",
+                format: "image/png",
+                transparent: true,
                 noCache: false
             };
-            options["isBaseLayer"]=false;
-            var layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options);
-            this.mapComponent.getMap().addLayer(layerObj);
-            this.layers[id] = layerObj;
+            var options={
+                timeout: 30,
+                retryonerror: 10,
+                ratio: 1,
+                showerrors: true,
+                initService: false
+            };
+
+            var layerObj = null;
+            if(service.protocol =="wms" ){
+                var layerUrl = service.url;
+                options["isBaseLayer"]=false;
+                layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options);
+                
+                this.mapComponent.getMap().addLayer(layerObj);
+                this.layers[id] = layerObj;
+            }else if(service.protocol == "arcims"){
+                // Process the url so the MapComponent can handle it
+                var url = service.url;
+                var server = url.substring(0,url.indexOf("/",7));
+                var servlet;
+                if(url.indexOf("?") != -1){
+                    servlet = url.substring(url.indexOf("/",7)+1, url.indexOf("?"));
+                }else{
+                    servlet = url.substring(url.indexOf("/",7)+1);
+                }
+                // Make arcIms specific ogcOptions
+                ogcOptions.name=  layerName;
+                ogcOptions.server = server;
+                ogcOptions.mapservice = service.name;
+                ogcOptions.servlet = servlet;
+                ogcOptions.type= "ArcIMS";
+                ogcOptions.visibleids = layerName;
+                layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.name, ogcOptions, options);
+                this.mapComponent.getMap().addLayer(layerObj);
+                this.layers[id] = layerObj;
+            }
         }
         return this.layers[id];
     },

@@ -75,5 +75,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
     reload : function (){
         this.getFrameworkLayer().callMethod(mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
+    },
+    setVisible : function (visible){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
     }
 });
