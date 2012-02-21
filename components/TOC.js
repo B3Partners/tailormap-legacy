@@ -26,6 +26,7 @@ Ext.define ("viewer.components.TOC",{
     appLayers :  null,
     service : null,
     levels : null,
+    checkClicked : false,
     config: {
         groupCheck:true,
         layersChecked:true,
@@ -199,6 +200,7 @@ Ext.define ("viewer.components.TOC",{
         this.selectLayer (id,visible);
     },
     checkboxClicked : function(nodeObj,checked,toc){
+        this.checkClicked= true;
         var node = nodeObj.raw;
         if(node ===undefined){
             node = nodeObj.data;
@@ -211,8 +213,11 @@ Ext.define ("viewer.components.TOC",{
             this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
         }
     },
-    
     itemClicked: function(thisObj, record, item, index, e, eOpts){
+        if(this.checkClicked){
+            this.checkClicked =false;
+            return
+        }
         // TODO don't fire when checkbox is clicked
         var node = record.raw;
         if(node ===undefined){
