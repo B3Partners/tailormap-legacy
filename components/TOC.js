@@ -201,16 +201,18 @@ Ext.define ("viewer.components.TOC",{
     },
     checkboxClicked : function(nodeObj,checked,toc){
         this.checkClicked= true;
-        var node = nodeObj.raw;
-        if(node ===undefined){
-            node = nodeObj.data;
-        }
-        var layer = node.layerObj;
+        if(nodeObj.isLeaf()){
+            var node = nodeObj.raw;
+            if(node ===undefined){
+                node = nodeObj.data;
+            }
+            var layer = node.layerObj;
     
-        if(checked){
-            this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
-        }else{
-            this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
+            if(checked){
+                this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
+            }else{
+                this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
+            }
         }
     },
     itemClicked: function(thisObj, record, item, index, e, eOpts){

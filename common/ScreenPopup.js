@@ -38,7 +38,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
-            contentEl : con
+            contentEl : con,
+            autoScroll: true
         });
         return this;
     },
