@@ -8,6 +8,8 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("viewer.viewercontroller.ViewerController", {
+    extend: "Ext.util.Observable", 
+    events: [],
 
     /** Map of name to component configuration object with the following properties:
      *  className: class name to construct
@@ -41,7 +43,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @constructor
      */
     constructor: function(viewerType, mapId, app) {
-           
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING);
         this.app = app;
         
         /* If a layout tree structure is supplied, dynamically create DOM elements
@@ -146,6 +148,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             component.config.div = layoutComponent.htmlId;
             this.createComponent(component.name, component.className, component.config, component.details);
         }
+        
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING);
     },    
     
     createComponent: function(name, className, config, details){
@@ -364,18 +368,5 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             maxx:maxx,
             maxy:maxy
         }, 0);
-    },    
-    
-    /** @deprecated */
-    bind : function (event,object,handler,scope){
-        if(object.isComponent != undefined){
-            object.bind(event,handler,scope);
-        }else{
-            this.mapComponent.registerEvent(event, object, handler,scope);
-        }
-    },
-    /** @deprecated */
-    unbind : function (event,object){
-        this.mapComponent.unRegisterEvent(event, object);
     }
 });
