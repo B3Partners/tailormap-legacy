@@ -22,7 +22,10 @@
 Ext.define ("viewer.components.ScreenPopup",{
     popupWin:null,
     config:{
-        title: ""
+        title: "",
+        showOnStart: false,
+        width : 400,
+        height: 600
     },
     constructor: function (conf){        
         this.initConfig(conf);   
@@ -33,14 +36,17 @@ Ext.define ("viewer.components.ScreenPopup",{
             title: this.title || 'Titel',
             closable: true,
             closeAction: 'hide',
-            width: 400,
-            height: 600,
+            width: this.width,
+            height: this.height,
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
             contentEl : con,
             autoScroll: true
         });
+        if(this.showOnStart){
+            this.popupWin.show();
+        }
         return this;
     },
     getContentId : function (){

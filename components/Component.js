@@ -31,7 +31,8 @@ Ext.define("viewer.components.Component",{
     config: {
         name: "naam",
         div: new Object(),
-        viewerController: new Object()
+        viewerController: new Object(),
+        isPopup : false
     }, 
     /**
     * @constructs
@@ -45,6 +46,13 @@ Ext.define("viewer.components.Component",{
             this.popup = Ext.create("viewer.components.ScreenPopup",config);
         }
         return this;
+    },
+    getContentDiv : function (){
+        if(this.isPopup){
+            return this.popup.getContentId();
+        }else{
+            return this.div;
+        }
     },
     /**
      * Bind an event to this component
