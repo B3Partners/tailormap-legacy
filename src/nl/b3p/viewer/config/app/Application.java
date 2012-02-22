@@ -48,7 +48,7 @@ public class Application  {
     private String layout;
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name="username"))
+    @JoinTable(joinColumns=@JoinColumn(name="application"))
     private Map<String,String> details = new HashMap<String,String>();
 
     @ManyToOne
@@ -76,7 +76,7 @@ public class Application  {
 
     private boolean authenticatedRequired;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private Level root;
 
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
