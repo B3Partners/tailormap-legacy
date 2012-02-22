@@ -18,9 +18,11 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -35,7 +37,7 @@ public abstract class GeoService {
     @Basic(optional=false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Category category;
 
     @Basic(optional=false)
@@ -147,14 +149,46 @@ public abstract class GeoService {
         if(topLayer != null) {
             JSONObject layers = new JSONObject();
             o.put("layers", layers);
-            addLayerJSON(topLayer, layers, layersToInclude);
+            
+            // XXX Oracle specific
+            // Retrieve layer tree structure in single query
+            List<Layer> layerEntities = Stripersist.getEntityManager().createNativeQuery(
+                "select * from layer start with id = :rootId connect by parent = prior id",
+                Layer.class)
+                .setParameter("rootId", topLayer.getId())
+                .getResultList();   
+            
+            Map<Layer,List<Layer>> childrenByParent = new HashMap<Layer,List<Layer>>();            
+            for(Layer l: layerEntities) {               
+                if(l.getParent() != null) {
+                    List<Layer> parentChildren = childrenByParent.get(l.getParent());
+                    if(parentChildren == null) {
+                        parentChildren = new ArrayList<Layer>();
+                        childrenByParent.put(l.getParent(), parentChildren);
+                    }
+                    parentChildren.add(l);
+                }
+            }            
+            
+            // Prevent n+1 queries
+            /* Currently disabled as Layer.details is not included in JSON at
+             * the moment. Reenable this when it is required
+             *
+            Stripersist.getEntityManager().createQuery("from Layer l "
+                    + "left join fetch l.details "
+                    + "where l in (:layers)")
+                    .setParameter("layers", layerEntities)
+                    .getResultList();
+            */
+           
+            addLayerJSON(topLayer, layers, childrenByParent, layersToInclude);
         }
         return o;
     }
     
-    private static void addLayerJSON(Layer l, JSONObject layers, Set<String> layersToInclude) throws JSONException {
+    private static void addLayerJSON(Layer l, JSONObject layers, Map<Layer,List<Layer>> childrenByParent, Set<String> layersToInclude) throws JSONException {
 
-        /* TODO check readers */
+        /* TODO check readers (and include readers in n+1 prevention query */
         
         /* Flatten tree structure, currently depth-first - later traversed layers
          * do not overwrite earlier layers with the same name - do not include
@@ -166,9 +200,12 @@ public abstract class GeoService {
                 layers.put(l.getName(), l.toJSONObject());
             }
         }
-                
-        for(Layer child: l.getChildren()) {
-            addLayerJSON(child, layers, layersToInclude);
+        
+        List<Layer> children = childrenByParent.get(l);
+        if(children != null) {        
+            for(Layer child: children) {                
+                addLayerJSON(child, layers, childrenByParent, layersToInclude);
+            }
         }
     }
     

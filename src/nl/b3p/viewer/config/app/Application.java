@@ -24,6 +24,7 @@ import nl.b3p.viewer.config.services.GeoService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -202,6 +203,50 @@ public class Application  {
         
         if(root != null) {
             o.put("rootLevel", root.getId().toString());
+            
+            // XXX Oracle specific
+            // Retrieve level tree structure in single query
+            
+            List<Level> levelEntities = Stripersist.getEntityManager().createNativeQuery(
+                "select * from level_ start with id = :rootId connect by parent = prior id",
+                Level.class)
+                .setParameter("rootId", root.getId())
+                .getResultList();
+            
+            // Prevent n+1 queries for each level            
+            Stripersist.getEntityManager().createQuery("from Level l "
+                    + "left join fetch l.documents "
+                    + "left join fetch l.layers "
+                    + "left join fetch l.readers "
+                    + "where l in (:levels) ")
+                    .setParameter("levels", levelEntities)
+                    .getResultList();
+            
+            Map<Level,List<Level>> childrenByParent = new HashMap<Level,List<Level>>();
+            List<ApplicationLayer> appLayerEntities = new ArrayList<ApplicationLayer>();
+            
+            for(Level l: levelEntities) {
+                appLayerEntities.addAll(l.getLayers());
+                
+                if(l.getParent() != null) {
+                    List<Level> parentChildren = childrenByParent.get(l.getParent());
+                    if(parentChildren == null) {
+                        parentChildren = new ArrayList<Level>();
+                        childrenByParent.put(l.getParent(), parentChildren);
+                    }
+                    parentChildren.add(l);
+                }
+            }
+            
+            // Prevent n+1 queries for each ApplicationLayer            
+            Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
+                    + "left join fetch al.attributes "
+                    + "left join fetch al.details "
+                    + "left join fetch al.readers "
+                    + "left join fetch al.writers "
+                    + "where al in (:alayers) ")
+                    .setParameter("alayers", appLayerEntities)
+                    .getResultList();
 
             JSONObject levels = new JSONObject();
             o.put("levels", levels);
@@ -211,7 +256,7 @@ public class Application  {
             o.put("selectedContent", selectedContent);         
             
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, childrenByParent, false);
 
             Collections.sort(selectedObjects, new Comparator() {
 
@@ -244,7 +289,7 @@ public class Application  {
             }
            
             Map<GeoService,Set<String>> usedLayersByService = new HashMap<GeoService,Set<String>>();
-            visitLevelForUsedServicesLayers(root, usedLayersByService);
+            visitLevelForUsedServicesLayers(root, childrenByParent, usedLayersByService);
 
             if(!usedLayersByService.isEmpty()) {
                 JSONObject services = new JSONObject();
@@ -254,9 +299,15 @@ public class Application  {
                     Set<String> usedLayers = entry.getValue();
                     services.put(gs.getId().toString(), gs.toJSONObject(usedLayers));
                 }
-            }            
+            }           
         }
 
+        // Prevent n+1 query for ConfiguredComponent.details
+        Stripersist.getEntityManager().createQuery(
+                "from ConfiguredComponent cc left join fetch cc.details where application = :this")
+                .setParameter("this", this)
+                .getResultList();
+        
         JSONObject c = new JSONObject();
         o.put("components", c);
         for(ConfiguredComponent comp: components) {
@@ -266,8 +317,8 @@ public class Application  {
         return o.toString(4);
     }
     
-    private static void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground) throws JSONException {
-        JSONObject o = l.toJSONObject();
+    private static void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, Map<Level,List<Level>> childrenByParent, boolean parentIsBackground) throws JSONException {
+        JSONObject o = l.toJSONObject(false);
         o.put("background", l.isBackground() || parentIsBackground);
         levels.put(l.getId().toString(), o);
         
@@ -285,12 +336,18 @@ public class Application  {
             }
         }
         
-        for(Level child: l.getChildren()) {
-            walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground());
+        List<Level> children = childrenByParent.get(l);
+        if(children != null) {
+            JSONArray jsonChildren = new JSONArray();
+            o.put("children", jsonChildren);
+            for(Level child: children) {
+                jsonChildren.put(child.getId().toString());
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, childrenByParent, l.isBackground());
+            }
         }
     }
     
-    private static void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService) {
+    private static void visitLevelForUsedServicesLayers(Level l, Map<Level,List<Level>> childrenByParent, Map<GeoService,Set<String>> usedLayersByService) {
                 
         for(ApplicationLayer al: l.getLayers()) {
             GeoService gs = al.getService();
@@ -302,8 +359,11 @@ public class Application  {
             }
             usedLayers.add(al.getLayerName());
         }
-        for(Level child: l.getChildren()) {
-            visitLevelForUsedServicesLayers(child, usedLayersByService);
-        }        
+        List<Level> children = childrenByParent.get(l);
+        if(children != null) {        
+            for(Level child: children) {
+                visitLevelForUsedServicesLayers(child, childrenByParent, usedLayersByService);
+            }        
+        }
     }
 }

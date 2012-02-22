@@ -147,6 +147,10 @@ public class Level {
     }
 
     public JSONObject toJSONObject() throws JSONException {
+        return toJSONObject(true);
+    }
+    
+    public JSONObject toJSONObject(boolean includeChildrenIds) throws JSONException {
         JSONObject o = new JSONObject();
  
         /* TODO check readers */
@@ -173,16 +177,18 @@ public class Level {
             }            
         }
         
-        if(!children.isEmpty()) {
-            JSONArray cs = new JSONArray();
-            o.put("children", cs);
-            for(Level l: children) {
-                cs.put(l.getId().toString());
+        if(includeChildrenIds) {
+            if(!children.isEmpty()) {
+                JSONArray cs = new JSONArray();
+                o.put("children", cs);
+                for(Level l: children) {
+                    cs.put(l.getId().toString());
+                }
             }
         }
         
         return o;
-    }
+    }    
 
     public boolean containsLayerInSubtree(ApplicationLayer appLayer) {
         
