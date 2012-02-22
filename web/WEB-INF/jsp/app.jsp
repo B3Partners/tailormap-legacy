@@ -76,7 +76,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:otherwise>
         </c:choose>
        
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewer.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
 ${actionBean.componentSourceHTML}
