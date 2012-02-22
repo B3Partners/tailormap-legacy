@@ -115,7 +115,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         }*/
         this.layers.push(layer);
         layer.map = this;
-//        this.viewerController.mapComponent.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
+        this.viewerController.mapComponent.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
     },
     /**
      *Removes a specifice layer from the map.
