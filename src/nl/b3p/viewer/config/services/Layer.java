@@ -35,10 +35,10 @@ public class Layer {
     @Id
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private GeoService service;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Layer parent;
 
     private String name;
@@ -61,7 +61,7 @@ public class Layer {
     @ElementCollection
     private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<CoordinateReferenceSystem,BoundingBox>();
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private TileSet tileset;
 
     /**
@@ -74,7 +74,7 @@ public class Layer {
     private boolean queryable;
     private boolean filterable;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private SimpleFeatureType featureType;
 
     @ElementCollection
@@ -127,7 +127,9 @@ public class Layer {
         }
 
         for(org.geotools.data.ows.Layer child: l.getLayerChildren()) {
-            children.add(new Layer(child, service));
+            Layer childLayer = new Layer(child, service);
+            childLayer.setParent(this);
+            children.add(childLayer);
         }
     }
     /**
@@ -167,6 +169,10 @@ public class Layer {
             o.put("maxScale", maxScale);
         }
         
+        /* Currently uninteresting to have in JSON tree. Enable with n+1 prevention
+         * code in GeoService when required for all layers immediately, or use
+         * AJAX request when only needed for a layer at a time.
+         
         if(!details.isEmpty()) {
             JSONObject d = new JSONObject();
             o.put("details", d);
@@ -174,6 +180,7 @@ public class Layer {
                 d.put(e.getKey(), e.getValue());
             }        
         }
+        */
         
         return o;
     }

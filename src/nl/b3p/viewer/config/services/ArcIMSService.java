@@ -98,7 +98,7 @@ public class ArcIMSService extends GeoService {
             top.setService(ims);
 
             for(AxlLayerInfo axlLayerInfo: gtims.getAxlServiceInfo().getLayers()) {
-                top.getChildren().add(parseAxlLayerInfo(axlLayerInfo, ims, fs));
+                top.getChildren().add(parseAxlLayerInfo(axlLayerInfo, ims, fs, top));
             }
             ims.setTopLayer(top);
             
@@ -123,8 +123,9 @@ public class ArcIMSService extends GeoService {
         return o;
     }
     
-    private Layer parseAxlLayerInfo(AxlLayerInfo axl, GeoService service, ArcXMLFeatureSource fs) {
+    private Layer parseAxlLayerInfo(AxlLayerInfo axl, GeoService service, ArcXMLFeatureSource fs, Layer parent) {
         Layer l = new Layer();
+        l.setParent(parent);
         l.setService(service);
         l.setFilterable(AxlLayerInfo.TYPE_FEATURECLASS.equals(axl.getType()));
         l.setQueryable(true);

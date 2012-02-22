@@ -110,6 +110,7 @@ public class ArcGISService extends GeoService {
     
     private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Layer parent) throws JSONException {
         Layer l = new Layer();
+        l.setParent(parent);
         l.setService(service);
         l.setFilterable(true);
         l.setQueryable(true); // Could check capabilities field for "Query", but don't bother
