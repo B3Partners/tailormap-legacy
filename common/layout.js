@@ -23,7 +23,7 @@ Ext.define('viewer.LayoutManager', {
         left_menu: {region:'center', subregion:'west', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false, defaultLayout: {width: 150}},
         top_menu: {region:'none'},
         content: {region:'center', subregion:'center', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', useTabs: false, defaultLayout: {}},
-        popupwindow: {},
+        popupwindow: { region: 'none', isPopup: true },
         rightmargin_top: {region:'east', subregion:'center', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
         rightmargin_bottom: {region:'east', subregion:'south', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
         footer: {region:'south', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}}
@@ -279,11 +279,17 @@ Ext.define('viewer.LayoutManager', {
             if(!singleBlock || (singleBlock && first)) {
                 componentItems.push(cmpView);
             }
-            me.componentList.push({
+            
+            var componentItem = {
                 htmlId: cmpId,
                 componentName: component.name,
                 componentClass: component.componentClass
-            });
+            };
+            if(regionDefaultConfig.isPopup) {
+                componentItem.isPopup = true;
+                componentItem.showOnStartup = true;
+            }
+            me.componentList.push(componentItem);
             if(component.componentClass == "FlamingoMap" || component.componentClass == "OpenLayersMap") {
                 me.mapId = cmpId;
             }
