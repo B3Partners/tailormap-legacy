@@ -92,6 +92,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     },
     setVisible : function (visible){
         throw("Layer.setVisible() Not implemented! Must be implemented in sub-class");
+    },
+    getLegendGraphic : function () {
+        throw("Layer.getLegendImage() Not implemented! Must be implemented in sub-class");
     }
 
 });

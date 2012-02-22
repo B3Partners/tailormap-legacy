@@ -79,5 +79,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
         this.visible = visible;
+    },
+    getLegendGraphic : function () {
+        var url = this.options.url;
+        var character = url.indexOf("?") == -1 ? "?" : "&";
+        if(url.substring(url.length) == character){
+            url += character;
+        }
+        var request = url + "request=GetLegendGraphic&layer="+this.id+"&version=1.1.1&format=png";
+        return request;
     }
 });

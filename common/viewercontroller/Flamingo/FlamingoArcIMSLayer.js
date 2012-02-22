@@ -98,6 +98,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         }else{
             this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "hide");
         }
+    },
+    getLegendGraphic : function (){
+        var url = this.options.server + "/" + this.options.servlet;
+        var character = url.indexOf("?") == -1 ? "?" : "&";
+        if(url.substring(url.length) == character){
+            url += character;
+        }
+        var request = url + "ServiceName="+this.options.mapservice+"request=GetLegendGraphic&layer="+this.id+"&version=1.1.1&format=png";
+        return request;
     }
 
 });

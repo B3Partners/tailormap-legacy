@@ -209,6 +209,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 timeout: 30,
                 retryonerror: 10,
                 ratio: 1,
+                id: layer.name,
                 showerrors: true,
                 initService: false
             };
@@ -294,12 +295,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(layer.legendImageUrl != undefined){
             return layer.legendImageUrl;
         }else{
-            // Make GetLegendGraphic request
-            var url = this.app.services[serviceId].url;
-            var request = url + "request=GetLegendGraphic&layer="+layerName+"&version=1.1.1&format=png";
-            return request;
+            var layerObj = this.getLayer(serviceId, layerName);
+            return layerObj.getLegendGraphic();
         }
-        
     },
     getLayerMetadata : function (serviceId, layerName){  
         var layer = this.app.services[serviceId].layers[layerName];

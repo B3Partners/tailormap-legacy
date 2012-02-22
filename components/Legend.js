@@ -35,7 +35,11 @@ Ext.define ("viewer.components.Legend",{
     constructor: function (conf){        
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGE,this.layerVisibilityChanged,this);
+        var legendContainer = document.getElementById(this.div);
+      
+        legendContainer.style.overflow = "auto";
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        this.start();
         return this;
     },
     makeLegendList : function (){
@@ -54,7 +58,7 @@ Ext.define ("viewer.components.Legend",{
             this.legends.push(legend);
         }
     },
-    layerVisibilityChanged : function (object ){
+    layerVisibilityChanged : function (map,object ){
         var layer = object.layer;
         var vis = object.visible;
         if(vis){
@@ -79,7 +83,8 @@ Ext.define ("viewer.components.Legend",{
         var layerName = layer.id;
         var id = serviceId  + "_"+ layerName+"-div";
         var node =document.getElementById(id);
-        document.removeChild(node);
+        var div = document.getElementById(this.div);
+        div.removeChild(node);
     },
     start : function (){
         this.makeLegendList();
@@ -109,14 +114,14 @@ Ext.define ("viewer.components.ImageQueue",{
     },
     load : function (){
         while(this.queueSize > 0){
-            this.queueSize--;
-            var item = this.legends[i];
+            var item = this.legends[0];
             if(item == undefined){
                 return;
             }
+            this.queueSize--;
             var config = {
                 item: item,
-                id : i,
+                id : item.id,
                 queue: this,
                 div : this.div
             };
@@ -152,11 +157,10 @@ Ext.define("viewer.components.Image",{
         this.initConfig(config);
     },
     loadImage: function (){
-        console.log("start loading" + this.item.title);
         var plek = document.getElementById(this.div);
         var div = document.createElement("div");
         div.id = this.item.id + "-div";
-        div.innerHTML = "<h3>"+ this.item.title+"</h3><br/>";
+        div.innerHTML = "<h3>"+ this.item.title+"</h3>";
         plek.appendChild(div);
         this.legendimg = document.createElement("img");
         div.appendChild(this.legendimg);
@@ -171,10 +175,9 @@ Ext.define("viewer.components.Image",{
         this.legendimg.src = this.item.src;
     },
     treeImageOnload : function (){
-        console.log("loading finished:" + this.imgObj.item.title);
         this.imgObj.queue.imageLoaded(this.imgObj.legendimg,this.imgObj.item);
     },
-    treeImageError :function (a,b,c){
-        alert("FOUT: ",a);
+    treeImageError :function (){
+        this.imgObj.queue.queueSize++;
     }
 });
