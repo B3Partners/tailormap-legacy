@@ -1,10 +1,11 @@
 /**
  * @class 
- * @constructor
  * @description The superclass for all maps 
  * @param frameworkMap The frameworkspecific layer
  * Map object interface class
- * */
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ **/
 Ext.define("viewer.viewercontroller.controller.Map",{
     extend: "Ext.util.Observable",
     events: [],
@@ -15,12 +16,22 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         viewerController: new Object()
         //maxExtent : new Object()
     },
+    /**
+     * @constructor
+     */
     constructor: function(config){
         //this.viewerController = config.viewerController;
         this.initConfig(config);
         this.frameworkMap = this.viewerController.mapComponent.viewerObject;
         
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED);
+        this.addEvents(
+            viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,
+            viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,
+            viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
+            viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,
+            viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
+            viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED);
+            
         return this;
     },
     
@@ -115,7 +126,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         }*/
         this.layers.push(layer);
         layer.map = this;
-        this.viewerController.mapComponent.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
+        //this.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
     },
     /**
      *Removes a specifice layer from the map.

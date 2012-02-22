@@ -44,8 +44,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         xml+=" mapservice=\""+this.getOption("mapservice")+"\"";
         xml+=">";
         //add the maptips
-        for (var i=0; i < this.getMapTips().length; i++){
-            var maptip=this.getMapTips()[i];
+        for (var i=0; i < this.getMaptips().length; i++){
+            var maptip=this.getMaptips()[i];
             xml+="<layer";
             xml+=" id=\""+maptip.layer+"\"";
             if (maptip.mapTipField!=null)

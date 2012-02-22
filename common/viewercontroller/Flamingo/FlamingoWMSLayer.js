@@ -51,8 +51,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         }
         xml+=">";
         //add the maptips
-        for (var i=0; i < this.getMapTips().length; i++){
-            var maptip=this.getMapTips()[i];
+        for (var i=0; i < this.getMaptips().length; i++){
+            var maptip=this.getMaptips()[i];
             xml+="<layer";
             xml+=" id=\""+maptip.layer+"\"";
             if (maptip.mapTipField!=null)
@@ -88,5 +88,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         }
         var request = url + "request=GetLegendGraphic&layer="+this.id+"&version=1.1.1&format=png";
         return request;
+    },
+    getLayers: function(){
+        return this.getOption("layers");
+    },
+    setMaptips: function(maptips){
+        viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.setMaptips.call(this,maptips);        
+        this.passMaptips();
+    },
+    passMaptips: function(){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
     }
 });

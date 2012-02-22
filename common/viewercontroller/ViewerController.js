@@ -128,7 +128,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         //testComponents();
         } catch(e) {
-        //console.log(e);
+            console.log(e);
         }  
     },
     
@@ -209,12 +209,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             version: "1.1.1",
             layers:layer.name,
             visible: false,
-            query_layers: layer.name,
+            /*xxx must be set by tool that uses it.
+             *query_layers: layer.name,*/
             styles: "",
             format: "image/png",
             transparent: true,
-            noCache: false,
-            serviceId : serviceId
+            noCache: false
         };
         var options={
             timeout: 30,
@@ -252,6 +252,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.name, ogcOptions, options);
             this.layers[id] = layerObj;
         }
+        layerObj.serviceId = serviceId;
         this.mapComponent.getMap().addLayer(layerObj);  
     },
     

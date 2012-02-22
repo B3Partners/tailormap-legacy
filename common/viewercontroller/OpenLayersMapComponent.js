@@ -479,7 +479,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             var maptip=this.getMapTipByFeatureType(featureType);
             /*temp*/
             if (maptip==null){
-                maptip=this.getMapTips()[0];
+                maptip=this.getMaptips()[0];
             }
             if (maptip!=null){
                 var maptipField=maptip.mapTipField;

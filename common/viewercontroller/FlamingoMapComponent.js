@@ -1,6 +1,5 @@
 /**
  * @class 
- * @constructur
  * @augments MapComponent
  * @description MapComponent subclass for Flamingo
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -15,6 +14,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     mainContainerId: "mainContainer",
     toolMargin: 30,
     viewerController: null,
+    /**
+     *
+     * @constructur
+     */
     constructor :function (viewerController, domId){
         this.viewerController = viewerController;
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
@@ -340,6 +343,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     handleEvents : function (event, component){
         var id = component[0];
+        var object = this.getObject(id);
         // onEvent is a general event, fired when a jsButton is hovered over, pressed or released. Here we specify which it was.
         if(event == "onEvent"){
             if(component[1]["down"]){
@@ -371,19 +375,24 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }else if(event==viewer.viewercontroller.controller.Event.ON_SET_TOOL){
             //onchange tool is called for a tool group but event is registerd on the MapComponent
             id=this.getId();
-        }else{
-            if(event == viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED){
-                // Make sure "component" is the drawn feature
-                var feature = new viewer.viewercontroller.controller.Feature(id,component[1]);
-                component = feature;
-            }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){
-                component = component[1];
-            }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){
-                component = component[2];
+            object = this.getObject(id);
+        }else if(event == viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED){
+            // Make sure "component" is the drawn feature
+            var feature = new viewer.viewercontroller.controller.Feature(id,component[1]);
+            component = feature;
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){
+            component = component[1];
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){
+            component = component[2];
+        }else if (event == viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
+            var layerId=component[1];
+            //remove id_ from the layer id
+            if (layerId.indexOf(id+"_")==0){
+                layerId = layerId.substring(id.length+1);
             }
+            var layer=object.getLayer(layerId);
+            component=layer;
         }
-    
-        var object = this.getObject(id);
         if(object != undefined){
             object.fire(event,component);
         }
@@ -400,9 +409,6 @@ function dispatchEventJS(event, comp) {
     if(comp [0]== null){
             comp[0] = viewerController.mapComponent.getId();
         comp[1] = new Object();
-    }
-    if(event == "onAddLayer"){
-        var a = 0;
     }
     viewerController.mapComponent.handleEvents(event,comp);
 }

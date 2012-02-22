@@ -14,6 +14,8 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     maptips: new Array(),
     map:null,
     visible: false,
+    //service id from where this layer is created
+    serviceId: 0,
     config :{
         id: "id",
         frameworkObject: new Object(),
@@ -33,8 +35,14 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      *Gets a option of this layer
      *@return the option value or null if not exists
      */
-    getOption : function(optionKey){
-        throw("Layer.getOption() Not implemented! Must be implemented in sub-class");
+    getOption: function(optionKey){
+        var availableOptions=""
+        for (var op in this.options){
+            if (op.toLowerCase()==optionKey.toLowerCase())
+                return this.options[op];
+            availableOptions+=op+",";
+        }
+        return null;
     },
     /**
      *sets or overwrites a option
@@ -50,6 +58,12 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         return this.id;
     },
     /**
+     *Gets the layer that are set in this layer
+     */
+    getLayers: function (){
+        Ext.Error.Raise({msg: "Get layers must be implemented by implementation"});
+    },
+    /**
      *Add a maptip to the layer
      */
     addMapTip : function(maptip){
@@ -58,13 +72,13 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     /**
      * set a array of maptips
      */
-    setMapTips : function (maptips){
+    setMaptips : function (maptips){
         this.maptips=maptips;
     },
     /**
      * get a array of maptips
      */
-    getMapTips : function (){
+    getMaptips : function (){
         return this.maptips;
     },
     /**

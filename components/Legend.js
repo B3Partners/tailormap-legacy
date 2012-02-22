@@ -68,7 +68,7 @@ Ext.define ("viewer.components.Legend",{
         }
     },
     addLayer : function (layer){
-        var serviceId = layer.options.serviceId;
+        var serviceId = layer.serviceId;
         var layerName = layer.id;
         var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
         var legend = {
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.Legend",{
         this.queue.addItem(legend);
     },
     removeLayer: function (layer){
-        var serviceId = layer.options.serviceId;
+        var serviceId = layer.serviceId;
         var layerName = layer.id;
         var id = serviceId  + "_"+ layerName+"-div";
         var node =document.getElementById(id);

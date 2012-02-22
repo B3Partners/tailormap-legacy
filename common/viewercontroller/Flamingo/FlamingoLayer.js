@@ -25,15 +25,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     getTagName : function(){
         throw("FlamingoLayer.getTagName: .getTagName() must be made!");
     },
-    getOption: function(optionKey){
-        var availableOptions=""
-        for (var op in this.options){
-            if (op.toLowerCase()==optionKey.toLowerCase())
-                return this.options[op];
-            availableOptions+=op+",";
-        }
-        return null;
-    },
     setOption : function(optionKey,optionValue){
         this.options[optionKey]=optionValue;
     },
