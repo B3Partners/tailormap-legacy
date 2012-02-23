@@ -20,6 +20,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.web.WaitPageStatus;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -139,7 +140,7 @@ public abstract class GeoService {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }
     
-    public JSONObject toJSONObject(Set<String> layersToInclude) throws JSONException {
+    public JSONObject toJSONObject(boolean flattenTree, Set<String> layersToInclude) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("name", name);
@@ -147,70 +148,92 @@ public abstract class GeoService {
         o.put("protocol", getProtocol());
         
         if(topLayer != null) {
-            JSONObject layers = new JSONObject();
-            o.put("layers", layers);
+            Map<Layer,List<Layer>> childrenByParent = null;
             
-            // XXX Oracle specific
-            // Retrieve layer tree structure in single query
-            List<Layer> layerEntities = Stripersist.getEntityManager().createNativeQuery(
-                "select * from layer start with id = :rootId connect by parent = prior id",
-                Layer.class)
-                .setParameter("rootId", topLayer.getId())
-                .getResultList();   
-            
-            Map<Layer,List<Layer>> childrenByParent = new HashMap<Layer,List<Layer>>();            
-            for(Layer l: layerEntities) {               
-                if(l.getParent() != null) {
-                    List<Layer> parentChildren = childrenByParent.get(l.getParent());
-                    if(parentChildren == null) {
-                        parentChildren = new ArrayList<Layer>();
-                        childrenByParent.put(l.getParent(), parentChildren);
+            if(Stripersist.getEntityManager().contains(this)) {
+                // XXX Oracle specific
+                // Retrieve layer tree structure in single query
+                List<Layer> layerEntities = Stripersist.getEntityManager().createNativeQuery(
+                    "select * from layer start with id = :rootId connect by parent = prior id",
+                    Layer.class)
+                    .setParameter("rootId", topLayer.getId())
+                    .getResultList();   
+
+                childrenByParent = new HashMap<Layer,List<Layer>>();            
+                for(Layer l: layerEntities) {               
+                    if(l.getParent() != null) {
+                        List<Layer> parentChildren = childrenByParent.get(l.getParent());
+                        if(parentChildren == null) {
+                            parentChildren = new ArrayList<Layer>();
+                            childrenByParent.put(l.getParent(), parentChildren);
+                        }
+                        parentChildren.add(l);
                     }
-                    parentChildren.add(l);
-                }
-            }            
+                }            
+
+                // Prevent n+1 queries
+                /* Currently disabled as Layer.details is not included in JSON at
+                * the moment. Reenable this when it is required
+                *
+                Stripersist.getEntityManager().createQuery("from Layer l "
+                        + "left join fetch l.details "
+                        + "where l in (:layers)")
+                        .setParameter("layers", layerEntities)
+                        .getResultList();
+                */
+            }
+
+            if(flattenTree) {
+                JSONObject layers = new JSONObject();
+                o.put("layers", layers);
+                walkLayerJSONFlatten(topLayer, layers, childrenByParent, layersToInclude);
+            } else {
+                o.put("topLayer", walkLayerJSONTree(topLayer, childrenByParent));
+            }
             
-            // Prevent n+1 queries
-            /* Currently disabled as Layer.details is not included in JSON at
-             * the moment. Reenable this when it is required
-             *
-            Stripersist.getEntityManager().createQuery("from Layer l "
-                    + "left join fetch l.details "
-                    + "where l in (:layers)")
-                    .setParameter("layers", layerEntities)
-                    .getResultList();
-            */
-           
-            addLayerJSON(topLayer, layers, childrenByParent, layersToInclude);
         }
         return o;
     }
     
-    private static void addLayerJSON(Layer l, JSONObject layers, Map<Layer,List<Layer>> childrenByParent, Set<String> layersToInclude) throws JSONException {
+    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Map<Layer,List<Layer>> childrenByParent, Set<String> layersToInclude) throws JSONException {
 
         /* TODO check readers (and include readers in n+1 prevention query */
         
         /* Flatten tree structure, currently depth-first - later traversed layers
-         * do not overwrite earlier layers with the same name - do not include
-         * virtual layers
-         */
-        
+        * do not overwrite earlier layers with the same name - do not include
+        * virtual layers
+        */
+
         if(layersToInclude == null || layersToInclude.contains(l.getName())) {
             if(!l.isVirtual() && !layers.has(l.getName())) {
                 layers.put(l.getName(), l.toJSONObject());
             }
         }
         
-        List<Layer> children = childrenByParent.get(l);
+        List<Layer> children = childrenByParent == null ? l.getChildren() : childrenByParent.get(l);
         if(children != null) {        
             for(Layer child: children) {                
-                addLayerJSON(child, layers, childrenByParent, layersToInclude);
+                walkLayerJSONFlatten(child, layers, childrenByParent, layersToInclude);
             }
         }
     }
     
-    public JSONObject toJSONObject() throws JSONException {
-        return toJSONObject(null);
+    private static JSONObject walkLayerJSONTree(Layer l, Map<Layer,List<Layer>> childrenByParent) throws JSONException {
+        JSONObject j = l.toJSONObject();
+        
+        List<Layer> children = childrenByParent == null ? l.getChildren() : childrenByParent.get(l);
+        if(children != null) {        
+            JSONArray jc = new JSONArray();
+            j.put("children", jc);
+            for(Layer child: children) {                
+                jc.put(walkLayerJSONTree(child, childrenByParent));
+            }
+        }
+        return j;
+    }
+    
+    public JSONObject toJSONObject(boolean flattenTree) throws JSONException {
+        return toJSONObject(flattenTree, null);
     }
 
     /**

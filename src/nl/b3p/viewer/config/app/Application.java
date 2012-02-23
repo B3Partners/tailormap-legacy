@@ -297,7 +297,7 @@ public class Application  {
                 for(Map.Entry<GeoService,Set<String>> entry: usedLayersByService.entrySet()) {
                     GeoService gs = entry.getKey();
                     Set<String> usedLayers = entry.getValue();
-                    services.put(gs.getId().toString(), gs.toJSONObject(usedLayers));
+                    services.put(gs.getId().toString(), gs.toJSONObject(true, usedLayers));
                 }
             }           
         }

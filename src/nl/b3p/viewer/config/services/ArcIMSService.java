@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Set;
 import javax.persistence.*;
 import nl.b3p.geotools.data.arcims.ArcIMSServer;
 import nl.b3p.geotools.data.arcims.AxlField;
@@ -114,13 +115,19 @@ public class ArcIMSService extends GeoService {
         }
     }
     
+    
     @Override
-    public JSONObject toJSONObject() throws JSONException {
-        JSONObject o = super.toJSONObject();
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude);
         if(serviceName != null) {
-            o.put("ServiceName", serviceName);
+            o.put("serviceName", serviceName);
         }
         return o;
+    }    
+    
+    @Override
+    public JSONObject toJSONObject(boolean flatten) throws JSONException {
+        return toJSONObject(flatten, null);
     }
     
     private Layer parseAxlLayerInfo(AxlLayerInfo axl, GeoService service, ArcXMLFeatureSource fs, Layer parent) {
