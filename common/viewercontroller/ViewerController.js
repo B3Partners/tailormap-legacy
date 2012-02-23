@@ -119,7 +119,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
 
             this.initializeConfiguredComponents();
-            this.initLayers();
+            var layersloaded = this.bookmarkValuesFromURL();
+            // When there are no layers loaded from bookmark the startmap layers are loaded,
+            if(!layersloaded){
+                this.initLayers();
+            }
+            
         // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
             
         // XXX viewer.js: viewerController.loadRootLevel(app.rootLevel);
@@ -374,5 +379,64 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             maxx:maxx,
             maxy:maxy
         }, 0);
+    },
+    bookmarkValuesFromURL : function(){
+        var layersLoaded = false;
+        var url = document.URL;
+        var index = url.indexOf("?");
+        var params = url.substring(index +1);
+        var parameters = params.split("&");
+        for ( var i = 0 ; i < parameters.length ; i++){
+            var parameter = parameters[i];
+            var index2 = parameter.indexOf("=");
+            var type = parameter.substring(0,index2);
+            var value = parameter.substring(index2 +1);
+            if(type == "layers"){
+                var values = value.split(",");
+                this.setLayersVisible(values,true);
+                layersLoaded = true;
+            }else if(type == "extent"){
+                var coords = value.split(",");
+                var newExtent = new Object();
+                newExtent.minx=coords[0];
+                newExtent.miny=coords[1];
+                newExtent.maxx=coords[2];
+                newExtent.maxy=coords[3];
+                this.mapComponent.getMap().zoomToExtent(newExtent);
+            }
+        }
+        return layersLoaded;
+    },
+    getBookmarkUrl : function(){
+        var url = document.URL;
+        var index = url.indexOf("?");
+        var newUrl = url.substring(0,index)+"?";
+        var params = url.substring(index +1);
+        var parameters = params.split("&");
+        for ( var i = 0 ; i < parameters.length ; i++){
+            var parameter = parameters[i];
+            var index2 = parameter.indexOf("=");
+            var type = parameter.substring(0,index2);
+            if(type != "layers" && type != "extent"){
+                newUrl += parameter+"&";
+            }
+        }
+        
+        var visLayers = this.getVisibleLayerIds();
+        if(visLayers.length != 0 ){
+            newUrl += "layers=";
+            for(var x = 0 ; x < visLayers.length ; x++){
+                if(x == visLayers.length-1){
+                    newUrl += visLayers[x]+"&";
+                }else{
+                    newUrl += visLayers[x]+",";
+                }
+            }
+        }
+        
+        var extent = this.mapComponent.getMap().getExtent();
+        newUrl += "extent=" + extent.minx +","+ extent.miny +","+ extent.maxx +","+ extent.maxy;
+        
+        return newUrl;
     }
 });

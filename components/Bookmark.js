@@ -21,10 +21,7 @@
 Ext.define ("viewer.components.Bookmark",{
     extend: "viewer.components.Component",
     form: null,
-    toc: null,
-    map: null,
-    basicUrl: "",
-    otherParams: "",
+    url: "",
     config:{
         title: "",
         titlebarIcon: "",
@@ -35,11 +32,6 @@ Ext.define ("viewer.components.Bookmark",{
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.loadButton();
-        
-        // check of alles is geladen
-        this.map = viewerController.mapComponent.getMap();
-        this.valuesFromURL(document.URL);
-        
         this.loadWindow();
         return this;
     },
@@ -70,7 +62,13 @@ Ext.define ("viewer.components.Bookmark",{
                 name: 'compactlink'
             },{ 
                 xtype: 'button',
-                text: 'Toevoegen aan favorieten'
+                text: 'Toevoegen aan favorieten',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: this.addToFavorites
+                    }
+                }
             },{ 
                 xtype: 'button',
                 text: 'Sluiten',
@@ -83,64 +81,27 @@ Ext.define ("viewer.components.Bookmark",{
             }],
             renderTo: this.popup.getContentId()
         });
-        
     },
     showWindow : function(){
-        var url = this.basicUrl+"?";
-        if(this.otherParams != ""){
-            var params = this.otherParams.split(",");
-            for( var i = 0; i < params.length; i++){
-                if(params[i] != ""){
-                    url += params[i]+"&";
-                }
-            }
-        }
-        
-        var visLayers = viewerController.getVisibleLayerIds();
-        if(visLayers.length != 0 ){
-            url += "layers=";
-            for(var i = 0 ; i < visLayers.length ; i++){
-                if(i == visLayers.length-1){
-                    url += visLayers[i]+"&";
-                }else{
-                    url += visLayers[i]+",";
-                }
-            }
-        }
-        
-        var extent = this.map.getExtent();
-        url += "extent=" + extent.minx +","+ extent.miny +","+ extent.maxx +","+ extent.maxy;
-
-        this.form.child().setValue(url);
+        this.url = viewerController.getBookmarkUrl();
+        this.form.child().setValue(this.url);
         this.popup.show();
     },
     hideWindow : function(){
         this.popup.hide();
     },
-    valuesFromURL : function(url){
-        var index = url.indexOf("?");
-        this.basicUrl = url.substring(0,index);
-        var params = url.substring(index +1);
-        var parameters = params.split("&");
-        for ( var i = 0 ; i < parameters.length ; i++){
-            var parameter = parameters[i];
-            var index2 = parameter.indexOf("=");
-            var type = parameter.substring(0,index2);
-            var value = parameter.substring(index2 +1);
-            if(type == "layers"){
-                var values = value.split(",");
-                viewerController.setLayersVisible(values,true);
-            }else if(type == "extent"){
-                var coords = value.split(",");
-                var newExtent = new Object();
-                newExtent.minx=coords[0];
-                newExtent.miny=coords[1];
-                newExtent.maxx=coords[2];
-                newExtent.maxy=coords[3];
-                this.map.zoomToExtent(newExtent);
-            }else{
-                this.otherParams += ","+parameter;
-            }
+    addToFavorites : function(){
+        if(Ext.firefoxVersion != 0){
+            //window.sidebar.addPanel(this.title, this.url, "");
+            alert("This browser doesn't support this function.");
+        }else if(Ext.ieVersion != 0){
+            window.external.AddFavorite(this.url, this.title);
+        }else if(Ext.chromeVersion != 0){
+            alert("This browser doesn't support this function.");
+        }else if(Ext.operaVersion != 0){
+            alert("This browser doesn't support this function.");
+        }else if(Ext.safariVersion != 0){
+            alert("This browser doesn't support this function.");
         }
     }
 });
