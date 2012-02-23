@@ -33,7 +33,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         bottom: null,
         listenTo: null,
         //for scalebar:
-        units: null
+        units: null,
+        maptipdelay: 500
     },       
     /** Create a new FlamingoTool
      *@construct
@@ -77,7 +78,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setTop("50");
             this.setLeft("20");
             this.setHeight("300");
-        }else{
+        }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){           
+            this.setTagName("Maptip");
+        }
+        else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
         }    
         return this;

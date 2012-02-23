@@ -169,7 +169,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         config.viewerController = this;
-
+        config.name=name;
         //console.log("Creating component " + name + " class  " + className + " with config", config);
         
         // XXX do something with details - maybe integrate into config server side

@@ -60,9 +60,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     addLayer : function(layer){
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
             throw("FlamingoMap.addLayer(): Given layer not of type FlamingoLayer");
-        this.superclass.addLayer.call(this,layer);
         //call super function
-        //Map.prototype.addLayer.call(this,layer);
+        this.superclass.addLayer.call(this,layer);
+                
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'addLayer',layer.toXML());
         }

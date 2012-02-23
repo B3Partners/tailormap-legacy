@@ -410,12 +410,14 @@
             propertyNames: {
                 tooltip: "Hoover tekst",
                 title: "Titel",
-                titlebarIcon : "Titelbalk icoon"
+                titlebarIcon : "Titelbalk icoon",
+                maptipdelay: "Maptip Delay"
             },
             source: {
                 tooltip: "",
                 title: "",
-                titlebarIcon : ""
+                titlebarIcon : "",
+                maptipdelay: 500
             }
         }             
     },

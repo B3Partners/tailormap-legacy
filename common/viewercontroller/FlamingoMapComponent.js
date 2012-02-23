@@ -15,7 +15,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     toolMargin: 30,
     viewerController: null,
     /**
-     *
+     * 
      * @constructur
      */
     constructor :function (viewerController, domId){
@@ -137,9 +137,14 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      *@see viewer.viewercontroller.flamingo.FlamingoComponent#constructor
      */
     createComponent: function (conf){  
+        //set the listen to as default to the map
         if (Ext.isEmpty(conf.listenTo)){
             conf.listenTo=this.getMap().getId();
         }
+        //set the name as id.
+        if (Ext.isEmpty(conf.id)){
+            conf.id=conf.name;
+        }        
         var component = new viewer.viewercontroller.flamingo.FlamingoComponent(conf);        
         return component;
     },
@@ -216,16 +221,23 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
         this.viewerObject.callMethod(this.mainContainerId,'addComponent',component.toXML()); 
+        if (component.type==viewer.viewercontroller.controller.Component.MAPTIP){
+            //if it's a maptip check for the maptipdelay. If not set, set it.
+            var maptipdelay= this.viewerObject.callMethod(this.getMap().id,'getMaptipdelay');             
+            if (maptipdelay==undefined){
+                this.viewerObject.callMethod(this.getMap().id,'setMaptipdelay',component.getMaptipdelay()); 
+            }
+        }
     },
     /**
-     *See @link MapComponent.activateTool
+     * See @link MapComponent.activateTool
      */
     activateTool : function (id){
         this.viewerObject.call(this.toolGroupId, "setTool", id);
     },
     /**
-     *See @link MapComponent.removeTool
-     */
+     * See @link MapComponent.removeTool
+     **/
     removeTool : function (tool){
         if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
             throw("The given tool is not of type 'FlamingoTool'");

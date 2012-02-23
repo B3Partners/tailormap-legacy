@@ -22,21 +22,34 @@
 Ext.define ("viewer.components.Maptip",{
     extend: "viewer.components.Component",    
     balloon: null,
+    maptipComponent: null,
+    config: {
+        maptipdelay: null
+    },
     constructor: function (conf){        
         viewer.components.Maptip.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
+        //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon");
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        //Add the maptip component to the framework
+        conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
+        this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
+        this.getViewerController().mapComponent.addComponent(this.maptipComponent);
+        
         return this;
     },
     onAddLayer: function(map,layer){
-        console.log("On add layer in : "+layer);
         var maptipLayers=this.getMaptipLayers(layer);
         if (maptipLayers.length >0){
             layer.setMaptips(maptipLayers);
         }
-        //if (layer.addMapTip());
     },
+    /**
+     * Gets the layers that have a maptip configured
+     * @param layer a mapComponent layer.
+     * @return a array of layer names in the given layer that have a maptip configured.
+     */
     getMaptipLayers: function(layer){
         var maptipLayers=new Array();
         var appLayers=this.viewerController.app.appLayers;

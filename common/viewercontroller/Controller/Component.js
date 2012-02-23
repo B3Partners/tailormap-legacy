@@ -35,7 +35,8 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         SCALEBAR                   : 2,
         BORDER_NAVIGATION          : 3,
         COORDINATES                : 4,
-        NAVIGATIONPANEL            : 5
+        NAVIGATIONPANEL            : 5,
+        MAPTIP                     : 6
     },
     setVisible: function (vis){
         Ext.Error.raise({msg: "setVisible() function must be implemented in implementation"});
