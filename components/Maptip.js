@@ -31,6 +31,7 @@ Ext.define ("viewer.components.Maptip",{
         this.initConfig(conf);        
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon");
+        //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
@@ -43,7 +44,72 @@ Ext.define ("viewer.components.Maptip",{
         var maptipLayers=this.getMaptipLayers(layer);
         if (maptipLayers.length >0){
             layer.setMaptips(maptipLayers);
+            //listen to the onMaptipData
+            layer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMaptipData,this);       
         }
+    },
+    onMaptipData: function(layer,options){
+        //alert(layer);
+        try{
+            
+            var html="";            
+            //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
+            var data = options.data;
+            for (var layerName in data){
+                var appLayer =  this.getApplicationLayer(layerName,layer.serviceId);
+                for (var index in data[layerName]){
+                    var feature=data[layerName][index];                    
+                    html+="<div class='maptip_feature'>";
+                        html+="<div class='maptip_title'>";
+                            html+=this.replaceByAttributes(appLayer.details["summary.title"],feature);
+                        html+="</div>";
+                        html+="<div class='maptip_image'>";
+                            html+="<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>";
+                        html+="</div>";
+                        html+="<div class='maptip_description'>";
+                            html+=this.replaceByAttributes(appLayer.details["summary.description"],feature);
+                        html+="</div>";                        
+                        html+="<div class='maptip_link'>";
+                            html+="<a href='"+this.replaceByAttributes(appLayer.details["summary.description"],feature)+">link</a>";
+                        html+="</div>";
+                    html+="</div>"                    
+                }
+            }
+            if (!Ext.isEmpty(html)){
+                console.log(html);
+                var x= (options.extent.minx+options.extent.maxx)/2;
+                var y= (options.extent.miny+options.extent.maxy)/2;
+                this.balloon.setPosition(x,y,true);
+                //this.balloon.getContentElement().dom.innerHTML="";
+                this.balloon.getContentElement().insertHtml("beforeEnd", html);
+            }
+        }catch(e){
+            console.log(e);
+        }
+    },
+    /**
+     * Replaces all [feature names] with the values of the feature.
+     * @param text the text that must be search for 'feature names'
+     * @param feature a object with object[key]=value 
+     * @return a new text with all [key]'s  replaced
+     */
+    replaceByAttributes: function(text,feature){
+        if (Ext.isEmpty(text))
+            return "";
+        var newText=""+text;
+        for (var key in feature){
+            var regex = new RegExp("\\["+key+"\\]","g");
+            newText=newText.replace(regex,feature[key]);
+        }
+        //remove all remaining [...]
+        var begin=newText.indexOf("[");
+        var end=newText.indexOf("]");
+        while(begin >=0 && end>0){            
+            newText=newText.replace(newText.substring(begin,end+1),"");
+            begin=newText.indexOf("[");
+            end=newText.indexOf("]");
+        }
+        return newText;
     },
     /**
      * Gets the layers that have a maptip configured
@@ -57,20 +123,27 @@ Ext.define ("viewer.components.Maptip",{
         if (layersParam==null)
             return null;
         var layers=layersParam.split(",");
-        for (var i=0; i < layers.length; i++){            
-            for (var id in appLayers){
-                if (appLayers[id].layerName==layers[i]){
-                    if (appLayers[id].details !=undefined &&
-                        (appLayers[id].details["summary.description"]!=undefined ||
-                            appLayers[id].details["summary.image"]!=undefined ||
-                            appLayers[id].details["summary.link"]!=undefined ||
-                            appLayers[id].details["summary.title"]!=undefined)){
-                        maptipLayers.push(layers[i]);
-                    }
-                }
+        for (var i=0; i < layers.length; i++){   
+            var appLayer = this.getApplicationLayer(layers[i],layer.serviceId);
+            if (appLayer.details !=undefined &&
+                (appLayer.details["summary.description"]!=undefined ||
+                    appLayer.details["summary.image"]!=undefined ||
+                    appLayer.details["summary.link"]!=undefined ||
+                    appLayer.details["summary.title"]!=undefined)){
+                maptipLayers.push(layers[i]);
             }
         }
         return maptipLayers;
+    },
+    getApplicationLayer: function (layerName,serviceId){
+        var appLayers=this.viewerController.app.appLayers;
+        for (var id in appLayers){
+            if (appLayers[id].serviceId==serviceId &&
+                appLayers[id].layerName==layerName){
+                return appLayers[id];
+            }
+        }
+        return null;
     }
     
 });
@@ -140,7 +213,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         var maxCornerSize=this.balloonHeight-(this.balloonArrowHeight*2)+2-this.balloonCornerSize;
         
         var topLeftEl=document.createElement("div");
-        topLeftEl.innerHTML("<img style='position: absolute;' src='images/infoBalloon/round.png'/>");
+        topLeftEl.innerHTML="<img style='position: absolute;' src='/viewer/resources/images/infoBalloon/round.png'/>";
         var topLeft = new Ext.Element(topLeftEl);
         topLeft.addCls("balloonCornerTopLeft");
         topLeft.applyStyles({
@@ -151,10 +224,10 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             'width':  this.balloonWidth-this.balloonCornerSize+'px',
             'height': maxCornerSize+'px'
         });
-        this.balloon.append(topLeft);
+        this.balloon.appendChild(topLeft);
         
         var topRightEl = document.createElement("div");
-        topRightEl.innerHTML("<img style='position: absolute; left: -1004px;' src='images/infoBalloon/round.png'/>");
+        topRightEl.innerHTML="<img style='position: absolute; left: -1004px;' src='/viewer/resources/images/infoBalloon/round.png'/>";
         var topRight= new Ext.Element(topRightEl);
         topRight.addCls("balloonCornerTopRight");
         topRight.applyStyles({
@@ -163,23 +236,23 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             'top': this.balloonArrowHeight-1+'px',
             'right':'0px'
         });
-        this.balloon.append(topRight);
+        this.balloon.appendChild(topRight);
         
         var bottomLeftEl = document.createElement("div");
-        bottomLeftEl.innerHTML("<img style='position: absolute; top: -748px;' src='images/infoBalloon/round.png'/>");
+        bottomLeftEl.innerHTML="<img style='position: absolute; top: -748px;' src='/viewer/resources/images/infoBalloon/round.png'/>";
         var bottomLeft=new Ext.Element(bottomLeftEl);
         bottomLeft.addCls("balloonCornerBottomLeft");
         bottomLeft.applyStyles({        
             'height':this.balloonCornerSize+'px',
             'left':  '0px',
             'bottom': this.balloonArrowHeight-1+'px',
-            'width': this.balloonWidth-this.balloonCornerSize
+            'width': this.balloonWidth-this.balloonCornerSize+'px'
         });
-        this.balloon.append(bottomLeft);
+        this.balloon.appendChild(bottomLeft);
         
         var bottomRightEl = document.createElement("div");
-        bottomRightEl.innerHTML("<img style='position: absolute; top: -748px; left: -1004px;' src='images/infoBalloon/round.png'/>");
-        var bottomRight = new Ext.Element(bottomRight);
+        bottomRightEl.innerHTML="<img style='position: absolute; top: -748px; left: -1004px;' src='/viewer/resources/images/infoBalloon/round.png'/>";
+        var bottomRight = new Ext.Element(bottomRightEl);
         bottomRight.addCls("balloonCornerBottomRight");
         bottomRight.applyStyles({
             'width':this.balloonCornerSize+'px',
@@ -187,18 +260,19 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             'right':'0px',
             'bottom':this.balloonArrowHeight-1+'px'
         });
-        this.balloon.append(bottomRight);
+        this.balloon.appendChild(bottomRight);
         
         //arrows
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none;'><img src='images/infoBalloon/arrow.png'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none;'><img src='images/infoBalloon/arrow.png'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none;'><img src='images/infoBalloon/arrow.png'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none;'><img src='images/infoBalloon/arrow.png'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
         
         //content
         this.balloon.insertHtml("beforeEnd","<div class='balloonContent' style='top: "
-            +this.balloonArrowHeight+20+"px; bottom: "
-            +this.balloonArrowHeight+4+"px'></div>");
+            +(this.balloonArrowHeight+20)+"px; bottom: "
+            +(this.balloonArrowHeight+4)+"px;"
+            +"'></div>");
         //closing button
         /*var thisObj=this;
         this.balloon.append($j("<div class='balloonCloseButton'></div>")
@@ -217,7 +291,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this._resetPositionOfBalloon(x,y);
         
         //append the balloon.
-        Ext.Element(this.mapDiv).append(this.balloon);
+        Ext.get(this.mapDiv).appendChild(this.balloon);
 
         this.webMapController.registerEvent(Event.ON_FINISHED_CHANGE_EXTENT,webMapController.getMap(), this.setPosition,this);
     }
@@ -247,20 +321,20 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             this.topOfPoint=false;
         }
         //display the right arrow
-        this.balloon.query(".balloonArrow").applyStyles({'display':'none'});
+        this.balloon.select(".balloonArrow").applyStyles({'display':'none'});
         //$j("#infoBalloon > .balloonArrow").css('display', 'block');
         if (!this.leftOfPoint && !this.topOfPoint){
             //popup is bottom right of the point
-            this.balloon.query(".balloonArrowTopLeft").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowTopLeft").applyStyles({"display":"block"});
         }else if (this.leftOfPoint && !this.topOfPoint){
             //popup is bottom left of the point
-            this.balloon.query(".balloonArrowTopRight").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowTopRight").applyStyles({"display":"block"});
         }else if (this.leftOfPoint && this.topOfPoint){
             //popup is top left of the point
-            this.balloon.query(".balloonArrowBottomRight").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowBottomRight").applyStyles({"display":"block"});
         }else{
             //pop up is top right of the point
-            this.balloon.query(".balloonArrowBottomLeft").applyStyles({"display":"block"});
+            this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"});
         }
     }
 
@@ -324,7 +398,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     }
     /*Get the DOM element where the content can be placed.*/
     this.getContentElement = function(){
-        return this.balloon.query('.balloonContent');
+        return this.balloon.select('.balloonContent');
     }
     this.hide = function(){
         this.balloon.setVisible(false);

@@ -28,10 +28,14 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_CHANGE_EXTENT                      : "ON_CHANGE_EXTENT",
         /** @field */
         ON_FINISHED_CHANGE_EXTENT             : "ON_FINISHED_CHANGE_EXTENT",
-        /** @field */
+        /** @field 
+         * Occures when a layer is added to this map
+         * @param map the map object
+         * @param layer the layer that is added.
+         **/
         ON_LAYER_ADDED                        : "ON_LAYER_ADDED",
-
-
+        
+        
         // Layer events:                            50 - 100
         /** @field */
         ON_GET_CAPABILITIES                   : "ON_REQUEST",
@@ -43,7 +47,18 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_LOADING_START                      : "ON_LOADING_START",
         /** @field */
         ON_LOADING_END                        : "ON_LOADING_END",
-    
+        // Maptips
+        /** @field */
+        ON_MAPTIP                             : "ON_MAPTIP",        
+        /** @field 
+         * Occures when a maptip returns data
+         * @param layer the layer where this event occured
+         * @param options a object with options
+         * @param options.data the data as a multi array
+         * @param options.extent the extent where this maptip for is done.
+         **/
+        ON_MAPTIP_DATA                        : "ON_MAPTIP_DATA",
+        
         // Tool events:                             100 - 150
         ON_EVENT_DOWN                         : "ON_EVENT_DOWN",
         /** @field */

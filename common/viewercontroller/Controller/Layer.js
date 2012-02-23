@@ -101,8 +101,8 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         this.fireEvent(event,this,options);
     },
 
-    registerEvent : function (event,handler){
-        this.addListener(event,handler);
+    registerEvent : function (event,handler,scope){
+        this.addListener(event,handler,scope);
     },
     setVisible : function (visible){
         throw("Layer.setVisible() Not implemented! Must be implemented in sub-class");

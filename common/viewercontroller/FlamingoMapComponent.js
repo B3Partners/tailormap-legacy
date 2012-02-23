@@ -43,7 +43,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]     = "onReallyChangedExtent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]              = "onChangeExtent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                = "onAddLayer";
-
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA]                = "onMaptipData";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                = "onMaptip";
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -404,6 +405,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             }
             var layer=object.getLayer(layerId);
             component=layer;
+        }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA){            
+            var comp=new Object();
+            comp.extent=component[2];
+            comp.data=component[1];
+            component=comp;
         }
         if(object != undefined){
             object.fire(event,component);
