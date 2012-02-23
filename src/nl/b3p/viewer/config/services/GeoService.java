@@ -32,6 +32,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @Entity
 @DiscriminatorColumn(name="protocol")
 public abstract class GeoService {
+    public static final String PARAM_PERSIST_FEATURESOURCE = "persistFeatureSource";
+    
     @Id
     private Long id;
 

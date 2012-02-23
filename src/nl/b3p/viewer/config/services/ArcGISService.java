@@ -79,7 +79,6 @@ public class ArcGISService extends GeoService {
             ArcGISFeatureSource fs = new ArcGISFeatureSource();
             fs.setLinkedService(s);
             fs.setUrl(url);
-            fs.setName(FeatureSource.findUniqueName(s.getName()));
             fs.setUsername(client.getUser());
             fs.setPassword(client.getPassword());
             
@@ -96,7 +95,8 @@ public class ArcGISService extends GeoService {
             }
             s.setTopLayer(top);
             
-            if(!fs.getFeatureTypes().isEmpty()) {
+            if(!Boolean.FALSE.equals(params.get(PARAM_PERSIST_FEATURESOURCE)) && !fs.getFeatureTypes().isEmpty()) {
+                fs.setName(FeatureSource.findUniqueName(s.getName()));
                 Stripersist.getEntityManager().persist(fs);
             }
             

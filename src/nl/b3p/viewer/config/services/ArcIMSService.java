@@ -87,7 +87,6 @@ public class ArcIMSService extends GeoService {
             fs.setUsername(ims.getUsername());
             fs.setPassword(ims.getPassword());
             
-            fs.setName(FeatureSource.findUniqueName(ims.getName()));
             fs.setUrl(url);
             
             /* ArcIMS has a flat layer structure, create a virtual top layer */
@@ -103,7 +102,8 @@ public class ArcIMSService extends GeoService {
             }
             ims.setTopLayer(top);
             
-            if(!fs.getFeatureTypes().isEmpty()) {
+            if(!Boolean.FALSE.equals(params.get(PARAM_PERSIST_FEATURESOURCE)) && !fs.getFeatureTypes().isEmpty()) {
+                fs.setName(FeatureSource.findUniqueName(ims.getName()));
                 Stripersist.getEntityManager().persist(fs);
             }
             

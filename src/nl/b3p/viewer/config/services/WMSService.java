@@ -168,16 +168,18 @@ public class WMSService extends GeoService {
                                 }
                             }                            
                         }
-                        if(used) {
-                            log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS, persisting after finding unique name");
-                            
-                            wfsFs.setName(FeatureSource.findUniqueName(wms.getName()));
-                            wfsFs.setLinkedService(wms);
-                            log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
+                        if(!Boolean.FALSE.equals(params.get(PARAM_PERSIST_FEATURESOURCE))) {
+                            if(used) {
+                                log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS, persisting after finding unique name");
 
-                            Stripersist.getEntityManager().persist(wfsFs);
-                        } else {
-                            log.debug("No type from WFSFeatureSource with url " + wfsUrl + " used, not persisting!");
+                                wfsFs.setName(FeatureSource.findUniqueName(wms.getName()));
+                                wfsFs.setLinkedService(wms);
+                                log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
+
+                                Stripersist.getEntityManager().persist(wfsFs);
+                            } else {
+                                log.debug("No type from WFSFeatureSource with url " + wfsUrl + " used, not persisting!");
+                            }
                         }
                     } catch(Exception e) {
                         log.error("Error loading WFS from url " + wfsUrl, e);
