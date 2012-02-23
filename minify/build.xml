@@ -16,11 +16,15 @@
           <sources dir="${viewerhtml.path}/components">
             <file name="Component.js"/>
           </sources>
-		    <!--					The Screenpopup-->
+		  <!--					The Screenpopup-->
           <sources dir="${viewerhtml.path}/common">
             <file name="ScreenPopup.js"/>
 			<file name="LayerSelector.js"/>
           </sources>
+		  <!--					The server-side Ajax wrappers -->
+          <sources dir="${viewerhtml.path}/common">
+            <file name="ServiceInfo.js"/>
+          </sources>          
           <!--					The Tool Components				-->
          <sources dir="${viewerhtml.path}/components/tools">
             <file name="Tool.js"/>            

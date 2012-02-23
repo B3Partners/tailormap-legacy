@@ -94,6 +94,10 @@
         <servlet-name>StripesDispatcher</servlet-name>
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StripesDispatcher</servlet-name>
+        <url-pattern>/service/*</url-pattern>
+    </servlet-mapping>    
 
     <session-config>
         <session-timeout>
