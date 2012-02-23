@@ -70,6 +70,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/LayerSelector.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ServiceInfo.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/CSWClient.js"></script>
             </c:when>
             <c:otherwise>
                  <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -86,6 +88,9 @@ ${actionBean.componentSourceHTML}
             
             var contextPath = "${contextPath}";
             var absoluteURIPrefix = "${absoluteURIPrefix}";
+
+            var serviceActionBean = "<stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/>";
+            
             var appId = "${actionBean.application.id}";
             var viewerController;
             (function() {
@@ -95,6 +100,37 @@ ${actionBean.componentSourceHTML}
                     viewerController = new viewer.viewercontroller.ViewerController("flamingo", null, config);
                 });
             }());
+            
+            Ext.onReady(function() {
+var si = Ext.create("viewer.ServiceInfo", { 
+    actionbeanUrl: serviceActionBean,
+    protocol: "arcims", 
+    url:"http://gisopenbaar.overijssel.nl/GeoJuli2008/ims",
+    serviceName: "ondergrond_lf" 
+});
+
+si.on("success", function(info) {
+    console.log("Service info for " + JSON.stringify(si.config) + ": " + JSON.stringify(info));
+});
+si.on("failure", function(msg) {
+    console.log("Error loading service " + JSON.stringify(si.config), msg);
+});
+
+si.loadInfo();
+
+var cswc = Ext.create("viewer.CSWClient", {
+    url: "http://192.168.1.13:8084/geonetwork"
+});
+
+cswc.on("success", function(response) {
+    console.log("CSW client response for " + JSON.stringify(cswc.config) + ": " + JSON.stringify(response));
+});
+cswc.on("failure", function(msg) {
+    console.log("Error querying CSW " + JSON.stringify(si.config) + ": " + msg);
+});
+
+cswc.query({q: "example"});
+            });
 
         </script>
 

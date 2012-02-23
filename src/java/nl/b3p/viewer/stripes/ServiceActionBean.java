@@ -92,8 +92,7 @@ public class ServiceActionBean implements ActionBean {
         String error = null;
         GeoService service = null;
         
-        if(protocol == null || url == null ||
-        (ArcIMSService.PROTOCOL.equals(protocol) && serviceName == null)) {
+        if(protocol == null || url == null) {
             error = "Invalid parameters";
         } else {
             
