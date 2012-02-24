@@ -11,18 +11,13 @@
 Ext.define("viewer.viewercontroller.MapComponent",{
     extend: "Ext.util.Observable",
     eventList: new Array(),
-    webMapMapComponent :null,
     maps: new Array(),
     tools : new Array(),
     events: new Array(),
     components: new Array(),
     panel : null,
-    constructor :function (viewerObject){
-     
-       // this.eventList = new Array();
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
-       // webMapMapComponent = this;
-        //this.initConfig(config);
+    constructor :function (viewerObject){            
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);        
         return this;
     },
     getId : function() {
@@ -104,6 +99,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
             });
             Ext.err();
         }
+        tool.mapComponent=this;
         this.tools.push(tool);
     },
     /**

@@ -57,6 +57,9 @@ Ext.define ("viewer.components.Maptip",{
             var html="";            
             //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
             var data = options.data;
+            if (data==null || data =="null" || data==undefined){
+                return;
+            }
             for (var layerName in data){
                 var appLayer =  this.getApplicationLayer(layerName,layer.serviceId);
                 for (var index in data[layerName]){
@@ -172,7 +175,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     this.offsetX=0;
     this.offsetY=0;
     this.roundImgPath=contextPath+"/resources/images/maptip/round.png";
-    this.arrowImgPath=contextPath+"/resources/images/infoBalloon/arrow.png";
+    this.arrowImgPath=contextPath+"/resources/images/maptip/arrow.png";
     //this.leftOfPoint;
     //this.topOfPoint;
     
@@ -274,7 +277,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         
         //content
         this.balloon.insertHtml("beforeEnd","<div class='balloonContent' style='top: "
-            +(this.balloonArrowHeight+20)+"px; bottom: "
+            +(this.balloonArrowHeight+5)+"px; bottom: "
             +(this.balloonArrowHeight+4)+"px;"
             +"'></div>");
         //closing button

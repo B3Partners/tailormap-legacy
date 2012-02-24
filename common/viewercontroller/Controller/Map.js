@@ -13,16 +13,15 @@ Ext.define("viewer.viewercontroller.controller.Map",{
   //  
     config :{
         id: "id" ,
-        viewerController: new Object()
+        mapComponent: new Object()
         //maxExtent : new Object()
     },
     /**
      * @constructor
      */
     constructor: function(config){
-        //this.viewerController = config.viewerController;
         this.initConfig(config);
-        this.frameworkMap = this.viewerController.mapComponent.viewerObject;
+        this.frameworkMap = this.mapComponent.viewerObject;
         
         this.addEvents(
             viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,

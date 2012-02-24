@@ -14,6 +14,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     mainContainerId: "mainContainer",
     toolMargin: 30,
     viewerController: null,
+    enabledEvents: new Object(),
     /**
      * 
      * @constructur
@@ -52,15 +53,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      *@param options Options for the map
      *@returns a FlamingoMapComponent
      */
-    createMap : function(id,options){
-        var config = {
-            id: id
-        };
-        for (var key in options){
-            config[key] = options[key];
-        }
-        var map = new viewer.viewercontroller.flamingo.FlamingoMap(config);
-        var maxExtent = options["maxExtent"];
+    createMap : function(id,options){       
+        options.id=id;
+        options.mapComponent=this;
+        var map = new viewer.viewercontroller.flamingo.FlamingoMap(options);
+        //var maxExtent = options["maxExtent"];
         // map.setMaxExtent(maxExtent);
         return map;
     },
@@ -417,6 +414,30 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     fire : function (event,options){
         this.fireEvent (event,this,options);
+    },
+    /**
+     * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
+     * so flamingo is allowed to broadcast the event.
+     */
+    addListener : function(event,handler,scope){
+        viewer.viewercontroller.FlamingoMapComponent.superclass.addListener.call(this,event,handler,scope);
+        //enable flamingo event broadcasting
+        if (this.viewerObject!=undefined && typeof this.viewerObject.callMethod == 'function' && this.eventList!=undefined){
+            var flamEvent=this.eventList[event];
+            if (flamEvent!=undefined){
+                //if not enabled yet, enable
+                if (this.enabledEvents[flamEvent]==undefined){
+                    this.viewerObject.callMethod(this.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                    this.enabledEvents[flamEvent]=true;                    
+                }
+            }     
+        }else{
+            console.log("flamingo not initialized yet");
+            var thisObj=this;
+            setTimeout(function(){
+                thisObj.addListener(event,handler,scope);
+            },100);
+        }
     }
 });
 
@@ -429,4 +450,5 @@ function dispatchEventJS(event, comp) {
         comp[1] = new Object();
     }
     viewerController.mapComponent.handleEvents(event,comp);
+    console.log(comp[0]+"."+event);
 }

@@ -14,6 +14,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         frameworkObject: new Object(),
         type: -1
     },
+    mapComponent: null,
     constructor: function (config){
         this.initConfig(config);
         this.addEvents(viewer.viewercontroller.controller.Event.ON_CLICK,viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,viewer.viewercontroller.controller.Event.ON_EVENT_UP);

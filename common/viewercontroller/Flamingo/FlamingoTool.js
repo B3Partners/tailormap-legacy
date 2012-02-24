@@ -5,7 +5,7 @@
  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     extend: "viewer.viewercontroller.controller.Tool",
-    
+    enabledEvents: new Object(),    
     config: {
         width: null,
         height: null,
@@ -99,5 +99,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         }else{
             return null;
         }
-    }    
+    },
+    
+    /**
+     * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
+     * so flamingo is allowed to broadcast the event.
+     */
+    addListener : function(event,handler,scope){
+        viewer.viewercontroller.flamingo.FlamingoTool.superclass.addListener.call(this,event,handler,scope);
+        //enable flamingo event broadcasting
+        var flamEvent=this.mapComponent.eventList[event];
+        if (flamEvent!=undefined){
+            //if not enabled yet, enable
+            if (this.enabledEvents[flamEvent]==undefined){
+                this.frameworkObject.callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                this.enabledEvents[flamEvent]=true;
+            }
+        }     
+    }
 });

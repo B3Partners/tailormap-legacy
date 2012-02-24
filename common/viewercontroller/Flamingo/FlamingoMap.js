@@ -8,6 +8,7 @@
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     extend: "viewer.viewercontroller.controller.Map",
+    enabledEvents: new Object(),
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
         this.initConfig(config);
@@ -203,6 +204,21 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      */
     getCenter : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "getCenter");
+    },
+    /**
+     * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
+     * so flamingo is allowed to broadcast the event.
+     */
+    addListener : function(event,handler,scope){
+        viewer.viewercontroller.flamingo.FlamingoMap.superclass.addListener.call(this,event,handler,scope);
+        //enable flamingo event broadcasting
+        var flamEvent=this.mapComponent.eventList[event];
+        if (flamEvent!=undefined){
+            //if not enabled yet, enable
+            if (this.enabledEvents[flamEvent]==undefined){
+                this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                this.enabledEvents[flamEvent]=true;
+            }
+        }     
     }
-
 });

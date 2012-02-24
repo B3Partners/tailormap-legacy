@@ -73,6 +73,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
         }
         );
+        options.mapComponent=this;
         var maxExtent = options["maxExtent"];
         var maxBounds = new OpenLayers.Bounds(maxExtent.minx,maxExtent.miny,maxExtent.maxx,maxExtent.maxy);
 

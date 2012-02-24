@@ -94,7 +94,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         //console.log("Creating map");
         var map = this.mapComponent.createMap("map", {
-            viewerController: this
+            /*viewerController: this*/
         });
         // ??? why doesn't MapContainer keep track of references to maps itself?
         this.mapComponent.addMap(map);

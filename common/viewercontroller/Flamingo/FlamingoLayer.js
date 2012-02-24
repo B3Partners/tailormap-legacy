@@ -12,6 +12,7 @@
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
+    enabledEvents: new Object(),
     constructor :function (config){
         viewer.viewercontroller.flamingo.FlamingoLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
@@ -31,7 +32,26 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     getId : function(){
         return this.id;
     },
+    getFrameworkId: function(){
+        return this.map.getId()+"_"+this.getId();
+    },
     setAlpha : function (alpha){
-        viewerController.mapComponent.getMap().getFrameworkMap().callMethod(viewerController.mapComponent.getMap().getId() +"_"+ this.getId(),"setAlpha",alpha)
+        this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setAlpha",alpha)
+    },
+    /**
+     * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
+     * so flamingo is allowed to broadcast the event.
+     */
+    addListener : function(event,handler,scope){
+        viewer.viewercontroller.flamingo.FlamingoLayer.superclass.addListener.call(this,event,handler,scope);
+        //enable flamingo event broadcasting
+        var flamEvent=this.map.mapComponent.eventList[event];
+        if (flamEvent!=undefined){
+            //if not enabled yet, add it
+            if (this.enabledEvents[flamEvent]==undefined){
+               this.map.getFrameworkMap().callMethod(this.map.mapComponent.getId(),"addAllowExternalInterface",this.getFrameworkId()+"."+flamEvent);
+               this.enabledEvents[flamEvent]=true;
+            }
+        }     
     }
 });
