@@ -122,7 +122,7 @@ public class ServiceActionBean implements ActionBean {
         
         if(service != null) {
             json.put("success", Boolean.TRUE);
-            json.put("service", service.toJSONObject(false));
+            json.put("service", service.toJSONObject(true));
         } else {
             json.put("success", Boolean.FALSE);
             json.put("error", error);
