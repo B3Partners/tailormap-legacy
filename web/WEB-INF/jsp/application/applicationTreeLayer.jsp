@@ -70,31 +70,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table>
                             <tr>
                                 <td>Transparantie beginwaarde:</td>
-                                <td><stripes:text name="details['transparantie']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['transparency']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
                                 <td>Straalinvloedsgebied:</td>
-                                <td><stripes:text name="details['straalinvloedsgebied']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['influenceradius']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
                                 <td>Samenvatting - titel:</td>
-                                <td><stripes:text name="details['samenvatting.titel']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['summary.title']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
                                 <td>Samenvatting - afbeelding:</td>
-                                <td><stripes:text name="details['samenvatting.afbeelding']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['summary.image']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
                                 <td>Samenvatting - omschrijving:</td>
-                                <td><stripes:textarea name="details['samenvatting.omschrijving']" rows="5" cols="27"/></td>
+                                <td><stripes:textarea name="details['summary.description']" rows="5" cols="27"/></td>
                             </tr>
                             <tr>
                                 <td>Samenvatting - link:</td>
-                                <td><stripes:text name="details['samenvatting.link']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['summary.link']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
                                 <td>EditFunctionaliteit - titel:</td>
-                                <td><stripes:text name="details['editfunctie.titel']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['editfunction.title']" maxlength="255" size="30"/></td>
                             </tr>
                         </table>
                     </div>
