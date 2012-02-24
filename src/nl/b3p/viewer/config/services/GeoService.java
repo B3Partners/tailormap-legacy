@@ -201,7 +201,7 @@ public abstract class GeoService {
         }
     }
     
-    public JSONObject toJSONObject(boolean flattenTree, Set<String> layersToInclude) throws JSONException {
+    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("name", name);
@@ -226,11 +226,11 @@ public abstract class GeoService {
                 */
             }
 
-            if(flattenTree) {
-                JSONObject layers = new JSONObject();
-                o.put("layers", layers);
-                walkLayerJSONFlatten(topLayer, layers, layersToInclude);
-            } else {
+            JSONObject layers = new JSONObject();
+            o.put("layers", layers);
+            walkLayerJSONFlatten(topLayer, layers, layersToInclude);
+            
+            if(includeLayerTree) {
                 o.put("topLayer", walkLayerJSONTree(topLayer));
             }
             
@@ -272,8 +272,8 @@ public abstract class GeoService {
         return j;
     }
     
-    public JSONObject toJSONObject(boolean flattenTree) throws JSONException {
-        return toJSONObject(flattenTree, null);
+    public JSONObject toJSONObject(boolean includeLayerTree) throws JSONException {
+        return toJSONObject(includeLayerTree, null);
     }
 
     /**
