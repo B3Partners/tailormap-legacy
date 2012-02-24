@@ -28,6 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
         
+        <!--XXX must only be loaded if component is added -->
+        <link href="${contextPath}/resources/css/maptip.css" rel="stylesheet">
+        
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
