@@ -19,6 +19,9 @@ package nl.b3p.viewer.config.services;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -114,5 +117,25 @@ public class SimpleFeatureType {
     public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException {
         return featureSource.calculateUniqueValues(this, attributeName, maxFeatures);
     }    
+    
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("id", id);
+        o.put("typeName", typeName);
+        o.put("writeable", writeable);
+        o.put("geometryAttribute", geometryAttribute);
+        
+        JSONArray atts = new JSONArray();
+        o.put("attributes", atts);
+        for(AttributeDescriptor a: attributes) {
+            JSONObject ja = new JSONObject();
+            ja.put("id", a.getId());
+            ja.put("name", a.getName());
+            ja.put("alias", a.getAlias());
+            ja.put("type", a.getType());
+            atts.put(ja);
+        }
+        return o;
+    }
 }
 
