@@ -21,6 +21,7 @@ import javax.persistence.*;
 import org.geotools.data.ows.CRSEnvelope;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -186,6 +187,10 @@ public class Layer {
         return o;
     }
 
+    public List<Layer> getCachedChildren() {        
+        return service.getLayerChildrenCache(this);
+    }
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Layer getParent() {
         return parent;
@@ -294,7 +299,7 @@ public class Layer {
     public List<Layer> getChildren() {
         return children;
     }
-
+    
     public void setChildren(List<Layer> children) {
         this.children = children;
     }

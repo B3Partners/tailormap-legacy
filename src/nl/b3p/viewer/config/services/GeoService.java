@@ -18,7 +18,6 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
-import nl.b3p.viewer.config.app.Level;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +56,9 @@ public abstract class GeoService {
     @ElementCollection
     @Column(name="keyword")
     private Set<String> keywords = new HashSet<String>();
+    
+    @Transient
+    private Map<Layer,List<Layer>> childrenByParent = null;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
@@ -142,6 +144,63 @@ public abstract class GeoService {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }
     
+    /** To prevent a lot of SQL requests walking a tree structure of entities,
+     * load all layers using an efficient query. The Layers.children collections
+     * are not initialized, but can be reconstructed from the list of all Layers
+     * for this service returned by the query. Call Layer.getLayerChildrenCache() 
+     * to retrieve it without causing a SQL query.
+     * 
+     * The cache is not updated on changes, so will only represent the database
+     * state when loadLayerTree() was last called.
+     */
+    public void loadLayerTree() {
+        if(!Stripersist.getEntityManager().contains(this)) {
+            // Not a persistent entity (for example when loading user specified 
+            // service)
+            return;
+        }
+        
+        // XXX Oracle specific
+        // Retrieve layer tree structure in single query
+        List<Layer> layerEntities = Stripersist.getEntityManager().createNativeQuery(
+            "select * from layer start with id = :rootId connect by parent = prior id",
+            Layer.class)
+            .setParameter("rootId", topLayer.getId())
+            .getResultList();   
+      
+        childrenByParent = new HashMap<Layer,List<Layer>>();
+        for(Layer l: layerEntities) {               
+            if(l.getParent() != null) {
+                List<Layer> parentChildren = childrenByParent.get(l.getParent());
+                if(parentChildren == null) {
+                    parentChildren = new ArrayList<Layer>();
+                    childrenByParent.put(l.getParent(), parentChildren);
+                }
+                parentChildren.add(l);
+            }
+        }      
+    }
+    
+    public List<Layer> getLayerChildrenCache(Layer l) {
+        if(childrenByParent != null) {
+            
+            EntityManager em = Stripersist.getEntityManager();
+        
+            if(!em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(l.getChildren())) {
+                List<Layer> childrenList = childrenByParent.get(l);
+                if(childrenList == null) {
+                    return Collections.EMPTY_LIST;
+                } else {
+                    return childrenList;
+                }
+            } else {
+                return l.getChildren();
+            }
+        } else {
+            return l.getChildren();
+        }
+    }
+    
     public JSONObject toJSONObject(boolean flattenTree, Set<String> layersToInclude) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
@@ -150,28 +209,10 @@ public abstract class GeoService {
         o.put("protocol", getProtocol());
         
         if(topLayer != null) {
-            Map<Layer,List<Layer>> childrenByParent = null;
             
             if(Stripersist.getEntityManager().contains(this)) {
-                // XXX Oracle specific
-                // Retrieve layer tree structure in single query
-                List<Layer> layerEntities = Stripersist.getEntityManager().createNativeQuery(
-                    "select * from layer start with id = :rootId connect by parent = prior id",
-                    Layer.class)
-                    .setParameter("rootId", topLayer.getId())
-                    .getResultList();   
-
-                childrenByParent = new HashMap<Layer,List<Layer>>();            
-                for(Layer l: layerEntities) {               
-                    if(l.getParent() != null) {
-                        List<Layer> parentChildren = childrenByParent.get(l.getParent());
-                        if(parentChildren == null) {
-                            parentChildren = new ArrayList<Layer>();
-                            childrenByParent.put(l.getParent(), parentChildren);
-                        }
-                        parentChildren.add(l);
-                    }
-                }            
+                   
+                loadLayerTree();          
 
                 // Prevent n+1 queries
                 /* Currently disabled as Layer.details is not included in JSON at
@@ -188,16 +229,16 @@ public abstract class GeoService {
             if(flattenTree) {
                 JSONObject layers = new JSONObject();
                 o.put("layers", layers);
-                walkLayerJSONFlatten(topLayer, layers, childrenByParent, layersToInclude);
+                walkLayerJSONFlatten(topLayer, layers, layersToInclude);
             } else {
-                o.put("topLayer", walkLayerJSONTree(topLayer, childrenByParent));
+                o.put("topLayer", walkLayerJSONTree(topLayer));
             }
             
         }
         return o;
     }
     
-    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Map<Layer,List<Layer>> childrenByParent, Set<String> layersToInclude) throws JSONException {
+    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude) throws JSONException {
 
         /* TODO check readers (and include readers in n+1 prevention query */
         
@@ -211,24 +252,21 @@ public abstract class GeoService {
                 layers.put(l.getName(), l.toJSONObject());
             }
         }
-        
-        List<Layer> children = childrenByParent == null ? l.getChildren() : childrenByParent.get(l);
-        if(children != null) {        
-            for(Layer child: children) {                
-                walkLayerJSONFlatten(child, layers, childrenByParent, layersToInclude);
-            }
+
+        for(Layer child: l.getCachedChildren()) {                
+            walkLayerJSONFlatten(child, layers, layersToInclude);
         }
     }
     
-    private static JSONObject walkLayerJSONTree(Layer l, Map<Layer,List<Layer>> childrenByParent) throws JSONException {
+    private static JSONObject walkLayerJSONTree(Layer l) throws JSONException {
         JSONObject j = l.toJSONObject();
         
-        List<Layer> children = childrenByParent == null ? l.getChildren() : childrenByParent.get(l);
-        if(children != null) {        
+        List<Layer> children = l.getCachedChildren();
+        if(!children.isEmpty()) {        
             JSONArray jc = new JSONArray();
             j.put("children", jc);
             for(Layer child: children) {                
-                jc.put(walkLayerJSONTree(child, childrenByParent));
+                jc.put(walkLayerJSONTree(child));
             }
         }
         return j;
@@ -259,7 +297,7 @@ public abstract class GeoService {
             return inLayer;
         //walk through layers
         Layer returnLayer=null;        
-        for (Layer layer : inLayer.getChildren()){
+        for (Layer layer : inLayer.getCachedChildren()){
             returnLayer= getLayer(layerName,layer);
             if(returnLayer!=null){
                 return returnLayer;
