@@ -166,7 +166,7 @@ public class ApplicationLayer {
             JSONArray attributes = new JSONArray();
             o.put("attributes", attributes);
             for(ConfiguredAttribute ca: getAttributes()) {
-                //attributes.put(ca.toJSONObject());
+                attributes.put(ca.toJSONObject());
             }
         }
         

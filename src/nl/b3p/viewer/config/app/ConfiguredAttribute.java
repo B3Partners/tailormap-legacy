@@ -17,6 +17,9 @@
 package nl.b3p.viewer.config.app;
 
 import javax.persistence.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -48,83 +51,105 @@ public class ConfiguredAttribute {
 
     private String defaultValue;
 
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
         return attributeName;
     }
-
+    
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
     }
-
+    
     public String getDefaultValue() {
         return defaultValue;
     }
-
+    
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
-
+    
     public String getEditAlias() {
         return editAlias;
     }
-
+    
     public void setEditAlias(String editAlias) {
         this.editAlias = editAlias;
     }
-
+    
     public String getEditHeight() {
         return editHeight;
     }
-
+    
     public void setEditHeight(String editHeight) {
         this.editHeight = editHeight;
     }
-
+    
     public String getEditValues() {
         return editValues;
     }
-
+    
     public void setEditValues(String editValues) {
         this.editValues = editValues;
     }
-
+    
     public boolean isEditable() {
         return editable;
     }
-
+    
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
-
+    
     public boolean isFilterable() {
         return filterable;
     }
-
+    
     public void setFilterable(boolean filterable) {
         this.filterable = filterable;
     }
-
+    
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     public boolean isSelectable() {
         return selectable;
     }
-
+    
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
     }
-
+    
     public boolean isVisible() {
         return visible;
     }
-
+    
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+    //</editor-fold>
+    
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject o = new JSONObject();     
+        o.put("id", id);
+        o.put("name", attributeName);
+        o.put("visible", visible);
+        o.put("editable", editable);
+        o.put("filterable", filterable);
+        o.put("editAlias", editAlias);
+        o.put("editHeight", editHeight);
+        
+        if(editValues != null) {
+            try {
+                o.put("editValues", new JSONArray(editValues));
+            } catch(JSONException je) {
+            }
+        }
+        o.put("defaultValue", defaultValue);
+        return o;
     }
 }
