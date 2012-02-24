@@ -38,7 +38,7 @@ import org.json.JSONObject;
  *
  * @author Matthijs Laan
  */
-@UrlBinding("/service/{protocol}/{$event}")
+@UrlBinding("/service/info")
 @StrictBinding
 public class ServiceActionBean implements ActionBean {
     
@@ -50,7 +50,7 @@ public class ServiceActionBean implements ActionBean {
     private String url;
     @Validate
     private String serviceName;
-
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
         return context;
