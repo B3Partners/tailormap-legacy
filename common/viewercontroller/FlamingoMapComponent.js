@@ -432,7 +432,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 }
             }     
         }else{
-            console.log("flamingo not initialized yet");
             var thisObj=this;
             setTimeout(function(){
                 thisObj.addListener(event,handler,scope);
@@ -449,6 +448,5 @@ function dispatchEventJS(event, comp) {
             comp[0] = viewerController.mapComponent.getId();
         comp[1] = new Object();
     }
-    viewerController.mapComponent.handleEvents(event,comp);
-    console.log(comp[0]+"."+event);
+    viewerController.mapComponent.handleEvents(event,comp);    
 }

@@ -52,45 +52,43 @@ Ext.define ("viewer.components.Maptip",{
     },
     onMaptipData: function(layer,options){
         //alert(layer);
-        try{
-            
-            var html="";            
-            //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
-            var data = options.data;
-            if (data==null || data =="null" || data==undefined){
-                return;
-            }
-            for (var layerName in data){
-                var appLayer =  this.getApplicationLayer(layerName,layer.serviceId);
-                for (var index in data[layerName]){
-                    var feature=data[layerName][index];                    
-                    html+="<div class='maptip_feature'>";
-                        html+="<div class='maptip_title'>";
-                            html+=this.replaceByAttributes(appLayer.details["summary.title"],feature);
-                        html+="</div>";
-                        html+="<div class='maptip_image'>";
-                            html+="<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>";
-                        html+="</div>";
-                        html+="<div class='maptip_description'>";
-                            html+=this.replaceByAttributes(appLayer.details["summary.description"],feature);
-                        html+="</div>";                        
-                        html+="<div class='maptip_link'>";
-                            html+="<a href='"+this.replaceByAttributes(appLayer.details["summary.description"],feature)+">link</a>";
-                        html+="</div>";
-                    html+="</div>"                    
-                }
-            }
-            if (!Ext.isEmpty(html)){
-                console.log(html);
-                var x= (options.extent.minx+options.extent.maxx)/2;
-                var y= (options.extent.miny+options.extent.maxy)/2;
-                this.balloon.setPosition(x,y,true);
-                //this.balloon.getContentElement().dom.innerHTML="";
-                this.balloon.getContentElement().insertHtml("beforeEnd", html);
-            }
-        }catch(e){
-            console.log(e);
+       // try{
+        var html="";            
+        //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
+        var data = options.data;
+        if (data==null || data =="null" || data==undefined){
+            return;
         }
+        for (var layerName in data){
+            var appLayer =  this.getApplicationLayer(layerName,layer.serviceId);
+            for (var index in data[layerName]){
+                var feature=data[layerName][index];                    
+                html+="<div class='maptip_feature'>";
+                    html+="<div class='maptip_title'>";
+                        html+=this.replaceByAttributes(appLayer.details["summary.title"],feature);
+                    html+="</div>";
+                    html+="<div class='maptip_image'>";
+                        html+="<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>";
+                    html+="</div>";
+                    html+="<div class='maptip_description'>";
+                        html+=this.replaceByAttributes(appLayer.details["summary.description"],feature);
+                    html+="</div>";                        
+                    html+="<div class='maptip_link'>";
+                        html+="<a href='"+this.replaceByAttributes(appLayer.details["summary.description"],feature)+">link</a>";
+                    html+="</div>";
+                html+="</div>"                    
+            }
+        }
+        if (!Ext.isEmpty(html)){
+            var x= (options.extent.minx+options.extent.maxx)/2;
+            var y= (options.extent.miny+options.extent.maxy)/2;
+            this.balloon.setPosition(x,y,true);
+            //this.balloon.getContentElement().dom.innerHTML="";
+            this.balloon.getContentElement().insertHtml("beforeEnd", html);
+        }
+        /*}catch(e){
+            console.log(e);
+        }*/
     },
     /**
      * Replaces all [feature names] with the values of the feature.
