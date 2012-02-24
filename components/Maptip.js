@@ -24,13 +24,15 @@ Ext.define ("viewer.components.Maptip",{
     balloon: null,
     maptipComponent: null,
     config: {
-        maptipdelay: null
+        maptipdelay: null,
+        height: null,
+        width: null
     },
     constructor: function (conf){        
         viewer.components.Maptip.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         //make the balloon
-        this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon");
+        this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon",this.width,this.height);
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //Add the maptip component to the framework
@@ -169,6 +171,8 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     this.balloonArrowHeight=40;
     this.offsetX=0;
     this.offsetY=0;
+    this.roundImgPath=contextPath+"/resources/images/maptip/round.png";
+    this.arrowImgPath=contextPath+"/resources/images/infoBalloon/arrow.png";
     //this.leftOfPoint;
     //this.topOfPoint;
     
@@ -213,7 +217,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         var maxCornerSize=this.balloonHeight-(this.balloonArrowHeight*2)+2-this.balloonCornerSize;
         
         var topLeftEl=document.createElement("div");
-        topLeftEl.innerHTML="<img style='position: absolute;' src='/viewer/resources/images/infoBalloon/round.png'/>";
+        topLeftEl.innerHTML="<img style='position: absolute;' src='"+this.roundImgPath+"'/>";
         var topLeft = new Ext.Element(topLeftEl);
         topLeft.addCls("balloonCornerTopLeft");
         topLeft.applyStyles({
@@ -227,7 +231,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.balloon.appendChild(topLeft);
         
         var topRightEl = document.createElement("div");
-        topRightEl.innerHTML="<img style='position: absolute; left: -1004px;' src='/viewer/resources/images/infoBalloon/round.png'/>";
+        topRightEl.innerHTML="<img style='position: absolute; left: -1004px;' src='"+this.roundImgPath+"'/>";
         var topRight= new Ext.Element(topRightEl);
         topRight.addCls("balloonCornerTopRight");
         topRight.applyStyles({
@@ -239,7 +243,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.balloon.appendChild(topRight);
         
         var bottomLeftEl = document.createElement("div");
-        bottomLeftEl.innerHTML="<img style='position: absolute; top: -748px;' src='/viewer/resources/images/infoBalloon/round.png'/>";
+        bottomLeftEl.innerHTML="<img style='position: absolute; top: -748px;' src='"+this.roundImgPath+"'/>";
         var bottomLeft=new Ext.Element(bottomLeftEl);
         bottomLeft.addCls("balloonCornerBottomLeft");
         bottomLeft.applyStyles({        
@@ -251,7 +255,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.balloon.appendChild(bottomLeft);
         
         var bottomRightEl = document.createElement("div");
-        bottomRightEl.innerHTML="<img style='position: absolute; top: -748px; left: -1004px;' src='/viewer/resources/images/infoBalloon/round.png'/>";
+        bottomRightEl.innerHTML="<img style='position: absolute; top: -748px; left: -1004px;' src='"+this.roundImgPath+"'/>";
         var bottomRight = new Ext.Element(bottomRightEl);
         bottomRight.addCls("balloonCornerBottomRight");
         bottomRight.applyStyles({
@@ -263,10 +267,10 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.balloon.appendChild(bottomRight);
         
         //arrows
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none;'><img src='/viewer/resources/images/infoBalloon/arrow.png'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
         
         //content
         this.balloon.insertHtml("beforeEnd","<div class='balloonContent' style='top: "

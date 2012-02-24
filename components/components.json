@@ -411,13 +411,17 @@
                 tooltip: "Hoover tekst",
                 title: "Titel",
                 titlebarIcon : "Titelbalk icoon",
-                maptipdelay: "Maptip Delay"
+                maptipdelay: "Maptip Delay",
+                height: 'hoogte',
+                width: 'width'
             },
             source: {
                 tooltip: "",
                 title: "",
                 titlebarIcon : "",
-                maptipdelay: 500
+                maptipdelay: 500,
+                height: 300,
+                width: 300
             }
         }             
     },
