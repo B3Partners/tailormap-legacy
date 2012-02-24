@@ -147,6 +147,7 @@ public class Layer {
         JSONObject o = new JSONObject();
         
         o.put("id", id);
+        o.put("serviceId", service.getId());
         o.put("name", name);
         
         o.put("virtual", virtual);
