@@ -74,7 +74,7 @@ public class FeatureActionBean implements ActionBean {
         if(service == null || layer == null) {
             error = "Invalid parameters";
         } else {
-
+            service.loadLayerTree();
             Layer l = service.getLayer(layer);
             
             if(l == null) {
