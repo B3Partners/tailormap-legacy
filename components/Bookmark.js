@@ -55,6 +55,7 @@ Ext.define ("viewer.components.Bookmark",{
                 xtype: 'textfield',
                 fieldLabel: 'Bookmark',
                 name: 'bookmark',
+                id: 'bookmark',
                 value: this.url
             },{ 
                 xtype: 'textfield',
@@ -79,12 +80,12 @@ Ext.define ("viewer.components.Bookmark",{
                     }
                 }
             }],
-            renderTo: this.popup.getContentId()
+            renderTo: this.getContentDiv()
         });
     },
     showWindow : function(){
         this.url = viewerController.getBookmarkUrl();
-        this.form.child().setValue(this.url);
+        this.form.getChildByElement("bookmark").setValue(this.url);
         this.popup.show();
     },
     hideWindow : function(){
