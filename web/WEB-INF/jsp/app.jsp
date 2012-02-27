@@ -76,6 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ServiceInfo.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/FeatureService.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/SLD.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/Bookmark.js"></script>
             </c:when>
             <c:otherwise>
                  <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -96,7 +97,8 @@ ${actionBean.componentSourceHTML}
             var actionBeans = { 
                 "service": "<stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/>",
                 "feature": "<stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/>",
-                "sld": "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>"
+                "sld": "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>",
+                "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>"
             };
             
             var appId = "${actionBean.application.id}";

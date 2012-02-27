@@ -26,6 +26,7 @@
             <file name="ServiceInfo.js"/>
             <file name="FeatureService.js"/>
             <file name="SLD.js"/>
+            <file name="Bookmark.js"/>
           </sources>          
           <!--					The Tool Components				-->
          <sources dir="${viewerhtml.path}/components/tools">
