@@ -65,7 +65,6 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
     },
     appendSearchField: function(config) {
-        console.log(config);
         var me = this;
         var nextId = me.nextId;
         var newconfig = config || {
