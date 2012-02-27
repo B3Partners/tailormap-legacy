@@ -24,10 +24,9 @@ Ext.define("viewer.FeatureService", {
     },
     url: null,
     constructor: function(config) {        
-        this.initConfig(config);       
-        
+        this.initConfig(config);      
     },
-    getFeatureType: function(success, failure) {
+    getFeatureType: function(successFunction, failureFunction) {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
@@ -36,13 +35,13 @@ Ext.define("viewer.FeatureService", {
                 var response = JSON.parse(result.responseText);
                 
                 if(response.success) {
-                    success(response.featureType);
+                    successFunction(response.featureType);
                 } else {
-                    failure(response.error);
+                    failureFunction(response.error);
                 }
             },
             failure: function(result) {
-                failure("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
             }
         });
     }

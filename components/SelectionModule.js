@@ -194,13 +194,15 @@ Ext.define ("viewer.components.SelectionModule",{
                                         url: url,
                                         actionbeanUrl: serviceActionBean
                                     });
-                                    si.on('success', function(info) {
-                                        me.populateCustomServiceTree(info)
-                                    });
-                                    si.on('failure', function(msg) {
-                                        Ext.MessageBox.alert("Foutmelding", msg);
-                                    });
-                                    si.loadInfo();
+                                    
+                                    si.loadInfo(
+                                        function(info) {
+                                            me.populateCustomServiceTree(info);
+                                        },
+                                        function(msg) {
+                                            Ext.MessageBox.alert("Foutmelding", msg);
+                                        }
+                                    );
                                 }
                             }}
                         ]

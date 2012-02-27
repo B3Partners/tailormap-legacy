@@ -31,8 +31,6 @@
  */
 
 Ext.define("viewer.ServiceInfo", {
-    extend: "Ext.util.Observable",    
-    events: [],
     config: {
         actionbeanUrl: null,
         protocol: "wms",
@@ -40,11 +38,9 @@ Ext.define("viewer.ServiceInfo", {
     },
     url: null,
     constructor: function(config) {        
-        this.initConfig(config);       
-        
+        this.initConfig(config);     
     },
-    loadInfo: function() {
-        var si = this;
+    loadInfo: function(successFunction, failureFunction) {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
@@ -53,13 +49,13 @@ Ext.define("viewer.ServiceInfo", {
                 var response = JSON.parse(result.responseText);
                 
                 if(response.success) {
-                    si.fireEvent("success", response.service);
+                    successFunction(response.service);
                 } else {
-                    si.fireEvent("failure", response.error);
+                    failureFunction(response.error);
                 }
             },
             failure: function(result) {
-                si.fireEvent("failure", "Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
             }
         });
     }
