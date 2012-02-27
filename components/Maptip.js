@@ -109,7 +109,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     onMaptipCancel: function (map){
         this.balloon.setContent("");
-        this.balloon.hide();
+        this.balloon.hideAfterMouseOut();
     },
     /**
      * Replaces all [feature names] with the values of the feature.
@@ -197,6 +197,10 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     this.balloonHeight=300;
     this.balloonCornerSize=20;
     this.balloonArrowHeight=40;
+    this.balloonContent=null;
+    this.mouseIsOverElement=new Object();
+    this.maptipId=0;
+    this.closeOnMouseOut=false;
     this.offsetX=0;
     this.offsetY=0;
     this.roundImgPath=contextPath+"/resources/images/maptip/round.png";
@@ -256,6 +260,12 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             'width':  this.balloonWidth-this.balloonCornerSize+'px',
             'height': maxCornerSize+'px'
         });
+        topLeft.on("mouseover",function(){
+            this.onMouseOver('topLeft');
+        },this); 
+        topLeft.on("mouseout",function(){
+            this.onMouseOut('topLeft');
+        },this);  
         this.balloon.appendChild(topLeft);
         
         var topRightEl = document.createElement("div");
@@ -268,6 +278,12 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             'top': this.balloonArrowHeight-1+'px',
             'right':'0px'
         });
+        topRight.on("mouseover",function(){
+            this.onMouseOver('topRight');
+        },this); 
+        topRight.on("mouseout",function(){
+            this.onMouseOut('topRight');
+        },this); 
         this.balloon.appendChild(topRight);
         
         var bottomLeftEl = document.createElement("div");
@@ -280,6 +296,12 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             'bottom': this.balloonArrowHeight-1+'px',
             'width': this.balloonWidth-this.balloonCornerSize+'px'
         });
+        bottomLeft.on("mouseover",function(){
+            this.onMouseOver('bottomLeft');
+        },this); 
+        bottomLeft.on("mouseout",function(){
+            this.onMouseOut('bottomLeft');
+        },this); 
         this.balloon.appendChild(bottomLeft);
         
         var bottomRightEl = document.createElement("div");
@@ -292,6 +314,12 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             'right':'0px',
             'bottom':this.balloonArrowHeight-1+'px'
         });
+        bottomRight.on("mouseover",function(){
+            this.onMouseOver('bottomRight');
+        },this); 
+        bottomRight.on("mouseout",function(){
+            this.onMouseOut('bottomRight');
+        },this); 
         this.balloon.appendChild(bottomRight);
         
         //arrows
@@ -301,10 +329,26 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
         
         //content
-        this.balloon.insertHtml("beforeEnd","<div class='balloonContent' style='top: "
+       /* this.balloon.insertHtml("beforeEnd","<div class='balloonContent' style='top: "
             +(this.balloonArrowHeight+5)+"px; bottom: "
             +(this.balloonArrowHeight+4)+"px;"
-            +"'></div>");
+            +"'></div>");*/
+        
+        var balloonContentEl = document.createElement("div");
+        //balloonContentEl.innerHTML=
+        this.balloonContent= new Ext.Element(balloonContentEl);
+        this.balloonContent.addCls('balloonContent');
+        this.balloonContent.applyStyles({
+            top: this.balloonArrowHeight+5+"px",
+            bottom: this.balloonArrowHeight+4+"px"
+        });
+        this.balloonContent.on("mouseover",function(){
+            this.onMouseOver('balloonContent');
+        },this); 
+        this.balloonContent.on("mouseout",function(){
+            this.onMouseOut('balloonContent');
+        },this); 
+        this.balloon.appendChild(this.balloonContent);
         //closing button
         /*var thisObj=this;
         this.balloon.append($j("<div class='balloonCloseButton'></div>")
@@ -316,6 +360,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             })
 
         );*/
+        
         this.x=x;
         this.y=y;
 
@@ -370,6 +415,36 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             this.balloon.select(".balloonArrowBottomLeft").applyStyles({"display":"block"});
         }
     }
+    /**
+     *called by internal elements if the mouse is moved in 1 of the maptip element
+     *@param the id of the element.
+     */
+    this.onMouseOver= function(elementId){
+        this.mouseIsOverElement[elementId]=1;
+    }
+    /**
+     *called by internal elements when the mouse is out 1 of the maptip element
+     *@param the id of the element.
+     */
+    this.onMouseOut= function(elementId){
+        this.mouseIsOverElement[elementId]=0;   
+        var thisObj=this;
+        setTimeout(function(){
+            console.log("Mouse is: "+thisObj.isMouseOver());
+            if (!thisObj.isMouseOver()){
+                thisObj.hide();
+            }
+        },50);
+        
+    }
+    this.isMouseOver = function(){
+        for (var elementid in this.mouseIsOverElement){
+            if(this.mouseIsOverElement[elementid]==1){
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      *Set the position of this balloon. Create it if not exists
@@ -378,7 +453,10 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
      *@param resetPositionOfBalloon boolean if true the balloon arrow will be
      *redrawn (this.resetPositionOfBalloon is called)
      */
-    this.setPosition = function (x,y,resetPositionOfBalloon){
+    this.setPosition = function (x,y,resetPositionOfBalloon){       
+        //new maptip position so update the maptipId
+        this.maptipId++;
+        
         if (this.balloon==undefined){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){
@@ -431,9 +509,9 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     }
     /*Get the DOM element where the content can be placed.*/
     this.getContentElement = function(){     
-        if (this.balloon==undefined)
+        if (this.balloon==undefined || this.balloonContent ==undefined)
             return null;
-        return this.balloon.select('.balloonContent');
+        return this.balloonContent;
     }
     this.setContent = function (value){
         var element=this.getContentElement();
@@ -455,4 +533,18 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         if (this.balloon!=undefined)
             this.balloon.setVisible(true);
     }
+    this.hideAfterMouseOut= function(){
+        var thisObj = this;
+        //store the number to check later if it's still the same maptip position
+        var newId= new Number(this.maptipId);
+        setTimeout(function(){
+            if (newId==thisObj.maptipId){
+                if (!thisObj.isMouseOver()){
+                    thisObj.hide();
+                }
+            }else{
+            }
+        },1000);
+    }
+    
 }
