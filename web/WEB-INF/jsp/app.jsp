@@ -93,9 +93,11 @@ ${actionBean.componentSourceHTML}
             var contextPath = "${contextPath}";
             var absoluteURIPrefix = "${absoluteURIPrefix}";
 
-            var serviceActionBean = "<stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/>";
-            var featureActionBean = "<stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/>";
-            var sldActionBean = "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>";
+            var actionBeans = { 
+                "service": "<stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/>",
+                "feature": "<stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/>",
+                "sld": "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>"
+            };
             
             var appId = "${actionBean.application.id}";
             var viewerController;
