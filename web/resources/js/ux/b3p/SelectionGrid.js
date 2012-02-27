@@ -291,7 +291,8 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
         var span = document.createElement('span');
             span.className = 'sliderheader';
             span.id = 'sliderheader-link-' + sliderid;
-            span.style = 'text-decoration: underline; cursor: pointer;';
+            span.style.textDecoration = 'underline';
+            span.style.cursor = 'pointer';
             span.innerHTML = slidername;
         var divobject = document.createElement('div');
             divobject.className = 'sliderheader';
