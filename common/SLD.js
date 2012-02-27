@@ -20,7 +20,10 @@ Ext.define("viewer.SLD", {
         actionbeanUrl: null
     },
     constructor: function(config) {        
-        this.initConfig(config);      
+        this.initConfig(config);  
+        if(this.config.actionbeanUrl == null) {
+            this.config.actionbeanUrl = actionBeans["sld"];
+        }
     },
     /**
      * Create a SLD for named layers in the layers parameter. Optionally specify

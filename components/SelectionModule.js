@@ -191,8 +191,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                     var url = Ext.getCmp('customServiceUrlTextfield').getValue();
                                     var si = Ext.create("viewer.ServiceInfo", {
                                         protocol: protocol,
-                                        url: url,
-                                        actionbeanUrl: serviceActionBean
+                                        url: url
                                     });
                                     
                                     si.loadInfo(

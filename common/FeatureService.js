@@ -25,6 +25,9 @@ Ext.define("viewer.FeatureService", {
     url: null,
     constructor: function(config) {        
         this.initConfig(config);      
+        if(this.config.actionbeanUrl == null) {
+            this.config.actionbeanUrl = actionBeans["feature"];
+        }        
     },
     getFeatureType: function(successFunction, failureFunction) {
         

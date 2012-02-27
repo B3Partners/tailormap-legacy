@@ -39,6 +39,9 @@ Ext.define("viewer.ServiceInfo", {
     url: null,
     constructor: function(config) {        
         this.initConfig(config);     
+        if(this.config.actionbeanUrl == null) {
+            this.config.actionbeanUrl = actionBeans["service"];
+        }        
     },
     loadInfo: function(successFunction, failureFunction) {
         
