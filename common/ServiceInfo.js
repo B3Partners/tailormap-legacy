@@ -51,11 +51,15 @@ Ext.define("viewer.ServiceInfo", {
                 if(response.success) {
                     successFunction(response.service);
                 } else {
-                    failureFunction(response.error);
+                    if(failureFunction != undefined) {
+                        failureFunction(response.error);
+                    }
                 }
             },
             failure: function(result) {
-                failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                if(failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
             }
         });
     }
