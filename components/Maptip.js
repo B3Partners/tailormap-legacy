@@ -28,6 +28,9 @@ Ext.define ("viewer.components.Maptip",{
         height: null,
         width: null
     },
+    /**
+     * @constructor
+     */
     constructor: function (conf){        
         viewer.components.Maptip.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
@@ -35,24 +38,32 @@ Ext.define ("viewer.components.Maptip",{
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon",this.width,this.height);
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        //listen to the onmaptipcancel
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
-        this.getViewerController().mapComponent.addComponent(this.maptipComponent);
-        
+        this.getViewerController().mapComponent.addComponent(this.maptipComponent);        
         return this;
-    },
+    },    
+    /**
+     * Event handler for when a layer is added to the map
+     * @see event ON_LAYER_ADDED
+     */
     onAddLayer: function(map,layer){
         var maptipLayers=this.getMaptipLayers(layer);
         if (maptipLayers.length >0){
             layer.setMaptips(maptipLayers);
             //listen to the onMaptipData
             layer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMaptipData,this);       
-        }
+        }       
     },
+    /**
+     * Event handler for when a maptip returned data
+     * @see event ON_MAPTIP_DATA
+     */
     onMaptipData: function(layer,options){
         //alert(layer);
-       // try{
         var html="";            
         //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
         var data = options.data;
@@ -80,15 +91,25 @@ Ext.define ("viewer.components.Maptip",{
             }
         }
         if (!Ext.isEmpty(html)){
-            var x= (options.extent.minx+options.extent.maxx)/2;
-            var y= (options.extent.miny+options.extent.maxy)/2;
+            var x= options.extent.x;
+            var y= options.extent.y;
+            if (options.extent.x ==undefined || options.extent.y ==undefined){
+                x= (options.extent.minx+options.extent.maxx)/2;
+                y= (options.extent.miny+options.extent.maxy)/2;
+            }   
             this.balloon.setPosition(x,y,true);
             //this.balloon.getContentElement().dom.innerHTML="";
-            this.balloon.getContentElement().insertHtml("beforeEnd", html);
-        }
-        /*}catch(e){
-            console.log(e);
-        }*/
+            this.balloon.addContent(html);
+            this.balloon.show();
+        }        
+    },
+    /**
+     * Event handler for the ON_MAPTIP_CANCEL event
+     * @see event ON_MAPTIP_CANCEL
+     */
+    onMaptipCancel: function (map){
+        this.balloon.setContent("");
+        this.balloon.hide();
     },
     /**
      * Replaces all [feature names] with the values of the feature.
@@ -138,6 +159,12 @@ Ext.define ("viewer.components.Maptip",{
         }
         return maptipLayers;
     },
+    /**
+     *Get the application layer
+     *@param layername the name of the layer
+     *@param serviceId the id of the service
+     *@return the application layer JSON object.
+     */
     getApplicationLayer: function (layerName,serviceId){
         var appLayers=this.viewerController.app.appLayers;
         for (var id in appLayers){
@@ -163,7 +190,7 @@ Ext.define ("viewer.components.Maptip",{
  * @param balloonArrowHeight the hight of the arrowImage (optional, default: 40);
  */
 function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight, offsetX,offsetY, balloonCornerSize, balloonArrowHeight){
-    this.mapDiv=mapDiv;
+    this.mapDiv=Ext.get(mapDiv);    
     this.webMapController=webMapController;
     this.balloonId=balloonId;
     this.balloonWidth=300;
@@ -178,9 +205,9 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     //this.topOfPoint;
     
     //the balloon jquery dom element.
-    this.balloon;
-    //this.xCoord;
-    //this.yCoord;
+    this.balloon=null;
+    this.x=null;
+    this.y=null;
 
     if (balloonWidth){
         this.balloonWidth=balloonWidth;
@@ -289,8 +316,8 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             })
 
         );*/
-        this.xCoord=x;
-        this.yCoord=y;
+        this.x=x;
+        this.y=y;
 
         //calculate position
         this._resetPositionOfBalloon(x,y);
@@ -311,16 +338,17 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     this._resetPositionOfBalloon = function(x,y){
         //calculate position
         var centerCoord= this.webMapController.getMap().getCenter();
-        var centerPixel= this.webMapController.getMap().coordinateToPixel(centerCoord.x,centerCoord.y);
-        var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);
-
+        //var centerPixel= this.webMapController.getMap().coordinateToPixel(centerCoord.x,centerCoord.y);
+        //var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);        
+        var centerX = this.mapDiv.getWidth(); 
+        var centerY = this.mapDiv.getHeight();
         //determine the left and top.
-        if (infoPixel.x > centerPixel.x){
+        if (x > centerX){
             this.leftOfPoint=true;
         }else{
             this.leftOfPoint=false;
         }
-        if (infoPixel.y > centerPixel.y){
+        if (y > centerY){
             this.topOfPoint=true;
         }else{
             this.topOfPoint=false;
@@ -345,8 +373,8 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
 
     /**
      *Set the position of this balloon. Create it if not exists
-     *@param x xcoord
-     *@param y ycoord
+     *@param x pixel x
+     *@param y pixel y
      *@param resetPositionOfBalloon boolean if true the balloon arrow will be
      *redrawn (this.resetPositionOfBalloon is called)
      */
@@ -357,34 +385,23 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             this._resetPositionOfBalloon(x,y);
         }
         if (x!=undefined && y != undefined){
-            this.xCoord=x;
-            this.yCoord=y;
-        }else if (this.xCoord ==undefined || this.yCoord == undefined){
+            this.x=x;
+            this.x=y;
+        }else if (this.x ==undefined || this.y == undefined){
             throw "No coords found for this balloon";
         }else{
-            x=this.xCoord;
-            y=this.yCoord;
+            x=this.x;
+            y=this.y;
         }
-        //if the point is out of the extent hide balloon
-        var curExt=this.webMapController.getMap().getExtent();
-        if (curExt.minx > x ||
-            curExt.maxx < x ||
-            curExt.miny > y ||
-            curExt.maxy < y){
-            /*TODO wat doen als hij er buiten valt.*/
-            this.balloon.applyStyles({'display':'none'});
-            return;
-        }else{
-            /*TODO wat doen als hij er weer binnen valt*/
-            this.balloon.applyStyles({'display':'block'});
-        }
+        this.balloon.applyStyles({'display':'block'});
+       
 
         //calculate position
-        var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);
+        //var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);
 
         //determine the left and top.
-        var left=infoPixel.x+this.offsetX;
-        var top =infoPixel.y+this.offsetY;
+        var left=x+this.offsetX;
+        var top =y+this.offsetY;
         if (this.leftOfPoint){
             left=left-this.balloonWidth;
         }
@@ -395,6 +412,17 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.balloon.setLeft(""+left+"px");
         this.balloon.setTop(""+top+"px");
     }
+    /**
+     *Set the position of this balloon. Create it if not exists
+     *@param xcoord The world x coord
+     *@param ycoord the world y coord
+     *@param resetPositionOfBalloon boolean if true the balloon arrow will be
+     *redrawn (this.resetPositionOfBalloon is called)
+     */
+    this.setPositionWorldCoords = function (xcoord,ycoord,resetPositionOfBalloon){
+        var pixel= this.webMapController.getMap().coordinateToPixel(xcoord,ycoord);   
+        setPosition(pixel.x, pixel.y, resetPositionOfBalloon);
+    }
     /*Remove the balloon*/
     this.remove = function(){
         this.balloon.remove();
@@ -402,13 +430,29 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         delete this.balloon;
     }
     /*Get the DOM element where the content can be placed.*/
-    this.getContentElement = function(){
+    this.getContentElement = function(){     
+        if (this.balloon==undefined)
+            return null;
         return this.balloon.select('.balloonContent');
     }
+    this.setContent = function (value){
+        var element=this.getContentElement();
+        if (element==null)
+            return;
+        element.update(value);
+    }
+    this.addContent = function (value){
+        var element=this.getContentElement();
+        if (element==null)
+            return;
+        element.insertHtml("beforeEnd", value);
+    }
     this.hide = function(){
-        this.balloon.setVisible(false);
+        if (this.balloon!=undefined)
+            this.balloon.setVisible(false);
     }
     this.show = function(){
-        this.balloon.setVisible(true);
+        if (this.balloon!=undefined)
+            this.balloon.setVisible(true);
     }
 }

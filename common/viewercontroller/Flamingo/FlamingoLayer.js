@@ -12,10 +12,11 @@
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
-    enabledEvents: new Object(),
+    enabledEvents: null,
     constructor :function (config){
         viewer.viewercontroller.flamingo.FlamingoLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
+        this.enabledEvents=new Object();
         return this;
     },
     

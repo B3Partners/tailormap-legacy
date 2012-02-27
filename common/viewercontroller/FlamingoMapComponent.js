@@ -20,6 +20,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      * @constructur
      */
     constructor :function (viewerController, domId){
+        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId);
         this.viewerController = viewerController;
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
@@ -46,6 +47,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                = "onAddLayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA]                = "onMaptipData";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                = "onMaptip";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]                = "onMaptipCancel";        
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -329,10 +331,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     
     },
     getObject : function(name){
-        if( name instanceof Array){
+       if( name instanceof Array){
             name = name[0];
-        }
-    
+        } 
+        name=""+name;
+                
         if(this.getMap(name)!= null){
             return this.getMap(name);
         }else if( this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){
@@ -365,6 +368,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }else{
             // Translate the specific name to the generic name. 
             event = this.getGenericEventName(event);
+            if(event==null)
+                return;
         }
         if (event==viewer.viewercontroller.controller.Event.ON_REQUEST){
             var obj=component[2];
@@ -448,5 +453,10 @@ function dispatchEventJS(event, comp) {
             comp[0] = viewerController.mapComponent.getId();
         comp[1] = new Object();
     }
-    viewerController.mapComponent.handleEvents(event,comp);    
+    try{
+        viewerController.mapComponent.handleEvents(event,comp);    
+    }catch(e){
+        if (window.console && console.log)
+            console.log(e);
+    }
 }

@@ -10,14 +10,15 @@
  */
 Ext.define("viewer.viewercontroller.MapComponent",{
     extend: "Ext.util.Observable",
-    eventList: new Array(),
+    eventList: new Object(),
     maps: new Array(),
     tools : new Array(),
     events: new Array(),
     components: new Array(),
     panel : null,
-    constructor :function (viewerObject){            
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);        
+    constructor :function (viewerObject){       
+        this.initEvents();     
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);    
         return this;
     },
     getId : function() {
@@ -265,7 +266,8 @@ Ext.define("viewer.viewercontroller.MapComponent",{
                 return key;
             }
         }
-        throw("Event " + specific + " does not exist!");
+        return null;
+        //throw("Event " + specific + " does not exist!");
     },
 
     /**

@@ -90,6 +90,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     getMapservice : function (){
         return this.options["mapservice"];
     },
+    getLayers : function(){
+        return this.options["visibleids"];
+    },
+    setMaptips: function(maptips){
+        viewer.viewercontroller.flamingo.FlamingoArcIMSLayer.superclass.setMaptips.call(this,maptips);        
+        this.passMaptips();
+    },
+    passMaptips: function(){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
+    },
     
     setVisible : function (visible){
         this.visible = visible;

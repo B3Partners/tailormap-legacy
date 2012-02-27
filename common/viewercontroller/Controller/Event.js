@@ -34,7 +34,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param layer the layer that is added.
          **/
         ON_LAYER_ADDED                        : "ON_LAYER_ADDED",
-        
+        /**
+         *@field
+         *occures when a mouse is moved and the maptip must be cancelled
+         *@param map the map object that called this event.
+         */
+        ON_MAPTIP_CANCEL                      : "ON_MAPTIP_CANCEL",
         
         // Layer events:                            50 - 100
         /** @field */
@@ -55,7 +60,13 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param layer the layer where this event occured
          * @param options a object with options
          * @param options.data the data as a multi array
-         * @param options.extent the extent where this maptip for is done.
+         * @param options.extent the place where this maptip for is done.
+         * @param options.extent.x the x pixel (screen location)
+         * @param options.extent.y the y pixel (screen location)
+         * @param options.extent.minx (not always available) the minx world coord (world location)
+         * @param options.extent.miny (not always available) the miny world coord (world location)
+         * @param options.extent.maxx (not always available) the maxx world coord (world location)
+         * @param options.extent.maxy (not always available) the maxy world coord (world location)
          **/
         ON_MAPTIP_DATA                        : "ON_MAPTIP_DATA",
         

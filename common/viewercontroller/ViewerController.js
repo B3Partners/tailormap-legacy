@@ -82,7 +82,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         /* XXX move to constructor? */
-        this.mapComponent.initEvents();
+        
      
         // XXX does API need to call other functions before the map is created?
         // 
@@ -133,7 +133,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         //testComponents();
         } catch(e) {
-            console.log(e);
+            if (window.console && console.log){
+                console.log(e);
+            }
         }  
     },
     

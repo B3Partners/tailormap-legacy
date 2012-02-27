@@ -61,7 +61,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      *Gets the layer that are set in this layer
      */
     getLayers: function (){
-        Ext.Error.Raise({msg: "Get layers must be implemented by implementation"});
+        Ext.Error.raise({msg: "Get layers must be implemented by implementation"});
     },
     /**
      *Add a maptip to the layer
