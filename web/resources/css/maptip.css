@@ -76,25 +76,21 @@
     width: 17px;
     cursor: pointer;
 }
-/******/
+/*** Features css ***/
 .maptip_feature{
-    z-index: 20000;
 }
 .maptip_feature div{
     width: 100%;
     float: left;
     clear: right;
-    z-index: 20000;
 }
 .maptip_title{
-    z-index: 20000;
+    font-weight: bold;
 }
 .maptip_image{
-    z-index: 20000;
+    float: right;
 }
 .maptip_description{
-    z-index: 20000;
 }
 .maptip_link{
-    z-index: 20000;
 }
