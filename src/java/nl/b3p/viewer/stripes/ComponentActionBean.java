@@ -17,9 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilationLevel;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.JSSourceFile;
+import com.google.javascript.jscomp.*;
 import java.util.*;
 import java.io.File;
 import java.io.FileInputStream;
@@ -256,7 +254,23 @@ public class ComponentActionBean implements ActionBean {
             options.setOutputCharset("UTF-8");
             compiler.compile(JSSourceFile.fromCode("dummy.js",""), JSSourceFile.fromFile(f), options);
 
-            minified = compiler.toSource();
+            if(compiler.hasErrors()) {
+                log.warn(compiler.getErrorCount() + " error(s) minifying source file " + f.getCanonicalPath() + "; using original source");
+                minified = IOUtils.toString(new FileInputStream(f));
+                
+                for(int i = 0; i < compiler.getErrorCount(); i++) {
+                    JSError error = compiler.getErrors()[i];
+                    log.warn(String.format("#%d line %d,%d: %s: %s",
+                            i+1,
+                            error.lineNumber,
+                            error.getCharno(),
+                            error.level.toString(),
+                            error.description));
+                }
+                
+            } else {
+                minified = compiler.toSource();
+            }
         } catch(Exception e) {
             log.warn(String.format("Error minifying file \"%s\" using closure compiler, sending original source\n", f.getCanonicalPath()), e);
         }
