@@ -76,26 +76,26 @@ Ext.define ("viewer.components.SelectionModule",{
         applicationTree: {
             treePanel: null,
             treeStore: null,
-            currentState: null,
-            treeNodes: []
+            filteredNodes: [],
+            hiddenNodes: []
         },
         registryTree: {
             treePanel: null,
             treeStore: null,
-            currentState: null,
-            treeNodes: []
+            filteredNodes: [],
+            hiddenNodes: []            
         },
         customServiceTree: {
             treePanel: null,
             treeStore: null,
-            currentState: null,
-            treeNodes: []
+            filteredNodes: [],
+            hiddenNodes: []
         },
         selectionTree: {
             treePanel: null,
             treeStore: null,
-            currentState: null,
-            treeNodes: []
+            filteredNodes: [],
+            hiddenNodes: []
         }
     },
     activeTree: null,
@@ -149,8 +149,6 @@ Ext.define ("viewer.components.SelectionModule",{
         });
         
         me.rendered = true;
-        
-        console.log(me);
     },
     
     initViewerControllerData: function() {
@@ -210,6 +208,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 marginRight: '5px'
                             }
                         },
+                        defaultType: 'radio',
                         items: [
                             {id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {id: 'radioRegistry', name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
@@ -269,7 +268,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     width: '100%',
                     padding: '5px',
                     border: 0
-                },
+                }
             ]
         });
     },
@@ -370,7 +369,6 @@ Ext.define ("viewer.components.SelectionModule",{
             height: '100%',
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
-                    console.log('dblclick', record);
                     me.addNode(record);
                 }
             }
@@ -382,14 +380,47 @@ Ext.define ("viewer.components.SelectionModule",{
                 treePanelType: 'applicationTree',
                 store: me.treePanels.applicationTree.treeStore,
                 renderTo: 'applicationTreeContainer',
-                tbar: [{xtype : 'textfield'},
+                tbar: [{xtype : 'textfield', id: 'applicationTreeSearchField'},
                     {
                         xtype: 'button',
                         text: 'Zoeken',
                         handler: function() {
+                            // TODO: DRY alert: filter is added to all trees with the same code, improvement needed?
                             var tree = me.treePanels.applicationTree.treePanel;
-                            me.treePanels.applicationTree.currentState = tree.getState();
-                            console.log(tree.getDockedItems());
+                            var textvalue = Ext.getCmp('applicationTreeSearchField').getValue();
+                            //var 
+                            if(textvalue === '') {
+                                me.setAllNodesVisible(true, 'applicationTree');
+                            } else {
+                                me.setAllNodesVisible(true, 'applicationTree');
+                                var re = new RegExp(Ext.escapeRe(textvalue), 'i');
+                                var visibleSum = 0;
+                                var filter = function(node) {// descends into child nodes
+                                    if(node.hasChildNodes()) {
+                                        visibleSum = 0;
+                                        node.eachChild(function(childNode) {
+                                            if(childNode.isLeaf()) {
+                                                if(!re.test(childNode.data.text)) {
+                                                    me.treePanels.applicationTree.filteredNodes.push(childNode);
+                                                } else {
+                                                    visibleSum++;
+                                                }
+                                            } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
+                                                visibleSum++;
+                                            } else {
+                                                filter(childNode);
+                                            }
+                                        });
+                                        if(visibleSum === 0 && !re.test(node.data.text)) {
+                                            me.treePanels.applicationTree.filteredNodes.push(node);
+                                        }
+                                    } else if(!re.test(node.data.text)) {
+                                        me.treePanels.applicationTree.filteredNodes.push(node);
+                                    }
+                                };
+                                tree.getRootNode().cascadeBy(filter);
+                                me.setAllNodesVisible(false, 'applicationTree');
+                            }
                         }
                     }
                 ]
@@ -414,14 +445,46 @@ Ext.define ("viewer.components.SelectionModule",{
                 treePanelType: 'registryTree',
                 store: me.treePanels.registryTree.treeStore,
                 renderTo: 'registryTreeContainer',
-                tbar: [{xtype : 'textfield'},
+                tbar: [{xtype : 'textfield', id: 'registryTreeSearchField'},
                     {
                         xtype: 'button',
                         text: 'Zoeken',
                         handler: function() {
-                            var tree = me.treePanels.applicationTree.treePanel;
-                            me.treePanels.registryTree.currentState = tree.getState();
-                            console.log(tree.getDockedItems());
+                            var tree = me.treePanels.registryTree.treePanel;
+                            var textvalue = Ext.getCmp('registryTreeSearchField').getValue();
+                            //var 
+                            if(textvalue === '') {
+                                me.setAllNodesVisible(true, 'registryTree');
+                            } else {
+                                me.setAllNodesVisible(true, 'registryTree');
+                                var re = new RegExp(Ext.escapeRe(textvalue), 'i');
+                                var visibleSum = 0;
+                                var filter = function(node) {// descends into child nodes
+                                    if(node.hasChildNodes()) {
+                                        visibleSum = 0;
+                                        node.eachChild(function(childNode) {
+                                            if(childNode.isLeaf()) {
+                                                if(!re.test(childNode.data.text)) {
+                                                    me.treePanels.registryTree.filteredNodes.push(childNode);
+                                                } else {
+                                                    visibleSum++;
+                                                }
+                                            } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
+                                                visibleSum++;
+                                            } else {
+                                                filter(childNode);
+                                            }
+                                        });
+                                        if(visibleSum === 0 && !re.test(node.data.text)) {
+                                            me.treePanels.registryTree.filteredNodes.push(node);
+                                        }
+                                    } else if(!re.test(node.data.text)) {
+                                        me.treePanels.registryTree.filteredNodes.push(node);
+                                    }
+                                };
+                                tree.getRootNode().cascadeBy(filter);
+                                me.setAllNodesVisible(false, 'registryTree');
+                            }
                         }
                     }
                 ]
@@ -434,14 +497,46 @@ Ext.define ("viewer.components.SelectionModule",{
                 treePanelType: 'customServiceTree',
                 store: me.treePanels.customServiceTree.treeStore,
                 renderTo: 'customTreeContainer',
-                tbar: [{xtype : 'textfield'},
+                tbar: [{xtype : 'textfield', id: 'customServiceTreeSearchField'},
                     {
                         xtype: 'button',
                         text: 'Zoeken',
                         handler: function() {
                             var tree = me.treePanels.customServiceTree.treePanel;
-                            me.treePanels.customServiceTree.currentState = tree.getState();
-                            console.log(tree.getDockedItems());
+                            var textvalue = Ext.getCmp('customServiceTreeSearchField').getValue();
+                            //var 
+                            if(textvalue === '') {
+                                me.setAllNodesVisible(true, 'customServiceTree');
+                            } else {
+                                me.setAllNodesVisible(true, 'customServiceTree');
+                                var re = new RegExp(Ext.escapeRe(textvalue), 'i');
+                                var visibleSum = 0;
+                                var filter = function(node) {// descends into child nodes
+                                    if(node.hasChildNodes()) {
+                                        visibleSum = 0;
+                                        node.eachChild(function(childNode) {
+                                            if(childNode.isLeaf()) {
+                                                if(!re.test(childNode.data.text)) {
+                                                    me.treePanels.customServiceTree.filteredNodes.push(childNode);
+                                                } else {
+                                                    visibleSum++;
+                                                }
+                                            } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
+                                                visibleSum++;
+                                            } else {
+                                                filter(childNode);
+                                            }
+                                        });
+                                        if(visibleSum === 0 && !re.test(node.data.text)) {
+                                            me.treePanels.customServiceTree.filteredNodes.push(node);
+                                        }
+                                    } else if(!re.test(node.data.text)) {
+                                        me.treePanels.customServiceTree.filteredNodes.push(node);
+                                    }
+                                };
+                                tree.getRootNode().cascadeBy(filter);
+                                me.setAllNodesVisible(false, 'customServiceTree');
+                            }
                         }
                     }
                 ]
@@ -461,11 +556,41 @@ Ext.define ("viewer.components.SelectionModule",{
             tbar: null
         }));
     },
-    
+
+    setAllNodesVisible: function(visible, treePanelName) {
+        var me = this;
+        if(!visible) {
+            // !visible -> A filter is being applied
+            // Save all nodes that are being filtered in hiddenNodes array
+            me.treePanels[treePanelName].hiddenNodes = me.treePanels[treePanelName].filteredNodes;
+        } else {
+            // visible -> No filter is applied
+            // filteredNodes = hiddenNodes, so all hidden nodes will be made visible
+            me.treePanels[treePanelName].filteredNodes = me.treePanels[treePanelName].hiddenNodes;
+            me.treePanels[treePanelName].hiddenNodes = [];
+        }
+        Ext.each(me.treePanels[treePanelName].filteredNodes, function(n) {
+            var el = Ext.fly(me.treePanels[treePanelName].treePanel.getView().getNodeByRecord(n));
+            if (el !== null) {
+                el.setDisplayed(visible);
+            }
+        });
+        me.treePanels[treePanelName].filteredNodes = [];
+    },
+
     initApplicationLayers: function() {
         var me = this;
-        var level = me.addLevel(me.rootLevel, true, false);
-        me.insertTreeNode(level, me.treePanels.applicationTree.treePanel);
+        var levels = [];
+        var rootLevel = me.levels[me.rootLevel];
+        if(Ext.isDefined(rootLevel.children)) {
+            for(var i = 0 ; i < rootLevel.children.length; i++) {
+                var l = me.addLevel(rootLevel.children[i], true, false);
+                if(l !== null) {
+                    levels.push(l);
+                }
+            }
+        }
+        me.insertTreeNode(levels, me.treePanels.applicationTree.treePanel);
     },
 
     loadSelectedLayers: function() {
@@ -502,7 +627,7 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false);
         treeNodeLayer.type = 'level';
-        if(Ext.isDefined(level.layers)) {
+        if(Ext.isDefined(level.layers) && !Ext.isDefined(level.children)) {
             treeNodeLayer.type = 'maplevel';
             treeNodeLayer.id = 'm' + level.id;
         }
@@ -670,6 +795,8 @@ Ext.define ("viewer.components.SelectionModule",{
         var nodeType1 = me.getNodeType(node1);
         var origDataNode2 = me.getOrigData(node2);
         var nodeType2 = me.getNodeType(node2);
+        nodeType1 = (nodeType1 == "maplevel") ? "level" : nodeType1;
+        nodeType2 = (nodeType2 == "maplevel") ? "level" : nodeType2;
         Ext.Array.each(me.selectedContent, function(content, index) {
             if(content.id == origDataNode1.id && content.type == nodeType1) {
                 contentNode1 = content;
@@ -702,17 +829,17 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var nodeType = me.getNodeType(record);
         if(nodeType == "appLayer" || nodeType == "layer" || (nodeType == "maplevel" && !me.onRootLevel(record, me.activeTree))) {
+            var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
             var recordOrigData = me.getOrigData(record);
-            var recordid = null;
-            if(recordOrigData == null) recordid = record.get('id');
-            else recordid = recordOrigData.id;
-            var nodeAdded = false;
-            // We should search here whether the node can be included or not
-            if(!nodeAdded) {
+            var recordid = record.get('id');
+            if(nodeType == "layer") {
+                recordid = 'rl' + recordid;
+            }
+            var searchNode = rootNode.findChild('id', recordid, false);
+            if(searchNode == null) {
                 var objData = record.raw;
-                var treenode = me.treePanels.selectionTree.treePanel.getRootNode();
-                if(treenode !== null) {
-                    if(recordOrigData != null && recordOrigData.service == null) {
+                if(rootNode !== null) {
+                    if(nodeType == "appLayer") {
                         // Own service
                         var customService = Ext.clone(me.userServices[recordOrigData.userService]);
                         customService.status = 'new';
@@ -748,21 +875,21 @@ Ext.define ("viewer.components.SelectionModule",{
                             me.addedLayers.push({
                                 background: false,
                                 checked: true,
-                                id: 'rl' + record.get('id').substring(1),
-                                layerName: record.get('layerName'),
+                                id: recordid,
+                                layerName: record.raw.layerName,
                                 serviceId: service.id,
                                 status: 'new'
                             });
                             me.selectedContent.push({
-                                id: 'rl' + record.get('id').substring(1),
+                                id: recordid,
                                 type: 'appLayer'
                             });
-                            objData = me.createNode('rl' + record.get('id'), record.get('name'), service.id, true);
+                            objData = me.createNode(recordid, record.get('name'), service.id, true);
                             objData.type = 'appLayer';
                             objData.origData.userService = service.id;
                         }
                     }
-                    if(objData != null) treenode.appendChild(objData);
+                    if(objData != null) rootNode.appendChild(objData);
                 }
             }
         }
