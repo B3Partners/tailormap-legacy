@@ -140,6 +140,7 @@ public class ConfiguredAttribute {
         o.put("visible", visible);
         o.put("editable", editable);
         o.put("filterable", filterable);
+        o.put("selectable", selectable);
         o.put("editAlias", editAlias);
         o.put("editHeight", editHeight);
         
