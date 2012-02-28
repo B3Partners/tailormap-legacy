@@ -79,6 +79,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/FeatureService.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/SLD.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/Bookmark.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/AppInfo.js"></script>
             </c:when>
             <c:otherwise>
                  <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -102,7 +103,8 @@ ${actionBean.componentSourceHTML}
                 "sld": "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>",
                 "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>",
                 "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>",
-                "geoserviceregistry": "<stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/>"
+                "geoserviceregistry": "<stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/>",
+                "app": "<stripes:url beanclass="nl.b3p.viewer.stripes.AppInfoActionBean"/>"
             };
             
             var appId = "${actionBean.application.id}";

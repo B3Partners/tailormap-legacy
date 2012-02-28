@@ -127,14 +127,14 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     private static JSONObject layerJSON(Layer l) throws JSONException {
         JSONObject j = new JSONObject();
         j.put("id", "l" + l.getId());
-        j.put("name", l.getName());
+        j.put("layerName", l.getName());
         String alias = l.getName();
         if(l.getTitleAlias() != null){
             alias = l.getTitleAlias();
         }else if(l.getTitle() != null){
             alias = l.getTitle();
         }
-        j.put("alias", alias);
+        j.put("name", alias);
         j.put("type", "layer");
         j.put("isLeaf", l.getChildren().isEmpty());
         j.put("isVirtual", l.isVirtual());
