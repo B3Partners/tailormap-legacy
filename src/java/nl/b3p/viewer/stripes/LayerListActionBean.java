@@ -34,11 +34,11 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Roy Braam
  */
-@UrlBinding("/action/componentConfigLayerList")
+@UrlBinding("/action/layerList")
 @StrictBinding
-public class ComponentConfigLayerListActionBean implements ActionBean {
+public class LayerListActionBean implements ActionBean {
 
-    private static final Log log = LogFactory.getLog(ComponentConfigLayerListActionBean.class);
+    private static final Log log = LogFactory.getLog(LayerListActionBean.class);
     private ActionBeanContext context;
 
     public ActionBeanContext getContext() {
@@ -131,12 +131,16 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
     }
 
     //</editor-fold>
+    
     public Resolution source() {
         EntityManager em = Stripersist.getEntityManager();
         JSONArray jsonArray = new JSONArray();
 
         if (appId != null) {
             Application app = em.find(Application.class, appId);
+            
+            // TODO filter layers according to readers
+            // set writeable according to writers
 
             List<Layer> layers = LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute);
 

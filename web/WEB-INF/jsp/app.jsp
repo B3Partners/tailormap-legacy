@@ -98,7 +98,8 @@ ${actionBean.componentSourceHTML}
                 "service": "<stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/>",
                 "feature": "<stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/>",
                 "sld": "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>",
-                "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>"
+                "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>",
+                "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>"               
             };
             
             var appId = "${actionBean.application.id}";
