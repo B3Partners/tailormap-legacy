@@ -327,9 +327,9 @@ public class Application  {
         }
         
         for(ApplicationLayer al: l.getLayers()) {
-            o = al.toJSONObject();
-            o.put("background", l.isBackground() || parentIsBackground);
-            appLayers.put(al.getId().toString(), o);
+            JSONObject p = al.toJSONObject();
+            p.put("background", l.isBackground() || parentIsBackground);
+            appLayers.put(al.getId().toString(), p);
             
             if(al.getSelectedIndex() != null) {
                 selectedContent.add(al);
