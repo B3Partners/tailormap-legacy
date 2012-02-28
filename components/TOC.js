@@ -36,16 +36,18 @@ Ext.define ("viewer.components.TOC",{
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.initConfig(config);        
-        this.selectedContent = this.viewerController.app.selectedContent,
-        this.appLayers = this.viewerController.app.appLayers,
-        this.levels = this.viewerController.app.levels,
-        this.services = this.viewerController.app.services,
         this.loadTree();
         this.loadInitLayers();
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         return this;
     },
     loadTree : function(){
+        
+        this.selectedContent = this.viewerController.app.selectedContent;
+        this.appLayers = this.viewerController.app.appLayers;
+        this.levels = this.viewerController.app.levels;
+        this.services = this.viewerController.app.services;
         Ext.QuickTips.init();
         var store = Ext.create('Ext.data.TreeStore', {
             root: {
@@ -56,7 +58,7 @@ Ext.define ("viewer.components.TOC",{
             }
         });
         this.panel =Ext.create('Ext.tree.Panel', {
-            renderTo: this.div,
+            renderTo: this.getContentDiv(),
             title: this.title,
             height: "100%",
             useArrows: true,
@@ -101,7 +103,7 @@ Ext.define ("viewer.components.TOC",{
         }
         var treeNodeLayer = {
             text: level.name, 
-            id: level.id,
+            id: "level-"+level.id,
             expanded: true,
             leaf: false,
             layerObj: {
@@ -142,7 +144,7 @@ Ext.define ("viewer.components.TOC",{
         var layerTitle = this.viewerController.getLayerTitle(service.id, appLayerObj.layerName); // TODO: Search title
         var treeNodeLayer = {
             text: layerTitle,
-            id: appLayerObj.id,
+            id: "layer-"+appLayerObj.id,
             expanded: true,
             leaf: true,
             layerObj: {
@@ -179,6 +181,7 @@ Ext.define ("viewer.components.TOC",{
                 }
                 this.checkboxClicked (node,checked,this);
                 node.updateInfo();
+                this.setNodeChecked(node,checked);
             }
         }
     },
@@ -187,7 +190,7 @@ Ext.define ("viewer.components.TOC",{
         for ( var i in this.appLayers){
             var appLayer = this.appLayers[i];
             if(appLayer.layerName== name){
-                return appLayer.id;
+                return "layer-"+appLayer.id;
             }
         }
         return null;
@@ -220,7 +223,6 @@ Ext.define ("viewer.components.TOC",{
             this.checkClicked =false;
             return
         }
-        // TODO don't fire when checkbox is clicked
         var node = record.raw;
         if(node ===undefined){
             node = record.data;
@@ -235,5 +237,21 @@ Ext.define ("viewer.components.TOC",{
                 Ext.Msg.alert('Info', node.layerObj.info);
             }
         }
+    },
+    setNodeChecked : function (item,visible){
+            var a = 0;
+    },
+/*/
+         * Set node Checked
+         * <input class="x-tree-checkbox" type="button" role="checkbox">
+>>> Ext.get(item).select ('input').elements[0]
+<input class="x-tree-checkbox x-tree-checkbox-checked" type="button" aria-checked="true" role="checkbox">
+        
+         */
+    selectedContentChanged : function (){
+        this.panel.destroy();
+            
+        this.loadTree();
+        this.loadInitLayers();
     }
 });
