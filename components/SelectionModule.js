@@ -849,7 +849,7 @@ Ext.define ("viewer.components.SelectionModule",{
         });
         var selectedContent = [];
         Ext.Array.each(me.selectedContent, function(content) {
-            if(content.id != layerid && content.type == "appLayer") {
+            if(!(content.id == layerid && content.type == "appLayer")) {
                 selectedContent.push(content);
             }
         });
@@ -867,7 +867,7 @@ Ext.define ("viewer.components.SelectionModule",{
         });
         var selectedContent = [];
         Ext.Array.each(me.selectedContent, function(content) {
-            if(content.id != levelid && content.type == "level") {
+            if(!(content.id == levelid && content.type == "level")) {
                 selectedContent.push(content);
             }
         });
