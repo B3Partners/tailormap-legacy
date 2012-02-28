@@ -210,19 +210,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var id = serviceId + "_" + layerName;
         var service = this.app.services[serviceId];
         var layer = service.layers[layerName];
-        var ogcOptions={
-            exceptions: "application/vnd.ogc.se_inimage",
-            srs: "EPSG:28992",
-            version: "1.1.1",
-            layers:layer.name,
-            visible: false,
-            /*xxx must be set by tool that uses it.
-             *query_layers: layer.name,*/
-            styles: "",
-            format: "image/png",
-            transparent: true,
-            noCache: false
-        };
         var options={
             timeout: 30,
             retryonerror: 10,
@@ -236,10 +223,24 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(service.protocol =="wms" ){
             var layerUrl = service.url;
             options["isBaseLayer"]=false;
+            
+            var ogcOptions={
+                exceptions: "application/vnd.ogc.se_inimage",
+                srs: "EPSG:28992",
+                version: "1.1.1",
+                layers:layer.name,
+                visible: false,
+                /*xxx must be set by tool that uses it.
+                    *query_layers: layer.name,*/
+                styles: "",
+                format: "image/png",
+                transparent: true,
+                noCache: false
+            };
             layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options);
                 
             this.layers[id] = layerObj;
-        }else if(service.protocol == "arcims"){
+        }else if(service.protocol == "arcims" || service.protocol == "arcgis"){
             // Process the url so the MapComponent can handle it
             var url = service.url;
             var server = url.substring(0,url.indexOf("/",7));
@@ -250,13 +251,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 servlet = url.substring(url.indexOf("/",7)+1);
             }
             // Make arcIms specific ogcOptions
-            ogcOptions.name=  layerName;
-            ogcOptions.server = server;
-            ogcOptions.mapservice = service.name;
-            ogcOptions.servlet = servlet;
-            ogcOptions.type= "ArcIMS";
-            ogcOptions.visibleids = layerName;
-            layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.name, ogcOptions, options);
+            options.name=  layerName;
+            options.server = server;            
+            options.mapservice = service.name;
+            options.servlet = servlet;
+            options.visibleids = layerName;
+            if (service.protocol == "arcims"){
+                options.type= "ArcIMS";
+                layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.name, options);
+            }else{                
+                options.type= "ArcGIS";
+                layerObj = this.mapComponent.createArcServerLayer(layerName,server,servlet,service.name, options);
+            }
             this.layers[id] = layerObj;
         }
         layerObj.serviceId = serviceId;

@@ -52,6 +52,28 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     createTMSLayer : function (id,name,url, options){
         throw("MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class");
+    },    
+    /**
+    * @description Creates a Arc IMS layer.
+    * @param id the id of the layer
+    * @param name the showable name of the layer
+    * @param url the url to the tms service
+    * @param options extra options for this TMS layer
+    * @returns Returns the ArcIMSLayer
+    */
+    createArcIMSLayer: function(){
+        Ext.Error.raise({msg: "MapComponent.createArcIMSLayer needs te be implemented in the sub-class"});
+    },      
+    /**
+    * @description Creates a Arc Server layer.
+    * @param id the id of the layer
+    * @param name the showable name of the layer
+    * @param url the url to the tms service
+    * @param options extra options for this TMS layer
+    * @returns Returns the ArcIMSLayer
+    */
+    createArcServerLayer: function(){
+        Ext.Error.raise({msg: "MapComponent.createArcServerLayer needs te be implemented in the sub-class"});
     },
     /**
     *Creates a Map object for this framework

@@ -16,19 +16,21 @@
  */
 /**
  * @class 
- * @constructor
- * @description Flamingo ArcIMS layer class 
- * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @description Flamingo ArcServer layer class 
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/
-Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
+Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
     extend: "viewer.viewercontroller.flamingo.FlamingoArcLayer",
+    /**
+     * @constructor 
+     */
     constructor: function(config){
-        viewer.viewercontroller.flamingo.FlamingoArcIMSLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.flamingo.FlamingoArcServerLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },
     
     getTagName: function(){
-        return "LayerArcIMS";
+        return "LayerArcServer";
     }
 });

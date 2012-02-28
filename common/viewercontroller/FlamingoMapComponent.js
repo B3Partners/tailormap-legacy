@@ -91,29 +91,37 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         };
         return new viewer.viewercontroller.flamingo.FlamingoWMSLayer(config);
     },
-    createArcIMSLayer : function(name,server,servlet,mapservice,ogcParams,options){
-        var object=new Object();
+    createArcConfig: function(name,server,servlet,mapservice,options){
+        /*var object=new Object();
         object["name"]=name;
         object["server"]=server;
         object["servlet"]=servlet;
-        object["mapservice"]=mapservice;
-        var ide=null;
-    
-        for (var key in ogcParams){
-            object[key]=ogcParams[key];
-        }
-        for (var key in options){
-            if (key.toLowerCase()=="id"){
-                ide=options[key];
-            }else{
-                object[key]=options[key];
-            }
-        }
+        object["mapservice"]=mapservice;*/
+        var ide=options.id;
+        delete options.id;
+        options.name=name;
+        options.server=server;
+        options.servlet=servlet;
+        options.mapservice=mapservice;
         var config ={
             id: ide,
-            options: object
+            options: options
         };
+        return config;
+    },
+    createArcIMSLayer : function(name,server,servlet,mapservice,options){
+        var config=this.createArcConfig(name,server,servlet,mapservice,options);
         return new viewer.viewercontroller.flamingo.FlamingoArcIMSLayer(config);
+    },
+    createArcServerLayer : function(name,server,servlet,mapservice,options){    
+        var newMapservice= servlet.substring(21,servlet.toLowerCase().indexOf("/mapserver"));
+        mapservice=newMapservice;
+        var config=this.createArcConfig(name,server,servlet,mapservice,options);
+        //xxx for REST remove the next line.
+        delete config.options.servlet;        
+        config.options.esriArcServerVersion="9.3";
+        config.options.dataframe="layers";        
+        return new viewer.viewercontroller.flamingo.FlamingoArcServerLayer(config);
     },
     /**
      * Create a tool that is useable in Flamingo-mc

@@ -430,7 +430,6 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.mouseIsOverElement[elementId]=0;   
         var thisObj=this;
         setTimeout(function(){
-            console.log("Mouse is: "+thisObj.isMouseOver());
             if (!thisObj.isMouseOver()){
                 thisObj.hide();
             }
