@@ -183,7 +183,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return instance;
     },
     
-    initLayers : function (){
+    addService: function(service) {
+       if(this.app.services[service.id] == undefined) {
+           this.app.services[service.id] = service;
+       }
+   },
+   
+   addAppLayer:function(appLayer) {
+       if(this.app.appLayers[appLayer.id] == undefined) {
+           this.app.appLayers[appLayer.id] = appLayer;
+       }
+   },
+   
+   setSelectedContent: function(selectedContent) {
+       //clearLayers();
+       this.app.selectedContent = selectedContent;
+       //initLayers();
+       this.fireEvent("selectedContentChanged");
+   },
+   
+   initLayers : function (){
         var appLayers = this.app.appLayers;
         for ( var i in appLayers){
             var appLayer = appLayers[i];
