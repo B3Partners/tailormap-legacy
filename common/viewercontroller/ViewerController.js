@@ -118,12 +118,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js: initializeButtons();
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
 
-            this.initializeConfiguredComponents();
+            
             var layersloaded = this.bookmarkValuesFromURL();
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();
             }
+            this.initializeConfiguredComponents();
             
         // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
             
@@ -377,15 +378,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var url = document.URL;
         var index = url.indexOf("?");
         var params = url.substring(index +1);
+        
         var parameters = params.split("&");
         for ( var i = 0 ; i < parameters.length ; i++){
             var parameter = parameters[i];
             var index2 = parameter.indexOf("=");
             var type = parameter.substring(0,index2);
             var value = parameter.substring(index2 +1);
-            if(type == "layers"){
-                var values = value.split(",");
-                this.setLayersVisible(values,true);
+            if(type == "bookmark"){
+                var me = this;
+                Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
+                layersLoaded = true;
+            }else if(type == "layers"){
+                //var values = value.split(",");
+                //this.setLayersVisible(values,true);
+                this.loadBookmarkLayers(value);
                 layersLoaded = true;
             }else if(type == "extent"){
                 var coords = value.split(",");
@@ -399,7 +406,40 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return layersLoaded;
     },
+    loadBookmarkLayers : function(layers){
+        var applayers = this.app.appLayers;
+        var values = layers.split(",");
+        this.setLayersVisible(values,true);
+    },
+    succesReadUrl : function(code){
+        var parameters = code.split("&");
+        for ( var i = 0 ; i < parameters.length ; i++){
+            var parameter = parameters[i];
+            var index2 = parameter.indexOf("=");
+            var type = parameter.substring(0,index2);
+            var value = parameter.substring(index2 +1);
+            if(type == "layers"){
+                //var values = value.split(",");
+                //this.setLayersVisible(values,true);
+                this.loadBookmarkLayers(value);
+            }else if(type == "extent"){
+                var coords = value.split(",");
+                var newExtent = new Object();
+                newExtent.minx=coords[0];
+                newExtent.miny=coords[1];
+                newExtent.maxx=coords[2];
+                newExtent.maxy=coords[3];
+                this.mapComponent.getMap().zoomToExtent(newExtent);
+            }else if(type == "selectedcontent"){
+                var blaa=9;
+            }
+        }
+    },
+    failureReadUrl : function(code){
+        //
+    },
     getBookmarkUrl : function(){
+        var allParams = "";
         var url = document.URL;
         var index = url.indexOf("?");
         var newUrl = url.substring(0,index)+"?";
@@ -410,25 +450,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var index2 = parameter.indexOf("=");
             var type = parameter.substring(0,index2);
             if(type != "layers" && type != "extent"){
-                newUrl += parameter+"&";
+                allParams += parameter+"&";
             }
         }
         
         var visLayers = this.getVisibleLayerIds();
         if(visLayers.length != 0 ){
-            newUrl += "layers=";
+            allParams += "layers=";
             for(var x = 0 ; x < visLayers.length ; x++){
                 if(x == visLayers.length-1){
-                    newUrl += visLayers[x]+"&";
+                    allParams += visLayers[x]+"&";
                 }else{
-                    newUrl += visLayers[x]+",";
+                    allParams += visLayers[x]+",";
                 }
             }
         }
         
         var extent = this.mapComponent.getMap().getExtent();
-        newUrl += "extent=" + extent.minx +","+ extent.miny +","+ extent.maxx +","+ extent.maxy;
+        allParams += "extent=" + extent.minx +","+ extent.miny +","+ extent.maxx +","+ extent.maxy;
         
+        newUrl += allParams;
         return newUrl;
     }
 });

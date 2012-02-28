@@ -22,6 +22,8 @@ Ext.define ("viewer.components.Bookmark",{
     extend: "viewer.components.Component",
     form: null,
     url: "",
+    compUrl: "",
+    baseUrl: "",
     config:{
         title: "",
         titlebarIcon: "",
@@ -60,7 +62,8 @@ Ext.define ("viewer.components.Bookmark",{
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Compact link',
-                name: 'compactlink'
+                name: 'compactlink',
+                id: 'compactlink'
             },{ 
                 xtype: 'button',
                 text: 'Toevoegen aan favorieten',
@@ -84,16 +87,33 @@ Ext.define ("viewer.components.Bookmark",{
         });
     },
     showWindow : function(){
-        this.url = viewerController.getBookmarkUrl();
+        this.url = this.viewerController.getBookmarkUrl();
+        var index = this.url.indexOf("?");
+        this.baseUrl = this.url.substring(0,index+1);
+        var params = this.url.substring(index +1);
+        
+        //selected content
+        var selectedContent = this.viewerController.app.selectedContent;
+        //params +="&"+selectedContent;
+
+        var me = this;
+        Ext.create("viewer.Bookmark").createBookmark(params,function(code){me.succesCompactUrl(code);},function(code){me.failureCompactUrl(code);});
+
         this.form.getChildByElement("bookmark").setValue(this.url);
         this.popup.show();
+    },
+    succesCompactUrl : function(code){
+        this.compUrl = this.baseUrl+"bookmark="+code;
+        this.form.getChildByElement("compactlink").setValue(this.compUrl);
+    },
+    failureCompactUrl : function(code){
+        // 
     },
     hideWindow : function(){
         this.popup.hide();
     },
     addToFavorites : function(){
         if(Ext.firefoxVersion != 0){
-            //window.sidebar.addPanel(this.title, this.url, "");
             alert("This browser doesn't support this function.");
         }else if(Ext.ieVersion != 0){
             window.external.AddFavorite(this.url, this.title);
