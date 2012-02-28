@@ -80,13 +80,7 @@ public class AppInfoActionBean implements ActionBean {
             // TODO check if user has rights to appLayer
             
             JSONObject info = new JSONObject();
-            
-            JSONObject details = new JSONObject();
-            for(Map.Entry<String,String> e: appLayer.getDetails().entrySet()) {
-                details.put(e.getKey(), e.getValue());
-            }
-            info.put("details", details);
-            
+                        
             Layer l = null;
             try {
                 l = (Layer)Stripersist.getEntityManager().createQuery("from Layer where service = :service and name = :n order by virtual desc")
