@@ -96,24 +96,16 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 children.put(j);
             }
         } else if(type.equals("s")) {
+            // TODO check readers
             
             GeoService gs = em.find(GeoService.class, new Long(id));
             // GeoService may be invalid and not have a top layer
             if(gs.getTopLayer() != null) {
+                // TODO check readers
+                
                 for(Layer sublayer: gs.getTopLayer().getChildren()) {
-                    JSONObject j = new JSONObject();
-                    j.put("id", "l" + sublayer.getId());
-                    if(sublayer.getTitleAlias() != null){
-                        j.put("name", sublayer.getTitleAlias());
-                    }else if(sublayer.getTitle() != null){
-                        j.put("name", sublayer.getTitle());
-                    }else{
-                        j.put("name", sublayer.getName());
-                    }
-                    j.put("type", "layer");
-                    j.put("isLeaf", sublayer.getChildren().isEmpty());
+                    JSONObject j = layerJSON(sublayer);
                     j.put("parentid", nodeId);
-                    j.put("isVirtual", sublayer.isVirtual());
                     children.put(j);
                 }
             }
@@ -123,23 +115,29 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 
                 // TODO check readers
                 
-                JSONObject j = new JSONObject();
-                j.put("id", "l" + sublayer.getId());
-                if(sublayer.getTitleAlias() != null){
-                    j.put("name", sublayer.getTitleAlias());
-                }else if(sublayer.getName() != null){
-                    j.put("name", sublayer.getName());
-                }else{
-                    j.put("name", sublayer.getTitle());
-                }
-                j.put("type", "layer");
-                j.put("isLeaf", sublayer.getChildren().isEmpty());
+                JSONObject j = layerJSON(sublayer);
                 j.put("parentid", nodeId);
-                j.put("isVirtual", sublayer.isVirtual());
                 children.put(j);
             }
         }
         
         return new StreamingResolution("application/json", new StringReader(children.toString()));          
     }    
+    
+    private static JSONObject layerJSON(Layer l) throws JSONException {
+        JSONObject j = new JSONObject();
+        j.put("id", "l" + l.getId());
+        j.put("name", l.getName());
+        String alias = l.getName();
+        if(l.getTitleAlias() != null){
+            alias = l.getTitleAlias();
+        }else if(l.getTitle() != null){
+            alias = l.getTitle();
+        }
+        j.put("alias", alias);
+        j.put("type", "layer");
+        j.put("isLeaf", l.getChildren().isEmpty());
+        j.put("isVirtual", l.isVirtual());
+        return j;
+    }
 }
