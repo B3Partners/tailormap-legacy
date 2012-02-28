@@ -240,7 +240,6 @@ public class Application  {
             
             // Prevent n+1 queries for each ApplicationLayer            
             Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
-                    + "left join fetch al.attributes "
                     + "left join fetch al.details "
                     + "left join fetch al.readers "
                     + "left join fetch al.writers "
