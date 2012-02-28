@@ -20,8 +20,8 @@
  * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 
-Ext.define('TreeNode', {
-    extend: 'Ext.data.NodeInterface',
+Ext.define('select.TreeNode', {
+    extend: 'Ext.data.Model',
     fields: [
         {name: 'id', type: 'string'},
         {name: 'children', type: 'array'},
@@ -36,18 +36,18 @@ Ext.define('TreeNode', {
         {name: 'text', type: 'string', mapping: 'name'}
     ],
     get: function(fieldName) {
-        var nodeType = '';
-        if(fieldName == "icon") {
-            nodeType = this.get('type');
-            if(nodeType == "category" || nodeType == "level") return contextPath + '/viewer-html/components/resources/map.gif';
-            if(nodeType == "layer" || nodeType == "appLayer") return contextPath + '/viewer-html/components/resources/folder.gif';
-            if(nodeType == "service") return contextPath + '/viewer-html/components/resources/serviceok.gif';
-        }
-        if(fieldName == "leaf") {
-            return this.get('isLeaf');
-        }
-        // Return default value, taken from ExtJS source
-        return this[this.persistenceProperty][fieldName];
+            var nodeType = '';
+            if(fieldName == "icon") {
+                nodeType = this.get('type');
+                if(nodeType == "category" || nodeType == "level") return contextPath + '/viewer-html/components/resources/folder.png';
+                if(nodeType == "layer" || nodeType == "appLayer") return contextPath + '/viewer-html/components/resources/map.png';
+                if(nodeType == "service") return contextPath + '/viewer-html/components/resources/serviceok.png';
+            }
+            if(fieldName == "leaf") {
+                return this.get('isLeaf');
+            }
+            // Return default value, taken from ExtJS source
+            return this[this.persistenceProperty][fieldName];
     }
 });
 
@@ -72,7 +72,7 @@ Ext.define ("viewer.components.SelectionModule",{
             currentState: null,
             treeNodes: []
         },
-        registeryTree: {
+        registryTree: {
             treePanel: null,
             treeStore: null,
             currentState: null,
@@ -235,7 +235,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     xtype: 'container',
                     flex: 1,
                     html: '<div id="applicationTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: visible;"></div>' + 
-                          '<div id="registeryTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>' + 
+                          '<div id="registryTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>' + 
                           '<div id="customTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>'
                 },
                 { xtype: 'container', width: 30, layout: { type: 'vbox', align: 'center' }, items: [
@@ -296,7 +296,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         
         var defaultStoreConfig = {
-            model: 'TreeNode',
+            model: select.TreeNode,
             root: {
                 text: 'Root',
                 expanded: true,
@@ -340,18 +340,30 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         
         if(me.config.selectLayers) {
-            me.treePanels.registeryTree.treeStore = Ext.create('Ext.data.TreeStore', defaultStoreConfig);
-            me.treePanels.registeryTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply(defaultTreeConfig, {
-                treePanelType: 'registeryTree',
-                store: me.treePanels.registeryTree.treeStore,
-                renderTo: 'registeryTreeContainer',
+            var serviceStore = Ext.create("Ext.data.TreeStore", {
+                autoLoad: true,
+                proxy: {
+                    type: 'ajax',
+                    url: actionBeans["geoserviceregistry"]
+                },
+                defaultRootId: 'c0',
+                defaultRootProperty: 'children',
+                model: select.TreeNode,
+                nodeParam: 'nodeId'
+            });    
+
+            me.treePanels.registryTree.treeStore = serviceStore;
+            me.treePanels.registryTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply(defaultTreeConfig, {
+                treePanelType: 'registryTree',
+                store: me.treePanels.registryTree.treeStore,
+                renderTo: 'registryTreeContainer',
                 tbar: [{ xtype : 'textfield' },
                     {
                         xtype: 'button',
                         text: 'Zoeken',
                         handler: function() {
                             var tree = me.treePanels.applicationTree.treePanel;
-                            me.treePanels.registeryTree.currentState = tree.getState();
+                            me.treePanels.registryTree.currentState = tree.getState();
                             console.log(tree.getDockedItems());
                         }
                     }
@@ -491,7 +503,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var customServiceUrlSelect = Ext.getCmp('customServiceUrlSelect');
         var customServiceUrlButton = Ext.getCmp('customServiceUrlButton');
         var applicationTreeContainer = Ext.get('applicationTreeContainer');
-        var registeryTreeContainer = Ext.get('registeryTreeContainer');
+        var registryTreeContainer = Ext.get('registryTreeContainer');
         var customTreeContainer = Ext.get('customTreeContainer');
         
         if(newval) {
@@ -499,15 +511,15 @@ Ext.define ("viewer.components.SelectionModule",{
             customServiceUrlSelect.setVisible(false);
             customServiceUrlButton.setVisible(false);
             applicationTreeContainer.setStyle('visibility', 'hidden');
-            registeryTreeContainer.setStyle('visibility', 'hidden');
+            registryTreeContainer.setStyle('visibility', 'hidden');
             customTreeContainer.setStyle('visibility', 'hidden');
             if(field.id == 'radioApplication') {
                 applicationTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.applicationTree.treePanel;
             }
             if(field.id == 'radioRegistry') {
-                registeryTreeContainer.setStyle('visibility', 'visible');
-                me.activeTree = me.treePanels.registeryTree.treePanel;
+                registryTreeContainer.setStyle('visibility', 'visible');
+                me.activeTree = me.treePanels.registryTree.treePanel;
             }
             if(field.id == 'radioCustom') {
                 customTreeContainer.setStyle('visibility', 'visible');
@@ -538,12 +550,12 @@ Ext.define ("viewer.components.SelectionModule",{
         var treeNode = null;
         if(!node.virtual) {
             var leaf = true;
-            if(node.children.length > 0) leaf = false;
+            if(node.children && node.children.length > 0) leaf = false;
             treeNode = me.createNode('l' + Ext.id(), node.title, serviceid, leaf);
             treeNode.origData.layerName = node.name;
             treeNode.type = 'layer';
         }
-        if(node.children.length > 0) {
+        if(node.children && node.children.length > 0) {
             var childnodes = [];
             for(var i = 0 ; i < node.children.length; i++) {
                 var l = me.createCustomNodesList(node.children[i], serviceid);
