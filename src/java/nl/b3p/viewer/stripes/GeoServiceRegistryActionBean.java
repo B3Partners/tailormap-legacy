@@ -87,6 +87,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             for(GeoService service: c.getServices()) {
                 JSONObject j = new JSONObject();
                 j.put("id", "s" + service.getId());
+                j.put("service", service.toJSONObject(false));
                 j.put("name", service.getName());
                 j.put("type", "service");
                 j.put("isLeaf", service.getTopLayer() == null);
