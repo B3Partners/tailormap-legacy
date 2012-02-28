@@ -25,7 +25,7 @@
  */
 Ext.define("viewer.components.Component",{
     extend: "Ext.util.Observable", 
-    events: [],
+    events: null,
     isPopup : false,
     popup: null,
     config: {
@@ -45,6 +45,7 @@ Ext.define("viewer.components.Component",{
         if(this.isPopup){
             this.popup = Ext.create("viewer.components.ScreenPopup",config);
         }
+        this.events = [];
         return this;
     },
     getContentDiv : function (){
