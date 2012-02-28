@@ -85,7 +85,7 @@ Ext.define ("viewer.components.Maptip",{
                         html+=this.replaceByAttributes(appLayer.details["summary.description"],feature);
                     html+="</div>";                        
                     html+="<div class='maptip_link'>";
-                        html+="<a href='"+this.replaceByAttributes(appLayer.details["summary.description"],feature)+">link</a>";
+                        html+="<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>";
                     html+="</div>";
                 html+="</div>"                    
             }
@@ -98,7 +98,6 @@ Ext.define ("viewer.components.Maptip",{
                 y= (options.extent.miny+options.extent.maxy)/2;
             }   
             this.balloon.setPosition(x,y,true);
-            //this.balloon.getContentElement().dom.innerHTML="";
             this.balloon.addContent(html);
             this.balloon.show();
         }        
@@ -178,7 +177,8 @@ Ext.define ("viewer.components.Maptip",{
     
 });
 
-/**
+/** Creates a balloon.
+ *TODO: Place in own file so it can be used by other components and make it a ext class
  * @param mapDiv The div element where the map is in.
  * @param webMapController the webMapController that controlles the map
  * @param balloonId the id of the DOM element that represents the balloon.
