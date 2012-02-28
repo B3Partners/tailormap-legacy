@@ -57,7 +57,7 @@ Ext.define ("viewer.components.Search",{
             data : this.searchconfigs
         });
         
-        this.form = new Ext.form.FormPanel({
+        this.form = Ext.create("Ext.form.Panel",{
             frame: false,
             items: [{
                 xtype: 'combo',
@@ -66,11 +66,11 @@ Ext.define ("viewer.components.Search",{
                 queryMode: 'local',
                 displayField: 'name',
                 valueField: 'id',
-                id: 'searchName'
+                id: 'searchName' + this.name
             },{ 
                 xtype: 'textfield',
                 name: 'searchfield',
-                id: 'searchfield'
+                id: 'searchfield' + this.name
             },{ 
                 xtype: 'button',
                 text: 'Zoeken',
@@ -99,15 +99,15 @@ Ext.define ("viewer.components.Search",{
             renderTo: this.getContentDiv()
         });
         
-        this.form.getChildByElement("cancel").setVisible(false);
+     //   this.form.getChildByElement("cancel").setVisible(false);
         this.results.hide();
     },
     showWindow : function(){
         this.popup.show();
     },
     search : function(){
-        var searchText = this.form.getChildByElement("searchfield").getValue();
-        var searchName = this.form.getChildByElement("searchName").getValue();
+        var searchText = this.form.getChildByElement("searchfield" + this.name).getValue();
+        var searchName = this.form.getChildByElement("searchName" + this.name).getValue();
         
         if(searchName != null && searchText != ""){
             var requestPath=  contextPath+"/action/search";
