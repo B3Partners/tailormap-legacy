@@ -129,8 +129,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             
         // XXX viewer.js: viewerController.loadRootLevel(app.rootLevel);
             
-        //  loadBaseLayers();
-
         //testComponents();
         } catch(e) {
             if (window.console && console.log){
@@ -344,40 +342,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         } else {
             return null;
         }
-    },    
-    
-    /** @deprecated To be replaced by loading layers from rootLevel */
-    loadBaseLayers: function() {
-        //console.log("Loading base layers");
-        
-        var layerUrl = "http://osm.kaartenbalie.nl/wms/mapserver?";
-
-        var options={
-            timeout: 30,
-            retryonerror: 10,
-            getcapabilitiesurl: layerUrl,
-            ratio: 1,
-
-            showerrors: true,
-            initService: true
-        };
-
-        var ogcOptions={
-            format: "image/png",
-            transparent: true,
-            exceptions: "application/vnd.ogc.se_inimage",
-            srs: "EPSG:28992",
-            version: "1.1.1",
-            layers: "OpenStreetMap",
-            styles: "",
-            noCache: false // TODO: Voor achtergrond kaartlagen wel cache gebruiken
-        };
-
-        options["isBaseLayer"]=false;
-
-        var osmLayer = this.mapComponent.createWMSLayer("OSM",layerUrl , ogcOptions, options);
-        this.mapComponent.getMap().addLayer(osmLayer);        
-    },
+    },        
     
     /** @deprecated */
     zoomToExtent : function(minx,miny,maxx,maxy){
