@@ -59,7 +59,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
             xml+="/>"    
         }
         xml+="</fmc:"+this.getTagName()+">";
-        console.log(xml);
+        //console.log(xml);
         return xml;
     },
 
