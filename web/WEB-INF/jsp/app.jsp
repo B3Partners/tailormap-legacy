@@ -94,6 +94,13 @@ ${actionBean.componentSourceHTML}
 
         <script type="text/javascript">
             
+            if(console == undefined) {
+                var console = {};
+                console.log = function(logmsg) {
+                    //alert(logmsg);
+                }
+            }
+                
             var contextPath = "${contextPath}";
             var absoluteURIPrefix = "${absoluteURIPrefix}";
 
