@@ -43,7 +43,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @constructor
      */
     constructor: function(viewerType, mapId, app) {
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING);
         this.app = app;
         
         /* If a layout tree structure is supplied, dynamically create DOM elements
@@ -197,21 +196,57 @@ Ext.define("viewer.viewercontroller.ViewerController", {
    },
    
    setSelectedContent: function(selectedContent) {
-       //clearLayers();
+       this.clearLayers();
+       console.log("changing selected content to ", selectedContent);
        this.app.selectedContent = selectedContent;
-       //initLayers();
-       this.fireEvent("selectedContentChanged");
+       this.uncheckUnselectedContent();
+       this.initLayers();
+       this.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
    },
+
+    uncheckUnselectedContent: function() {
+        this.app.appLayers[1205].checked = false;
+    },
+    
+   clearLayers: function() {
+       this.mapComponent.getMap().removeAllLayers();
+       this.layers = [];
+    },
    
    initLayers : function (){
-        var appLayers = this.app.appLayers;
-        for ( var i in appLayers){
-            var appLayer = appLayers[i];
-            if(appLayer.checked){
-                this.setLayerVisible(appLayer.serviceId, appLayer.layerName, true);
+       
+       for(var i in this.app.selectedContent) {
+           var content = this.app.selectedContent[i];
+           if(content.type == "appLayer") {
+               this.initAppLayer(content.id);
+            } else {
+                this.initLevel(content.id);
             }
         }
     },
+    
+    initAppLayer: function(appLayerId) {
+        var appLayer = this.app.appLayers[appLayerId];
+        if(appLayer.checked){
+            this.setLayerVisible(appLayer.serviceId, appLayer.layerName, true);
+        }               
+    },
+    
+    initLevel: function(levelId) {
+        var level = this.app.levels[levelId];
+        if(level.layers) {
+            for(var i in level.layers) {
+                this.initAppLayer(level.layers[i]);
+            }
+        }
+        
+        if(level.children) {
+            for(var i in level.children) {
+                this.initLevel(level.children[i]);
+            }
+        }
+    },
+    
     setLayerVisible : function (serviceId, layerName, visible){
         var layer = this.getLayer(serviceId, layerName);
         this.mapComponent.getMap().setLayerVisible(layer, visible);
