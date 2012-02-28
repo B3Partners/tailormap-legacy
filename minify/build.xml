@@ -46,6 +46,8 @@
           <!--					The Flamingo-MC implementation		-->
           <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo">
             <file name="FlamingoLayer.js"/>
+            <file name="FlamingoArcLayer.js"/>
+            <file name="FlamingoArcServerLayer.js"/>
             <file name="FlamingoArcIMSLayer.js"/>
             <file name="FlamingoWMSLayer.js"/>
             <file name="FlamingoVectorLayer.js"/>
