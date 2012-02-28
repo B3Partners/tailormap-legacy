@@ -94,8 +94,10 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Remove all the layers
      */
     removeAllLayers:function(){
-        for (var i=0; i < this.layers().length; i++){
-            removeLayer(this.layers[i]);
+        // loop backwards because this.layers is updated in loop
+        for (var i=this.layers.length-1; i > 0; i--){
+            console.log("remove layer " + this.layers[i].id, this.layers[i]);
+            this.removeLayer(this.layers[i]);
         }
     },
     /**
