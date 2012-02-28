@@ -99,7 +99,8 @@ ${actionBean.componentSourceHTML}
                 "feature": "<stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/>",
                 "sld": "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>",
                 "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>",
-                "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>"               
+                "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>",
+                "geoserviceregistry": "<stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/>"
             };
             
             var appId = "${actionBean.application.id}";
