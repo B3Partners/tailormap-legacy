@@ -20,11 +20,131 @@
  * @author <a href="mailto:geertplaisier@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.Search",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
+    form: null,
+    searchResult: null,
+    results: null,
+    config:{
+        title: null,
+        iconUrl: null,
+        tooltip: null,
+        searchconfigs: null,
+        isPopup: true
+    },    
     constructor: function (conf){        
         viewer.components.Search.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
+        this.initConfig(conf);
+        this.loadButton();   
+        this.loadWindow();
         return this;
-    }      
+    },
+    loadButton : function(){
+        Ext.create('Ext.Button', {
+            renderTo: this.div,
+            icon: this.iconUrl,
+            tooltip: this.tooltip,
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.showWindow
+                }
+            }
+        });
+    },
+    loadWindow : function(){
+        var configs = Ext.create('Ext.data.Store', {
+            fields: ['id', 'name', 'url'],
+            data : this.searchconfigs
+        });
+        
+        this.form = new Ext.form.FormPanel({
+            frame: false,
+            items: [{
+                xtype: 'combo',
+                fieldLabel: 'Zoek op',
+                store: configs,
+                queryMode: 'local',
+                displayField: 'name',
+                valueField: 'id',
+                id: 'searchName'
+            },{ 
+                xtype: 'textfield',
+                name: 'searchfield',
+                id: 'searchfield'
+            },{ 
+                xtype: 'button',
+                text: 'Zoeken',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: this.search
+                    }
+                }
+            },{ 
+                xtype: 'button',
+                text: 'Annuleren',
+                name: 'cancel',
+                id: 'cancel',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: this.cancel
+                    }
+                }
+            }],
+            renderTo: this.getContentDiv()
+        });
+        this.results = Ext.create('Ext.panel.Panel', {
+            title: 'Resultaten:',
+            renderTo: this.getContentDiv()
+        });
+        
+        this.form.getChildByElement("cancel").setVisible(false);
+        this.results.hide();
+    },
+    showWindow : function(){
+        this.popup.show();
+    },
+    search : function(){
+        var searchText = this.form.getChildByElement("searchfield").getValue();
+        var searchName = this.form.getChildByElement("searchName").getValue();
+        
+        if(searchName != null && searchText != ""){
+            var requestPath=  contextPath+"/action/search";
+            var requestParams = {};
+
+            requestParams["searchText"]= searchText;
+            requestParams["searchName"]= searchName;
+            requestParams["appId"]= appId;
+            requestParams["componentName"]= this.name;
+            var me = this;
+            Ext.Ajax.request({ 
+                url: requestPath, 
+                params: requestParams, 
+                success: function ( result, request ) {
+                    me.searchResult = JSON.parse(result.responseText);
+                    me.showSearchResults();
+                },
+                failure: function(a,b,c) {
+                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                }
+            });
+        }else{
+            Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevult te worden.");
+            // search request is not complete
+        }
+        
+        this.form.getChildByElement("cancel").setVisible(true);
+    },
+    showSearchResults : function(){
+        this.results.show();
+        //this.resultsgetChildByElement("html").setValue("<h1>test</h1>");
+    },
+    cancel : function(){
+        this.form.getChildByElement("searchfield").setValue("");
+        this.form.getChildByElement("searchName").setValue("");
+        this.form.getChildByElement("cancel").setVisible(false);
+        this.results.hide();
+    }
 });
 
