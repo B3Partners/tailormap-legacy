@@ -32,7 +32,7 @@ Ext.define ("viewer.components.LayerSelector",{
     constructor: function (conf){        
         this.initConfig(conf);   
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE);
-        var requestPath=  contextPath+"/action/componentConfigLayerList";
+        var requestPath= actionBeans["layerlist"];
         var requestParams = {};
         
         requestParams[this.restriction]= true;
