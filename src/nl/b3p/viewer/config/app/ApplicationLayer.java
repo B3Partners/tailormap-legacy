@@ -162,14 +162,6 @@ public class ApplicationLayer {
             }
         }
 
-        if(!getAttributes().isEmpty()) {
-            JSONArray attributes = new JSONArray();
-            o.put("attributes", attributes);
-            for(ConfiguredAttribute ca: getAttributes()) {
-                attributes.put(ca.toJSONObject());
-            }
-        }
-        
         return o;
     }
 }
