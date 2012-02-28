@@ -224,7 +224,7 @@ public class Level {
             if(parentLevel.equals(level)) {
                 return true;
             }
-            parentLevel = parent.getParent();
+            parentLevel = parentLevel.getParent();
         } while(parentLevel != null);
         return false;
     }
