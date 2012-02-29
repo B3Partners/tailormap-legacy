@@ -172,6 +172,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * Sets a layer visible/invisible
      */
     setLayerVisible : function (layer, visible){
+        viewerController.app.appLayers[layer.appLayerId].checked = visible;
         this.fire(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,{layer:layer, visible:visible});
     },
 

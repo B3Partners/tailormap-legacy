@@ -187,6 +187,7 @@ Ext.define ("viewer.components.TOC",{
     },
     
     getAppLayerId : function (name){
+        // Not the correct way to get the applayerID TODO: Fix it
         for ( var i in this.appLayers){
             var appLayer = this.appLayers[i];
             if(appLayer.layerName== name){

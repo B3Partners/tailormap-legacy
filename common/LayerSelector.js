@@ -23,6 +23,7 @@ Ext.define ("viewer.components.LayerSelector",{
     extend: "viewer.components.Component",    
     popupWin:null,
     layerList : null,
+    layerArray : null,
     combobox : null,
     div: null,
     config: {
@@ -31,6 +32,25 @@ Ext.define ("viewer.components.LayerSelector",{
     }, 
     constructor: function (conf){        
         this.initConfig(conf);   
+        var layers = Ext.create('Ext.data.Store', {
+            fields: ['id', 'title','layer'],
+            data : []
+        });
+
+        this.combobox = Ext.create('Ext.form.ComboBox', {
+            fieldLabel: 'Kies kaartlaag',
+            store: layers,
+            queryMode: 'local',
+            displayField: 'title',
+            valueField: 'layer',
+            listeners :{
+                change:{
+                    fn: this.changed,
+                    scope: this
+                }
+            },
+            renderTo: this.div
+        });
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE);
         var requestPath= actionBeans["layerlist"];
         var requestParams = {};
@@ -53,35 +73,18 @@ Ext.define ("viewer.components.LayerSelector",{
         return this;
     },
     initLayers : function (){
-        var layerArray = new Array();
+        this.layerArray = new Array();
+        var store = this.combobox.getStore();
         for (var i = 0 ; i < this.layerList.length ;i++){
             var l = this.layerList[i];
             l.title = l.titleAlias || l.title ;
             l.layer = l;
-            layerArray.push(l);
+            store.add(l);
         }
-        var layers = Ext.create('Ext.data.Store', {
-            fields: ['id', 'title','layer'],
-            data : layerArray
-        });
-
-        this.combobox = Ext.create('Ext.form.ComboBox', {
-            fieldLabel: 'Kies kaartlaag',
-            store: layers,
-            queryMode: 'local',
-            displayField: 'title',
-            valueField: 'layer',
-            listeners :{
-                change:{
-                    fn: this.changed,
-                    scope: this
-                }
-            },
-            renderTo: this.div
-        });
+        
     },
     changed :function (combobox,item,previousSelected){
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,item,this);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,item,previousSelected,this);
     },
     getValue : function (){
         return this.combobox.getValue();

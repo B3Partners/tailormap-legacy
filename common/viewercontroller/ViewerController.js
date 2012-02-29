@@ -151,6 +151,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var layoutComponent = list[i];
             var component = this.app.components[layoutComponent.componentName];
             component.config.div = layoutComponent.htmlId;
+            component.config.isPopup = layoutComponent.isPopup;
+            component.config.showOnStartup = layoutComponent.showOnStartup;
             this.createComponent(component.name, component.className, component.config, component.details);
         }
         
@@ -205,7 +207,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
    },
 
     uncheckUnselectedContent: function() {
-        this.app.appLayers[1205].checked = false;
+        //this.app.appLayers[1205].checked = false;
     },
     
    clearLayers: function() {
@@ -227,9 +229,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     initAppLayer: function(appLayerId) {
         var appLayer = this.app.appLayers[appLayerId];
-        if(appLayer.checked){
-            this.setLayerVisible(appLayer.serviceId, appLayer.layerName, true);
-        }               
+        console.log(appLayer.layerName);
+        this.setLayerVisible(appLayer.serviceId, appLayer.layerName, appLayer.checked);
+        
     },
     
     initLevel: function(levelId) {
@@ -258,10 +260,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return this.layers[id];
     },
+    getApplayer : function (serviceId, layerName){
+        for ( var i in this.app.appLayers){
+            var appLayer = this.app.appLayers[i];
+            if(appLayer.layerName== layerName && appLayer.serviceId == serviceId){
+                return appLayer;
+            }
+        }
+        return null;
+    },
     
     createLayer : function (serviceId, layerName){
         var id = serviceId + "_" + layerName;
         var service = this.app.services[serviceId];
+        var appLayer = this.getApplayer(serviceId, layerName);
         var layer = service.layers[layerName];
         var options={
             timeout: 30,
@@ -319,6 +331,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.layers[id] = layerObj;
         }
         layerObj.serviceId = serviceId;
+        layerObj.appLayerId = appLayer.id;
         this.mapComponent.getMap().addLayer(layerObj);  
     },
     

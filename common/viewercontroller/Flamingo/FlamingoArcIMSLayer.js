@@ -30,5 +30,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     
     getTagName: function(){
         return "LayerArcIMS";
+    },
+    setQuery : function (query){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setLayerProperty", this.id,"query", query);
+        this.map.update();
     }
 });

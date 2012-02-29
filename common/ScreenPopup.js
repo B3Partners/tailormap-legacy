@@ -23,7 +23,7 @@ Ext.define ("viewer.components.ScreenPopup",{
     popupWin:null,
     config:{
         title: "",
-        showOnStart: false,
+        showOnStartup: null,
         width : 400,
         height: 600
     },
@@ -31,6 +31,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         this.initConfig(conf);   
         var con = document.createElement('div');
         con.style.height=  "100%";
+        con.style["background"] = "#FFFFFF";
         con.style.width=  "100%";
         this.popupWin = Ext.create('Ext.window.Window', {
             title: this.title || 'Titel',
@@ -42,9 +43,10 @@ Ext.define ("viewer.components.ScreenPopup",{
             modal: false,
             renderTo: Ext.getBody(),
             contentEl : con,
+            x:300,
             autoScroll: true
         });
-        if(this.showOnStart){
+        if(this.showOnStartup){
             this.popupWin.show();
         }
         return this;

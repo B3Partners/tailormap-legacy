@@ -20,10 +20,10 @@ Ext.define('viewer.LayoutManager', {
         header: {region: 'north', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}},
         leftmargin_top: {region:'west', subregion:'center', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
         leftmargin_bottom: {region:'west', subregion:'south', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
-        left_menu: {region:'center', subregion:'west', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false, defaultLayout: {width: 150}},
+        left_menu: {region:'center', subregion:'west', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false,isPopup:true, defaultLayout: {width: 150}},
         top_menu: {region:'none'},
         content: {region:'center', subregion:'center', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false, defaultLayout: {}},
-        popupwindow: { region: 'none', isPopup: true },
+        popupwindow: { region: 'none', isPopup: true,showOnStartup:true },
         rightmargin_top: {region:'east', subregion:'center', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
         rightmargin_bottom: {region:'east', subregion:'south', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
         footer: {region:'south', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}}
@@ -287,6 +287,8 @@ Ext.define('viewer.LayoutManager', {
             };
             if(regionDefaultConfig.isPopup) {
                 componentItem.isPopup = true;
+            }
+            if(regionDefaultConfig.showOnStartup) {
                 componentItem.showOnStartup = true;
             }
             me.componentList.push(componentItem);

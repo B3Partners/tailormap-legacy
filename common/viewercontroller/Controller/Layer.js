@@ -16,6 +16,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     visible: false,
     //service id from where this layer is created
     serviceId: 0,
+    appLayerId: 0,
     config :{
         id: "id",
         frameworkObject: new Object(),
@@ -109,6 +110,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     },
     getLegendGraphic : function () {
         throw("Layer.getLegendImage() Not implemented! Must be implemented in sub-class");
+    },
+    setQuery : function (query){
+        throw("Layer.setQuery() Not implemented! Must be implemented in sub-class");
     }
 
 });
