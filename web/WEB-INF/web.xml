@@ -97,7 +97,32 @@
     <servlet-mapping>
         <servlet-name>StripesDispatcher</servlet-name>
         <url-pattern>/service/*</url-pattern>
-    </servlet-mapping>    
+    </servlet-mapping>   
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>login</web-resource-name>
+            <url-pattern>/action/login</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>    
+           
+    <security-role>
+        <role-name>*</role-name>
+    </security-role>
+    
+    <login-config>
+        <!-- BASIC is useful during development with lots of redeploys, use
+             FORM for production
+        -->
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/loginfail.jsp</form-error-page>
+        </form-login-config>
+    </login-config>    
 
     <session-config>
         <session-timeout>
