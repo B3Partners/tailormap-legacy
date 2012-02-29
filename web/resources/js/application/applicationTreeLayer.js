@@ -181,9 +181,11 @@ function getJson() {
     var currentAttributes = [];
     Ext.Array.each(attributes, function(attribute) {
         var newAttribute = attribute;
+        if (Ext.getCmp('edit' + attribute.id)!=undefined){
         Ext.getCmp('edit' + attribute.id).getForm().getFields().each(function(field) {
             newAttribute[field.getName()] = field.getValue();
         });
+        }
         newAttribute.filterable = Ext.getCmp('filterable' + attribute.id).getValue();
         newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();
         currentAttributes.push(newAttribute);
