@@ -70,8 +70,9 @@ Ext.define ("viewer.components.Maptip",{
         if (data==null || data =="null" || data==undefined){
             return;
         }
-        for (var layerName in data){
-            var appLayer =  this.getApplicationLayer(layerName,layer.serviceId);
+        for (var layerName in data){            
+            var applayerName=layerName.replace(""+layer.serviceId+"_","");
+            var appLayer =  this.viewerController.getApplayer(layer.serviceId,applayerName);
             for (var index in data[layerName]){
                 var feature=data[layerName][index];                    
                 html+="<div class='maptip_feature'>";

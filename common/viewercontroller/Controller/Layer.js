@@ -51,7 +51,17 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     setOption : function(optionKey,optionValue){
         throw("Layer.getOption() Not implemented! Must be implemented in sub-class");
     },
-
+    
+    /**
+     * Because 1 layer is created per applayer (not combined) every layer has the id:
+     * serviceId_appLayerName
+     * To get the appLayerName the serviceId_ string needs to be removed.
+     * TODO: Must be removed! When combined the id of the layer will be the serviceId
+     * @deprecated        
+     */
+    getAppLayerName: function(){
+        return this.id.replace(""+this.serviceId+"_","");
+    },
     /**
      *Get the id of this layer
      */

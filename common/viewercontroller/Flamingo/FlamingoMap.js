@@ -62,8 +62,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
             throw("FlamingoMap.addLayer(): Given layer not of type FlamingoLayer");
         //call super function
-        this.superclass.addLayer.call(this,layer);
-                
+        this.superclass.addLayer.call(this,layer);                
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'addLayer',layer.toXML());
         }
@@ -76,10 +75,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
             throw("FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer");
         //call super function
-        viewer.viewercontroller.controller.Map.prototype.removeLayer.call(this,layer);
+        this.superclass.removeLayer.call(this,layer);
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
         }
+    },
+    /**
+     * Get layer with flamingo layer id (with mapid_ as prefix)
+     */
+    getLayerByFlamingoId: function(layerId){
+        var l=null;
+        if (layerId.indexOf(this.getId()+"_")==0){
+            l=this.getLayer( (layerId.replace(this.getId() + "_" ,"")));
+        }if (l==null){
+            l=this.getLayer(layerId);
+        }
+        return l;
     },
 
     /**
@@ -89,14 +100,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer)){
             throw("FlamingoMap.setLayerIndex(): Given layer not of type FlamingoLayer.");
         }
-
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),"swapLayer",this.getId()+'_'+layer.getId(),newIndex);
         }
-        return Map.prototype.setLayerIndex(layer,newIndex);
+        return this.superclass.setLayerIndex(layer,newIndex);
     },
     setLayerVisible : function (layer, visible){
-        viewer.viewercontroller.controller.Map.prototype.setLayerVisible.call(this,layer,visible);
+        this.superclass.setLayerVisible.call(this,layer,visible);
         layer.setVisible(visible);
     },
     /**

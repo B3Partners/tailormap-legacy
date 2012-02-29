@@ -143,9 +143,9 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     },
 
     /**
- * Helperfunction: Get a tool based on the given id
- * @param id The id of the Tool which must be retrieved
- **/
+    * Helperfunction: Get a tool based on the given id
+    * @param id The id of the Tool which must be retrieved
+    **/
     getTool : function (id){
         for (var i = 0 ; i < this.tools.length ; i++){
             var tool = this.tools[i];
@@ -170,10 +170,10 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         return foundTools;
     },
     /**
- *Removes a tool based on the given id
- *Must be implemented by subclass
- * @param id Id of the which must be removed
- **/
+    *Removes a tool based on the given id
+    *Must be implemented by subclass
+    * @param id Id of the which must be removed
+    **/
     removeToolById : function (id){
         throw("MapComponent.removeToolById() Not implemented! Must be implemented in sub-class");
     },

@@ -40,6 +40,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_REQUEST]			= "onRequest";
         this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                   = "onSetTool";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]		= "onIdentify";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS]		= "onIdentifyProgress";        
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA]	= "onIdentifyData";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE] = "onUpdateComplete";
         this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]     = "onReallyChangedExtent";
@@ -339,15 +340,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     
     },
     getObject : function(name){
-       if( name instanceof Array){
+        if( name instanceof Array){
             name = name[0];
         } 
-        name=""+name;
-                
+        name=""+name;                
         if(this.getMap(name)!= null){
             return this.getMap(name);
-        }else if( this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){
-        
+        }else if (this.getMap().getLayer(name)!=null){
+            return this.getMap().getLayer(name);
+        }else if(name.indexOf(this.getMap().getId()+"_")==0 && this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){        
             return this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,"")));
         }else if(this.getTool(name) != null){
             return this.getTool(name);
@@ -403,10 +404,22 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             // Make sure "component" is the drawn feature
             var feature = new viewer.viewercontroller.controller.Feature(id,component[1]);
             component = feature;
-        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){
-            component = component[1];
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){            
+            component = {extent: component[1]};
+        }else if ( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS){
+            component= {
+                nr: component[1],
+                total: component[2]
+            };
         }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){
-            component = component[2];
+            var newComponent = new Object();
+            var layerId=component[1];            
+            newComponent.layer = this.getMap().getLayerByFlamingoId(layerId);
+            newComponent.data = component[2];
+            newComponent.extent= component[3];
+            newComponent.nr = component[4];
+            newComponent.total=component[5];
+            component = newComponent;
         }else if (event == viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
             var layerId=component[1];
             //remove id_ from the layer id

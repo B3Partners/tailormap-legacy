@@ -18,9 +18,27 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_SET_TOOL                           : "ON_SET_TOOL",
     
         // Map events:                              11 - 50
-        /** @field */
+        /** @field 
+         * @param map the map object
+         * @param options the options returned
+         * @param options.nr number of layers that are identified
+         * @param options.total number of total layers that needs to be done.
+         **/
+        ON_GET_FEATURE_INFO_PROGRESS          : "ON_GET_FEATURE_INFO_PROGRESS",
+        /** @field
+         * @param map the map object
+         * @param options the options returned
+         * @param options.extent the extent object where this info is done.
+         */
         ON_GET_FEATURE_INFO                   : "ON_GET_FEATURE_INFO",
-        /** @field */
+        /** @field 
+         * @param map the map object that generates the event
+         * @param options the options returned
+         * @param options.data the data. Looks like: data[layername][count][attribute name]= value
+         * @param options.extent the extent with .minx .miny .maxx .maxy
+         * @param options.nr nr of layer that is done
+         * @param options.total total identifies that needs to be done
+         **/        
         ON_GET_FEATURE_INFO_DATA              : "ON_GET_FEATURE_INFO_DATA",
         /** @field */
         ON_ALL_LAYERS_LOADING_COMPLETE        : "ON_ALL_LAYERS_LOADING_COMPLETE",

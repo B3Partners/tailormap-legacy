@@ -48,6 +48,9 @@ Ext.define("viewer.components.Component",{
         this.events = [];
         return this;
     },
+    /**
+      *Returns the id of the content div.
+     */
     getContentDiv : function (){
         if(this.isPopup){
             return this.popup.getContentId();

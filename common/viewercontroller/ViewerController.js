@@ -124,6 +124,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.initLayers();
             }
             
+            
         // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
             
         // XXX viewer.js: viewerController.loadRootLevel(app.rootLevel);
@@ -259,6 +260,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return this.layers[id];
     },
+     /**
+     *Get the application layer
+     *@param serviceId the id of the service
+     *@param layerName the name of the layer
+     *@return the application layer JSON object.
+     */
     getApplayer : function (serviceId, layerName){
         for ( var i in this.app.appLayers){
             var appLayer = this.app.appLayers[i];
@@ -268,8 +275,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
-    
-    createLayer : function (serviceId, layerName){
+    //TODO: Change function to combine appLayers in 1 layer.
+    createLayer : function (serviceId, layerName){        
+        //TODO: The id must be serviceId
         var id = serviceId + "_" + layerName;
         var service = this.app.services[serviceId];
         var appLayer = this.getApplayer(serviceId, layerName);
@@ -278,7 +286,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             timeout: 30,
             retryonerror: 10,
             ratio: 1,
-            id: layer.name,
+            id: id,
             showerrors: true,
             initService: false
         };
@@ -286,7 +294,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layerObj = null;
         if(service.protocol =="wms" ){
             var layerUrl = service.url;
-            options["isBaseLayer"]=false;
+            options["isBaseLayer"]=false;           
             
             var ogcOptions={
                 exceptions: "application/vnd.ogc.se_inimage",
@@ -295,12 +303,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layers:layer.name,
                 visible: false,
                 /*xxx must be set by tool that uses it.
-                    *query_layers: layer.name,*/
+                   *query_layers: layer.name,*/
                 styles: "",
                 format: "image/png",
                 transparent: true,
                 noCache: false
             };
+            if (layer.queryable){
+                ogcOptions.query_layers= layer.name;
+            }
             layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options);
                 
             this.layers[id] = layerObj;

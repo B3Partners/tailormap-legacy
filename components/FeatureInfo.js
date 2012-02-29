@@ -20,11 +20,72 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.FeatureInfo",{
-    extend: "viewer.components.Component",    
-    constructor: function (conf){        
-        viewer.components.FeatureInfo.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
+    extend: "viewer.components.Component",   
+    progressElement: null,
+    constructor: function (conf){      
+        conf.isPopup=true;
+        viewer.components.FeatureInfo.superclass.constructor.call(this, conf);        
+        //this.initConfig(conf);        
+        this.popup.hide();
+        this.progressElement = new Ext.Element(document.createElement("div"));       
+        //register ondata event.
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onGetFeatureInfoData,this);
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfo,this);
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS,this.onProgress,this);
+        
         return this;
-    }      
+    },
+    onGetFeatureInfoData: function(map,options){
+        var dataReturned=false;
+        var contentDiv=Ext.get(this.getContentDiv());
+        contentDiv.update("");   
+        var data=options.data;
+        var html="";
+        for (var layerName in data){
+            var appLayer = this.viewerController.getApplayer(options.layer.serviceId,layerName);
+            html+="<div class='featureinfo_layertitle'>"
+                //TODO: Use the alias of the layer???
+                html+=appLayer.layerName;                
+                html+="<div class='featureinfo_attributes'>";
+                for (var index in data[layerName]){
+                    for (var attributeName in data[layerName][index]){
+                        dataReturned=true;
+                        html+="<div class='featureinfo_attr'>";
+                            html+="<div class='featureinfo_attrname'>"+attributeName+"</div>";
+                            html+="<div class='featureinfo_attrvalue'>"+data[layerName][index][attributeName]+"</div>";
+                        html+="</div>"
+                    }
+                }
+                html+="</div>";
+            html+="</div>";
+        }
+        if(dataReturned){
+        }
+        contentDiv.insertHtml("beforeEnd", html);
+        
+        console.log("GetFeatureInfoData: "+html);
+    },
+    onFeatureInfo: function(map,options){          
+        console.log("onFeatureInfo");
+        Ext.get(this.getContentDiv()).update("");
+        Ext.get(this.getContentDiv()).appendChild(this.progressElement);
+        this.popup.show();
+        this.setProgress(0);      
+        
+    },
+    onProgress: function(map,options){
+        console.log("onProgress total: "+ options.total + " nr: "+options.nr);        
+        if (options.total==options.nr){
+            this.progressElement.hide();
+        }else{
+            this.progressElement.show();
+            //calculate the percentage but add 1 to both because we begin at 0
+            var percentage=100/(options.total+1) * (options.nr+1);
+            this.setProgress(percentage);      
+        }
+    },
+    setProgress: function (progress){
+        this.progressElement.update(""+progress+" %");
+    }
 });
 
