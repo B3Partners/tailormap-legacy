@@ -100,7 +100,6 @@
         type : "popup",
         singleton: true,
         restrictions: ["popupwindow"],
-
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip", title: "Titel", titlebarIcon:"Titelbalk icoon"},
             source: {tooltip: "Feature info", title : "", titlebarIcon:""}
@@ -222,7 +221,7 @@
         sources: ["BorderNavigation.js"],
         closureCompilerSafe: true,        
         singleton: true,
-        restrictions: ["top_menu","content"]        
+        restrictions: ["content"]        
     },
     {
         className: "viewer.components.ScaleBar",
@@ -271,7 +270,7 @@
         name: "TOC",
         sources: ["TOC.js"],
         configSource: ["TOC-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top"],
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"],
     },
     {
         className: "viewer.components.tools.GoogleNavigation",
@@ -314,7 +313,7 @@
             }
         },
         singleton: true,
-        restrictions: ["leftmargin_top", "rightmargin_top"]        
+        restrictions: ["leftmargin_top", "rightmargin_top","leftmargin_bottom", "rightmargin_bottom","popupwindow"]        
     },
     {
         className: "viewer.components.RelatedDocuments",
@@ -380,8 +379,8 @@
         name: "HTML",
         shortName: "HTML",
         sources: ["HTML.js"],
-        configSource: ["HTML-config.js"]
-        //restrictions: ["rightmargin_top", "leftmargin_top"],                
+        configSource: ["HTML-config.js"],
+        restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom","header","footer"]
     },
 
     {
@@ -389,7 +388,7 @@
         name: "Transparantie",
         sources: ["Slider.js","TransparencySlider.js"],
         configSource: ["TransparencySlider-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top"]
+        restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"]
         
     },
     {
@@ -398,7 +397,7 @@
         shortName: "Bf",
         sources: ["Buffer.js"],
         configSource: ["SelectionWindowConfig.js","Buffer-config.js"],
-        //restrictions: ["rightmargin_top", "leftmargin_top"],                
+        restrictions: ["left_menu"],                
     },
     {
         className: "viewer.components.Maptip",
@@ -408,17 +407,11 @@
         restrictions: ["content"],
         extPropertyGridConfigs: {
             propertyNames: {
-                tooltip: "Hoover tekst",
-                title: "Titel",
-                titlebarIcon : "Titelbalk icoon",
                 maptipdelay: "Maptip Delay",
                 height: 'hoogte',
                 width: 'width'
             },
             source: {
-                tooltip: "",
-                title: "",
-                titlebarIcon : "",
                 maptipdelay: 500,
                 height: 300,
                 width: 300
@@ -448,7 +441,7 @@
         shortName: "AL",
         sources: ["AttributeList.js"],
         configSource: ["SelectionWindowConfig.js","AttributeList-config.js"],
-        restrictions: ["leftmargin_top","leftmargin_bottom"] ,        
+        restrictions: ["left_menu"] ,        
         type: "popup"        
     },
     {
