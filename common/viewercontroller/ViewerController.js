@@ -199,7 +199,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
    
    setSelectedContent: function(selectedContent) {
        this.clearLayers();
-       console.log("changing selected content to ", selectedContent);
+       //console.log("changing selected content to ", selectedContent);
        this.app.selectedContent = selectedContent;
        this.uncheckUnselectedContent();
        this.initLayers();
@@ -229,7 +229,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     initAppLayer: function(appLayerId) {
         var appLayer = this.app.appLayers[appLayerId];
-        console.log(appLayer.layerName);
+        //console.log(appLayer.layerName);
         this.setLayerVisible(appLayer.serviceId, appLayer.layerName, appLayer.checked);
         
     },
@@ -331,6 +331,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             options.mapservice = service.name;
             options.servlet = servlet;
             options.visibleids = layerName;
+            if (layer.queryable){
+                options.query_layers= layer.name;
+            }
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
                 layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.name, options);
@@ -342,6 +345,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         layerObj.serviceId = serviceId;
         layerObj.appLayerId = appLayer.id;
+        
         this.mapComponent.getMap().addLayer(layerObj);  
     },
     

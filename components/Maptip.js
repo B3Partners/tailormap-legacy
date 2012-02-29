@@ -108,7 +108,6 @@ Ext.define ("viewer.components.Maptip",{
      * @see event ON_MAPTIP_CANCEL
      */
     onMaptipCancel: function (map){
-        this.balloon.setContent("");
         this.balloon.hideAfterMouseOut();
     },
     /**
@@ -202,7 +201,8 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     this.mouseIsOverElement=new Object();
     this.maptipId=0;
     this.closeOnMouseOut=false;
-    this.offsetX=0;
+    //because click events still needs to be handled by the map, move the balloon a bit
+    this.offsetX=3;
     this.offsetY=0;
     this.roundImgPath=contextPath+"/resources/images/maptip/round.png";
     this.arrowImgPath=contextPath+"/resources/images/maptip/arrow.png";
@@ -540,6 +540,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         setTimeout(function(){
             if (newId==thisObj.maptipId){
                 if (!thisObj.isMouseOver()){
+                    thisObj.setContent("");
                     thisObj.hide();
                 }
             }else{
