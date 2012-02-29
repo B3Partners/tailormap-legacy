@@ -103,7 +103,7 @@ Ext.onReady(function() {
                         items: [
                             { xtype: 'displayfield', fieldLabel: 'Attribuut gebruiken bij', labelWidth: 'auto' },
                             { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable', inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' },
-                            { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable', inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' }
+                            { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'selectable', inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' }
                         ]
                     }
                 ]
