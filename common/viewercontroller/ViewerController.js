@@ -436,7 +436,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var url = document.URL;
         var index = url.indexOf("?");
         var params = url.substring(index +1);
-        var appLayers = null;
+        var appLayers = this.app.appLayers;
         
         var parameters = params.split("&");
         for ( var i = 0 ; i < parameters.length ; i++){
