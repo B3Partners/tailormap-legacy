@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <table>
             <tr><td>Remote user:</td><td><c:out value="${pageContext.request.remoteUser}"/></td></tr>
-            <tr><td>Principal:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:out value="${pageContext.request.userPrincipal.class.name}"/>)</td></tr>
+            <tr><td>Principal:</td><td><c:out value="${pageContext.request.userPrincipal}"/> (class <c:catch var="e"><%= request.getUserPrincipal().getClass().getName() %></c:catch>)</td></tr>
             <tr><td>Realm:</td><td> <c:catch var="e"><c:out value="${pageContext.request.userPrincipal.realm.info}"/></c:catch></td></tr>
         </table>
         <p>
