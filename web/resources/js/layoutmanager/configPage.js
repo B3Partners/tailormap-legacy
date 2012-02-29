@@ -154,16 +154,43 @@ function createLayoutTab(){
     });      
 }
 
-function getConfig() {
-    var config;
+function save(){ 
     if(metadata.configSource != undefined){
-        config = customConfiguration.getConfiguration();
+        var config = customConfiguration.getConfiguration();
+        continueSave(config);
     }else{
-        config = propertyGrid.getSource();
+        // Hackhackhack
+        if(Ext.isIE8){
+            propertyGrid.addListener("propertychange",getPropertyGridConfig,this);
+            var btn = Ext.get('saveConfigButton');
+            btn.focus();
+        }else{
+            getPropertyGridConfig();            
+        }
     }
-    
+}
+
+function getPropertyGridConfig(){
+    var config = propertyGrid.getSource();
+    continueSave(config);
+}
+
+function continueSave(config){
     var configFormObject = Ext.get("configObject");
     configFormObject.dom.value = JSON.stringify(config);
+    if(metadata.type != undefined && metadata.type != "popup"){
+        var layout = new Object();
+        for( var i = 0 ; i < layoutForm.items.length ; i++){
+            var items = layoutForm.items.get(i);
+            for ( var j = 0 ; j < items.items.length ; j ++){
+                layout[items.items.get(j).name] = items.items.get(j).value;
+            }
+        }
+        var layoutFormObject = Ext.get("componentLayout");
+        layoutFormObject.dom.value = JSON.stringify(layout);
+    }
+                    
+    document.getElementById('configForm').submit();
 }
 
 Ext.onReady(function() {
@@ -182,7 +209,7 @@ Ext.onReady(function() {
             title: 'Layout'
         });
     }
-    Ext.createWidget('tabpanel', {
+    Ext.widget('tabpanel', {
         renderTo: 'tabs',
         width: '100%',
         height: '100%',
@@ -195,23 +222,11 @@ Ext.onReady(function() {
         bbar: ["->", {
             xtype: 'button',
             text: 'Opslaan',
+            id: 'saveConfigButton',
             iconCls: 'savebutton-icon',
             listeners: {
                 click: function() {
-                    getConfig();
-                    if(metadata.type != undefined && metadata.type != "popup"){
-                        var layout = new Object();
-                        for( var i = 0 ; i < layoutForm.items.length ; i++){
-                            var items = layoutForm.items.get(i);
-                            for ( var j = 0 ; j < items.items.length ; j ++){
-                                layout[items.items.get(j).name] = items.items.get(j).value;
-                            }
-                        }
-                        var layoutFormObject = Ext.get("componentLayout");
-                        layoutFormObject.dom.value = JSON.stringify(layout);
-                    }
-                    
-                    document.getElementById('configForm').submit();
+                    save();
                 }
             }
         }]
