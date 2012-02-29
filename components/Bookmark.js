@@ -87,17 +87,33 @@ Ext.define ("viewer.components.Bookmark",{
         });
     },
     showWindow : function(){
-        this.url = this.viewerController.getBookmarkUrl();
-        var index = this.url.indexOf("?");
-        this.baseUrl = this.url.substring(0,index+1);
-        var params = this.url.substring(index +1);
+        var paramJSON = this.viewerController.getBookmarkUrl();
+        var parameters = "";
+        for ( var i = 0 ; i < paramJSON["params"].length ; i ++){
+            var param = paramJSON["params"][i];
+            if(param.name == 'url'){
+                this.url = param.value;
+                this.baseUrl = param.value;
+            }else if(param.name == 'extent'){
+                parameters += param.name +"=";
+                var extent = param.value;
+                parameters += extent.minx+","+extent.miny+","+extent.maxx+","+extent.maxy+"&";
+            }else if(param.name == 'layers'){
+                parameters += param.name +"=";
+                var layers = param.value;
+                for( var x = 0 ; x < layers.length ; x++){
+                     parameters += layers[x]+","
+                } 
+                parameters +="&";
+            }else if(param.name != 'selectedContent'){
+                parameters += param.name +"="+ param.value +"&";
+            }
+        }
         
-        //selected content
-        var selectedContent = this.viewerController.app.selectedContent;
-        //params +="&"+selectedContent;
+        this.url += parameters;
 
         var me = this;
-        Ext.create("viewer.Bookmark").createBookmark(params,function(code){me.succesCompactUrl(code);},function(code){me.failureCompactUrl(code);});
+        Ext.create("viewer.Bookmark").createBookmark(JSON.stringify(paramJSON),function(code){me.succesCompactUrl(code);},function(code){me.failureCompactUrl(code);});
 
         this.form.getChildByElement("bookmark").setValue(this.url);
         this.popup.show();

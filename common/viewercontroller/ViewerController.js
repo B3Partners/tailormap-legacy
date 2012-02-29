@@ -117,13 +117,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js: initializeButtons();
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
 
-            
+            this.initializeConfiguredComponents();
             var layersloaded = this.bookmarkValuesFromURL();
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();
             }
-            this.initializeConfiguredComponents();
             
         // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
             
@@ -426,6 +425,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var url = document.URL;
         var index = url.indexOf("?");
         var params = url.substring(index +1);
+        var appLayers = null;
         
         var parameters = params.split("&");
         for ( var i = 0 ; i < parameters.length ; i++){
@@ -438,9 +438,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
                 layersLoaded = true;
             }else if(type == "layers"){
-                //var values = value.split(",");
-                //this.setLayersVisible(values,true);
-                this.loadBookmarkLayers(value);
+                appLayers = this.loadBookmarkLayers(value);
                 layersLoaded = true;
             }else if(type == "extent"){
                 var coords = value.split(",");
@@ -452,72 +450,114 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.mapComponent.getMap().zoomToExtent(newExtent);
             }
         }
+        this.app.appLayers = appLayers;
+        this.setSelectedContent(this.app.selectedContent);
         return layersLoaded;
     },
     loadBookmarkLayers : function(layers){
-        var applayers = this.app.appLayers;
+        var appLayers = this.app.appLayers;
+        
         var values = layers.split(",");
-        this.setLayersVisible(values,true);
-    },
-    succesReadUrl : function(code){
-        var parameters = code.split("&");
-        for ( var i = 0 ; i < parameters.length ; i++){
-            var parameter = parameters[i];
-            var index2 = parameter.indexOf("=");
-            var type = parameter.substring(0,index2);
-            var value = parameter.substring(index2 +1);
-            if(type == "layers"){
-                //var values = value.split(",");
-                //this.setLayersVisible(values,true);
-                this.loadBookmarkLayers(value);
-            }else if(type == "extent"){
-                var coords = value.split(",");
-                var newExtent = new Object();
-                newExtent.minx=coords[0];
-                newExtent.miny=coords[1];
-                newExtent.maxx=coords[2];
-                newExtent.maxy=coords[3];
-                this.mapComponent.getMap().zoomToExtent(newExtent);
-            }else if(type == "selectedcontent"){
-                var blaa=9;
+        
+        for ( var i in appLayers){
+            var appLayer = appLayers[i];
+            var isBookmarked = false;
+            
+            for(var x = 0 ; x < values.length ; x++){
+                var index = values[x].indexOf("_");
+                var service = values[x].substring(0,index);
+                var layername = values[x].substring(index+1);
+                if(appLayer.layerName == layername && appLayer.serviceId == service){
+                    isBookmarked = true;
+                }
+            }
+            
+            if(isBookmarked){
+                appLayer.checked = true;
+            }else{
+                appLayer.checked = false;
             }
         }
+        return appLayers;
+    },
+    succesReadUrl : function(code){
+        var paramJSON = JSON.parse(code);
+        
+        var appLayers = this.app.appLayers;
+        var selectedContent = [];
+        for ( var i = 0 ; i < paramJSON["params"].length ; i++){
+            var parameter = paramJSON["params"][i];
+            if(parameter.name == "layers"){
+                var layers = "";
+                for( var x = 0 ; x < parameter.value.length ; x++){
+                     layers += parameter.value[x]+","
+                }
+                appLayers = this.loadBookmarkLayers(layers);
+            }else if(parameter.name == "extent"){
+                this.mapComponent.getMap().zoomToExtent(parameter.value);
+            }else if(parameter.name == "selectedContent"){
+                selectedContent = parameter.value;
+            }
+        }
+        this.app.appLayers = appLayers;
+        this.setSelectedContent(selectedContent);
     },
     failureReadUrl : function(code){
         //
     },
     getBookmarkUrl : function(){
-        var allParams = "";
+        var paramJSON = {
+            params:[]
+        };
+        
         var url = document.URL;
         var index = url.indexOf("?");
         var newUrl = url.substring(0,index)+"?";
+        var param = {
+            name: "url", 
+            value: newUrl
+        };
+        paramJSON.params.push(param);
+        
         var params = url.substring(index +1);
         var parameters = params.split("&");
         for ( var i = 0 ; i < parameters.length ; i++){
             var parameter = parameters[i];
             var index2 = parameter.indexOf("=");
             var type = parameter.substring(0,index2);
-            if(type != "layers" && type != "extent"){
-                allParams += parameter+"&";
+            var value = parameter.substring(index2 +1);
+            if(type != "layers" && type != "extent" && type != "bookmark"){
+                var param5 = {
+                    name: type, 
+                    value: value
+                };
+                paramJSON.params.push(param5);
             }
         }
         
         var visLayers = this.getVisibleLayerIds();
         if(visLayers.length != 0 ){
-            allParams += "layers=";
-            for(var x = 0 ; x < visLayers.length ; x++){
-                if(x == visLayers.length-1){
-                    allParams += visLayers[x]+"&";
-                }else{
-                    allParams += visLayers[x]+",";
-                }
-            }
+            var param2 = {
+                name: "layers", 
+                value: visLayers
+            };
+            paramJSON.params.push(param2);
         }
         
         var extent = this.mapComponent.getMap().getExtent();
-        allParams += "extent=" + extent.minx +","+ extent.miny +","+ extent.maxx +","+ extent.maxy;
+        var param3 = {
+            name: "extent", 
+            value: extent
+        };
+        paramJSON.params.push(param3);
         
-        newUrl += allParams;
-        return newUrl;
+        var selectedContent = this.app.selectedContent;
+        var param4 = {
+            name:"selectedContent", 
+            value:selectedContent
+        };
+        paramJSON.params.push(param4);
+        
+        return paramJSON;
     }
 });
