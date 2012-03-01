@@ -214,7 +214,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             {id: 'radioRegistry', name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {id: 'radioCustom', name: 'layerSource', boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {xtype: 'textfield', hidden: true, id: 'customServiceUrlTextfield', flex: 1},
-                            {xtype: 'combo', store: [ ['wms','WMS'], ['csw','CWS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect'},
+                            {xtype: 'combo', store: [ ['wms','WMS'], /*['csw','CSW'],*/ ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect'},
                             {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
                                 var protocol = Ext.getCmp('customServiceUrlSelect').getValue();
                                 if(protocol == 'csw') {
