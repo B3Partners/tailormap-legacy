@@ -575,26 +575,33 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         var url = document.URL;
         var index = url.indexOf("?");
-        var newUrl = url.substring(0,index)+"?";
+        var newUrl = "";
+        if(index > 0){
+            newUrl = url.substring(0,index)+"?";
+        }else{
+            newUrl = url+"?";
+        }
         var param = {
             name: "url", 
             value: newUrl
         };
         paramJSON.params.push(param);
         
-        var params = url.substring(index +1);
-        var parameters = params.split("&");
-        for ( var i = 0 ; i < parameters.length ; i++){
-            var parameter = parameters[i];
-            var index2 = parameter.indexOf("=");
-            var type = parameter.substring(0,index2);
-            var value = parameter.substring(index2 +1);
-            if(type != "layers" && type != "extent" && type != "bookmark"){
-                var param5 = {
-                    name: type, 
-                    value: value
-                };
-                paramJSON.params.push(param5);
+        if(index > 0){
+            var params = url.substring(index +1);
+            var parameters = params.split("&");
+            for ( var i = 0 ; i < parameters.length ; i++){
+                var parameter = parameters[i];
+                var index2 = parameter.indexOf("=");
+                var type = parameter.substring(0,index2);
+                var value = parameter.substring(index2 +1);
+                if(type != "layers" && type != "extent" && type != "bookmark"){
+                    var param5 = {
+                        name: type, 
+                        value: value
+                    };
+                    paramJSON.params.push(param5);
+                }
             }
         }
         
