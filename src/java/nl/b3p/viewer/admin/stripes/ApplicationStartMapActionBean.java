@@ -110,6 +110,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             String id = o.getString("id");
             if(o.get("type").equals("layer")) {
                 
+                message = "Kaartlagen kunnen niet los worden geselecteerd, alleen als onderdeel van een kaart of kaartlaaggroep";
+                result = false;
+                /*
                 ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(id));
                 if(appLayer == null) {
                     message = "Kaartlaag met id " + id + " is onbekend!";
@@ -118,7 +121,7 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                     /* An appLayer can not be selected if:
                      * - selectedContent contains the appLayer
                      * - the appLayer is a layer of any level or its children in selectedContent 
-                     */
+                     * /
 
                     for(int i = 0; i < jsonContent.length(); i++) {
                         JSONObject content = jsonContent.getJSONObject(i);
@@ -140,46 +143,53 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
                             }
                         }
                     }
-                }
+                }*/
             } else {
                 Level level = Stripersist.getEntityManager().find(Level.class, new Long(id));
                 if(level == null) {
                     result = false;
                     message = "Niveau met id " + id + " is onbekend!";
                 } else {
-                    /* A level can not be selected if:
-                    * any level in selectedContent is the level is a sublevel of the level
-                    * any level in selectedContent is a parent (recursive) of the level
-                    */
-                    for(int i = 0; i < jsonContent.length(); i++) {
-                        JSONObject content = jsonContent.getJSONObject(i);
+                    
+                    if(level.getLayers().isEmpty()) {
+                        message = "Niveau is geen kaart";
+                        result = false;
+                        
+                    } else {
+                        /* A level can not be selected if:
+                        * any level in selectedContent is the level is a sublevel of the level
+                        * any level in selectedContent is a parent (recursive) of the level
+                        */
+                        for(int i = 0; i < jsonContent.length(); i++) {
+                            JSONObject content = jsonContent.getJSONObject(i);
 
-                        if(content.getString("type").equals("level")) {
-                            if(id.equals(content.getString("id"))) {
-                                result = false;
-                                message = "Niveau is al geselecteerd";
-                                break;
-                            }
-
-                            Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
-                            if(l != null) {
-                                if(l.containsLevelInSubtree(level)) {
+                            if(content.getString("type").equals("level")) {
+                                if(id.equals(content.getString("id"))) {
                                     result = false;
-                                    message = "Niveau kan niet worden geselecteerd omdat een bovenliggend niveau al geselecteerd is";
+                                    message = "Niveau is al geselecteerd";
                                     break;
                                 }
-                                if(l.isInSubtreeOf(level)) {
+
+                                Level l = Stripersist.getEntityManager().find(Level.class, new Long(content.getString("id")));
+                                if(l != null) {
+                                    if(l.containsLevelInSubtree(level)) {
+                                        result = false;
+                                        message = "Niveau kan niet worden geselecteerd omdat een bovenliggend niveau al geselecteerd is";
+                                        break;
+                                    }
+                                    if(l.isInSubtreeOf(level)) {
+                                        result = false;
+                                        message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
+                                        break;
+                                    }
+                                }
+                            } else {
+                                ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(content.getString("id")));
+                                if(level.containsLayerInSubtree(appLayer)) {
                                     result = false;
-                                    message = "Niveau kan niet worden geselecteerd omdat een subniveau al geselecteerd is";
+                                    message = "Niveau kan niet worden geselecteerd omdat een kaartlaag uit dit (of onderliggend) niveau al is geselecteerd";
                                     break;
                                 }
-                            }
-                        } else {
-                            ApplicationLayer appLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, new Long(content.getString("id")));
-                            if(level.containsLayerInSubtree(appLayer)) {
-                                result = false;
-                                message = "Niveau kan niet worden geselecteerd omdat een kaartlaag uit dit (of onderliggend) niveau al is geselecteerd";
-                                break;
                             }
                         }
                     }
