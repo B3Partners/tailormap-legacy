@@ -38,8 +38,10 @@
     font-weight: bold;
     float: left;
     width: 30%;
+    overflow: auto;
 }
 .featureinfo_attrvalue{
-    float: right;
+    float: left;
+    overflow: auto;
     width: 65%;
 }
