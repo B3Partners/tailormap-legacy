@@ -95,7 +95,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     removeAllLayers:function(){
         // loop backwards because this.layers is updated in loop
-        for (var i=this.layers.length-1; i > 0; i--){
+        for (var i=this.layers.length-1; i >= 0; i--){
             this.removeLayer(this.layers[i]);
         }
     },
