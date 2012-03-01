@@ -320,7 +320,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layer = service.layers[layerName];
         var options={
             timeout: 30,
-            retryonerror: 10,
+            retryonerror: 1,
             ratio: 1,
             id: id,
             showerrors: true,
