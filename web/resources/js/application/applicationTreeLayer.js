@@ -54,27 +54,30 @@ Ext.onReady(function() {
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
             if(editable) {
+                
                 editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                     id: 'edit' + attribute.id,
                     title: name + (attribute.editable ? ' (&times;)' : ''),
                     collapsed: collapsed,
                     items: [
                         { fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
-                            change: function(field, newval) {
-                                editPanelTitle(field.findParentByType('form'), name, newval)
+                                change: function(field, newval) {
+                                    editPanelTitle(field.findParentByType('form'), name, newval)
+                                }
                             }
-                        }},
+                        },
                         { fieldLabel: 'Alias', name: 'editalias', value: attribute.editalias, xtype: 'textfield' },
                         {
                             xtype: 'container',
                             layout: 'hbox',
                             items: [
-                                { fieldLabel: 'Mogelijke waarden', name: 'editvalues', id: 'editvalues' + attribute.id, value: attribute.editvalues, xtype: 'textfield', size: 100 },
+                                { fieldLabel: 'Mogelijke waarden', 
+                                    name: 'editvalues', id: 'editvalues' + attribute.id, value: attribute.editvalues, xtype: 'textfield', size: 100 },
                                 { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {
                                     click: function() {
                                         getDBValues(attribute.id);
                                     }
-                                }},
+                                }}
                             ]
                         },
                         { fieldLabel: 'Hoogte', name: 'editheight', value: attribute.editheight, xtype: 'textfield' }
@@ -101,9 +104,9 @@ Ext.onReady(function() {
                         xtype: 'container',
                         layout: 'hbox',
                         items: [
-                            { xtype: 'displayfield', fieldLabel: 'Attribuut gebruiken bij', labelWidth: 'auto' },
-                            { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' },
-                            { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' }
+                            { xtype: 'displayfield', fieldLabel: 'Attribuut gebruiken bij' },
+                            { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right' },
+                            { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right' }
                         ]
                     }
                 ]
@@ -156,7 +159,8 @@ Ext.onReady(function() {
         });
     }
 
-    Ext.createWidget('tabpanel', {
+    Ext.create('Ext.tab.Panel', {
+        
         renderTo: 'tabs',
         width: '100%',
         activeTab: 0,
