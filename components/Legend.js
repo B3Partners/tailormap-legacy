@@ -52,12 +52,14 @@ Ext.define ("viewer.components.Legend",{
             //will change if the layers are combined.
             layerName=layerName.replace(""+service+"_","");
             var url = this.viewerController.getLayerLegendImage(service,layerName);
-            var legend = {
-                src: url,
-                title: layerName,
-                id: id
-            };
-            this.legends.push(legend);
+            if (url!=null){
+                var legend = {
+                    src: url,
+                    title: layerName,
+                    id: id
+                };
+                this.legends.push(legend);
+            }
         }
     },
     layerVisibilityChanged : function (map,object ){
@@ -73,20 +75,24 @@ Ext.define ("viewer.components.Legend",{
         var serviceId = layer.serviceId;
         var layerName = layer.getAppLayerName();// TODO: not yet correct
         var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
-        var legend = {
-            src: url,
-            title: layerName,
-            id: serviceId  + "_"+ layerName
-        };
-        this.queue.addItem(legend);
+        if (url!=null){
+            var legend = {
+                src: url,
+                title: layerName,
+                id: serviceId  + "_"+ layerName
+            };
+            this.queue.addItem(legend);
+        }
     },
     removeLayer: function (layer){
         var serviceId = layer.serviceId;
         var layerName = layer.id;
         var id = serviceId  + "_"+ layerName+"-div";
         var node =document.getElementById(id);
-        var div = document.getElementById(this.div);
-        div.removeChild(node);
+        if (node!=null){
+            var div = document.getElementById(this.div);
+            div.removeChild(node);
+        }
     },
     start : function (){
         this.makeLegendList();

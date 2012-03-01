@@ -110,5 +110,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
         }else{
             this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "hide");
         }
+    },
+    getLegendGraphic: function (){
+        console.log("getLegendGraphic still needs to be implemented in ArcLayer");
+        return null;
     }
+   
 });
