@@ -189,7 +189,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
        if(this.app.services[service.id] == undefined) {
            this.app.services[service.id] = service;
        }
-   },
+    },
    
    addAppLayer:function(appLayer) {
        if(this.app.appLayers[appLayer.id] == undefined) {
