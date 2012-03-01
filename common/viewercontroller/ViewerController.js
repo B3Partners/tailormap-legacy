@@ -186,9 +186,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     
     addService: function(service) {
-       if(this.app.services[service.id] == undefined) {
-           this.app.services[service.id] = service;
-       }
+        if(this.app.services[service.id] == undefined) {
+            this.app.services[service.id] = service;
+        }
     },
    
    addAppLayer:function(appLayer) {
