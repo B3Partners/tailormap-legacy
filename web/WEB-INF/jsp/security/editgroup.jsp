@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
             <stripes:errors/>
             <stripes:messages/>
-        <p>
+        </p>
 
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean">
                 <c:choose>

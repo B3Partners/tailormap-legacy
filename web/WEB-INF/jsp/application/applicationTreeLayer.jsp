@@ -23,11 +23,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Boomstructuur met kaarten</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-
         <p>
         <stripes:errors/>
-        <stripes:messages/>
-        <p>
+       <stripes:messages/>
+        </p>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform">
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
@@ -38,18 +37,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="tabs">
                     <div id="rights-tab" class="x-hide-display">
                         <h1>Rechten:</h1>
-                        L &nbsp; B <br>
+                        L &nbsp; B <br/>
                         <c:forEach var="group" items="${actionBean.allGroups}">
                             <stripes:checkbox name="groupsRead" value="${group.name}"/>
                             <stripes:checkbox name="groupsWrite" value="${group.name}"/>
-                            ${group.name}<br>
+                            ${group.name}<br/>
                         </c:forEach>
                     </div>
-                    <div id="attributes-tab" class="x-hide-display">
+                    <div id="attributes-tab" class="x-hide-display"><div>
                         <c:choose>
                             <c:when test="${not empty actionBean.attributesList}">
                                 <c:forEach var="attribute" items="${actionBean.attributesList}">
-                                    <stripes:checkbox name="selectedAttributes" value="${attribute.name}"/> 
+                                    <stripes:checkbox name="selectedAttributes" value="${attribute.name}"/>
                                     <c:choose>
                                         <c:when test="${not empty attribute.alias}">
                                             ${attribute.alias}
@@ -65,6 +64,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 Er zijn geen attributen voor deze kaartlaag geconfigureerd.
                             </c:otherwise>
                         </c:choose>
+                        </div>
                     </div>
                     <div id="settings-tab" class="x-hide-display">
                         <table>

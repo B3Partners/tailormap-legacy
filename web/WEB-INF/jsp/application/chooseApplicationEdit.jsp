@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
             <stripes:errors/>
             <stripes:messages/>
-        <p>
+        </p>
             <c:if test="${actionBean.context.eventName == 'deleteApplication'}">
                 <script type="text/javascript">
                     var frameParent = getParent();

@@ -47,13 +47,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     %>
             </c:catch>
         </ol>
-        <p>
+        </p><p>
         Test HttpServletRequest.isUserInRole():
-        <p>
+        </p><p>
         <c:if test="${!empty param.role}">
             Rol <b><c:out value="${param.role}"/>: <b><%= request.isUserInRole(request.getParameter("role")) %></b>
-            <p>
+            
         </c:if>
+                </p>
         <form action="${pageContext.request.pathInfo}" method="get">
             <input name="role"  placeholder="Voer rolnaam in"  type="text">
             <input type="submit"value="Check">

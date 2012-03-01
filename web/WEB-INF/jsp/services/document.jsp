@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
         <stripes:errors/>
         <stripes:messages/>
-        <p>
+        </p>
         <div id="content">
             <h1>Documenten</h1>
             <div id="grid-container" class="documenten">

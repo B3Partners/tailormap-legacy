@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <p>
         <stripes:errors/>
         <stripes:messages/>
-        <p>
+        </p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
                 
 <c:if test="${(actionBean.context.eventName == 'default' || actionBean.context.eventName == 'editCategory') && !empty actionBean.category}">
@@ -210,6 +210,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </tr>
 
     </table>
+</p>
     <stripes:submit name="add" value="Service inladen"/>
     <stripes:submit name="cancel" value="Annuleren"/>
 </c:if>
