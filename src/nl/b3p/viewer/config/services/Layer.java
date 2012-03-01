@@ -103,6 +103,7 @@ public class Layer {
     
     public Layer(org.geotools.data.ows.Layer l, GeoService service) {
         name = l.getName();
+        virtual = name == null;
         title = l.getTitle();
         minScale = l.getScaleDenominatorMin();
         this.service = service;
