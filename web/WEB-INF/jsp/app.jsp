@@ -30,6 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
         <!--XXX must only be loaded if component is added -->
         <link href="${contextPath}/resources/css/maptip.css" rel="stylesheet">
+        <link href="${contextPath}/resources/css/featureinfo.css" rel="stylesheet">
+        
         
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         
