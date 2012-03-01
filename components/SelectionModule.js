@@ -627,9 +627,11 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false);
         treeNodeLayer.type = 'level';
-        if(Ext.isDefined(level.layers) && !Ext.isDefined(level.children)) {
+        // Create a leaf node when a level has layers (even if it has children)
+        if(Ext.isDefined(level.layers)) {
             treeNodeLayer.type = 'maplevel';
             treeNodeLayer.id = 'm' + level.id;
+            showChildren = false;
         }
         if(showChildren) {
             var nodes = [];
@@ -934,7 +936,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.removeLayer(recordOrigData.id, null);
                 me.removeService(recordOrigData.userService);
             }
-            else if(nodeType == "maplevel") {
+            else if(nodeType == "maplevel" || nodeType == "level") {
                 // Added from application
                 me.removeLevel(recordOrigData.id, null);
             }
