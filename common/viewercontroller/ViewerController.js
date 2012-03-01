@@ -372,7 +372,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             options.servlet = servlet;
             options.visibleids = layerName;
             if (layer.queryable){
-                options.query_layers= layer.name;
+                options.identifyids= layer.name;
             }
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
@@ -385,7 +385,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         layerObj.serviceId = serviceId;
         layerObj.appLayerId = appLayer.id;
-        
         this.mapComponent.getMap().addLayer(layerObj);  
     },
     
