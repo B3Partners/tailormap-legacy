@@ -69,7 +69,7 @@ Ext.define ("viewer.components.Legend",{
     },
     addLayer : function (layer){
         var serviceId = layer.serviceId;
-        var layerName = layer.id;
+        var layerName = layer.getAppLayerName();// TODO: not yet correct
         var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
         var legend = {
             src: url,
