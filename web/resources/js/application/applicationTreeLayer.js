@@ -102,8 +102,8 @@ Ext.onReady(function() {
                         layout: 'hbox',
                         items: [
                             { xtype: 'displayfield', fieldLabel: 'Attribuut gebruiken bij', labelWidth: 'auto' },
-                            { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable', inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' },
-                            { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'selectable', inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' }
+                            { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' },
+                            { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio', labelWidth: 'auto', labelAlign: 'right' }
                         ]
                     }
                 ]
@@ -182,9 +182,9 @@ function getJson() {
     Ext.Array.each(attributes, function(attribute) {
         var newAttribute = attribute;
         if (Ext.getCmp('edit' + attribute.id)!=undefined){
-        Ext.getCmp('edit' + attribute.id).getForm().getFields().each(function(field) {
-            newAttribute[field.getName()] = field.getValue();
-        });
+            Ext.getCmp('edit' + attribute.id).getForm().getFields().each(function(field) {
+                newAttribute[field.getName()] = field.getValue();
+            });
         }
         newAttribute.filterable = Ext.getCmp('filterable' + attribute.id).getValue();
         newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();
