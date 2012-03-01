@@ -27,37 +27,46 @@ Ext.define ("viewer.components.FeatureInfo",{
         viewer.components.FeatureInfo.superclass.constructor.call(this, conf);        
         //this.initConfig(conf);        
         this.popup.hide();
-        this.progressElement = new Ext.Element(document.createElement("div"));       
+        this.progressElement = new Ext.Element(document.createElement("div"));
+        this.progressElement.addCls("featureinfo_progress");
         //register ondata event.
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onGetFeatureInfoData,this);
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfo,this);
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS,this.onProgress,this);
-        
+        var contentDiv=Ext.get(this.getContentDiv());
+        contentDiv.applyStyles({position: "static"});
         return this;
     },
     onGetFeatureInfoData: function(map,options){
         var contentDiv=Ext.get(this.getContentDiv());
-        contentDiv.update("");   
         var data=options.data;
+        var dataAdded=false;
         var html="";
+        html+="<div class='featureinfo_layer'>";
         for (var layerName in data){
             var appLayer = this.viewerController.getApplayer(options.layer.serviceId,layerName);
             html+="<div class='featureinfo_layertitle'>"
                 //TODO: Use the alias of the layer???
-                html+=appLayer.layerName;                
+                html+=appLayer.layerName;          
+            html+="</div>";
+            html+="<div class='featureinfo_features'>";
+            for (var index in data[layerName]){
+                dataAdded=true;
+                html+="<div class='featureinfo_layername'>"+layerName+"</div>";
                 html+="<div class='featureinfo_attributes'>";
-                for (var index in data[layerName]){
-                    for (var attributeName in data[layerName][index]){
-                        html+="<div class='featureinfo_attr'>";
-                            html+="<div class='featureinfo_attrname'>"+attributeName+"</div>";
-                            html+="<div class='featureinfo_attrvalue'>"+data[layerName][index][attributeName]+"</div>";
-                        html+="</div>"
-                    }
+                for (var attributeName in data[layerName][index]){
+                    html+="<div class='featureinfo_attr'>";
+                        html+="<div class='featureinfo_attrname'>"+attributeName+"</div>";
+                        html+="<div class='featureinfo_attrvalue'>"+data[layerName][index][attributeName]+"</div>";
+                    html+="</div>";
                 }
                 html+="</div>";
+            }            
             html+="</div>";
         }
-        contentDiv.insertHtml("beforeEnd", html);                
+        html+="</div>";
+        if(dataAdded)
+            contentDiv.insertHtml("beforeEnd", html);                
     },
     onFeatureInfo: function(map,options){          
         Ext.get(this.getContentDiv()).update("");
