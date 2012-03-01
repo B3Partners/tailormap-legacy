@@ -86,7 +86,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         if(url.substring(url.length) == character){
             url += character;
         }
-        var request = url + "request=GetLegendGraphic&layer="+this.id+"&version=1.1.1&format=png";
+        var request = url + "request=GetLegendGraphic&layer="+this.getAppLayerName()+"&version=1.1.1&format=png";
         return request;
     },
     getLayers: function(){
