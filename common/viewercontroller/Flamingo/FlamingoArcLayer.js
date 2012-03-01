@@ -112,7 +112,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
         }
     },
     getLegendGraphic: function (){
-        console.log("getLegendGraphic still needs to be implemented in ArcLayer");
+        //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
         return null;
     }
    
