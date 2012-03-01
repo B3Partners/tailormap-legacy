@@ -85,7 +85,9 @@ public class BoundingBox {
 
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();
-        o.put("crs", crs.getName());
+        if(crs != null) {
+            o.put("crs", crs.getName());
+        }
         o.put("minx", minx);
         o.put("maxx", maxx);
         o.put("miny", miny);
