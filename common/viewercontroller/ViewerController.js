@@ -199,7 +199,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
    
    setSelectedContent: function(selectedContent) {
        this.clearLayers();
-       //console.log("changing selected content to ", selectedContent);
        this.app.selectedContent = selectedContent;
        this.uncheckUnselectedContent();
        this.initLayers();
@@ -207,7 +206,44 @@ Ext.define("viewer.viewercontroller.ViewerController", {
    },
 
     uncheckUnselectedContent: function() {
-        //this.app.appLayers[1205].checked = false;
+        var selectedAppLayers = [];
+        
+        for(var i in this.app.selectedContent) {
+            var content = this.app.selectedContent[i];
+            if(content.type == "appLayer") {
+                selectedAppLayers.push(content.id);
+            } else {
+                selectedAppLayers = selectedAppLayers.concat(this.getLevelAppLayerIds(this.app.levels[content.id]));
+            }
+        }
+
+        for(var i in this.app.appLayers) {
+            var appLayer = this.app.appLayers[i];
+            
+            if(appLayer.checked) {
+                if(Ext.Array.indexOf(selectedAppLayers, appLayer.id + "") == -1) {
+                    appLayer.checked = false;
+                }
+            }
+        }
+    },
+    
+    getLevelAppLayerIds: function(level) {
+        var appLayers = [];
+        
+        if(level.layers) {
+            for(var i in level.layers) {
+                appLayers.push(level.layers[i]);
+            }
+        }
+        if(level.children) {
+            for(var c in level.children) {
+                var childId = level.children[c];
+                var childLayers = this.getLevelAppLayerIds(this.app.levels[childId]);
+                appLayers = appLayers.concat(childLayers);
+            }
+        }
+        return appLayers;
     },
     
    clearLayers: function() {
