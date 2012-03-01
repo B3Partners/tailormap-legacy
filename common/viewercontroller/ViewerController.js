@@ -174,13 +174,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         config.name=name;
         //console.log("Creating component " + name + " class  " + className + " with config", config);
         
-        // XXX do something with details - maybe integrate into config server side
-        var instance = Ext.create(className, config);
+        try {
+            // XXX do something with details - maybe integrate into config server side
+            var instance = Ext.create(className, config);
 
-        this.components[name] = {
-            className: className,
-            instance: instance
-        };
+            this.components[name] = {
+                className: className,
+                instance: instance
+            };
+        } catch(e) {
+            console.log("Error creating component with className " + className + ": error ",e, " with config", config);
+        }
 
         return instance;
     },
