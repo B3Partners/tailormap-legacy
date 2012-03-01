@@ -127,22 +127,6 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
     @HandlesEvent("default")
     @DontValidate
     public Resolution view(){
-        if(application == null){
-            getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
-            return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
-        }
-        return new ForwardResolution(JSP);
-    }
-    
-    @DontValidate
-    public Resolution newApplication(){
-        application = null;
-        applicationId = -1L;
-        return new ForwardResolution(JSP);
-    }
-    
-    @DontValidate
-    public Resolution edit(){
         if(application != null){
             details = application.getDetails();
             if(application.getOwner() != null){
@@ -158,7 +142,13 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
         }
-        
+        return new ForwardResolution(JSP);
+    }
+    
+    @DontValidate
+    public Resolution newApplication(){
+        application = null;
+        applicationId = -1L;
         return new ForwardResolution(JSP);
     }
     
