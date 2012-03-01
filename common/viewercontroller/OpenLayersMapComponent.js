@@ -307,10 +307,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addTool : function(tool){
         /* if (!(tool instanceof OpenLayersTool)){
-        throw("The given tool is not of type 'OpenLayersTool'");
+        Ext.Error.raise({msg: "The given tool is not of type 'OpenLayersTool'"});
     }*/
         if (this.maps.length==0){
-            throw("No map in MapComponent!");
+            Ext.Error.raise({msg: "No map in MapComponent!"});
         }
         if( tool instanceof Array){
             for(var i = 0 ; i < tool.length; i++){
@@ -350,7 +350,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     removeTool : function (tool){
         if (!(tool instanceof OpenLayersTool)){
-            throw("The given tool is not of type 'OpenLayersTool'");
+            Ext.Error.raise({msg: "The given tool is not of type 'OpenLayersTool'"});
         }    
         if (tool.type==Tool.NAVIGATION_HISTORY){
             OpenLayers.Util.removeItem(this.getPanel().controls, tool.getFrameworkTool().next);
@@ -373,10 +373,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     addMap : function (map){
         if (!(map instanceof OpenLayersMap)){
-            throw("The given map is not of the type 'OpenLayersMap'");
+            Ext.Error.raise({msg: "The given map is not of the type 'OpenLayersMap'"});
         }
         if (this.maps.length>=1)
-            throw("Multiple maps not supported yet");
+            Ext.Error.raise({msg: "Multiple maps not supported yet"});
         this.maps.push(map);
         map.getFrameworkMap().events.register("mousemove",this,this.removeMaptip);
     },

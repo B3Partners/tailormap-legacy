@@ -5,7 +5,7 @@
  */
 function OpenLayersWMSLayer(olLayerObject,id){
     if (!olLayerObject instanceof OpenLayers.Layer.WMS){
-        throw("The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+olLayerObject);
+        Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+olLayerObject});
     }
     OpenLayersLayer.call(this,olLayerObject,id);
     this.getFeatureInfoControl=null;

@@ -49,7 +49,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      *sets or overwrites a option
      */
     setOption : function(optionKey,optionValue){
-        throw("Layer.getOption() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Layer.getOption() Not implemented! Must be implemented in sub-class"});
     },
     
     /**
@@ -106,7 +106,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         return null;
     },
     setAlpha : function (alpha){
-        throw("Layer.setAlpha() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Layer.setAlpha() Not implemented! Must be implemented in sub-class"});
     },
     fire : function (event,options){
         this.fireEvent(event,this,options);
@@ -116,13 +116,13 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         this.addListener(event,handler,scope);
     },
     setVisible : function (visible){
-        throw("Layer.setVisible() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Layer.setVisible() Not implemented! Must be implemented in sub-class"});
     },
     getLegendGraphic : function () {
-        throw("Layer.getLegendImage() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Layer.getLegendImage() Not implemented! Must be implemented in sub-class"});
     },
     setQuery : function (query){
-        throw("Layer.setQuery() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
     }
 
 });

@@ -30,7 +30,7 @@ OpenLayersTool.prototype.register = function (event,handler){
 
 OpenLayersTool.prototype.addControl = function(control){
     if (!(this.type == Tool.GET_FEATURE_INFO)){
-        throw("The given Control object is not of type get feature info. But: "+this.type);
+        Ext.Error.raise({msg: "The given Control object is not of type get feature info. But: "+this.type});
     }
     this.controls.push(control);
 }

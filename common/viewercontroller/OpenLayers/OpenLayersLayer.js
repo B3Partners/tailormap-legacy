@@ -5,7 +5,7 @@
  */
 function OpenLayersLayer(olLayerObject,id){
     if (!olLayerObject instanceof OpenLayers.Layer){
-        throw("The given layer object is not of type 'OpenLayers.Layer'. But: "+olLayerObject);
+        Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer'. But: "+olLayerObject});
     }
     Layer.call(this,olLayerObject,id);
 }

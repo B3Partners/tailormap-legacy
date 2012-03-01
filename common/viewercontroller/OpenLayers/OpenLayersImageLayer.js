@@ -5,7 +5,7 @@
  */
 function OpenLayersImageLayer (olLayerObject, id){
     if (!olLayerObject instanceof OpenLayers.Layer.Image){
-        throw("The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+olLayerObject);
+        Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+olLayerObject});
     }
     OpenLayersLayer.call(this,olLayerObject,id);
 }

@@ -67,10 +67,10 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     },
 
     setVisible : function(){
-        throw("Tool.setVisible() not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Tool.setVisible() not implemented! Must be implemented in sub-class"});
     },
 
     isActive : function(){
-        throw("Tool.isActive() not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Tool.isActive() not implemented! Must be implemented in sub-class"});
     }
 });

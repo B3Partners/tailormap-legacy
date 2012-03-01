@@ -15,7 +15,7 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         if (minx!=undefined && miny==undefined && maxx==undefined && maxy==undefined){
             var tokens=minx.split(",");
             if (tokens.length!=4){
-                throw("Can not create Extent because there is no bbox found");
+                Ext.Error.raise({msg: "Can not create Extent because there is no bbox found"});
             }
             this.minx=tokens[0];
             this.miny=tokens[1];

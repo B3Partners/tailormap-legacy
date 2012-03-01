@@ -40,7 +40,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     *Must be implemented by subclass
     */
     createWMSLayer : function(name, url, ogcParams,options){
-        throw("MapComponent.createWMSLayer() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.createWMSLayer() Not implemented! Must be implemented in sub-class"});
     },
     /**
     * @description Creates a OSGEO TMS layer.
@@ -51,7 +51,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     * @returns Returns the TMSLayer
     */
     createTMSLayer : function (id,name,url, options){
-        throw("MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class"});
     },    
     /**
     * @description Creates a Arc IMS layer.
@@ -82,14 +82,14 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     *Must be implemented by subclass
     */
     createMap : function(id, options){
-        throw("MapComponent.createMap(...) not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.createMap(...) not implemented! Must be implemented in sub-class"});
     },
     /**
     *Must be implemented by the sub-class
     *This creates a tool.
     */
     createTool: function (){
-        throw("MapComponent.createTool(...) not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.createTool(...) not implemented! Must be implemented in sub-class"});
     },
     /**
      *Must be implemented by sub-class
@@ -132,7 +132,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     removeTool : function (tool){
         if (!(tool instanceof viewer.viewercontroller.controller.Tool)){
-            throw("Given tool not of type 'Tool'");
+            Ext.Error.raise({msg: "Given tool not of type 'Tool'"});
         }
         for (var i=0; i < this.tools; i++){
             if (this.tools[i]==tool){
@@ -175,7 +175,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     * @param id Id of the which must be removed
     **/
     removeToolById : function (id){
-        throw("MapComponent.removeToolById() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.removeToolById() Not implemented! Must be implemented in sub-class"});
     },
     
     addComponent: function(component){
@@ -195,7 +195,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @param mapObject The map which must be added to the MapComponent.
  **/    
     addMap : function (mapObject){
-        throw("MapComponent.addMap() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.addMap() Not implemented! Must be implemented in sub-class"});
     },
     /**
  *Gets the map with mapId
@@ -203,7 +203,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @param mapId The id of the map which must be returned.
  */
     getMap : function (mapId){
-        throw("MapComponent.getMap() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.getMap() Not implemented! Must be implemented in sub-class"});
     },
     /**
  *Removes the given map from the MapComponent.
@@ -211,7 +211,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @param removeMap The map which must be removed
  */
     removeMap : function (removeMap){
-        throw("MapComponent.removeMap() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.removeMap() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -221,7 +221,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @param name The name of this laye
  */
     createVectorLayer : function (name){
-        throw("MapComponent.createVectorLayer() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.createVectorLayer() Not implemented! Must be implemented in sub-class"});
     },
     /**
  *Creates a layer of an image
@@ -234,7 +234,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @param options Hashtable of extra options to tag onto the layer
  */
     createImageLayer : function (name,url, bounds, size,options){
-        throw("MapComponent.createImageLayer() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.createImageLayer() Not implemented! Must be implemented in sub-class"});
     },
  /**
  * Registers a function with a given event on the given object
@@ -246,7 +246,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  *
  */
     registerEvent : function(event, object, handler){
-        throw("MapComponent.registerEvent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.registerEvent() Not implemented! Must be implemented in sub-class"});
     },
     /**
  *Unregisters a event.
@@ -254,7 +254,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  *@param object is the object on which the event must be unregisterd.
  */
     unRegisterEvent : function (event, object){
-        throw("MapComponent.unRegisterEvent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.unRegisterEvent() Not implemented! Must be implemented in sub-class"});
     },
  
     /**
@@ -263,14 +263,14 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @param event The event to be handled
  */
     handleEvents : function(event){
-        throw("MapComponent.handleEvents() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.handleEvents() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
  * Initialize all the MapComponent specific events.
  */
     initEvents : function(){
-        throw("MapComponent.initEvent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.initEvent() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -289,7 +289,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
             }
         }
         return null;
-        //throw("Event " + specific + " does not exist!");
+        //Ext.Error.raise({msg: "Event " + specific + " does not exist!");
     },
 
     /**
@@ -306,7 +306,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @param id Id of the tool to be activated
  */
     activateTool : function (id){
-        throw("MapComponent.activateTool() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "MapComponent.activateTool() Not implemented! Must be implemented in sub-class"});
     }
 
 });

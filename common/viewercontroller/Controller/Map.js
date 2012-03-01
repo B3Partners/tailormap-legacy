@@ -122,7 +122,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      **/
     addLayer: function(layer){
         /*  if (!(layer instanceof Layer)){
-            throw("Map.addLayer: Given layer is not of type Layer");
+            Ext.Error.raise({msg: "Map.addLayer: Given layer is not of type Layer"});
         }*/
         this.layers.push(layer);
         layer.map = this;
@@ -135,7 +135,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     removeLayer:function(layer){
         var index=this.getLayerIndex(layer);
         if (index==-1)
-            throw("Map.removeLayer(): Layer not available in map!");
+            Ext.Error.raise({msg: "Map.removeLayer(): Layer not available in map!"});
         this.layers.splice(index,1);
     },
     /**
@@ -147,7 +147,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     setLayerIndex : function (layer, newIndex){
         if(!(layer instanceof viewer.viewercontroller.controller.Layer)){
-            throw("Given layer not of type Layer");
+            Ext.Error.raise({msg: "Given layer not of type Layer"});
         }
         var currentIndex=this.getLayerIndex(layer);
         var newLayerArray= new Array();
@@ -181,28 +181,28 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     getId : function(){
-        throw("Map.getId() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getId() Not implemented! Must be implemented in sub-class"});
     },
 
     /** 
      *Gets all the wms layers in this map
      */
     getAllWMSLayers : function(){
-        throw("Map.getAllWMSLayers() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getAllWMSLayers() Not implemented! Must be implemented in sub-class"});
     },
 
     /** 
      *Gets all the vector layers in this map
      */
     getAllVectorLayers : function(){
-        throw("Map.getAllVectorLayers() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getAllVectorLayers() Not implemented! Must be implemented in sub-class"});
     },
     /**
      *Remove this map
      *Must be implemented by subclass
      */
     remove : function(){
-        throw("Map.remove() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.remove() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -211,7 +211,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     zoomToExtent : function (extent){
-        throw("Map.moveToExtent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.moveToExtent() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -219,7 +219,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * Must be implemented by subclass
      */
     zoomToMaxExtent : function(){
-        throw("Map.zoomToMaxExtent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.zoomToMaxExtent() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -227,7 +227,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     zoomToScale : function(scale){
-        throw("Map.zoomToScale() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.zoomToScale() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -235,7 +235,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     zoomToResolution : function(resolution){
-        throw("Map.zoomToResolution() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.zoomToResolution() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -243,7 +243,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     getExtent: function(){
-        throw("Map.getExtent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getExtent() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -252,7 +252,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * Must be implemented by subclass
      */
     setMaxExtent:function(extent){
-        throw("Map.setMaxExtent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.setMaxExtent() Not implemented! Must be implemented in sub-class"});
     },
     /**
      *returns the full extent as a extent object
@@ -260,7 +260,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *
      */
     getMaxExtent:function(){
-        throw("Map.getFullExtent() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getFullExtent() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -270,7 +270,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     doIdentify : function(x,y){
-        throw("Map.doIdentify() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.doIdentify() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -278,7 +278,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     update : function (){
-        throw("Map.update() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.update() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -290,7 +290,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     setMarker : function(markerName,x,y,type){
-        throw("Map.setMarker() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.setMarker() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -299,7 +299,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      *Must be implemented by subclass
      */
     removeMarker : function(markerName){
-        throw("Map.removeMarker() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.removeMarker() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -307,7 +307,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @return The current scale of this map
      */
     getScale : function (){
-        throw("Map.getScale() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getScale() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -315,7 +315,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @return The current resolution of this map
      */
     getResolution : function (){
-        throw("Map.getResolution() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getResolution() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -325,7 +325,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @return a object with object.x the x pixel and object.y the y pixel
      */
     coordinateToPixel : function(x,y){
-        throw("Map.coordinateToPixel() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.coordinateToPixel() Not implemented! Must be implemented in sub-class"});
     },
 
     /**
@@ -333,7 +333,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @return a object with object.x the .y.
      */
     getCenter : function(){
-        throw("Map.getCenter() Not implemented! Must be implemented in sub-class");
+        Ext.Error.raise({msg: "Map.getCenter() Not implemented! Must be implemented in sub-class"});
     }
 
     

@@ -249,7 +249,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      **/
     removeTool : function (tool){
         if (!(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
-            throw("The given tool is not of type 'FlamingoTool'");
+            Ext.Error.raise({msg: "The given tool is not of type 'FlamingoTool'"});
         }
         this.viewerObject.callMethod(tool.getId(),'setVisible',false);
         MapComponent.prototype.removeTool.call(this,tool);
@@ -260,7 +260,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     addMap : function (map){
         if (!(map instanceof viewer.viewercontroller.flamingo.FlamingoMap)){
-            throw("FlamingoMapComponent.addMap(): The given map is not of the type 'FlamingoMap'");
+            Ext.Error.raise({msg: "FlamingoMapComponent.addMap(): The given map is not of the type 'FlamingoMap'"});
         }
         this.maps.push(map);
     },
@@ -270,7 +270,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     removeToolById : function (id){
         var tool = this.getTool(id);
         if(tool == null || !(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
-            throw("The given tool is not of type 'FlamingoTool' or the given id does not exist");
+            Ext.Error.raise({msg: "The given tool is not of type 'FlamingoTool' or the given id does not exist"});
         }
         this.removeTool(tool);
     },
@@ -293,7 +293,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             }
         }
         return null;
-        //throw("FlamingoMapComponent.getMap(): Map with id: "+mapId+" not found! Available maps: "+availableMaps);
+        //Ext.Error.raise({msg: "FlamingoMapComponent.getMap(): Map with id: "+mapId+" not found! Available maps: "+availableMaps});
     },
     /****************************************************************Event handling***********************************************************/
 

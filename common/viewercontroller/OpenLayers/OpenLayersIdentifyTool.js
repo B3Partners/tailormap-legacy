@@ -5,7 +5,7 @@
  */
 function OpenLayersIdentifyTool(id,olControlObject,type){
     if (type!=Tool.GET_FEATURE_INFO){
-        throw("OpenLayersIdentifyTool.constructor(): A OpenLayersIdentifyTool needs to be of type: Tool.GET_FEATURE_INFO");
+        Ext.Error.raise({msg: "OpenLayersIdentifyTool.constructor(): A OpenLayersIdentifyTool needs to be of type: Tool.GET_FEATURE_INFO"});
     }
     this.getFeatureInfoHandler = new Object();
     this.beforeGetFeatureInfoHandler = new Object();

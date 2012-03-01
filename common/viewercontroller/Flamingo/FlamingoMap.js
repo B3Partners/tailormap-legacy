@@ -60,7 +60,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      **/
     addLayer : function(layer){
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
-            throw("FlamingoMap.addLayer(): Given layer not of type FlamingoLayer");
+            Ext.Error.raise({msg: "FlamingoMap.addLayer(): Given layer not of type FlamingoLayer"});
         //call super function
         this.superclass.addLayer.call(this,layer);                
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
@@ -73,7 +73,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      **/
     removeLayer:function(layer){
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
-            throw("FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer");
+            Ext.Error.raise({msg: "FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer"});
         //call super function
         this.superclass.removeLayer.call(this,layer);
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
@@ -98,7 +98,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      */
     setLayerIndex : function (layer, newIndex){
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer)){
-            throw("FlamingoMap.setLayerIndex(): Given layer not of type FlamingoLayer.");
+            Ext.Error.raise({msg: "FlamingoMap.setLayerIndex(): Given layer not of type FlamingoLayer."});
         }
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),"swapLayer",this.getId()+'_'+layer.getId(),newIndex);
@@ -155,7 +155,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *See @link Map.doIdentify
      */
     doIdentify : function(x,y){
-        throw("Map.doIdentify() Not implemented!");
+        Ext.Error.raise({msg: "Map.doIdentify() Not implemented!"});
     },
 
     /**

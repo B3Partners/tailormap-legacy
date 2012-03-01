@@ -5,7 +5,7 @@
  */
 function OpenLayersVectorLayer(olLayerObject,id){
     if (!olLayerObject instanceof OpenLayers.Layer.Vector){
-        throw("The given layer object is not of type 'OpenLayers.Layer.Vector'. But: "+olLayerObject);
+        Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.Vector'. But: "+olLayerObject});
     }
     OpenLayersLayer.call(this,olLayerObject,id);
 }
