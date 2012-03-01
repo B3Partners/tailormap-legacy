@@ -473,6 +473,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     bookmarkValuesFromURL : function(){
         var layersLoaded = false;
+        var bookmark = false;
         var url = document.URL;
         var index = url.indexOf("?");
         var params = url.substring(index +1);
@@ -488,6 +489,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var me = this;
                 Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
                 layersLoaded = true;
+                bookmark = true;
             }else if(type == "layers"){
                 appLayers = this.loadBookmarkLayers(value);
                 layersLoaded = true;
@@ -501,8 +503,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.mapComponent.getMap().zoomToExtent(newExtent);
             }
         }
-        this.app.appLayers = appLayers;
-        this.setSelectedContent(this.app.selectedContent);
+        
+        if(layersLoaded && !bookmark){
+            this.app.appLayers = appLayers;
+            this.setSelectedContent(this.app.selectedContent);
+        }
+
         return layersLoaded;
     },
     loadBookmarkLayers : function(layers){
@@ -543,6 +549,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 for( var x = 0 ; x < parameter.value.length ; x++){
                      layers += parameter.value[x]+","
                 }
+                //this.app.appLayers = this.loadBookmarkLayers(layers);
                 appLayers = this.loadBookmarkLayers(layers);
             }else if(parameter.name == "extent"){
                 this.mapComponent.getMap().zoomToExtent(parameter.value);
