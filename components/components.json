@@ -427,11 +427,9 @@
         extPropertyGridConfigs: {
             propertyNames: {
                 loadingText: "Laad tekst",
-                doneLoadingText: "'Klaar met laden' tekst"
             },
             source: {
                 loadingText: "Bezig met laden...",
-                doneLoadingText: "Laden gereed."
             }
         }             
     },

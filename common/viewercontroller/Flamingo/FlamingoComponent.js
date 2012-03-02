@@ -80,6 +80,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setHeight("300");
         }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){           
             this.setTagName("Maptip");
+        }else if (config.type == viewer.viewercontroller.controller.Component.LOADMONITOR){           
+            this.setTagName("MonitorLayer");
+            this.setLeft("100");
+            this.setTop("100");
+            this.setWidth("200");
+            if (config.loadingText!=undefined){
+                this.addString("loading",config.loadingText);
+                this.addString("waiting",config.loadingText);
+            }           
         }
         else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
@@ -101,7 +110,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
     toXML: function (){        
         var xml="<fmc:";
         xml+=this.getTagName();
-        xml+=" "+this.getParamsAsXml();        
+        xml+="  xmlns:fmc='fmc' "+this.getParamsAsXml();        
         xml+=">";
         for (var key in this.strings){
             xml+="<string id='"+key+"' en='"+this.strings[key]+"'/>"

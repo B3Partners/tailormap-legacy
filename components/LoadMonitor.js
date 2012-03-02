@@ -24,6 +24,13 @@ Ext.define ("viewer.components.LoadMonitor",{
     constructor: function (conf){        
         viewer.components.LoadMonitor.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
+        
+        conf.id=conf.name;
+        conf.type=viewer.viewercontroller.controller.Component.LOADMONITOR;
+        
+        var comp = viewerController.mapComponent.createComponent(conf);
+        viewerController.mapComponent.addComponent(comp);
+        
         return this;
     }      
 });
