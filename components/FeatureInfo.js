@@ -29,12 +29,17 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.popup.hide();
         this.progressElement = new Ext.Element(document.createElement("div"));
         this.progressElement.addCls("featureinfo_progress");
+        //Add event when started the identify (clicked on the map)
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfo,this);
+        
+        //TODO if no attribute data configuration available:
         //register ondata event.
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onGetFeatureInfoData,this);
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfo,this);
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS,this.onProgress,this);
+        //todo: else with configured attributes:
+        
         var contentDiv=Ext.get(this.getContentDiv());
-        contentDiv.applyStyles({position: "static"});
+        //contentDiv.applyStyles({position: "static"});
         return this;
     },
     onGetFeatureInfoData: function(map,options){
