@@ -226,7 +226,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     addComponent: function(component){
         if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
             Ext.Error.raise({
-                msg: "The given tool is not of type 'FlamingoComponent'"               
+                msg: "The given Component is not of type 'FlamingoComponent'"               
             });
         }
         viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
@@ -238,6 +238,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 this.viewerObject.callMethod(this.getMap().id,'setMaptipdelay',component.getMaptipdelay()); 
             }
         }
+    },
+    /**
+     */
+    addComponentXml: function (xml){
+        this.viewerObject.callMethod(this.mainContainerId,'addComponent',xml); 
     },
     /**
      * See @link MapComponent.activateTool
