@@ -104,8 +104,7 @@ Ext.define ("viewer.components.SelectionModule",{
         name: "Selection Module",
         title: "",
         titlebarIcon : "",
-        tooltip : "",
-        isPopup: true
+        tooltip : ""
     },
     constructor: function (conf) {
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);

@@ -27,8 +27,7 @@ Ext.define ("viewer.components.Bookmark",{
     config:{
         title: "",
         titlebarIcon: "",
-        tooltip: "",
-        isPopup: true
+        tooltip: ""
     },
     constructor: function (conf){        
         viewer.components.Bookmark.superclass.constructor.call(this, conf);

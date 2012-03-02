@@ -22,8 +22,7 @@
 Ext.define ("viewer.components.FeatureInfo",{
     extend: "viewer.components.Component",   
     progressElement: null,
-    constructor: function (conf){      
-        conf.isPopup=true;
+    constructor: function (conf){     
         viewer.components.FeatureInfo.superclass.constructor.call(this, conf);        
         //this.initConfig(conf);        
         this.popup.hide();

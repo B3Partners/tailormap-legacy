@@ -28,8 +28,7 @@ Ext.define ("viewer.components.Search",{
         title: null,
         iconUrl: null,
         tooltip: null,
-        searchconfigs: null,
-        isPopup: true
+        searchconfigs: null
     },    
     constructor: function (conf){        
         viewer.components.Search.superclass.constructor.call(this, conf);
