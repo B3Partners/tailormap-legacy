@@ -136,7 +136,7 @@ function createLayoutTab(){
             { 
                 xtype: 'textfield',
                 fieldLabel: 'Hoogte',
-                name: 'Height',
+                name: 'height',
                 value: "",
                 labelWidth:100
             },{
@@ -178,12 +178,14 @@ function getPropertyGridConfig(){
 function continueSave(config){
     var configFormObject = Ext.get("configObject");
     configFormObject.dom.value = JSON.stringify(config);
-    if(metadata.type != undefined && metadata.type != "popup"){
+    if(metadata.type != undefined && metadata.type == "popup"){
         var layout = new Object();
         for( var i = 0 ; i < layoutForm.items.length ; i++){
             var items = layoutForm.items.get(i);
             for ( var j = 0 ; j < items.items.length ; j ++){
-                layout[items.items.get(j).name] = items.items.get(j).value;
+                if(items.items.get(j).name != undefined){
+                    layout[items.items.get(j).name] = items.items.get(j).value;
+                }
             }
         }
         var layoutFormObject = Ext.get("componentLayout");
