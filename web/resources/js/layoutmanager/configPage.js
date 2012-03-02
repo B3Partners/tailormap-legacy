@@ -191,9 +191,8 @@ function getPropertyGridConfig(){
 }
 
 function continueSave(config){
-    var configFormObject = Ext.get("configObject");
-    configFormObject.dom.value = JSON.stringify(config);
     if(metadata.type != undefined && metadata.type == "popup"){
+        config.isPopup = true;
         var layout = new Object();
         for( var i = 0 ; i < layoutForm.items.length ; i++){
             var fieldSetItems = layoutForm.items.get(i);
@@ -210,8 +209,12 @@ function continueSave(config){
         }
         var layoutFormObject = Ext.get("componentLayout");
         layoutFormObject.dom.value =  JSON.stringify(layout);
+    }else{
+        config.isPopup = false;
     }
                     
+    var configFormObject = Ext.get("configObject");
+    configFormObject.dom.value = JSON.stringify(config);
     document.getElementById('configForm').submit();
 }
 
