@@ -45,10 +45,13 @@ Ext.onReady(function(){
     }
 });
 function createLayoutTab(){
-    if(metadata.type == undefined && metadata.type != "popup"){
-        return;
+    if(details == undefined || details == null){
+        details = new Object();
     }
     var labelWidth = 300;
+    var centerChecked = details.position == "center";
+    var fixedChecked = details.position == "fixed";
+    
     layoutForm = new Ext.form.FormPanel({
         frame: false,
         width: 480,
@@ -63,29 +66,26 @@ function createLayoutTab(){
             items:[
             {
                 xtype: 'radiogroup',
+                name: 'position', 
                 columns: 1,
                 vertical: true,
+                value: details.position,
                 labelWidth:350,
                 items: [
                 {
                     boxLabel: 'Gecentreerd', 
                     name: 'position', 
                     inputValue: 'center' , 
-                    checked: true
+                    checked: centerChecked
                 },
                 {
                     boxLabel: 'Vaste Positie', 
                     name: 'position', 
+                    checked: fixedChecked,
                     inputValue: 'fixed',
                     listeners:{
                         change:function(el) {
-                            if(this.getValue()==true){
-                                Ext.getCmp('x').show();
-                                Ext.getCmp('y').show();
-                            }else{
-                                Ext.getCmp('x').hide();
-                                Ext.getCmp('y').hide();
-                            }
+                            toggleXY(this.getValue());
                         }
                     }
                 }
@@ -96,7 +96,7 @@ function createLayoutTab(){
                 fieldLabel: 'x',
                 id: "x",
                 name: 'x',
-                value: "",
+                value: details.x,
                 hidden : true,
                 labelWidth:100
             },
@@ -105,7 +105,7 @@ function createLayoutTab(){
                 fieldLabel: 'y',
                 id: "y",
                 name: 'y',
-                value: "",
+                value: details.y,
                 hidden : true,
                 labelWidth:100
             },
@@ -114,8 +114,8 @@ function createLayoutTab(){
                 fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
                 inputValue: true,
                 name: 'changeablePosition',
-                checked: true,
-                value: true,
+                checked: JSON.parse(details.changeablePosition),
+                value: JSON.parse(details.changeablePosition),
                 labelWidth:labelWidth
             }]
         },
@@ -130,28 +130,43 @@ function createLayoutTab(){
                 xtype: 'textfield',
                 fieldLabel: 'Breedte',
                 name: 'width',
-                value: "",
+                value: details.width,
                 labelWidth:100
             },
             { 
                 xtype: 'textfield',
                 fieldLabel: 'Hoogte',
                 name: 'height',
-                value: "",
+                value: details.height,
                 labelWidth:100
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Gebruiker kan de grootte van de popup aanpassen',
                 inputValue: true,
                 name: 'changeableSize',
-                checked: true,
-                value: true,
+                //checked: details.changeableSize,
+                value: JSON.parse(details.changeableSize),
+                checked: JSON.parse(details.changeableSize),
+                //value: true,
                 labelWidth:labelWidth
             }]
         }],
         
         renderTo: "layout"//(2)
     });      
+    if(fixedChecked){
+        toggleXY(true);
+    }
+}
+
+function toggleXY(show){
+    if(show){
+        Ext.getCmp('x').show();
+        Ext.getCmp('y').show();
+    }else{
+        Ext.getCmp('x').hide();
+        Ext.getCmp('y').hide();
+    }
 }
 
 function save(){ 
@@ -181,15 +196,20 @@ function continueSave(config){
     if(metadata.type != undefined && metadata.type == "popup"){
         var layout = new Object();
         for( var i = 0 ; i < layoutForm.items.length ; i++){
-            var items = layoutForm.items.get(i);
-            for ( var j = 0 ; j < items.items.length ; j ++){
-                if(items.items.get(j).name != undefined){
-                    layout[items.items.get(j).name] = items.items.get(j).value;
+            var fieldSetItems = layoutForm.items.get(i);
+            for ( var j = 0 ; j < fieldSetItems.items.length ; j ++){
+                var item = fieldSetItems.items.get(j);
+                if(item.name != undefined){
+                    if(Ext.isObject(item.getValue())){
+                        layout[item.name] = item.getValue().position;  
+                    }else{
+                        layout[item.name] = item.getValue();
+                    }
                 }
             }
         }
         var layoutFormObject = Ext.get("componentLayout");
-        layoutFormObject.dom.value = JSON.stringify(layout);
+        layoutFormObject.dom.value =  JSON.stringify(layout);
     }
                     
     document.getElementById('configForm').submit();

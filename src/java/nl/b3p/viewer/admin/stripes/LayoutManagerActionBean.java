@@ -50,8 +50,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @RolesAllowed("ApplicationAdmin")
 public class LayoutManagerActionBean extends ApplicationActionBean {
+
     private static final Log log = LogFactory.getLog(LayoutManagerActionBean.class);
-    
     private JSONObject metadata;
     private JSONArray components;
     private List<Group> allGroups;
@@ -67,12 +67,13 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private List<String> groups = new ArrayList<String>();
     @Validate(on = "saveApplicationLayout")
     private String layout;
-    
-    @Validate(on="saveComponentConfig")
+    @Validate(on = "saveComponentConfig")
     private String componentLayout;
-
-    private Boolean loadCustomConfig=false;
+    private Boolean loadCustomConfig = false;
+    private JSONObject details;
+    
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
+
     public JSONArray getComponents() {
         return components;
     }
@@ -152,7 +153,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public void setComponentLayout(String componentLayout) {
         this.componentLayout = componentLayout;
     }
-    
+
     public Boolean getLoadCustomConfig() {
         return loadCustomConfig;
     }
@@ -160,10 +161,19 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public void setLoadCustomConfig(Boolean loadCustomConfig) {
         this.loadCustomConfig = loadCustomConfig;
     }
+
+    public JSONObject getDetails() {
+        return details;
+    }
+
+    public void setDetails(JSONObject details) {
+        this.details = details;
+    }
+    
     //</editor-fold>
 
     @DefaultHandler
-    public Resolution view() throws JSONException {    
+    public Resolution view() throws JSONException {
         if (application == null) {
             getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
@@ -186,30 +196,43 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
         }
         metadata = ComponentRegistry.getInstance().getViewerComponent(className).getMetadata();
-        
-        if (metadata.has("configSource")){
-            loadCustomConfig= true;
+
+        if (metadata.has("configSource")) {
+            loadCustomConfig = true;
         }
-        /* if there is a configXML and no Ext Property Grid settings. Get the settings from the xml*/
-        if (metadata.has("configXML") && !metadata.has("extPropertyGridConfigs")){
-            try{
-                String xml=metadata.getString("configXML");
-                JSONObject properties=new JSONObject();
-                int beginIndex=xml.indexOf("[");
-                int endIndex=-1;
-                while(beginIndex!=-1 && beginIndex<xml.length()){
-                    endIndex=xml.indexOf("]",beginIndex);
-                    if (endIndex==-1)
+            try {
+                JSONObject d = new JSONObject();
+                for(Map.Entry<String,String> e: component.getDetails().entrySet()) {
+                    d.put(e.getKey(), e.getValue());
+                }
+                details = d;
+            } catch (JSONException ex) {
+            }
+
+        /*
+         * if there is a configXML and no Ext Property Grid settings. Get the
+         * settings from the xml
+         */
+        if (metadata.has("configXML") && !metadata.has("extPropertyGridConfigs")) {
+            try {
+                String xml = metadata.getString("configXML");
+                JSONObject properties = new JSONObject();
+                int beginIndex = xml.indexOf("[");
+                int endIndex = -1;
+                while (beginIndex != -1 && beginIndex < xml.length()) {
+                    endIndex = xml.indexOf("]", beginIndex);
+                    if (endIndex == -1) {
                         break;
-                    String name=xml.substring(beginIndex+1, endIndex);
-                    properties.put(name,"");
-                    beginIndex=xml.indexOf("[",endIndex);
+                    }
+                    String name = xml.substring(beginIndex + 1, endIndex);
+                    properties.put(name, "");
+                    beginIndex = xml.indexOf("[", endIndex);
                 }
                 JSONObject pgConfig = new JSONObject();
                 pgConfig.put("source", properties);
-                metadata.put("extPropertyGridConfigs",pgConfig);                
-            }catch(JSONException je){
-                log.error("Error while making 'extPropertyGridConfigs' properties for xml object",je);
+                metadata.put("extPropertyGridConfigs", pgConfig);
+            } catch (JSONException je) {
+                log.error("Error while making 'extPropertyGridConfigs' properties for xml object", je);
             }
         }
         return new ForwardResolution("/WEB-INF/jsp/application/configPage.jsp");
@@ -224,9 +247,19 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         component.setName(name);
         component.setClassName(className);
         component.setApplication(application);
-        Map<String,String> details = new HashMap<String,String>();
-        details.put("layout",componentLayout);
-        component.setDetails(details);
+        Map<String, String> compDetails = new HashMap<String, String>();
+        try {
+            JSONObject compLayout = new JSONObject(componentLayout);
+            for (Iterator<String> it = compLayout.keys(); it.hasNext();) {
+                String key = it.next();
+                Object val = compLayout.get(key);
+                compDetails.put(key,val.toString());
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//        details.put("layout", componentLayout);
+        component.setDetails(compDetails);
 
         component.getReaders().clear();
         component.setReaders(new HashSet<String>(groups));
@@ -247,7 +280,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
             em.remove(component);
         } catch (NoResultException e) {
-            
         }
         em.getTransaction().commit();
         return new ForwardResolution("/WEB-INF/jsp/application/layoutmanager.jsp");
@@ -298,6 +330,4 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             components.put(ComponentRegistry.getInstance().getViewerComponent(cn).getMetadata());
         }
     }
-
-    
 }
