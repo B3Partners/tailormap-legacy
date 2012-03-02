@@ -108,8 +108,6 @@ Ext.define ("viewer.components.SelectionModule",{
         isPopup: true
     },
     constructor: function (conf) {
-        conf.width = 700;
-        conf.height = 500;
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.renderButton();

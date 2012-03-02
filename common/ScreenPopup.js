@@ -24,8 +24,15 @@ Ext.define ("viewer.components.ScreenPopup",{
     config:{
         title: "",
         showOnStartup: null,
-        width : 400,
-        height: 600
+        details:{
+            x: 100,
+            y: 100,
+            width : 400,
+            height: 600,
+            changeablePosition:true,
+            changeableSize:true,
+            position : 'center'
+        }
     },
     constructor: function (conf){        
         this.initConfig(conf);   
@@ -33,19 +40,25 @@ Ext.define ("viewer.components.ScreenPopup",{
         con.style.height=  "100%";
         con.style["background"] = "#FFFFFF";
         con.style.width=  "100%";
-        this.popupWin = Ext.create('Ext.window.Window', {
+        var config = {
             title: this.title || 'Titel',
             closable: true,
             closeAction: 'hide',
-            width: this.width,
-            height: this.height,
+            width: parseInt(this.details.width),
+            height: parseInt(this.details.height),
+            resizable: JSON.parse(this.details.changeableSize),
+            draggable: JSON.parse(this.details.changeablePosition),
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
             contentEl : con,
-            x:300,
             autoScroll: true
-        });
+        };
+        if(this.details.position == 'fixed'){
+            config.x=parseInt(this.details.x);
+            config.y=parseInt(this.details.y);
+        }
+        this.popupWin = Ext.create('Ext.window.Window', config);
         if(this.showOnStartup){
             this.popupWin.show();
         }

@@ -172,10 +172,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         config.viewerController = this;
         config.name=name;
+        config.details=details;
         //console.log("Creating component " + name + " class  " + className + " with config", config);
         
-        try {
-            // XXX do something with details - maybe integrate into config server side
+        try
             var instance = Ext.create(className, config);
 
             this.components[name] = {
@@ -628,5 +628,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         paramJSON.params.push(param4);
         
         return paramJSON;
+    },
+    /**
+     *Utility functions
+     ***/
+    isEmptyObject:function(map) {
+        for(var key in map) {
+            if (map.hasOwnProperty(key)) {
+                return false;
+            }
+        }
+        return true;
     }
 });
