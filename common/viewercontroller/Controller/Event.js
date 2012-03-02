@@ -52,6 +52,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param layer the layer that is added.
          **/
         ON_LAYER_ADDED                        : "ON_LAYER_ADDED",
+        ON_LAYER_REMOVED                        : "ON_LAYER_REMOVED",
         /**
          *@field
          *occures when a mouse is moved and the maptip must be cancelled

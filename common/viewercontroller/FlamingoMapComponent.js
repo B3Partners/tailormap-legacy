@@ -46,6 +46,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]     = "onReallyChangedExtent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]              = "onChangeExtent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                = "onAddLayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]                = "onRemoveLayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA]                = "onMaptipData";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                = "onMaptip";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]                = "onMaptipCancel";        
@@ -428,6 +429,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             }
             var layer=object.getLayer(layerId);
             component=layer;
+        }else if(event == viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED){
+            var layerId=component[1];
+            //remove id_ from the layer id
+            if (layerId.indexOf(id+"_")==0){
+                layerId = layerId.substring(id.length+1);
+            }
+            component=layerId;
         }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA){            
             var comp=new Object();
             comp.extent=component[2];

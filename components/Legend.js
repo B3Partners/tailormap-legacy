@@ -40,7 +40,7 @@ Ext.define ("viewer.components.Legend",{
         legendContainer.style.overflow = "auto";
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         
-    //    this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.removeLayer,this);
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
         this.start();
         return this;
     },
@@ -70,7 +70,7 @@ Ext.define ("viewer.components.Legend",{
         if(vis){
             this.addLayer(layer);
         }else{
-            this.removeLayer(/*null,*/layer);
+           this.removeLayer(layer.id);
         }
     },
     addLayer : function (layer){
@@ -86,10 +86,10 @@ Ext.define ("viewer.components.Legend",{
             this.queue.addItem(legend);
         }
     },
-    removeLayer: function (/*map,*/layer){
-        var serviceId = layer.serviceId;
-        var layerName = layer.id;
-       // var id = serviceId  + "_"+ layerName+"-div";
+    layerRemoved : function(map, layerName){
+        this.removeLayer(layerName);
+    },
+    removeLayer: function (layerName){
         var id = layerName+"-div";
         var node =document.getElementById(id);
         if (node!=null){
