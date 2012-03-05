@@ -48,7 +48,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/layoutmanager/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"})
+@RolesAllowed({"Admin", "ApplicationAdmin"})
 public class LayoutManagerActionBean extends ApplicationActionBean {
 
     private static final Log log = LogFactory.getLog(LayoutManagerActionBean.class);
@@ -248,11 +248,13 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         component.setApplication(application);
         Map<String, String> compDetails = new HashMap<String, String>();
         try {
-            JSONObject compLayout = new JSONObject(componentLayout);
-            for (Iterator<String> it = compLayout.keys(); it.hasNext();) {
-                String key = it.next();
-                Object val = compLayout.get(key);
-                compDetails.put(key, val.toString());
+            if (componentLayout != null) {
+                JSONObject compLayout = new JSONObject(componentLayout);
+                for (Iterator<String> it = compLayout.keys(); it.hasNext();) {
+                    String key = it.next();
+                    Object val = compLayout.get(key);
+                    compDetails.put(key, val.toString());
+                }
             }
         } catch (JSONException ex) {
             Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
