@@ -27,14 +27,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
-        
+
         <!--XXX must only be loaded if component is added -->
         <link href="${contextPath}/resources/css/maptip.css" rel="stylesheet">
         <link href="${contextPath}/resources/css/featureinfo.css" rel="stylesheet">
         
         
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
-        
+
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         <c:choose>
@@ -75,22 +75,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/LayerSelector.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ServiceInfo.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/LayerSelector.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/ServiceInfo.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/FeatureService.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/SLD.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/Bookmark.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/AppInfo.js"></script>
             </c:when>
             <c:otherwise>
-                 <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
             </c:otherwise>
         </c:choose>
-       
+
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
-${actionBean.componentSourceHTML}
+        ${actionBean.componentSourceHTML}
     </head>
     <body>
 
@@ -119,7 +119,7 @@ ${actionBean.componentSourceHTML}
             var appId = "${actionBean.application.id}";
             var viewerController;
             (function() {
-                var config = ${actionBean.appConfigJSON}
+                var config = ${actionBean.appConfigJSON};
           
                 Ext.onReady(function() {
                     viewerController = new viewer.viewercontroller.ViewerController("flamingo", null, config);
@@ -128,16 +128,16 @@ ${actionBean.componentSourceHTML}
             
         </script>
 
-        
+
         <%-- initLayout();
         <div id="leftmargin_top" style="height: 90%;width: 15%;float:left;">sdfgsdfg</div>
         <div id="map" style="height: 90%;width: 60%;float:left;">
             <font color="red"><strong>U heeft de Flash plugin nodig om de kaart te kunnen zien.<br/>Deze kunt u <a href="http://get.adobe.com/flashplayer/" target="_blank">hier</a> gratis downloaden.</strong></font>
         </div>
         <div id="rightmargin_top" style="height: 90%;width: 15%; float: right;">rechts</div>
-         --%>
+        --%>
         <div id="wrapper" style="width: 100%; height: 100%;">
-            
+
         </div>
     </body>
 </html>
