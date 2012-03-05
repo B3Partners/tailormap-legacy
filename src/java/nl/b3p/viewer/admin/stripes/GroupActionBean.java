@@ -35,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/group/{$event}/{service}")
-@RolesAllowed("UserAdmin")
+@RolesAllowed({"Admin","UserAdmin"})
 public class GroupActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";

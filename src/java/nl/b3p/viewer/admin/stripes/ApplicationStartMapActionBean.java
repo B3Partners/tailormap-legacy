@@ -35,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationstartmap/{$event}")
 @StrictBinding
-@RolesAllowed("ApplicationAdmin") 
+@RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationStartMap.jsp";

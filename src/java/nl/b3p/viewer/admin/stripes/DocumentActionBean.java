@@ -34,7 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/document/{$event}/{service}")
-@RolesAllowed("RegistryAdmin")
+@RolesAllowed({"Admin","RegistryAdmin"})
 public class DocumentActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/document.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editdocument.jsp";

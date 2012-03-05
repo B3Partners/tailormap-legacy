@@ -40,7 +40,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/componentConfigLayerList")
 @StrictBinding
-@RolesAllowed("ApplicationAdmin")
+@RolesAllowed({"Admin","ApplicationAdmin"})
 public class ComponentConfigLayerListActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(ComponentConfigLayerListActionBean.class);

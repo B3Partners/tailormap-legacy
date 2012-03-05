@@ -35,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/geoserviceregistry/{$event}")
 @StrictBinding
-@RolesAllowed("RegistryAdmin")
+@RolesAllowed({"Admin","RegistryAdmin"})
 public class GeoServiceRegistryActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/geoserviceregistry.jsp";
     private ActionBeanContext context;

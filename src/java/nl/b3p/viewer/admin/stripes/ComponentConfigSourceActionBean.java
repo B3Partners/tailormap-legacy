@@ -35,7 +35,7 @@ import org.json.JSONException;
  */
 @UrlBinding("/action/componentConfigSource")
 @StrictBinding
-@RolesAllowed("ApplicationAdmin") 
+@RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ComponentConfigSourceActionBean implements ActionBean {
     
     private ActionBeanContext context;

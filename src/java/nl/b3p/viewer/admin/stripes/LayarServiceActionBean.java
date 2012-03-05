@@ -34,7 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/layarservice/{$event}/{service}")
-@RolesAllowed("RegistryAdmin")
+@RolesAllowed({"Admin","RegistryAdmin"})
 public class LayarServiceActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/layarservice.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarservice.jsp";

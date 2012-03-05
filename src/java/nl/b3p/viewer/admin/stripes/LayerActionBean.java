@@ -34,7 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/layer")
 @StrictBinding
-@RolesAllowed("RegistryAdmin")
+@RolesAllowed({"Admin","RegistryAdmin"})
 public class LayerActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";

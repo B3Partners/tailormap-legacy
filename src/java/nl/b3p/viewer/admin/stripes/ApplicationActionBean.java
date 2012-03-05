@@ -35,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/application")
 @StrictBinding
-@RolesAllowed("ApplicationAdmin") 
+@RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationActionBean implements ActionBean {
 
     protected ActionBeanContext context;

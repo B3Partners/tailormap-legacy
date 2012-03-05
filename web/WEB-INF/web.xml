@@ -118,6 +118,9 @@
         </web-resource-collection>
         <auth-constraint>
             <role-name>Admin</role-name>
+            <role-name>RegistryAdmin</role-name>
+            <role-name>UserAdmin</role-name>
+            <role-name>ApplicationAdmin</role-name>
         </auth-constraint>
     </security-constraint>
 

@@ -34,7 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/attribute/{$event}")
 @StrictBinding
-@RolesAllowed("RegistryAdmin")
+@RolesAllowed({"Admin","RegistryAdmin"})
 public class AttributeActionBean implements ActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/attribute.jsp";

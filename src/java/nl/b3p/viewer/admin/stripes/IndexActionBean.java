@@ -25,7 +25,7 @@ import net.sourceforge.stripes.action.*;
  */
 @UrlBinding("/action/index")
 @StrictBinding
-@RolesAllowed("Admin")
+@RolesAllowed("*")
 public class IndexActionBean implements ActionBean {
 
     private ActionBeanContext context;

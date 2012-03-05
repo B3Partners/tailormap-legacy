@@ -35,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtreelevel/{$event}")
 @StrictBinding
-@RolesAllowed("ApplicationAdmin") 
+@RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLevel.jsp";
     

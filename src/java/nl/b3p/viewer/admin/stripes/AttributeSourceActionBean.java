@@ -40,7 +40,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/attributesource/{$event}")
 @StrictBinding
-@RolesAllowed("RegistryAdmin")
+@RolesAllowed({"Admin","RegistryAdmin"})
 public class AttributeSourceActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);
 

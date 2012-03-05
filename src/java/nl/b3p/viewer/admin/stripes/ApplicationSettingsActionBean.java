@@ -32,7 +32,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationsettings/{$event}")
 @StrictBinding
-@RolesAllowed("ApplicationAdmin") 
+@RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationSettingsActionBean extends ApplicationActionBean{
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
    
