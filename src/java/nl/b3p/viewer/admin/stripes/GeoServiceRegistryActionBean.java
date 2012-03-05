@@ -215,8 +215,8 @@ public class GeoServiceRegistryActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution view() {
-        Stripersist.getEntityManager().getTransaction().commit();
-        
+        category = Category.getRootCategory();
+                
         return new ForwardResolution(JSP);
     }
 }

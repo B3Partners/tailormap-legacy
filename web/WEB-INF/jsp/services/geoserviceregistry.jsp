@@ -51,6 +51,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
             var addicon = '${contextPath}/resources/images/add.png';
             
+            var imagesPath = "${contextPath}/resources/images/";
+            
+            var rootName = <js:quote value="${actionBean.category.name}"/>;
+
             var activelink = 'menu_services';
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/services/geoserviceregistry.js"></script>
