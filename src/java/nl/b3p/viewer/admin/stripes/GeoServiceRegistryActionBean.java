@@ -16,14 +16,18 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.StringReader;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,26 +37,24 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Matthijs Laan
  */
-@UrlBinding("/action/geoserviceregistry/{$event}")
+@UrlBinding("/action/geoserviceregistry")
 @StrictBinding
 @RolesAllowed({"Admin","RegistryAdmin"})
 public class GeoServiceRegistryActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(GeoServiceRegistryActionBean.class);
+    
     private static final String JSP = "/WEB-INF/jsp/services/geoserviceregistry.jsp";
     private ActionBeanContext context;
 
-    @Validate(on="addCategory", required=true)
-    private String parentId;
-    
     @Validate
     private String nodeId;
 
-    @Validate(on="addCategory",required=true)
+    @Validate
     private String name;
 
-    @Validate
     private Category category;
 
-    //<editor-fold defaultstate="collapsed" desc="getters & setters">
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -84,54 +86,171 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
     }
-
-    public String getParentId() {
-        return parentId;
-    }
-    
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
     //</editor-fold>
 
-    public Resolution addCategory() throws JSONException {
-        EntityManager em = Stripersist.getEntityManager();
-
-        // Demangle id
-        Long parentIdLong;
-        if(parentId.equals("0")){
-            parentIdLong = new Long(0);
-        }else{
-            parentIdLong = Long.parseLong(parentId.substring(1));
-        }
-
-        Category parent = em.find(Category.class, parentIdLong);
-        
-        Category c = new Category();
-        c.setName(name);
-        c.setParent(parent);
-        parent.getChildren().add(c);
-
-        em.persist(c);
-        em.persist(parent);
-        em.getTransaction().commit();
-
-        final JSONObject j = new JSONObject();
-        j.put("id", "c" + c.getId());
-        j.put("name", c.getName());
-        j.put("type", "category");
-        j.put("isLeaf", true);
-        j.put("parentid", parentId);
-        
-        return new StreamingResolution("application/json") {
-           @Override
-           public void stream(HttpServletResponse response) throws Exception {
-               response.getWriter().print(j.toString());
-           }
-        };
+    @DefaultHandler
+    public Resolution view() {
+        category = Category.getRootCategory();
+                
+        return new ForwardResolution(JSP);
     }
     
-    public Resolution loadCategoryTree() throws JSONException {
+    @After(on={"addSubcategory","saveCategory","removeCategory"}, stages= LifecycleStage.BindingAndValidation)
+    public void loadCategory() {
+        EntityManager em = Stripersist.getEntityManager();
+
+        if(nodeId != null) {
+            // Demangle id
+            Long id;
+            if(nodeId.equals("0")) {
+                id = 0L;
+            } else {
+                id = Long.parseLong(nodeId.substring(1));
+            }
+
+            category = em.find(Category.class, id);
+        }
+    }
+    
+    private String checkCategoryAndNameError() {
+        if(category == null) {
+            return "Categorie niet gevonden";
+        } else if(name == null) {
+            return "Naam is niet ingevuld";
+        } else {        
+            return null;
+        }
+    }
+    
+    public Resolution addSubcategory() throws JSONException {
+        EntityManager em = Stripersist.getEntityManager();
+        
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        
+        String error = checkCategoryAndNameError();
+                
+        for(Category child: category.getChildren()) {
+            if(name.equals(child.getName())) {
+                error = "Categorie met dezelfde naam bestaat al";
+            }
+        }            
+        
+        if(error == null) {
+            try {
+                Category c = new Category();
+                c.setName(name);
+                c.setParent(category);
+                category.getChildren().add(c);
+
+                em.persist(c);
+                em.getTransaction().commit();
+
+                JSONObject node = new JSONObject();
+                node.put("id", "c" + c.getId());
+                node.put("name", c.getName());
+                node.put("type", "category");
+                node.put("isLeaf", true);
+                node.put("parentid", nodeId);
+                json.put("node", node);
+
+                json.put("success", Boolean.TRUE);
+            } catch(Exception e) {
+                log.error("Fout bij toevoegen categorie", e);
+                error = "Kan categorie niet toevoegen: " + e;
+                Throwable t = e;
+                while(t.getCause() != null) {
+                    t = t.getCause();
+                    error += "; " + t;
+                }                
+            }
+        }
+        
+        if(error != null) {
+            json.put("error", error);
+        }              
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+    
+    public Resolution saveCategory() throws JSONException {
+        
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        
+        String error = checkCategoryAndNameError();
+        
+        for(Category sibling: category.getParent().getChildren()) {
+            if(sibling != category && name.equals(sibling.getName())) {
+                error = "Categorie met dezelfde naam bestaat al";
+            }
+        }            
+        
+        if(error == null) {
+            try {
+                category.setName(name);
+                Stripersist.getEntityManager().getTransaction().commit();
+                json.put("success", Boolean.TRUE);
+                json.put("name", category.getName());
+            } catch(Exception e) {
+                log.error("Fout bij wijzigen naam categorie", e);
+                error = "Kan naam niet wijzigen: " + e;
+                Throwable t = e;
+                while(t.getCause() != null) {
+                    t = t.getCause();
+                    error += "; " + t;
+                }
+            }
+        }
+        
+        if(error != null) {
+            json.put("error", error);
+        }              
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+    
+    public Resolution removeCategory() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        String error = null;
+
+        if(category == null) {
+            error = "Categorie niet gevonden";
+        } else if(category.getParent() == null) {
+            error = "Bovenste categorie kan niet worden verwijderd";
+        } else if(category.getChildren().size() > 0) {
+            error = "De categorie bevat nog andere categorieën en kan niet verwijderd worden";
+        } else if(category.getServices().size() > 0) {
+            error = "De categorie bevat services en kan niet verwijderd worden";
+        }
+
+        if(error == null) {
+            try {
+                Category p = category.getParent();
+                p.getChildren().remove(category);
+                Stripersist.getEntityManager().remove(category);
+                Stripersist.getEntityManager().getTransaction().commit();
+                json.put("success", Boolean.TRUE);
+            } catch(Exception e) {
+                log.error("Fout verwijderen categorie", e);
+                error = "Kan categorie niet verwijderen: " + e;
+                Throwable t = e;
+                while(t.getCause() != null) {
+                    t = t.getCause();
+                    error += "; " + t;
+                }
+            }
+        }
+        
+        if(error != null) {
+            json.put("error", error);
+        }              
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+    
+    public Resolution tree() throws JSONException {
 
         EntityManager em = Stripersist.getEntityManager();
         
@@ -211,12 +330,5 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                response.getWriter().print(children.toString());
            }
         };
-    }
-
-    @DefaultHandler
-    public Resolution view() {
-        category = Category.getRootCategory();
-                
-        return new ForwardResolution(JSP);
     }
 }
