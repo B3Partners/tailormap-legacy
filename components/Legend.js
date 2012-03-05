@@ -35,7 +35,7 @@ Ext.define ("viewer.components.Legend",{
     constructor: function (conf){        
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        var legendContainer = document.getElementById(this.div);
+        var legendContainer = document.getElementById(this.getContentDiv());
       
         legendContainer.style.overflow = "auto";
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
@@ -93,7 +93,7 @@ Ext.define ("viewer.components.Legend",{
         var id = layerName+"-div";
         var node =document.getElementById(id);
         if (node!=null){
-            var div = document.getElementById(this.div);
+            var div = document.getElementById(this.getContentDiv());
             div.removeChild(node);
         }
     },
@@ -102,7 +102,7 @@ Ext.define ("viewer.components.Legend",{
         var config ={
             legends: this.legends, 
             queueSize: 1,
-            div: this.div
+            div: this.getContentDiv()
         };
         this.queue = Ext.create("viewer.components.ImageQueue",config);
         this.queue.load();
