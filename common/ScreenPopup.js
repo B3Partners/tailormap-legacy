@@ -58,9 +58,18 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.x=parseInt(this.details.x);
             config.y=parseInt(this.details.y);
         }
+        
         this.popupWin = Ext.create('Ext.window.Window', config);
         if(this.showOnStartup){
             this.popupWin.show();
+        }
+        if(config.draggable){
+            this.popupWin.addListener("dragstart",this.disableBody,this);
+            this.popupWin.addListener("dragend",this.enableBody,this);
+        }
+        if(config.resizable){
+            this.popupWin.resizer.addListener("beforeresize",this.disableBody,this);
+            this.popupWin.resizer.addListener("resize",this.enableBody,this);
         }
         return this;
     },
@@ -72,5 +81,11 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     hide : function(){
         this.popupWin.hide();
+    },
+    disableBody : function (){
+        Ext.getBody().mask();
+    },
+    enableBody : function(){
+        Ext.getBody().unmask()
     }
 });
