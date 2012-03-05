@@ -27,6 +27,7 @@ Ext.define ("viewer.components.TOC",{
     service : null,
     levels : null,
     checkClicked : false,
+    popup:null,
     config: {
         groupCheck:true,
         layersChecked:true,
@@ -35,7 +36,7 @@ Ext.define ("viewer.components.TOC",{
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
-        this.initConfig(config);        
+        this.initConfig(config);
         this.loadTree();
         this.loadInitLayers();
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
@@ -231,11 +232,45 @@ Ext.define ("viewer.components.TOC",{
         var layerName = node.text;
         if(node.leaf){
             if(node.layerObj.metadata!= undefined){
-                Ext.Msg.alert('Metadata', node.layerObj.metadata);
+                var config = {
+                    details:{
+                        width : 700,
+                        height: 500
+                    },
+                    title: "Metadata"
+                };
+                
+                if(this.popup != null){
+                    this.popup.hide();
+                }
+                this.popup = Ext.create("viewer.components.ScreenPopup",config);
+                var panelConfig={
+                    renderTo : this.popup.getContentId(),
+                    html: node.layerObj.metadata
+                }
+                var panel = Ext.create ("Ext.panel.Panel",panelConfig);
+                this.popup.show();
             }
         }else if(!node.leaf){
             if(node.layerObj.info!= undefined){
-                Ext.Msg.alert('Info', node.layerObj.info);
+                if(this.popup != null){
+                    this.popup.hide();
+                }
+                var config = {
+                    details:{
+                        width : 700,
+                        height: 500
+                    },
+                    title: "Info"
+                };
+                
+                this.popup = Ext.create("viewer.components.ScreenPopup",config);
+                var panelConfig={
+                    renderTo : this.popup.getContentId(),
+                    html: node.layerObj.info
+                }
+                var panel = Ext.create ("Ext.panel.Panel",panelConfig);
+                this.popup.show();
             }
         }
     },
