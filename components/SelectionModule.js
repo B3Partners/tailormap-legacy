@@ -160,11 +160,10 @@ Ext.define ("viewer.components.SelectionModule",{
    
     renderButton: function() {
         var me = this;
-        Ext.create('Ext.button.Button', {
-            text: (me.titlebarIcon == '' ? (me.title || (me.name || "Selectie Module")) : ''),
-            renderTo: me.div,
-            icon: me.titlebarIcon || null,
-            tooltip: me.tooltip || null,
+        this.superclass.renderButton.call(this,{
+            text: me.title,
+            icon: me.titlebarIcon,
+            tooltip: me.tooltip,
             handler: function() {
                 me.popup.show();
                 if(!me.rendered) {
@@ -175,6 +174,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 }
             }
         });
+        
     },
 
     initInterface: function() {
