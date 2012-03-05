@@ -249,6 +249,59 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return appLayers;
     },
+    /**
+     *Get the level that is the parent of the appLayer by the given id
+     *@param appLayerId the id of the applayer.
+     *@return the level that is parent of this applayer or null if not found.
+     */    
+    getAppLayerParent: function(appLayerId){
+        for (var levelId in this.app.levels){
+            var level = this.app.levels[levelId];
+            if (level.layers){
+                if(Ext.Array.contains(level.layers,appLayerId)){
+                    return level;
+                }
+            }
+        }        
+        return null;
+    },
+    /**
+     *Get the level that is the parent of the level by the given id
+     *@param levelId the id of the level.
+     *@return the level that is parent of this level or null if not found.
+     */    
+    getLevelParent: function(levelId){
+        for (var lid in this.app.levels){
+            var level = this.app.levels[lid];
+            if (level.children){
+                if(Ext.Array.contains(level.children,levelId)){
+                    return level;
+                }
+            }
+        }        
+        return null;
+    },
+    
+    /**
+     * Returns a array of documents in the given level and every level above.
+     * @param level the level
+     * @return a object array with object[document id]=document
+     */
+    getDocumentsInLevel: function(level){
+        var documents= new Object();
+        if (level.documents){
+            for (var i =0;i < level.documents.length; i++){
+                var doc = level.documents[i];
+                documents[doc.id]=doc;
+            }
+        }
+        var parentLevel=this.getLevelParent(level);
+        if (parentLevel!=null){
+            var parentDocuments= this.getDocumentsInLevel(parentLevel);
+            Ext.apply(documents,parentDocuments);
+        }
+        return documents;
+    },
 
     clearLayers: function() {
         this.mapComponent.getMap().removeAllLayers();

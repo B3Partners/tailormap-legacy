@@ -19,18 +19,120 @@
  * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.RelatedDocuments",{
     extend: "viewer.components.Component",
+    documentImg: null,
     config:{
         name: "Related Documents",
         title: "",
         titlebarIcon : "",
         tooltip : ""
     },
-    constructor: function (conf){        
+    constructor: function (conf){   
+        conf.isPopup=true;        
         viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);
-        this.initConfig(conf);   
+        this.documentImg = new Object();
+        this.initConfig(conf);
+        this.popup.hide();
+        var me = this;
+        this.renderButton({
+            handler: function(){
+                me.buttonClick();
+            },
+            text: me.title,
+            icon: me.titlebarIcon,
+            tooltip: me.tooltip
+        });
         return this;
+    },
+    /**
+     *When the button is clicked
+     */
+    buttonClick: function (){
+        //console.log("!!!"+this.viewerController);
+        var documents=this.getDocuments();
+        var html = this.createHtml(documents);
+        var contentDiv=Ext.get(this.getContentDiv());
+        contentDiv.update("");
+        contentDiv.appendChild(html);
+        this.loadImages();
+        this.popup.show();
+    },
+    /**
+     *Gets all the documents with the selectedContent
+     */
+    getDocuments: function(){
+        var documents = new Object();
+        for ( var i = 0 ; i < this.viewerController.app.selectedContent.length ; i ++){
+            var contentItem = this.viewerController.app.selectedContent[i];
+            var parentDocuments = new Object();
+            if(contentItem.type ==  "level"){
+                parentDocuments=this.viewerController.getDocumentsInLevel(this.viewerController.app.levels[contentItem.id]);
+            }else if(contentItem.type == "appLayer"){
+                var parentLevel = this.viewerController.getAppLayerParent(contentItem.id);
+                parentDocuments=this.viewerController.getDocumentsInLevel(parentLevel);                
+            }
+            Ext.apply(documents,parentDocuments);
+        }
+        return documents;
+    },
+    /**
+     * Make a Ext.Element with the documents in it as a <a href>
+     * @param documents the document objects
+     * @return Ext.Element with html in it that represents the documents.
+     */
+    createHtml: function(documents){        
+        var html="";
+        this.documentImg={};
+        html+="<div class='documents_documents'>";
+        for (var documentId in documents){
+            var doc=documents[documentId];
+            html+="<div class='document_entry'>";
+                html+="<div class='document_icon'>"
+                html+="<img id='img_"+doc.id+"' src=''/>";
+                html+="</div>";
+                html+="<div class='document_link'>"
+                html+="<a target='_blank' href='"+doc.url+"'>"+doc.name+"</a></div>";
+            html+="</div>";
+            this.documentImg["img_"+doc.id]=doc.url;
+        }
+        html+="</div>"
+        var element=new Ext.Element(document.createElement("div"));
+        element.insertHtml("beforeEnd",html);
+        
+        return element;
+    },
+    /**
+     * Call loadImage for all the images
+     */
+    loadImages: function(){
+        for (var imgId in this.documentImg){
+            this.loadImage(imgId,this.documentImg[imgId]);
+        }
+    },
+    /**
+     * Load the image icon_<extension>.png Iff the image does not exists then load the default.
+     * @param imgId the id of the img element
+     * @param path the path of the document.
+     */
+    loadImage: function (imgId,path){       
+        var defaultSrc=contextPath+"/resources/images/relatedDocuments/icon_default.png";
+        var extension=path.substring(path.length-4);
+        if (extension.indexOf(".")==0){
+            var image = new Image();
+            extension=extension.substring(1);
+            image.onload=function(){
+                Ext.get(imgId).dom.src = image.src
+            };
+            image.onerror=function(){
+                Ext.get(imgId).dom.src = defaultSrc
+            };
+            image.src=contextPath+"/resources/images/relatedDocuments/icon_"+extension+".png";
+        }else{
+            Ext.get(imgId).dom.src=defaultSrc;
+        }
     }
+    
 });
