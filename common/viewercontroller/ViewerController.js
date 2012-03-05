@@ -175,7 +175,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         config.details=details;
         //console.log("Creating component " + name + " class  " + className + " with config", config);
         
-        try
+        try{
             var instance = Ext.create(className, config);
 
             this.components[name] = {
