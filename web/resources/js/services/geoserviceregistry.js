@@ -15,17 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.Loader.setConfig({enabled:true});
-Ext.require([
-    'Ext.tree.*',
-    'Ext.data.*'
-]);
-
 Ext.onReady(function() {
     
     // Definition of the TreeNode model. Get function is overridden, so custom
     // icons for the different types are possible
-    Ext.define('TreeNode', {
+    Ext.define('GeoServiceTreeModel', {
         extend: 'Ext.data.Model',
         fields: [
             {name: 'id', type: 'string'},
@@ -66,9 +60,8 @@ Ext.onReady(function() {
             type: 'ajax',
             url: treeurl
         },
-        defaultRootId: 'c0',
-        defaultRootProperty: 'children',
-        model: TreeNode,
+        root: {text: rootName, id: "c0", type: "category", expanded: true},
+        model: 'GeoServiceTreeModel',
         nodeParam: 'nodeId'
     });
 
@@ -80,7 +73,23 @@ Ext.onReady(function() {
         },
         items: [{
             text: 'Nieuwe categorie toevoegen',
-            icon: foldericon,
+            icon: imagesPath + "add.png",
+            listeners: {
+                click: function(item, e, eOpts) {
+                    addCategory(item.ownerCt.data.parent);
+                }
+            }
+        },{
+            text: 'Naam wijzigen',
+            listeners: {
+                click: function(item, e, eOpts) {
+                    addCategory(item.ownerCt.data.parent);
+                }
+            }
+        },
+        {
+            text: 'Verwijderen',
+            icon: imagesPath + "delete.png",
             listeners: {
                 click: function(item, e, eOpts) {
                     addCategory(item.ownerCt.data.parent);
@@ -93,11 +102,7 @@ Ext.onReady(function() {
     var tree = Ext.create('Ext.tree.Panel', {
         id: 'servicestree',
         store: treeStore,
-        rootVisible: false,
-        root: {
-            text: "Root node",
-            expanded: true
-        },
+        rootVisible: true,
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',
@@ -195,7 +200,7 @@ function addCategory(parentid) {
                     success: function ( result, request ) {
                         var objData = Ext.JSON.decode(result.responseText);
                         objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-                        var newNode = Ext.create('TreeNode', objData);
+                        var newNode = Ext.create('GeoServiceTreeModel', objData);
                         addNode(newNode, objData.parentid);
                     },
                     failure: function ( result, request) {
