@@ -60,19 +60,19 @@ Ext.define("viewer.components.Component",{
     /**
      * Renders a button in the div (holder)
      * if a titlebarIcon is set, its used to generate in the button. Otherwise the title or name.
-     * @param handler the handler function called when the button is clicked.
+     * @param options.handler the handler function called when the button is clicked.
      * @param options.text the text in the button
      * @param options.icon the url to a  icon for this button.
      * @param options.tooltip the tooltip for this button.
      */
-    renderButton: function(handler,options) {
+    renderButton: function(options) {
         var me = this;
         Ext.create('Ext.button.Button', {
             text: (options.icon == '' ? (options.text || (me.name || "")) : ''),
             renderTo: me.div,
             icon: options.icon || null,
             tooltip: options.tooltip || null,
-            handler: handler
+            handler: options.handler
         });
     },
     /**
