@@ -125,7 +125,7 @@ Ext.define ("viewer.components.Search",{
                 url: requestPath, 
                 params: requestParams, 
                 success: function ( result, request ) {
-                    me.searchResult = JSON.parse(result.responseText);
+                    me.searchResult = Ext.JSON.decode(result.responseText);
                     me.showSearchResults();
                 },
                 failure: function(a,b,c) {

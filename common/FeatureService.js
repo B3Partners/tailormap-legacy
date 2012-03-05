@@ -35,7 +35,7 @@ Ext.define("viewer.FeatureService", {
             url: this.config.actionbeanUrl,
             params: this.config, // XXX also posts actionbeanUrl, but is harmless
             success: function(result) {
-                var response = JSON.parse(result.responseText);
+                var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
                     successFunction(response.featureType);

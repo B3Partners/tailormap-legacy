@@ -62,7 +62,7 @@ Ext.define ("viewer.components.LayerSelector",{
             url: requestPath, 
             params: requestParams, 
             success: function ( result, request ) {
-                me.layerList = JSON.parse(result.responseText);
+                me.layerList = Ext.JSON.decode(result.responseText);
                 me.initLayers();
             },
             failure: function(a,b,c) {

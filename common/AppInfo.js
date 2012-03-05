@@ -32,7 +32,7 @@ Ext.define("viewer.AppInfo", {
             url: this.config.actionbeanUrl,
             params: {appLayerInfo: true, appLayer: appLayerId},
             success: function(result) {
-                var response = JSON.parse(result.responseText);
+                var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
                     successFunction(response.info);

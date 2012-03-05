@@ -44,7 +44,7 @@ Ext.define("viewer.SLD", {
             url: this.config.actionbeanUrl,
             params: {layers: layers, styles: styles, filters: cqlFilters}, 
             success: function(result) {
-                var response = JSON.parse(result.responseText);
+                var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
                     successFunction(response.sld);

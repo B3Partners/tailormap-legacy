@@ -32,7 +32,7 @@ Ext.define("viewer.Bookmark", {
             url: this.config.actionbeanUrl,
             params: {create: true, "bookmark.params": params}, 
             success: function(result) {
-                var response = JSON.parse(result.responseText);
+                var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
                     successFunction(response.bookmark);
@@ -55,7 +55,7 @@ Ext.define("viewer.Bookmark", {
             url: this.config.actionbeanUrl,
             params: {load: true, bookmark: bookmark}, 
             success: function(result) {
-                var response = JSON.parse(result.responseText);
+                var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
                     successFunction(response.params);

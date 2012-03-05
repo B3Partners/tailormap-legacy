@@ -543,7 +543,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return appLayers;
     },
     succesReadUrl : function(code){
-        var paramJSON = JSON.parse(code);
+        var paramJSON = Ext.JSON.decode(code);
         
         var appLayers = this.app.appLayers;
         var selectedContent = [];

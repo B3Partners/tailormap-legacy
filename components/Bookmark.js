@@ -110,7 +110,7 @@ Ext.define ("viewer.components.Bookmark",{
         this.url += parameters;
 
         var me = this;
-        Ext.create("viewer.Bookmark").createBookmark(JSON.stringify(paramJSON),function(code){me.succesCompactUrl(code);},function(code){me.failureCompactUrl(code);});
+        Ext.create("viewer.Bookmark").createBookmark(Ext.JSON.encode(paramJSON),function(code){me.succesCompactUrl(code);},function(code){me.failureCompactUrl(code);});
 
         this.form.getChildByElement("bookmark").setValue(this.url);
         this.popup.show();
