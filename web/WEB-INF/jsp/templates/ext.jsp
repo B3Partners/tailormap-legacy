@@ -40,6 +40,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/resources/js/less-1.1.5.min.js"></script>
 
         <stripes:layout-component name="head"/>
+        
+        <script type="text/javascript">
+            if(console == undefined) {
+                var console = {};
+                console.log = function(logmsg) {
+                    //alert(logmsg);
+                }
+            }
+        </script>
     </head>
     <body>
         <stripes:layout-component name="header" />
