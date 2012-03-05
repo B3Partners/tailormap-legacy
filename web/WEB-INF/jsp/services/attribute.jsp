@@ -93,7 +93,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 featureSourceId: selectedValue
                             }, 
                             success: function ( result, request ) {
-                                result = JSON.parse(result.responseText);
+                                result = Ext.JSON.decode(result.responseText);
                                 Ext.Array.each(result, function(item) {
                                     simpleFeatureTypeId.appendChild(getOption(item.id, item.name, false));
                                 });                              

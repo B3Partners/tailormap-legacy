@@ -582,7 +582,7 @@ Ext.onReady(function() {
             }
         });
         var response = {
-            "layout": JSON.stringify(layout)
+            "layout": Ext.JSON.encode(layout)
         };
         
         Ext.Ajax.request({ 

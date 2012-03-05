@@ -67,7 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var details = null;
             <c:if test="${!empty actionBean.component.config}">
                 configObject= ${actionBean.component.config};
-                details = JSON.parse('${actionBean.details}');
+                details = Ext.JSON.decode('${actionBean.details}');
             </c:if>             
         </script>          
         <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">

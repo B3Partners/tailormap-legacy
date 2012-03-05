@@ -194,7 +194,7 @@ function getJson() {
         newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();
         currentAttributes.push(newAttribute);
     });
-    return JSON.stringify(currentAttributes);
+    return Ext.JSON.encode(currentAttributes);
 }
 
 function getDBValues(attributeid) {
@@ -205,7 +205,7 @@ function getDBValues(attributeid) {
                 attributeid: attributeid
             }, 
             success: function ( result, request ) { 
-                var result = JSON.parse(result.responseText);
+                var result = Ext.JSON.decode(result.responseText);
                 Ext.getCmp('editvalues' + attributeid).setValue(result.join(','));
             }, 
             failure: function ( result, request) { 

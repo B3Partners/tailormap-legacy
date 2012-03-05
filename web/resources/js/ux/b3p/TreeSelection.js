@@ -325,13 +325,13 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             url: me.backendCheckUrl, 
             params: { 
                 selectedContent: me.getSelection(),
-                contentToBeSelected: JSON.stringify({
+                contentToBeSelected: Ext.JSON.encode({
                     id: record.get('id').substring(1),
                     type: record.get('type')
                 })
             }, 
             success: function ( result, request ) {
-                result = JSON.parse(result.responseText);
+                result = Ext.JSON.decode(result.responseText);
                 if(result.result) {
                     me.addToSelection(record)
                 } else {
@@ -402,14 +402,14 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         });
         if(me.returnJson) {
-            addedLayers = JSON.stringify(addedLayers);
+            addedLayers = Ext.JSON.encode(addedLayers);
         }
         return addedLayers;
     },
     
     getCheckedLayers: function() {
         var me = this;
-        return JSON.stringify(me.checkedLayers);
+        return Ext.JSON.encode(me.checkedLayers);
     }
     
 });

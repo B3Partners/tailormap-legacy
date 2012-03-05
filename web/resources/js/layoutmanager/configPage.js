@@ -114,8 +114,8 @@ function createLayoutTab(){
                 fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
                 inputValue: true,
                 name: 'changeablePosition',
-                checked:details.changeablePosition ? JSON.parse(details.changeablePosition) : false,
-                value: details.changeablePosition ? JSON.parse(details.changeablePosition) : false,
+                checked:details.changeablePosition ? Ext.JSON.decode(details.changeablePosition) : false,
+                value: details.changeablePosition ? Ext.JSON.decode(details.changeablePosition) : false,
                 labelWidth:labelWidth
             }]
         },

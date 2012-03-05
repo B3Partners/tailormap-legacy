@@ -194,7 +194,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             url: me.requestUrl, 
             params: me.requestParams, 
             success: function ( result, request ) {
-                me.itemList = JSON.parse(result.responseText);
+                me.itemList = Ext.JSON.decode(result.responseText);
                 me.render();
             },
             failure: function() {
