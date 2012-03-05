@@ -34,7 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Jytte Schaeffer
  */
 @StrictBinding
-@UrlBinding("/action/geoservice/{$event}/{service}")
+@UrlBinding("/action/geoservice/{service}")
 @RolesAllowed({"Admin","RegistryAdmin"})
 public class GeoServiceActionBean implements ActionBean{
     private static final Log log = LogFactory.getLog(GeoServiceActionBean.class);
