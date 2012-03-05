@@ -109,20 +109,17 @@ public class SearchActionBean implements ActionBean {
                 }
             }
         }
-        //String url = "http://gisopenbaar.toverijs3.nl/ArcGIS/rest/services/Geocode_Services/Addresses/GeocodeServer/findAddressCandidates?ZiP=8011PK&outFields=&outSR=&f=pjson";
         
         if(url != null && !url.equals("")){
             url = url.replace("[ZOEKWOORD]", searchText);
             
             JSONObject info = issueRequest(url);
             if(url.toLowerCase().contains("arcgis")){
-                //jsonArray.put(info.get("candidates"));
                 jsonArray = (JSONArray)info.get("candidates");
             }else{
                 // not arcGis services
             }
             
-            //jsonArray.put(info);
         }
         
         return new StreamingResolution("application/json", new StringReader(jsonArray.toString())); 
