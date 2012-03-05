@@ -151,11 +151,6 @@ public class LayerActionBean implements ActionBean {
     }
     //</editor-fold>
 
-    @DefaultHandler
-    public Resolution view() {
-        return new ForwardResolution(JSP);
-    }
-
     @Before(stages = LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
@@ -163,6 +158,7 @@ public class LayerActionBean implements ActionBean {
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
 
+    @DefaultHandler
     public Resolution edit() {
         if (layer != null) {
             details = layer.getDetails();
