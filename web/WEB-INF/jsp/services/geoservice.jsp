@@ -46,6 +46,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             return confirm('Weet u zeker dat u deze categorie wilt verwijderen?');
         }
     </script>
+    
+    <%--
     <stripes:hidden name="category" value="${actionBean.category.id}"/>
     Naam: <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
     <stripes:submit name="editCategory" value="Opslaan"/>
@@ -64,6 +66,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             frameParent.renameNode('c${actionBean.category.id}','${actionBean.category.name}');
         }
     </script>
+    --%>
 </c:if>
             
 <c:if test="${actionBean.context.eventName == 'deleteCategory'}">
