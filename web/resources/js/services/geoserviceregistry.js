@@ -37,12 +37,12 @@ Ext.onReady(function() {
             var nodeType = '';
             if(fieldName == "icon") {
                 nodeType = this.get('type');
-                if(nodeType == "category") return foldericon;
-                if(nodeType == "layer") return layericon;
+                if(nodeType == "category") return imagesPath + "folder.png";
+                if(nodeType == "layer") return imagesPath + "map.png";
                 if(nodeType == "service") {
                     var nodeStatus = this.get('status');
-                    if(nodeStatus == "ok") return serviceokicon;
-                    if(nodeStatus == "error") return serviceerroricon;
+                    if(nodeStatus == "ok") return imagesPath + "serviceok.png";
+                    if(nodeStatus == "error") return imagesPath + "serviceerror.png";
                 }
             }
             if(fieldName == "leaf") {
@@ -58,7 +58,7 @@ Ext.onReady(function() {
         autoLoad: true,
         proxy: {
             type: 'ajax',
-            url: treeurl
+            url: actionBeans["tree"]
         },
         root: {text: rootName, id: "c0", type: "category", expanded: true},
         model: 'GeoServiceTreeModel',
@@ -72,15 +72,8 @@ Ext.onReady(function() {
             clickedItem: null
         },
         items: [{
-            text: 'Nieuwe categorie toevoegen',
+            text: 'Subcategorie toevoegen',
             icon: imagesPath + "add.png",
-            listeners: {
-                click: function(item, e, eOpts) {
-                    addCategory(item.ownerCt.data.parent);
-                }
-            }
-        },{
-            text: 'Naam wijzigen',
             listeners: {
                 click: function(item, e, eOpts) {
                     addCategory(item.ownerCt.data.parent);
@@ -88,14 +81,35 @@ Ext.onReady(function() {
             }
         },
         {
-            text: 'Verwijderen',
+            text: 'Categorie verwijderen',
             icon: imagesPath + "delete.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    addCategory(item.ownerCt.data.parent);
+                    removeCategory(item.ownerCt.data.clickedItem);
                 }
             }
-        }]
+        },
+        { xtype: "menuseparator"},
+        {
+            text: 'Naam wijzigen',
+            listeners: {
+                click: function(item, e, eOpts) {
+                    changeCategoryName(item.ownerCt.data.clickedItem);
+                }
+            }
+        },
+        { xtype: "menuseparator"},
+        {
+            text: 'Service toevoegen',
+            icon: imagesPath + "serviceok.png",
+            listeners: {
+                click: function(item, e, eOpts) {
+                    var record = item.ownerCt.data.clickedItem;
+                    Ext.get('editFrame').dom.src = actionBeans["service"] + '?addForm=t&category=' + record.get('id').substr(1);
+                }
+            }
+        }
+        ]
     });
 
     // Definition of the tree
@@ -106,7 +120,7 @@ Ext.onReady(function() {
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',
-        width: 225,
+        width: 230,
         height: 400,
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
@@ -128,23 +142,29 @@ Ext.onReady(function() {
             itemclick: function(view, record, item, index, event, eOpts) {
                 var recordType = record.get('type');
                 var id = record.get('id').substr(1);
+                                
                 if(recordType == "category") {
                     // click on category = new service
-                    Ext.get('editFrame').dom.src = geoserviceurl + '?category=' + id;
+                    Ext.get('editFrame').dom.src = actionBeans["service"] + '?category=' + id;
                 }
                 if(recordType == "service") {
                     // click on service = edit service
-                    Ext.get('editFrame').dom.src = geoserviceediturl + '?service=' + id + '&category=' + record.parentNode.get('id').substr(1);
+                    Ext.get('editFrame').dom.src = actionBeans["service"] + '?editGeoService=t&service=' + id + '&category=' + record.parentNode.get('id').substr(1);
                 }
                 if(recordType == "layer") {
                     // click on layer = edit layer
-                    Ext.get('editFrame').dom.src = layerediturl + '&layer=' + id + '&parentId=' + record.parentNode.get('id');
+                    Ext.get('editFrame').dom.src = actionBeans["layer"] + '?layer=' + id + '&parentId=' + record.parentNode.get('id');
                 }
+                
+                // Expand tree on click
+                tree.expandPath(record.getPath());
             }
         },
         bbar: [
-            "->",
-            {xtype: 'button', text: 'Categorie toevoegen', handler: function() {addCategory(0)}, cls: 'x-btn-text-icon', icon: addicon}
+            { 
+                xtype: "label",
+                text: "Gebruik het contextmenu (rechtermuisknop) om de categoriën te bewerken"
+            }
         ]
     });
 });
@@ -184,27 +204,34 @@ function removeTreeNode(nodeid) {
 // Add a category, shows a prompt dialog for the new name and adds the category
 function addCategory(parentid) {
     Ext.MessageBox.show({
-        title:'Nieuwe categorie toevoegen',
+        title: 'Nieuwe categorie toevoegen',
         msg: 'Naam van nieuwe categorie:',
         buttons: Ext.MessageBox.OKCANCEL,
         prompt:true,
         fn: function(btn, text, cBoxes){
             if(btn=='ok' && text){
                 Ext.Ajax.request({
-                    url: addcategoryurl,
+                    url: actionBeans["category"],
                     params: {
+                        addSubcategory: true,
                         name: text,
-                        parentId: parentid
+                        nodeId: parentid
                     },
                     method: 'POST',
                     success: function ( result, request ) {
-                        var objData = Ext.JSON.decode(result.responseText);
-                        objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-                        var newNode = Ext.create('GeoServiceTreeModel', objData);
-                        addNode(newNode, objData.parentid);
+                        var response = Ext.JSON.decode(result.responseText);
+                        
+                        if(response.success) {
+                            var node = response.node;
+                            node.text = node.name; // For some reason text is not mapped to name when creating a new model
+                            var newNode = Ext.create('GeoServiceTreeModel', node);
+                            addNode(newNode, node.parentid);
+                        } else {
+                            Ext.MessageBox.alert("Fout", response.error);
+                        }                        
                     },
                     failure: function ( result, request) {
-                        Ext.MessageBox.alert('Failed', result.responseText);
+                        Ext.MessageBox.alert("Fout", result.responseText);
                     }
                 });
             }
@@ -212,16 +239,96 @@ function addCategory(parentid) {
     });
 }
 
+function changeCategoryName(record) {
+  
+    Ext.MessageBox.show({
+        title:'Naam wijzigen',
+        msg: 'Naam van categorie:',
+        buttons: Ext.MessageBox.OKCANCEL,
+        prompt:true,
+        value: record.data.text,
+        fn: function(btn, text, cBoxes){
+            if(btn=='ok' && text){
+                console.log("change name to " + text);
+                
+                Ext.Ajax.request({
+                    url: actionBeans["category"],
+                    params: {
+                        saveCategory: true,
+                        name: text,
+                        nodeId: record.data.id
+                    },
+                    method: 'POST',
+                    success: function(result) {
+                        var response = Ext.JSON.decode(result.responseText);
+                        
+                        if(response.success) {
+                            record.set("text", response.name);
+                        } else {
+                            Ext.MessageBox.alert("Fout", response.error);
+                        }
+                    },
+                    failure: function (result) {
+                        Ext.MessageBox.alert("Fout", result.responseText);
+                    }
+                });
+            }
+        }
+    });
+}
+
+function removeCategory(record) {
+    Ext.MessageBox.show({
+        title: "Categorie verwijderen",
+        msg: "Weet u zeker dat u de categorie " + record.data.text + " wilt verwijderen?",
+        buttons: Ext.MessageBox.OKCANCEL,
+        fn: function(btn){
+            if(btn=='ok'){
+                
+                Ext.Ajax.request({
+                    url: actionBeans["category"],
+                    params: {
+                        removeCategory: true,
+                        nodeId: record.data.id
+                    },
+                    method: 'POST',
+                    success: function(result) {
+                        var response = Ext.JSON.decode(result.responseText);
+                        
+                        if(response.success) {
+                            record.remove();
+                            Ext.get('editFrame').dom.src = "about:blank";
+                        } else {
+                            Ext.MessageBox.alert("Fout", response.error);
+                        }
+                    },
+                    failure: function (result) {
+                        Ext.MessageBox.alert("Fout", result.responseText);
+                    }
+                });
+            }
+        }
+    });    
+}
+
 // Function to add a service node. Parameter should hold the JSON for 1 servicenode
 function addServiceNode(json) {
     var objData = Ext.JSON.decode(json);
     objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-    var newNode = Ext.create('TreeNode', objData);
+    var newNode = Ext.create('GeoServiceTreeModel', objData);
     addNode(newNode, objData.parentid);
 }
 
 // Function to rename a node, based in its ID
-function renameNode(nodeid, newname) {
+function renameNode(nodeid, newname) {    
     var tree = Ext.getCmp('servicestree');
-    tree.getRootNode().findChild('id', nodeid, true).set('text', newname);
+    var node = null;
+    if(nodeid == tree.getRootNode().getId()) {
+        node = tree.getRootNode();
+    } else {
+        node = tree.getRootNode().findChild("id", nodeid, true);
+    }
+    if(node != null) {
+        node.set("text",newname);
+    }
 }

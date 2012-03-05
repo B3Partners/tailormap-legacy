@@ -39,17 +39,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </div>
         
         <script type="text/javascript">
-            // Definition of URLS and icons... how are we going to do this?
-            var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
-            var addcategoryurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="addCategory"/>';
-            var geoserviceediturl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="editGeoService"/>';
-            var geoserviceurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean"/>';
-            var layerediturl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean" event="edit"/>';
-            var foldericon = '${contextPath}/resources/images/folder.png';
-            var layericon = '${contextPath}/resources/images/map.png';
-            var serviceokicon = '${contextPath}/resources/images/serviceok.png';
-            var serviceerroricon = '${contextPath}/resources/images/serviceerror.png';
-            var addicon = '${contextPath}/resources/images/add.png';
+            
+            var actionBeans = {
+                "tree": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="tree"/></js:quote>,
+                "category": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean"/></js:quote>,
+                "service": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean"/></js:quote>,
+                "layer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean"/></js:quote>
+            };
             
             var imagesPath = "${contextPath}/resources/images/";
             
