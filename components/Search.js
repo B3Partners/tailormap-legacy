@@ -83,28 +83,37 @@ Ext.define ("viewer.components.Search",{
                 xtype: 'button',
                 text: 'Annuleren',
                 name: 'cancel',
-                id: 'cancel',
+                id: 'cancel'+ this.name,
                 listeners: {
                     click:{
                         scope: this,
                         fn: this.cancel
                     }
                 }
+            },{ 
+                xtype: 'button',
+                text: 'Sluiten',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: this.hideWindow
+                    }
+                }
             }],
             renderTo: this.getContentDiv()
         });
-        this.results = Ext.create('Ext.panel.Panel', {
-            title: 'Resultaten:',
-            renderTo: this.getContentDiv()
-        });
-        
-     //   this.form.getChildByElement("cancel").setVisible(false);
-        this.results.hide();
+        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
     },
     showWindow : function(){
         this.popup.show();
     },
+    hideWindow : function(){
+        this.popup.hide();
+    },
     search : function(){
+        if(this.results != null){
+            this.results.destroy();
+        }
         var searchText = this.form.getChildByElement("searchfield" + this.name).getValue();
         var searchName = this.form.getChildByElement("searchName" + this.name).getValue();
         
@@ -133,17 +142,55 @@ Ext.define ("viewer.components.Search",{
             // search request is not complete
         }
         
-        this.form.getChildByElement("cancel").setVisible(true);
+        this.form.getChildByElement("cancel"+ this.name).setVisible(true);
     },
     showSearchResults : function(){
-        this.results.show();
-        //this.resultsgetChildByElement("html").setValue("<h1>test</h1>");
+        var html = "";
+        if(this.searchResult.length <= 0){
+            html = "Er zijn geen resultaten gevonden.";
+        }
+        var me = this;
+        
+        var buttonList = new Array();
+        for ( var i = 0 ; i < this.searchResult.length ; i ++){
+            var result = this.searchResult[i];
+            buttonList.push({
+                text: result.address,
+                xtype: 'button',
+                tooltip: 'Zoom naar locatie',
+                listeners: {
+                    click:{
+                        scope: me,
+                        fn: function(){me.zoomToExtent(result.location);}
+                    }
+                }
+            });
+        }
+        
+        me.results = Ext.create('Ext.form.Panel', {
+            title: 'Resultaten:',
+            renderTo: this.getContentDiv(),
+            html: html,
+            items: buttonList
+        });
+        
     },
     cancel : function(){
-        this.form.getChildByElement("searchfield").setValue("");
-        this.form.getChildByElement("searchName").setValue("");
-        this.form.getChildByElement("cancel").setVisible(false);
-        this.results.hide();
+        this.form.getChildByElement("searchfield"+ this.name).setValue("");
+        this.form.getChildByElement("searchName"+ this.name).setValue("");
+        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
+        this.results.destroy();
+    },
+    zoomToExtent : function(location){
+        var newExtent = new Object();
+        newExtent.minx=location.x-100;
+        newExtent.miny=location.y-100;
+        newExtent.maxx=location.x+100;
+        newExtent.maxy=location.y+100;
+        this.viewerController.mapComponent.getMap().zoomToExtent(newExtent);
+        this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
+        this.viewerController.mapComponent.getMap().setMarker("searchmarker",location.x,location.y,"marker");
+        this.popup.hide();
     }
 });
 
