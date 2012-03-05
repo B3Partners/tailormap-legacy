@@ -1,0 +1,85 @@
+/* 
+ * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+/**
+ * Creates a JSButton with the given configuration
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ */
+Ext.define ("viewer.components.tools.JSButton",{
+    extend: "viewer.components.tools.Tool",
+    config:{
+        name: "JSButton",
+        iconUrl_up: null,
+        iconUrl_over: null,
+        iconUrl_sel: null,
+        iconUrl_dis: null,
+        toggle: false,
+        enabled: false,
+        selected:false,
+        tooltip:null
+    },
+    constructor: function (conf){        
+        viewer.components.tools.JSButton.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        conf.type = viewer.viewercontroller.controller.Tool.Button;        
+        this.initTool(conf);
+        return this;
+    },
+    /**
+     * Create a xml string for this object.
+     * @return string of the xml.
+     */
+    toXML: function (){        
+        var xml="<fmc:";
+        xml+=this.getTagName(this.getType());
+        if (this.getId()!=null)
+            xml+=" id='"+this.getId()+"'";
+        if (this.getWidth()!=null)
+            xml+=" width='"+this.getWidth()+"'";
+        if (this.getHeight()!=null)
+            xml+=" height='"+this.getHeight()+"'";
+        if (this.getTop()!=null)
+            xml+=" top='"+this.getTop()+"'";
+        if (this.getLeft()!=null)
+            xml+=" left='"+this.getLeft()+"'";
+        if (this.getRight()!=null)
+            xml+=" right='"+this.getRight()+"'";
+        if (this.getBottom()!=null)
+            xml+=" bottom='"+this.getBottom()+"'";        
+        if (this.getListenTo()!=null){
+            xml+=" listento='"+this.getListenTo()+"'";
+        }
+        xml += " iconurl_up='"+this.iconUrl_up+"'";
+        xml += " iconurl_down='"+this.iconUrl_down+"'";
+        xml += " iconurl_over='"+this.iconUrl_over+"'";
+        xml += " iconurl_sel='"+this.iconUrl_sel+"'";
+        xml += " iconurl_dis='"+this.iconUrl_dis+"'";
+        xml += " visible='"+this.visible+"'";
+        xml += " enabled='"+this.enabled+"'";
+        xml += " selected='"+this.selected+"'";
+        xml += " toggle='"+this.toggle+"'";
+        xml+=">";    
+        if (this.getTooltip()!=null)
+            xml+="<string id='tooltip' en='"+this.getTooltip()+"'/>";
+        xml+="</fmc:"+this.getTagName(this.getType())+">"
+        return xml;
+    },
+    getTagName: function (toolType){
+        return "JsButton";
+    }
+});

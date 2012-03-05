@@ -513,5 +513,32 @@
         configSource: ["SelectionWindowConfig.js","Print-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
+    },
+    {
+        className: "viewer.components.tools.JSButton",
+        name: "JSButton",
+        shortName: "JB",
+        sources: ["tools/JSButton.js"],
+        closureCompilerSafe: true,
+        singleton: false,
+        restrictions: ["top_menu"],
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip",
+                            iconUrl_up: "Icoon up",
+                            iconUrl_over: "Icoon over",
+                            iconUrl_sel: "Icoon selected",
+                            iconUrl_dis: "Icoon disabled",
+                            toggle: "Toggle",
+                            enabled: "Enabled",
+                            selected:"Selected"},
+            source: {tooltip: "Zoom out",
+                     iconUrl_up: "http://localhost:8084/viewer/resources/images/buffer.png",
+                     iconUrl_over: "http://localhost:8084/viewer/resources/images/buffer_over.png",
+                     iconUrl_sel: "http://localhost:8084/viewer/resources/images/buffer_down.png",
+                     iconUrl_dis: "http://localhost:8084/viewer/resources/images/buffer.png",
+                     toggle: false,
+                     enabled: true,
+                     selected:false}
+        }
     }
 ]
