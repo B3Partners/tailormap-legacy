@@ -114,8 +114,8 @@ function createLayoutTab(){
                 fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
                 inputValue: true,
                 name: 'changeablePosition',
-                checked: JSON.parse(details.changeablePosition),
-                value: JSON.parse(details.changeablePosition),
+                checked:details.changeablePosition ? JSON.parse(details.changeablePosition) : false,
+                value: details.changeablePosition ? JSON.parse(details.changeablePosition) : false,
                 labelWidth:labelWidth
             }]
         },
@@ -145,8 +145,8 @@ function createLayoutTab(){
                 inputValue: true,
                 name: 'changeableSize',
                 //checked: details.changeableSize,
-                value: JSON.parse(details.changeableSize),
-                checked: JSON.parse(details.changeableSize),
+                value: details.changeableSize ? JSON.parse(details.changeableSize) : false,
+                checked: details.changeableSize ? JSON.parse(details.changeableSize) : false,
                 //value: true,
                 labelWidth:labelWidth
             }]

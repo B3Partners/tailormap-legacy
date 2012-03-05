@@ -71,9 +71,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private String componentLayout;
     private Boolean loadCustomConfig = false;
     private JSONObject details;
-    
-    // <editor-fold defaultstate="collapsed" desc="getters and setters">
 
+    // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
         return components;
     }
@@ -169,9 +168,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public void setDetails(JSONObject details) {
         this.details = details;
     }
-    
-    //</editor-fold>
 
+    //</editor-fold>
     @DefaultHandler
     public Resolution view() throws JSONException {
         if (application == null) {
@@ -192,6 +190,14 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             component = (ConfiguredComponent) em.createQuery(
                     "from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", name).getSingleResult();
             groups = new ArrayList<String>(component.getReaders());
+            try {
+                JSONObject d = new JSONObject();
+                for (Map.Entry<String, String> e : component.getDetails().entrySet()) {
+                    d.put(e.getKey(), e.getValue());
+                }
+                details = d;
+            } catch (JSONException ex) {
+            }
         } catch (NoResultException ex) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getClass().getName() + ": " + ex.getMessage()));
         }
@@ -200,14 +206,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         if (metadata.has("configSource")) {
             loadCustomConfig = true;
         }
-            try {
-                JSONObject d = new JSONObject();
-                for(Map.Entry<String,String> e: component.getDetails().entrySet()) {
-                    d.put(e.getKey(), e.getValue());
-                }
-                details = d;
-            } catch (JSONException ex) {
-            }
+
 
         /*
          * if there is a configXML and no Ext Property Grid settings. Get the
@@ -253,7 +252,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             for (Iterator<String> it = compLayout.keys(); it.hasNext();) {
                 String key = it.next();
                 Object val = compLayout.get(key);
-                compDetails.put(key,val.toString());
+                compDetails.put(key, val.toString());
             }
         } catch (JSONException ex) {
             Logger.getLogger(LayoutManagerActionBean.class.getName()).log(Level.SEVERE, null, ex);
