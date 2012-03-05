@@ -26,7 +26,6 @@
 Ext.define("viewer.components.Component",{
     extend: "Ext.util.Observable", 
     events: null,
-    isPopup : false,
     popup: null,
     config: {
         name: "naam",
