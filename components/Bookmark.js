@@ -32,20 +32,18 @@ Ext.define ("viewer.components.Bookmark",{
     constructor: function (conf){        
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.loadButton();
+        this.renderButton();
         this.loadWindow();
         return this;
     },
-    loadButton : function(){
-        Ext.create('Ext.Button', {
-            renderTo: this.div,
-            icon: this.titlebarIcon,
-            tooltip: this.tooltip,
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.showWindow
-                }
+    renderButton: function() {
+        var me = this;
+        this.superclass.renderButton.call(this,{
+            text: me.title,
+            icon: me.titlebarIcon,
+            tooltip: me.tooltip,
+            handler: function() {
+                me.showWindow();
             }
         });
     },

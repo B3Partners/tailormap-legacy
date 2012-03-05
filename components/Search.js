@@ -33,20 +33,18 @@ Ext.define ("viewer.components.Search",{
     constructor: function (conf){        
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.loadButton();   
+        this.renderButton(); 
         this.loadWindow();
         return this;
     },
-    loadButton : function(){
-        Ext.create('Ext.Button', {
-            renderTo: this.div,
-            icon: this.iconUrl,
-            tooltip: this.tooltip,
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.showWindow
-                }
+    renderButton: function() {
+        var me = this;
+        this.superclass.renderButton.call(this,{
+            text: me.title,
+            icon: me.iconUrl,
+            tooltip: me.tooltip,
+            handler: function() {
+                me.popup.show();
             }
         });
     },
@@ -103,9 +101,6 @@ Ext.define ("viewer.components.Search",{
             renderTo: this.getContentDiv()
         });
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
-    },
-    showWindow : function(){
-        this.popup.show();
     },
     hideWindow : function(){
         this.popup.hide();
