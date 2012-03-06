@@ -1,7 +1,7 @@
 insert into application(id,name,authenticated_required) values(1,'default',0);
 SELECT app_id_seq.NEXTVAL FROM dual;
 
-insert into category (id,name) values(0,'root');
+insert into category (id,name) values(0,'Categoriën');
 
 -- Genereer een random wachtwoord een maak een SHA-1 digest met:
 -- pwgen -1Bc 10 | tr -d '\n' | tee /tmp/pw | sha1sum; cat /tmp/pw; rm /tmp/pw; echo
