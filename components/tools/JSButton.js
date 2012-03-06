@@ -21,7 +21,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.tools.JSButton",{
-    extend: "viewer.components.tools.Tool",
+    extend: "viewer.viewercontroller.flamingo.FlamingoTool",
     config:{
         name: "JSButton",
         iconUrl_up: null,
@@ -33,11 +33,15 @@ Ext.define ("viewer.components.tools.JSButton",{
         selected:false,
         tooltip:null
     },
-    constructor: function (conf){        
+    constructor: function (conf){              
         viewer.components.tools.JSButton.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.Button;        
-        this.initTool(conf);
+        this.mapComponent = this.viewerController.mapComponent;
+        this.frameworkObject = this.viewerController.mapComponent.viewerObject;
+        
+        this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.down, this);
+        this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.up, this);
+        this.viewerController.mapComponent.addTool(this);
         return this;
     },
     /**
@@ -46,7 +50,8 @@ Ext.define ("viewer.components.tools.JSButton",{
      */
     toXML: function (){        
         var xml="<fmc:";
-        xml+=this.getTagName(this.getType());
+        xml+=this.getTagName();
+        xml += " xmlns:fmc='fmc'"
         if (this.getId()!=null)
             xml+=" id='"+this.getId()+"'";
         if (this.getWidth()!=null)
@@ -79,7 +84,7 @@ Ext.define ("viewer.components.tools.JSButton",{
         xml+="</fmc:"+this.getTagName(this.getType())+">"
         return xml;
     },
-    getTagName: function (toolType){
+    getTagName: function (){
         return "JsButton";
     }
 });

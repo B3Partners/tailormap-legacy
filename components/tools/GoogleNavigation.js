@@ -20,7 +20,7 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.tools.GoogleNavigation",{
-    extend: "viewer.components.tools.Tool",
+    extend: "viewer.viewercontroller.controller.Tool",
     config:{
         name: "Google Navigation",
         navigationPanel : true

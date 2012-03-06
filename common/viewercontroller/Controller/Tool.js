@@ -7,27 +7,7 @@
  * @param type The type of tool to be created
  */
 Ext.define("viewer.viewercontroller.controller.Tool",{
-    extend: "Ext.util.Observable",
-    events: [],
-    config :{
-        id: "id",
-        frameworkObject: new Object(),
-        type: -1
-    },
-    mapComponent: null,
-    constructor: function (config){
-        this.initConfig(config);
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_CLICK,viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,viewer.viewercontroller.controller.Event.ON_EVENT_UP);
-        return this;
-    },
-    
-    fire : function (event,options){
-        this.fireEvent(event,this,options);
-    },
-
-    registerEvent : function (event,handler){
-        this.addListener(event,handler);
-    },
+    extend: "viewer.components.Component",
     statics:{
         // The different types of tools
         DRAW_FEATURE               : 0,
@@ -53,6 +33,40 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         PREVIOUS_EXTENT            : 19,
         NEXT_EXTENT                : 20,
         FULL_EXTENT                : 21
+    },
+    tool: null,    
+    mapComponent: null,
+    events: [],
+    config :{
+        id: "id",
+        frameworkObject: new Object(),
+        type: -1
+    },
+    constructor: function (config){
+        this.initConfig(config);
+        this.addEvents(viewer.viewercontroller.controller.Event.ON_CLICK,viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,viewer.viewercontroller.controller.Event.ON_EVENT_UP);
+        return this;
+    },
+    /**
+     * Init the tool and add it to the mapcomponent
+     */
+    initTool: function(conf){ 
+        //MapComponent is working with ids instead of names
+        conf.id=this.name;
+        //Let the Mapcomponent create the specific tool
+        tool = viewerController.mapComponent.createTool(conf);   
+        if (tool==null){
+            throw new Error("Tool not initialized! Initialize the tool before the addTool");            
+        }
+        //Add the tool
+        viewerController.mapComponent.addTool(tool);
+    },
+    fire : function (event,options){
+        this.fireEvent(event,this,options);
+    },
+
+    registerEvent : function (event,handler){
+        this.addListener(event,handler);
     },
     getFrameworkTool : function(){
         return this.frameworkTool;
