@@ -32,6 +32,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:hidden name="level" value="${actionBean.level.id}"/>
 
                 <c:if test="${actionBean.context.eventName == 'edit'}">
+                    <h1>Bewerken: <c:out value="${actionBean.level.name}"/></h1>
+                    <br>
                     <stripes:submit name="save" value="Opslaan" />
                     <stripes:submit name="cancel" value="Annuleren"/>
                     <stripes:submit name="delete" value="Verwijderen"/>
@@ -73,7 +75,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <div id="context-tab" class="tabdiv">
                             <h1>Context:</h1>
                             <stripes:textarea cols="150" rows="5" name="level.info"/><br>
-                            Niveau naam: <stripes:text name="level.name"/>
                         </div>
                     </div>
             </c:if>
@@ -91,7 +92,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${actionBean.context.eventName == 'edit'}">
             <script type="text/javascript">
                 // Definition of URLS and icons... how are we going to do this?
-                var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="loadCategoryTree"/>';
+                var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="tree"/>';
                 var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
                 var doctreeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadDocumentTree"/>';
                 var selecteddocsurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedDocuments"/>';

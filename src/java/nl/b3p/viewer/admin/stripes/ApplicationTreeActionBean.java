@@ -32,7 +32,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Jytte Schaeffer
  */
 
-@UrlBinding("/action/applicationtree/{$event}")
+@UrlBinding("/action/applicationtree")
 @StrictBinding
 @RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationTreeActionBean extends ApplicationActionBean {
@@ -50,16 +50,17 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
     @Validate(on="addLevel",required=true)
     private String name;
 
-    private Level rootlevel;
+    private Level rootLevel;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
-    public Level getRootlevel() {
-        return rootlevel;
+    public Level getRootLevel() {
+        return rootLevel;
     }
-    
-    public void setRootlevel(Level rootlevel) {
-        this.rootlevel = rootlevel;
+
+    public void setRootLevel(Level rootLevel) {
+        this.rootLevel = rootLevel;
     }
+
     
     public String getName() {
         return name;
@@ -100,13 +101,13 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             getContext().getMessages().add(new SimpleError("Er moet eerst een bestaande applicatie geactiveerd of een nieuwe applicatie gemaakt worden."));
             return new ForwardResolution("/WEB-INF/jsp/application/chooseApplication.jsp");
         }else{
-            rootlevel = application.getRoot();
+            rootLevel = application.getRoot();
         }
         
         return new ForwardResolution(JSP);
     }
     
-    public Resolution loadApplicationTree() throws JSONException {
+    public Resolution tree() throws JSONException {
 
         EntityManager em = Stripersist.getEntityManager();
         

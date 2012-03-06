@@ -15,18 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-Ext.Loader.setConfig({enabled:true});
-Ext.require([
-    'Ext.tree.*',
-    'Ext.data.*'
-]);
-
 Ext.onReady(function() {
     
     // Definition of the TreeNode model. Get function is overridden, so custom
     // icons for the different types are possible
-    Ext.define('TreeNode', {
+    Ext.define('AppLevelTreeModel', {
         extend: 'Ext.data.Model',
         fields: [
             {name: 'id', type: 'string'},
@@ -44,8 +37,8 @@ Ext.onReady(function() {
             var nodeType = '';
             if(fieldName == "icon") {
                 nodeType = this.get('type');
-                if(nodeType == "level") return foldericon;
-                if(nodeType == "layer") return layericon;
+                if(nodeType == "level") return imagesPath + "folder.png";
+                if(nodeType == "layer") return imagesPath + "map.png";
             }
             if(fieldName == "leaf") {
                 return this.get('isLeaf');
@@ -88,40 +81,76 @@ Ext.onReady(function() {
         autoLoad: true,
         proxy: {
             type: 'ajax',
-            url: treeurl
+            url: actionBeans.appTree + "?tree=t"            
         },
-        defaultRootId: 'n'+rootid,
-        defaultRootProperty: 'children',
-        model: TreeNode,
+        root: {text: rootName, id: rootId, type: "level", expanded: true},
+        model: AppLevelTreeModel,
         nodeParam: 'nodeId'
     });
 
-    // Definition of contextmenu for categories
+    // Definition of contextmenu for levels
     var levelMenu = new Ext.menu.Menu({
         data: {
-            parent: 0,
             clickedItem: null
         },
         items: [{
-            text: 'Nieuw niveau toevoegen',
-            icon: foldericon,
+            text: 'Subniveau toevoegen',
+            icon: imagesPath + "add.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    addLevel(item.ownerCt.data.parent);
+                    addSublevel(item.ownerCt.data.clickedItem);
+                }
+            }
+        },{
+            text: 'Verwijderen',
+            icon: imagesPath + "delete.png",
+            listeners: {
+                click: function(item, e, eOpts) {
+                    removeLevel(item.ownerCt.data.clickedItem);
+                }
+            }
+        },{
+            text: 'Naam wijzigen',
+            listeners: {
+                click: function(item, e, eOpts) {
+                    changeLevelName(item.ownerCt.data.clickedItem)
+                }
+            }
+        },{
+            text: 'Bewerken',
+            icon: imagesPath + "wrench.png",
+            listeners: {
+                click: function(item, e, eOpts) {
+                    var record = item.ownerCt.data.clickedItem;
+                    tree.fireEvent("itemclick", null, record);
+                }
+            }
+        }
+        
+        ]
+    });
+
+    var appLayerMenu = new Ext.menu.Menu({
+        data: {
+            clickedItem: null
+        },
+        items: [{
+            text: 'Bewerken',
+            icon: imagesPath + "wrench.png",
+            listeners: {
+                click: function(item, e, eOpts) {
+                    var record = item.ownerCt.data.clickedItem;
+                    tree.fireEvent("itemclick", null, record);
                 }
             }
         }]
     });
-
+    
     // Definition of the tree
     var tree = Ext.create('Ext.tree.Panel', {
         id: 'applicationtree',
         store: treeStore,
-        rootVisible: false,
-        root: {
-            text: "Root node",
-            expanded: true
-        },
+        rootVisible: true,
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',
@@ -129,13 +158,14 @@ Ext.onReady(function() {
         height: 400,
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
-                // Only show contextmenu (add new level) on level nodes
                 if(record.get('type') == "level") {
-                    levelMenu.data.parent = record.get('id');
                     levelMenu.data.clickedItem = record;
                     levelMenu.showAt(event.getXY());
-                    event.stopEvent();
+                } else {
+                    appLayerMenu.data.clickedItem = record;
+                    appLayerMenu.showAt(event.getXY());
                 }
+                event.stopEvent();
             },
             containercontextmenu: function(view, event, eOpts) {
                 // When rightclicking in the treecontainer (not on a node) than
@@ -148,17 +178,21 @@ Ext.onReady(function() {
                 var recordType = record.get('type');
                 var id = record.get('id').substr(1);
                 if(recordType == "level") {
-                    Ext.get('editFrame').dom.src = levelurl + '?level=' + id;
+                    Ext.get('editFrame').dom.src = actionBeans.appTreeLevel + '?edit=t&level=' + id;
                 }
                 if(recordType == "layer") {
-                    Ext.get('editFrame').dom.src = layerurl + '?applicationLayer=' + id; //+ '&parentId=' + record.parentNode.get('id');
+                    Ext.get('editFrame').dom.src = actionBeans.appTreeLayer + '?edit=t&applicationLayer=' + id; //+ '&parentId=' + record.parentNode.get('id');
                 }
+                
+                // Expand tree on click
+                record.set("isLeaf", false);
+                record.expand(false);                
             }
         },
-        bbar: [
-            "->",
-            {xtype: 'button', text: 'Niveau toevoegen', handler: function() {addLevel(rootid)}, cls: 'x-btn-text-icon', icon: addicon}
-        ]
+        bbar: [{
+            xtype: "label",
+            text: "Gebruik het contextmenu (rechtermuisknop) om de boomstructuur te bewerken"
+        }]
     });
 });
 
@@ -167,7 +201,7 @@ Ext.onReady(function() {
 function addNode(node, parentid) {
     var record = null;
     var tree = Ext.getCmp('applicationtree');
-    if(parentid == rootid || parentid == 'n'+rootid) {
+    if(parentid == rootId || parentid == 'n'+rootId) {
         record = tree.getRootNode();
     } else {
         record = tree.getRootNode().findChild('id', parentid, true);
@@ -181,8 +215,28 @@ function addNode(node, parentid) {
         } else {
             // If it has childnodes then just append the new node
             // First expand, then append child, otherwise childnodes are replaced?
+            
             record.expand(false, function() {
-                record.appendChild(node);
+                // Sometimes node is being expanded even is isLeaf() is true
+                // Do not add record twice
+                if(record.findChild("id", node.data.id) == null) {
+                    
+                    // New layer always added at bottom
+                    if(node.data.id.charAt(0) == "s") {
+                        record.appendChild(node);
+                    } else {
+                        // Add as last level before services
+                        var firstAppLayer = null;
+                        record.eachChild(function(child) {
+                            if(firstAppLayer == null && child.data.id.charAt(0) == "s") {
+                                firstAppLayer = child;
+                            }
+                        });
+                        record.insertBefore(node, firstAppLayer);
+                    }
+                } else {
+                    //console.log("child already exists even though parent was a leaf!");
+                }
             });
         }
     }
@@ -195,26 +249,27 @@ function removeTreeNode(nodeid) {
 }
 
 // Add a category, shows a prompt dialog for the new name and adds the category
-function addLevel(parentid) {
+function addSublevel(record) {
     Ext.MessageBox.show({
         title:'Nieuw niveau toevoegen',
-        msg: 'Naam van nieuwe niveau:',
+        msg: 'Naam van nieuw niveau:',
         buttons: Ext.MessageBox.OKCANCEL,
-        prompt:true,
+        prompt: true,
         fn: function(btn, text, cBoxes){
             if(btn=='ok' && text){
                 Ext.Ajax.request({
-                    url: addlevelurl,
+                    url: actionBeans.appTree + "?addLevel=t",
                     params: {
                         name: text,
-                        parentId: parentid
+                        parentId: record.data.id
                     },
                     method: 'POST',
                     success: function ( result, request ) {
                         var objData = Ext.JSON.decode(result.responseText);
                         objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-                        var newNode = Ext.create('TreeNode', objData);
+                        var newNode = Ext.create('AppLevelTreeModel', objData);
                         addNode(newNode, objData.parentid);
+                        Ext.getCmp("applicationtree").fireEvent("itemclick", null, newNode);
                     },
                     failure: function ( result, request) {
                         Ext.MessageBox.alert('Failed', result.responseText);
@@ -225,11 +280,83 @@ function addLevel(parentid) {
     });
 }
 
+
+function changeLevelName(record) {
+  
+    Ext.MessageBox.show({
+        title:'Naam wijzigen',
+        msg: 'Naam van niveau:',
+        buttons: Ext.MessageBox.OKCANCEL,
+        prompt:true,
+        value: record.data.text,
+        fn: function(btn, text, cBoxes){
+            if(btn=='ok' && text){
+                
+                Ext.Ajax.request({
+                    url: actionBeans.appTreeLevel,
+                    params: {
+                        saveName: true,
+                        "level.name": text,
+                        level: record.data.id.substring(1)
+                    },
+                    method: 'POST',
+                    success: function(result) {
+                        var response = Ext.JSON.decode(result.responseText);
+                        
+                        if(response.success) {
+                            record.set("text", response.name);
+                        } else {
+                            Ext.MessageBox.alert("Fout", response.error);
+                        }
+                    },
+                    failure: function (result) {
+                        Ext.MessageBox.alert("Fout", result.responseText);
+                    }
+                });
+            }
+        }
+    });
+}
+
+function removeLevel(record) {
+    Ext.MessageBox.show({
+        title: "Niveau verwijderen",
+        msg: "Weet u zeker dat u het niveau " + record.data.text + " wilt verwijderen?",
+        buttons: Ext.MessageBox.OKCANCEL,
+        fn: function(btn){
+            if(btn=='ok'){
+                
+                Ext.Ajax.request({
+                    url: actionBeans.appTreeLevel,
+                    params: {
+                        deleteAjax: true,
+                        level: record.data.id.substring(1)
+                    },
+                    method: 'POST',
+                    success: function(result) {
+                        var response = Ext.JSON.decode(result.responseText);
+                        
+                        if(response.success) {
+                            record.remove();
+                            Ext.get('editFrame').dom.src = "about:blank";
+                        } else {
+                            Ext.MessageBox.alert("Fout", response.error);
+                        }
+                    },
+                    failure: function (result) {
+                        Ext.MessageBox.alert("Fout", result.responseText);
+                    }
+                });
+            }
+        }
+    });    
+}
+    
 // Function to add a service node. Parameter should hold the JSON for 1 servicenode
 function addServiceNode(json) {
     var objData = Ext.JSON.decode(json);
     objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-    var newNode = Ext.create('TreeNode', objData);
+    var newNode = Ext.create('AppLevelTreeModel', objData);
     addNode(newNode, objData.parentid);
 }
 

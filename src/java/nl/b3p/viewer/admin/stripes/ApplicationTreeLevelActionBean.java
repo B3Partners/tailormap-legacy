@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.StringReader;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
@@ -26,6 +27,10 @@ import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.*;
 import nl.b3p.viewer.config.services.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -33,16 +38,18 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Jytte Schaeffer
  */
 
-@UrlBinding("/action/applicationtreelevel/{$event}")
+@UrlBinding("/action/applicationtreelevel")
 @StrictBinding
 @RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
+    private static final Log log = LogFactory.getLog(ApplicationTreeLevelActionBean.class);
+    
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLevel.jsp";
     
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="info"),
-                @Validate(field="name",required=true)
+                @Validate(field="name")
     })
     private Level level;
     
@@ -60,8 +67,8 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private String selecteddocs;
     
     @DefaultHandler
+    @DontValidate
     public Resolution view() {
-        Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);
     }
@@ -69,15 +76,16 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     public Resolution delete() {
         boolean inUse = false;
         
-        if(level.getChildren().size() > 0){
+        if(level.getParent() == null) {
+            inUse = true;
+            getContext().getValidationErrors().add("niveau", new SimpleError("Het bovenste niveau kan niet worden verwijderd"));
+        } else if(level.getChildren().size() > 0){
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft."));
-        }
-        if(level.getSelectedIndex() != null){
+        } else if(level.getSelectedIndex() != null){
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen"));
-        }
-        if(level.getLayers().size() > 0){
+        } else if(level.getLayers().size() > 0){
             inUse = true;
             getContext().getValidationErrors().add("niveau", new SimpleError("Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat."));
         }
@@ -104,7 +112,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             
             if(level.isBackground()){
                 layersAllowed = false;
-            }else if(level.getParent() != null && level.getParent().getId().equals(rootLevel.getId())){
+            }else if(level.getParent() == null || level.getParent().getId().equals(rootLevel.getId())){
                 layersAllowed = false;
             }else{
                 layersAllowed = true;
@@ -119,6 +127,81 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
     }
+    
+    @DontValidate
+    public Resolution saveName() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        String error = null;
+        
+        if(level == null) {
+            error = "Niveau niet gevonden";
+        } else if(level.getName() == null) {
+            error = "Naam moet zijn ingevuld";
+        } else {
+            try {
+                Stripersist.getEntityManager().persist(level);
+                Stripersist.getEntityManager().getTransaction().commit();
+                json.put("name", level.getName());
+                json.put("success", Boolean.TRUE);
+            } catch(Exception e) {
+                log.error("Fout bij opslaan niveau", e);
+                error = "Kan niveau niet opslaan: " + e;
+                Throwable t = e;
+                while(t.getCause() != null) {
+                    t = t.getCause();
+                    error += "; " + t;
+                }                
+            }
+        }
+        if(error != null) {
+            json.put("error", error);
+        }              
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+    
+    @DontValidate
+    public Resolution deleteAjax() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        String error = null;
+        
+        if(level == null) {
+            error = "Niveau niet gevonden";
+        } else if(level.getParent() == null) {
+            error = "Bovenste niveau kan niet worden verwijderd";
+        } else if(level.getChildren().size() > 0) {
+            error = "Het niveau kan niet worden verwijderd omdat deze sub-niveau's heeft.";
+        } else if(level.getSelectedIndex() != null) {
+            error = "Het niveau kan niet worden verwijderd omdat deze kaart in de TOC is opgenomen";
+        } else if(level.getLayers().size() > 0) {
+            error = "Het niveau kan niet worden verwijderd omdat deze kaartlagen bevat.";
+        } else {
+            try {
+                Level parent = level.getParent();
+                parent.getChildren().remove(level);
+                Stripersist.getEntityManager().remove(level);
+                Stripersist.getEntityManager().getTransaction().commit();
+
+                json.put("success", Boolean.TRUE);
+            } catch(Exception e) {
+                log.error("Fout bij verwijderen niveau", e);
+                error = "Kan niveau niet verwijderen: " + e;
+                Throwable t = e;
+                while(t.getCause() != null) {
+                    t = t.getCause();
+                    error += "; " + t;
+                }                
+            }
+        }
+        
+        if(error != null) {
+            json.put("error", error);
+        }              
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }    
     
     public Resolution save() {                
         level.getReaders().clear();

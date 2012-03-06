@@ -31,6 +31,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
             <c:if test="${actionBean.context.eventName == 'edit'}">
+                <h1>Bewerken kaartlaag</h1>
+                <br>
                 <stripes:submit name="save" value="Opslaan" />
                 <stripes:submit name="cancel" value="Annuleren"/>
                 <br /><br />

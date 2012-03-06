@@ -162,10 +162,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
             application = new Application();
             
             /*
-             * A new application always have a root and a background level.
+             * A new application always has a root and a background level.
              */
             Level root = new Level();
-            root.setName("root");
+            root.setName("Applicatie");
             
             Level background = new Level();
             background.setName("Achtergrond");

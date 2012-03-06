@@ -31,7 +31,7 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Jytte Schaeffer
  */
-@UrlBinding("/action/applicationtreelayer/{$event}")
+@UrlBinding("/action/applicationtreelayer")
 @StrictBinding
 @RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {

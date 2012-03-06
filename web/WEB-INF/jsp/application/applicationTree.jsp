@@ -39,18 +39,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </div>
         
         <script type="text/javascript">
-            // Definition of URLS and icons... how are we going to do this?
-            var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadApplicationTree"/>';
-            var addlevelurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="addLevel"/>';
-            var levelurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" event="edit"/>';
-            var layerurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" event="edit"/>';
- 
-            var foldericon = '${contextPath}/resources/images/folder.png';
-            var layericon = '${contextPath}/resources/images/map.png';
-            var addicon = '${contextPath}/resources/images/add.png';
             
-            // 
-            var rootid = '${actionBean.rootlevel.id}';
+            var actionBeans = {
+                "appTree": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean"/></js:quote>,
+                "appTreeLevel": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean"/></js:quote>,
+                "appTreeLayer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>
+            };
+ 
+            var imagesPath = "${contextPath}/resources/images/";
+            
+            var rootName = <js:quote value="${actionBean.rootLevel.name}"/>;
+            var rootId = 'n${actionBean.rootLevel.id}';
             
             var activelink = 'menu_boomstructuur';
         </script>
