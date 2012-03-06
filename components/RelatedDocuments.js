@@ -26,6 +26,7 @@
 Ext.define ("viewer.components.RelatedDocuments",{
     extend: "viewer.components.Component",
     documentImg: null,
+    iconPath: null,
     config:{
         name: "Related Documents",
         title: "",
@@ -34,9 +35,12 @@ Ext.define ("viewer.components.RelatedDocuments",{
     },
     constructor: function (conf){   
         conf.isPopup=true;        
-        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);
-        this.documentImg = new Object();
+        viewer.components.RelatedDocuments.superclass.constructor.call(this, conf);        
         this.initConfig(conf);
+        
+        this.documentImg = new Object();
+        this.iconPath=contextPath+"/viewer-html/components/resources/images/relatedDocuments/"
+        
         this.popup.hide();
         var me = this;
         this.renderButton({
@@ -59,7 +63,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
         this.popup.show();
     },
     /**
-     * reinit the window
+     * reinit the window and the documents etc.
      */
     reinit: function(){
         var documents=this.getDocuments();
@@ -127,7 +131,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
      * @param path the path of the document.
      */
     loadImage: function (imgId,path){       
-        var defaultSrc=contextPath+"/resources/images/relatedDocuments/icon_default.png";        
+        var defaultSrc=this.iconPath+"icon_default.png";        
         var extension=path.substring(path.lastIndexOf(".")+1);
         //check if the extension has a length > 2 and < 4
         if (extension.length <= 4 && extension.length>=2){            
@@ -139,7 +143,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
             image.onerror=function(){
                 Ext.get(imgId).dom.src = defaultSrc
             };
-            image.src=contextPath+"/resources/images/relatedDocuments/icon_"+extension+".png";
+            image.src=this.iconPath+"icon_"+extension+".png";
         }else{
             Ext.get(imgId).dom.src=defaultSrc;
         }

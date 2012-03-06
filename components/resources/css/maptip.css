@@ -1,0 +1,96 @@
+/* 
+    Document   : maptip
+    Created on : 24-feb-2012, 9:33:35
+    Author     : Roy Braam
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+/*************Balloon css:**************/
+.infoBalloon{
+    position: absolute;
+}
+.balloonCornerTopRight{    
+    position: absolute;
+    overflow: hidden;
+}
+.balloonCornerTopLeft{    
+    position: absolute;
+    overflow: hidden;
+}
+.balloonCornerBottomRight{    
+    position: absolute;
+    overflow: hidden;
+}
+.balloonCornerBottomLeft{    
+    position: absolute;
+    overflow: hidden;
+}
+/*Balloon Arrows*/
+.balloonArrow {    
+    position: absolute;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+}
+.balloonArrow  img{
+    position: absolute;
+}
+.balloonArrowTopLeft{
+    left: 0px;
+    top: 0px;
+}
+.balloonArrowTopRight{
+    right: 0px;
+    top: 0px;
+}
+.balloonArrowTopRight img{
+    left: -40px;
+}
+.balloonArrowBottomLeft{
+    left: 0px;
+    bottom: 0px;
+}
+.balloonArrowBottomLeft img{
+    left: -80px;
+}
+.balloonArrowBottomRight{
+    right: 0px;
+    bottom: 0px;
+}
+.balloonArrowBottomRight img{
+    left: -120px;
+}
+/*Balloon Content*/
+.balloonContent{
+    position: absolute;
+    right: 7px;
+    left: 7px;
+    overflow: auto;
+}
+.balloonCloseButton{
+    position: absolute;
+    background: url("../images/close.gif") no-repeat scroll 0 0 transparent;
+    height: 17px;
+    width: 17px;
+    cursor: pointer;
+}
+/*** Features css ***/
+.maptip_feature{
+}
+.maptip_feature div{
+    width: 100%;
+    float: left;
+    clear: right;
+}
+.maptip_title{
+    font-weight: bold;
+}
+.maptip_image{
+    float: right;
+}
+.maptip_description{
+}
+.maptip_link{
+}

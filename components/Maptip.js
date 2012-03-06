@@ -204,8 +204,8 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     //because click events still needs to be handled by the map, move the balloon a bit
     this.offsetX=3;
     this.offsetY=0;
-    this.roundImgPath=contextPath+"/resources/images/maptip/round.png";
-    this.arrowImgPath=contextPath+"/resources/images/maptip/arrow.png";
+    this.roundImgPath=contextPath+"/viewer-html/components/resources/images/maptip/round.png";
+    this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";
     //this.leftOfPoint;
     //this.topOfPoint;
     
