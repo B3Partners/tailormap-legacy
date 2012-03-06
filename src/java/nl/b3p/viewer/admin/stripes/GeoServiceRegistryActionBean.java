@@ -130,12 +130,14 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
         
         String error = checkCategoryAndNameError();
-                
-        for(Category child: category.getChildren()) {
-            if(name.equals(child.getName())) {
-                error = "Categorie met dezelfde naam bestaat al";
-            }
-        }            
+        
+        if(error == null) {
+            for(Category child: category.getChildren()) {
+                if(name.equals(child.getName())) {
+                    error = "Categorie met dezelfde naam bestaat al";
+                }
+            }            
+        }
         
         if(error == null) {
             try {
@@ -181,11 +183,13 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         
         String error = checkCategoryAndNameError();
         
-        for(Category sibling: category.getParent().getChildren()) {
-            if(sibling != category && name.equals(sibling.getName())) {
-                error = "Categorie met dezelfde naam bestaat al";
-            }
-        }            
+        if(error == null) {
+            for(Category sibling: category.getParent().getChildren()) {
+                if(sibling != category && name.equals(sibling.getName())) {
+                    error = "Categorie met dezelfde naam bestaat al";
+                }
+            }            
+        }
         
         if(error == null) {
             try {
