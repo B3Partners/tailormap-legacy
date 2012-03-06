@@ -16,8 +16,10 @@
  */
 /**
  * StreetView component
- * Creates a MapComponent Tool with the given configuration by calling createTool 
- * of the MapComponent
+ * Creates a Related document window that can be opened bij clicking a button.
+ * It generates a list of Documents and tries to get the file extension from the url
+ * With the file extention it tries to get the file icon_[fileextension].png in the 
+ * resources/images/relatedDocuments/ folder.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
@@ -118,11 +120,12 @@ Ext.define ("viewer.components.RelatedDocuments",{
      * @param path the path of the document.
      */
     loadImage: function (imgId,path){       
-        var defaultSrc=contextPath+"/resources/images/relatedDocuments/icon_default.png";
-        var extension=path.substring(path.length-4);
-        if (extension.indexOf(".")==0){
+        var defaultSrc=contextPath+"/resources/images/relatedDocuments/icon_default.png";        
+        var extension=path.substring(path.lastIndexOf(".")+1);
+        //check if the extension has a length > 2 and < 4
+        if (extension.length <= 4 && extension.length>=2){            
             var image = new Image();
-            extension=extension.substring(1);
+            //var extension=path.substring(lio);
             image.onload=function(){
                 Ext.get(imgId).dom.src = image.src
             };
