@@ -68,7 +68,6 @@ Ext.onReady(function() {
     // Definition of contextmenu for categories
     var categoryMenu = new Ext.menu.Menu({
         data: {
-            parent: 0,
             clickedItem: null
         },
         items: [{
@@ -76,7 +75,7 @@ Ext.onReady(function() {
             icon: imagesPath + "add.png",
             listeners: {
                 click: function(item, e, eOpts) {
-                    addCategory(item.ownerCt.data.parent);
+                    addSubcategory(item.ownerCt.data.clickedItem);
                 }
             }
         },
@@ -111,6 +110,25 @@ Ext.onReady(function() {
         }
         ]
     });
+    
+    var editMenu = new Ext.menu.Menu({
+        data: {
+            record: null
+        },
+        items: [{
+            text: 'Bewerken',
+            icon: imagesPath + "wrench.png",
+            listeners: {
+                click: function(item, e, eOpts) {
+                    var record = item.ownerCt.data.record;
+                    var node = tree.getRootNode().findChild("id", record.get("id"), true)
+                    console.log("Bewerken record", record, record.get("id"), "node", node);
+                    tree.fireEvent("itemclick", null, record);
+                }
+            }
+        }
+        ]
+    });
 
     // Definition of the tree
     var tree = Ext.create('Ext.tree.Panel', {
@@ -124,18 +142,19 @@ Ext.onReady(function() {
         height: 400,
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
-                // Only show contextmenu (add new category) on category nodes
                 if(record.get('type') == "category") {
-                    categoryMenu.data.parent = record.get('id');
                     categoryMenu.data.clickedItem = record;
                     categoryMenu.showAt(event.getXY());
-                    event.stopEvent();
+                } else {
+                    editMenu.data.record = record;
+                    editMenu.showAt(event.getXY());
                 }
+                event.stopEvent();
             },
             containercontextmenu: function(view, event, eOpts) {
-                // When rightclicking in the treecontainer (not on a node) than
-                // show the context menu for adding a new category
-                categoryMenu.data.parent = 0;
+                // When rightclicking in the treecontainer (not on a node) then
+                // show the context menu for the root category
+                categoryMenu.data.clickedItem = tree.getRootNode();
                 categoryMenu.showAt(event.getXY());
                 event.stopEvent();
             },
@@ -145,7 +164,7 @@ Ext.onReady(function() {
                                 
                 if(recordType == "category") {
                     // click on category = new service
-                    Ext.get('editFrame').dom.src = actionBeans["service"] + '?category=' + id;
+                    Ext.get('editFrame').dom.src = "about:blank";
                 }
                 if(recordType == "service") {
                     // click on service = edit service
@@ -157,7 +176,8 @@ Ext.onReady(function() {
                 }
                 
                 // Expand tree on click
-                tree.expandPath(record.getPath());
+                record.set("isLeaf", false);
+                record.expand(false);
             }
         },
         bbar: [
@@ -170,7 +190,7 @@ Ext.onReady(function() {
 });
 
 // Function for adding a node, should not be called directly, but trough the
-// addCategory or addServiceNode functions
+// addSubcategory or addServiceNode functions
 function addNode(node, parentid) {
     var record = null;
     var tree = Ext.getCmp('servicestree');
@@ -183,13 +203,30 @@ function addNode(node, parentid) {
         if(record.isLeaf()) {
             // If the parent is currently a Leaf, then setting it to false
             // and expanding it will load the added childnode from backend
+            
             record.set('isLeaf', false);
             record.expand(false);
         } else {
+            console.log("addNode: record is expanded, appending child");
             // If it has childnodes then just append the new node
             // First expand, then append child, otherwise childnodes are replaced?
+            
             record.expand(false, function() {
-                record.appendChild(node);
+                // Sometimes node is being expanded even is isLeaf() is true
+                // Do not add record twice
+                if(record.findChild("id", node.data.id) == null) {
+                    // Add as last category before services
+                    var firstService = null;
+                    record.eachChild(function(child) {
+                        if(firstService == null && child.data.id.charAt(0) == "s") {
+                            firstService = child;
+                        }
+                    });
+                    console.log("firstService", firstService);
+                    record.insertBefore(node, firstService);
+                } else {
+                    console.log("child already exists even though parent was a leaf!");
+                }
             });
         }
     }
@@ -202,7 +239,7 @@ function removeTreeNode(nodeid) {
 }
 
 // Add a category, shows a prompt dialog for the new name and adds the category
-function addCategory(parentid) {
+function addSubcategory(record) {
     Ext.MessageBox.show({
         title: 'Nieuwe categorie toevoegen',
         msg: 'Naam van nieuwe categorie:',
@@ -215,7 +252,7 @@ function addCategory(parentid) {
                     params: {
                         addSubcategory: true,
                         name: text,
-                        nodeId: parentid
+                        nodeId: record.data.id
                     },
                     method: 'POST',
                     success: function ( result, request ) {
