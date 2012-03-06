@@ -39,10 +39,10 @@ Ext.define('select.TreeNode', {
         var nodeType = '';
         if(fieldName == "icon") {
             nodeType = this.get('type');
-            if(nodeType == "category" || nodeType == "level") return contextPath + '/viewer-html/components/resources/folder.png';
-            if(nodeType == "maplevel") return contextPath + '/viewer-html/components/resources/maplevel.png';
-            if(nodeType == "layer" || nodeType == "appLayer") return contextPath + '/viewer-html/components/resources/map.png';
-            if(nodeType == "service") return contextPath + '/viewer-html/components/resources/serviceok.png';
+            if(nodeType == "category" || nodeType == "level") return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
+            if(nodeType == "maplevel") return contextPath + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
+            if(nodeType == "layer" || nodeType == "appLayer") return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
+            if(nodeType == "service") return contextPath + '/viewer-html/components/resources/images/selectionModule/serviceok.png';
         }
         if(fieldName == "leaf") {
             return this.get('isLeaf');
@@ -115,10 +115,10 @@ Ext.define ("viewer.components.SelectionModule",{
     initComponent: function() {
         var me = this;
 
-        me.moveRightIcon = contextPath + '/viewer-html/components/resources/move-right.gif';
-        me.moveLeftIcon = contextPath + '/viewer-html/components/resources/move-left.gif';
-        me.moveUpIcon = contextPath + '/viewer-html/components/resources/move-up.gif';
-        me.moveDownIcon = contextPath + '/viewer-html/components/resources/move-down.gif';
+        me.moveRightIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-right.gif';
+        me.moveLeftIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-left.gif';
+        me.moveUpIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-up.gif';
+        me.moveDownIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-down.gif';
         
         me.initViewerControllerData();
 
