@@ -121,8 +121,6 @@ Ext.onReady(function() {
             listeners: {
                 click: function(item, e, eOpts) {
                     var record = item.ownerCt.data.record;
-                    var node = tree.getRootNode().findChild("id", record.get("id"), true)
-                    console.log("Bewerken record", record, record.get("id"), "node", node);
                     tree.fireEvent("itemclick", null, record);
                 }
             }
@@ -292,7 +290,6 @@ function changeCategoryName(record) {
         value: record.data.text,
         fn: function(btn, text, cBoxes){
             if(btn=='ok' && text){
-                console.log("change name to " + text);
                 
                 Ext.Ajax.request({
                     url: actionBeans["category"],
