@@ -515,10 +515,10 @@
         type: "popup"         
     },
     {
-        className: "viewer.components.tools.JSButton",
-        name: "JSButton",
-        shortName: "JB",
-        sources: ["tools/JSButton.js"],
+        className: "viewer.components.tools.PopupButton",
+        name: "Popup Button",
+        shortName: "PB",
+        sources: ["tools/JSButton.js","tools/PopupButton.js"],
         closureCompilerSafe: true,
         singleton: false,
         restrictions: ["top_menu"],
