@@ -29,10 +29,6 @@
             <file name="Bookmark.js"/>
             <file name="AppInfo.js"/>
           </sources>          
-          <!--					The Tool Components				-->
-         <sources dir="${viewerhtml.path}/components/tools">
-            <file name="Tool.js"/>            
-          </sources>
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
             <file name="Map.js"/>
