@@ -46,21 +46,28 @@ Ext.define ("viewer.components.RelatedDocuments",{
             text: me.title,
             icon: me.titlebarIcon,
             tooltip: me.tooltip
-        });
+        });        
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.reinit,this);
         return this;
     },
     /**
      *When the button is clicked
      */
     buttonClick: function (){
-        //console.log("!!!"+this.viewerController);
+        //console.log("!!!"+this.viewerController);        
+        this.reinit();
+        this.popup.show();
+    },
+    /**
+     * reinit the window
+     */
+    reinit: function(){
         var documents=this.getDocuments();
         var html = this.createHtml(documents);
         var contentDiv=Ext.get(this.getContentDiv());
         contentDiv.update("");
         contentDiv.appendChild(html);
         this.loadImages();
-        this.popup.show();
     },
     /**
      *Gets all the documents with the selectedContent
