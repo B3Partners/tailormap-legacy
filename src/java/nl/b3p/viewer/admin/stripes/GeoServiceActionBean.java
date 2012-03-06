@@ -43,7 +43,7 @@ public class GeoServiceActionBean implements ActionBean{
     
     private ActionBeanContext context;
     
-    @Validate(on={"addForm","add","editCategory"},required=true)
+    @Validate(on={"add"},required=true)
     private Category category;
     
     @Validate(on="editGeoService",required=true)
@@ -55,8 +55,10 @@ public class GeoServiceActionBean implements ActionBean{
     @Validate(on="add", required=true)
     private String protocol;
 
-    private String categoryId;
-    private String serviceId;
+    /**
+     * Whether the service was succesfully deleted. Use in view JSP to update tree.
+     */
+    private boolean serviceDeleted;
     
     @Validate
     private String name;
@@ -66,9 +68,6 @@ public class GeoServiceActionBean implements ActionBean{
     @Validate
     private String password;
     
-    @Validate(on="editCategory", required=true)
-    private String categoryName;
-
     @Validate
     private boolean overrideUrl;
     
@@ -79,7 +78,7 @@ public class GeoServiceActionBean implements ActionBean{
     
     private JSONObject newService;
 
-    //<editor-fold defaultstate="collapsed" desc="getters en setters">
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
         return context;
     }
@@ -110,14 +109,6 @@ public class GeoServiceActionBean implements ActionBean{
 
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
     }
 
     public String getName() {
@@ -184,37 +175,21 @@ public class GeoServiceActionBean implements ActionBean{
         this.newService = newService;
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public boolean isServiceDeleted() {
+        return serviceDeleted;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-    
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setServiceDeleted(boolean serviceDeleted) {
+        this.serviceDeleted = serviceDeleted;
     }
     //</editor-fold>
-    
-    @DefaultHandler
-    @HandlesEvent("default")
-    public Resolution defaultResolution() {
-        if(category != null){
-            categoryName = category.getName();
-        }
-        return new ForwardResolution(JSP);
-    }
     
     public Resolution cancel() {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution editGeoService() {
+    @DefaultHandler
+    public Resolution edit() {
         if(service != null){
            protocol = service.getProtocol();
            url = service.getUrl();
@@ -229,7 +204,7 @@ public class GeoServiceActionBean implements ActionBean{
         return new ForwardResolution(JSP);
     }
     
-    public Resolution saveService() {
+    public Resolution save() {
         if(name != null){
             service.setName(name);
         }
@@ -242,13 +217,14 @@ public class GeoServiceActionBean implements ActionBean{
         
         getContext().getMessages().add(new SimpleMessage("De service is opgeslagen"));
         
-        return new ForwardResolution(JSP);
+        return edit();
     }
     
-    public Resolution deleteService(){
-        /* Als een service layers heeft die toegevoegd zijn aan een applicatie 
-         * mag de service niet verwijderd worden */
-        this.setServiceId("s" + service.getId());
+    public Resolution delete(){
+        /* XXX Als een service layers heeft die toegevoegd zijn aan een applicatie 
+         * mag de service niet verwijderd worden 
+         */
+        
         Category c = service.getCategory();
         c.getServices().remove(service);
         
@@ -266,48 +242,12 @@ public class GeoServiceActionBean implements ActionBean{
         Stripersist.getEntityManager().remove(service);
         Stripersist.getEntityManager().getTransaction().commit();
         
+        serviceDeleted = true;        
         getContext().getMessages().add(new SimpleMessage("De service is verwijderd"));
         
         return new ForwardResolution(JSP);
     }
     
-    public Resolution deleteCategory(){
-        if(category.getChildren().size() > 0){
-            getContext().getValidationErrors().addGlobalError(new SimpleError("De categorie bevat nog andere categorieën en kan niet verwijderd worden. "));
-            return new ForwardResolution(JSP);
-        }else if(category.getServices().size() > 0){
-            getContext().getValidationErrors().addGlobalError(new SimpleError("De categorie bevat services en kan niet verwijderd worden. "));
-            return new ForwardResolution(JSP);
-        }
-        
-        this.setCategoryId("c" + category.getId());
-        Category c = category.getParent();
-        c.getChildren().remove(category);
-        Stripersist.getEntityManager().persist(c);
-        Stripersist.getEntityManager().remove(category);
-        Stripersist.getEntityManager().getTransaction().commit();
-        
-        getContext().getMessages().add(new SimpleMessage("De categorie is verwijderd"));
-        
-        return new ForwardResolution(JSP);
-    }
-    
-    public Resolution editCategory(){
-        category.setName(categoryName);
-        
-        Stripersist.getEntityManager().persist(category);
-        Stripersist.getEntityManager().getTransaction().commit();
-        
-        getContext().getMessages().add(new SimpleMessage("De categorie is opgeslagen"));
-        
-        return new ForwardResolution(JSP);
-    }
-    
-    public Resolution addForm() {
-
-        return new ForwardResolution(JSP);
-    }
-
     @ValidationMethod(on="add")
     public void validateParams(ValidationErrors errors) {
         if(protocol.equals(ArcIMSService.PROTOCOL)) {
@@ -315,6 +255,10 @@ public class GeoServiceActionBean implements ActionBean{
                 errors.add("serviceName", new LocalizableError("validation.required.valueNotPresent"));
             }
         }
+    }
+    
+    public Resolution addForm() {
+        return new ForwardResolution(JSP);
     }
     
     @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=2000, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
@@ -378,6 +322,6 @@ public class GeoServiceActionBean implements ActionBean{
 
         getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
 
-        return new RedirectResolution(GeoServiceActionBean.class).flash(this);
+        return edit();
     }
 }

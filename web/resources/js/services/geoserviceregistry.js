@@ -168,7 +168,7 @@ Ext.onReady(function() {
                 }
                 if(recordType == "service") {
                     // click on service = edit service
-                    Ext.get('editFrame').dom.src = actionBeans["service"] + '?editGeoService=t&service=' + id + '&category=' + record.parentNode.get('id').substr(1);
+                    Ext.get('editFrame').dom.src = actionBeans["service"] + '?edit=t&service=' + id + '&category=' + record.parentNode.get('id').substr(1);
                 }
                 if(recordType == "layer") {
                     // click on layer = edit layer
@@ -207,7 +207,8 @@ function addNode(node, parentid) {
             record.set('isLeaf', false);
             record.expand(false);
         } else {
-            console.log("addNode: record is expanded, appending child");
+            //console.log("addNode: record is expanded, appending child");
+            
             // If it has childnodes then just append the new node
             // First expand, then append child, otherwise childnodes are replaced?
             
@@ -215,17 +216,22 @@ function addNode(node, parentid) {
                 // Sometimes node is being expanded even is isLeaf() is true
                 // Do not add record twice
                 if(record.findChild("id", node.data.id) == null) {
-                    // Add as last category before services
-                    var firstService = null;
-                    record.eachChild(function(child) {
-                        if(firstService == null && child.data.id.charAt(0) == "s") {
-                            firstService = child;
-                        }
-                    });
-                    console.log("firstService", firstService);
-                    record.insertBefore(node, firstService);
+                    
+                    // New service always added at bottom
+                    if(node.data.id.charAt(0) == "s") {
+                        record.appendChild(node);
+                    } else {
+                        // Add as last category before services
+                        var firstService = null;
+                        record.eachChild(function(child) {
+                            if(firstService == null && child.data.id.charAt(0) == "s") {
+                                firstService = child;
+                            }
+                        });
+                        record.insertBefore(node, firstService);
+                    }
                 } else {
-                    console.log("child already exists even though parent was a leaf!");
+                    //console.log("child already exists even though parent was a leaf!");
                 }
             });
         }
@@ -349,11 +355,10 @@ function removeCategory(record) {
 }
 
 // Function to add a service node. Parameter should hold the JSON for 1 servicenode
-function addServiceNode(json) {
-    var objData = Ext.JSON.decode(json);
-    objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-    var newNode = Ext.create('GeoServiceTreeModel', objData);
-    addNode(newNode, objData.parentid);
+function addServiceNode(service) {
+    service.text = service.name; // For some reason text is not mapped to name when creating a new model
+    var newNode = Ext.create('GeoServiceTreeModel', service);
+    addNode(newNode, service.parentid);
 }
 
 // Function to rename a node, based in its ID

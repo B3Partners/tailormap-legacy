@@ -24,136 +24,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
-        <p>
-        <stripes:errors/>
-        <stripes:messages/>
-        </p>
-            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
-                
-<c:if test="${(actionBean.context.eventName == 'default' || actionBean.context.eventName == 'editCategory') && !empty actionBean.category}">
+<p>
+    <stripes:errors/>
+    <stripes:messages/>
+</p>
 
-    <script type="text/javascript">
-        Ext.create('Ext.Button', {
-            renderTo: document.body,
-            text    : 'Service toevoegen aan <c:out value="${actionBean.category.name}"/>',
-            icon    : '${contextPath}/resources/images/add.png',
-            handler: function() {
-                window.location.href = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="addForm"><stripes:param name="category" value="${actionBean.category}"/></stripes:url>';
-            }
-        });
-        
-        function deleteConfirm() {
-            return confirm('Weet u zeker dat u deze categorie wilt verwijderen?');
+<stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+
+<script type="text/javascript">
+    var frameParent = getParent();
+
+    <c:if test="${actionBean.serviceDeleted}">
+        if(frameParent && frameParent.removeTreeNode && '${actionBean.service.id}' != '') {
+            frameParent.removeTreeNode('s${actionBean.service.id}');
         }
-    </script>
-    
-    <%--
-    <stripes:hidden name="category" value="${actionBean.category.id}"/>
-    Naam: <stripes:text name="categoryName" value="${actionBean.category.name}"/><br />
-    <stripes:submit name="editCategory" value="Opslaan"/>
-    <stripes:submit name="deleteCategory" onclick="return deleteConfirm();" value="Verwijder categorie"/>
-    <stripes:submit name="cancel" value="Annuleren"/><br />
-    
-    <script type="text/javascript">
-        var frameParent = getParent();
-        if(frameParent && frameParent.addServiceNode && '${actionBean.newService}' != '') {
-            frameParent.addServiceNode('${actionBean.newService}');
+    </c:if>
+    <c:if test="${actionBean.newService != null}">
+        if(frameParent && frameParent.addServiceNode && '${actionBean.service.id}' != '') {
+            frameParent.addServiceNode(${actionBean.newService});
         }
-    </script>
-    <script type="text/javascript">
-        var frameParent = getParent();
-        if(frameParent && frameParent.renameNode && '${actionBean.category.name}' != '') {
-            frameParent.renameNode('c${actionBean.category.id}','${actionBean.category.name}');
-        }
-    </script>
-    --%>
-</c:if>
-            
-<c:if test="${actionBean.context.eventName == 'deleteCategory'}">
-    <script type="text/javascript">
-        var frameParent = getParent();
-        if(frameParent && frameParent.removeTreeNode && '${actionBean.categoryId}' != '') {
-            frameParent.removeTreeNode('${actionBean.categoryId}');
-        }
-    </script>
-</c:if>
-    
-<c:if test="${actionBean.context.eventName == 'deleteService'}">
-    <script type="text/javascript">
-        var frameParent = getParent();
-        if(frameParent && frameParent.removeTreeNode && '${actionBean.serviceId}' != '') {
-            frameParent.removeTreeNode('${actionBean.serviceId}');
-        }
-    </script>
-</c:if>
-    
- <c:if test="${actionBean.context.eventName == 'saveService'}">
-    <script type="text/javascript">
-        var frameParent = getParent();
+    </c:if>
+    <c:if test="${actionBean.context.eventName == 'save'}">
         if(frameParent && frameParent.renameNode && '${actionBean.service.name}' != '') {
             frameParent.renameNode('s${actionBean.service.id}','${actionBean.service.name}');
         }
-    </script>
-</c:if>
-    
-<%-- Bestaande service --%>
-<c:if test="${actionBean.context.eventName == 'editGeoService'}">   
-    <h1>Service wijzigen</h1>
-    
-    <table>
-        <tr>
-            <td>URL van de service:</td>
-            <td><stripes:text name="url" maxlength="255" size="80" disabled="true"/></td>
-        </tr>
-        <tr><td>Protocol:</td>
-            <td>
-                <stripes:select name="protocol" disabled="true" onchange="checkProtocol()" onkeyup="checkProtocol()">
-                    <stripes:option value="wms">WMS</stripes:option>
-                    <stripes:option value="arcgis">ArcGIS Server</stripes:option>
-                    <stripes:option value="arcims">ArcIMS</stripes:option>
-                </stripes:select>
-            </td>
-        </tr>
-        <c:if test="${actionBean.protocol == 'arcims'}">
-            <tr>
-                <td>Service name:</td>
-                <td>
-                    <stripes:text name="serviceName" disabled="true" size="30"/>
-                </label>
-                </td>
-            </tr>          
-        </c:if>
-        <tr>
-            <td>Weergavenaam:</td>
-            <td><stripes:text name="name" maxlength="255" size="30"/></td>
-        </tr>
-        <tr>
-            <td>Gebruikersnaam:</td>
-            <td><stripes:text name="username" maxlength="255" size="30"/></td>
-        </tr>
-        <tr>
-            <td>Wachtwoord:</td>
-            <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
-        </tr>
-    </table>
-    
-    <stripes:submit name="saveService" value="Opslaan"/>
-    <stripes:hidden name="service" value="${actionBean.service.id}"/>
-    <stripes:submit name="deleteService" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
-    <stripes:submit name="cancel" value="Annuleren"/>
-    <script type="text/javascript">
-        function deleteServiceConfirm() {
-            return confirm('Weet u zeker dat u deze service wilt verwijderen?');
-        }
-    </script>
-</c:if>
+    </c:if>
+</script>
 
-<%-- Nieuwe service --%>
-<c:if test="${actionBean.context.eventName == 'addForm' || actionBean.context.eventName == 'add'}">
-    
+<c:if test="${!actionBean.serviceDeleted && actionBean.context.eventName != 'cancel'}">
+    <c:set var="edit" value="${!empty actionBean.service.id}"/>
+
     <stripes:hidden name="category"/>
+    <stripes:hidden name="service"/>
+
+    <c:if test="${!edit}"><h1>Nieuwe service toevoegen aan <c:out value="${actionBean.category.name}"/></h1></c:if>
+    <c:if test="${edit}"><h1>Service <c:out value="${actionBean.service.name}"/> bewerken</h1></c:if>
     
-    <h1>Nieuwe service toevoegen</h1>
     <p>
     <script type="text/javascript">
         function checkProtocol() {
@@ -167,11 +73,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <table>
         <tr>
             <td>URL van de service:</td>
-            <td><stripes:text name="url" maxlength="255" size="80"/></td>
+            <td><stripes:text name="url" maxlength="255" size="80" disabled="${edit}"/></td>
         </tr>
         <tr><td>Protocol:</td>
             <td>
-                <stripes:select name="protocol" onchange="checkProtocol()" onkeyup="checkProtocol()">
+                <stripes:select name="protocol" disabled="${edit}" onchange="checkProtocol()" onkeyup="checkProtocol()">
                     <stripes:option value="wms">WMS</stripes:option>
                     <stripes:option value="arcgis">ArcGIS MapServer (REST)</stripes:option>
                     <stripes:option value="arcims">ArcIMS</stripes:option>
@@ -189,7 +95,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Service name:</td>
             <td>
             <label>
-                <stripes:text name="serviceName" maxlength="255" size="30"/>
+                <stripes:text name="serviceName" maxlength="255" size="30" disabled="${edit}"/>
             </label>
             </td>
         </tr>        
@@ -205,20 +111,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Wachtwoord:</td>
             <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
         </tr>
-        <tr>
-            <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service
-                    automatisch bepaald. Bovenstaand kan optioneel een alternatieve weergavenaam
-                    worden ingevuld.</i>
-            </td>
-        </tr>
-
+        <c:if test="${!edit}">
+            <tr>
+                <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service
+                        automatisch bepaald. Bovenstaand kan optioneel een alternatieve weergavenaam
+                        worden ingevuld.</i>
+                </td>
+            </tr>
+        </c:if>
     </table>
-</p>
-    <stripes:submit name="add" value="Service inladen"/>
-    <stripes:submit name="cancel" value="Annuleren"/>
-</c:if>
+    </p>
     
+    <c:choose>
+        <c:when test="${!edit}">
+            <stripes:submit name="add" value="Service inladen"/>
+            <stripes:submit name="cancel" value="Annuleren"/>
+        </c:when>
+        <c:otherwise>
+            <stripes:submit name="save" value="Opslaan"/>
+            <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
+            <stripes:submit name="cancel" value="Annuleren"/>
+            <script type="text/javascript">
+                function deleteServiceConfirm() {
+                    return confirm('Weet u zeker dat u deze service wilt verwijderen?');
+                }
+            </script>
+        </c:otherwise>
+    </c:choose>
+</c:if>
+            
 </stripes:form>
-
+            
     </stripes:layout-component>
 </stripes:layout-render>
