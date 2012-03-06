@@ -41,7 +41,7 @@ public class GroupActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/editgroup.jsp";
     
-    private static final List<String> DEFAULT_GROUPS = Arrays.asList("Admin", "RegistryAdmin", "UserAdmin", "ApplicationAdmin", "ExtendedUser");
+    private static final List<String> DEFAULT_GROUPS = Arrays.asList("Admin", "RegistryAdmin", "UserAdmin", "ApplicationAdmin", "ExtendedUser", "ServiceAdmin");
     
     private ActionBeanContext context;
     
