@@ -87,6 +87,24 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
                 editable = sft.isWriteable();
                 attributesList = sft.getAttributes();
                 
+                /*
+                 * When a layer has attributes, but the applicationLayer doesn't have configuredAttributes,
+                 * (because attributes where added after layer was added to an applicationTree)
+                 * the configuredAttributes are made and saved for the applicationLayer.
+                 * Otherwise the user can never configure edit and selection/filter.
+                 */
+                if((applicationLayer.getAttributes() == null || applicationLayer.getAttributes().size() < 1) && (attributesList != null && attributesList.size() > 0)){
+                    for(Iterator it = attributesList.iterator(); it.hasNext();){
+                        AttributeDescriptor attribute = (AttributeDescriptor)it.next();
+                        ConfiguredAttribute confAttribute = new ConfiguredAttribute();
+                        confAttribute.setAttributeName(attribute.getName());
+                        Stripersist.getEntityManager().persist(confAttribute);
+                        applicationLayer.getAttributes().add(confAttribute);
+                    }
+                    Stripersist.getEntityManager().persist(applicationLayer);
+                    Stripersist.getEntityManager().getTransaction().commit();
+                }
+                
                 for(Iterator it = applicationLayer.getAttributes().iterator(); it.hasNext();){
                     ConfiguredAttribute ca = (ConfiguredAttribute)it.next();
                     //set visible
