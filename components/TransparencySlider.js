@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * HTML component
- * Creates a html component
+ * TransparencySlider component
+ * Creates a TransparencySlider component. It uses the Slider component..
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 

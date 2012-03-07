@@ -39,12 +39,14 @@ Ext.define("viewer.components.Component",{
     * @param config.name {String} the unique name of the object
     * @param config.div {DomElement} the div where the component must be placed
     * @param config.viewerController {ViewerController} a reference to the ViewerController
+    * @param config.isPopup {Boolean} Indicates whether or not to render this component to a popup
+    * @param config.hasSharedPopup {Boolean} Indicates if this component should render itself to the shared popup
     */
     constructor: function(config){
         this.initConfig(config);
         if(this.isPopup){
             if(this.hasSharedPopup){
-                 
+                 // TODO render to sharedpopup div id (is maybe a tabid)
             }else{
                 this.popup = Ext.create("viewer.components.ScreenPopup",config);
             }

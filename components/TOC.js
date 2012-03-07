@@ -43,8 +43,9 @@ Ext.define ("viewer.components.TOC",{
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         return this;
     },
-    loadTree : function(){
-        
+    // Build the tree
+    loadTree : function(){        
+        // Get the current state of the map
         this.selectedContent = this.viewerController.app.selectedContent;
         this.appLayers = this.viewerController.app.appLayers;
         this.levels = this.viewerController.app.levels;
@@ -80,6 +81,7 @@ Ext.define ("viewer.components.TOC",{
             store: store
         });
     },
+    // Start the treetraversal
     loadInitLayers : function(){
         var nodes = new Array();
         for ( var i = 0 ; i < this.selectedContent.length ; i ++){
@@ -96,6 +98,7 @@ Ext.define ("viewer.components.TOC",{
         }
         this.insertLayer(nodes);
     },
+    // Add a level to the tree, and load all it's levels and applayers
     addLevel : function (levelId){
         var nodes = new Array();
         var level = this.levels[levelId];
@@ -137,7 +140,7 @@ Ext.define ("viewer.components.TOC",{
         treeNodeLayer.children= nodes;
         return treeNodeLayer;
     },
-    
+    // Add a layer to the level
     addLayer : function (layerId){
         var appLayerObj = this.appLayers[layerId];
         var service = this.services[appLayerObj.serviceId];
@@ -204,6 +207,7 @@ Ext.define ("viewer.components.TOC",{
         var id = this.getAppLayerId(layer.id);
         this.selectLayer (id,visible);
     },
+    
     checkboxClicked : function(nodeObj,checked,toc){
         this.checkClicked= true;
         if(nodeObj.isLeaf()){
@@ -220,6 +224,7 @@ Ext.define ("viewer.components.TOC",{
             }
         }
     },
+    // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
         if(this.checkClicked){
             this.checkClicked =false;
@@ -246,6 +251,7 @@ Ext.define ("viewer.components.TOC",{
                 this.popup = Ext.create("viewer.components.ScreenPopup",config);
                 var panelConfig={
                     renderTo : this.popup.getContentId(),
+                    frame: false,
                     html: node.layerObj.metadata
                 }
                 var panel = Ext.create ("Ext.panel.Panel",panelConfig);
@@ -259,6 +265,7 @@ Ext.define ("viewer.components.TOC",{
                 var config = {
                     details:{
                         width : 700,
+                        frame: false,
                         height: 500
                     },
                     title: "Info"
@@ -284,6 +291,7 @@ Ext.define ("viewer.components.TOC",{
 <input class="x-tree-checkbox x-tree-checkbox-checked" type="button" aria-checked="true" role="checkbox">
         
          */
+        // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
     selectedContentChanged : function (){
         this.panel.destroy();
             

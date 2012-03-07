@@ -34,6 +34,9 @@ Ext.define ("viewer.components.tools.PopupButton",{
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.up, this);
         return this;
     },
+    /**
+     *  Handler for the down event on this button. Shows the popup window.
+     **/
     down : function (button,comp){
         this.popup.show();
     },

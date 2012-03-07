@@ -15,6 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Slider 
+ * Controls the opacity of the layers. Used by the TransparencySlider component.
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ */
 
 Ext.define("viewer.components.Slider",{
     extend: "viewer.components.Component",

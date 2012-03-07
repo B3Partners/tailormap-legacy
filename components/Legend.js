@@ -17,9 +17,9 @@
 
 
 /**
- * StreetView component
- * Creates a MapComponent Tool with the given configuration by calling createTool 
- * of the MapComponent
+ * Legend
+ * Creates the legend of the current switched on layers.
+ * This legend uses a queue to load the images.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.Legend",{
@@ -44,6 +44,7 @@ Ext.define ("viewer.components.Legend",{
         this.start();
         return this;
     },
+    // Construct the list of images to be retrieved by the queue
     makeLegendList : function (){
         var visibleLayers = this.viewerController.getVisibleLayerIds();
         this.legends = new Array();
@@ -64,6 +65,7 @@ Ext.define ("viewer.components.Legend",{
             }
         }
     },
+    // Handler for changes to the visibility of layers
     layerVisibilityChanged : function (map,object ){
         var layer = object.layer;
         var vis = object.visible;
@@ -73,6 +75,7 @@ Ext.define ("viewer.components.Legend",{
            this.removeLayer(layer.id);
         }
     },
+    // Called when a layer is added
     addLayer : function (layer){
         var serviceId = layer.serviceId;
         var layerName = layer.getAppLayerName();// TODO: not yet correct
@@ -97,6 +100,7 @@ Ext.define ("viewer.components.Legend",{
             div.removeChild(node);
         }
     },
+    // Start the legend: make a list of images to be retrieved, make a queue and start it
     start : function (){
         this.makeLegendList();
         var config ={
@@ -108,7 +112,9 @@ Ext.define ("viewer.components.Legend",{
         this.queue.load();
     }
 });
-
+/**
+ * ImageQueue: A queue to load images
+ */
 Ext.define ("viewer.components.ImageQueue",{
     loadedLegends : null,
     config :{
@@ -116,6 +122,12 @@ Ext.define ("viewer.components.ImageQueue",{
         queueSize : null,
         div : null
     },
+    /**
+    * @constructs
+    * @param config.legends {Array} The legends to load
+    * @param config.div {DomElement} the div where the images must be placed
+    * @param config.queueSize {Number} How many images may be loaded at the same time
+    */
     constructor : function (config){
         this.initConfig(config);
     },
@@ -123,6 +135,7 @@ Ext.define ("viewer.components.ImageQueue",{
         this.legends.push(item);
         this.load();
     },
+    // Make the queue fill up all slots from the legends
     load : function (){
         while(this.queueSize > 0){
             var item = this.legends[0];
@@ -141,6 +154,7 @@ Ext.define ("viewer.components.ImageQueue",{
             image.loadImage();
         }
     },
+    // Called when an image is ready loading
     imageLoaded : function (img,item){
         this.queueSize++;
         this.load();
