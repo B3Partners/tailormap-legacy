@@ -31,7 +31,8 @@ Ext.define("viewer.components.Component",{
         name: "naam",
         div: new Object(),
         viewerController: new Object(),
-        isPopup : false
+        isPopup : false,
+        hasSharedPopup:false
     }, 
     /**
     * @constructs
@@ -42,7 +43,11 @@ Ext.define("viewer.components.Component",{
     constructor: function(config){
         this.initConfig(config);
         if(this.isPopup){
-            this.popup = Ext.create("viewer.components.ScreenPopup",config);
+            if(this.hasSharedPopup){
+                 
+            }else{
+                this.popup = Ext.create("viewer.components.ScreenPopup",config);
+            }
         }
         this.events = [];
         return this;

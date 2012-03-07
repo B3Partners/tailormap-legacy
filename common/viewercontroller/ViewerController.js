@@ -29,6 +29,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** A map which stores the current instantiated layerObjects */
     layers : null,
     
+    /** The popup shared by (possible) multiple components  */
+    sharedPopup : null,
     /**
      * Creates a ViewerController and initializes the map container. 
      * 

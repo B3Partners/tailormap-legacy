@@ -39,8 +39,6 @@ Ext.define ("viewer.components.tools.JSButton",{
         this.mapComponent = this.viewerController.mapComponent;
         this.frameworkObject = this.viewerController.mapComponent.viewerObject;
         
-        this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.down, this);
-        this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.up, this);
         this.viewerController.mapComponent.addTool(this);
         return this;
     },

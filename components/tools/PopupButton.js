@@ -21,23 +21,23 @@
  */
 Ext.define ("viewer.components.tools.PopupButton",{
     extend: "viewer.components.tools.JSButton",
+    popup:null,
     config:{
         name: "zoomIn"
     },
     constructor: function (conf){        
         viewer.components.tools.PopupButton.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
+        this.popup = this.viewerController.sharedPopup;
         
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.down, this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.up, this);
         return this;
     },
-    down : function (comp,a,b){
-        var c = 0;
+    down : function (button,comp){
+        this.popup.show();
     },
-    up : function (comp,a,b){
-        var c = 0;
-        
+    up : function (button,comp){
     }
 });
 
