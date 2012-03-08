@@ -404,7 +404,7 @@
         className: "viewer.components.BufferObject",
         name: "BufferObject",
         shortName: "BO",
-        sources: ["BufferObject.js"],
+        sources: ["tools/ToolMapClick.js","BufferObject.js"],
         configSource: ["SelectionWindowConfig.js","BufferObject-config.js"],
         restrictions: ["left_menu"],            
         type: "popup"
