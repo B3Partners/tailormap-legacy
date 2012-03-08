@@ -17,6 +17,7 @@
 /**
  * BufferLayer component
  * Creates a BufferLayer component
+ * This calls a buffer function in an ArcIMS or ArcGis layer (the latter is yet untested).
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.BufferLayer",{
@@ -47,7 +48,6 @@ Ext.define ("viewer.components.BufferLayer",{
         this.popup.show();
     },
     loadWindow : function(){
-        
         var layers = [];
         for( var i = 0 ; i < this.layers.length;i++){
             var layer = this.viewerController.getLayerByLayerId(this.layers[i]);
@@ -68,12 +68,6 @@ Ext.define ("viewer.components.BufferLayer",{
             queryMode: 'local',
             displayField: 'title',
             valueField: 'layer',
-            listeners :{
-                change:{
-                    fn: this.changed,
-                    scope: this
-                }
-            },
             renderTo: this.getContentDiv()
         });
         this.radius = Ext.create("Ext.form.field.Text",{
@@ -113,6 +107,7 @@ Ext.define ("viewer.components.BufferLayer",{
         
     },
     removeBuffer : function(){
-        var a = 0;
+        var layer = this.combobox.getValue();
+        layer.removeBuffer( layer.options.name);
     }
 });

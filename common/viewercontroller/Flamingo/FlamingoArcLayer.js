@@ -114,6 +114,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     getLegendGraphic: function (){
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
         return null;
+    },
+    setBuffer : function (radius,layer){
+        console.log("FlamingoArcLayer.setBuffer: .setBuffer() must be made!");
+    },
+    removeBuffer: function(layer){        
+        console.log("FlamingoArcLayer.removeBuffer: .removeBuffer() must be made!");
     }
-   
 });

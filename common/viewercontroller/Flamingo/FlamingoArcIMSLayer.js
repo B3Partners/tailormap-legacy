@@ -35,8 +35,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setLayerProperty", this.id,"query", query);
         this.map.update();
     },
+    // Call the setLayerProperty to set the buffer radius. It must be a object with a radius property
     setBuffer : function (radius,layer){
-        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id,"setLayerProperty", layer,"buffer",{radius:radius})
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id,"setLayerProperty", layer,"buffer",{radius:radius});
+        this.map.update();
+    },
+    // Set the buffer property to null to remove the buffer
+    removeBuffer: function(layer){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setLayerProperty", layer,"buffer");
         this.map.update();
     }
 });
