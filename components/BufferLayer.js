@@ -103,11 +103,14 @@ Ext.define ("viewer.components.BufferLayer",{
     buffer : function (){
         var layer = this.combobox.getValue();
         var radius = this.radius.getValue();
-        layer.setBuffer(radius, layer.options.name);
-        
+        if(layer != null && radius != ""){
+            layer.setBuffer(radius, layer.options.name);
+        }
     },
     removeBuffer : function(){
         var layer = this.combobox.getValue();
-        layer.removeBuffer( layer.options.name);
+        if(layer != null){
+            layer.removeBuffer( layer.options.name);
+        }
     }
 });
