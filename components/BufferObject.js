@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Buffer component
- * Creates a Buffer component
+ * BufferObject component
+ * Creates a BufferObject component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.Buffer",{
+Ext.define ("viewer.components.BufferObject",{
     extend: "viewer.components.Component",    
     constructor: function (conf){        
-        viewer.components.Buffer.superclass.constructor.call(this, conf);
+        viewer.components.BufferObject.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         return this;
     }      
