@@ -20,10 +20,85 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.BufferObject",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
+    combobox: null,
+    radius:null,
+    tmc:null,
+    config: {
+        layers:null,
+        title:null,
+        iconUrl:null
+    },    
     constructor: function (conf){        
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
+        this.initConfig(conf);
+        this.tmc = Ext.create ("viewer.components.tools.ToolMapClick",conf);
+        var me = this;
+        this.renderButton({
+            handler: function(){
+                me.buttonClick();
+            },
+            text: me.title,
+            icon: me.iconUrl,
+            tooltip: me.tooltip
+        });
+        this.loadWindow();
         return this;
-    }      
+    }      ,
+    buttonClick : function (){
+        this.popup.show();
+    },
+    loadWindow : function(){
+        var layers = [];
+        for( var i = 0 ; i < this.layers.length;i++){
+            var layer = this.viewerController.getLayerByLayerId(this.layers[i]);
+            layers.push({
+                id: layer.serviceId+"_"+layer.options.name,
+                title: layer.options.name,
+                layer: layer
+            });
+        }
+        var layerStore = Ext.create('Ext.data.Store', {
+            fields: ['id', 'title','layer'],
+            data : layers
+        });
+
+        this.combobox = Ext.create('Ext.form.ComboBox', {
+            fieldLabel: 'Kies kaartlaag',
+            store: layerStore,
+            queryMode: 'local',
+            displayField: 'title',
+            valueField: 'layer',
+            renderTo: this.getContentDiv()
+        });
+        this.radius = Ext.create("Ext.form.field.Text",{
+            name: "straal" ,
+            fieldLabel: "Straal",
+            renderTo: this.getContentDiv()
+        });
+        
+        Ext.create("Ext.button.Button",{
+            name: "selectObject" ,
+            text: "Selecteer object op de kaart",
+            renderTo: this.getContentDiv(),
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.buffer
+                }
+            }
+        });
+        
+        Ext.create("Ext.button.Button",{
+            name: "removeBuffer" ,
+            text: "Huidige buffer verwijderen",
+            renderTo: this.getContentDiv(),
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.removeBuffer
+                }
+            }
+        });
+    }
 });

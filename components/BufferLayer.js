@@ -25,8 +25,8 @@ Ext.define ("viewer.components.BufferLayer",{
     combobox: null,
     radius:null,
     config: {
-        "layers":null,
-        "title":null,
+        layers:null,
+        title:null,
         iconUrl:null
     },
     constructor: function (conf){        
@@ -90,7 +90,7 @@ Ext.define ("viewer.components.BufferLayer",{
         
         Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
-            text: "Buffer verwijderen",
+            text: "Huidige buffer verwijderen",
             renderTo: this.getContentDiv(),
             listeners: {
                 click:{

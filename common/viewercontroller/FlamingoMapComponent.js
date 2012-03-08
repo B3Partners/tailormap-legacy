@@ -50,6 +50,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA]                = "onMaptipData";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                = "onMaptip";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]                = "onMaptipCancel";        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAP_CLICKED]                = "onMapClicked";        
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -194,12 +195,23 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         if (tool.getLeft()==null && tool.getRight()==null){
             tool.setLeft(this.tools.length * this.toolMargin);
         }        
+        this.getToolGroup(tool);
         viewer.viewercontroller.FlamingoMapComponent.superclass.addTool.call(this,tool);
         //var isToolGroup=this.viewerObject.callMethod(this.flamingoId,'isLoaded',this.toolGroupId,true);        
+        
+        var toolXml="<fmc:ToolGroup id='"+this.toolGroupId+"'>";
+        toolXml+=tool.toXML();
+        toolXml+="</fmc:ToolGroup>";        
+        this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
+        if (this.tools.length ==1){
+            this.activateTool(tool.getId());
+        }
+    },
+    getToolGroup : function(tool){
         if (!this.toolGroupCreated){
             var lt = this.getMap().id;
             if ( lt==undefined || lt==null ){
-                var lt=tool.getListenTo();
+                lt=tool.getListenTo();
             }
             this.createToolGroup({
                 id: this.toolGroupId,
@@ -211,13 +223,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             });
             this.toolGroupCreated=true;
         }
-        var toolXml="<fmc:ToolGroup id='"+this.toolGroupId+"'>";
-        toolXml+=tool.toXML();
-        toolXml+="</fmc:ToolGroup>";        
-        this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
-        if (this.tools.length ==1){
-            this.activateTool(tool.getId());
-        }
+        return this.toolGroupId;
     },
     /**
      * Adds a container to flamingo.

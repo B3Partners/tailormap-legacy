@@ -106,6 +106,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         
         ON_LAYERSELECTOR_CHANGE                 : "ON_LAYERSELECTOR_CHANGE",
         ON_COMPONENTS_FINISHED_LOADING           : "ON_COMPONENTS_FINISHED_LOADING",
-        ON_SELECTEDCONTENT_CHANGE             : "ON_SELECTEDCONTENT_CHANGE"
+        ON_SELECTEDCONTENT_CHANGE             : "ON_SELECTEDCONTENT_CHANGE",
+        ON_MAP_CLICKED                        :  "ON_MAP_CLICKED"
     }
 });
