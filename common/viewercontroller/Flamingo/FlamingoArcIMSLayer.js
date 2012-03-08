@@ -34,5 +34,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     setQuery : function (query){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setLayerProperty", this.id,"query", query);
         this.map.update();
+    },
+    setBuffer : function (radius,layer){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id,"setLayerProperty", layer,"buffer",{radius:radius})
+        this.map.update();
     }
 });

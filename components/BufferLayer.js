@@ -1,0 +1,118 @@
+/* 
+ * Copyright (C) 2012 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * BufferLayer component
+ * Creates a BufferLayer component
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ */
+Ext.define ("viewer.components.BufferLayer",{
+    extend: "viewer.components.Component",
+    combobox: null,
+    radius:null,
+    config: {
+        "layers":null,
+        "title":null,
+        iconUrl:null
+    },
+    constructor: function (conf){        
+        viewer.components.BufferLayer.superclass.constructor.call(this, conf);
+        this.initConfig(conf);     
+        var me = this;
+        this.renderButton({
+            handler: function(){
+                me.buttonClick();
+            },
+            text: me.title,
+            icon: me.iconUrl,
+            tooltip: me.tooltip
+        });      
+        this.loadWindow();
+        return this;
+    },
+    buttonClick : function (){
+        this.popup.show();
+    },
+    loadWindow : function(){
+        
+        var layers = [];
+        for( var i = 0 ; i < this.layers.length;i++){
+            var layer = this.viewerController.getLayerByLayerId(this.layers[i]);
+            layers.push({
+                id: layer.serviceId+"_"+layer.options.name,
+                title: layer.options.name,
+                layer: layer
+            });
+        }
+        var layerStore = Ext.create('Ext.data.Store', {
+            fields: ['id', 'title','layer'],
+            data : layers
+        });
+
+        this.combobox = Ext.create('Ext.form.ComboBox', {
+            fieldLabel: 'Kies kaartlaag',
+            store: layerStore,
+            queryMode: 'local',
+            displayField: 'title',
+            valueField: 'layer',
+            listeners :{
+                change:{
+                    fn: this.changed,
+                    scope: this
+                }
+            },
+            renderTo: this.getContentDiv()
+        });
+        this.radius = Ext.create("Ext.form.field.Text",{
+            name: "straal" ,
+            fieldLabel: "Straal",
+            renderTo: this.getContentDiv()
+        });
+        
+        Ext.create("Ext.button.Button",{
+            name: "buffer" ,
+            text: "Buffer",
+            renderTo: this.getContentDiv(),
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.buffer
+                }
+            }
+        });
+        
+        Ext.create("Ext.button.Button",{
+            name: "removeBuffer" ,
+            text: "Buffer verwijderen",
+            renderTo: this.getContentDiv(),
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.removeBuffer
+                }
+            }
+        });
+    },
+    buffer : function (){
+        var layer = this.combobox.getValue();
+        var radius = this.radius.getValue();
+        layer.setBuffer(radius, layer.options.name);
+        
+    },
+    removeBuffer : function(){
+        var a = 0;
+    }
+});
