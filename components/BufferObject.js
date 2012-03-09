@@ -32,7 +32,15 @@ Ext.define ("viewer.components.BufferObject",{
     constructor: function (conf){        
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.tmc = Ext.create ("viewer.components.tools.ToolMapClick",conf);
+        var config = {
+            id: this.name,
+            handler:{
+                fn: this.mapClicked,
+                scope:this
+            },
+            viewerController: this.viewerController
+        };
+        this.tmc = Ext.create ("viewer.components.tools.ToolMapClick",config);
         var me = this;
         this.renderButton({
             handler: function(){
@@ -100,5 +108,17 @@ Ext.define ("viewer.components.BufferObject",{
                 }
             }
         });
+    },
+    buffer : function (){
+        this.tmc.activateTool();
+    },
+    mapClicked : function (toolMapClick,comp){
+        var coords = comp[1];
+        var x = coords.x;
+        var y = coords.y;
+        console.log("xy", x,y);
+    },
+    addWktToMapcomponent : function (wkt){
+        // Do it
     }
 });

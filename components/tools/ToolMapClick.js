@@ -32,7 +32,7 @@ Ext.define ("viewer.components.tools.ToolMapClick",{
         this.initConfig(conf);
         this.mapComponent = this.viewerController.mapComponent;
         this.frameworkObject = this.viewerController.mapComponent.viewerObject;
-        this.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,this.clicked,this);
+        this.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.scope);
         
         this.addTool();
         //this.viewerController.mapComponent.addTool(this);
@@ -56,14 +56,6 @@ Ext.define ("viewer.components.tools.ToolMapClick",{
     },
     deactivateTool : function(){
         this.frameworkObject.callMethod(this.id,"deactivate");
-    },
-    clicked : function (toolMapClick,comp){
-        var coords = comp[1];
-        var x = coords.x;
-        var y = coords.y;
-        // Do request to backend, give this.addWktToMapcomponent() as callback.
-    },
-    addWktToMapcomponent : function (wkt){
-        // Do it
+        // TODO make sure the toolmapclick is deactivated. Even if there is no other tool selected.
     }
 });
