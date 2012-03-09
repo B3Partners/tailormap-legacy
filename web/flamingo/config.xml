@@ -2,7 +2,17 @@
 <FLAMINGO xmlns:fmc="fmc" id="flamingo" lang="en" tooltipdelay="300" commtojava="true" preloadtitle="Prototypemap" useexternalinterface="true" loglevel="debug" allowexternalinterface="flamingo.onConfigComplete">
 	<style id=".tooltip" font-family="arial, sans-serif" font-size="11" color="#880000" display="block"/>
 	<fmc:Container id="mainContainer" left="0" top="0" height="100%" width="100%">
-		<fmc:Map id="map" left="0" top="0%" height="100%" width="100%" bottom="bottom" visible="true" fullextent="12000,304000,280000,620000" extent="12000,304000,280000,620000" resolutions="156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505" extenthistory="10">
+		<!-- het 'canvas' waar op getekend kan worden-->
+        
+        <!--fmc:EditMap id="editMap" editable="true" left="0" top="0%" height="100%" width="100%" bottom="bottom" listento="gis,map"/>
+
+        <fmc:GIS id="gis" geometryeditable="false" alwaysdrawpoints="false">
+            <fmc:Layer id="layer1" name="layer1" visible="true" geometrytypes="Point,LineString,Polygon,MultiPolygon" showmeasures="true">
+                <fmc:Style fillcolor="0x000000" fillopacity="30" strokecolor="0xcc0000" strokeopacity="100" strokeWidth="1"/>
+            </fmc:Layer>
+        </fmc:GIS-->
+        
+        <fmc:Map id="map" left="0" top="0%" height="100%" width="100%" bottom="bottom" visible="true" fullextent="12000,304000,280000,620000" extent="12000,304000,280000,620000" resolutions="156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505" extenthistory="10">
 			<fmc:LayerIdentifyIcon id="identifyicon"/>
 			<!--fmc:TilingLayer id="osm" serviceurl="http://a.tile.openstreetmap.org/" extension="png" resolutions="156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505" serviceenvelope="-20037507.0671618,-20313886.4749848,20037507.0671618,20313886.4749848" type="OSM" tileheight="256" tilewidth="256">
 			</fmc:TilingLayer-->
