@@ -20,11 +20,198 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.AttributeList",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
+    grid: null,
+    config: {
+        layers:null,
+        title:null,
+        iconUrl:null,
+        tooltip:null
+    },    
     constructor: function (conf){        
+        conf.width=  600;
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
+        this.loadButton();
+        this.loadWindow();
         return this;
-    }      
+    } ,
+    loadButton : function(){
+        Ext.create('Ext.Button', {
+            renderTo: this.div,
+            icon: this.iconUrl,
+            tooltip: this.tooltip,
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.showWindow
+                }
+            }
+        });
+    },
+    loadWindow : function(){
+        var config = {
+            viewerController : this.viewerController,
+            restriction : "attribute",
+            div: this.getContentDiv()
+        };
+        var ls = Ext.create("viewer.components.LayerSelector",config);
+        ls.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+
+    },
+    showWindow : function (){
+        if(this.grid == null){
+            Ext.define('TableRow', {
+                extend: 'Ext.data.Model',
+                fields: [
+                {
+                    name: 'name', 
+                    type: 'string'
+                },
+{
+                    name: 'email', 
+                    type: 'string'
+                },
+{
+                    name: 'phone', 
+                    type: 'string'
+                }
+                ]
+            });
+
+            var store = Ext.create('Ext.data.Store', {
+                pageSize: 4,
+                model: 'TableRow',
+                remoteSort: true,
+                remoteFilter: true,
+                proxy: {
+                    type: 'ajax',
+                    url: 'http://localhost:8084/viewer/users.json',
+                    reader: {
+                        type: 'json',
+                        root: 'users',
+                        totalProperty: 'total'
+                    },
+                    simpleSortMode: true
+                },
+                autoLoad: true
+            });
+
+            this.grid = Ext.create('Ext.grid.Panel',  {
+                id: 'editGrid',
+                store: store,
+                columns: [
+                {
+                    id: 'name.l',
+                    text: "Naam",
+                    dataIndex: 'name.l',
+                    flex: 1,
+                    filter: {
+                        xtype: 'textfield'
+                    }
+                },{
+                    id: 'email',
+                    text: "email",
+                    dataIndex: 'email',
+                    flex: 1,
+                    filter: {
+                        xtype: 'textfield'
+                    }
+                },{
+                    id: 'phone',
+                    text: "phone",
+                    dataIndex: 'phone',
+                    flex: 1,
+                    filter: {
+                        xtype: 'textfield'
+                    }
+                }
+                ],
+                bbar: Ext.create('Ext.PagingToolbar', {
+                    store: store,
+                    displayInfo: true,
+                    displayMsg: 'Layar service {0} - {1} of {2}',
+                    emptyMsg: "Geen layar services weer te geven"
+                })/*,
+                plugins: [ 
+                    Ext.create('Ext.ux.grid.GridHeaderFilters', {
+                        enableTooltip: false
+                    })
+                ],*/,
+                renderTo: this.getContentDiv()
+            });
+        }
+        this.popup.show();
+    },
+    layerChanged : function (item){
+        
+        this.grid.destroy();
+        var appLayer = this.viewerController.getApplayer (item.serviceId,item.name);
+        if(appLayer != null){
+            var attributes = appLayer.attributes;
+            var attributeList = new Array();
+            var columns = new Array();
+            for(var i= 0 ; i < attributes.length ;i++){
+                var attribute = attributes[i];
+                if(attribute.visible){
+                    var colName = attribute.name.substring(attribute.name.lastIndexOf(".")+1);
+                    attributeList.push({
+                        name: attribute.name,
+                        type : 'string'
+                    });
+                    columns.push({
+                        id: colName,//attribute.name,
+                        text:colName,// attribute.name,// title
+                        dataIndex:colName,// attribute.name,
+                        flex: 1,
+                        filter: {
+                            xtype: 'textfield'
+                        }
+                    });
+                }
+            }
+            Ext.define('TableRow', {
+                extend: 'Ext.data.Model',
+                fields: attributeList
+            });
+            
+            var store = Ext.create('Ext.data.Store', {
+                pageSize: 4,
+                model: 'TableRow',
+                remoteSort: true,
+                remoteFilter: true,
+                proxy: {
+                    type: 'ajax',
+                    url: 'http://localhost:8084/viewer/'+ item.title + '.json',
+                    reader: {
+                        type: 'json',
+                        root: 'users',
+                        totalProperty: 'total'
+                    },
+                    simpleSortMode: true
+                },
+                autoLoad: true
+            });
+
+            this.grid = Ext.create('Ext.grid.Panel',  {
+                id: 'editGrid',
+                store: store,
+                columns: columns,
+                bbar: Ext.create('Ext.PagingToolbar', {
+                    store: store,
+                    displayInfo: true,
+                    displayMsg: 'Layar service {0} - {1} of {2}',
+                    emptyMsg: "Geen layar services weer te geven"
+                })/*,
+                plugins: [ 
+                    Ext.create('Ext.ux.grid.GridHeaderFilters', {
+                        enableTooltip: false
+                    })
+                ],*/,
+                renderTo: this.getContentDiv()
+            });
+            
+        }
+    }
 });
 
