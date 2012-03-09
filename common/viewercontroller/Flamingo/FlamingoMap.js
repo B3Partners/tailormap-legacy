@@ -9,6 +9,8 @@
 Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     extend: "viewer.viewercontroller.controller.Map",
     enabledEvents: new Object(),
+    editMapId: null,
+    gisId: 'gis',
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
         this.initConfig(config);
@@ -63,7 +65,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             Ext.Error.raise({msg: "FlamingoMap.addLayer(): Given layer not of type FlamingoLayer"});
         //call super function
         this.superclass.addLayer.call(this,layer);                
-        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
+        if (layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer){
+            if (this.editMapId==null){
+                this.addEditMap();             
+            }
+            //add layer to gis
+            var me=this;
+            setTimeout(function(){
+                me.getFrameworkMap().callMethod(me.gisId,'addLayerAsString',layer.toXML());
+                },5000);
+        }else if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'addLayer',layer.toXML());
         }
     },
@@ -79,6 +90,21 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
         }
+    },
+    
+    addEditMap: function(){
+        this.editMapId='editMap';        
+        //add gis
+        this.getFrameworkMap().callMethod(
+            this.getMapComponent().mainContainerId,
+            "addComponent",
+            "<fmc:GIS xmlns:fmc='fmc' id='"+this.gisId+"' geometryeditable='false' alwaysdrawpoints='false'></fmc:GIS>");
+        //add editMap
+        console.log("<fmc:EditMap xmlns:fmc='fmc' id='"+this.editMapId+"' editable='true' left='0' top='0%' height='100%' width='100%' bottom='bottom' listento='"+this.gisId+","+this.id+"'/>");
+        this.getFrameworkMap().callMethod(
+            this.getMapComponent().mainContainerId,
+            "addComponent",
+            "<fmc:EditMap xmlns:fmc='fmc' id='"+this.editMapId+"' editable='true' left='0' top='0%' height='100%' width='100%' bottom='bottom' listento='"+this.gisId+","+this.id+"'/>");                
     },
     /**
      * Get layer with flamingo layer id (with mapid_ as prefix)

@@ -6,16 +6,61 @@
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
-    layerName: "layer1",
+    config: {
+        //@field visible true/false
+        visible: null,
+        //@field Array of allowed geometry types on this layer. Possible values: "Point,LineString,Polygon,MultiPolygon,Circle"
+        geometrytypes: null,
+        //@field true/false show measures of the drawing object
+        showmeasures: null,
+        //@field the style
+        style: {
+            //@field (0x000000 – 0xFFFFFF, default: 0x000000 ) Fill color. Not applicable to point or line string geometries.
+            fillcolor: "0x000000",
+            //@field (0 – 100, default: 100) Fill opacity. A value of 0 means completely transparent. Not applicable to point or line string geometries. If a feature's geometry is not completely transparent, a click on its fill will make the feature the active feature. If the geometry is completely transparent the user's mouse will click right through it.
+            fillopacity: 100,
+            //@field (0x000000 – 0xFFFFFF, default: 0x000000) Stroke color.
+            strokecolor: "0x000000",
+            //@field (0 – 100, default: 100) Stroke opacity. A value of 0 means completely transparent.
+            strokeopacity: 100
+        }
+    },
+    /**
+     * Creates a vector layer
+     * @constructor
+     * @param config.visible visible true/false
+     * @param config.geometrytypes Array of allowed geometry types on this layer. Possible values: "Point,LineString,Polygon,MultiPolygon,Circle"
+     * @param config.showmeasures true/false show measures of the drawing object
+     */
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoVectorLayer.superclass.constructor.call(this, config);
-        this.initConfig(config);
+        this.initConfig(config);        
         return this;
     },
     
-    toXML : function(){
-    
-        return "";
+    toXML : function(){    
+        var xml= "<fmc:Layer ";
+        xml+= "id='"+this.id+"' ";
+        xml+= "name='"+this.id+"' ";
+        if (this.getVisible()!=null)
+            xml+= "visible='"+this.getVisible()+"' ";
+        if (this.getGeometrytypes()!=null && this.getGeometrytypes().length > 0)
+            xml+= "geometrytypes='"+this.getGeometrytypes().join()+"' ";
+        if (this.getShowmeasures()!=null)
+            xml+= "showmeasures='"+this.getShowmeasures()+"' ";
+        xml+=">";
+        //add style
+        xml+="<fmc:Style ";
+        if (this.style.fillcolor!=null)
+            xml+="fillcolor='"+this.style.fillcolor+"' ";
+        if (this.style.fillopacity!=null)
+            xml+="fillopacity='"+this.style.fillopacity+"' ";
+        if (this.style.strokecolor!=null)
+            xml+="strokecolor='"+this.style.strokecolor+"' ";
+        if (this.style.strokeopacity!=null)
+            xml+="strokeopacity='"+this.style.strokeopacity+"' ";
+        xml+="/></fmc:Layer>";
+        return xml;
     },
 
     getLayerName : function(){
@@ -85,17 +130,21 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         return features;
     },
 
-    drawFeature : function(type){
-        
-       // viewerController.mapComponent.viewerObject;//this.getFrameworkLayer().callMethod(this.getId(),"editMapDrawNewGeometry",this.getLayerName(),type );
-        viewerController.mapComponent.viewerObject.callMethod(this.getId(),"editMapDrawNewGeometry",this.getLayerName(),type );
+    drawFeature : function(type){     
+        if (this.map!=null && this.map.editMapId!=null)
+            viewerController.mapComponent.viewerObject.callMethod(this.map.editMapId,"editMapDrawNewGeometry",this.getId(),type );
     },
 
     /* stop editing */
     stopDrawDrawFeature : function(){
         //this.getFrameworkLayer().callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
         viewerController.mapComponent.viewerObject.callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
+    },
+    
+    setVisible: function(vis){
+        this.visible=vis;
     }
+            
     
     
 });

@@ -162,11 +162,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      * See @link MapComponent.createVectorLayer
      */
-    createVectorLayer : function (identification){
-        var config = {
-            id:identification,
-            frameworkObject: new Object()
-        };
+    createVectorLayer : function (config){        
         return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
     /**

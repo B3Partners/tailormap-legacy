@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.Print",{
     extend: "viewer.components.Component",  
     panel: null,
+    minKwality: 128,
     config:{
         name: "Print",
         title: "",
@@ -43,7 +44,11 @@ Ext.define ("viewer.components.Print",{
             icon: me.titlebarIcon,
             tooltip: me.tooltip
         });
-        me.buttonClick();        
+        //test
+        //me.buttonClick();        
+        var vl=viewerController.mapComponent.createVectorLayer({id: 'vectorLayer'});
+        viewerController.mapComponent.getMap().addLayer(vl);
+        vl.drawFeature("Point");
         return this;
     },
     buttonClick: function(){
@@ -52,7 +57,7 @@ Ext.define ("viewer.components.Print",{
     },
     createForm: function(){
         var me = this;
-        me.panel = Ext.create('Ext.panel.Panel', {
+        this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,
             width: "100%",
@@ -196,54 +201,58 @@ Ext.define ("viewer.components.Print",{
                         }]
                     }]                        
                 }]
+            },{
+                //button container 2b
+                xtype: 'container',
+                frame: true,
+                border: true,
+                style: {
+                    paddingTop: "5px"
+                },
+                items: [{
+                    xtype: 'button',
+                    text: 'Opslaan als RTF'  ,
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    }                  
+                },{
+                    xtype: 'button',
+                    text: 'Opslaan als PDF'  ,
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    }                  
+                },{
+                    xtype: 'button',
+                    text: 'Printen via PDF',
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    }
+                }]                
             }]
         });
-        /*this.form=new Ext.form.FormPanel({
-            frame: false,
-            bodyPadding: me.formPadding,
-            width: me.formWidth,          
-            items: [{ 
-                xtype: 'container',
-                layout: {type: 'hbox'},
-                items: [{
-                        xtype: 'container',
-                        //layout: {type: 'vbox'},
-                        items: [{                     
-                            xtype: 'textfield',
-                            fieldLabel: 'Titel',
-                            name: 'title',
-                            value: config.title,
-                            labelWidth:me.labelWidth,
-                            width: 500
-                        },{                        
-                            xtype: 'textfield',
-                            fieldLabel: 'Titelbalk icoon',
-                            name: 'iconUrl',
-                            value: config.iconUrl,
-                            labelWidth:me.labelWidth,
-                            width: 500,
-                            listeners: {
-                                blur: function(textField,options){
-                                    me.onIconChange(textField,options);
-                                }
-                            }
-                        }]                    
-                    },{
-                        xtype: "image",
-                        id: "iconImage",
-                        src: iconurl,
-                        style: {"margin-left": "100px"}
-                    }]
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Tooltip',
-                name: 'tooltip',
-                value: config.tooltip,
-                labelWidth:me.labelWidth,
-                width: 700
-            }],
-            renderTo: this.parentId//(2)
-        });*/
+    },
+    submitSettings: function(){
+        var properties = this.getValuesFromContainer(this.panel);
+        console.log(properties);
+    },
+    /**
+     * Get the item values of the given container.
+     */
+    getValuesFromContainer: function(container){
+        var config=new Object();
+        for( var i = 0 ; i < container.items.length ; i++){
+            //if its a radiogroup get the values with the function and apply the values to the config.
+            if ("radiogroup"==container.items.get(i).xtype){
+                Ext.apply(config, container.items.get(i).getValue());       
+            }else if ("container"==container.items.get(i).xtype){
+                Ext.apply(config,this.getValuesFromContainer(container.items.get(i)));
+            }else if (container.items.get(i).name!=undefined)
+                config[container.items.get(i).name] = container.items.get(i).value;
+        }
+        return config;
     }
 });
 
