@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.Print",{
     extend: "viewer.components.Component",  
     panel: null,
+    vl:null,
     minKwality: 128,
     config:{
         name: "Print",
@@ -46,9 +47,13 @@ Ext.define ("viewer.components.Print",{
         });
         //test
         //me.buttonClick();        
-        var vl=viewerController.mapComponent.createVectorLayer({id: 'vectorLayer'});
-        viewerController.mapComponent.getMap().addLayer(vl);
-        vl.drawFeature("Point");
+        this.vl=viewerController.mapComponent.createVectorLayer({
+            id: 'vectorLayer',
+            name:'vectorLayer',
+            geometrytypes:["Point","Point","LineString","Polygon","MultiPolygon"],
+            showmeasures:true
+        });
+        viewerController.mapComponent.getMap().addLayer(this.vl);
         return this;
     },
     buttonClick: function(){
@@ -57,6 +62,9 @@ Ext.define ("viewer.components.Print",{
     },
     createForm: function(){
         var me = this;
+        if(this.vl.isLoaded){
+            this.vl.drawFeature("Point");
+       }
         this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,

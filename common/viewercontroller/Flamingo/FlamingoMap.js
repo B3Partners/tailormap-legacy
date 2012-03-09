@@ -69,16 +69,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             if (this.editMapId==null){
                 this.addEditMap();             
             }
-            //add layer to gis
-            var me=this;
-            setTimeout(function(){
-                me.getFrameworkMap().callMethod(me.gisId,'addLayerAsString',layer.toXML());
-                },5000);
+            this.addLayerToGis(layer);
         }else if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'addLayer',layer.toXML());
         }
     },
-    
+    addLayerToGis : function (layer){
+        if(this.getFrameworkMap().callMethod("flamingo", "isLoaded",this.gisId, true)){
+            this.getFrameworkMap().callMethod(this.gisId,'addLayerAsString',layer.toXML());
+            layer.isLoaded=true;
+        }else{
+            var thisObj = this;
+            setTimeout(function(){
+                thisObj.addLayerToGis(layer,thisObj);
+            },500);
+        }
+    },
     /**
      *remove the specific layer. See @link Map.removeLayer
      **/

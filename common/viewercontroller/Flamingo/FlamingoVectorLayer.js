@@ -6,9 +6,8 @@
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
+    isLoaded: false,
     config: {
-        //@field visible true/false
-        visible: null,
         //@field Array of allowed geometry types on this layer. Possible values: "Point,LineString,Polygon,MultiPolygon,Circle"
         geometrytypes: null,
         //@field true/false show measures of the drawing object
@@ -42,8 +41,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         var xml= "<fmc:Layer ";
         xml+= "id='"+this.id+"' ";
         xml+= "name='"+this.id+"' ";
-        if (this.getVisible()!=null)
-            xml+= "visible='"+this.getVisible()+"' ";
+        xml+= "visible='true' ";
         if (this.getGeometrytypes()!=null && this.getGeometrytypes().length > 0)
             xml+= "geometrytypes='"+this.getGeometrytypes().join()+"' ";
         if (this.getShowmeasures()!=null)
@@ -139,12 +137,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     stopDrawDrawFeature : function(){
         //this.getFrameworkLayer().callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
         viewerController.mapComponent.viewerObject.callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
-    },
-    
-    setVisible: function(vis){
-        this.visible=vis;
     }
-            
-    
     
 });
