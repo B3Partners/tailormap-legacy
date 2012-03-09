@@ -22,7 +22,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId,configObject){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        this.createCheckBoxes(this.configObject.layers,{bufferable:true});
+        this.createCheckBoxes(this.configObject.layers,{wfs:true});
     }
 });
 
