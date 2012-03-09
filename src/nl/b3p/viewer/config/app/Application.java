@@ -21,6 +21,7 @@ import javax.persistence.*;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ import org.stripesstuff.stripersist.Stripersist;
         uniqueConstraints=
             @UniqueConstraint(columnNames={"name", "version"})
 )
-public class Application  {
+public class Application {
     @Id
     private Long id;
 
@@ -364,5 +365,32 @@ public class Application  {
                 visitLevelForUsedServicesLayers(child, childrenByParent, usedLayersByService);
             }        
         }
+    }
+
+    public Application deepCopy() throws Exception {
+        
+        Application copy = (Application) BeanUtils.cloneBean(this);   
+        copy.setId(null);
+        
+        // user reference is not deep copied, of course
+        
+        copy.setDetails(new HashMap<String,String>(details));
+        if(startExtent != null) {
+            copy.setStartExtent(startExtent.clone());
+        }
+        if(maxExtent != null) {
+            copy.setMaxExtent(maxExtent.clone());
+        }
+        
+        copy.setComponents(new HashSet<ConfiguredComponent>());
+        for(ConfiguredComponent cc: components) {
+            copy.getComponents().add(cc.deepCopy(copy));
+        }
+        
+        if(root != null) {
+            copy.setRoot(root.deepCopy(null));
+        }
+        
+        return copy;
     }
 }

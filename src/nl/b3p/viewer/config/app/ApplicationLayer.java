@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.services.GeoService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -163,5 +164,22 @@ public class ApplicationLayer {
         }
 
         return o;
+    }
+
+    ApplicationLayer deepCopy() throws Exception {
+        ApplicationLayer copy = (ApplicationLayer) BeanUtils.cloneBean(this);
+        copy.setId(null);
+        
+        // service reference is not deep copied, of course
+        
+        copy.setReaders(new HashSet<String>(readers));
+        copy.setWriters(new HashSet<String>(writers));
+        copy.setDetails(new HashMap<String,String>(details));
+        
+        copy.setAttributes( new ArrayList<ConfiguredAttribute>());
+        for(ConfiguredAttribute a: attributes) {
+            copy.getAttributes().add(a.deepCopy());
+        }
+        return copy;
     }
 }

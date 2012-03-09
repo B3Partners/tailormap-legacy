@@ -20,6 +20,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ViewerComponent;
+import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,6 +52,10 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     @ManyToOne(optional=false)
     private Application application;
 
+    @ElementCollection
+    @Column(name="role_name")
+    private Set<String> readers = new HashSet<String>();
+    
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
@@ -67,10 +72,6 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     public void setName(String name) {
         this.name = name;
     }
-
-    @ElementCollection
-    @Column(name="role_name")
-    private Set<String> readers = new HashSet<String>();
 
     public Set<String> getReaders() {
         return readers;
@@ -139,5 +140,14 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     @Override
     public int compareTo(ConfiguredComponent rhs) {
         return className.compareTo(rhs.getClassName());
+    }
+
+    ConfiguredComponent deepCopy(Application app) throws Exception {
+        ConfiguredComponent copy = (ConfiguredComponent) BeanUtils.cloneBean(this);
+        copy.setId(null);
+        copy.setDetails(new HashMap<String,String>(details));
+        copy.setReaders(new HashSet<String>(readers));
+        copy.setApplication(app);
+        return copy;
     }
 }

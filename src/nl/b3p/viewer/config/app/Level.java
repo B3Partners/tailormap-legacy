@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.services.Document;
+import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -227,5 +228,28 @@ public class Level {
             parentLevel = parentLevel.getParent();
         } while(parentLevel != null);
         return false;
+    }
+
+    Level deepCopy(Level parent) throws Exception {
+        Level copy = (Level)BeanUtils.cloneBean(this);
+        copy.setId(null);
+        copy.setParent(parent);
+        
+        copy.setChildren(new ArrayList<Level>());
+        for(Level child: children) {
+            copy.getChildren().add(child.deepCopy(copy));
+        }
+        
+        copy.setLayers(new ArrayList<ApplicationLayer>());
+        for(ApplicationLayer appLayer: layers) {
+            copy.getLayers().add(appLayer.deepCopy());
+        }
+        
+        // do not clone documents, only the list
+        copy.setDocuments(new ArrayList<Document>(documents));
+        
+        copy.setReaders(new HashSet<String>(readers));
+        
+        return copy;
     }
 }

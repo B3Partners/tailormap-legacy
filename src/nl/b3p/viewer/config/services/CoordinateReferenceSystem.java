@@ -23,7 +23,7 @@ import javax.persistence.*;
  * @author Matthijs Laan
  */
 @Embeddable
-public class CoordinateReferenceSystem {
+public class CoordinateReferenceSystem implements Cloneable {
 
     @Column(name="crs")
     private String name;
@@ -41,5 +41,10 @@ public class CoordinateReferenceSystem {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    @Override
+    public CoordinateReferenceSystem clone() throws CloneNotSupportedException { 
+        return (CoordinateReferenceSystem)super.clone();
     }
 }

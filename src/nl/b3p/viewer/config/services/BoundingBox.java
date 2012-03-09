@@ -26,7 +26,7 @@ import org.json.JSONObject;
  * @author Matthijs Laan
  */
 @Embeddable
-public class BoundingBox {
+public class BoundingBox implements Cloneable {
     CoordinateReferenceSystem crs;
     Double minx, miny, maxx, maxy;
 
@@ -93,5 +93,14 @@ public class BoundingBox {
         o.put("miny", miny);
         o.put("maxy", maxy);
         return o;
+    }
+    
+    @Override
+    public BoundingBox clone() throws CloneNotSupportedException {
+        BoundingBox clone = (BoundingBox)super.clone();
+        if(crs != null) {
+            crs = (CoordinateReferenceSystem) crs.clone();
+        }
+        return clone;
     }
 }

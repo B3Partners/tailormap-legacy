@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.app;
 
 import javax.persistence.*;
+import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -152,5 +153,11 @@ public class ConfiguredAttribute {
         }
         o.put("defaultValue", defaultValue);
         return o;
+    }
+
+    ConfiguredAttribute deepCopy() throws Exception {
+        ConfiguredAttribute copy = (ConfiguredAttribute)BeanUtils.cloneBean(this);
+        copy.setId(null);
+        return copy;
     }
 }
