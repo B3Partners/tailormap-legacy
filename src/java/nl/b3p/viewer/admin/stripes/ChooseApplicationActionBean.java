@@ -20,8 +20,11 @@ import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
@@ -35,6 +38,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @RolesAllowed({"Admin","ApplicationAdmin"})       
 public class ChooseApplicationActionBean extends ApplicationActionBean {
+    private static final Log log = LogFactory.getLog(ChooseApplicationActionBean.class);
+    
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/application/chooseApplicationEdit.jsp";
@@ -131,13 +136,28 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     }
     
     public Resolution deleteApplication() {
-        Stripersist.getEntityManager().remove(application);
-        Stripersist.getEntityManager().getTransaction().commit();
-        
-        application = null;
-        applicationId = -1L;
-        
-        getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+        try {
+            Stripersist.getEntityManager().remove(application);
+            Stripersist.getEntityManager().getTransaction().commit();
+
+            application = null;
+            applicationId = -1L;
+
+            getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+        } catch(Exception e) {
+            log.error(String.format("Error deleting application #%d named %s",
+                    application.getId(),
+                    application.getName(),
+                    application.getVersion() == null ? "" : "v" + application.getVersion() + " "),
+                    e);
+            String ex = e.toString();
+            Throwable cause = e.getCause();
+            while(cause != null) {
+                ex += ";\n<br>" + cause.toString();
+                cause = cause.getCause();
+            }
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij verwijderen applicatie: " + ex));
+        }
         return new ForwardResolution(EDITJSP);
     }
     

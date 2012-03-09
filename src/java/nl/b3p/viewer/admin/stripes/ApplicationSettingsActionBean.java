@@ -24,6 +24,8 @@ import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -33,7 +35,9 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/applicationsettings/{$event}")
 @StrictBinding
 @RolesAllowed({"Admin","ApplicationAdmin"}) 
-public class ApplicationSettingsActionBean extends ApplicationActionBean{
+public class ApplicationSettingsActionBean extends ApplicationActionBean {
+    private static final Log log = LogFactory.getLog(ApplicationSettingsActionBean.class);
+    
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
    
     @Validate
@@ -177,6 +181,22 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
             Stripersist.getEntityManager().persist(root);
             application.setRoot(root);
         }
+        
+        bindAppProperties();
+        
+        Stripersist.getEntityManager().persist(application);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Applicatie is opgeslagen"));
+
+        setApplication(application);
+        
+        return new ForwardResolution(JSP);
+    }
+    
+    /* XXX */
+    private void bindAppProperties() {
+
         application.setName(name);
         application.setVersion(version);
         
@@ -193,16 +213,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
         application.setAuthenticatedRequired(authenticatedRequired);
         
         application.getDetails().clear();
-        application.getDetails().putAll(details);
-        
-        Stripersist.getEntityManager().persist(application);
-        Stripersist.getEntityManager().getTransaction().commit();
-        
-        getContext().getMessages().add(new SimpleMessage("Applicatie is opgeslagen"));
-
-        setApplication(application);
-        
-        return new ForwardResolution(JSP);
+        application.getDetails().putAll(details);        
     }
     
     @ValidationMethod(on="save")
@@ -260,6 +271,53 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean{
             if(maxExtent.getMinx() == null || maxExtent.getMiny() == null || maxExtent.getMaxx() == null || maxExtent.getMaxy() == null ){
                 errors.add("maxExtent", new SimpleError("Alle velden van de max extentie moeten ingevult worden."));
             }
+        }
+    }
+    
+    public Resolution copy() throws Exception {
+        
+        try {
+            Object o = Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name")
+                .setMaxResults(1)
+                .setParameter("name", name)
+                .getSingleResult();
+            
+            getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" bestaat al", name));
+            return new ForwardResolution(JSP);
+        } catch(NoResultException nre) {
+            // name is unique
+        }
+
+        try {
+            bindAppProperties();
+
+            Application copy = application.deepCopy();
+
+            // don't save changes to original app
+            Stripersist.getEntityManager().detach(application);
+
+            Stripersist.getEntityManager().persist(copy);
+            Stripersist.getEntityManager().getTransaction().commit();
+
+            getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
+            setApplication(copy);   
+
+            application = copy;
+            return view();
+        } catch(Exception e) {
+            log.error(String.format("Error copying application #%d named %s %swith new name %s",
+                    application.getId(),
+                    application.getName(),
+                    application.getVersion() == null ? "" : "v" + application.getVersion() + " ",
+                    name), e);
+            String ex = e.toString();
+            Throwable cause = e.getCause();
+            while(cause != null) {
+                ex += ";\n<br>" + cause.toString();
+                cause = cause.getCause();
+            }
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij kopieren applicatie: " + ex));
+            return new ForwardResolution(JSP);
         }
     }
 }

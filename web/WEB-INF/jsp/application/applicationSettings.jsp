@@ -94,10 +94,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht<br>
                     <stripes:submit name="save" value="Opslaan"/>
                     <stripes:submit name="cancel" value="Annuleren"/>
+                    <stripes:submit name="copy" value="Maak kopie" onclick="return askName();"/>                                    
                 </stripes:form>
             </div>
         <script type="text/javascript">
             var activelink = 'menu_instellingen';
+            
+            
+            function askName() {
+                var name = prompt("Naam van kopie",document.forms[0].name.value);
+
+                if(name == null) {
+                    alert("Naam moet zijn ingevuld");
+                    return false;
+                } else {                    
+                    document.forms[0].name.value = name;
+                    return true;
+                }
+            }
         </script>
     </stripes:layout-component>
 </stripes:layout-render>
