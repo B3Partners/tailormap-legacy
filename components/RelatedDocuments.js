@@ -85,7 +85,9 @@ Ext.define ("viewer.components.RelatedDocuments",{
                 parentDocuments=this.viewerController.getDocumentsInLevel(this.viewerController.app.levels[contentItem.id]);
             }else if(contentItem.type == "appLayer"){
                 var parentLevel = this.viewerController.getAppLayerParent(contentItem.id);
-                parentDocuments=this.viewerController.getDocumentsInLevel(parentLevel);                
+                if(parentLevel != null){
+                    parentDocuments=this.viewerController.getDocumentsInLevel(parentLevel);    
+                }
             }
             Ext.apply(documents,parentDocuments);
         }
