@@ -15,11 +15,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         //@field the style
         style: {
             //@field (0x000000 – 0xFFFFFF, default: 0x000000 ) Fill color. Not applicable to point or line string geometries.
-            fillcolor: "0x000000",
+            fillcolor: "0xFF0000",
             //@field (0 – 100, default: 100) Fill opacity. A value of 0 means completely transparent. Not applicable to point or line string geometries. If a feature's geometry is not completely transparent, a click on its fill will make the feature the active feature. If the geometry is completely transparent the user's mouse will click right through it.
             fillopacity: 100,
             //@field (0x000000 – 0xFFFFFF, default: 0x000000) Stroke color.
-            strokecolor: "0x000000",
+            strokecolor: "0xFF0000",
             //@field (0 – 100, default: 100) Stroke opacity. A value of 0 means completely transparent.
             strokeopacity: 100
         }
@@ -117,7 +117,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      */
     getAllFeatures : function(){
         var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
-        var flamingoFeatures = flamingoObj.callMethod(this.getId(),"getAllFeaturesAsObject");
+        var flamingoFeatures = flamingoObj.callMethod(this.map.editMapId,"getAllFeaturesAsObject");
         var features = new Array();
         var featureObj = new viewer.viewercontroller.controller.Feature();
         for(var i = 0 ; i< flamingoFeatures.length ; i++){
@@ -128,6 +128,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         return features;
     },
 
+    // TODO make function that gets all the features from THIS layer (not the entire editmap)
     drawFeature : function(type){     
         if (this.map!=null && this.map.editMapId!=null)
             viewerController.mapComponent.viewerObject.callMethod(this.map.editMapId,"editMapDrawNewGeometry",this.getId(),type );
