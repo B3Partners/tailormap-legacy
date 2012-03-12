@@ -7,10 +7,12 @@
  * The generic class for defining a feature. A feature consists of a id and a wkt. Convenience methods for converting from and to viewerspecific features.
  */
 Ext.define("viewer.viewercontroller.controller.Feature",{
-    constructor: function (id,wkt){
-        
-        this.id = id;
-        this.wkt = wkt;
+    config:{
+        id:null,
+        wkt:null
+    },
+    constructor: function (config){
+        this.initConfig(config);
        // this.wktParser = new OpenLayers.Format.WKT();
     },
     

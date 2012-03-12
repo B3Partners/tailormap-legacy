@@ -109,7 +109,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      */
     addFeature : function(feature){
         var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
-        flamingoObj.callMethod(this.getId(),'addFeature',this.getLayerName(),feature.toFlamingoFeature());
+        flamingoObj.callMethod(this.map.editMapId,'addFeature',this.getId(),feature.toFlamingoFeature());
     },
 
     /**

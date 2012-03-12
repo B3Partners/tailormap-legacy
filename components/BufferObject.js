@@ -24,6 +24,7 @@ Ext.define ("viewer.components.BufferObject",{
     combobox: null,
     radius:null,
     tmc:null,
+    vectorLayer:null,
     config: {
         layers:null,
         title:null,
@@ -40,6 +41,19 @@ Ext.define ("viewer.components.BufferObject",{
             },
             viewerController: this.viewerController
         };
+        this.vectorLayer=viewerController.mapComponent.createVectorLayer({
+            id: 'boVectorLayer',
+            name:'boVectorLayer',
+            geometrytypes:["Circle","Polygon"],
+            showmeasures:true,
+                style: {
+                fillcolor: "0xFF0000",
+                fillopacity: 50,
+                strokecolor: "0xFF0000",
+                strokeopacity: 100
+            }
+        });
+        viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.tmc = Ext.create ("viewer.components.tools.ToolMapClick",config);
         var me = this;
         this.renderButton({
@@ -104,7 +118,8 @@ Ext.define ("viewer.components.BufferObject",{
             listeners: {
                 click:{
                     scope: this,
-                    fn: this.removeBuffer
+                    //fn: this.removeBuffer
+                    fn: this.addWktToMapcomponent
                 }
             }
         });
@@ -113,12 +128,16 @@ Ext.define ("viewer.components.BufferObject",{
         this.tmc.activateTool();
     },
     mapClicked : function (toolMapClick,comp){
+        this.tmc.deactivateTool();
         var coords = comp[1];
         var x = coords.x;
         var y = coords.y;
         console.log("xy", x,y);
     },
     addWktToMapcomponent : function (wkt){
-        // Do it
+        wkt ="POLYGON((98914.7905763337 576961.290540899,101360.775481459 488905.833956381,166179.375467285 487071.345277537,174128.826408943 570234.832051804,146611.496226281 610593.582986375,98914.7905763337 576961.290540899))";
+        var feature = Ext.create("viewer.viewercontroller.controller.Feature",{id: 1, wkt: wkt});
+        this.vectorLayer.addFeature(feature);
+        
     }
 });
