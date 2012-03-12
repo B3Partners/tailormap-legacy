@@ -22,19 +22,27 @@ import java.util.Map;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.store.DataFeatureCollection;
+import org.geotools.data.wfs.WFSDataStore;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -44,11 +52,20 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/appLayer")
 @StrictBinding
 public class AppLayerActionBean implements ActionBean {
+    private static final int MAX_FEATURES = 30;
     
     private ActionBeanContext context;
     
     @Validate
     private ApplicationLayer appLayer;
+    
+    private Layer layer = null;
+    
+    private int limit;
+    private int page;
+    private int start;
+    
+    private Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
@@ -66,8 +83,55 @@ public class AppLayerActionBean implements ActionBean {
     public void setAppLayer(ApplicationLayer appLayer) {
         this.appLayer = appLayer;
     }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
     //</editor-fold>
 
+    @After(stages=LifecycleStage.BindingAndValidation)
+    public void loadLayer() {
+        // TODO check if user has rights to appLayer
+
+        try {
+            layer = (Layer)Stripersist.getEntityManager().createQuery("from Layer where service = :service and name = :n order by virtual desc")
+                    .setParameter("service", appLayer.getService())
+                    .setParameter("n", appLayer.getLayerName())
+                    .setMaxResults(1)
+                    .getSingleResult();
+            
+            if(layer != null) {
+                SimpleFeatureType ft = layer.getFeatureType();
+                if(ft != null) {
+                    for(AttributeDescriptor ad: ft.getAttributes()) {
+                        featureTypeAttributes.put(ad.getName(), ad);
+                    }
+                }
+            }            
+        } catch(NoResultException nre) {
+        }
+    }
+    
     public Resolution attributes() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -77,32 +141,14 @@ public class AppLayerActionBean implements ActionBean {
         if(appLayer == null) {
             error = "Invalid parameters";
         } else {
-            // TODO check if user has rights to appLayer
-            
-            Layer l = null;
-            try {
-                l = (Layer)Stripersist.getEntityManager().createQuery("from Layer where service = :service and name = :n order by virtual desc")
-                        .setParameter("service", appLayer.getService())
-                        .setParameter("n", appLayer.getLayerName())
-                        .setMaxResults(1)
-                        .getSingleResult();
-            } catch(NoResultException nre) {
-            }
-            Map<String,AttributeDescriptor> ftAttributes = new HashMap<String,AttributeDescriptor>();
-            if(l != null) {
-                SimpleFeatureType ft = l.getFeatureType();
-                if(ft != null) {
-                    for(AttributeDescriptor ad: ft.getAttributes()) {
-                        ftAttributes.put(ad.getName(), ad);
-                    }
-                }
-            }
+
+
             
             JSONArray attributes = new JSONArray();
             for(ConfiguredAttribute ca: appLayer.getAttributes()) {
                 JSONObject j = ca.toJSONObject();
                 
-                AttributeDescriptor ad = ftAttributes.get(ca.getAttributeName());
+                AttributeDescriptor ad = featureTypeAttributes.get(ca.getAttributeName());
                 if(ad != null) {
                     j.put("alias", ad.getAlias());
                     j.put("type", ad.getType());
@@ -121,11 +167,60 @@ public class AppLayerActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
     }
     
-    public Resolution store() throws JSONException {
+    public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
-        json.put("features", new JSONArray());
-        json.put("total", 0);
+        JSONArray features = new JSONArray();
+        
+        int total = 0;
+        
+        if(layer != null && layer.getFeatureType() != null) {
+            FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource();
+            ((WFSDataStore)fs.getDataStore()).setMaxFeatures(MAX_FEATURES);
+            
+            FeatureCollection fc = fs.getFeatures();
+            
+            if(!fc.isEmpty()) {
+                if(fc instanceof DataFeatureCollection) {
+                    total = ((DataFeatureCollection)fc).getCount();
+                } else {
+                    total = fc.size(); /* Deze methode swallowt exceptions */
+                }           
+                total = Math.min(MAX_FEATURES, total);
+
+                FeatureIterator<SimpleFeature> it = fc.features();
+                int processed = 0;
+                while(it.hasNext()) {
+                    SimpleFeature f = it.next();
+                    processed++;
+                    if(start > 0) {
+                        start--;
+                        continue;
+                    }
+                    
+                    JSONObject j = new JSONObject();
+                    for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+
+                        Object value = f.getAttribute(ca.getAttributeName());
+
+                        //AttributeDescriptor ad = featureTypeAttributes.get(ca.getAttributeName());
+                        //if(ad != null && ad.getAlias() != null) {
+                        //    j.put(ad.getAlias(), value);
+                        //} else {
+                            j.put(ca.getAttributeName(), value);
+                        //}
+                    }                     
+                    features.put(j);
+                    
+                    if(processed == MAX_FEATURES) {
+                        break;
+                    }
+                }
+            }            
+        }
                 
+        json.put("total", total);
+        json.put("features", features);
+
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
     }
 }
