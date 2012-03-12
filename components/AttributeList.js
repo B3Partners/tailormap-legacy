@@ -185,15 +185,16 @@ Ext.define ("viewer.components.AttributeList",{
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.visible){
-                var colName = attribute.name.substring(attribute.name.lastIndexOf(".")+1);
+                
+                var colName = attribute.alias != undefined ? attribute.alias : attribute.name.substring(attribute.name.lastIndexOf(".")+1);
                 attributeList.push({
                     name: attribute.name,
                     type : 'string'
                 });
                 columns.push({
-                    id: colName,//attribute.name,
-                    text:colName,// attribute.name,// title
-                    dataIndex:colName,// attribute.name,
+                    id: attribute.name,
+                    text:colName,
+                    dataIndex: attribute.name,
                     flex: 1,
                     filter: {
                         xtype: 'textfield'

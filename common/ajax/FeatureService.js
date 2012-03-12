@@ -92,6 +92,6 @@ Ext.define("viewer.AppLayerService", {
         });
     },
     getStoreUrl: function() {
-        return this.getActionbeanUrl() + "?store=1";
+        return this.getActionbeanUrl() + "?store=1&appLayer=" + this.appLayer.id;
     }
 });
