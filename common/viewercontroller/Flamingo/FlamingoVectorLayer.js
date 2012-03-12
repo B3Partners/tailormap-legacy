@@ -81,9 +81,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      */
     getActiveFeature : function(){
         var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
-        var flaFeature = flamingoObj.callMethod(this.id,'getActiveFeature');
+        var flaFeature = flamingoObj.callMethod(this.gisId,'getActiveFeatureAsObject');
 
-        /* als er geen tekenobject op scherm staat is flaFeature null */
+        /* No active feature; return null */
         if(flaFeature == null){
             return null;
         }
