@@ -141,7 +141,6 @@ public class Layer {
      */
     public boolean isBufferable(){
         return getService().getProtocol().equals(ArcIMSService.PROTOCOL) || 
-                getService().getProtocol().equals(ArcGISService.PROTOCOL) ||
                 this.getFeatureType() != null;
     }
     
