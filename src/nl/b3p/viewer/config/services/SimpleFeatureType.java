@@ -110,13 +110,17 @@ public class SimpleFeatureType {
     }
     //</editor-fold>
     
-    public List<String> calculateUniqueValues(String attributeName) throws IOException {
+    public List<String> calculateUniqueValues(String attributeName) throws Exception {
         return featureSource.calculateUniqueValues(this, attributeName, MAX_FEATURES_DEFAULT);
     }    
     
-    public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws IOException {
+    public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws Exception {
         return featureSource.calculateUniqueValues(this, attributeName, maxFeatures);
     }    
+    
+    public org.geotools.data.FeatureSource openGeoToolsFeatureSource() throws Exception {
+        return featureSource.openGeoToolsFeatureSource(this);
+    }
     
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();

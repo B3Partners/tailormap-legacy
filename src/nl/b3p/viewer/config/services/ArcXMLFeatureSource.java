@@ -43,4 +43,9 @@ public class ArcXMLFeatureSource extends FeatureSource {
     List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

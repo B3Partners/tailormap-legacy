@@ -29,7 +29,6 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.opengis.feature.type.AttributeType;
 
 /**
@@ -185,5 +184,12 @@ public class WFSFeatureSource extends FeatureSource {
     @Override
     List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
+        DataStore ds = createDataStore();
+        
+        return ds.getFeatureSource(sft.getTypeName());
     }
 }

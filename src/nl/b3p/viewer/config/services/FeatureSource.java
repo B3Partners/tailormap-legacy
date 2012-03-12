@@ -117,7 +117,9 @@ public abstract class FeatureSource {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }    
     
-    /* package */ abstract List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException;    
+    /* package */ abstract List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception;    
+    
+    /* package */ abstract org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception;
     
     public SimpleFeatureType getFeatureType(String typeName) {
         for(SimpleFeatureType sft: getFeatureTypes()) {
