@@ -123,6 +123,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var config = ${actionBean.appConfigJSON};
           
                 Ext.onReady(function() {
+                    //TODO set the correct viewertype
                     viewerController = new viewer.viewercontroller.ViewerController("flamingo", null, config);
                 });
             }());
