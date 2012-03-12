@@ -62,91 +62,12 @@ Ext.define ("viewer.components.AttributeList",{
 
     },
     showWindow : function (){
-        if(this.grid == null){
-            Ext.define('TableRow', {
-                extend: 'Ext.data.Model',
-                fields: [
-                {
-                    name: 'name', 
-                    type: 'string'
-                },
-                {
-                    name: 'email', 
-                    type: 'string'
-                },
-                {
-                    name: 'phone', 
-                    type: 'string'
-                }
-                ]
-            });
-
-            var store = Ext.create('Ext.data.Store', {
-                pageSize: 4,
-                model: 'TableRow',
-                remoteSort: true,
-                remoteFilter: true,
-                proxy: {
-                    type: 'ajax',
-                    url: 'http://localhost:8084/viewer/users.json',
-                    reader: {
-                        type: 'json',
-                        root: 'users',
-                        totalProperty: 'total'
-                    },
-                    simpleSortMode: true
-                },
-                autoLoad: true
-            });
-
-            this.grid = Ext.create('Ext.grid.Panel',  {
-                id: 'editGrid',
-                store: store,
-                columns: [
-                {
-                    id: 'name.l',
-                    text: "Naam",
-                    dataIndex: 'name.l',
-                    flex: 1,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                },{
-                    id: 'email',
-                    text: "email",
-                    dataIndex: 'email',
-                    flex: 1,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                },{
-                    id: 'phone',
-                    text: "phone",
-                    dataIndex: 'phone',
-                    flex: 1,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                }
-                ],
-                bbar: Ext.create('Ext.PagingToolbar', {
-                    store: store,
-                    displayInfo: true,
-                    displayMsg: 'Layar service {0} - {1} of {2}',
-                    emptyMsg: "Geen layar services weer te geven"
-                })/*,
-                plugins: [ 
-                    Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                        enableTooltip: false
-                    })
-                ],*/,
-                renderTo: this.getContentDiv()
-            });
-        }
         this.popup.show();
     },
     clear: function() {
-        this.grid.destroy();
+        if(this.grid) {
+            this.grid.destroy();
+        }
         delete this.appLayer;
         delete this.featureService;
     },
@@ -232,8 +153,8 @@ Ext.define ("viewer.components.AttributeList",{
             bbar: Ext.create('Ext.PagingToolbar', {
                 store: store,
                 displayInfo: true,
-                displayMsg: 'Layar service {0} - {1} of {2}',
-                emptyMsg: "Geen layar services weer te geven"
+                displayMsg: 'Feature {0} - {1} of {2}',
+                emptyMsg: "Geen features om weer te geven"
             })/*,
             plugins: [ 
                 Ext.create('Ext.ux.grid.GridHeaderFilters', {
