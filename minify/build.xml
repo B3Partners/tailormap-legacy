@@ -26,7 +26,6 @@
             <file name="FeatureService.js"/>
             <file name="SLD.js"/>
             <file name="Bookmark.js"/>
-            <file name="AppInfo.js"/>
 			<file name="LayerSelector.js"/>
           </sources>          
 		  <!--					The abstract MapComponent				-->         

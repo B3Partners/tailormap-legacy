@@ -41,9 +41,9 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Matthijs Laan
  */
-@UrlBinding("/action/appInfo")
+@UrlBinding("/action/appLayer")
 @StrictBinding
-public class AppInfoActionBean implements ActionBean {
+public class AppLayerActionBean implements ActionBean {
     
     private ActionBeanContext context;
     
@@ -68,7 +68,7 @@ public class AppInfoActionBean implements ActionBean {
     }
     //</editor-fold>
 
-    public Resolution appLayerInfo() throws JSONException {
+    public Resolution attributes() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
@@ -79,8 +79,6 @@ public class AppInfoActionBean implements ActionBean {
         } else {
             // TODO check if user has rights to appLayer
             
-            JSONObject info = new JSONObject();
-                        
             Layer l = null;
             try {
                 l = (Layer)Stripersist.getEntityManager().createQuery("from Layer where service = :service and name = :n order by virtual desc")
@@ -111,9 +109,8 @@ public class AppInfoActionBean implements ActionBean {
                 }
                 attributes.put(j);
             }        
-            info.put("attributes", attributes);
                        
-            json.put("info", info);
+            json.put("attributes", attributes);
             json.put("success", Boolean.TRUE);
         }
         
@@ -121,6 +118,14 @@ public class AppInfoActionBean implements ActionBean {
             json.put("error", error);
         }      
         
+        return new StreamingResolution("application/json", new StringReader(json.toString()));    
+    }
+    
+    public Resolution store() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("features", new JSONArray());
+        json.put("total", 0);
+                
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
     }
 }
