@@ -24,6 +24,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
             strokeopacity: 100
         }
     },
+    gisId: null,
     /**
      * Creates a vector layer
      * @constructor
@@ -70,7 +71,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      */
     removeAllFeatures : function(){
         var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
-        flamingoObj.callMethod(this.getId(),'removeAllFeatures');
+        flamingoObj.callMethod(this.gisId,'removeAllLayerFeatures',this.getId(),false);
     },
 
 
@@ -138,6 +139,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     stopDrawDrawFeature : function(){
         //this.getFrameworkLayer().callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
         viewerController.mapComponent.viewerObject.callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
+    },
+    setGisId: function(newGisId){
+        this.gisId=newGisId;
     }
     
 });

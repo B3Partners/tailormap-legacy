@@ -69,6 +69,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             if (this.editMapId==null){
                 this.addEditMap();             
             }
+            layer.setGisId(this.gisId);
             this.addLayerToGis(layer);
         }else if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'addLayer',layer.toXML());

@@ -50,7 +50,7 @@ Ext.define ("viewer.components.Print",{
         this.vl=viewerController.mapComponent.createVectorLayer({
             id: 'vectorLayer',
             name:'vectorLayer',
-            geometrytypes:["Point","Point","LineString","Polygon","MultiPolygon"],
+            geometrytypes:["Point","LineString","Polygon","MultiPolygon"],
             showmeasures:true
         });
         viewerController.mapComponent.getMap().addLayer(this.vl);
@@ -63,6 +63,7 @@ Ext.define ("viewer.components.Print",{
     createForm: function(){
         var me = this;
         if(this.vl.isLoaded){
+         //   this.vl.removeAllFeatures();
             this.vl.drawFeature("Point");
        }
         this.panel = Ext.create('Ext.panel.Panel', {
