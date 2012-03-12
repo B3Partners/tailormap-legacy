@@ -45,7 +45,7 @@ Ext.define ("viewer.components.BufferObject",{
             id: 'boVectorLayer',
             name:'boVectorLayer',
             geometrytypes:["Circle","Polygon"],
-            showmeasures:true,
+            showmeasures:false,
                 style: {
                 fillcolor: "0xFF0000",
                 fillopacity: 50,
@@ -66,7 +66,7 @@ Ext.define ("viewer.components.BufferObject",{
         });
         this.loadWindow();
         return this;
-    }      ,
+    } ,
     buttonClick : function (){
         this.popup.show();
     },
@@ -106,7 +106,8 @@ Ext.define ("viewer.components.BufferObject",{
             listeners: {
                 click:{
                     scope: this,
-                    fn: this.buffer
+                    //fn: this.buffer
+                    fn : this.addWktToMapcomponent
                 }
             }
         });
@@ -118,8 +119,7 @@ Ext.define ("viewer.components.BufferObject",{
             listeners: {
                 click:{
                     scope: this,
-                    //fn: this.removeBuffer
-                    fn: this.addWktToMapcomponent
+                    fn: this.removeBuffer
                 }
             }
         });
@@ -135,9 +135,13 @@ Ext.define ("viewer.components.BufferObject",{
         console.log("xy", x,y);
     },
     addWktToMapcomponent : function (wkt){
+        this.tmc.activateTool();
         wkt ="POLYGON((98914.7905763337 576961.290540899,101360.775481459 488905.833956381,166179.375467285 487071.345277537,174128.826408943 570234.832051804,146611.496226281 610593.582986375,98914.7905763337 576961.290540899))";
         var feature = Ext.create("viewer.viewercontroller.controller.Feature",{id: 1, wkt: wkt});
         this.vectorLayer.addFeature(feature);
         
+    },
+    removeBuffer : function (){
+        this.vectorLayer.removeAllFeatures();
     }
 });

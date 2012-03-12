@@ -32,7 +32,7 @@ Ext.define ("viewer.components.tools.ToolMapClick",{
         this.initConfig(conf);
         this.mapComponent = this.viewerController.mapComponent;
         this.frameworkObject = this.viewerController.mapComponent.viewerObject;
-        this.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.scope);
+        this.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.handler.scope);
         
         this.addTool();
         //this.viewerController.mapComponent.addTool(this);
