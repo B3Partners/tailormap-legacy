@@ -34,7 +34,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             position : 'center'
         }
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         this.initConfig(conf);   
         var con = document.createElement('div');
         con.style.height=  "100%";

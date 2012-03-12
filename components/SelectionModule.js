@@ -83,7 +83,7 @@ Ext.define ("viewer.components.SelectionModule",{
             treePanel: null,
             treeStore: null,
             filteredNodes: [],
-            hiddenNodes: []            
+            hiddenNodes: []
         },
         customServiceTree: {
             treePanel: null,
@@ -107,6 +107,8 @@ Ext.define ("viewer.components.SelectionModule",{
         tooltip : ""
     },
     constructor: function (conf) {
+        var minwidth = 600;
+        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.renderButton();
@@ -132,20 +134,53 @@ Ext.define ("viewer.components.SelectionModule",{
         me.loadSelectedLayers();
         me.activeTree = me.treePanels.applicationTree.treePanel;
         
-        me.popup.popupWin.on('hide', function() {
-            var treeContainers = Ext.query('.selectionModuleTreeContainer');
-            Ext.Array.each(treeContainers, function(treeContainer) {
-                treeContainer.style.display = 'none';
-            });
-        });
-        me.popup.popupWin.on('show', function() {
-            var treeContainers = Ext.query('.selectionModuleTreeContainer');
-            Ext.Array.each(treeContainers, function(treeContainer) {
-                treeContainer.style.display = 'block';
-            });
+        me.popup.popupWin.addListener('hide', me.hideTreeContainers);
+        me.popup.popupWin.addListener('show', me.showTreeContainers);
+        me.popup.popupWin.addListener("dragstart", me.hideTreeContainers);
+        me.popup.popupWin.addListener("dragend", me.showTreeContainers);
+        me.popup.popupWin.addListener("resize", function() {
+            me.resizeLayout();
         });
         
         me.rendered = true;
+    },
+    
+    hideTreeContainers: function() {
+        var treeContainers = Ext.query('.selectionModuleTreeContainer');
+        Ext.Array.each(treeContainers, function(treeContainer) {
+            treeContainer.style.display = 'none';
+        });
+    },
+    
+    showTreeContainers: function() {
+        var treeContainers = Ext.query('.selectionModuleTreeContainer');
+        Ext.Array.each(treeContainers, function(treeContainer) {
+            treeContainer.style.display = 'block';
+        });
+    },
+    
+    resizeLayout: function() {
+        var me = this;
+        Ext.getCmp('selectionModuleMainContainer').doLayout();
+        Ext.getCmp('selectionModuleFormContainer').doLayout();
+        Ext.getCmp('selectionModuleTreeContentContainer').doLayout();
+        Ext.getCmp('selectionModuleSaveFormContainer').doLayout();
+        Ext.getCmp('selectionModuleTreesContainer').doLayout();
+        Ext.getCmp('selectionModuleFormFieldContainer').doLayout();
+        var treePanels = me.getActiveTreePanels();
+        Ext.Array.each(treePanels, function(panel) {
+            panel.doLayout();
+        });
+    },
+    
+    getActiveTreePanels: function() {
+        var me = this;
+        var panels = [];
+        if(me.treePanels.applicationTree.treePanel != null) panels.push(me.treePanels.applicationTree.treePanel);
+        if(me.treePanels.registryTree.treePanel != null) panels.push(me.treePanels.registryTree.treePanel);
+        if(me.treePanels.customServiceTree.treePanel != null) panels.push(me.treePanels.customServiceTree.treePanel);
+        if(me.treePanels.selectionTree.treePanel != null) panels.push(me.treePanels.selectionTree.treePanel);
+        return panels;
     },
     
     initViewerControllerData: function() {
@@ -181,6 +216,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         // Create main container
         Ext.create('Ext.container.Container', {
+            id: 'selectionModuleMainContainer',
             width: '100%',
             height: '100%',
             layout: {
@@ -197,6 +233,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     xtype: 'form',
                     items: [{
                         xtype: 'fieldcontainer',
+                        id: 'selectionModuleFormFieldContainer',
                         layout: 'hbox',
                         border: 0,
                         defaults: {
@@ -205,13 +242,15 @@ Ext.define ("viewer.components.SelectionModule",{
                                 marginRight: '5px'
                             }
                         },
+                        width: '100%',
+                        height: '100%',
                         defaultType: 'radio',
                         items: [
                             {id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {id: 'radioRegistry', name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {id: 'radioCustom', name: 'layerSource', boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
-                            {xtype: 'textfield', hidden: true, id: 'customServiceUrlTextfield', flex: 1},
-                            {xtype: 'combo', store: [ ['wms','WMS'], /*['csw','CSW'],*/ ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect'},
+                            {xtype: 'textfield', hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
+                            {xtype: 'combo', store: [ ['wms','WMS'], /*['csw','CSW'],*/ ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Selecteer'},
                             {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
                                 var protocol = Ext.getCmp('customServiceUrlSelect').getValue();
                                 if(protocol == 'csw') {
@@ -236,15 +275,16 @@ Ext.define ("viewer.components.SelectionModule",{
                         ]
                     }],
                     height: 35,
-                    width: '100%',
                     padding: '5px',
-                    border: 0
+                    border: 0,
+                    id: 'selectionModuleFormContainer'
                 },
                 {
                     xtype: 'container',
                     flex: 1,
                     width: '100%',
-                    html: '<div id="treeSelectionContainer" style="width: 100%; height: 100%;"></div>'
+                    html: '<div id="treeSelectionContainer" style="width: 100%; height: 100%;"></div>',
+                    id: 'selectionModuleTreeContentContainer'
                 },
                 {
                     // Form above the trees with radiobuttons and textfields
@@ -262,9 +302,9 @@ Ext.define ("viewer.components.SelectionModule",{
                             }}
                     ],
                     height: 35,
-                    width: '100%',
                     padding: '5px',
-                    border: 0
+                    border: 0,
+                    id: 'selectionModuleSaveFormContainer'
                 }
             ]
         });
@@ -279,6 +319,7 @@ Ext.define ("viewer.components.SelectionModule",{
             },
             width: '100%',
             height: '100%',
+            id: 'selectionModuleTreesContainer',
             items: [
                 {
                     xtype: 'container',
@@ -362,7 +403,6 @@ Ext.define ("viewer.components.SelectionModule",{
             rootVisible: false,
             useArrows: true,
             autoScroll: true,
-            width: '100%',
             height: '100%',
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
