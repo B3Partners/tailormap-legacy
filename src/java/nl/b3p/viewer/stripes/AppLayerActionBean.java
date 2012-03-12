@@ -61,11 +61,12 @@ public class AppLayerActionBean implements ActionBean {
     
     private Layer layer = null;
     
+    @Validate
     private int limit;
+    @Validate
     private int page;
-    private int start;
-    
-    private Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
+    @Validate
+    private int start;    
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
@@ -120,14 +121,6 @@ public class AppLayerActionBean implements ActionBean {
                     .setMaxResults(1)
                     .getSingleResult();
             
-            if(layer != null) {
-                SimpleFeatureType ft = layer.getFeatureType();
-                if(ft != null) {
-                    for(AttributeDescriptor ad: ft.getAttributes()) {
-                        featureTypeAttributes.put(ad.getName(), ad);
-                    }
-                }
-            }            
         } catch(NoResultException nre) {
         }
     }
@@ -142,7 +135,16 @@ public class AppLayerActionBean implements ActionBean {
             error = "Invalid parameters";
         } else {
 
+            Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
 
+            if(layer != null) {
+                SimpleFeatureType ft = layer.getFeatureType();
+                if(ft != null) {
+                    for(AttributeDescriptor ad: ft.getAttributes()) {
+                        featureTypeAttributes.put(ad.getName(), ad);
+                    }
+                }
+            } 
             
             JSONArray attributes = new JSONArray();
             for(ConfiguredAttribute ca: appLayer.getAttributes()) {
@@ -189,6 +191,7 @@ public class AppLayerActionBean implements ActionBean {
 
                 FeatureIterator<SimpleFeature> it = fc.features();
                 int processed = 0;
+                int processMax = Math.min(limit*page, total);
                 while(it.hasNext()) {
                     SimpleFeature f = it.next();
                     processed++;
@@ -199,19 +202,14 @@ public class AppLayerActionBean implements ActionBean {
                     
                     JSONObject j = new JSONObject();
                     for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-
-                        Object value = f.getAttribute(ca.getAttributeName());
-
-                        //AttributeDescriptor ad = featureTypeAttributes.get(ca.getAttributeName());
-                        //if(ad != null && ad.getAlias() != null) {
-                        //    j.put(ad.getAlias(), value);
-                        //} else {
-                            j.put(ca.getAttributeName(), value);
-                        //}
+                        
+                        if(ca.isVisible()) {
+                            j.put(ca.getAttributeName(), f.getAttribute(ca.getAttributeName()));
+                        }
                     }                     
                     features.put(j);
                     
-                    if(processed == MAX_FEATURES) {
+                    if(processed >= processMax) {
                         break;
                     }
                 }
