@@ -15,30 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-Ext.define("viewer.FeatureService", {
+Ext.define("viewer.DirectFeatureService", {
     config: {
-        actionbeanUrl: null,
-        service: null,
-        layer: null
+        actionBeanUrl: null,
+        appLayer: null,
+        protocol: null,
+        url: null
     },
-    url: null,
     constructor: function(config) {        
         this.initConfig(config);      
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["feature"];
         }        
+        console.log("DirectFeatureService init", this.config);        
     },
-    getFeatureType: function(successFunction, failureFunction) {
+    loadAttributes: function(successFunction, failureFunction) {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: this.config, // XXX also posts actionbeanUrl, but is harmless
+            params: {getLayerFeatureType: true, protocol: this.protocol, layer: this.appLayer.layerName },
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
-                    successFunction(response.featureType);
+                    
+                    successFunction(response.attributes);
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);
@@ -51,5 +52,46 @@ Ext.define("viewer.FeatureService", {
                 }
             }
         });
+    }
+});
+
+Ext.define("viewer.AppLayerService", {
+    config: {
+        actionbeanUrl: null,
+        appLayer: null
+    },
+    constructor: function(config) {        
+        if(config.actionbeanUrl == null) {
+            config.actionbeanUrl = actionBeans["appLayer"];
+        }        
+        this.initConfig(config);     
+        console.log("AppLayerService init", this.config);
+    },
+    loadAttributes: function(theAppLayer, successFunction, failureFunction) {
+        
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl,
+            params: {attributes: true, appLayer: this.appLayer.id},
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                
+                if(response.success) {
+                    theAppLayer.attributes = response.attributes;
+                    successFunction(response.attributes);
+                } else {
+                    if(failureFunction != undefined) {
+                        failureFunction(response.error);
+                    }
+                }
+            },
+            failure: function(result) {
+                if(failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });
+    },
+    getStoreUrl: function() {
+        return this.getActionbeanUrl() + "?store=1";
     }
 });

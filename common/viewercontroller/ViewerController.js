@@ -370,6 +370,25 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
+    
+    getAppLayerFeatureService: function(appLayer) {
+        
+        if(appLayer.featureService == undefined) {
+            // XXX appLayer can be custom service or from service registry...
+            if(appLayer.added) {
+                var service = this.app.services[appLayer.serviceId];
+                appLayer.featureService = Ext.create("viewer.DirectFeatureService", { 
+                    appLayer: appLayer,
+                    protocol: service.protocol,
+                    url: service.url
+                });
+            } else {
+                appLayer.featureService = Ext.create("viewer.AppLayerService", { appLayer: appLayer });
+            }
+        }
+        return appLayer.featureService;
+    },
+    
     //TODO: Change function to combine appLayers in 1 layer.
     createLayer : function (serviceId, layerName){        
         //TODO: The id must be serviceId
