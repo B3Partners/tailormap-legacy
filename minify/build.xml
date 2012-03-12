@@ -19,15 +19,15 @@
 		  <!--					The Screenpopup-->
           <sources dir="${viewerhtml.path}/common">
             <file name="ScreenPopup.js"/>
-			<file name="LayerSelector.js"/>
           </sources>
 		  <!--					The server-side Ajax wrappers -->
-          <sources dir="${viewerhtml.path}/common">
+          <sources dir="${viewerhtml.path}/common/ajax">
             <file name="ServiceInfo.js"/>
             <file name="FeatureService.js"/>
             <file name="SLD.js"/>
             <file name="Bookmark.js"/>
             <file name="AppInfo.js"/>
+			<file name="LayerSelector.js"/>
           </sources>          
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
