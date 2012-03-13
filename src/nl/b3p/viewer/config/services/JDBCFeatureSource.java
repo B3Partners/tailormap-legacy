@@ -204,7 +204,9 @@ public class JDBCFeatureSource extends FeatureSource {
     }
 
     @Override
-    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
+        DataStore ds = createDataStore();
+
+        return ds.getFeatureSource(sft.getTypeName());
     }
 }
