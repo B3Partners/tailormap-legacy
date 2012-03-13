@@ -132,13 +132,13 @@ Ext.define ("viewer.components.BufferObject",{
         var coords = comp[1];
         var x = coords.x;
         var y = coords.y;
-        console.log("xy", x,y);
-    },
-    addWktToMapcomponent : function (wkt){
-        this.tmc.activateTool();
+        //console.log("xy", x,y);
         wkt ="POLYGON((98914.7905763337 576961.290540899,101360.775481459 488905.833956381,166179.375467285 487071.345277537,174128.826408943 570234.832051804,146611.496226281 610593.582986375,98914.7905763337 576961.290540899))";
         var feature = Ext.create("viewer.viewercontroller.controller.Feature",{id: 1, wkt: wkt});
         this.vectorLayer.addFeature(feature);
+    },
+    addWktToMapcomponent : function (wkt){
+        this.tmc.activateTool();
         
     },
     removeBuffer : function (){
