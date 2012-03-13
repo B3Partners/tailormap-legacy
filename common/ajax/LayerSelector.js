@@ -54,7 +54,7 @@ Ext.define ("viewer.components.LayerSelector",{
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE);
         var requestPath= actionBeans["layerlist"];
         var requestParams = {};
-        
+        // TODO make layerselector so, that the layerselector can use a filtered list of layers
         requestParams[this.restriction]= true;
         requestParams["appId"]= appId;
         var me = this;

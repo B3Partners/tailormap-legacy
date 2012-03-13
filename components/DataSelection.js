@@ -84,14 +84,14 @@ Ext.define ("viewer.components.DataSelection",{
             items: [
                 {
                     id : "filterTab",
-                    title: 'Filter',
+                    title: 'Dataselectie',// TODO Do renaming of variables filter->dataselection
                     hideMode: 'offsets',
                     autoScroll:true,
                     html: "<div id='filterTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
                 },
                 {
                     id   : 'dataTab',
-                    title: 'Data selectie',
+                    title: 'Filter',// TODO Do renaming of variables dataselection-->filter
                     hideMode: 'offsets',
                     autoScroll:true,
                     html: "<div id='dataTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
@@ -245,7 +245,7 @@ Ext.define ("viewer.components.DataSelection",{
         return cql;
     },
     cancel : function (){
-        // TODO Do something
+        this.popup.hide();
     },
     /**
      *  Reset all comboboxes when a different layer is selected
