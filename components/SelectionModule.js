@@ -459,7 +459,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() == e.ENTER) {
-                                me.filterNodes(me.treePanels.registryTree.treePanel, Ext.getCmp('registryTreeSearchField').getValue());
+                                // Remote search
                             }
                         }
                     }},
@@ -467,7 +467,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         xtype: 'button',
                         text: 'Zoeken',
                         handler: function() {
-                            me.filterNodes(me.treePanels.registryTree.treePanel, Ext.getCmp('registryTreeSearchField').getValue());
+                            // Remote search
                         }
                     }
                 ]
