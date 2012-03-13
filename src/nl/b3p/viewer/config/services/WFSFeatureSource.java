@@ -41,6 +41,7 @@ public class WFSFeatureSource extends FeatureSource {
     private static final Log log = LogFactory.getLog(WFSFeatureSource.class);
     
     public static final String PROTOCOL = "wfs";
+    public static final Integer TIMEOUT = 60000;
     
     public WFSFeatureSource() {
         super();
@@ -157,7 +158,20 @@ public class WFSFeatureSource extends FeatureSource {
     }
     
     public DataStore createDataStore() throws Exception {
+        return createDataStore(null);
+    }
+    
+    public DataStore createDataStore(Map extraDataStoreParams) throws Exception {
         Map params = new HashMap();
+        
+        // Params which can be overridden
+        params.put(WFSDataStoreFactory.TIMEOUT.key, TIMEOUT);
+        
+        if(extraDataStoreParams != null) {
+            params.putAll(extraDataStoreParams);
+        }
+        
+        // Params which can not be overridden below
         
         String wfsUrl = getUrl();
         if(!wfsUrl.endsWith("&") && !wfsUrl.endsWith("?")){
@@ -188,8 +202,12 @@ public class WFSFeatureSource extends FeatureSource {
 
     @Override
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
-        DataStore ds = createDataStore();
+        return openGeoToolsFeatureSource(sft, null);
+    }
         
+    public org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, Map extraDataStoreParams) throws Exception {
+        DataStore ds = createDataStore(extraDataStoreParams);
+
         return ds.getFeatureSource(sft.getTypeName());
     }
 }
