@@ -138,9 +138,6 @@ Ext.define ("viewer.components.SelectionModule",{
         me.popup.popupWin.addListener('show', me.showTreeContainers);
         me.popup.popupWin.addListener("dragstart", me.hideTreeContainers);
         me.popup.popupWin.addListener("dragend", me.showTreeContainers);
-        me.popup.popupWin.addListener("resize", function() {
-            me.resizeLayout();
-        });
         
         me.rendered = true;
     },
@@ -159,27 +156,25 @@ Ext.define ("viewer.components.SelectionModule",{
         });
     },
     
-    resizeLayout: function() {
+    getExtComponents: function() {
         var me = this;
-        Ext.getCmp('selectionModuleMainContainer').doLayout();
-        Ext.getCmp('selectionModuleFormContainer').doLayout();
-        Ext.getCmp('selectionModuleTreeContentContainer').doLayout();
-        Ext.getCmp('selectionModuleSaveFormContainer').doLayout();
-        Ext.getCmp('selectionModuleTreesContainer').doLayout();
-        Ext.getCmp('selectionModuleFormFieldContainer').doLayout();
-        var treePanels = me.getActiveTreePanels();
-        Ext.Array.each(treePanels, function(panel) {
-            panel.doLayout();
-        });
+        var extComponents = [];
+        extComponents.push('selectionModuleMainContainer');
+        extComponents.push('selectionModuleFormContainer');
+        extComponents.push('selectionModuleTreeContentContainer');
+        extComponents.push('selectionModuleSaveFormContainer');
+        extComponents.push('selectionModuleTreesContainer');
+        extComponents.push('selectionModuleFormFieldContainer');
+        return Ext.Array.merge(extComponents, me.getActiveTreePanels());
     },
     
     getActiveTreePanels: function() {
         var me = this;
         var panels = [];
-        if(me.treePanels.applicationTree.treePanel != null) panels.push(me.treePanels.applicationTree.treePanel);
-        if(me.treePanels.registryTree.treePanel != null) panels.push(me.treePanels.registryTree.treePanel);
-        if(me.treePanels.customServiceTree.treePanel != null) panels.push(me.treePanels.customServiceTree.treePanel);
-        if(me.treePanels.selectionTree.treePanel != null) panels.push(me.treePanels.selectionTree.treePanel);
+        if(me.treePanels.applicationTree.treePanel != null) panels.push(me.treePanels.applicationTree.treePanel.id);
+        if(me.treePanels.registryTree.treePanel != null) panels.push(me.treePanels.registryTree.treePanel.id);
+        if(me.treePanels.customServiceTree.treePanel != null) panels.push(me.treePanels.customServiceTree.treePanel.id);
+        if(me.treePanels.selectionTree.treePanel != null) panels.push(me.treePanels.selectionTree.treePanel.id);
         return panels;
     },
     
