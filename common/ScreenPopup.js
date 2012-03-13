@@ -44,6 +44,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             title: this.title || 'Titel',
             closable: true,
             closeAction: 'hide',
+            hideMode: 'offsets',
             width: parseInt(this.details.width),
             height: parseInt(this.details.height),
             resizable: Ext.JSON.decode(this.details.changeableSize),
