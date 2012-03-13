@@ -34,7 +34,7 @@ public class LayerListHelper {
      * @param level
      * @return A list of Layer objects
      */
-    public static List<Layer> getLayers(Level level,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute) {
+    public static List<Layer> getLayers(Level level,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,Boolean hasConfiguredLayers, List<Long> possibleLayers) {
         List<Layer> layers = new ArrayList<Layer>();
         //get all the layers of this level
         for (ApplicationLayer appLayer : level.getLayers()) {
@@ -58,12 +58,15 @@ public class LayerListHelper {
             if (attribute && appLayer.getAttributes().isEmpty()) {
                 continue;
             }
+            if(hasConfiguredLayers && !possibleLayers.contains(l.getId())){
+                continue;
+            }            
 
             layers.add(l);
         }
         //get all the layers of the level children.
         for (Level childLevel : level.getChildren()) {
-            layers.addAll(getLayers(childLevel, filterable, bufferable, editable, influence, arc, wfs, attribute));
+            layers.addAll(getLayers(childLevel, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,possibleLayers));
         }
         return layers;
 
