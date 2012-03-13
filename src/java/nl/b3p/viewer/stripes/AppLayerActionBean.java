@@ -186,69 +186,83 @@ public class AppLayerActionBean implements ActionBean {
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
         JSONArray features = new JSONArray();
-        
-        int total = 0;
-        
-        if(layer != null && layer.getFeatureType() != null) {
-            FeatureSource fs;
-            
-            if(isDebug() && layer.getFeatureType().getFeatureSource() instanceof WFSFeatureSource) {
-                Map extraDataStoreParams = new HashMap();
-                extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
-                fs = ((WFSFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
-            } else {
-                fs = layer.getFeatureType().openGeoToolsFeatureSource();
-            }
-            
-            boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
-            
-            Query q = new Query(fs.getName().toString());
-            q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
-            q.setStartIndex(start);
-
-            FeatureCollection fc = fs.getFeatures(q);
-
-            if(!fc.isEmpty()) {
-                if(fc instanceof DataFeatureCollection) {
-                    total = ((DataFeatureCollection)fc).getCount();
-                } else {
-                    total = fc.size(); /* This method swallows exceptions */
-                }     
-                if(total == q.getMaxFeatures()) {
-                    // we don't know if these are all the features or if there are more...
-                    total = MAX_FEATURES;
-                }
-                if(total != MAX_FEATURES && !startIndexSupported) {
-                    total -= start;
-                }
-
-                FeatureIterator<SimpleFeature> it = fc.features();
-                try {
-                    while(it.hasNext()) {
-                        SimpleFeature f = it.next();
-
-                        if(!startIndexSupported && start > 0) {
-                            start--;
-                            continue;
-                        }
-
-                        JSONObject j = new JSONObject();
-                        for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-
-                            if(ca.isVisible()) {
-                                j.put(ca.getAttributeName(), f.getAttribute(ca.getAttributeName()));
-                            }
-                        }                     
-                        features.put(j);
-                    }
-                } finally {
-                    it.close();
-                }
-            }
-        }
-                
-        json.put("total", total);
         json.put("features", features);
+        
+        try {
+            int total = 0;
+            
+            if(layer != null && layer.getFeatureType() != null) {
+                FeatureSource fs;
+
+                if(isDebug() && layer.getFeatureType().getFeatureSource() instanceof WFSFeatureSource) {
+                    Map extraDataStoreParams = new HashMap();
+                    extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
+                    fs = ((WFSFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                } else {
+                    fs = layer.getFeatureType().openGeoToolsFeatureSource();
+                }
+
+                boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
+
+                Query q = new Query(fs.getName().toString());
+                q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
+                q.setStartIndex(start);
+
+                FeatureCollection fc = fs.getFeatures(q);
+
+                if(!fc.isEmpty()) {
+                    if(fc instanceof DataFeatureCollection) {
+                        total = ((DataFeatureCollection)fc).getCount();
+                    } else {
+                        total = fc.size(); /* This method swallows exceptions */
+                    }     
+                    if(total == q.getMaxFeatures()) {
+                        // we don't know if these are all the features or if there are more...
+                        total = MAX_FEATURES;
+                    }
+                    if(total != MAX_FEATURES && !startIndexSupported) {
+                        total -= start;
+                    }
+
+                    FeatureIterator<SimpleFeature> it = fc.features();
+                    try {
+                        while(it.hasNext()) {
+                            SimpleFeature f = it.next();
+
+                            if(!startIndexSupported && start > 0) {
+                                start--;
+                                continue;
+                            }
+
+                            JSONObject j = new JSONObject();
+                            for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+
+                                if(ca.isVisible()) {
+                                    String name = ca.getAttributeName();
+                                    name = name.substring(name.lastIndexOf('.')+1);
+                                    j.put(name, f.getAttribute(ca.getAttributeName()));
+                                }
+                            }                     
+                            features.put(j);
+                        }
+                    } finally {
+                        it.close();
+                    }
+                }
+            }
+
+            json.put("total", total);
+        } catch(Exception e) {
+            json.put("success", false);
+            
+            String message = "Fout bij ophalen features: " + e.toString();
+            Throwable cause = e.getCause();
+            while(cause != null) {
+                message += "; " + cause.toString();
+                cause = cause.getCause();
+            }
+            json.put("message", message);
+        }
 
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
     }
