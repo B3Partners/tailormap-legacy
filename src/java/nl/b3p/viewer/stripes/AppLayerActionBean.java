@@ -247,7 +247,7 @@ public class AppLayerActionBean implements ActionBean {
                     
                     String sortAttribute = sort;
                     if(arrays) {
-                        int i = Integer.parseInt(sort);
+                        int i = Integer.parseInt(sort.substring(1));
 
                         int j = 0;
                         for(ConfiguredAttribute ca: appLayer.getAttributes()) {
@@ -296,11 +296,12 @@ public class AppLayerActionBean implements ActionBean {
                             }
                         
                             if(arrays) {
-                                JSONArray j = new JSONArray();
+                                JSONObject j = new JSONObject();
+                                int idx = 0;
                                 for(ConfiguredAttribute ca: appLayer.getAttributes()) {
 
                                     if(ca.isVisible()) {
-                                        j.put(f.getAttribute(ca.getAttributeName()));
+                                        j.put("c" + idx++, f.getAttribute(ca.getAttributeName()));
                                     }
                                 }    
                                 features.put(j);                                
