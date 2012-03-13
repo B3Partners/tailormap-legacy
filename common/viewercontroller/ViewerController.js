@@ -11,6 +11,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     extend: "Ext.util.Observable", 
     events: [],
 
+    queryParams: null,
+    
     /** Map of name to component configuration object with the following properties:
      *  className: class name to construct
      *  instance: the created instance
@@ -46,6 +48,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     constructor: function(viewerType, mapId, app) {
         this.app = app;
+        
+        this.queryParams = Ext.urlDecode(window.location.search.substring(1));
         
         /* If a layout tree structure is supplied, dynamically create DOM elements
          * using Ext objects. If not, the caller must have created these elements
@@ -102,6 +106,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
         
+    },
+    
+    isDebug: function() {
+        return this.queryParams.hasOwnProperty("debug") && this.queryParams.debug == "true";
     },
     
     /** @private Guard variable to prevent double event execution */
@@ -383,7 +391,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     url: service.url
                 });
             } else {
-                appLayer.featureService = Ext.create("viewer.AppLayerService", { appLayer: appLayer });
+                appLayer.featureService = Ext.create("viewer.AppLayerService", { 
+                    appLayer: appLayer,
+                    debug: this.isDebug()                    
+                });
             }
         }
         return appLayer.featureService;
@@ -549,6 +560,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }, 0);
     },
     bookmarkValuesFromURL : function(){
+        
+        // XXX use this.queryParams
+        
         var layersLoaded = false;
         var bookmark = false;
         var url = document.URL;
