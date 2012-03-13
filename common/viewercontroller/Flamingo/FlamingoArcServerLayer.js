@@ -27,6 +27,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoArcServerLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
+        this.type=viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE;
         return this;
     },
     

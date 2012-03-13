@@ -9,21 +9,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
+        this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
         return this;
     },
     getTagName : function(){
         return "LayerOGWMS";
-    },
-    /**
-     *Gets the last wms request-url of this layer
-     *@returns the WMS getMap Reqeust.
-     */
-    getURL : function(){
-        return this.url;
-    },
-    setURL : function(url){
-        this.url= url;
-    },
+    },    
     /**
      *makes a xml string so the object can be added to flamingo
      *@return a xml string of this object

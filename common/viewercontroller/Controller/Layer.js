@@ -10,6 +10,12 @@
  */
 Ext.define("viewer.viewercontroller.controller.Layer",{
     extend: "Ext.util.Observable",
+    statics:{
+        WMS_TYPE: "WMS",
+        ARCSERVER_TYPE: "ARCSERVER",
+        ARCIMS_TYPE: "ARCIMS",
+        VECTOR_TYPE: "VECTOR"
+    },
     events: [],
     maptips: new Array(),
     map:null,
@@ -44,14 +50,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
             availableOptions+=op+",";
         }
         return null;
-    },
-    /**
-     *sets or overwrites a option
-     */
-    setOption : function(optionKey,optionValue){
-        Ext.Error.raise({msg: "Layer.getOption() Not implemented! Must be implemented in sub-class"});
-    },
-    
+    },    
     /**
      * Because 1 layer is created per applayer (not combined) every layer has the id:
      * serviceId_appLayerName
@@ -67,12 +66,6 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      */
     getId :function (){
         return this.id;
-    },
-    /**
-     *Gets the layer that are set in this layer
-     */
-    getLayers: function (){
-        Ext.Error.raise({msg: "Get layers must be implemented by implementation"});
     },
     /**
      *Add a maptip to the layer
@@ -105,15 +98,26 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         }
         return null;
     },
+    /**
+     * Gets the layer type (WMS, ArcServer, ArcIms, Vector etc.)
+     */
+    getType: function (){
+        Ext.Error.raise({msg: "Layer.getType() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     *sets or overwrites a option
+     */
+    setOption : function(optionKey,optionValue){
+        Ext.Error.raise({msg: "Layer.getOption() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     *Gets the layer that are set in this layer
+     */
+    getLayers: function (){
+        Ext.Error.raise({msg: "Get layers must be implemented by implementation"});
+    },
     setAlpha : function (alpha){
         Ext.Error.raise({msg: "Layer.setAlpha() Not implemented! Must be implemented in sub-class"});
-    },
-    fire : function (event,options){
-        this.fireEvent(event,this,options);
-    },
-
-    registerEvent : function (event,handler,scope){
-        this.addListener(event,handler,scope);
     },
     setVisible : function (visible){
         Ext.Error.raise({msg: "Layer.setVisible() Not implemented! Must be implemented in sub-class"});
@@ -123,6 +127,13 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     },
     setQuery : function (query){
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
+    },
+    fire : function (event,options){
+        this.fireEvent(event,this,options);
+    },
+
+    registerEvent : function (event,handler,scope){
+        this.addListener(event,handler,scope);
     }
 
 });

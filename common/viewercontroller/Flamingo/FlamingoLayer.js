@@ -13,6 +13,7 @@
 Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
     enabledEvents: null,
+    type: null,
     constructor :function (config){
         viewer.viewercontroller.flamingo.FlamingoLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
@@ -38,6 +39,21 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     },
     setAlpha : function (alpha){
         this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setAlpha",alpha)
+    },
+    getAlpha : function (){
+        this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getAlpha");
+    },
+    /**
+     * Get the last getMap request
+     */
+    getMapRequest: function(){
+        return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getLastGetMapRequest");
+    },
+    /**
+     * Returns the type of the layer.
+     */
+    getType: function(){
+        return this.type;
     },
     /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
