@@ -236,12 +236,10 @@ public class AppLayerActionBean implements ActionBean {
                 } else {
                     fs = layer.getFeatureType().openGeoToolsFeatureSource();
                 }
-
+                
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
                 Query q = new Query(fs.getName().toString());
-                q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
-                q.setStartIndex(start);
                 
                 FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
                 
@@ -250,28 +248,41 @@ public class AppLayerActionBean implements ActionBean {
                     String sortAttribute = sort;
                     if(arrays) {
                         int i = Integer.parseInt(sort);
-                        sortAttribute = layer.getFeatureType().getAttributes().get(i).getName();
+
+                        int j = 0;
+                        for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+                            if(ca.isVisible()) {
+                                if(j == i) {
+                                    sortAttribute = ca.getAttributeName();
+                                }
+                                j++;
+                            }
+                        }
                     }
-                    
                     q.setSortBy(new SortBy[] {
                         ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
                     });
                 }
-
+                
+                total = fs.getCount(q);
+                if(total == -1) {
+                    total = MAX_FEATURES;
+                }
+                
+                q.setStartIndex(start);
+                q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
+                
                 FeatureCollection fc = fs.getFeatures(q);
 
                 if(!fc.isEmpty()) {
+                    int featureCount;
                     if(fc instanceof DataFeatureCollection) {
-                        total = ((DataFeatureCollection)fc).getCount();
+                        featureCount = ((DataFeatureCollection)fc).getCount();
                     } else {
-                        total = fc.size(); /* This method swallows exceptions */
+                        featureCount = fc.size(); /* This method swallows exceptions */
                     }     
-                    if(total == q.getMaxFeatures()) {
-                        // we don't know if these are all the features or if there are more...
-                        total = MAX_FEATURES;
-                    }
-                    if(total != MAX_FEATURES && !startIndexSupported) {
-                        total -= start;
+                    if(featureCount < limit) {
+                        total = start + featureCount;
                     }
 
                     FeatureIterator<SimpleFeature> it = fc.features();
@@ -306,7 +317,8 @@ public class AppLayerActionBean implements ActionBean {
                             }
                         }
                     } finally {
-                        it.close();
+                        it.close();                        
+                        fs.getDataStore().dispose();
                     }
                 }
             }
