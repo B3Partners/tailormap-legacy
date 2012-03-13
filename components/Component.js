@@ -31,8 +31,7 @@ Ext.define("viewer.components.Component",{
         name: "naam",
         div: new Object(),
         viewerController: new Object(),
-        isPopup : false,
-        hasSharedPopup:false
+        isPopup : false
     }, 
     /**
     * @constructs
@@ -40,28 +39,23 @@ Ext.define("viewer.components.Component",{
     * @param config.div {DomElement} the div where the component must be placed
     * @param config.viewerController {ViewerController} a reference to the ViewerController
     * @param config.isPopup {Boolean} Indicates whether or not to render this component to a popup
-    * @param config.hasSharedPopup {Boolean} Indicates if this component should render itself to the shared popup
     */
     constructor: function(config){
         var me = this;
         me.initConfig(config);
         if(me.isPopup){
-            if(me.hasSharedPopup){
-                 // TODO render to sharedpopup div id (is maybe a tabid)
-            }else{
-                me.popup = Ext.create("viewer.components.ScreenPopup",config);
-                me.popup.popupWin.addListener("resize", function() {
-                    if(me.getExtComponents) {
-                        var extComponents = me.getExtComponents();
-                        for(var i = 0; i < extComponents.length; i++) {
-                            var comp = Ext.getCmp(extComponents[i]);
-                            if(comp !== null) {
-                                comp.doLayout();
-                            }
+            me.popup = Ext.create("viewer.components.ScreenPopup",config);
+            me.popup.popupWin.addListener("resize", function() {
+                if(me.getExtComponents) {
+                    var extComponents = me.getExtComponents();
+                    for(var i = 0; i < extComponents.length; i++) {
+                        var comp = Ext.getCmp(extComponents[i]);
+                        if(comp !== null) {
+                            comp.doLayout();
                         }
                     }
-                });
-            }
+                }
+            });
         }
         if(me.name && me.title) {
             me.viewerController.layoutManager.setTabTitle(me.name, me.title);
