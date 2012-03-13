@@ -89,6 +89,7 @@ Ext.define("viewer.components.Component",{
         Ext.create('Ext.button.Button', {
             text: (options.icon == '' ? (options.text || (me.name || "")) : ''),
             renderTo: me.div,
+            scale: "large",
             icon: options.icon || null,
             tooltip: options.tooltip || null,
             handler: options.handler
