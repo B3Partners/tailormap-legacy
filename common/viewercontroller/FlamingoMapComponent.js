@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var config = {
             id: ide,
             options: object,
-            frameworkObject : new Object() //this.viewerObject
+            frameworkLayer : this.viewerObject
         };
         return new viewer.viewercontroller.flamingo.FlamingoWMSLayer(config);
     },
@@ -108,7 +108,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         options.mapservice=mapservice;
         var config ={
             id: ide,
-            options: options
+            options: options,
+            frameworkLayer : this.viewerObject
         };
         return config;
     },
@@ -163,6 +164,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      * See @link MapComponent.createVectorLayer
      */
     createVectorLayer : function (config){        
+        config.frameworkLayer = this.viewerObject
         return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
     /**

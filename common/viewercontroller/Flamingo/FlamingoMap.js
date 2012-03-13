@@ -13,7 +13,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     gisId: 'gis',
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
-        this.initConfig(config);
+        this.initConfig(config);        
+        this.frameworkMap = this.mapComponent.viewerObject;
         return this;
     },
     

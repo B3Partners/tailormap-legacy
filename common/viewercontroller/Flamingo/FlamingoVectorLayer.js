@@ -70,7 +70,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * Removes all the features from this vectorlayer
      */
     removeAllFeatures : function(){
-        var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
+        var flamingoObj = this.map.getFrameworkMap();//this.getFrameworkLayer();
         flamingoObj.callMethod(this.gisId,'removeAllLayerFeatures',this.getId(),false);
     },
 
@@ -80,7 +80,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * @return The active - generic type - feature from this vector layer.
      */
     getActiveFeature : function(){
-        var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
+        var flamingoObj = this.map.getFrameworkMap();//this.getFrameworkLayer();
         var flaFeature = flamingoObj.callMethod(this.gisId,'getActiveFeatureAsObject');
 
         /* No active feature; return null */
@@ -108,8 +108,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * @param feature The generic feature to be added to this vector layer.
      */
     addFeature : function(feature){
-        var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
-        flamingoObj.callMethod(this.map.editMapId,'addFeature',this.getId(),feature.toFlamingoFeature());
+        this.map.getFrameworkMap().callMethod(this.map.editMapId,'addFeature',this.getId(),feature.toFlamingoFeature());
     },
 
     /**
@@ -117,8 +116,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * @return Array of generic features.
      */
     getAllFeatures : function(){
-        var flamingoObj = viewerController.mapComponent.viewerObject;//this.getFrameworkLayer();
-        var flamingoFeatures = flamingoObj.callMethod(this.map.editMapId,"getAllFeaturesAsObject");
+        //var flamingoObj = this.getFrameworkLayer();//this.getFrameworkLayer();
+        var flamingoFeatures=this.map.getFrameworkMap().callMethod(this.getGisId(),"getFeaturesAsObject",false,this.getId());
         var features = new Array();
         var featureObj = new viewer.viewercontroller.controller.Feature();
         for(var i = 0 ; i< flamingoFeatures.length ; i++){
@@ -129,19 +128,24 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         return features;
     },
 
-    // TODO make function that gets all the features from THIS layer (not the entire editmap)
+    /**
+     * Orders the flamingo map to start drawing a geometry type
+     * @param type the type of the geometry (Point, Polygon, LineString, MultiPolygon)
+     */
     drawFeature : function(type){     
         if (this.map!=null && this.map.editMapId!=null)
-            viewerController.mapComponent.viewerObject.callMethod(this.map.editMapId,"editMapDrawNewGeometry",this.getId(),type );
+           this.map.getFrameworkMap().callMethod(this.map.editMapId,"editMapDrawNewGeometry",this.getId(),type );
     },
 
     /* stop editing */
     stopDrawDrawFeature : function(){
         //this.getFrameworkLayer().callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
-        viewerController.mapComponent.viewerObject.callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
+        this.map.getFrameworkMap().callMethod(this.getId(),"removeEditMapCreateGeometry",this.getLayerName());
     },
     setGisId: function(newGisId){
         this.gisId=newGisId;
+    },
+    getGisId: function(){
+        return this.gisId;
     }
-    
 });

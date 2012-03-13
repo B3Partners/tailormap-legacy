@@ -10,6 +10,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     extend: "Ext.util.Observable",
     events: [],
     layers: new Array(),
+    frameworkMap: null,
   //  
     config :{
         id: "id" ,
@@ -21,7 +22,6 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     constructor: function(config){
         this.initConfig(config);
-        this.frameworkMap = this.mapComponent.viewerObject;
         
         this.addEvents(
             viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,
