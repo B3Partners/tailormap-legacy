@@ -161,13 +161,13 @@ Ext.define ("viewer.components.AttributeList",{
                 
                 var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
                 attributeList.push({
-                    name: attIndex,
+                    name: "c" + attIndex,
                     type : 'string'
                 });
                 columns.push({
-                    id: attIndex,
+                    id: "c" +attIndex,
                     text:colName,
-                    dataIndex: attIndex,
+                    dataIndex: "c" + attIndex,
                     flex: 1,
                     filter: {
                         xtype: 'textfield'
