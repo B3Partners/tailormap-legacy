@@ -55,7 +55,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/appLayer")
 @StrictBinding
 public class AppLayerActionBean implements ActionBean {
-    private static final int MAX_FEATURES = 30;
+    private static final int MAX_FEATURES = 50;
     
     private ActionBeanContext context;
     
@@ -200,27 +200,34 @@ public class AppLayerActionBean implements ActionBean {
                 fs = layer.getFeatureType().openGeoToolsFeatureSource();
             }
             
-            Query q = new Query(fs.getName().toString());
-            q.setMaxFeatures(MAX_FEATURES);
+            boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
             
+            Query q = new Query(fs.getName().toString());
+            q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
+            q.setStartIndex(start);
+
             FeatureCollection fc = fs.getFeatures(q);
 
             if(!fc.isEmpty()) {
                 if(fc instanceof DataFeatureCollection) {
                     total = ((DataFeatureCollection)fc).getCount();
                 } else {
-                    total = fc.size(); /* Deze methode swallowt exceptions */
-                }           
-                total = Math.min(MAX_FEATURES, total);
+                    total = fc.size(); /* This method swallows exceptions */
+                }     
+                if(total == q.getMaxFeatures()) {
+                    // we don't know if these are all the features or if there are more...
+                    total = MAX_FEATURES;
+                }
+                if(total != MAX_FEATURES && !startIndexSupported) {
+                    total -= start;
+                }
 
                 FeatureIterator<SimpleFeature> it = fc.features();
                 try {
-                    int processed = 0;
-                    int processMax = Math.min(limit*page, total);
                     while(it.hasNext()) {
                         SimpleFeature f = it.next();
-                        processed++;
-                        if(start > 0) {
+
+                        if(!startIndexSupported && start > 0) {
                             start--;
                             continue;
                         }
@@ -233,10 +240,6 @@ public class AppLayerActionBean implements ActionBean {
                             }
                         }                     
                         features.put(j);
-
-                        if(processed >= processMax) {
-                            break;
-                        }
                     }
                 } finally {
                     it.close();
