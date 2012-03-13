@@ -58,14 +58,14 @@ Ext.define("viewer.DirectFeatureService", {
 Ext.define("viewer.AppLayerService", {
     config: {
         actionbeanUrl: null,
-        appLayer: null
+        appLayer: null,
+        debug: false
     },
     constructor: function(config) {        
         if(config.actionbeanUrl == null) {
             config.actionbeanUrl = actionBeans["appLayer"];
         }        
         this.initConfig(config);     
-        console.log("AppLayerService init", this.config);
     },
     loadAttributes: function(theAppLayer, successFunction, failureFunction) {
         

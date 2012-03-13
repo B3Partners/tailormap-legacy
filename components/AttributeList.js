@@ -152,20 +152,22 @@ Ext.define ("viewer.components.AttributeList",{
         var attributes = appLayer.attributes;
         var attributeList = new Array();
         var columns = new Array();
+        var index = 0;
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.visible){
                 
-                var attName = attribute.name.substring(attribute.name.lastIndexOf('.')+1);
-                var colName = attribute.alias != undefined ? attribute.alias : attName;
+                var attIndex = index++;
+                
+                var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
                 attributeList.push({
-                    name: attName,
+                    name: attIndex,
                     type : 'string'
                 });
                 columns.push({
-                    id: attName,
+                    id: attIndex,
                     text:colName,
-                    dataIndex: attName,
+                    dataIndex: attIndex,
                     flex: 1,
                     filter: {
                         xtype: 'textfield'
@@ -185,7 +187,7 @@ Ext.define ("viewer.components.AttributeList",{
             remoteFilter: true,
             proxy: {
                 type: 'ajax',
-                url: appLayer.featureService.getStoreUrl(),
+                url: appLayer.featureService.getStoreUrl() + "&arrays=1",
                 reader: {
                     type: 'json',
                     root: 'features',
