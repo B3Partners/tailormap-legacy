@@ -34,9 +34,12 @@ import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.config.services.WFSFeatureSource;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
 import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.data.wfs.WFSDataStore;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.json.JSONArray;
@@ -67,6 +70,9 @@ public class AppLayerActionBean implements ActionBean {
     private int page;
     @Validate
     private int start;    
+    
+    @Validate
+    private boolean debug;
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
@@ -107,6 +113,14 @@ public class AppLayerActionBean implements ActionBean {
 
     public void setStart(int start) {
         this.start = start;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
     //</editor-fold>
 
@@ -176,11 +190,21 @@ public class AppLayerActionBean implements ActionBean {
         int total = 0;
         
         if(layer != null && layer.getFeatureType() != null) {
-            FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource();
-            ((WFSDataStore)fs.getDataStore()).setMaxFeatures(MAX_FEATURES);
+            FeatureSource fs;
             
-            FeatureCollection fc = fs.getFeatures();
+            if(isDebug() && layer.getFeatureType().getFeatureSource() instanceof WFSFeatureSource) {
+                Map extraDataStoreParams = new HashMap();
+                extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
+                fs = ((WFSFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+            } else {
+                fs = layer.getFeatureType().openGeoToolsFeatureSource();
+            }
             
+            Query q = new Query(fs.getName().toString());
+            q.setMaxFeatures(MAX_FEATURES);
+            
+            FeatureCollection fc = fs.getFeatures(q);
+
             if(!fc.isEmpty()) {
                 if(fc instanceof DataFeatureCollection) {
                     total = ((DataFeatureCollection)fc).getCount();
@@ -190,30 +214,34 @@ public class AppLayerActionBean implements ActionBean {
                 total = Math.min(MAX_FEATURES, total);
 
                 FeatureIterator<SimpleFeature> it = fc.features();
-                int processed = 0;
-                int processMax = Math.min(limit*page, total);
-                while(it.hasNext()) {
-                    SimpleFeature f = it.next();
-                    processed++;
-                    if(start > 0) {
-                        start--;
-                        continue;
-                    }
-                    
-                    JSONObject j = new JSONObject();
-                    for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-                        
-                        if(ca.isVisible()) {
-                            j.put(ca.getAttributeName(), f.getAttribute(ca.getAttributeName()));
+                try {
+                    int processed = 0;
+                    int processMax = Math.min(limit*page, total);
+                    while(it.hasNext()) {
+                        SimpleFeature f = it.next();
+                        processed++;
+                        if(start > 0) {
+                            start--;
+                            continue;
                         }
-                    }                     
-                    features.put(j);
-                    
-                    if(processed >= processMax) {
-                        break;
+
+                        JSONObject j = new JSONObject();
+                        for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+
+                            if(ca.isVisible()) {
+                                j.put(ca.getAttributeName(), f.getAttribute(ca.getAttributeName()));
+                            }
+                        }                     
+                        features.put(j);
+
+                        if(processed >= processMax) {
+                            break;
+                        }
                     }
+                } finally {
+                    it.close();
                 }
-            }            
+            }
         }
                 
         json.put("total", total);
