@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
@@ -64,6 +65,10 @@ public class LayerListActionBean implements ActionBean {
     private Boolean wfs = false;
     @Validate
     private Boolean attribute = false;
+    @Validate
+    private Boolean hasConfiguredLayers = false;
+    @Validate
+    private List<Long> layers = new ArrayList<Long>();
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     public Long getAppId() {
@@ -130,6 +135,24 @@ public class LayerListActionBean implements ActionBean {
         this.wfs = wfs;
     }
 
+    public List<Long> getLayers() {
+        return layers;
+    }
+
+    public void setLayers(List<Long> layers) {
+        this.layers = layers;
+    }
+
+    public Boolean getHasConfiguredLayers() {
+        return hasConfiguredLayers;
+    }
+
+    public void setHasConfiguredLayers(Boolean hasConfiguredLayers) {
+        this.hasConfiguredLayers = hasConfiguredLayers;
+    }
+    
+    
+
     //</editor-fold>
     
     public Resolution source() {
@@ -142,9 +165,9 @@ public class LayerListActionBean implements ActionBean {
             // TODO filter layers according to readers
             // set writeable according to writers
 
-            List<Layer> layers = LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute);
+            List<Layer> filteredLayers = LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers);
 
-            for (Layer layer : layers) {
+            for (Layer layer : filteredLayers) {
                 try {
                     jsonArray.put(layer.toJSONObject());
                 } catch (JSONException je) {
