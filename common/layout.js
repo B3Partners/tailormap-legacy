@@ -23,7 +23,7 @@ Ext.define('viewer.LayoutManager', {
         left_menu: {region:'center', subregion:'west', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false,isPopup:true, defaultLayout: {width: 150}},
         top_menu: {region:'none'},
         content: {region:'center', subregion:'center', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false, defaultLayout: {}},
-        popupwindow: { region: 'none', isPopup: true,showOnStartup:true },
+        popupwindow: { region: 'popupwindow', useTabs: true },
         rightmargin_top: {region:'east', subregion:'center', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
         rightmargin_bottom: {region:'east', subregion:'south', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
         footer: {region:'south', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}}
@@ -35,6 +35,7 @@ Ext.define('viewer.LayoutManager', {
     wrapperId: 'wrapper',
     autoRender: true,
     tabComponents: {},
+    popupWin: null,
     
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -126,7 +127,7 @@ Ext.define('viewer.LayoutManager', {
             regionlayout = regionitems[0].regionConfig.layout;
             var componentItems = me.createComponents(regionitems[0].regionConfig.components, regionitems[0].regionDefaultConfig, regionlayout);
             componentItems = me.getRegionContent(componentItems, regionlayout);
-            if(regionitems[0].regionDefaultConfig.region != "none") {
+            if(regionitems[0].regionDefaultConfig.region != "none" && regionitems[0].regionDefaultConfig.region != "popupwindow") {
                 layout = regionitems[0].regionDefaultConfig.defaultLayout;
                 if(regionlayout.width != '' && regionlayout.widthmeasure == 'px') {
                     layout.width = parseInt(regionlayout.width);
@@ -152,6 +153,44 @@ Ext.define('viewer.LayoutManager', {
                     layout: extLayout,
                     items: componentItems
                 }, layout);
+            } else if(regionitems[0].regionDefaultConfig.region == "popupwindow") {
+                
+                var width = 400;
+                if(regionlayout.width != '' && regionlayout.widthmeasure == 'px') {
+                    width = parseInt(regionlayout.width);
+                } else if(regionlayout.width != '' && regionlayout.widthmeasure == '%') {
+                    width = '' + parseInt(regionlayout.width) + '%';
+                }
+                var height = 400;
+                if(regionlayout.height != '' && regionlayout.heightmeasure == 'px') {
+                    height = parseInt(regionlayout.height);
+                } else if(regionlayout.height != '' && regionlayout.heightmeasure == '%') {
+                    height = '' + parseInt(regionlayout.height) + '%';
+                }
+                var popupLayout = 'fit';
+                if(regionlayout.useTabs == false && componentItems.length > 1) {
+                    popupLayout = { type: 'hbox', align: 'stretch' };
+                }
+                
+                var popupWindowConfig = {
+                    title: '???',
+                    closable: true,
+                    closeAction: 'hide',
+                    hideMode: 'offsets',
+                    width: width,
+                    height: height,
+                    resizable: true,
+                    draggable: true,
+                    layout: popupLayout,
+                    modal: false,
+                    renderTo: Ext.getBody(),
+                    autoScroll: true,
+                    items: componentItems,
+                    bodyStyle: {
+                        background: '#fff'
+                    }
+                };
+                me.popupWin = Ext.create('Ext.window.Window', popupWindowConfig);
             }
         }
         return {};
@@ -335,6 +374,9 @@ Ext.define('viewer.LayoutManager', {
             height: '100%',
             width: '100%'
         });
+        if(me.popupWin !== null) {
+            me.showStartupPopup();
+        }
     },
 
     getMapId: function() {
@@ -349,7 +391,16 @@ Ext.define('viewer.LayoutManager', {
         // Not sure if this works, don't know for sure how to set a tab title
         var me = this;
         if(Ext.isDefined(me.tabComponents[componentId])) {
-            Ext.getCmp(me.tabComponents[componentId].tabId).getComponent(me.tabComponents[componentId].tabNo).setText(title);
+            Ext.getCmp(me.tabComponents[componentId].tabId).tabBar.items.getAt(me.tabComponents[componentId].tabNo).setText(title);
         }
+    },
+    
+    showStartupPopup: function() {
+        this.popupWin.show();
+    },
+    
+    hideStartupPopup: function() {
+        this.popupWin.hide();
     }
+    
 });

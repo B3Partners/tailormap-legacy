@@ -27,7 +27,7 @@ Ext.define ("viewer.components.HTML",{
     },
     constructor: function (conf){        
         viewer.components.HTML.superclass.constructor.call(this, conf);
-        this.initConfig(conf); 
+        this.initConfig(conf);
         this.loadHtml();
         return this;
     },

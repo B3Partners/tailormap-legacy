@@ -63,6 +63,9 @@ Ext.define("viewer.components.Component",{
                 });
             }
         }
+        if(me.name && me.title) {
+            me.viewerController.layoutManager.setTabTitle(me.name, me.title);
+        }
         me.events = [];
         return me;
     },
