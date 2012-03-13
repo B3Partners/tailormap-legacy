@@ -64,7 +64,8 @@ Ext.define ("viewer.components.DataSelection",{
         var config = {
             viewerController : this.viewerController,
             restriction : "filterable",
-            div: this.getContentDiv()
+            div: this.getContentDiv(),
+            layers : this.layers
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);

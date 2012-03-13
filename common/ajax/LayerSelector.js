@@ -28,7 +28,8 @@ Ext.define ("viewer.components.LayerSelector",{
     div: null,
     config: {
         viewerController: new Object(),
-        restriction : null
+        restriction : null,
+        layers:null
     }, 
     constructor: function (conf){        
         this.initConfig(conf);   
@@ -57,6 +58,11 @@ Ext.define ("viewer.components.LayerSelector",{
         // TODO make layerselector so, that the layerselector can use a filtered list of layers
         requestParams[this.restriction]= true;
         requestParams["appId"]= appId;
+        if(this.layers != null){
+            requestParams["layers"]= this.layers;
+            requestParams["hasConfiguredLayers"]= true;
+        }
+        
         var me = this;
         Ext.Ajax.request({ 
             url: requestPath, 
