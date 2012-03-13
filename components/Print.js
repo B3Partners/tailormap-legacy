@@ -24,6 +24,7 @@ Ext.define ("viewer.components.Print",{
     panel: null,
     vl:null,
     minKwality: 128,
+    minWidth: 500,
     config:{
         name: "Print",
         title: "",
@@ -33,9 +34,13 @@ Ext.define ("viewer.components.Print",{
         orientation: null,
         legend: null
     },
-    constructor: function (conf){                
+    constructor: function (conf){  
+        //set minwidth:
+        if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
+        
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
+        
         var me = this;
         this.renderButton({
             handler: function(){
@@ -47,25 +52,29 @@ Ext.define ("viewer.components.Print",{
         });
         //test
         //me.buttonClick();        
-        this.vl=viewerController.mapComponent.createVectorLayer({
+        /*this.vl=viewerController.mapComponent.createVectorLayer({
             id: 'vectorLayer',
             name:'vectorLayer',
             geometrytypes:["Point","LineString","Polygon","MultiPolygon"],
             showmeasures:true
         });
-        viewerController.mapComponent.getMap().addLayer(this.vl);
+        viewerController.mapComponent.getMap().addLayer(this.vl);*/
         return this;
     },
     buttonClick: function(){
         this.popup.show();
-        this.createForm();
+        if (this.panel==null)
+            this.createForm();
     },
     createForm: function(){
         var me = this;
-        if(this.vl.isLoaded){
-         //   this.vl.removeAllFeatures();
+        /*if(this.vl.isLoaded){
+            var f=this.vl.getAllFeatures();
+            if (f !=null){
+                console.log(f);
+            }
             this.vl.drawFeature("Point");
-       }
+       }*/
         this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,
@@ -224,6 +233,14 @@ Ext.define ("viewer.components.Print",{
                     style: {
                         "float": "right",
                         marginLeft: '5px'
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                this.submitSettings("saveRTF")
+                            }
+                        }
                     }                  
                 },{
                     xtype: 'button',
@@ -231,20 +248,40 @@ Ext.define ("viewer.components.Print",{
                     style: {
                         "float": "right",
                         marginLeft: '5px'
-                    }                  
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                this.submitSettings("savePDF")
+                            }
+                        }
+                    }                    
                 },{
                     xtype: 'button',
                     text: 'Printen via PDF',
                     style: {
                         "float": "right",
                         marginLeft: '5px'
-                    }
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                this.submitSettings("printPDF")
+                            }
+                        }
+                    }  
                 }]                
             }]
         });
     },
-    submitSettings: function(){
+    /**
+    * Called when a button is clicked and the form must be submitted.
+    */
+    submitSettings: function(action){
         var properties = this.getValuesFromContainer(this.panel);
+        properties.action=action;
         console.log(properties);
     },
     /**

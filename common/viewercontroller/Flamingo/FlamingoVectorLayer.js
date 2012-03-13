@@ -117,7 +117,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         //var flamingoObj = this.getFrameworkLayer();//this.getFrameworkLayer();
         var flamingoFeatures=this.map.getFrameworkMap().callMethod(this.getGisId(),"getFeaturesAsObject",false,this.getId());
         var features = new Array();
-        var featureObj = new viewer.viewercontroller.controller.Feature();
         for(var i = 0 ; i< flamingoFeatures.length ; i++){
             var flFeature = flamingoFeatures[i];
             var feature = this.fromFlamingoFeature(flFeature);
