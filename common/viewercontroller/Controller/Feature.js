@@ -42,27 +42,6 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
     fromOpenLayersFeature : function(openLayersFeature){
         var feature = new viewer.viewercontroller.controller.Feature(openLayersFeature.id,openLayersFeature.geometry.toString());
         return feature;
-    },
-
-    /**
-     * Converts this feature to a FlamingoFeature
-     * @return The Flamingotype feature
-     */
-    toFlamingoFeature : function(){
-        var flFeature = new Object();
-        flFeature["id"]= this.getId();
-        flFeature["wktgeom"] = this.getWkt();
-        return flFeature;
-    },
-
-    /**
-     * Helper function: Converts the given Flamingo Feature to the generic feature.
-     * @param flamingoFeature The FlamingoFeature to be converted
-     * @return The generic feature
-     */
-    fromFlamingoFeature : function(flamingoFeature){
-        var feature = new viewer.viewercontroller.controller.Feature(flamingoFeature["id"],flamingoFeature["wktgeom"]);
-        return feature;
     }
 
 });

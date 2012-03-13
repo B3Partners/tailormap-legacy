@@ -87,9 +87,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         if(flaFeature == null){
             return null;
         }
-
-        var featureObj = new viewer.viewercontroller.controller.Feature();
-        var feature = featureObj.fromFlamingoFeature(flaFeature);
+        var feature = this.fromFlamingoFeature(flaFeature);
 
         return feature;
     },
@@ -108,7 +106,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * @param feature The generic feature to be added to this vector layer.
      */
     addFeature : function(feature){
-        this.map.getFrameworkMap().callMethod(this.map.editMapId,'addFeature',this.getId(),feature.toFlamingoFeature());
+        this.map.getFrameworkMap().callMethod(this.map.editMapId,'addFeature',this.getId(),this.toFlamingoFeature(feature));
     },
 
     /**
@@ -122,7 +120,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         var featureObj = new viewer.viewercontroller.controller.Feature();
         for(var i = 0 ; i< flamingoFeatures.length ; i++){
             var flFeature = flamingoFeatures[i];
-            var feature = featureObj.fromFlamingoFeature(flFeature);
+            var feature = this.fromFlamingoFeature(flFeature);
             features.push(feature);
         }
         return features;
@@ -147,5 +145,27 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     },
     getGisId: function(){
         return this.gisId;
+    },
+
+    /**
+     * Helper function: Converts the given Flamingo Feature to a generic feature.
+     * @param flamingoFeature The FlamingoFeature to be converted
+     * @return The generic feature
+     */
+    fromFlamingoFeature : function(flamingoFeature){
+        flamingoFeature.wkt=flamingoFeature.wktgeom;
+        var feature = new viewer.viewercontroller.controller.Feature(flamingoFeature);
+        return feature;
+    },
+    /**
+     * Converts th feature to a FlamingoFeature
+     * @param feature a viewer.viewercontroller.controller.Feature object
+     * @return The Flamingotype feature
+     */
+    toFlamingoFeature : function(feature){
+        var flFeature = new Object();
+        flFeature["id"]= feature.getId();
+        flFeature["wktgeom"] = feature.getWkt();
+        return flFeature;
     }
 });
