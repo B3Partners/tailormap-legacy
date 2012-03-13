@@ -280,9 +280,9 @@ public class AppLayerActionBean implements ActionBean {
                         featureCount = ((DataFeatureCollection)fc).getCount();
                     } else {
                         featureCount = fc.size(); /* This method swallows exceptions */
-                    }     
-                    if(featureCount < limit) {
-                        total = start + featureCount;
+                    }   
+                    if(featureCount < (startIndexSupported ? limit : start + limit)) {
+                        total = start + (startIndexSupported ? featureCount : featureCount - start);
                     }
 
                     FeatureIterator<SimpleFeature> it = fc.features();
