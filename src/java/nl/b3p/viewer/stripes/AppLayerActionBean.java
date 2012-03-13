@@ -40,12 +40,17 @@ import org.geotools.data.Query;
 import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.sort.SortOrder;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -70,6 +75,12 @@ public class AppLayerActionBean implements ActionBean {
     private int page;
     @Validate
     private int start;    
+    @Validate
+    private String dir;
+    @Validate
+    private String sort;
+    @Validate
+    private boolean arrays;
     
     @Validate
     private boolean debug;
@@ -121,6 +132,30 @@ public class AppLayerActionBean implements ActionBean {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public String getDir() {
+        return dir;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public boolean isArrays() {
+        return arrays;
+    }
+
+    public void setArrays(boolean arrays) {
+        this.arrays = arrays;
     }
     //</editor-fold>
 
@@ -207,6 +242,21 @@ public class AppLayerActionBean implements ActionBean {
                 Query q = new Query(fs.getName().toString());
                 q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
                 q.setStartIndex(start);
+                
+                FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
+                
+                if(sort != null) {
+                    
+                    String sortAttribute = sort;
+                    if(arrays) {
+                        int i = Integer.parseInt(sort);
+                        sortAttribute = layer.getFeatureType().getAttributes().get(i).getName();
+                    }
+                    
+                    q.setSortBy(new SortBy[] {
+                        ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
+                    });
+                }
 
                 FeatureCollection fc = fs.getFeatures(q);
 
@@ -233,17 +283,27 @@ public class AppLayerActionBean implements ActionBean {
                                 start--;
                                 continue;
                             }
+                        
+                            if(arrays) {
+                                JSONArray j = new JSONArray();
+                                for(ConfiguredAttribute ca: appLayer.getAttributes()) {
 
-                            JSONObject j = new JSONObject();
-                            for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+                                    if(ca.isVisible()) {
+                                        j.put(f.getAttribute(ca.getAttributeName()));
+                                    }
+                                }    
+                                features.put(j);                                
+                            } else {
+                                JSONObject j = new JSONObject();
+                                for(ConfiguredAttribute ca: appLayer.getAttributes()) {
 
-                                if(ca.isVisible()) {
-                                    String name = ca.getAttributeName();
-                                    name = name.substring(name.lastIndexOf('.')+1);
-                                    j.put(name, f.getAttribute(ca.getAttributeName()));
-                                }
-                            }                     
-                            features.put(j);
+                                    if(ca.isVisible()) {
+                                        String name = ca.getAttributeName();
+                                        j.put(name, f.getAttribute(name));
+                                    }
+                                }                     
+                                features.put(j);
+                            }
                         }
                     } finally {
                         it.close();
