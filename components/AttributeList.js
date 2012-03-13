@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.AttributeList",{
     extend: "viewer.components.Component",
     grid: null,
+    pager: null,
     config: {
         layers:null,
         title:null,
@@ -51,11 +52,55 @@ Ext.define ("viewer.components.AttributeList",{
             }
         });
     },
+    
+    getExtComponents: function() {
+        var c = [];
+        c.push(this.name + 'Container');
+        c.push(this.name + 'LayerSelectorPanel');
+        c.push(this.name + 'GridPanel');
+        c.push(this.name + 'Grid');
+        c.push(this.name + 'PagerPanel');
+        c.push(this.name + 'Pager');
+        return c;
+    },
     loadWindow : function(){
+        
+        Ext.create('Ext.container.Container', {
+            id: this.name + 'Container',
+            width: '100%',
+            height: '100%',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            style: {
+                backgroundColor: 'White'
+            },
+            renderTo: this.getContentDiv(),
+            items: [{
+                id: this.name + 'LayerSelectorPanel',
+                xtype: "container",
+                padding: "4px",
+                width: '100%',
+                height: 36
+            },{
+                id: this.name + 'GridPanel',
+                xtype: "container",
+                autoScroll: true,
+                width: '100%',
+                flex: 1
+            },{
+                id: this.name + 'PagerPanel',
+                xtype: "container",
+                width: '100%',
+                height: 30
+            }]
+        });
+              
         var config = {
             viewerController : this.viewerController,
             restriction : "attribute",
-            div: this.getContentDiv()
+            div: this.name + 'LayerSelectorPanel'
         };
         var ls = Ext.create("viewer.components.LayerSelector",config);
         ls.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
@@ -67,6 +112,9 @@ Ext.define ("viewer.components.AttributeList",{
     clear: function() {
         if(this.grid) {
             this.grid.destroy();
+        }
+        if(this.pager) {
+            this.pager.destroy();
         }
         delete this.appLayer;
         delete this.featureService;
@@ -99,6 +147,7 @@ Ext.define ("viewer.components.AttributeList",{
         this.loadAttributes(appLayer);
     },
     initGrid: function(appLayer) {
+        var me = this;
         
         var attributes = appLayer.attributes;
         var attributeList = new Array();
@@ -107,15 +156,16 @@ Ext.define ("viewer.components.AttributeList",{
             var attribute = attributes[i];
             if(attribute.visible){
                 
-                var colName = attribute.alias != undefined ? attribute.alias : attribute.name.substring(attribute.name.lastIndexOf(".")+1);
+                var attName = attribute.name.substring(attribute.name.lastIndexOf('.')+1);
+                var colName = attribute.alias != undefined ? attribute.alias : attName;
                 attributeList.push({
-                    name: attribute.name,
+                    name: attName,
                     type : 'string'
                 });
                 columns.push({
-                    id: attribute.name,
+                    id: attName,
                     text:colName,
-                    dataIndex: attribute.name,
+                    dataIndex: attName,
                     flex: 1,
                     filter: {
                         xtype: 'textfield'
@@ -123,14 +173,14 @@ Ext.define ("viewer.components.AttributeList",{
                 });
             }
         }
-        Ext.define('TableRow', {
+        Ext.define(this.name + 'Model', {
             extend: 'Ext.data.Model',
             fields: attributeList
         });
-
+        
         var store = Ext.create('Ext.data.Store', {
-            pageSize: 4,
-            model: 'TableRow',
+            pageSize: 10,
+            model: this.name + 'Model',
             remoteSort: true,
             remoteFilter: true,
             proxy: {
@@ -141,27 +191,46 @@ Ext.define ("viewer.components.AttributeList",{
                     root: 'features',
                     totalProperty: 'total'
                 },
-                simpleSortMode: true
+                simpleSortMode: true,
+                listeners: {
+                    exception: function(store, response, op) {
+                        
+                        msg = response.responseText;
+                        if(response.status == 200) {
+                            try {
+                                var j = Ext.JSON.decode(response.responseText);
+                                if(j.message) {
+                                    msg = j.message;
+                                }
+                            } catch(e) {
+                            }
+                        }
+
+                        Ext.getCmp(me.name + "Grid").getStore().removeAll();
+                            
+                        Ext.MessageBox.alert("Foutmelding", msg);
+                        
+                    }
+                }
             },
             autoLoad: true
         });
 
         this.grid = Ext.create('Ext.grid.Panel',  {
-            id: 'editGrid',
+            id: this.name + 'Grid',
             store: store,
             columns: columns,
-            bbar: Ext.create('Ext.PagingToolbar', {
-                store: store,
-                displayInfo: true,
-                displayMsg: 'Feature {0} - {1} of {2}',
-                emptyMsg: "Geen features om weer te geven"
-            })/*,
-            plugins: [ 
-                Ext.create('Ext.ux.grid.GridHeaderFilters', {
-                    enableTooltip: false
-                })
-            ],*/,
-            renderTo: this.getContentDiv()
+            renderTo: this.name + 'GridPanel'
+        });
+        
+        this.pager = Ext.create('Ext.PagingToolbar', {
+            id: this.name + 'Pager',
+            store: store,
+            displayInfo: true,
+            displayMsg: 'Feature {0} - {1} van {2}',
+            emptyMsg: "Geen features om weer te geven",
+            renderTo: this.name + 'PagerPanel',
+            height: 30
         });
     }
 });
