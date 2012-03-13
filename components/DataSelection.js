@@ -44,26 +44,19 @@ Ext.define ("viewer.components.DataSelection",{
         viewer.components.DataSelection.superclass.constructor.call(this, conf);
         this.filters = new Array();
         this.initConfig(conf); 
-        this.loadButton();
+        var me = this;
+        this.renderButton({
+            handler: function(){
+                me.showWindow();
+            },
+            text: me.title,
+            icon: me.iconUrl,
+            tooltip: me.tooltip
+        });
         this.loadWindow();
         return this;
     },
-    /**
-     * Create the button to open the popupwindow
-     */
-    loadButton : function(){
-        Ext.create('Ext.Button', {
-            renderTo: this.div,
-            icon: this.iconUrl,
-            tooltip: this.tooltip,
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.showWindow
-                }
-            }
-        });
-    },
+    
     showWindow : function (){
         this.popup.show();
     },
@@ -172,7 +165,8 @@ Ext.define ("viewer.components.DataSelection",{
                         xtype: "textfield",
                         id: attribute.name,
                         name: attribute.name,
-                        fieldLabel: attribute.alias || attribute.name
+                        fieldLabel: attribute.alias || attribute.name,
+                        labelWidth:200
                     });
                 }
                
