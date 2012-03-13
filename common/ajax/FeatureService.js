@@ -33,7 +33,7 @@ Ext.define("viewer.DirectFeatureService", {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {getLayerFeatureType: true, protocol: this.protocol, layer: this.appLayer.layerName },
+            params: {getLayerFeatureType: true, protocol: this.protocol, layer: this.appLayer.layerName},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
@@ -92,6 +92,6 @@ Ext.define("viewer.AppLayerService", {
         });
     },
     getStoreUrl: function() {
-        return this.getActionbeanUrl() + "?store=1&appLayer=" + this.appLayer.id;
+        return this.getActionbeanUrl() + "?store=1&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : "");
     }
 });
