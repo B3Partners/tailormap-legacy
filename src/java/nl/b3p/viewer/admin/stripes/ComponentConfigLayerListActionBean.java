@@ -143,7 +143,7 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         if (appId != null) {
             Application app = em.find(Application.class, appId);
 
-            List<Layer> layers =LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute);
+            List<Layer> layers =LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute, false, null);
 
             for (Layer layer : layers) {
                 try {
