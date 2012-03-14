@@ -35,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/bookmark")
 @StrictBinding
 public class BookmarkActionBean implements ActionBean {
-    private static final Log log = LogFactory.getLog(SldActionBean.class);
+    private static final Log log = LogFactory.getLog(BookmarkActionBean.class);
     
     private ActionBeanContext context;
     

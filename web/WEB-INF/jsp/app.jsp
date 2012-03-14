@@ -82,6 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/FeatureService.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/SLD.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/Bookmark.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/CombineImage.js"></script>
             </c:when>
             <c:otherwise>
                 <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -113,7 +114,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>",
                 "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>",
                 "geoserviceregistry": "<stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/>",
-                "appLayer": "<stripes:url beanclass="nl.b3p.viewer.stripes.AppLayerActionBean"/>"
+                "appLayer": "<stripes:url beanclass="nl.b3p.viewer.stripes.AppLayerActionBean"/>",
+                "combineimage": "<stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/>"
             };
             
             var appId = "${actionBean.application.id}";

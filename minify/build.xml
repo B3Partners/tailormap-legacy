@@ -27,6 +27,7 @@
             <file name="SLD.js"/>
             <file name="Bookmark.js"/>
 			<file name="LayerSelector.js"/>
+			<file name="CombineImage.js"/>
           </sources>          
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
