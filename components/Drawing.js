@@ -35,21 +35,20 @@ Ext.define ("viewer.components.Drawing",{
     constructor: function (conf){        
         viewer.components.Drawing.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.renderButton();
-        this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/"
-        this.loadWindow();
-        return this;
-    },
-    renderButton: function() {
         var me = this;
-        this.superclass.renderButton.call(this,{
+        this.renderButton({
+            handler: function(){
+                me.popup.show();
+            },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip,
-            handler: function() {
-                me.popup.show();
-            }
+            tooltip: me.tooltip
         });
+        
+        this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/"
+        this.loadWindow();
+        this.popup.show();
+        return this;
     },
     loadWindow : function(){
         var me=this;
@@ -59,237 +58,220 @@ Ext.define ("viewer.components.Drawing",{
                 xtype: 'fieldset',
                 defaultType: 'textfield',
                 border: 0,
-                padding: 10,
+                padding: 0,
                 style: {
                     border: '0px none',
                     marginBottom: '0px'
                 },
                 items: [
-                    {
-                        xtype: 'label',
-                        text: 'Objecten op de kaart tekenen'
+                {
+                    xtype: 'label',
+                    text: 'Objecten op de kaart tekenen'
+                },
+                {
+                    xtype: 'fieldset',
+                    //columns: 7,
+                    layout:'hbox',
+                    border: 0,
+                    items: [{
+                        xtype: 'button',
+                        icon: this.iconPath+"bullet_red.png",
+                        tooltip: "Teken een punt",
+                        listeners: {
+                            click:{
+                                scope: me,
+                                fn: me.drawPoint
+                            }
+                        }
                     },
                     {
-                        xtype: 'fieldset',
-                        columns: 6,
-                        border: 0,
-                        items: [{
-                            xtype: 'button',
-                            icon: this.iconPath+"bullet_red.png",
-                            tooltip: "Teken een punt",
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.drawPoint
-                                }
+                        xtype: 'button',
+                        icon: this.iconPath+"line_red.png",
+                        tooltip: "Teken een lijn",
+                        listeners: {
+                            click:{
+                                scope: me,
+                                fn: me.drawLine
                             }
-                        },
-                        {
-                            xtype: 'button',
-                            icon: this.iconPath+"line_red.png",
-                            tooltip: "Teken een lijn",
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.drawLine
-                                }
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        icon: this.iconPath+"shape_square_red.png",
+                        tooltip: "Teken een polygoon",
+                        listeners: {
+                            click:{
+                                scope: me,
+                                fn: me.drawPolygon
                             }
-                        },
-                        {
-                            xtype: 'button',
-                            icon: this.iconPath+"shape_square_red.png",
-                            tooltip: "Teken een polygoon",
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.drawPolygon
-                                }
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        icon: this.iconPath+"shape_square_red.png",
+                        tooltip: "Teken een cirkel",
+                        listeners: {
+                            click:{
+                                scope: me,
+                                fn: me.drawCircle
                             }
-                        },
-                        {
-                            xtype: 'button',
-                            icon: this.iconPath+"shape_square_red.png",
-                            tooltip: "Teken een cirkel",
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.drawCircle
-                                }
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        icon: this.iconPath+"cursor.png",
+                        tooltip: "Selecteer een object",
+                        listeners: {
+                            click:{
+                                scope: me,
+                                fn: me.objectSelected
                             }
-                        },
-                        {
-                            xtype: 'button',
-                            icon: this.iconPath+"cursor.png",
-                            tooltip: "Selecteer een object",
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.objectSelected
-                                }
+                        }
+                    },{ 
+                        xtype: 'colorfield',
+                        width: 40,
+                        showText: false,
+                        name: 'color',
+                        value: 993300
+                    },
+                    {
+                        xtype: 'button',
+                        icon: this.iconPath+"delete.png",
+                        tooltip: "Verwijder alle objecten",
+                        listeners: {
+                            click:{
+                                scope: me,
+                                fn: me.deleteAll
                             }
-                        },
-                        /*{
-                            xtype: 'colorfield',
-                            fieldLabel: 'Kleur',
-                            name: 'color',
-                            value: '993300',
-                            labelWidth: 200
-                        },*/
-                        /*{
-                            xtype: 'colorfield',
-                            fieldLabel: 'Kleur',
-                            name: 'color',
-                            value: '993300',
-                            listeners: {
-                                select: function(picker, selColor) {
-                                    alert(selColor);
-                                }
-                            }
-                        },*/
-                        {
-                            xtype: 'button',
-                            icon: this.iconPath+"delete.png",
-                            tooltip: "Verwijder alle objecten",
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.deleteAll
-                                }
-                            } 
-                        }]
-                    }
+                        } 
+                    }]
+                }
                 ]
             }],
 
             renderTo: this.getContentDiv()
         });
         
-        var cp = new Ext.picker.Color({
-            value: '993300'
-        });
-        
-        this.formdraw.add(cp);
-        
         this.formselect = new Ext.form.FormPanel({
             items: [
-                { 
-                    xtype: 'fieldset',
-                    defaultType: 'textfield',
-                    border: 0,
-                    padding: 10,
-                    style: {
-                        border: '0px none',
-                        marginBottom: '0px'
-                    },
-                    items: [
-                        {
-                            xtype: 'label',
-                            text: 'Label geselecteerd object:',
-                            id: 'label' + this.name
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'labelObject',
-                            id: 'labelObject' + this.name
-                        },
-                        {
-                            xtype: 'button',
-                            icon: this.iconPath+"delete.png",
-                            tooltip: "Verwijder geselecteerd object",
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.deleteObject
-                                }
-                            } 
+            { 
+                xtype: 'fieldset',
+                defaultType: 'textfield',
+                border: 0,
+                padding: 10,
+                style: {
+                    border: '0px none',
+                    marginBottom: '0px'
+                },
+                items: [
+                {
+                    xtype: 'label',
+                    text: 'Label geselecteerd object:',
+                    id: 'label' + this.name
+                },
+                {
+                    xtype: 'textfield',
+                    name: 'labelObject',
+                    id: 'labelObject' + this.name
+                },
+                {
+                    xtype: 'button',
+                    icon: this.iconPath+"delete.png",
+                    tooltip: "Verwijder geselecteerd object",
+                    listeners: {
+                        click:{
+                            scope: me,
+                            fn: me.deleteObject
                         }
-                    ]
+                    } 
                 }
+                ]
+            }
             ],
             renderTo: this.getContentDiv()
         });
         
         this.formsave = new Ext.form.FormPanel({
             items: [
+            { 
+                xtype: 'fieldset',
+                defaultType: 'textfield',
+                border: 0,
+                padding: 10,
+                style: {
+                    border: '0px none',
+                    marginBottom: '0px'
+                },
+                items: [
+                {
+                    xtype: 'label',
+                    text: 'Op de kaart getekende objecten opslaan'
+                },
+                {
+                    xtype: 'textfield', 
+                    fieldLabel: 'Titel',
+                    name: 'title',
+                    id: 'title'+ this.name
+                },
+                {
+                    xtype: 'textarea',
+                    fieldLabel: 'Opmerking',
+                    name: 'comment',
+                    id: 'comment'+ this.name
+                },
                 { 
-                    xtype: 'fieldset',
-                    defaultType: 'textfield',
-                    border: 0,
-                    padding: 10,
-                    style: {
-                        border: '0px none',
-                        marginBottom: '0px'
-                    },
-                    items: [
-                        {
-                            xtype: 'label',
-                            text: 'Op de kaart getekende objecten opslaan'
-                        },
-                        {
-                            xtype: 'textfield', 
-                            fieldLabel: 'Titel',
-                            name: 'title',
-                            id: 'title'+ this.name
-                        },
-                        {
-                            xtype: 'textarea',
-                            fieldLabel: 'Opmerking',
-                            name: 'comment',
-                            id: 'comment'+ this.name
-                        },
-                        { 
-                            xtype: 'button',
-                            text: 'Opslaan als bestand',
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.saveFile
-                                }
-                            }
+                    xtype: 'button',
+                    text: 'Opslaan als bestand',
+                    listeners: {
+                        click:{
+                            scope: me,
+                            fn: me.saveFile
                         }
-                    ]
+                    }
                 }
+                ]
+            }
             ],
             renderTo: this.getContentDiv()
         });
         
         this.formopen = new Ext.form.FormPanel({
             items: [
-                { 
-                    xtype: 'fieldset',
-                    defaultType: 'textfield',
-                    border: 0,
-                    padding: 10,
-                    style: {
-                        border: '0px none',
-                        marginBottom: '0px'
-                    },
-                    items: [
-                        {
-                            xtype: 'label',
-                            text: 'Bestand met getekende objecten openen'
-                        },
-                        {
-                            xtype: 'filefield',
-                            fieldLabel: 'Tekstbestand',
-                            name: 'textfile',
-                            msgTarget: 'side',
-                            anchor: '100%',
-                            buttonText: 'Bladeren',
-                            id: 'file'+ this.name
-                        },
-                        {
-                            xtype: 'button',
-                            text: 'bestand openen',
-                            listeners: {
-                                click:{
-                                    scope: me,
-                                    fn: me.openFile
-                                }
-                            }
+            { 
+                xtype: 'fieldset',
+                defaultType: 'textfield',
+                border: 0,
+                padding: 10,
+                style: {
+                    border: '0px none',
+                    marginBottom: '0px'
+                },
+                items: [
+                {
+                    xtype: 'label',
+                    text: 'Bestand met getekende objecten openen'
+                },
+                {
+                    xtype: 'filefield',
+                    fieldLabel: 'Tekstbestand',
+                    name: 'textfile',
+                    msgTarget: 'side',
+                    anchor: '100%',
+                    buttonText: 'Bladeren',
+                    id: 'file'+ this.name
+                },
+                {
+                    xtype: 'button',
+                    text: 'bestand openen',
+                    listeners: {
+                        click:{
+                            scope: me,
+                            fn: me.openFile
                         }
-                    ]
+                    }
                 }
+                ]
+            }
             ],
             renderTo: this.getContentDiv()
         });

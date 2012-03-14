@@ -466,7 +466,7 @@
         className: "viewer.components.Drawing",
         name: "Tekenen",
         shortName: "Te",
-        sources: ["Drawing.js"],
+        sources: ["../common/ColorField.js","Drawing.js"],
         configSource: ["SelectionWindowConfig.js","Drawing-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
