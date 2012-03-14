@@ -51,6 +51,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                = "onMaptip";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]                = "onMaptipCancel";        
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAP_CLICKED]                = "onMapClicked";        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED]                = "onActiveFeatureChange";
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -364,6 +365,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             return this.getTool(name);
         }else if(name == this.getId()){
             return this;
+        }else if(this.getMap().editMapId){
         }else{
             return null;
         }
@@ -450,6 +452,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             comp.extent=component[2];
             comp.data=component[1];
             component=comp;
+        }else if(event == viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED ){
+            var layerName = component[1].fmc_layername;
+            var layerObj = this.getMap().getLayer(layerName);
+            var featureObj = Ext.create("viewer.viewercontroller.controller.Feature",component[1]);
+            component = featureObj;
+            object = layerObj;
         }
         if(object != undefined){
             object.fire(event,component);

@@ -9,19 +9,13 @@
 Ext.define("viewer.viewercontroller.controller.Feature",{
     config:{
         id:null,
-        wkt:null
+        wktgeom:null,
+        color:null,
+        label:null
     },
     constructor: function (config){
         this.initConfig(config);
        // this.wktParser = new OpenLayers.Format.WKT();
-    },
-    
-    getId : function(){
-        return this.id;
-    },
-
-    getWkt : function(){
-        return this.wkt;
     },
 
     /**

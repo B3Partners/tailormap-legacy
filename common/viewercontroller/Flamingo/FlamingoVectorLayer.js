@@ -12,6 +12,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         geometrytypes: null,
         //@field true/false show measures of the drawing object
         showmeasures: null,
+        //@field name of the label
+        labelPropertyName: null,
         //@field the style
         style: {
             //@field (0x000000 – 0xFFFFFF, default: 0xFF0000 ) Fill color. Not applicable to point or line string geometries.
@@ -33,6 +35,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * @param config.showmeasures true/false show measures of the drawing object
      */
     constructor: function(config){
+        if(config.labelPropertyName == null){
+            config.labelPropertyName = "label";
+        }
         viewer.viewercontroller.flamingo.FlamingoVectorLayer.superclass.constructor.call(this, config);
         this.initConfig(config);        
         return this;
@@ -43,11 +48,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         xml+= "id='"+this.id+"' ";
         xml+= "name='"+this.id+"' ";
         xml+= "visible='true' ";
+        xml+= "labelpropertyname='"+this.labelPropertyName+"' ";
         if (this.getGeometrytypes()!=null && this.getGeometrytypes().length > 0)
             xml+= "geometrytypes='"+this.getGeometrytypes().join()+"' ";
         if (this.getShowmeasures()!=null)
             xml+= "showmeasures='"+this.getShowmeasures()+"' ";
         xml+=">";
+        xml+="<fmc:Property name='"+this.labelPropertyName+"' title='Label' type='MultiLine'/>";
         //add style
         xml+="<fmc:Style ";
         if (this.style.fillcolor!=null)
@@ -60,6 +67,21 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
             xml+="strokeopacity='"+this.style.strokeopacity+"' ";
         xml+="/></fmc:Layer>";
         return xml;
+    },
+    
+    adjustStyle : function (){
+        var xml ="<fmc:Style ";
+        if (this.style.fillcolor!=null)
+            xml+="fillcolor='"+this.style.fillcolor+"' ";
+        if (this.style.fillopacity!=null)
+            xml+="fillopacity='"+this.style.fillopacity+"' ";
+        if (this.style.strokecolor!=null)
+            xml+="strokecolor='"+this.style.strokecolor+"' ";
+        if (this.style.strokeopacity!=null)
+            xml+="strokeopacity='"+this.style.strokeopacity+"' ";
+        xml+="/>";
+        this.map.getFrameworkMap().callMethod(this.gisId,'setCompositeInLayer',xml,"Style",this.getId());
+        
     },
 
     getLayerName : function(){
@@ -145,6 +167,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     getGisId: function(){
         return this.gisId;
     },
+    setLabel : function (featureId, labelText){
+        //(layerName:String, featureId: Number, propertyName:String, value:String):Void {
+        this.map.getFrameworkMap().callMethod(this.gisId,'setFeatureValue',this.getId(), featureId, this.getLabelPropertyName(),labelText);
+    },
 
     /**
      * Helper function: Converts the given Flamingo Feature to a generic feature.
@@ -166,5 +192,21 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         flFeature["id"]= feature.getId();
         flFeature["wktgeom"] = feature.getWkt();
         return flFeature;
+    },
+    /**
+     * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
+     * so flamingo is allowed to broadcast the event.
+     */
+    addListener : function(event,handler,scope){
+        viewer.viewercontroller.flamingo.FlamingoLayer.superclass.addListener.call(this,event,handler,scope);
+        //enable flamingo event broadcasting
+        var flamEvent=this.map.mapComponent.eventList[event];
+        if (flamEvent!=undefined){
+            //if not enabled yet, add it
+            if (this.enabledEvents[flamEvent]==undefined){
+               this.map.getFrameworkMap().callMethod(this.map.mapComponent.getId(),"addAllowExternalInterface",this.map.editMapId+"."+flamEvent);
+               this.enabledEvents[flamEvent]=true;
+            }
+        }     
     }
 });

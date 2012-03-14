@@ -71,6 +71,7 @@ Ext.define('Ext.ux.ColorField', {
     menuListeners : {
         select: function(m, d){
             this.setValue(d);
+            this.fireEvent("select",d);
         },
         show : function(){
             this.onFocus();

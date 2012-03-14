@@ -107,6 +107,11 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_LAYERSELECTOR_CHANGE                 : "ON_LAYERSELECTOR_CHANGE",
         ON_COMPONENTS_FINISHED_LOADING           : "ON_COMPONENTS_FINISHED_LOADING",
         ON_SELECTEDCONTENT_CHANGE             : "ON_SELECTEDCONTENT_CHANGE",
-        ON_MAP_CLICKED                        :  "ON_MAP_CLICKED"
+        ON_MAP_CLICKED                        :  "ON_MAP_CLICKED",
+        /** @field
+         *  Occurs when the active feature is changed. Note: Alse fired when the first point of a polygon is set, so the WKT may ben incorrect
+         */
+        ON_ACTIVE_FEATURE_CHANGED             :  "ON_ACTIVE_FEATURE_CHANGED"
+        
     }
 });
