@@ -21,7 +21,7 @@
  */
 Ext.define ("viewer.components.BufferObject",{
     extend: "viewer.components.Component",
-    combobox: null,
+    layerSelector:null,
     radius:null,
     tmc:null,
     vectorLayer:null,
@@ -71,28 +71,15 @@ Ext.define ("viewer.components.BufferObject",{
         this.popup.show();
     },
     loadWindow : function(){
-        var layers = [];
-        for( var i = 0 ; i < this.layers.length;i++){
-            var layer = this.viewerController.getLayerByLayerId(this.layers[i]);
-            layers.push({
-                id: layer.serviceId+"_"+layer.options.name,
-                title: layer.options.name,
-                layer: layer
-            });
-        }
-        var layerStore = Ext.create('Ext.data.Store', {
-            fields: ['id', 'title','layer'],
-            data : layers
-        });
-
-        this.combobox = Ext.create('Ext.form.ComboBox', {
-            fieldLabel: 'Kies kaartlaag',
-            store: layerStore,
-            queryMode: 'local',
-            displayField: 'title',
-            valueField: 'layer',
-            renderTo: this.getContentDiv()
-        });
+        
+        var config = {
+            viewerController : this.viewerController,
+            div: this.getContentDiv(),
+            layers : this.layers
+        };
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
+        
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             fieldLabel: "Straal",
