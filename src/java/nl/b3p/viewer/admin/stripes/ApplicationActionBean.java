@@ -33,10 +33,9 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Meine Toonen
  */
-@UrlBinding("/action/application")
 @StrictBinding
 @RolesAllowed({"Admin","ApplicationAdmin"}) 
-public class ApplicationActionBean implements ActionBean {
+public abstract class ApplicationActionBean implements ActionBean {
 
     protected ActionBeanContext context;
     
