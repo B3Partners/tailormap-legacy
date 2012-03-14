@@ -102,7 +102,7 @@ Ext.define ("viewer.components.Bookmark",{
                      parameters += layers[x]+","
                 } 
                 parameters +="&";
-            }else if(param.name != 'selectedContent'){
+            }else if(param.name != 'selectedContent' && param.name != 'services' && param.name != 'appLayers'){
                 parameters += param.name +"="+ param.value +"&";
             }
         }
@@ -129,7 +129,7 @@ Ext.define ("viewer.components.Bookmark",{
         if(Ext.firefoxVersion != 0){
             alert("This browser doesn't support this function.");
         }else if(Ext.ieVersion != 0){
-            window.external.AddFavorite(this.url, this.title);
+            window.external.AddFavorite(this.compUrl, this.title);
         }else if(Ext.chromeVersion != 0){
             alert("This browser doesn't support this function.");
         }else if(Ext.operaVersion != 0){

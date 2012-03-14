@@ -647,6 +647,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.mapComponent.getMap().zoomToExtent(parameter.value);
             }else if(parameter.name == "selectedContent"){
                 selectedContent = parameter.value;
+            }else if(parameter.name == "services"){
+                var services = parameter.value;
+                this.app.services = services;
+            }else if(parameter.name == "appLayers"){
+                appLayers = parameter.value;
             }
         }
         this.app.appLayers = appLayers;
@@ -683,11 +688,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var type = parameter.substring(0,index2);
                 var value = parameter.substring(index2 +1);
                 if(type != "layers" && type != "extent" && type != "bookmark"){
-                    var param5 = {
+                    var param7 = {
                         name: type, 
                         value: value
                     };
-                    paramJSON.params.push(param5);
+                    paramJSON.params.push(param7);
                 }
             }
         }
@@ -714,6 +719,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             value:selectedContent
         };
         paramJSON.params.push(param4);
+        
+        var services = this.app.services;
+        var param5 = {
+            name:"services", 
+            value:services
+        };
+        paramJSON.params.push(param5);
+        
+        var appLayers = this.app.appLayers;
+        var param6 = {
+            name:"appLayers", 
+            value:appLayers
+        };
+        paramJSON.params.push(param6);
         
         return paramJSON;
     },
