@@ -83,20 +83,21 @@ Ext.define ("viewer.components.DataSelection",{
                 style: 'background:#fff;'
             },
             items: [
-                {
-                    id : "filterTab",
-                    title: 'Dataselectie',// TODO Do renaming of variables filter->dataselection
-                    hideMode: 'offsets',
-                    autoScroll:true,
-                    html: "<div id='filterTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
-                },
-                {
-                    id   : 'dataTab',
-                    title: 'Filter',// TODO Do renaming of variables dataselection-->filter
-                    hideMode: 'offsets',
-                    autoScroll:true,
-                    html: "<div id='dataTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
-                }],
+            {
+                id   : 'filterTab',
+                title: 'Filter',// TODO Do renaming of variables dataselection-->filter
+                hideMode: 'offsets',
+                autoScroll:true,
+                html: "<div id='filterTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
+            },
+            {
+                id : "dataTab",
+                title: 'Dataselectie',// TODO Do renaming of variables filter->dataselection
+                hideMode: 'offsets',
+                autoScroll:true,
+                html: "<div id='dataTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
+            }
+            ],
             activeTab : "dataTab",
             renderTo : this.getContentDiv()
         });
@@ -122,15 +123,15 @@ Ext.define ("viewer.components.DataSelection",{
                 }
             }
         });        
-        this.dataTab.add(addFilter);
+        this.filterTab.add(addFilter);
         this.filterActive = Ext.create ("Ext.form.field.Checkbox",{
             boxLabel  : 'Filter is actief',
             name      : 'filterActive',
             inputValue: true,
-            checked   : true
+            checked   : false
                 
         });
-        this.dataTab.add(this.filterActive);
+        this.filterTab.add(this.filterActive);
         // Add the first filter
         this.addFilter();
         // Make lower buttons
@@ -155,14 +156,14 @@ Ext.define ("viewer.components.DataSelection",{
             }
         });
     },
-    createFilterTab : function (appLayer){
+    createDataTab : function (appLayer){
         var attributes = appLayer.attributes;
-        var filterAttributes = new Array();
+        var dataSelectieAttributes = new Array();
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
-            if(attribute.filterable){
+            if(attribute.selectable){
                 if(true){ // TODO Check if attribute has a list of distinct values
-                    filterAttributes.push({
+                    dataSelectieAttributes.push({
                         xtype: "textfield",
                         id: attribute.name,
                         name: attribute.name,
@@ -174,8 +175,8 @@ Ext.define ("viewer.components.DataSelection",{
             }
         }
         
-        this.filterTab.removeAll();
-        this.filterTab.add(filterAttributes);
+        this.dataTab.removeAll();
+        this.dataTab.add(dataSelectieAttributes);
     },
     /**
      *  Add a filter to the current filterlist.
@@ -204,7 +205,7 @@ Ext.define ("viewer.components.DataSelection",{
                 valueField: 'id'
             });
             // Insert before the checkbox
-            this.dataTab.insert(this.dataTab.items.length - 1,logicOperator);
+            this.filterTab.insert(this.filterTab.items.length - 1,logicOperator);
             
         }
         var config = {
@@ -216,25 +217,27 @@ Ext.define ("viewer.components.DataSelection",{
         var filter = Ext.create("viewer.components.Filter",config);
         this.filters.push(filter);
         // Insert before the checkboxs
-        this.dataTab.insert(this.dataTab.items.length - 1,filter.getUI());
+        this.filterTab.insert(this.filterTab.items.length - 1,filter.getUI());
     },
     applyFilter : function (){
         var cql = "";
-        for ( var i = 0 ; i < this.filters.length;i++){
-            var filter = this.filters[i];
-            cql += filter.getCQL();
-        }
-        
+     
+        cql += this.getDataTabCQL();
         if(this.filterActive.getValue()){
-            cql += " AND " + this.getFilterTabCQL();
+            cql += " AND ";
+            for ( var i = 0 ; i < this.filters.length;i++){
+                var filter = this.filters[i];
+                cql += filter.getCQL();
+            }
+        
         }
         var layerObj = this.layerSelector.getValue();
         var layer = this.viewerController.getLayer(layerObj.serviceId, layerObj.name)
         layer.setQuery(cql);
         console.log("CQL: " + cql);
     },
-    getFilterTabCQL : function (){
-        var items = this.filterTab.items.items;
+    getDataTabCQL : function (){
+        var items = this.dataTab.items.items;
         var cql = "";
         for ( var i = 0 ; i < items.length;i++){
             var item = items[i];
@@ -290,6 +293,6 @@ Ext.define ("viewer.components.DataSelection",{
             var filter = this.filters[j];
             filter.setNewAttributeList(attributeList);
         }
-        this.createFilterTab(appLayer);
+        this.createDataTab(appLayer);
     }
 });
