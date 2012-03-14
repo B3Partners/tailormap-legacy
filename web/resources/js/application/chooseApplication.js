@@ -38,7 +38,7 @@ Ext.onReady(function(){
     });
 
     var store = Ext.create('Ext.data.Store', {
-        pageSize: 10,
+        pageSize: 10,       
         model: 'TableRow',
         remoteSort: true,
         remoteFilter: true,
@@ -89,7 +89,7 @@ Ext.onReady(function(){
                 dataIndex: 'id',
                 flex: 1,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="'+ editurl + '?application=' +'{0} ">Activeren</a>', value) +
+                    return Ext.String.format('<a href="'+ editurl + '&application=' +'{0} ">Activeren</a>', value) +
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
                 },
@@ -120,17 +120,25 @@ function editObject(objId) {
 }
 
 function removeObject(objId) {
-    if(deleteConfirm()){
-        // How are we going to remove items? In the iframe or directly trough ajax?
-        Ext.get('editFrame').dom.src = deleteurl + '?application=' + objId;
-        var gridCmp = Ext.getCmp('editGrid')
-        gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-        return false;
-    }
-}
+    
+    var appRecord = Ext.getCmp('editGrid').store.getById(objId);
+    
+    Ext.MessageBox.show({
+        title: "Bevestiging",
+        msg: "Weet u zeker dat u de applicatie " + appRecord.get("name") + " wilt verwijderen?",
+        buttons: Ext.MessageBox.OKCANCEL,
+        fn: function(btn){
+            if(btn=='ok'){
 
-function deleteConfirm() {
-    return confirm('Weet u zeker dat u deze applicatie wilt verwijderen?');
+                Ext.get('editFrame').dom.src = deleteurl + '?applicationToDelete=' + objId;
+                var gridCmp = Ext.getCmp('editGrid')
+                gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
+
+            }
+        }
+    });  
+
+    return false;
 }
 
 function reloadGrid(){

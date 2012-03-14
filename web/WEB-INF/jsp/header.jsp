@@ -54,7 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <ul class="slideoutmenu">
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" id="menu_kiesapplicatie">Kies een applicatie</stripes:link></li>
                     <c:if test="${!empty sessionScope['applicationId'] && sessionScope['applicationId'] != -1}">
-                        <li>
+                        <li id="activeAppMenu">
                             <a href="#">Applicatie: <span style="font-style: italic;"><c:out value="${sessionScope['applicationName']}"/></span></a>
                             <ul class="dropdownmenu">
                                 <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="menu_instellingen">Instellingen</stripes:link></li>

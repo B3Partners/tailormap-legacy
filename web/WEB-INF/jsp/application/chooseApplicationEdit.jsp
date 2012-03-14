@@ -27,14 +27,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
         </p>
-            <c:if test="${actionBean.context.eventName == 'deleteApplication'}">
-                <script type="text/javascript">
+            <script type="text/javascript">
                     var frameParent = getParent();
+                <c:if test="${actionBean.context.eventName == 'deleteApplication'}">
                     if(frameParent && frameParent.reloadGrid) {
                         frameParent.reloadGrid();
+                    }   
+                </c:if>
+                <c:if test="${empty sessionScope['applicationId']}">
+                    if(frameParent && frameParent.removeActiveAppMenu) {
+                        frameParent.removeActiveAppMenu();
                     }
-                </script>
-            </c:if>
+                </c:if>
+            </script>
 
     </stripes:layout-component>
 </stripes:layout-render>

@@ -47,6 +47,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" event="view"/>';
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>';
                 var activelink = 'menu_kiesapplicatie';
+                
+                function removeActiveAppMenu() {
+                    var a = document.getElementById("activeAppMenu");
+                    if(a) {
+                        Ext.removeNode(a);
+                    }
+                }
             </script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/chooseApplication.js"></script>
         </div>
