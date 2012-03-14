@@ -33,7 +33,7 @@ Ext.define("viewer.CombineImage", {
      * @param succesFunction the function that is called when success
      * @param failureFunction the function that is called when failed
      */
-    submitPrint: function(params, successFunction, failureFunction) {        
+    getImageUrl: function(params, successFunction, failureFunction) {        
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: {create: true, "params": params}, 

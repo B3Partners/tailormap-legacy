@@ -25,7 +25,7 @@ Ext.define ("viewer.components.Print",{
     vl:null,
     minKwality: 128,
     minWidth: 500,
-    printService: null,
+    combineImageService: null,
     config:{
         name: "Print",
         title: "",
@@ -42,7 +42,7 @@ Ext.define ("viewer.components.Print",{
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
         
-        this.printService = Ext.create("viewer.CombineImage",{});
+        this.combineImageService = Ext.create("viewer.CombineImage",{});
         
         var me = this;
         this.renderButton({
@@ -53,31 +53,24 @@ Ext.define ("viewer.components.Print",{
             icon: me.titlebarIcon,
             tooltip: me.tooltip
         });
-        //test
-        //me.buttonClick();        
-        /*this.vl=viewerController.mapComponent.createVectorLayer({
-            id: 'vectorLayer',
-            name:'vectorLayer',
-            geometrytypes:["Point","LineString","Polygon","MultiPolygon"],
-            showmeasures:true
-        });
-        viewerController.mapComponent.getMap().addLayer(this.vl);*/
+        
         return this;
     },
     buttonClick: function(){
-        this.popup.show();
+        var getImage=false;
+        if(!this.popup.popupWin.isVisible()){
+            this.popup.show();
+            getImage=true;
+        }
         if (this.panel==null)
             this.createForm();
+        if (getImage){
+            this.redrawPreview();
+        }
     },
     createForm: function(){
         var me = this;
-        /*if(this.vl.isLoaded){
-            var f=this.vl.getAllFeatures();
-            if (f !=null){
-                console.log(f);
-            }
-            this.vl.drawFeature("Point");
-       }*/
+        
         this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,
@@ -288,24 +281,48 @@ Ext.define ("viewer.components.Print",{
         });
     },
     /**
+    * Call to redraw the preview
+    */
+    redrawPreview: function (){
+        var properties = this.getProperties();
+        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
+    },
+    /**
     * Called when a button is clicked and the form must be submitted.
     */
-    submitSettings: function(action){
-        var properties = this.getValuesFromContainer(this.panel);
+    submitSettings: function(action){        
+        var properties = this.getProperties();
         properties.action=action;
-        var mapProperties=this.getMapValues();        
-        Ext.apply(properties, mapProperties);
-        this.printService.submitPrint(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
+        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
         
     },
+    /**
+     *Called when the imageUrl is succesfully returned
+     *@param imageUrl the url to the image
+     */
     imageSuccess: function(imageUrl){        
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
         Ext.getCmp("previewImg").el.dom.src = imageUrl;
     },
+    /**
+     *Called when the imageUrl is succesfully returned
+     *@param error the error message
+     */
     imageFailure: function(error){
         console.log(error);
     },
-    
+    /**
+     *Get all the properties from the map and the print form
+     */
+    getProperties: function(){
+        var properties = this.getValuesFromContainer(this.panel);
+        var mapProperties=this.getMapValues();        
+        Ext.apply(properties, mapProperties);
+        return properties;
+    },
+    /**
+     *Get all the map properties/values
+     */
     getMapValues: function(){
         var values = new Object();
         var printLayers = new Array();
