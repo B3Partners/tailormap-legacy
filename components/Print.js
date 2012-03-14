@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Print",{
     vl:null,
     minKwality: 128,
     minWidth: 500,
+    printService: null,
     config:{
         name: "Print",
         title: "",
@@ -40,6 +41,8 @@ Ext.define ("viewer.components.Print",{
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
+        
+        this.printService = Ext.create("viewer.CombineImage",{});
         
         var me = this;
         this.renderButton({
@@ -92,7 +95,11 @@ Ext.define ("viewer.components.Print",{
                 xtype: 'container',
                 height: 200,
                 items: [{
-                    
+                    xtype: 'image',
+                    src: '',
+                    id: 'previewImg',                    
+                    height: 200,
+                    border: 1
                 }]                
             },{
                 //bottom container (2)
@@ -112,14 +119,14 @@ Ext.define ("viewer.components.Print",{
                         xtype: 'textfield',
                         width: '100%',                        
                         name: 'title',
-                        value: "titel"
+                        value: ""
                     },{                        
                         xtype: "label",
                         text: "Subtitel"
                     },{
                         xtype: 'textfield',
                         name: 'subtitle',
-                        value: "Sub titel"
+                        value: ""
                     },{                        
                         xtype: "label",
                         text: "Optionele Tekst"
@@ -147,6 +154,7 @@ Ext.define ("viewer.components.Print",{
                             width: '100%',
                             items: [{
                                 xtype: 'slider',
+                                name: "quality",
                                 value: 50,
                                 increment: 10,
                                 minValue: 0,
@@ -156,6 +164,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'button',
                                 text: '<',
                                 width: 30
+                                //todo handle reset
                             }]
                         }]
                     },{
@@ -182,7 +191,7 @@ Ext.define ("viewer.components.Print",{
                                     boxLabel: 'Staand', 
                                     name: 'orientation', 
                                     inputValue: 'portrait', 
-                                    checked: me.getOrientation()=='portrait' 
+                                    checked: !(me.getOrientation()=='landscape') 
                                 }]                            
                             },{
                                 xtype: 'checkbox',
@@ -199,14 +208,16 @@ Ext.define ("viewer.components.Print",{
                                 text: "Pagina formaat"  
                             },{
                                 xtype: 'combo',                                
+                                name: 'pageformat',
                                 store: [['a4','A4'],['a3','A3']],
                                 width: 100,
-                                value: me.getDefault_format()
+                                value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
                                 xtype: 'label',  
                                 text: "Kaart draaien"  
                             },{
                                 xtype: 'slider',
+                                name: 'angle',
                                 value: 0,
                                 increment: 1,                                
                                 minValue: 0,
@@ -282,7 +293,40 @@ Ext.define ("viewer.components.Print",{
     submitSettings: function(action){
         var properties = this.getValuesFromContainer(this.panel);
         properties.action=action;
-        console.log(properties);
+        var mapProperties=this.getMapValues();        
+        Ext.apply(properties, mapProperties);
+        this.printService.submitPrint(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
+        
+    },
+    imageSuccess: function(imageUrl){        
+        if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
+        Ext.getCmp("previewImg").el.dom.src = imageUrl;
+    },
+    imageFailure: function(error){
+        console.log(error);
+    },
+    
+    getMapValues: function(){
+        var values = new Object();
+        var printLayers = new Array();
+        //get last getmap request from wms layers
+        var layers=viewerController.mapComponent.getMap().getLayers();        
+        for (var i=0; i < layers.length; i ++){
+            var layer = layers[i];
+            if (layer.getType()== viewer.viewercontroller.controller.Layer.WMS_TYPE){
+                var request=layer.getMapRequest();
+                if (request){
+                    if (layer.getAlpha()!=null)
+                        request.alpha = layer.getAlpha();           
+                    printLayers.push(
+                        request
+                    );
+                }
+            }
+        }
+        values.requests=printLayers;
+        
+        return values;
     },
     /**
      * Get the item values of the given container.
