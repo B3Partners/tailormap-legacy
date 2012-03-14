@@ -40,7 +40,6 @@ import org.stripesstuff.stripersist.Stripersist;
 public class ChooseApplicationActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ChooseApplicationActionBean.class);
     
-    private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/application/chooseApplicationEdit.jsp";
     
@@ -58,25 +57,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private JSONArray filter;
     
     @Validate
-    private Application application;
+    private Application applicationToDelete;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
-    public ActionBeanContext getContext() {
-        return context;
-    }
-    
-    public void setContext(ActionBeanContext context) {
-        this.context = context;
-    }
-
-    public Application getApplication() {
-        return application;
-    }
-
-    public void setApplication(Application application) {
-        this.application = application;
-    }
-
     public String getDir() {
         return dir;
     }
@@ -124,6 +107,14 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     public void setStart(int start) {
         this.start = start;
     }
+
+    public Application getApplicationToDelete() {
+        return applicationToDelete;
+    }
+
+    public void setApplicationToDelete(Application applicationToDelete) {
+        this.applicationToDelete = applicationToDelete;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -137,18 +128,19 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     
     public Resolution deleteApplication() {
         try {
-            Stripersist.getEntityManager().remove(application);
+            Stripersist.getEntityManager().remove(applicationToDelete);
             Stripersist.getEntityManager().getTransaction().commit();
 
-            application = null;
-            applicationId = -1L;
-
             getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+            
+            if(applicationToDelete.equals(application)) {
+                setApplication(null);
+            } 
         } catch(Exception e) {
             log.error(String.format("Error deleting application #%d named %s",
-                    application.getId(),
-                    application.getName(),
-                    application.getVersion() == null ? "" : "v" + application.getVersion() + " "),
+                    applicationToDelete.getId(),
+                    applicationToDelete.getName(),
+                    applicationToDelete.getVersion() == null ? "" : "v" + applicationToDelete.getVersion() + " "),
                     e);
             String ex = e.toString();
             Throwable cause = e.getCause();
