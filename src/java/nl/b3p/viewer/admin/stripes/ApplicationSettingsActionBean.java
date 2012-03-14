@@ -32,7 +32,7 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Jytte Schaeffer
  */
-@UrlBinding("/action/applicationsettings/{$event}")
+@UrlBinding("/action/applicationsettings/")
 @StrictBinding
 @RolesAllowed({"Admin","ApplicationAdmin"}) 
 public class ApplicationSettingsActionBean extends ApplicationActionBean {
@@ -128,7 +128,6 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     //</editor-fold>
     
     @DefaultHandler
-    @HandlesEvent("default")
     @DontValidate
     public Resolution view(){
         if(application != null){
