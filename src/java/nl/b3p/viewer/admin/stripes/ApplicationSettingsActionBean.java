@@ -282,7 +282,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 .getSingleResult();
             
             getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" bestaat al", name));
-            return new ForwardResolution(JSP);
+            return new RedirectResolution(this.getClass());
         } catch(NoResultException nre) {
             // name is unique
         }
@@ -300,9 +300,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
             setApplication(copy);   
-
-            application = copy;
-            return view();
+            
+            return new RedirectResolution(this.getClass());
         } catch(Exception e) {
             log.error(String.format("Error copying application #%d named %s %swith new name %s",
                     application.getId(),
