@@ -94,24 +94,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht<br>
                     <stripes:submit name="save" value="Opslaan"/>
                     <stripes:submit name="cancel" value="Annuleren"/>
-                    <stripes:submit name="copy" value="Maak kopie" onclick="return askName();"/>                                    
+                    <input type="hidden" name="copy" value="1" disabled="true"/>
+                    <input type="button" value="Maak kopie" onclick="return confirmCopy();"/>                                    
                 </stripes:form>
             </div>
-        <script type="text/javascript">
-            var activelink = 'menu_instellingen';
-            
-            
-            function askName() {
-                var name = prompt("Naam van kopie",document.forms[0].name.value);
+<script type="text/javascript">
+    var activelink = 'menu_instellingen';
 
-                if(name == null) {
-                    alert("Naam moet zijn ingevuld");
-                    return false;
-                } else {                    
-                    document.forms[0].name.value = name;
-                    return true;
+    function confirmCopy() {
+        Ext.MessageBox.show({
+            title: 'Applicatie kopiëren',
+            msg: 'Naam van kopie:',
+            buttons: Ext.MessageBox.OKCANCEL,
+            prompt:true,
+            value: document.forms[0].name.value + " (kopie)",
+            fn: function(btn, text){
+                if(btn=='ok' && text){
+                    
+                    var frm = document.forms[0];
+                    
+                    frm.name.value = text;
+                    frm.copy.disabled = false;
+                    
+                    frm.submit();
                 }
             }
-        </script>
+        });  
+    }
+</script>
     </stripes:layout-component>
 </stripes:layout-render>
