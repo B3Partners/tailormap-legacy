@@ -33,8 +33,13 @@ Ext.define ("viewer.components.Print",{
         tooltip : "",
         default_format: null,
         orientation: null,
-        legend: null
+        legend: null,
+        max_imagesize: "2048"
     },
+    /**
+     * @constructor
+     * creating a print module.
+     */
     constructor: function (conf){  
         //set minwidth:
         if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
@@ -56,6 +61,10 @@ Ext.define ("viewer.components.Print",{
         
         return this;
     },
+    /**
+     * Called when the button is clicked. Opens the print window (if not already opened) and creates a form.
+     * If the window was invisible the preview will be redrawn
+     */
     buttonClick: function(){
         var getImage=false;
         if(!this.popup.popupWin.isVisible()){
@@ -68,6 +77,9 @@ Ext.define ("viewer.components.Print",{
             this.redrawPreview();
         }
     },
+    /**
+     * Create the print form.
+     */
     createForm: function(){
         var me = this;
         
@@ -87,12 +99,19 @@ Ext.define ("viewer.components.Print",{
                 //top container (1)
                 xtype: 'container',
                 height: 200,
+                layout: 'hbox',
                 items: [{
+                    xtype: "label",
+                    text: "Kaart voorbeeld: "
+                },{
                     xtype: 'image',
                     src: '',
                     id: 'previewImg',                    
                     height: 200,
-                    border: 1
+                    style: {
+                        border: "1px solid gray",
+                        "margin-left": "10px"
+                    }
                 }]                
             },{
                 //bottom container (2)
@@ -293,8 +312,7 @@ Ext.define ("viewer.components.Print",{
     submitSettings: function(action){        
         var properties = this.getProperties();
         properties.action=action;
-        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
-        
+        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
     },
     /**
      *Called when the imageUrl is succesfully returned
@@ -330,7 +348,7 @@ Ext.define ("viewer.components.Print",{
         var layers=viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
-            if (layer.getType()== viewer.viewercontroller.controller.Layer.WMS_TYPE){
+            //if (){
                 var request=layer.getMapRequest();
                 if (request){
                     if (layer.getAlpha()!=null)
@@ -339,7 +357,7 @@ Ext.define ("viewer.components.Print",{
                         request
                     );
                 }
-            }
+           //}
         }
         values.requests=printLayers;
         
