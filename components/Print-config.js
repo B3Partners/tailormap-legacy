@@ -45,7 +45,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     boxLabel: 'Staand', 
                     name: 'orientation', 
                     inputValue: 'portrait', 
-                    checked: me.configObject.orientation=="portrait" 
+                    checked: !(me.configObject.orientation=="landscape")
                 }]
             },{
                 xtype: "label",
@@ -54,7 +54,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: "combo",
                 fields: ['value','text'],
-                value: me.configObject.default_format,
+                value: me.configObject.default_format ? me.configObject.default_format : "a4",
                 name: "default_format",
                 store: [
                     ["a4","A4"],
@@ -70,6 +70,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "legend",
                 checked: me.configObject.legend,
                 boxLabel: "Standaard de legenda toevoegen"
+            },{
+                xtype: "label",
+                text: "Maximale grote plaatje",
+                style: "font-weight: bold;"                
+            },{
+                xtype: "textfield",
+                name: "max_imagesize",
+                value: me.configObject.max_imagesize ? me.configObject.max_imagesize :"2048"
             }
         ]);
                  
