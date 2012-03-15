@@ -95,7 +95,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         var flamingoObj = this.map.getFrameworkMap();//this.getFrameworkLayer();
         flamingoObj.callMethod(this.gisId,'removeAllLayerFeatures',this.getId(),false);
     },
-
+    
+    /**
+     * Removes the given feature from this vectorlayer
+     * @param feature The feature to be removed
+     */
+    removeFeature : function (feature){
+        var flamingoObj = this.map.getFrameworkMap();
+        flamingoObj.callMethod(this.gisId,'removeLayerFeatureById',this.getId(),feature.getId(),false);
+    },
 
     /**
      * Gets the active feature from this vector layer
@@ -146,6 +154,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         }
         return features;
     },
+    
+    getFeatureById : function (featureId){
+        var flamingoFeature=this.map.getFrameworkMap().callMethod(this.getGisId(),"getFeature",this.getId(),featureId);
+        if(flamingoFeature != null){
+            return this.fromFlamingoFeature(flamingoFeature);
+        }else{
+            return null;
+        }
+    },
 
     /**
      * Orders the flamingo map to start drawing a geometry type
@@ -190,7 +207,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     toFlamingoFeature : function(feature){
         var flFeature = new Object();
         flFeature["id"]= feature.getId();
-        flFeature["wktgeom"] = feature.getWkt();
+        flFeature["wktgeom"] = feature.getWktgeom();
+        flFeature[this.labelPropertyName] = feature.getLabel();
         return flFeature;
     },
     /**

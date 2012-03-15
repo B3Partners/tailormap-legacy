@@ -412,10 +412,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             //onchange tool is called for a tool group but event is registerd on the MapComponent
             id=this.getId();
             object = this.getObject(id);
-        }else if(event == viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED){
-            // Make sure "component" is the drawn feature
-            var feature = new viewer.viewercontroller.controller.Feature(id,component[1]);
-            component = feature;
         }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){            
             component = {extent: component[1]};
         }else if ( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS){
@@ -452,7 +448,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             comp.extent=component[2];
             comp.data=component[1];
             component=comp;
-        }else if(event == viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED ){
+        }else if(event == viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED ||event == viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED){
             var layerName = component[1].fmc_layername;
             var layerObj = this.getMap().getLayer(layerName);
             var featureObj = Ext.create("viewer.viewercontroller.controller.Feature",component[1]);
