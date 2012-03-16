@@ -344,13 +344,14 @@ Ext.define ("viewer.components.Print",{
     getMapValues: function(){
         var values = new Object();
         var printLayers = new Array();
-        //get last getmap request from wms layers
+        //get last getmap request from all layers
         var layers=viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             //if (){
                 var request=layer.getMapRequest();
                 if (request){
+                    request.protocol=layer.getType();
                     if (layer.getAlpha()!=null)
                         request.alpha = layer.getAlpha();           
                     printLayers.push(
@@ -359,8 +360,13 @@ Ext.define ("viewer.components.Print",{
                 }
            //}
         }
-        values.requests=printLayers;
-        
+        values.requests=printLayers;        
+        var bbox=viewerController.mapComponent.getMap().getExtent();
+        if (bbox){
+            values.bbox = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
+        }
+        values.width = viewerController.mapComponent.getMap().getWidth();
+        values.height = viewerController.mapComponent.getMap().getHeight();
         return values;
     },
     /**

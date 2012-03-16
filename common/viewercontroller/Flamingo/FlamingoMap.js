@@ -196,7 +196,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *see @link Map.getExtent
      */
     getExtent: function(){
-        var extent= this.getFrameworkMap().callMethod(this.getId(),'getExtent');
+        var extent= this.getFrameworkMap().callMethod(this.getId(),'getCurrentExtent');
         return new viewer.viewercontroller.controller.Extent(extent.minx,extent.miny,extent.maxx,extent.maxy);
     },
 
@@ -244,10 +244,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         });
     },
     /**
-     * see @link Map.getCenter
+     * see @see Map.getCenter
      */
     getCenter : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "getCenter");
+    },
+    /**
+     * @see Map#getWidth
+     */
+    getWidth : function(){
+        return this.getFrameworkMap().callMethod(this.getId(), "getMovieClipWidth");
+    },
+    /**
+     * @see Map#getHeight
+     */
+    getHeight : function(){
+        return this.getFrameworkMap().callMethod(this.getId(), "getMovieClipHeight");
     },
     /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
