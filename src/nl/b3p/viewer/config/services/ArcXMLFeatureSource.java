@@ -17,8 +17,17 @@
 package nl.b3p.viewer.config.services;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.*;
+import nl.b3p.geotools.data.arcims.ArcIMSDataStore;
+import nl.b3p.geotools.data.arcims.ArcIMSDataStoreFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
 /**
  *
  * @author jytte
@@ -26,6 +35,8 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue(ArcXMLFeatureSource.PROTOCOL)
 public class ArcXMLFeatureSource extends FeatureSource {
+    private static final Log log = LogFactory.getLog(ArcXMLFeatureSource.class);
+
     public static final String PROTOCOL = "arcxml";
     
     @Basic
@@ -39,13 +50,37 @@ public class ArcXMLFeatureSource extends FeatureSource {
         this.serviceName = serviceName;
     }
 
+    
+    public DataStore createDataStore() throws Exception {
+        Map params = new HashMap();
+
+        params.put(ArcIMSDataStoreFactory.PARAM_URL.key, new URL(getUrl()));
+        params.put(ArcIMSDataStoreFactory.PARAM_SERVICENAME.key, serviceName);
+        
+        params.put(ArcIMSDataStoreFactory.PARAM_USER, getUsername());
+        params.put(ArcIMSDataStoreFactory.PARAM_PASSWD, getPassword());
+        
+        log.debug("Opening datastore using parameters: " + params);
+        try {
+            DataStore ds = DataStoreFinder.getDataStore(params);      
+            if(ds == null) {
+                throw new Exception("Cannot open datastore using parameters " + params);
+            }
+            return ds;
+        } catch(Exception e) {
+            throw new Exception("Cannot open datastore using parameters " + params, e);
+        }
+    }
+    
     @Override
     List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
+        DataStore ds = createDataStore();
+
+        return ds.getFeatureSource(sft.getTypeName());
     }
 }
