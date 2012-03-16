@@ -19,7 +19,10 @@ package nl.b3p.viewer.stripes;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -40,6 +43,8 @@ import org.json.JSONObject;
 @StrictBinding
 public class CombineImageActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
+    
+    private static HashMap<String,CombineImageSettings> imageSettings = new HashMap<String,CombineImageSettings>();
     
     private ActionBeanContext context;
     private int maxResponseTime = 10000;
@@ -84,8 +89,8 @@ public class CombineImageActionBean implements ActionBean {
         this.keepAlive = keepAlive;
     }
     //</editor-fold>
-    
-    public Resolution create() throws JSONException, Exception {
+    @DefaultHandler
+    public Resolution create() throws JSONException, Exception {        
         JSONObject jRequest = new JSONObject(params);
         JSONObject jResponse = new JSONObject();
         String error=null;
@@ -126,7 +131,12 @@ public class CombineImageActionBean implements ActionBean {
                 if (imageId==null){
                     imageId= uniqueId();
                 }
-                this.getContext().getRequest().getSession().setAttribute(imageId, cis);
+                //this.getContext().getRequest().getSession().setAttribute(imageId, cis);
+                //todo: better fix....
+                if (imageSettings.size()>100){                    
+                    imageSettings.clear();
+                }
+                imageSettings.put(imageId, cis);
                 String url=this.context.getRequest().getRequestURL().toString();
                 url+="?getImage=t&imageId="+imageId;
                 jResponse.put("imageUrl", url );
@@ -147,12 +157,15 @@ public class CombineImageActionBean implements ActionBean {
      * @throws Exception 
      */
     public Resolution getImage() throws Exception {
-        if (imageId==null || getContext().getRequest().getSession().getAttribute(imageId)==null){
+        if (imageId==null || imageSettings.get(imageId)==null){
             throw new Exception("No imageId given");
         }
-        final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
+        log.info("get    "+imageId+" sessionid: "+this.getContext().getRequest().getSession().getId());
+        //final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
+        final CombineImageSettings settings = imageSettings.get(imageId);
         if (getKeepAlive()==null || getKeepAlive().length()==0) {
-            getContext().getRequest().getSession().removeAttribute(imageId);
+            //getContext().getRequest().getSession().removeAttribute(imageId);
+            imageSettings.remove(imageId);
         }
         StreamingResolution res = new StreamingResolution(settings.getMimeType()) {
             @Override

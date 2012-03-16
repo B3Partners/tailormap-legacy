@@ -115,7 +115,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>",
                 "geoserviceregistry": "<stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/>",
                 "appLayer": "<stripes:url beanclass="nl.b3p.viewer.stripes.AppLayerActionBean"/>",
-                "combineimage": "<stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/>"
+                "combineimage": "<stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/>",
+                "print": "<stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/>"
             };
             
             var appId = "${actionBean.application.id}";
