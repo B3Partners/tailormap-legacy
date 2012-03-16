@@ -149,6 +149,16 @@ public class ArcIMSServer {
         axlServiceInfo = response.getServiceInfo();
     }    
     
+    public AxlFeatures getFeatures(AxlGetFeatures request) throws Exception {
+        request.setOutputmode(AxlGetFeatures.OUTPUTMODE_NEWXML);
+        AxlResponse response = internalIssueRequest(createRequest(request));
+        
+        if(response.getError() != null) {
+            throw new AxlException(response.getError());
+        }
+        return response.getFeatures(); 
+    }
+    
     protected AxlResponse internalIssueRequest(ArcXMLRequest request) throws Exception {
         
         final URL finalURL = request.getFinalURL();

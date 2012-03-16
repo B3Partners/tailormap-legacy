@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,46 +16,37 @@
  */
 package nl.b3p.geotools.data.arcims;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
- * @author matthijsln
+ * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlResponse {
-    @XmlElement(name="SERVICEINFO")
-    private AxlServiceInfo serviceInfo;
+public class AxlFeatures {
     
-    @XmlElement(name="FEATURES")
-    private AxlFeatures features;
+    @XmlElement(name="FEATURE")
+    List<AxlFeature> features;
+
+    @XmlElement(name="FEATURECOUNT")
+    AxlFeatureCount featureCount;
     
-    @XmlElement(name="ERROR")
-    private String error;
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public AxlServiceInfo getServiceInfo() {
-        return serviceInfo;
-    }
-
-    public void setServiceInfo(AxlServiceInfo serviceInfo) {
-        this.serviceInfo = serviceInfo;
-    }
-
-    public AxlFeatures getFeatures() {
+    public List<AxlFeature> getFeatures() {
         return features;
     }
 
-    public void setFeatures(AxlFeatures features) {
+    public void setFeatures(List<AxlFeature> features) {
         this.features = features;
-    }       
+    }
+
+    public AxlFeatureCount getFeatureCount() {
+        return featureCount;
+    }
+
+    public void setFeatureCount(AxlFeatureCount featureCount) {
+        this.featureCount = featureCount;
+    }
 }

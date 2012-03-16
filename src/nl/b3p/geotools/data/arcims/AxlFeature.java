@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,46 +16,26 @@
  */
 package nl.b3p.geotools.data.arcims;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
- * @author matthijsln
+ * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlResponse {
-    @XmlElement(name="SERVICEINFO")
-    private AxlServiceInfo serviceInfo;
+public class AxlFeature {
     
-    @XmlElement(name="FEATURES")
-    private AxlFeatures features;
-    
-    @XmlElement(name="ERROR")
-    private String error;
+    @XmlElement(name="FIELD")
+    List<AxlField> fields;
 
-    public String getError() {
-        return error;
+    public List<AxlField> getFields() {
+        return fields;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setFields(List<AxlField> fields) {
+        this.fields = fields;
     }
-
-    public AxlServiceInfo getServiceInfo() {
-        return serviceInfo;
-    }
-
-    public void setServiceInfo(AxlServiceInfo serviceInfo) {
-        this.serviceInfo = serviceInfo;
-    }
-
-    public AxlFeatures getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(AxlFeatures features) {
-        this.features = features;
-    }       
 }
