@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.Print",{
     extend: "viewer.components.Component",  
     panel: null,
+    printForm: null,
     vl:null,
     minKwality: 128,
     minWidth: 500,
@@ -298,6 +299,17 @@ Ext.define ("viewer.components.Print",{
                 }]                
             }]
         });
+        
+        this.printForm = Ext.create('Ext.form.Panel', {            
+            renderTo: me.getContentDiv(),
+            url: actionBeans["print"],
+            standardSubmit: true,
+            items: [{
+                xtype: "textfield",
+                name: "params",
+                id: 'formParams'
+            }]
+        });
     },
     /**
     * Call to redraw the preview
@@ -312,7 +324,11 @@ Ext.define ("viewer.components.Print",{
     submitSettings: function(action){        
         var properties = this.getProperties();
         properties.action=action;
-        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
+        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
+        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
+        this.printForm.submit({            
+            target: '_blank'
+        });
     },
     /**
      *Called when the imageUrl is succesfully returned
