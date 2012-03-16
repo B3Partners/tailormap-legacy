@@ -100,7 +100,7 @@ public class ImageCollector extends Thread {
             setMessage("");
             setStatus(COMPLETED);
         } catch (Exception ex) {
-            log.error("error callimage collector: ", ex);
+            log.warn("error callimage collector: ", ex);
             setStatus(ERROR);
         } 
     }
