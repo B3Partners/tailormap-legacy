@@ -15,6 +15,9 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
     },
     constructor: function (config){
         this.initConfig(config);
+        if(this.label == null){
+            this.label = "";
+        }
        // this.wktParser = new OpenLayers.Format.WKT();
     },
 
@@ -36,6 +39,18 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
     fromOpenLayersFeature : function(openLayersFeature){
         var feature = new viewer.viewercontroller.controller.Feature(openLayersFeature.id,openLayersFeature.geometry.toString());
         return feature;
+    },
+    
+    /**
+     * Function to get the JSON representation for this feature object.
+     */
+    toJsonObject : function (){
+        var json = {};
+        json.id = this.id;
+        json.wktgeom = this.wktgeom;
+        json.color = this.color;
+        json.label = this.label;
+        return json;
     }
 
 });

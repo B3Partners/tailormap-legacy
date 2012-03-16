@@ -54,7 +54,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         if (this.getShowmeasures()!=null)
             xml+= "showmeasures='"+this.getShowmeasures()+"' ";
         xml+=">";
-        xml+="<fmc:Property name='"+this.labelPropertyName+"' title='Label' type='MultiLine'/>";
+        xml+="<fmc:Property name='"+this.labelPropertyName+"' title='Label' type='SingleLine'/>";
         //add style
         xml+="<fmc:Style ";
         if (this.style.fillcolor!=null)
@@ -208,7 +208,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         var flFeature = new Object();
         flFeature["id"]= feature.getId();
         flFeature["wktgeom"] = feature.getWktgeom();
-        flFeature[this.labelPropertyName] = feature.getLabel();
+        if(feature.getLabel() != ""){
+            flFeature[this.labelPropertyName] = feature.getLabel();
+        }else{
+            flFeature[this.labelPropertyName] = null;
+        }
         return flFeature;
     },
     /**
