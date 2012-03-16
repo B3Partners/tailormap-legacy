@@ -30,8 +30,8 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.util.StreamCopy;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -111,7 +111,7 @@ public class FileActionBean implements ActionBean {
             features = File.createTempFile("Import", ".txt");
             in = featureFile.getInputStream();
             out = new FileOutputStream(features);
-            StreamCopy.copy(in, out);
+            IOUtils.copy(in, out);
             try {
                 in.close();
                 out.close();
@@ -157,7 +157,7 @@ public class FileActionBean implements ActionBean {
 
                     try {
                         in = new FileInputStream(features);
-                        StreamCopy.copy(in, out);
+                        IOUtils.copy(in, out);
                     } catch (IOException ex) {
                         log.error("Could not write zip to output: ", ex);
                     } finally {
