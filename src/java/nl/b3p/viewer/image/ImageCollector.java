@@ -22,6 +22,7 @@
 package nl.b3p.viewer.image;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Stack;
 import javax.imageio.ImageIO;
@@ -50,8 +51,8 @@ public class ImageCollector extends Thread {
     private int status = NEW;
     private String message = null;
     private BufferedImage bufferedImage;
-    private static final String host = AuthScope.ANY_HOST;
-    private static final int port = AuthScope.ANY_PORT;
+    protected static final String host = AuthScope.ANY_HOST;
+    protected static final int port = AuthScope.ANY_PORT;
     private String username = null;
     private String password = null;
     private String url;
@@ -82,7 +83,7 @@ public class ImageCollector extends Thread {
     }
 
     public void processWaiting() throws InterruptedException {
-        join(maxResponseTime);
+        join(getMaxResponseTime());
     }
 
     public void run() {
@@ -90,39 +91,43 @@ public class ImageCollector extends Thread {
             return;
         }
 
-        HttpMethod method = null;
         try {
             if (realUrl != null) {
                 setBufferedImage(ImageIO.read(realUrl));
             } else {
-
-                HttpClient client = new HttpClient();
-                client.getHttpConnectionManager().
-                        getParams().setConnectionTimeout(maxResponseTime);
-
-                if (username != null && password != null) {
-                    client.getParams().setAuthenticationPreemptive(true);
-                    Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
-                    AuthScope authScope = new AuthScope(host, port);
-                    client.getState().setCredentials(authScope, defaultcreds);
-                }
-                method = new GetMethod(getUrl());
-
-                int statusCode = client.executeMethod(method);
-                if (statusCode != HttpStatus.SC_OK) {
-                    throw new Exception("Error connecting to server. HTTP status code: " + statusCode);
-                }
-
-                String mime = method.getResponseHeader("Content-Type").getValue();
-                setBufferedImage(ImageTool.readImage(method, mime));
-
+                setBufferedImage(loadImage(getUrl(),getUsername(),getPassword()));                
             }
             setMessage("");
             setStatus(COMPLETED);
         } catch (Exception ex) {
             log.error("error callimage collector: ", ex);
             setStatus(ERROR);
-        } finally {
+        } 
+    }
+    
+    protected BufferedImage loadImage(String url, String user, String pass) throws IOException, Exception {
+        HttpMethod method = null;
+        try {
+            HttpClient client = new HttpClient();
+            client.getHttpConnectionManager().
+                    getParams().setConnectionTimeout(getMaxResponseTime());
+
+            if (user != null && pass != null) {
+                client.getParams().setAuthenticationPreemptive(true);
+                Credentials defaultcreds = new UsernamePasswordCredentials(user, pass);
+                AuthScope authScope = new AuthScope(host, port);
+                client.getState().setCredentials(authScope, defaultcreds);
+            }
+            method = new GetMethod(url);
+
+            int statusCode = client.executeMethod(method);
+            if (statusCode != HttpStatus.SC_OK) {
+                throw new Exception("Error connecting to server. HTTP status code: " + statusCode);
+            }
+
+            String mime = method.getResponseHeader("Content-Type").getValue();
+            return ImageTool.readImage(method, mime);
+        }finally{
             if (method != null) {
                 method.releaseConnection();
             }
@@ -165,5 +170,29 @@ public class ImageCollector extends Thread {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getMaxResponseTime() {
+        return maxResponseTime;
+    }
+
+    public void setMaxResponseTime(int maxResponseTime) {
+        this.maxResponseTime = maxResponseTime;
     }
 }

@@ -32,34 +32,6 @@ public class CombineImageSettings {
     private Integer tilingTileWidth = null;
     private Integer tilingTileHeight = null;
     private String tilingServiceUrl = null;    
-
-    /**
-     * @return the wktGeomColor
-     */
-    public Color getDefaultWktGeomColor() {
-        return defaultWktGeomColor;
-    }
-
-    /**
-     * @param wktGeomColor the wktGeomColor to set
-     */
-    public void setDefaultWktGeomColor(Color defaultWktGeomColor) {
-        this.defaultWktGeomColor = defaultWktGeomColor;
-    }
-
-    /**
-     * @return the mimeType
-     */
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    /**
-     * @param mimeType the mimeType to set
-     */
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
     
     /**
      * Calculate the urls in the combineImageSettings.
@@ -99,11 +71,15 @@ public class CombineImageSettings {
             return null;
         }
         Bbox newBbox= getCalculatedBbox();
-        String newurl=new String(url.getUrl());
-        newurl=changeParameter(newurl, "bbox", newBbox.toString());
-        newurl=changeParameter(newurl, "width", width.toString());
-        newurl=changeParameter(newurl, "height", height.toString());
-        url.setUrl(newurl);
+        if (CombineImageUrl.WMS.equals(url.getProtocol())){
+            String newurl=new String(url.getUrl());
+            newurl=changeParameter(newurl, "bbox", newBbox.toString());
+            newurl=changeParameter(newurl, "width", width.toString());
+            newurl=changeParameter(newurl, "height", height.toString());
+            url.setUrl(newurl);
+        }else if (CombineImageUrl.ARCIMS.equals(url.getProtocol())){
+            
+        }
         return url;
     }
     /**
@@ -135,11 +111,7 @@ public class CombineImageSettings {
         }
         return newBbox;
     }
-
-    public List getUrls() {
-        return urls;
-    }
-
+    
     public void setUrls(String[] urls){
         this.urls=new ArrayList();
         for (int i=0; i < urls.length; i++){    
@@ -153,59 +125,14 @@ public class CombineImageSettings {
         }
         this.urls.add(ciu);
     }
-
-    public void setUrls(List<CombineImageUrl> urls) {
-        this.urls = urls;
-    }
-
-    public List getWktGeoms() {
-        return wktGeoms;
-    }
-
-    public void setWktGeoms(List<CombineImageWkt> wktGeoms) {
-        this.wktGeoms = wktGeoms;
-    }
+    
     public void setWktGeoms(String[] wktGeoms){
         this.wktGeoms=new ArrayList();
         for (int i=0; i < wktGeoms.length; i++){
             CombineImageWkt ciw= new CombineImageWkt(wktGeoms[i]);
             this.wktGeoms.add(ciw);
         }
-    }
-    public Bbox getBbox() {
-        return bbox;
-    }
-
-    public void setBbox(double[] bbox) {
-        this.bbox = new Bbox(bbox);
-    }
-    public void setBbox(String bbox) throws Exception {
-        this.bbox = new Bbox(bbox);
-    }
-
-    public Integer getSrid() {
-        return srid;
-    }
-
-    public void setSrid(Integer srid) {
-        this.srid = srid;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
+    }  
     /*Returned een bepaalde parameter uit de url.*/
     private static String getParameter(String url, String key) {
         String lowerUrl = url.toLowerCase();
@@ -336,43 +263,103 @@ public class CombineImageSettings {
         return result;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
+    public Color getDefaultWktGeomColor() {
+        return defaultWktGeomColor;
+    }
+    public void setDefaultWktGeomColor(Color defaultWktGeomColor) {
+        this.defaultWktGeomColor = defaultWktGeomColor;
+    }
+    public String getMimeType() {
+        return mimeType;
+    }
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+    public List getUrls() {
+        return urls;
+    }
+    public void setUrls(List<CombineImageUrl> urls) {
+        this.urls = urls;
+    }
+    public List getWktGeoms() {
+        return wktGeoms;
+    }
+    public void setWktGeoms(List<CombineImageWkt> wktGeoms) {
+        this.wktGeoms = wktGeoms;
+    }
+    
+    public Bbox getBbox() {
+        return bbox;
+    }
+    public void setBbox(double[] bbox) {
+        this.bbox = new Bbox(bbox);
+    }
+    public void setBbox(String bbox) throws Exception {
+        this.bbox = new Bbox(bbox);
+    }
+    
+    public Integer getSrid() {
+        return srid;
+    }
+    
+    public void setSrid(Integer srid) {
+        this.srid = srid;
+    }
+    
+    public Integer getWidth() {
+        return width;
+    }
+    
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+    
+    public Integer getHeight() {
+        return height;
+    }
+    
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
     public String getTilingBbox() {
         return tilingBbox;
     }
-
+    
     public void setTilingBbox(String tilingBbox) {
         this.tilingBbox = tilingBbox;
     }
-
+    
     public String getTilingServiceUrl() {
         return tilingServiceUrl;
     }
-
+    
     public void setTilingServiceUrl(String tilingServiceUrl) {
         this.tilingServiceUrl = tilingServiceUrl;
     }
-
+    
     public Integer getTilingTileHeight() {
         return tilingTileHeight;
     }
-
+    
     public void setTilingTileHeight(Integer tilingTileHeight) {
         this.tilingTileHeight = tilingTileHeight;
     }
-
+    
     public Integer getTilingTileWidth() {
         return tilingTileWidth;
     }
-
+    
     public void setTilingTileWidth(Integer tilingTileWidth) {
         this.tilingTileWidth = tilingTileWidth;
     }
-
+    
     public String getTilingResolutions() {
         return tilingResolutions;
     }
-
+    
     public void setTilingResolutions(String tilingResolutions) {
         this.tilingResolutions = tilingResolutions;
     }
+    //</editor-fold>
 }

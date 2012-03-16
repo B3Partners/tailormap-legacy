@@ -53,7 +53,12 @@ public class ImageManager {
             if (o instanceof String) {
                 ic = new ImageCollector((String) o, maxResponseTime);
             } else if (o instanceof CombineImageUrl) {
-                ic = new ImageCollector((CombineImageUrl) o, maxResponseTime, uname, pw);
+                CombineImageUrl ciu = (CombineImageUrl) o;
+                if (ciu.getProtocol().equals(CombineImageUrl.WMS)){
+                    ic = new ImageCollector(ciu, maxResponseTime, uname, pw);
+                }else{
+                    ic = new PrePostImageCollector(ciu, maxResponseTime);
+                }
             }
             ics.add(ic);
         }

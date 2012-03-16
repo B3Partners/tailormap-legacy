@@ -16,20 +16,16 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.Random;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.image.CombineImageSettings;
 import nl.b3p.viewer.image.CombineImageUrl;
 import nl.b3p.viewer.image.CombineImagesHandler;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -89,7 +85,7 @@ public class CombineImageActionBean implements ActionBean {
     }
     //</editor-fold>
     
-    public Resolution create() throws JSONException {
+    public Resolution create() throws JSONException, Exception {
         JSONObject jRequest = new JSONObject(params);
         JSONObject jResponse = new JSONObject();
         String error=null;
@@ -99,35 +95,45 @@ public class CombineImageActionBean implements ActionBean {
         if (orientation==null || pageFormat ==null){
             error = "invalid parameters";
         }else{
-            CombineImageSettings cis = new CombineImageSettings();            
-            //get the requests
-            JSONArray requests = jRequest.getJSONArray("requests");
-            for (int r=0; r < requests.length(); r++){
-                CombineImageUrl ciu = new CombineImageUrl();
-                JSONObject request=requests.getJSONObject(r);
-                ciu.setUrl(request.getString("url"));
-                if (request.has("alpha")){
-                    Double alpha=request.getDouble("alpha");
-                    ciu.setAlpha(alpha.floatValue());
+            try{
+                CombineImageSettings cis = new CombineImageSettings();            
+                //get the requests
+                JSONArray requests = jRequest.getJSONArray("requests");
+                for (int r=0; r < requests.length(); r++){
+                    CombineImageUrl ciu = new CombineImageUrl();
+                    JSONObject request=requests.getJSONObject(r);
+                    ciu.setUrl(request.getString("url"));
+                    if (request.has("alpha")){
+                        Double alpha=request.getDouble("alpha");
+                        ciu.setAlpha(alpha.floatValue());
+                    }
+                    ciu.setBody(request.getString("body"));
+                    if (request.has("protocol")){
+                        ciu.setProtocol(request.getString("protocol"));
+                    }
+                    cis.addUrl(ciu);
                 }
-                ciu.setBody(request.getString("body"));
-                cis.addUrl(ciu);
+                if (jRequest.has("bbox")){
+                    cis.setBbox(jRequest.getString("bbox"));                
+                }if (jRequest.has("width")){
+                    cis.setWidth(jRequest.getInt("width"));
+                }if (jRequest.has("height")){
+                    cis.setHeight(jRequest.getInt("height"));
+                }if (jRequest.has("srid")){
+                    cis.setSrid(jRequest.getInt("srid"));
+                }
+                //if no imageId is set, create a new one.
+                if (imageId==null){
+                    imageId= uniqueId();
+                }
+                this.getContext().getRequest().getSession().setAttribute(imageId, cis);
+                String url=this.context.getRequest().getRequestURL().toString();
+                url+="?getImage=t&imageId="+imageId;
+                jResponse.put("imageUrl", url );
+                jResponse.put("success", Boolean.TRUE);
+            }catch(Exception e){
+                log.error("",e);
             }
-            if (jRequest.has("bbox")){
-                cis.setBbox(jRequest.getString("bbox"));                
-            }if (jRequest.has("width")){
-                cis.setWidth(jRequest.getInt("width"));
-            }if (jRequest.has("height")){
-                cis.setWidth(jRequest.getInt("height"));
-            }if (jRequest.has("srid")){
-                cis.setSrid(jRequest.getInt("srid"));
-            } 
-            String imageId= uniqueId();
-            this.getContext().getRequest().getSession().setAttribute(imageId, cis);
-            String url=this.context.getRequest().getRequestURL().toString();
-            url+="?getImage=t&imageId="+imageId;
-            jResponse.put("imageUrl", url );
-            jResponse.put("success", Boolean.TRUE);
         }        
         if(error != null) {
             jResponse.put("error", error);
@@ -144,16 +150,6 @@ public class CombineImageActionBean implements ActionBean {
         if (imageId==null || getContext().getRequest().getSession().getAttribute(imageId)==null){
             throw new Exception("No imageId given");
         }
-       /*       CombineImageSettings settings = (CombineImageSettings) request.getSession().getAttribute(imageId);
-                response.setContentType(settings.getMimeType());
-                response.setDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
-
-                String keepAlive = request.getParameter("keepAlive");
-                if (keepAlive==null || keepAlive.length()==0) {
-                    request.getSession().removeAttribute(imageId);
-                }
-                
-                CombineImagesHandler.combineImage(response.getOutputStream(), settings,settings.getMimeType(),maxResponseTime);*/
         final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
         if (getKeepAlive()==null || getKeepAlive().length()==0) {
             getContext().getRequest().getSession().removeAttribute(imageId);

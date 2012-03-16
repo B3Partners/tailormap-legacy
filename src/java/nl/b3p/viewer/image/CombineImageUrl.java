@@ -5,16 +5,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * B3partners B.V. http://www.b3partners.nl
- * @author Roy
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  * Created on 20-okt-2009, 10:30:38
  */
 public class CombineImageUrl {
     private static final Log log = LogFactory.getLog(CombineImageSettings.class);
+    public static final String WMS = "WMS";
+    public static final String ARCIMS = "ARCIMS";
+    public static final String ARCSERVER = "ARCSERVER";
     private String url=null;
     private String body=null;
     private URL realUrl;
     private Float alpha =null;
+    private String protocol=WMS;
 
     public CombineImageUrl() {
     }
@@ -46,35 +49,36 @@ public class CombineImageUrl {
         setAlpha(al);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the url
      */
     public String getUrl() {
         return url;
     }
-
+    
     /**
      * @param url the url to set
      */
     public void setUrl(String url) {
         this.url = url;
     }
-
+    
     public URL getRealUrl() {
         return realUrl;
     }
-
+    
     public void setRealUrl(URL realUrl) {
         this.realUrl = realUrl;
     }
-
+    
     /**
      * @return the alpha
      */
     public Float getAlpha() {
         return alpha;
     }
-
+    
     /**
      * @param alpha the alpha to set
      */
@@ -96,7 +100,7 @@ public class CombineImageUrl {
     public String getBody() {
         return this.body;
     }
-
+    
     public String toString(){
         String returnValue="";
         if (url!=null){
@@ -107,5 +111,14 @@ public class CombineImageUrl {
         }
         return returnValue;
     }
+    
+    public String getProtocol() {
+        return protocol;
+    }
+    
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+    //</editor-fold>
 
 }
