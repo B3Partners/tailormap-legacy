@@ -67,16 +67,16 @@ Ext.define ("viewer.components.Print",{
      * If the window was invisible the preview will be redrawn
      */
     buttonClick: function(){
-        var getImage=false;
+        var restart=false;
         if(!this.popup.popupWin.isVisible()){
             this.popup.show();
-            getImage=true;
+            restart=true;
         }
         if (this.panel==null)
             this.createForm();
-        if (getImage){
-            this.redrawPreview();
             this.setQuality();
+        if (restart){            
+            this.redrawPreview();
         }
     },
     /**
@@ -170,7 +170,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'slider',
                                 name: "quality",
                                 id: "formQuality",
-                                value: 10,
+                                value: 11,
                                 increment: 1,
                                 minValue: 10,
                                 maxValue: me.max_imagesize,
@@ -352,7 +352,7 @@ Ext.define ("viewer.components.Print",{
      * Set the quality from the map in the slider
      */
     setQuality: function(){
-        Ext.getCmp('formQuality').setValue(this.getMapQuality());
+        Ext.getCmp('formQuality').setValue(this.getMapQuality(),false);
     },
     /**
      *Gets the map 'quality'
@@ -490,7 +490,7 @@ Ext.define ("viewer.components.Print",{
             }else if ("container"==container.items.get(i).xtype){
                 Ext.apply(config,this.getValuesFromContainer(container.items.get(i)));
             }else if (container.items.get(i).name!=undefined)
-                config[container.items.get(i).name] = container.items.get(i).value;
+                config[container.items.get(i).name] = container.items.get(i).getValue();
         }
         return config;
     }
