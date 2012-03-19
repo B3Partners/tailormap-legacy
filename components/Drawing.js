@@ -66,7 +66,7 @@ Ext.define ("viewer.components.Drawing",{
                 fillcolor: "0x"+this.color,
                 fillopacity: 50,
                 strokecolor: "0xFF0000",
-                strokeopacity: 100
+                strokeopacity: 50
             }
         });
         viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
@@ -231,11 +231,13 @@ Ext.define ("viewer.components.Drawing",{
         this.title = Ext.create("Ext.form.field.Text",{
             fieldLabel: 'Titel',
             name: 'title',
+            allowBlank:false,
             id: 'title'+ this.name
         });
         this.description = Ext.create("Ext.form.field.TextArea",
         {
             fieldLabel: 'Opmerking',
+            allowBlank:false,
             name: 'description',
             id: 'description'
         });
@@ -272,6 +274,7 @@ Ext.define ("viewer.components.Drawing",{
         this.file = Ext.create("Ext.form.field.File", {
             fieldLabel: 'Tekstbestand',
             name: 'featureFile',
+            allowBlank:false,
             msgTarget: 'side',
             anchor: '100%',
             buttonText: 'Bladeren',
