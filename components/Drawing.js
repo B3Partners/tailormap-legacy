@@ -133,7 +133,6 @@ Ext.define ("viewer.components.Drawing",{
                             left: 0
                         }
                     },
-                    //border: 0,
                     items: [{
                         xtype: 'button',
                         icon: this.iconPath+"bullet_red.png",
@@ -178,11 +177,6 @@ Ext.define ("viewer.components.Drawing",{
                             }
                         }
                     },
-                    /*    {
-                        xtype: 'button',
-                        icon: this.iconPath+"cursor.png",
-                        tooltip: "Selecteer een object"
-                    }, */
                     this.colorPicker,
                     {
                         xtype: 'button',
@@ -247,19 +241,10 @@ Ext.define ("viewer.components.Drawing",{
         });
         // Build the saving form
         this.formsave = new Ext.form.FormPanel({
+            standardSubmit: true,
             url: actionBeans["file"] + "?save",
             items: [
             { 
-                /*xtype: 'fieldset',
-                defaultType: 'textfield',
-                border: 0,
-                padding: 10,
-                style: {
-                    border: '0px none',
-                    marginBottom: '0px'
-                },
-                items: [
-                {*/
                 xtype: 'label',
                 text: 'Op de kaart getekende objecten opslaan'
             },
@@ -280,8 +265,6 @@ Ext.define ("viewer.components.Drawing",{
                     }
                 }
             }
-            /*]
-            }*/
             ],
             renderTo: this.getContentDiv()
         });
@@ -295,18 +278,7 @@ Ext.define ("viewer.components.Drawing",{
             id: 'featureFile'
         });
         this.formopen = new Ext.form.FormPanel({
-            standardSubmit: true,
             items: [
-            /*{ 
-                xtype: 'fieldset',
-                defaultType: 'textfield',
-                border: 0,
-                padding: 10,
-                style: {
-                    border: '0px none',
-                    marginBottom: '0px'
-                },
-                items: [*/
             {
                 xtype: 'label',
                 text: 'Bestand met getekende objecten openen'
@@ -322,8 +294,6 @@ Ext.define ("viewer.components.Drawing",{
                     }
                 }
             }
-            //  ]
-            //}
             ],
             renderTo: this.getContentDiv()
         });
@@ -395,10 +365,7 @@ Ext.define ("viewer.components.Drawing",{
         this.toggleSelectForm(false);
         this.activeFeature=null;
     },
-    saveFile: function(){
-        /* var title = this.formopen.getChildByElement('title'+ this.name).getValue();
-        var comment = this.formopen.getChildByElement('comment'+ this.name).getValue();*/
-       
+    saveFile: function(){       
         var form = this.formsave.getForm();
         
         var features = new Array();
@@ -407,71 +374,39 @@ Ext.define ("viewer.components.Drawing",{
             features.push(feature.toJsonObject());
         }
         form.setValues({
-            "saveObject":JSON.stringify(features)
-            });/*
-        var hidden = form.items[4];
-        hidden.value =JSON.stringify(features);*/
-        form.submit( {
-            success: function(form, action) {
-                Ext.Msg.alert('Success', action.result.msg);
-            },
-            failure: function(form, action) {
-                switch (action.failureType) {
-                    case Ext.form.action.Action.CLIENT_INVALID:
-                        Ext.Msg.alert('Failure', 'Form fields may not be submitted with invalid values');
-                        break;
-                    case Ext.form.action.Action.CONNECT_FAILURE:
-                        Ext.Msg.alert('Failure', 'Ajax communication failed');
-                        break;
-                    case Ext.form.action.Action.SERVER_INVALID:
-                        Ext.Msg.alert('Failure', action.result.msg);
-                }
-            }
+            "saveObject":Ext.JSON.encode(features)
         });
-    //save: function(title,description,saveObject, successFunction, failureFunction) {
-    /*var saveFile = Ext.create("viewer.File",{});
-        saveFile.save(title,description,features, this.saveSucces, this.saveFailure);*/
-        
-    return features;
-},
-openFile: function(){
-    //var file = this.formopen.getChildByElement('file'+ this.name).getValue();
-    /* var form =this.formopen.getForm();
+        this.formsave.submit({            
+            target: '_blank'
+        } );
+        return features;
+    },
+    openFile: function(){
+        var form =this.formopen.getForm();
         if(form.isValid()){
             form.submit({
+                scope:this,
                 url: actionBeans["file"],
-                waitMsg: 'Uploading your photo...',
+                waitMsg: 'Bezig met uploaden...',
                 success: function(fp, o) {
-                    Ext.Msg.alert('Success', 'Your photo "' + o.result.file + '" has been uploaded.');
+                    var json = Ext.JSON.decode(o.result.content);
+                    this.title.setValue( json.title);
+                    this.description.setValue(json.description);
+                    var features = Ext.JSON.decode(json.features);
+                    for ( var i = 0 ; i < features.length;i++){
+                        var feature = features[i];
+                        var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
+                        this.vectorLayer.style.fillcolor = featureObject.color;
+                        this.vectorLayer.adjustStyle();
+                        this.vectorLayer.addFeature(featureObject);
+                    }
+        
                 },
-                failure: function (a,b,c){
-                    var d = 0;
+                failure: function (){
+                    Ext.Msg.alert('Mislukt', 'Uw bestand kon niet gelezen worden.');
                 }
             });
         }
-             */
-    var features = [
-    {
-        color: "0x00FF00",
-        id: "T_0",
-        label:	"groen",
-        wktgeom: "POLYGON((263101.527332884 608759.094307531,260655.542427759 532933.56224864,302237.285814893 533545.058474921,303460.278267455 576961.290540899,289395.865062984 620989.018833159,263101.527332884 608759.094307531))"
-    },
-
-    {
-        color:"0xFF9900",
-        id:"T_1",
-        label:"oranje",
-        wktgeom:"POLYGON((238030.182055348 416749.279255178,237418.685829066 332974.296254629,297956.812230923 338477.762291161,238030.182055348 416749.279255178))"
-    }];
-        
-    for ( var i = 0 ; i < features.length;i++){
-        var feature = features[i];
-        var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
-        this.vectorLayer.style.fillcolor = featureObject.color;
-        this.vectorLayer.adjustStyle();
-        this.vectorLayer.addFeature(featureObject);
     }
-}
 });
  
