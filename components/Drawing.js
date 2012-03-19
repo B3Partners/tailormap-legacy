@@ -74,7 +74,6 @@ Ext.define ("viewer.components.Drawing",{
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
-        this.popup.show();
         return this;
     },
     /**
