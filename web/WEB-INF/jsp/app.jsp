@@ -83,7 +83,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/SLD.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/Bookmark.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/CombineImage.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/File.js"></script>
             </c:when>
             <c:otherwise>
                 <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -120,7 +119,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "file" :  "<stripes:url beanclass="nl.b3p.viewer.stripes.FileActionBean"/>",
                 "print": "<stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/>"
             };
-            
+             
             var appId = "${actionBean.application.id}";
             var viewerController;
             (function() {
