@@ -17,18 +17,10 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.*;
-import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.ActionBean;
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.FileBean;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -49,12 +41,10 @@ public class FileActionBean implements ActionBean {
     private ActionBeanContext context;
     @Validate
     private FileBean featureFile;
-    
     @Validate
     private String saveObject;
     @Validate
     private String title;
-    
     @Validate
     private String description;
 
@@ -100,14 +90,16 @@ public class FileActionBean implements ActionBean {
     }
 
     //</editor-fold>
-    
     @DefaultHandler
     public Resolution upload() {
-        JSONObject fileContents = new JSONObject();
+        JSONObject json = new JSONObject();
+
         File features = null;
         InputStream in = null;
         OutputStream out = null;
         try {
+            json.put("success", Boolean.FALSE);
+
             features = File.createTempFile("Import", ".txt");
             in = featureFile.getInputStream();
             out = new FileOutputStream(features);
@@ -119,42 +111,41 @@ public class FileActionBean implements ActionBean {
                 log.error("Fout sluiten streams:", ex);
             }
             String contents = FileUtils.readFileToString(features);
-            fileContents.put("features", new JSONObject(contents));
-            
+
+            json.put("success", Boolean.TRUE);
+            json.put("content", contents);
         } catch (JSONException ex) {
-            log.error("Fout met jsoon",ex);
+            log.error("Fout met jsoon", ex);
         } catch (IOException e) {
             log.error("Fout lezen gmlfile:", e);
         } finally {
             features.delete();
         }
-        return new StreamingResolution("text/html", new StringReader(fileContents.toString()));
+        return new StreamingResolution("text/html", new StringReader(json.toString()));
     }
-    
-    public Resolution save(){
-        final String fileName = "pipotaart";
-         return new StreamingResolution("text/html") {
+
+    public Resolution save() {
+
+        Date nowDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+        sdf.applyPattern("HH-mm_dd-MM-yyyy");
+        String now = sdf.format(nowDate);
+        final String fileName = title + now;
+        return new StreamingResolution("text/plain") {
 
             @Override
             public void stream(HttpServletResponse response) throws Exception {
-
                 OutputStream out = response.getOutputStream();
 
-                String workingName = System.getProperty("java.io.tmpdir") + File.separator + fileName;
                 try {
-                   /* Date nowDate = new Date(System.currentTimeMillis());
-                    SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
-                    sdf.applyPattern("HH-mm_dd-MM-yyyy");
-                    String now = sdf.format(nowDate);
-                    final String fileName = "Export_" + now;*/
                     File features = File.createTempFile("Features", ".txt");
-                    
-                    
-                    
-                    FileUtils.writeStringToFile(features, title);
-                    InputStream in = null;
-                    
+                    JSONObject file = new JSONObject();
+                    file.put("title", title);
+                    file.put("description", description);
+                    file.put("features", saveObject);
 
+                    FileUtils.writeStringToFile(features, file.toString());
+                    InputStream in = null;
                     try {
                         in = new FileInputStream(features);
                         IOUtils.copy(in, out);
@@ -163,7 +154,7 @@ public class FileActionBean implements ActionBean {
                     } finally {
                         out.close();
                         in.close();
-                   //     features.delete();
+                        features.delete();
                     }
                 } catch (Exception e) {
                     log.error("Fout bij maken sld: ", e);
