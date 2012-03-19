@@ -76,6 +76,7 @@ Ext.define ("viewer.components.Print",{
             this.createForm();
         if (getImage){
             this.redrawPreview();
+            this.setQuality();
         }
     },
     /**
@@ -168,15 +169,32 @@ Ext.define ("viewer.components.Print",{
                             items: [{
                                 xtype: 'slider',
                                 name: "quality",
-                                value: 50,
-                                increment: 10,
-                                minValue: 0,
-                                maxValue: 100,
+                                id: "formQuality",
+                                value: 10,
+                                increment: 1,
+                                minValue: 10,
+                                maxValue: me.max_imagesize,
+                                listeners: {
+                                    changecomplete: {
+                                        scope: this,
+                                        fn: function (slider,newValue){
+                                            this.qualityChanged(newValue);
+                                        }
+                                    }
+                                },
                                 columnWidth: 1
                             },{
                                 xtype: 'button',
                                 text: '<',
-                                width: 30
+                                width: 30,
+                                listeners: {
+                                    click:{
+                                        scope: this,
+                                        fn: function (){
+                                            Ext.getCmp('formQuality').setValue(this.getMapQuality());
+                                        }
+                                    }
+                                }  
                                 //todo handle reset
                             }]
                         }]
@@ -227,10 +245,11 @@ Ext.define ("viewer.components.Print",{
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
                                 xtype: 'label',  
-                                text: "Kaart draaien"  
+                                text: "Kaart draaien *"  
                             },{
                                 xtype: 'slider',
                                 name: 'angle',
+                                id: 'formAngle',
                                 value: 0,
                                 increment: 1,                                
                                 minValue: 0,
@@ -238,6 +257,14 @@ Ext.define ("viewer.components.Print",{
                                 width: 100,
                                 tipText: function(tumb){
                                     return tumb.value+"º";
+                                },
+                                listeners: {
+                                    changecomplete: {
+                                        scope: this,
+                                        fn: function (slider,newValue){
+                                            this.angleChanged(newValue);
+                                        }
+                                    }
                                 }
                             }] 
                         }]
@@ -297,6 +324,9 @@ Ext.define ("viewer.components.Print",{
                         }
                     }  
                 }]                
+            },{
+                 xtype: 'label',  
+                 text: "* Door het draaien van de kaart kan niet de maximale kwaliteit worden opgehaald."  
             }]
         });
         
@@ -305,7 +335,7 @@ Ext.define ("viewer.components.Print",{
             url: actionBeans["print"],
             standardSubmit: true,
             items: [{
-                xtype: "textfield",
+                xtype: "hidden",
                 name: "params",
                 id: 'formParams'
             }]
@@ -317,6 +347,73 @@ Ext.define ("viewer.components.Print",{
     redrawPreview: function (){
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
+    },
+    /**
+     * Set the quality from the map in the slider
+     */
+    setQuality: function(){
+        Ext.getCmp('formQuality').setValue(this.getMapQuality());
+    },
+    /**
+     *Gets the map 'quality'
+     *@return the 'quality' of the map (the biggest dimension: height or width)
+     */
+    getMapQuality: function(){
+        var width = this.viewerController.mapComponent.getMap().getWidth();
+        var height = this.viewerController.mapComponent.getMap().getHeight();
+        return width > height? width : height;
+    },
+    /**
+     * Called when quality is changed.
+     */
+    qualityChanged: function(newValue){
+        var angle=Ext.getCmp('formAngle').getValue();
+        if (angle>0){
+            this.correctQuality(angle);
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            
+    },
+    /**
+     * Called when the angle is changed.
+     */
+    angleChanged: function (newValue){
+        if (newValue>0){
+            this.correctQuality(newValue);
+        } 
+    },
+    /**
+     * Corrects the quality slider to the max quality possible with the given angle
+     * @param angle the angle that is set.
+     */
+    correctQuality: function(angle){
+        //get the max quality that is allowed with the given angle
+        var maxQuality =this.getMaxQualityWithAngle(angle);
+        var sliderQuality = Ext.getCmp('formQuality').getValue();
+        if (sliderQuality > maxQuality){
+            Ext.getCmp('formQuality').setValue(maxQuality);
+        }
+    },
+    /**
+     * Get the maximum quality that is possible with the given angle
+     */
+    getMaxQualityWithAngle: function(angle){
+        if (angle==0)
+            return this.max_imagesize;
+        
+        var width = this.viewerController.mapComponent.getMap().getWidth();
+        var height = this.viewerController.mapComponent.getMap().getHeight();
+        var biggest = height > width ? height :width;
+        var smallest = height > width ? width: height;
+        //ratio between biggest and smallest
+        var ratio = biggest/smallest;
+        var sqrRatio= ratio*ratio;
+        //calculate the smallest square length
+        var sqrSmallest= (this.max_imagesize*this.max_imagesize)/(sqrRatio+1);
+        //the biggest is square root( smallest_square * sqr_ratio)
+        var maxQuality=Math.sqrt(sqrSmallest*(sqrRatio));
+        //var maxSmallest=Math.sqrt(sqrSmallest);
+        //console.log("check: "+this.max_imagesize+" ~= "+Math.sqrt((maxQuality*maxQuality)+(maxSmallest*maxSmallest)));
+        return Math.round(maxQuality);
     },
     /**
     * Called when a button is clicked and the form must be submitted.
@@ -361,28 +458,24 @@ Ext.define ("viewer.components.Print",{
         var values = new Object();
         var printLayers = new Array();
         //get last getmap request from all layers
-        var layers=viewerController.mapComponent.getMap().getLayers();        
+        var layers=this.viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
-            //if (){
-                var request=layer.getMapRequest();
-                if (request){
-                    request.protocol=layer.getType();
-                    if (layer.getAlpha()!=null)
-                        request.alpha = layer.getAlpha();           
-                    printLayers.push(
-                        request
-                    );
-                }
-           //}
+            var request=layer.getMapRequest();
+            if (request){
+                request.protocol=layer.getType();
+                if (layer.getAlpha()!=null)
+                    request.alpha = layer.getAlpha();           
+                printLayers.push(request);
+            }
         }
         values.requests=printLayers;        
-        var bbox=viewerController.mapComponent.getMap().getExtent();
+        var bbox=this.viewerController.mapComponent.getMap().getExtent();
         if (bbox){
             values.bbox = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
         }
-        values.width = viewerController.mapComponent.getMap().getWidth();
-        values.height = viewerController.mapComponent.getMap().getHeight();
+        values.width = this.viewerController.mapComponent.getMap().getWidth();
+        values.height = this.viewerController.mapComponent.getMap().getHeight();
         return values;
     },
     /**
