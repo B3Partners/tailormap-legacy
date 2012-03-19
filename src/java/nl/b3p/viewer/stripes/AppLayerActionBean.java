@@ -35,10 +35,11 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.store.DataFeatureCollection;
-import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
@@ -60,6 +61,8 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/appLayer")
 @StrictBinding
 public class AppLayerActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(AppLayerActionBean.class);
+    
     private static final int MAX_FEATURES = 50;
     
     private ActionBeanContext context;
@@ -326,6 +329,8 @@ public class AppLayerActionBean implements ActionBean {
 
             json.put("total", total);
         } catch(Exception e) {
+            log.error("Error loading features", e);
+            
             json.put("success", false);
             
             String message = "Fout bij ophalen features: " + e.toString();
