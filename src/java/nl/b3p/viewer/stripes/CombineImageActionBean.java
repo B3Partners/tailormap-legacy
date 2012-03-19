@@ -127,6 +127,16 @@ public class CombineImageActionBean implements ActionBean {
                 }if (jRequest.has("srid")){
                     cis.setSrid(jRequest.getInt("srid"));
                 }
+                if (jRequest.has("quality")){
+                    Integer quality = jRequest.getInt("quality");
+                    if (cis.getWidth() > cis.getHeight()){
+                        cis.setHeight(Math.round(cis.getHeight() * quality/cis.getWidth()));
+                        cis.setWidth(quality);
+                    }else{
+                        cis.setWidth(Math.round(cis.getWidth() * quality/cis.getHeight()));
+                        cis.setHeight(quality);
+                    }
+                }
                 //if no imageId is set, create a new one.
                 if (imageId==null){
                     imageId= uniqueId();

@@ -52,35 +52,16 @@ public class CombineImageSettings {
         }else if(oldList==null){
             return returnValue;
         }        
+        Bbox correctedBbox= getCalculatedBbox();
         for (int i=0; i < oldList.size(); i++){
-            returnValue.add(getCalculatedUrl(((CombineImageUrl)oldList.get(i))));
+            CombineImageUrl ciu = (CombineImageUrl) oldList.get(i);
+            returnValue.add(ciu.calculateNewUrl(width, height, correctedBbox));
         }
         if (returnValue.size()==oldList.size()){
             return returnValue;
         }else{
             return null;
         }
-    }
-    /**
-     * Een enkele url omzetten zodat de bbox, width en height goed worden geset.
-     * Tot nu alleen WMS urls ondersteund
-     */
-    public CombineImageUrl getCalculatedUrl(CombineImageUrl url){
-        if (bbox == null || width == null || height == null) {
-            log.info("Not all settings set (width,height and bbox must be set)");
-            return null;
-        }
-        Bbox newBbox= getCalculatedBbox();
-        if (CombineImageUrl.WMS.equals(url.getProtocol())){
-            String newurl=new String(url.getUrl());
-            newurl=changeParameter(newurl, "bbox", newBbox.toString());
-            newurl=changeParameter(newurl, "width", width.toString());
-            newurl=changeParameter(newurl, "height", height.toString());
-            url.setUrl(newurl);
-        }else if (CombineImageUrl.ARCIMS.equals(url.getProtocol())){
-            
-        }
-        return url;
     }
     /**
      * Geeft een kloppende bbox terug. Dus kijkt naar de width en height en past
@@ -133,61 +114,8 @@ public class CombineImageSettings {
             this.wktGeoms.add(ciw);
         }
     }  
-    /*Returned een bepaalde parameter uit de url.*/
-    private static String getParameter(String url, String key) {
-        String lowerUrl = url.toLowerCase();
-        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
-            int beginIndex = 0;
-            int endIndex = lowerUrl.length();
-            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
-                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
-            } else {
-                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
-            }
-            if (lowerUrl.indexOf("&", beginIndex) > 0) {
-                endIndex = lowerUrl.indexOf("&", beginIndex);
-            }
-            if (beginIndex < endIndex) {
-                return url.substring(beginIndex, endIndex);
-            }
-        }
-        return null;
-    }
-    /**
-     * Returned een url met een aangepaste parameter
-     * @param url de url die veranderd moet worden
-     * @param key de waarde van de parameter key
-     * @param newValue de nieuwe waarde van de parameter
-     * @return de veranderde url
-     *
-     */
-    private static String changeParameter(String url, String key,String newValue) {
-        String lowerUrl = url.toLowerCase();
-        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
-            int beginIndex = 0;
-            int endIndex = lowerUrl.length();
-            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
-                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
-            } else {
-                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
-            }
-            if (lowerUrl.indexOf("&", beginIndex) > 0) {
-                endIndex = lowerUrl.indexOf("&", beginIndex);
-            }
-            if (beginIndex < endIndex) {
-                String newUrl="";
-                if (beginIndex>0){
-                    newUrl+=url.substring(0,beginIndex);
-                }
-                newUrl+=newValue;
-                if (endIndex < url.length()){
-                    newUrl+=url.substring(endIndex,url.length());
-                }
-                return newUrl;
-            }
-        }
-        return url;
-    }
+   
+    
     /**
      * Haalt de bbox op van de eerste de beste bbox in een url
      */
@@ -207,7 +135,7 @@ public class CombineImageSettings {
         }
         double[] bb = null;
         String url=ciu.getUrl();
-        String stringBbox = getParameter(url, "bbox");
+        String stringBbox = ciu.getParameter("bbox");
         if (stringBbox != null) {
             if (stringBbox.split(",").length != 4) {
                 stringBbox = null;
@@ -247,8 +175,8 @@ public class CombineImageSettings {
         }
         String url=ciu.getUrl();
 
-        String heightString = getParameter(url, "height");
-        String widthString = getParameter(url, "width");
+        String heightString = ciu.getParameter("height");
+        String widthString = ciu.getParameter("width");
         Integer[] result = null;
         if (heightString != null && widthString != null) {
             try {

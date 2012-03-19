@@ -121,4 +121,82 @@ public class CombineImageUrl {
     }
     //</editor-fold>
 
+    public CombineImageUrl calculateNewUrl(Integer width, Integer height, Bbox bbox) {
+        CombineImageUrl ciu = this.clone();
+        if (CombineImageUrl.WMS.equals(ciu.getProtocol())){
+            ciu.changeParameter("bbox", bbox.toString());
+            ciu.changeParameter("width", width.toString());
+            ciu.changeParameter("height", height.toString());
+        }
+        return ciu;
+    }
+    /**
+     * Returned a url with changed param     
+     * @param key the param name
+     * @param newValue the new value
+     * @return the changed url
+     *
+     */
+    private void changeParameter(String key,String newValue) {
+        String lowerUrl = url.toLowerCase();
+        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
+            int beginIndex = 0;
+            int endIndex = lowerUrl.length();
+            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
+                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
+            } else {
+                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
+            }
+            if (lowerUrl.indexOf("&", beginIndex) > 0) {
+                endIndex = lowerUrl.indexOf("&", beginIndex);
+            }
+            if (beginIndex < endIndex) {
+                String newUrl="";
+                if (beginIndex>0){
+                    newUrl+=url.substring(0,beginIndex);
+                }
+                newUrl+=newValue;
+                if (endIndex < url.length()){
+                    newUrl+=url.substring(endIndex,url.length());
+                }
+                url=newUrl;
+            }
+        }
+    }
+     /**
+      * Get a parameter from this url.      
+      * @param key
+      * @return 
+      */
+    public String getParameter(String key) {
+        String lowerUrl = url.toLowerCase();
+        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
+            int beginIndex = 0;
+            int endIndex = lowerUrl.length();
+            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
+                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
+            } else {
+                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
+            }
+            if (lowerUrl.indexOf("&", beginIndex) > 0) {
+                endIndex = lowerUrl.indexOf("&", beginIndex);
+            }
+            if (beginIndex < endIndex) {
+                return url.substring(beginIndex, endIndex);
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public CombineImageUrl clone(){
+        CombineImageUrl ciu = new CombineImageUrl();
+        ciu.setUrl(url);
+        ciu.setAlpha(alpha);
+        ciu.setBody(body);
+        ciu.setRealUrl(realUrl);
+        ciu.setProtocol(protocol);
+        return ciu;
+    }
+
 }
