@@ -19,35 +19,35 @@ package nl.b3p.geotools.data.arcims;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlList;
 
 /**
  *
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlFeature {
+public class AxlQuery {
+    @XmlAttribute
+    private String where;
     
-    @XmlElementWrapper(name="FIELDS")
-    @XmlElement(name="FIELD")
-    List<AxlField> fields;
-    
-    @XmlElement(name="POLYGON")
-    AxlPolygon polygon;
-    
-    @XmlElement(name="MULTIPOINT")
-    AxlCoords pointCoords;
-    
-    @XmlElementWrapper(name="POLYLINE")
-    @XmlElement(name="PATH")
-    List<AxlCoords> linePaths;
+    @XmlAttribute
+    @XmlList
+    private List<String> subfields;
 
-    public List<AxlField> getFields() {
-        return fields;
+    public List<String> getSubfields() {
+        return subfields;
     }
 
-    public void setFields(List<AxlField> fields) {
-        this.fields = fields;
+    public void setSubfields(List<String> subfields) {
+        this.subfields = subfields;
+    }
+
+    public String getWhere() {
+        return where;
+    }
+
+    public void setWhere(String where) {
+        this.where = where;
     }
 }

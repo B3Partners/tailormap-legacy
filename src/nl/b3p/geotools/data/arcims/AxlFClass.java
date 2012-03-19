@@ -28,6 +28,10 @@ import javax.xml.bind.annotation.XmlElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AxlFClass {
+    public static final String TYPE_POINT = "point";
+    public static final String TYPE_POLYGON = "polygon";
+    public static final String TYPE_LINE = "line";
+    
     @XmlAttribute
     private String type;
     

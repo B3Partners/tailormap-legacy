@@ -22,6 +22,7 @@ import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -33,13 +34,8 @@ import org.opengis.filter.sort.SortBy;
  */
 public class ArcIMSFeatureSource extends ContentFeatureSource {
 
-    private ArcIMSDataStore ds;
-    private String layer;
-    
-    public ArcIMSFeatureSource(ContentEntry ce, Query q) {
-        super(ce, q);
-        this.ds = (ArcIMSDataStore)ce.getDataStore();
-        this.layer = ce.getTypeName();
+    public ArcIMSFeatureSource(ContentEntry ce) {
+        super(ce, null);
     }
     
     @Override
@@ -73,23 +69,51 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
     }
     
     @Override
+    protected boolean canFilter() {
+        // TODO: implement filter
+        return false;
+    }        
+    
+    @Override
+    protected boolean canLimit() {
+        return true;
+    }
+    
+    @Override
+    protected boolean canOffset() {
+        return true;
+    }
+    
+    @Override
     protected ReferencedEnvelope getBoundsInternal(Query query) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override   
     protected int getCountInternal(Query query) throws IOException {
+        // TODO use skipfeatures -- although total count may have to be cached
+        // along multiple requests if skipfeatures request reduces performance
         return -1;
     }
 
     @Override
     protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ArcIMSFeatureReader(this, query);
     }
 
     @Override
     protected SimpleFeatureType buildFeatureType() throws IOException {       
-        throw new UnsupportedOperationException("Not supported yet.");
+        AxlLayerInfo al = ((ArcIMSDataStore)getDataStore()).getAxlLayerInfo(entry.getTypeName());
+        AxlFClass fc = al.getFclass();
+        
+        SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
+        b.setName(al.getId());
+        
+        for(AxlField f: fc.getFields()) {
+            b.add(f.getName(), f.getBinding(fc));
+        }
+             
+        return b.buildFeatureType();
     }
     
 }

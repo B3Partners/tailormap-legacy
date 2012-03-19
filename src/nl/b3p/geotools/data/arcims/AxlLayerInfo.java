@@ -47,10 +47,17 @@ public class AxlLayerInfo {
     private String minscale;
             
     @XmlAttribute
-    private boolean visible;
+    private Boolean visible;
     
     @XmlElement(name="FCLASS")
     private AxlFClass fclass;
+
+    public AxlLayerInfo() {
+    }
+    
+    public AxlLayerInfo(String id) {
+        this.id = id;
+    }
 
     public AxlFClass getFclass() {
         return fclass;

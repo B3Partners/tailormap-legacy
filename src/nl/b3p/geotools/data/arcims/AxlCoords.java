@@ -16,38 +16,24 @@
  */
 package nl.b3p.geotools.data.arcims;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  *
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlFeature {
-    
-    @XmlElementWrapper(name="FIELDS")
-    @XmlElement(name="FIELD")
-    List<AxlField> fields;
-    
-    @XmlElement(name="POLYGON")
-    AxlPolygon polygon;
-    
-    @XmlElement(name="MULTIPOINT")
-    AxlCoords pointCoords;
-    
-    @XmlElementWrapper(name="POLYLINE")
-    @XmlElement(name="PATH")
-    List<AxlCoords> linePaths;
+class AxlCoords {
+    @XmlElement(name="COORDS")
+    private String coords;
 
-    public List<AxlField> getFields() {
-        return fields;
+    public String getCoords() {
+        return coords;
     }
 
-    public void setFields(List<AxlField> fields) {
-        this.fields = fields;
+    public void setCoords(String coords) {
+        this.coords = coords;
     }
 }

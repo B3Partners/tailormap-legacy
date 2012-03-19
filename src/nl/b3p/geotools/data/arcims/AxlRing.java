@@ -20,34 +20,22 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  *
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlFeature {
+class AxlRing extends AxlCoords {
     
-    @XmlElementWrapper(name="FIELDS")
-    @XmlElement(name="FIELD")
-    List<AxlField> fields;
-    
-    @XmlElement(name="POLYGON")
-    AxlPolygon polygon;
-    
-    @XmlElement(name="MULTIPOINT")
-    AxlCoords pointCoords;
-    
-    @XmlElementWrapper(name="POLYLINE")
-    @XmlElement(name="PATH")
-    List<AxlCoords> linePaths;
+    @XmlElement(name="HOLE")
+    private List<AxlCoords> holes;
 
-    public List<AxlField> getFields() {
-        return fields;
+    public List<AxlCoords> getHoles() {
+        return holes;
     }
 
-    public void setFields(List<AxlField> fields) {
-        this.fields = fields;
+    public void setHoles(List<AxlCoords> holes) {
+        this.holes = holes;
     }
 }

@@ -35,10 +35,10 @@ public class AxlGetFeatures implements AxlRequest {
     private int beginrecord = 0;
     
     @XmlAttribute
-    private boolean checkesc = false;
+    private boolean checkesc = true;
     
     @XmlAttribute
-    private boolean compact = false;
+    private boolean compact = true;
     
     @XmlAttribute
     private boolean envelope = false;
@@ -57,7 +57,16 @@ public class AxlGetFeatures implements AxlRequest {
 
     @XmlAttribute
     private boolean skipfeatures = false;
-
+    
+    @XmlElement(name="LAYER")
+    private AxlLayerInfo layer;
+    
+    @XmlElement(name="QUERY")
+    private AxlQuery query;
+    /*
+    @XmlElement(name="SPATIALQUERY")
+    private AxlSpatialQuery spatialQuery;
+*/
     public boolean isAttributes() {
         return attributes;
     }
@@ -136,5 +145,21 @@ public class AxlGetFeatures implements AxlRequest {
 
     public void setSkipfeatures(boolean skipfeatures) {
         this.skipfeatures = skipfeatures;
+    }
+
+    public AxlLayerInfo getLayer() {
+        return layer;
+    }
+
+    public void setLayer(AxlLayerInfo layer) {
+        this.layer = layer;
+    }
+
+    public AxlQuery getQuery() {
+        return query;
+    }
+
+    public void setQuery(AxlQuery query) {
+        this.query = query;
     }
 }

@@ -16,6 +16,14 @@
  */
 package nl.b3p.geotools.data.arcims;
 
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -37,6 +45,9 @@ public class AxlField {
     public static final int TYPE_DOUBLE        = 8;
     public static final int TYPE_STRING        = 12;
     public static final int TYPE_DATE          = 91;
+    
+    public static final String AXL_ID = "#ID#";
+    public static final String AXL_SHAPE = "#SHAPE#";
    
     @XmlAttribute
     private String name;
@@ -91,5 +102,84 @@ public class AxlField {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+    
+    public Class getBinding(AxlFClass fclass) {
+        Class binding = String.class;
+        switch(type) {
+            case AxlField.TYPE_SHAPE:
+                String fcType = fclass.getType();
+                if(AxlFClass.TYPE_LINE.equals(fcType)) {
+                    binding = MultiLineString.class;
+                } else if(AxlFClass.TYPE_POINT.equals(fcType)) {
+                    binding = MultiPoint.class;
+                } else {
+                    binding = MultiPolygon.class;
+                }
+
+                break;
+            case AxlField.TYPE_ROW_ID:
+            case AxlField.TYPE_INTEGER:
+            case AxlField.TYPE_SMALL_INTEGER:
+                binding = Integer.class;
+                break;
+            case AxlField.TYPE_BOOLEAN:
+                binding = Boolean.class;
+                break;
+            case AxlField.TYPE_BIG_INTEGER:
+                binding = BigInteger.class;
+                break;
+            case AxlField.TYPE_CHAR:
+                binding = Character.class;
+                break;
+            case AxlField.TYPE_FLOAT:
+                binding = Float.class;
+                break;
+            case AxlField.TYPE_DOUBLE:
+                binding = Double.class;
+                break;
+            case AxlField.TYPE_STRING:
+                binding = String.class;
+                break;
+            case AxlField.TYPE_DATE:
+                binding = Date.class;
+                break;
+        }
+        return binding;
+    }
+    
+    public static DateFormat createDateFormat() {
+        return new SimpleDateFormat("{ts 'YYYY-MM-dd HH:mm:ss'}");
+    }
+    
+    public Object getConvertedValue(Class binding, DateFormat dateFormat) throws ParseException {
+        if(value == null) {
+            return null;
+        }
+        if(binding.equals(String.class)) {
+            return value;
+        } else if(binding.equals(Integer.class)) {
+            return Integer.parseInt(value);
+        } else if(binding.equals(Boolean.class)) {
+            return "true".equals(value);
+        } else if(binding.equals(BigInteger.class)) {
+            return new BigInteger(value);
+        } else if(binding.equals(Character.class)) {
+            return value.charAt(0);
+        } else if(binding.equals(Float.class)) {
+            return Float.parseFloat(value);
+        } else if(binding.equals(Double.class)) {
+            return Double.parseDouble(value);
+        } else if(binding.equals(Date.class)) {
+            return dateFormat.parse(value);
+        } else if(binding.equals(MultiLineString.class)) {
+            return null;
+        } else if(binding.equals(MultiPolygon.class)) {
+            return null;
+        } else if(binding.equals(MultiPoint.class)) {
+            return null;
+        }
+           
+        return null;
     }
 }

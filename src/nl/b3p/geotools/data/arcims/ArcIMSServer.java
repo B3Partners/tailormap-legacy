@@ -151,7 +151,13 @@ public class ArcIMSServer {
     
     public AxlFeatures getFeatures(AxlGetFeatures request) throws Exception {
         request.setOutputmode(AxlGetFeatures.OUTPUTMODE_NEWXML);
-        AxlResponse response = internalIssueRequest(createRequest(request));
+        request.setCompact(true);
+        request.setCheckesc(true); // lol...        
+        request.setGeometry(true);
+        request.setAttributes(true);
+        ArcXMLRequest req = createRequest(request);
+        req.setProperty("CustomService", "Query");
+        AxlResponse response = internalIssueRequest(req);
         
         if(response.getError() != null) {
             throw new AxlException(response.getError());

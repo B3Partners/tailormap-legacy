@@ -57,33 +57,52 @@ public class ArcIMSDataStore extends ContentDataStore {
     @Override
     protected List<Name> createTypeNames() throws IOException {
         if(typeNames == null) {
-            try {
-                initArcIMS();
+            initArcIMS();
 
-                typeNames = new ArrayList<Name>();
-                for(AxlLayerInfo l: arcims.getAxlServiceInfo().getLayers()) {
+            typeNames = new ArrayList<Name>();
+            for(AxlLayerInfo l: arcims.getAxlServiceInfo().getLayers()) {
+                if(AxlLayerInfo.TYPE_FEATURECLASS.equals(l.getType())) {
                     typeNames.add(new NameImpl(l.getId()));
                 }
+            }
+        }
+        return typeNames;
+    }
+    
+    private void initArcIMS() throws IOException {
+        if(arcims == null) {
+            HTTPClient client = new SimpleHttpClient();
+            client.setUser(user);
+            client.setPassword(passwd);
+
+            try {
+                arcims = new ArcIMSServer(url, serviceName, client);
             } catch(IOException e) {
                 throw e;
             } catch(Exception e) {
                 throw new IOException(e);
             }
         }
-        return typeNames;
-    }
-    
-    private void initArcIMS() throws Exception {
-        HTTPClient client = new SimpleHttpClient();
-        client.setUser(user);
-        client.setPassword(passwd);
-            
-        arcims = new ArcIMSServer(url, serviceName, client);
      }
 
     @Override
     protected ContentFeatureSource createFeatureSource(ContentEntry ce) throws IOException {
-        throw new UnsupportedOperationException();
+        return new ArcIMSFeatureSource(ce);
     }
     
+    AxlLayerInfo getAxlLayerInfo(String layer) throws IOException {
+        initArcIMS();
+        
+        for(AxlLayerInfo l: arcims.getAxlServiceInfo().getLayers()) {
+            if(layer.equals(l.getId())) {
+                return l;
+            }
+        }
+        return null;
+    }
+    
+    ArcIMSServer getArcIMSServer() throws IOException {
+        initArcIMS();
+        return arcims;
+    }
 }
