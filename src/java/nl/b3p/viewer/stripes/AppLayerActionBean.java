@@ -17,6 +17,9 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.NoResultException;
@@ -39,7 +42,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.data.store.DataFeatureCollection;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
@@ -277,53 +279,42 @@ public class AppLayerActionBean implements ActionBean {
                 
                 FeatureCollection fc = fs.getFeatures(q);
 
-                if(!fc.isEmpty()) {
-                    int featureCount;
-                    if(fc instanceof DataFeatureCollection) {
-                        featureCount = ((DataFeatureCollection)fc).getCount();
-                    } else {
-                        featureCount = fc.size(); /* This method swallows exceptions */
-                    }   
-                    if(featureCount < (startIndexSupported ? limit : start + limit)) {
-                        total = start + (startIndexSupported ? featureCount : featureCount - start);
-                    }
+                FeatureIterator<SimpleFeature> it = fc.features();
+                try {
+                    while(it.hasNext()) {
+                        SimpleFeature f = it.next();
 
-                    FeatureIterator<SimpleFeature> it = fc.features();
-                    try {
-                        while(it.hasNext()) {
-                            SimpleFeature f = it.next();
-
-                            if(!startIndexSupported && start > 0) {
-                                start--;
-                                continue;
-                            }
-                        
-                            if(arrays) {
-                                JSONObject j = new JSONObject();
-                                int idx = 0;
-                                for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-
-                                    if(ca.isVisible()) {
-                                        j.put("c" + idx++, f.getAttribute(ca.getAttributeName()));
-                                    }
-                                }    
-                                features.put(j);                                
-                            } else {
-                                JSONObject j = new JSONObject();
-                                for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-
-                                    if(ca.isVisible()) {
-                                        String name = ca.getAttributeName();
-                                        j.put(name, f.getAttribute(name));
-                                    }
-                                }                     
-                                features.put(j);
-                            }
+                        if(!startIndexSupported && start > 0) {
+                            start--;
+                            continue;
                         }
-                    } finally {
-                        it.close();                        
-                        fs.getDataStore().dispose();
+
+                        if(arrays) {
+                            JSONObject j = new JSONObject();
+                            int idx = 0;
+                            for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+
+                                if(ca.isVisible()) {
+                                    Object value = f.getAttribute(ca.getAttributeName());
+                                    j.put("c" + idx++, formatValue(value));
+                                }
+                            }    
+                            features.put(j);                                
+                        } else {
+                            JSONObject j = new JSONObject();
+                            for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+
+                                if(ca.isVisible()) {
+                                    String name = ca.getAttributeName();
+                                    j.put(name, f.getAttribute(name));
+                                }
+                            }                     
+                            features.put(j);
+                        }
                     }
+                } finally {
+                    it.close();                        
+                    fs.getDataStore().dispose();
                 }
             }
 
@@ -343,5 +334,17 @@ public class AppLayerActionBean implements ActionBean {
         }
 
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
+    }
+    
+    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    
+    private Object formatValue(Object value) {
+        if(value instanceof Date) {
+            // JSON has no date type so format the date as it is used for 
+            // display, not calculation
+            return dateFormat.format((Date)value);
+        } else {
+            return value;
+        }
     }
 }
