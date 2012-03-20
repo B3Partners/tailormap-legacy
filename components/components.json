@@ -99,7 +99,7 @@
         closureCompilerSafe: true,
         type : "popup",
         singleton: true,
-        restrictions: ["content"],
+        restrictions: ["popupwindow"],
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip", title: "Titel", titlebarIcon:"Titelbalk icoon"},
             source: {tooltip: "Feature info", title : "", titlebarIcon:""}
