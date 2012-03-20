@@ -100,13 +100,20 @@ public class CombineImageSettings {
             this.urls.add(ciu);
         }
     }
+    /**
+     * Add the CombineImageUrl
+     * @param ciu 
+     */
     public void addUrl(CombineImageUrl ciu) {
         if (this.urls==null){
             this.urls = new ArrayList<CombineImageUrl>();
         }
         this.urls.add(ciu);
     }
-    
+    /**
+     * Set the wktGeoms
+     * @param wktGeoms Array of wktGeoms
+     */
     public void setWktGeoms(String[] wktGeoms){
         this.wktGeoms=new ArrayList();
         for (int i=0; i < wktGeoms.length; i++){
@@ -117,7 +124,7 @@ public class CombineImageSettings {
    
     
     /**
-     * Haalt de bbox op van de eerste de beste bbox in een url
+     * Gets the bbox from a url
      */
     public Bbox getBboxFromUrls() {
         Bbox bb = null;
@@ -127,7 +134,7 @@ public class CombineImageSettings {
         return bb;
     }
     /**
-     * Haalt de bbox van de meegegeven url op (of null als die er niet is)
+     * Gets the bbox from the url in the CombineImageUrl
      */
     public Bbox getBboxFromUrl(CombineImageUrl ciu) {
         if (ciu == null || ciu.getUrl()==null) {
@@ -159,7 +166,8 @@ public class CombineImageSettings {
         }
     }
     /**
-     *Haalt de breedte en hoogte uit de eerste url waar hij dat vind
+     * Try to resolve the width and height from the CombineImageUrl's
+     * @return Array of int's width is the first in the array, height second
      */
     public Integer[] getWidthAndHeightFromUrls() {
         Integer[] hw = null;
@@ -168,7 +176,11 @@ public class CombineImageSettings {
         }
         return hw;
     }
-
+    /**
+     * Try to resolve the width and height from the given CombineImageUrl
+     * @param ciu 
+     * @return Array of int's width is the first in the array, height second
+     */
     public Integer[] getWidthAndHeightFromUrl(CombineImageUrl ciu) {
         if (ciu == null || ciu.getUrl()==null) {
             return null;

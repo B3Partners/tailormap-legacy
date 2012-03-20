@@ -26,9 +26,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.image.CombineImageSettings;
-import nl.b3p.viewer.image.CombineImageUrl;
-import nl.b3p.viewer.image.CombineImagesHandler;
+import nl.b3p.viewer.image.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -105,17 +103,28 @@ public class CombineImageActionBean implements ActionBean {
                 //get the requests
                 JSONArray requests = jRequest.getJSONArray("requests");
                 for (int r=0; r < requests.length(); r++){
-                    CombineImageUrl ciu = new CombineImageUrl();
+                    CombineImageUrl ciu = null;
                     JSONObject request=requests.getJSONObject(r);
+                    
+                    String protocol = null;
+                    if (request.has("protocol")){
+                        protocol=request.getString("protocol");
+                    }
+                    if (CombineImageUrl.ARCSERVER.equals(protocol)){
+                        ciu= new CombineArcServerUrl();
+                    }else if (CombineImageUrl.ARCIMS.equals(protocol)){
+                        ciu= new CombineArcIMSUrl();
+                    }else{
+                        ciu = new CombineImageUrl();
+                    }
+                    ciu.setProtocol(protocol);
                     ciu.setUrl(request.getString("url"));
                     if (request.has("alpha")){
                         Double alpha=request.getDouble("alpha");
                         ciu.setAlpha(alpha.floatValue());
                     }
-                    ciu.setBody(request.getString("body"));
-                    if (request.has("protocol")){
-                        ciu.setProtocol(request.getString("protocol"));
-                    }
+                    ciu.setBody(request.getString("body"));                    
+                    
                     cis.addUrl(ciu);
                 }
                 if (jRequest.has("bbox")){

@@ -5,6 +5,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Class to store a image request. Extend this to overwrite functions. This class
+ * is typical used for WMS requests
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  * Created on 20-okt-2009, 10:30:38
  */
@@ -187,10 +189,16 @@ public class CombineImageUrl {
         }
         return null;
     }
-    
+    /**
+     * Clone this
+     * @return a clone
+     */
     @Override
-    public CombineImageUrl clone(){
+    public CombineImageUrl clone(){        
         CombineImageUrl ciu = new CombineImageUrl();
+        return clone(ciu);
+    }
+    public CombineImageUrl clone(CombineImageUrl ciu){
         ciu.setUrl(url);
         ciu.setAlpha(alpha);
         ciu.setBody(body);
