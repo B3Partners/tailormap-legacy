@@ -24,8 +24,10 @@ Ext.define ("viewer.components.FeatureInfo",{
     progressElement: null,
     constructor: function (conf){     
         viewer.components.FeatureInfo.superclass.constructor.call(this, conf);        
-        //this.initConfig(conf);        
-        this.popup.hide();
+        //this.initConfig(conf);   
+        if (this.popup){
+            this.popup.hide();
+        }
         this.progressElement = new Ext.Element(document.createElement("div"));
         this.progressElement.addCls("featureinfo_progress");
         //Add event when started the identify (clicked on the map)
