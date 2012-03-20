@@ -16,9 +16,12 @@
  */
 package nl.b3p.viewer.stripes;
 
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -26,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,9 +37,9 @@ import org.json.JSONObject;
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-@UrlBinding("/action/file")
+@UrlBinding("/action/Drawing")
 @StrictBinding
-public class FileActionBean implements ActionBean {
+public class DrawingActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(LayerListActionBean.class);
     private ActionBeanContext context;
@@ -112,6 +116,8 @@ public class FileActionBean implements ActionBean {
             }
             String contents = FileUtils.readFileToString(features);
 
+            Map<String, Double> extent = getBBOX(contents);
+            json.put("extent", extent);
             json.put("success", Boolean.TRUE);
             json.put("content", contents);
         } catch (JSONException ex) {
@@ -122,6 +128,41 @@ public class FileActionBean implements ActionBean {
             features.delete();
         }
         return new StreamingResolution("text/html", new StringReader(json.toString()));
+    }
+
+    private Map<String, Double> getBBOX(String contents) throws JSONException {
+        JSONObject json = new JSONObject(contents);
+        String featureString = json.getString("features");
+        JSONArray features = new JSONArray(featureString);
+        List<Geometry> polys = new ArrayList<Geometry>();
+        Map<String, Double> extent = new HashMap<String, Double>();
+        for (int i = 0; i < features.length(); i++) {
+            JSONObject feature = features.getJSONObject(i);
+            String wkt = feature.getString("wktgeom");
+            if (wkt != null) {
+                try {
+                    Geometry geom = new WKTReader().read(wkt);
+                    polys.add(geom);
+                } catch (ParseException e) {
+                    log.error("Failed to parse geometry from gemeentenaam >" + wkt + "<. Message: " + e.getMessage());
+                }
+            }
+        }
+        if (polys != null) {
+            GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
+            GeometryCollection mg = new GeometryCollection(polys.toArray(new Geometry[polys.size()]), gf);
+            Envelope envelope = mg.getEnvelopeInternal();
+            // Maak wat groter, zodat omliggende terreinen/percelen ook te zien zijn.
+            envelope.expandBy(500);
+
+            extent.put("minx", envelope.getMinX());
+            extent.put("miny", envelope.getMinY());
+            extent.put("maxx", envelope.getMaxX());
+            extent.put("maxy", envelope.getMaxY());
+        } else {
+            extent = null;
+        }
+        return extent;
     }
 
     public Resolution save() {
