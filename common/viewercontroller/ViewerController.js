@@ -450,21 +450,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }else{
                 servlet = url.substring(url.indexOf("/",7)+1);
             }
-            // Make arcIms specific ogcOptions
-            options.name=  layerName;
-            options.server = server;            
-            options.mapservice = service.name;
-            options.servlet = servlet;
+            // Make arcIms specific options
             options.visibleids = layerName;
             if (layer.queryable){
                 options.identifyids= layer.name;
             }
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
-                layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.name, options);
+                layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.serviceName, options);
             }else{                
                 options.type= "ArcGIS";
-                layerObj = this.mapComponent.createArcServerLayer(layerName,server,servlet,service.name, options);
+                layerObj = this.mapComponent.createArcServerLayer(layerName,server,servlet,null, options);
             }
             this.layers[id] = layerObj;
         }
