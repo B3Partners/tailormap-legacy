@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.persistence.*;
 import nl.b3p.geotools.data.arcims.ArcIMSServer;
 import nl.b3p.geotools.data.arcims.AxlField;
+import nl.b3p.geotools.data.arcims.AxlFieldInfo;
 import nl.b3p.geotools.data.arcims.AxlLayerInfo;
 import nl.b3p.web.WaitPageStatus;
 import org.geotools.data.ServiceInfo;
@@ -161,7 +162,7 @@ public class ArcIMSService extends GeoService {
             sft.setWriteable(false);
             sft.setDescription(axl.getName());
 
-            for(AxlField axlField: axl.getFclass().getFields()) {
+            for(AxlFieldInfo axlField: axl.getFclass().getFields()) {
                 AttributeDescriptor att = new AttributeDescriptor();
                 sft.getAttributes().add(att);
                 att.setName(axlField.getName());
