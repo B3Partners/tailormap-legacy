@@ -93,8 +93,9 @@ Ext.define ("viewer.components.AttributeList",{
               
         var config = {
             viewerController : this.viewerController,
-            restriction : "hasConfiguredLayers",
-            layers: this.layers,
+            restriction: "attribute",
+//            restriction : "hasConfiguredLayers",
+//            layers: this.layers,
             div: this.name + 'LayerSelectorPanel'
         };
         var ls = Ext.create("viewer.components.LayerSelector",config);
