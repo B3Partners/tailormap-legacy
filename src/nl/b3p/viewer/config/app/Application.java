@@ -238,15 +238,17 @@ public class Application {
                     parentChildren.add(l);
                 }
             }
-            
-            // Prevent n+1 queries for each ApplicationLayer            
-            Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
-                    + "left join fetch al.details "
-                    + "left join fetch al.readers "
-                    + "left join fetch al.writers "
-                    + "where al in (:alayers) ")
-                    .setParameter("alayers", appLayerEntities)
-                    .getResultList();
+
+            if(!appLayerEntities.isEmpty()) {
+                // Prevent n+1 queries for each ApplicationLayer            
+                Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
+                        + "left join fetch al.details "
+                        + "left join fetch al.readers "
+                        + "left join fetch al.writers "
+                        + "where al in (:alayers) ")
+                        .setParameter("alayers", appLayerEntities)
+                        .getResultList();
+            }
 
             JSONObject levels = new JSONObject();
             o.put("levels", levels);
