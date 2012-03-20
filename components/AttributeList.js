@@ -35,24 +35,18 @@ Ext.define ("viewer.components.AttributeList",{
         conf.width=  600;
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
-        this.loadButton();
+        var me = this;
+        this.renderButton({
+            handler: function(){
+                me.showWindow();
+            },
+            text: me.title,
+            icon: me.iconUrl,
+            tooltip: me.tooltip
+        });      
         this.loadWindow();
         return this;
-    } ,
-    loadButton : function(){
-        Ext.create('Ext.Button', {
-            renderTo: this.div,
-            icon: this.iconUrl,
-            tooltip: this.tooltip,
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.showWindow
-                }
-            }
-        });
     },
-    
     getExtComponents: function() {
         var c = [];
         c.push(this.name + 'Container');
@@ -99,7 +93,8 @@ Ext.define ("viewer.components.AttributeList",{
               
         var config = {
             viewerController : this.viewerController,
-            restriction : "attribute",
+            restriction : "hasConfiguredLayers",
+            layers: this.layers,
             div: this.name + 'LayerSelectorPanel'
         };
         var ls = Ext.create("viewer.components.LayerSelector",config);
