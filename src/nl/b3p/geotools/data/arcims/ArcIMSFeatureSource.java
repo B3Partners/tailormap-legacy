@@ -33,7 +33,7 @@ import org.opengis.filter.sort.SortBy;
  * @author Matthijs Laan
  */
 public class ArcIMSFeatureSource extends ContentFeatureSource {
-
+    
     public ArcIMSFeatureSource(ContentEntry ce) {
         super(ce, null);
     }
@@ -91,9 +91,7 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
 
     @Override   
     protected int getCountInternal(Query query) throws IOException {
-        // TODO use skipfeatures -- although total count may have to be cached
-        // along multiple requests if skipfeatures request reduces performance
-        return -1;
+        return new ArcIMSFeatureReader(this, query).getCount();
     }
 
     @Override
@@ -107,13 +105,24 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
         AxlFClass fc = al.getFclass();
         
         SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
-        b.setName(al.getId());
+        b.setName(al.getId());       
         
-        for(AxlField f: fc.getFields()) {
+        // Add AxlField.TYPE_ROW_ID first, default sort column
+        for(AxlFieldInfo f: fc.getFields()) {
             b.add(f.getName(), f.getBinding(fc));
         }
              
         return b.buildFeatureType();
     }
     
+    protected String findRowIdAttribute() throws IOException {
+        AxlLayerInfo al = ((ArcIMSDataStore)getDataStore()).getAxlLayerInfo(entry.getTypeName());
+        AxlFClass fc = al.getFclass();
+        for(AxlFieldInfo f: fc.getFields()) {
+            if(AxlField.TYPE_ROW_ID == f.getType()) {
+                return f.getName();
+            }
+        }
+        return null;
+    }    
 }

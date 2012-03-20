@@ -17,21 +17,21 @@
 package nl.b3p.geotools.data.arcims;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.NoSuchElementException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeType;
 
 /**
  *
  * @author Matthijs Laan
  */
 class ArcIMSFeatureReader implements SimpleFeatureReader {  
+    private static final Log log = LogFactory.getLog(ArcIMSFeatureReader.class);
 
     private ArcIMSFeatureSource fs;
     private Query query;
@@ -41,13 +41,63 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     private AxlGetFeatures request;
     private AxlFeatures response;
     
-    private DateFormat dateFormat;
+    private int startIndex = 0;
+    private Integer maxFeatures;
     
     private int index;
     
+    private Integer totalCount;
+    
+    private String rowIdAttribute;
+
     public ArcIMSFeatureReader(ArcIMSFeatureSource fs, Query query) {
         this.fs = fs;
-        this.query = query;        
+        this.query = query;     
+        
+        if(query.getStartIndex() != null) {
+            this.startIndex = query.getStartIndex();
+        }
+        if(!query.isMaxFeaturesUnlimited()) {
+            maxFeatures = query.getMaxFeatures();
+        }
+        /*String qryString = null;
+        if(query != null) {
+            try {
+                // NPE when NullSortBy
+                qryString = query.toString();
+            } catch(Exception e) {
+                log.error("query.toString()", e);
+                qryString = "<exception>";
+            }
+        }*/
+        log.debug(String.format("%s init reader, startindex=%d maxfeatures=%d", //, query %s", 
+                fs.getDataStore().toString(), 
+                startIndex, 
+                maxFeatures/*, 
+                qryString*/));
+    }
+    
+    public int getCount() throws IOException {
+        if(totalCount != null) {
+            return totalCount;
+        }
+        
+        AxlGetFeatures r = new AxlGetFeatures();
+        r.setLayer(new AxlLayerInfo(fs.getEntry().getTypeName()));
+        // TODO: set AxlQuery according to query
+        r.setQuery(new AxlQuery());     
+        r.setSkipfeatures(true);
+        log.debug(String.format("%s get feature count for layer %s",
+                fs.getDataStore().toString(),
+                r.getLayer().getId()));
+        try {
+            AxlFeatures resp = ((ArcIMSDataStore)fs.getDataStore()).getArcIMSServer().getFeatures(r);
+            totalCount = resp.getFeatureCount().getCount();
+            log.debug("feature count for layer " + r.getLayer().getId() + ": " + totalCount);
+            return totalCount;
+        } catch(Exception e) {
+            throw new IOException("Error retrieving feature count from ArcIMS: " + e.toString(), e);
+        }        
     }
 
     @Override
@@ -55,21 +105,34 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         return fs.getSchema();
     }
     
+    private void performNewRequest() throws IOException {
+        request = null;
+        performRequest();
+    }
+    
     protected void performRequest() throws IOException {
         if(request != null) {
             return;
         }
-        builder = new SimpleFeatureBuilder(getFeatureType());
-        for(AttributeType t: getFeatureType().getTypes()) {
-            if(t.getBinding().equals(Date.class)) {
-                dateFormat = AxlField.createDateFormat();
-            }
+        if(builder == null) {
+            builder = new SimpleFeatureBuilder(getFeatureType());
+            rowIdAttribute = fs.findRowIdAttribute();
         }
         
         request = new AxlGetFeatures();
         request.setLayer(new AxlLayerInfo(fs.getEntry().getTypeName()));
+        // TODO: set AxlQuery according to query        
         request.setQuery(new AxlQuery());
         
+        if(maxFeatures != null) {
+            request.setFeaturelimit(maxFeatures);
+        }
+        request.setBeginrecord(startIndex+1);
+        log.debug(String.format("%s get features for layer %s, beginrecord=%d featurelimit=%d",
+                fs.getDataStore().toString(),
+                request.getLayer().getId(),
+                request.getBeginrecord(),
+                request.getFeaturelimit()));
         try {
             response = ((ArcIMSDataStore)fs.getDataStore()).getArcIMSServer().getFeatures(request);
         } catch(Exception e) {
@@ -78,15 +141,15 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     }
     
     protected SimpleFeature buildFeature(AxlFeature axlf) throws IOException {
-        
-        boolean hasId = false;
-        
+        String id = null;
         for(AxlField f: axlf.getFields()) {
             Class binding = null;
             try {
                 binding = getFeatureType().getType(f.getName()).getBinding();
-                builder.set(f.getName(), f.getConvertedValue(binding, dateFormat));
-                hasId = AxlField.AXL_ID.equals(f.getName());
+                builder.set(f.getName(), f.getConvertedValue(binding));
+                if(rowIdAttribute != null && rowIdAttribute.equals(f.getName())) {
+                    id = f.getValue();
+                }
             } catch(Exception e) {
                 throw new IOException(String.format("Error converting field \"%s\" value \"%s\" to type %s: %s",
                         f.getName(),
@@ -95,7 +158,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
                         e.toString()), e);
             }
         }
-        return builder.buildFeature(hasId ? AxlField.AXL_ID : null);
+        return builder.buildFeature(id);
     }
 
     @Override
@@ -111,11 +174,27 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     @Override
     public boolean hasNext() throws IOException {
         performRequest();
-        if(response == null || response.getFeatures() == null || response.getFeatures() == null ||
+        if(response == null || response.getFeatures() == null ||
                 response.getFeatures().isEmpty()) {
             return false;
         }
-        return index < response.getFeatures().size();
+        if(index < response.getFeatures().size()) {
+            return true;
+        }
+        if(response.getFeatureCount().isHasmore()) {
+            startIndex += response.getFeatures().size();
+            index = 0;
+            
+            if(maxFeatures != null) {
+                maxFeatures -= response.getFeatures().size();
+                if(maxFeatures <= 0) {
+                    return false;
+                }
+            }
+            performNewRequest();
+            return response.getFeatures() != null && !response.getFeatures().isEmpty();
+        }
+        return false;
     }
 
     public boolean hasMore() throws IOException {
