@@ -57,8 +57,8 @@ public class ArcXMLFeatureSource extends FeatureSource {
         params.put(ArcIMSDataStoreFactory.PARAM_URL.key, new URL(getUrl()));
         params.put(ArcIMSDataStoreFactory.PARAM_SERVICENAME.key, serviceName);
         
-        params.put(ArcIMSDataStoreFactory.PARAM_USER, getUsername());
-        params.put(ArcIMSDataStoreFactory.PARAM_PASSWD, getPassword());
+        params.put(ArcIMSDataStoreFactory.PARAM_USER.key, getUsername());
+        params.put(ArcIMSDataStoreFactory.PARAM_PASSWD.key, getPassword());
         
         log.debug("Opening datastore using parameters: " + params);
         try {
