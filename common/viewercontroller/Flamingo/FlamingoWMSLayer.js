@@ -74,7 +74,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     getLegendGraphic : function () {
         var url = this.options.url;
         var character = url.indexOf("?") == -1 ? "?" : "&";
-        if(url.substring(url.length) == character){
+        if(url.substring(url.length) != character){
             url += character;
         }
         var request = url + "request=GetLegendGraphic&layer="+this.getAppLayerName()+"&version=1.1.1&format=png";
