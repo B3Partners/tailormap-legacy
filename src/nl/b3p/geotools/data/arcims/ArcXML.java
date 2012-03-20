@@ -30,12 +30,12 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ArcXML {
     private static JAXBContext jaxbContext = null;
-    
+    private static JAXBException initException;
     static {
         try {
             jaxbContext = JAXBContext.newInstance(ArcXML.class);
         } catch(JAXBException e) {
-            e.printStackTrace();
+            initException = e;
         }
     }    
     
@@ -64,6 +64,9 @@ public class ArcXML {
     }
 
     public static JAXBContext getJaxbContext() {
+        if(initException != null) {
+            throw new ExceptionInInitializerError(initException);
+        }
         return jaxbContext;
     }
 }
