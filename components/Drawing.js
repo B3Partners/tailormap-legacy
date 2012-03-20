@@ -243,7 +243,7 @@ Ext.define ("viewer.components.Drawing",{
         // Build the saving form
         this.formsave = new Ext.form.FormPanel({
             standardSubmit: true,
-            url: actionBeans["file"] + "?save",
+            url: actionBeans["drawing"] + "?save",
             items: [
             { 
                 xtype: 'label',
@@ -337,8 +337,10 @@ Ext.define ("viewer.components.Drawing",{
         }
     },
     labelChanged : function (field,newValue){
-        this.vectorLayer.setLabel(this.activeFeature.getId(),newValue);
-        this.activeFeature.label=newValue;
+        if(this.activeFeature != null){
+            this.vectorLayer.setLabel(this.activeFeature.getId(),newValue);
+            this.activeFeature.label=newValue;
+        }
     },
     toggleSelectForm : function(visible){
         this.formselect.setVisible(visible);
@@ -359,13 +361,21 @@ Ext.define ("viewer.components.Drawing",{
         this.vectorLayer.removeAllFeatures();
         this.toggleSelectForm(false);
         this.features = {};
-        this.activeFeature=null;
+        this.label.setValue("");
+        this.title.setValue("");
+        this.description.setValue("");
+        if(this.activeFeature != null){
+            this.activeFeature=null;
+        }
     },
     deleteObject: function(){
         delete this.features[this.activeFeature.id];
         this.vectorLayer.removeFeature(this.activeFeature);
         this.toggleSelectForm(false);
-        this.activeFeature=null;
+        if(this.activeFeature != null){
+            this.activeFeature=null;
+        }
+        this.label.setValue("");
     },
     saveFile: function(){       
         var form = this.formsave.getForm();
@@ -388,8 +398,9 @@ Ext.define ("viewer.components.Drawing",{
         if(form.isValid()){
             form.submit({
                 scope:this,
-                url: actionBeans["file"],
+                url: actionBeans["drawing"],
                 waitMsg: 'Bezig met uploaden...',
+                waitTitle: "Even wachten...",
                 success: function(fp, o) {
                     var json = Ext.JSON.decode(o.result.content);
                     this.title.setValue( json.title);
@@ -402,6 +413,8 @@ Ext.define ("viewer.components.Drawing",{
                         this.vectorLayer.adjustStyle();
                         this.vectorLayer.addFeature(featureObject);
                     }
+                    var extent = o.result.extent;
+                    this.viewerController.mapComponent.getMap().zoomToExtent(extent);
         
                 },
                 failure: function (){
