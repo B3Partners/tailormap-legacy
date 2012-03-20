@@ -161,7 +161,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var layoutComponent = list[i];
             var component = this.app.components[layoutComponent.componentName];
             component.config.div = layoutComponent.htmlId;
-            component.config.isPopup = layoutComponent.isPopup;
+            if(component.config.isPopup == undefined){
+                component.config.isPopup = layoutComponent.isPopup;
+            }
             component.config.showOnStartup = layoutComponent.showOnStartup;
             this.createComponent(component.name, component.className, component.config, component.details);
         }
