@@ -105,4 +105,9 @@ public class ArcIMSDataStore extends ContentDataStore {
         initArcIMS();
         return arcims;
     }
+    
+    @Override
+    public String toString() {
+        return "ArcIMSDataStore URL=" + url.toString() + " ServiceName=" + serviceName;
+    }
 }
