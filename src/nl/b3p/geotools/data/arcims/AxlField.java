@@ -45,24 +45,12 @@ public class AxlField {
     public static final int TYPE_DOUBLE        = 8;
     public static final int TYPE_STRING        = 12;
     public static final int TYPE_DATE          = 91;
-    
-    public static final String AXL_ID = "#ID#";
-    public static final String AXL_SHAPE = "#SHAPE#";
    
     @XmlAttribute
     private String name;
     
     @XmlAttribute
-    private Integer type;
-    
-    @XmlAttribute
     private String value;
-    
-    @XmlAttribute
-    private Integer precision;
-    
-    @XmlAttribute
-    private Integer size;
 
     public String getName() {
         return name;
@@ -72,22 +60,6 @@ public class AxlField {
         this.name = name;
     }
 
-    public Integer getPrecision() {
-        return precision;
-    }
-
-    public void setPrecision(Integer precision) {
-        this.precision = precision;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
-    }
-
     public String getValue() {
         return value;
     }
@@ -95,64 +67,12 @@ public class AxlField {
     public void setValue(String value) {
         this.value = value;
     }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-    
-    public Class getBinding(AxlFClass fclass) {
-        Class binding = String.class;
-        switch(type) {
-            case AxlField.TYPE_SHAPE:
-                String fcType = fclass.getType();
-                if(AxlFClass.TYPE_LINE.equals(fcType)) {
-                    binding = MultiLineString.class;
-                } else if(AxlFClass.TYPE_POINT.equals(fcType)) {
-                    binding = MultiPoint.class;
-                } else {
-                    binding = MultiPolygon.class;
-                }
-
-                break;
-            case AxlField.TYPE_ROW_ID:
-            case AxlField.TYPE_INTEGER:
-            case AxlField.TYPE_SMALL_INTEGER:
-                binding = Integer.class;
-                break;
-            case AxlField.TYPE_BOOLEAN:
-                binding = Boolean.class;
-                break;
-            case AxlField.TYPE_BIG_INTEGER:
-                binding = BigInteger.class;
-                break;
-            case AxlField.TYPE_CHAR:
-                binding = Character.class;
-                break;
-            case AxlField.TYPE_FLOAT:
-                binding = Float.class;
-                break;
-            case AxlField.TYPE_DOUBLE:
-                binding = Double.class;
-                break;
-            case AxlField.TYPE_STRING:
-                binding = String.class;
-                break;
-            case AxlField.TYPE_DATE:
-                binding = Date.class;
-                break;
-        }
-        return binding;
-    }
     
     public static DateFormat createDateFormat() {
         return new SimpleDateFormat("{ts 'YYYY-MM-dd HH:mm:ss'}");
     }
     
-    public Object getConvertedValue(Class binding, DateFormat dateFormat) throws ParseException {
+    public Object getConvertedValue(Class binding) throws ParseException {
         if(value == null) {
             return null;
         }
@@ -167,16 +87,19 @@ public class AxlField {
         } else if(binding.equals(Character.class)) {
             return value.charAt(0);
         } else if(binding.equals(Float.class)) {
-            return Float.parseFloat(value);
+            return Float.parseFloat(value.replace(',', '.'));
         } else if(binding.equals(Double.class)) {
-            return Double.parseDouble(value);
+            return Double.parseDouble(value.replace(',', '.'));
         } else if(binding.equals(Date.class)) {
-            return dateFormat.parse(value);
+            return new Date(Long.parseLong(value));
         } else if(binding.equals(MultiLineString.class)) {
+            // TODO
             return null;
         } else if(binding.equals(MultiPolygon.class)) {
+            // TODO
             return null;
         } else if(binding.equals(MultiPoint.class)) {
+            // TODO
             return null;
         }
            

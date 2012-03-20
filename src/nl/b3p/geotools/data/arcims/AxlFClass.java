@@ -39,7 +39,7 @@ public class AxlFClass {
     private AxlEnvelope envelope;
     
     @XmlElement(name="FIELD")
-    private List<AxlField> fields;
+    private List<AxlFieldInfo> fields;
 
     public AxlEnvelope getEnvelope() {
         return envelope;
@@ -49,11 +49,11 @@ public class AxlFClass {
         this.envelope = envelope;
     }
 
-    public List<AxlField> getFields() {
+    public List<AxlFieldInfo> getFields() {
         return fields;
     }
 
-    public void setFields(List<AxlField> fields) {
+    public void setFields(List<AxlFieldInfo> fields) {
         this.fields = fields;
     }
 
