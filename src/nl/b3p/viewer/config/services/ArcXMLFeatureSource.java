@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.*;
-import nl.b3p.geotools.data.arcims.ArcIMSDataStore;
 import nl.b3p.geotools.data.arcims.ArcIMSDataStoreFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,22 +52,24 @@ public class ArcXMLFeatureSource extends FeatureSource {
     
     public DataStore createDataStore() throws Exception {
         Map params = new HashMap();
-
-        params.put(ArcIMSDataStoreFactory.PARAM_URL.key, new URL(getUrl()));
-        params.put(ArcIMSDataStoreFactory.PARAM_SERVICENAME.key, serviceName);
         
-        params.put(ArcIMSDataStoreFactory.PARAM_USER.key, getUsername());
-        params.put(ArcIMSDataStoreFactory.PARAM_PASSWD.key, getPassword());
+        params.put(ArcIMSDataStoreFactory.URL.key, new URL(getUrl()));
+        params.put(ArcIMSDataStoreFactory.SERVICENAME.key, serviceName);
+        
+        params.put(ArcIMSDataStoreFactory.USER.key, getUsername());
+        params.put(ArcIMSDataStoreFactory.PASSWD.key, getPassword());
         
         log.debug("Opening datastore using parameters: " + params);
+        DataStore ds = null;
         try {
-            DataStore ds = DataStoreFinder.getDataStore(params);      
-            if(ds == null) {
-                throw new Exception("Cannot open datastore using parameters " + params);
-            }
-            return ds;
+            ds = DataStoreFinder.getDataStore(params);      
         } catch(Exception e) {
             throw new Exception("Cannot open datastore using parameters " + params, e);
+        }
+        if(ds == null) {
+            throw new Exception("Cannot open datastore using parameters " + params);
+        } else {
+            return ds;        
         }
     }
     
