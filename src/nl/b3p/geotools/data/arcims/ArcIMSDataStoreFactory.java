@@ -20,8 +20,8 @@ public class ArcIMSDataStoreFactory extends AbstractDataStoreFactory {
     
     public static final DataStoreFactorySpi.Param PARAM_URL = new Param("url", URL.class, "url to a ArcIMS service");
     public static final DataStoreFactorySpi.Param PARAM_SERVICENAME = new Param("service_name", String.class, "Service name parameter");    
-    public static final DataStoreFactorySpi.Param PARAM_USER = new Param("user", String.class, "Username");    
-    public static final DataStoreFactorySpi.Param PARAM_PASSWD = new Param("passwd", String.class, "Password");    
+    public static final DataStoreFactorySpi.Param PARAM_USER = new Param("user", String.class, "Username", false);    
+    public static final DataStoreFactorySpi.Param PARAM_PASSWD = new Param("passwd", String.class, "Password", false);    
     
     @Override
     public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
@@ -44,6 +44,6 @@ public class ArcIMSDataStoreFactory extends AbstractDataStoreFactory {
 
     @Override
     public Param[] getParametersInfo() {
-        return new Param[] { PARAM_URL, PARAM_SERVICENAME };
+        return new Param[] { PARAM_URL, PARAM_SERVICENAME, PARAM_USER, PARAM_PASSWD };
     }    
 }

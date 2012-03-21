@@ -16,7 +16,6 @@
  */
 package nl.b3p.geotools.data.arcims;
 
-import nl.b3p.geotools.data.arcims.axl.AxlLayerInfo;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
+import nl.b3p.geotools.data.arcims.axl.AxlLayerInfo;
 
 /**
  *
@@ -55,22 +55,7 @@ public class ArcIMSDataStore extends ContentDataStore {
         this.passwd = passwd;
     }
 
-    @Override
-    protected List<Name> createTypeNames() throws IOException {
-        if(typeNames == null) {
-            initArcIMS();
-
-            typeNames = new ArrayList<Name>();
-            for(AxlLayerInfo l: arcims.getAxlServiceInfo().getLayers()) {
-                if(AxlLayerInfo.TYPE_FEATURECLASS.equals(l.getType())) {
-                    typeNames.add(new NameImpl(l.getId()));
-                }
-            }
-        }
-        return typeNames;
-    }
-    
-    private void initArcIMS() throws IOException {
+    public ArcIMSServer getArcIMSServer() throws IOException {
         if(arcims == null) {
             HTTPClient client = new SimpleHttpClient();
             client.setUser(user);
@@ -84,15 +69,31 @@ public class ArcIMSDataStore extends ContentDataStore {
                 throw new IOException(e);
             }
         }
-     }
+        return arcims;
+    }
+    
+    @Override
+    protected List<Name> createTypeNames() throws IOException {
+        if(typeNames == null) {
+            getArcIMSServer();
+
+            typeNames = new ArrayList<Name>();
+            for(AxlLayerInfo l: arcims.getAxlServiceInfo().getLayers()) {
+                if(AxlLayerInfo.TYPE_FEATURECLASS.equals(l.getType())) {
+                    typeNames.add(new NameImpl(l.getId()));
+                }
+            }
+        }
+        return typeNames;
+    }
 
     @Override
     protected ContentFeatureSource createFeatureSource(ContentEntry ce) throws IOException {
         return new ArcIMSFeatureSource(ce);
     }
     
-    AxlLayerInfo getAxlLayerInfo(String layer) throws IOException {
-        initArcIMS();
+    public AxlLayerInfo getAxlLayerInfo(String layer) throws IOException {
+        getArcIMSServer();
         
         for(AxlLayerInfo l: arcims.getAxlServiceInfo().getLayers()) {
             if(layer.equals(l.getId())) {
@@ -100,11 +101,6 @@ public class ArcIMSDataStore extends ContentDataStore {
             }
         }
         return null;
-    }
-    
-    ArcIMSServer getArcIMSServer() throws IOException {
-        initArcIMS();
-        return arcims;
     }
     
     @Override
