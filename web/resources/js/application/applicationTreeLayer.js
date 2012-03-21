@@ -54,7 +54,7 @@ Ext.onReady(function() {
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
             if(editable) {
-                
+                var possibleValues = Ext.JSON.decode(attribute.editvalues);
                 editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                     id: 'edit' + attribute.id,
                     title: name + (attribute.editable ? ' (&times;)' : ''),
@@ -72,7 +72,7 @@ Ext.onReady(function() {
                             layout: 'hbox',
                             items: [
                                 { fieldLabel: 'Mogelijke waarden', 
-                                    name: 'editvalues', id: 'editvalues' + attribute.id, value: attribute.editvalues, xtype: 'textfield', size: 100 },
+                                    name: 'editvalues', id: 'editvalues' + attribute.id, value: possibleValues, xtype: 'textfield', size: 100 },
                                 { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {
                                     click: function() {
                                         getDBValues(attribute.id);
@@ -189,6 +189,9 @@ function getJson() {
             Ext.getCmp('edit' + attribute.id).getForm().getFields().each(function(field) {
                 newAttribute[field.getName()] = field.getValue();
             });
+            if(newAttribute["editvalues"] != undefined && newAttribute["editvalues"] != ""){
+                newAttribute["editvalues"]= newAttribute["editvalues"].split(",");
+            }
         }
         newAttribute.filterable = Ext.getCmp('filterable' + attribute.id).getValue();
         newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();
