@@ -24,7 +24,7 @@ Ext.define ("viewer.components.Print",{
     panel: null,
     printForm: null,
     vl:null,
-    minKwality: 128,
+    minQuality: 128,
     minWidth: 500,
     combineImageService: null,
     config:{
@@ -172,7 +172,7 @@ Ext.define ("viewer.components.Print",{
                                 id: "formQuality",
                                 value: 11,
                                 increment: 1,
-                                minValue: 10,
+                                minValue: me.minQuality,
                                 maxValue: me.max_imagesize,
                                 listeners: {
                                     changecomplete: {
@@ -387,7 +387,7 @@ Ext.define ("viewer.components.Print",{
      */
     correctQuality: function(angle){
         //get the max quality that is allowed with the given angle
-        var maxQuality =this.getMaxQualityWithAngle(angle);
+        var maxQuality =this.getMaxQualityWithAngle(angle);        
         var sliderQuality = Ext.getCmp('formQuality').getValue();
         if (sliderQuality > maxQuality){
             Ext.getCmp('formQuality').setValue(maxQuality);
@@ -397,23 +397,79 @@ Ext.define ("viewer.components.Print",{
      * Get the maximum quality that is possible with the given angle
      */
     getMaxQualityWithAngle: function(angle){
-        if (angle==0)
+        //only if a rotation must be done.
+        if (angle==0 || angle==360)
             return this.max_imagesize;
         
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
-        var biggest = height > width ? height :width;
-        var smallest = height > width ? width: height;
-        //ratio between biggest and smallest
-        var ratio = biggest/smallest;
-        var sqrRatio= ratio*ratio;
-        //calculate the smallest square length
-        var sqrSmallest= (this.max_imagesize*this.max_imagesize)/(sqrRatio+1);
-        //the biggest is square root( smallest_square * sqr_ratio)
-        var maxQuality=Math.sqrt(sqrSmallest*(sqrRatio));
-        //var maxSmallest=Math.sqrt(sqrSmallest);
-        //console.log("check: "+this.max_imagesize+" ~= "+Math.sqrt((maxQuality*maxQuality)+(maxSmallest*maxSmallest)));
-        return Math.round(maxQuality);
+        var sliderQuality = Ext.getCmp('formQuality').getValue();
+        var ratio = width/height;
+        //calculate the new widht and height with the quality
+        if (height> width){
+            height = sliderQuality;
+            width = sliderQuality * ratio;
+        }else{
+            width = sliderQuality;
+            height = sliderQuality/ratio;
+        }
+        //calc divide only twice
+        var width2 = width/2;
+        var height2 = height/2;
+        
+        var newCoords = new Array();        
+        //calculate rotation with the rotation point transformed to 0,0
+        newCoords[0] = this.calcRotationX(angle,-width2,-height2);
+        newCoords[1] = this.calcRotationX(angle,width2,-height2);
+        newCoords[2] = this.calcRotationX(angle,width2,height2);
+        newCoords[3] = this.calcRotationX(angle,-width2,height2);
+        //transform the rectangle (or square) back
+        for (var c in newCoords){
+            var coord=newCoords[c];
+            coord.x= coord.x + width2;
+            coord.y= coord.y + height2;
+        }
+        //get the bbox of both the extents. (original and rotated)
+        var totalBBox= new viewer.viewercontroller.controller.Extent(0,0,width,height);
+        for (var c in newCoords){
+            var coord = newCoords[c];
+            if (coord.x > totalBBox.maxx){
+                totalBBox.maxx=coord.x;
+            }if (coord.x < totalBBox.minx){
+                totalBBox.minx=coord.x;
+            }if (coord.y > totalBBox.maxy){
+                totalBBox.maxy=coord.y;
+            }if (coord.y < totalBBox.miny){
+                totalBBox.miny=coord.y;
+            } 
+        }
+        //calculate the new widht and height en check what the size would be in pixels
+        var newWidth= totalBBox.maxx - totalBBox.minx;
+        var newHeight= totalBBox.maxy - totalBBox.miny;
+        var maxQuality = newWidth > newHeight ? newWidth : newHeight;
+        
+        //if the quality is bigger then the max allowed the original quality would be lower.
+        if (maxQuality > this.max_imagesize){
+            maxQuality = (this.max_imagesize*this.max_imagesize)/maxQuality;
+        }        
+        //because its in pixels floor.
+        return Math.floor(maxQuality);
+    },
+    /**
+     * Calculate the new x,y when a rotation is done with angle. The rotation point must be transformed to 0
+     * @param angle the angle of rotation in degree
+     * @param x the x coord
+     * @param y the y coord
+     */    
+    calcRotationX: function (angle,x,y){
+        //first calc rad
+        var rad=Math.PI / 180 * angle;
+        //x=x*cos(angle)-y*sin(angle) 
+        //y=x*sin(angle)+y*cos(angle) 
+        var returnValue= new Object();
+        returnValue.x= x * Math.cos(rad) - y * Math.sin(rad);
+        returnValue.y= x * Math.sin(rad) + y * Math.cos(rad);
+        return returnValue;
     },
     /**
     * Called when a button is clicked and the form must be submitted.

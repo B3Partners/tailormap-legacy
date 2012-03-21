@@ -10,7 +10,10 @@
  * @param maxy The maximal y of the extent.
  **/
 Ext.define("viewer.viewercontroller.controller.Extent",{
-
+    minx: null,
+    maxx: null,
+    miny: null,
+    maxy: null,
     constructor: function (minx,miny,maxx,maxy){
         if (minx!=undefined && miny==undefined && maxx==undefined && maxy==undefined){
             var tokens=minx.split(",");
@@ -28,5 +31,15 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
             this.maxy=maxy;
         }
         return this;
+    },
+    toWKT: function (){
+        var wkt="POLYGON((";
+        wkt+=this.minx+" "+this.miny+", ";
+        wkt+=this.maxx+" "+this.miny+", ";
+        wkt+=this.maxx+" "+this.maxy+", ";
+        wkt+=this.minx+" "+this.maxy+", ";
+        wkt+=this.minx+" "+this.miny+"))";
+        return wkt;
     }
+    
 });
