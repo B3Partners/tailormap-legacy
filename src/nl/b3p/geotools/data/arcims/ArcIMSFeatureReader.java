@@ -17,6 +17,7 @@
 package nl.b3p.geotools.data.arcims;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +37,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
 
     private ArcIMSFeatureSource fs;
     private Query query;
+    private String[] internedPropertyNames;
     
     private SimpleFeatureBuilder builder;
     
@@ -61,21 +63,33 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         if(!query.isMaxFeaturesUnlimited()) {
             maxFeatures = query.getMaxFeatures();
         }
-        /*String qryString = null;
-        if(query != null) {
-            try {
-                // NPE when NullSortBy
-                qryString = query.toString();
-            } catch(Exception e) {
-                log.error("query.toString()", e);
-                qryString = "<exception>";
+        
+        if(!query.retrieveAllProperties() && query.getPropertyNames().length > 0) {
+            String[] propertyNames = query.getPropertyNames();
+            internedPropertyNames = new String[propertyNames.length];
+            for(int i = 0; i < propertyNames.length; i++) {
+                internedPropertyNames[i] = propertyNames[i].intern();
             }
-        }*/
-        log.debug(String.format("%s init reader, startindex=%d maxfeatures=%d", //, query %s", 
-                fs.getDataStore().toString(), 
-                startIndex, 
-                maxFeatures/*, 
-                qryString*/));
+            Arrays.sort(internedPropertyNames);
+        }
+        
+        if(log.isDebugEnabled()) {
+            String qryString = null;
+            if(query != null) {
+                try {
+                    // NPE when NullSortBy
+                    qryString = query.toString();
+                } catch(Exception e) {
+                    log.error("query.toString()", e);
+                    qryString = "<exception>";
+                }
+            }
+            log.debug(String.format("%s init reader, startindex=%d maxfeatures=%d query %s", 
+                    fs.getDataStore().toString(), 
+                    startIndex, 
+                    maxFeatures, 
+                    qryString));
+        }
     }
     
     public int getCount() throws IOException {
@@ -119,7 +133,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
             builder = new SimpleFeatureBuilder(getFeatureType());
             rowIdAttribute = fs.findRowIdAttribute();
         }
-        
+                
         request = new AxlGetFeatures();
         request.setLayer(new AxlLayerInfo(fs.getEntry().getTypeName()));
         // TODO: set AxlQuery according to query        
@@ -143,14 +157,25 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     
     protected SimpleFeature buildFeature(AxlFeature axlf) throws IOException {
         String id = null;
+        
         for(AxlField f: axlf.getFields()) {
+            if(rowIdAttribute != null && rowIdAttribute.equals(f.getName())) {
+                id = f.getValue();
+            }
+            
+            if(!query.retrieveAllProperties()) {
+                if(internedPropertyNames == null) {
+                    // No properties
+                    continue;
+                } else if(Arrays.binarySearch(internedPropertyNames, f.getName().intern()) < 0) {
+                    continue;
+                }
+            }
+
             Class binding = null;
             try {
                 binding = getFeatureType().getType(f.getName()).getBinding();
                 builder.set(f.getName(), f.getConvertedValue(binding));
-                if(rowIdAttribute != null && rowIdAttribute.equals(f.getName())) {
-                    id = f.getValue();
-                }
             } catch(Exception e) {
                 throw new IOException(String.format("Error converting field \"%s\" value \"%s\" to type %s: %s",
                         f.getName(),
