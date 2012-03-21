@@ -183,6 +183,7 @@ Ext.define ("viewer.components.AttributeList",{
             remoteFilter: true,
             proxy: {
                 type: 'ajax',
+                timeout: 40000,
                 url: appLayer.featureService.getStoreUrl() + "&arrays=1",
                 reader: {
                     type: 'json',
@@ -201,6 +202,16 @@ Ext.define ("viewer.components.AttributeList",{
                                     msg = j.message;
                                 }
                             } catch(e) {
+                            }
+                        }
+                        
+                        if(msg == null) {
+                            if(response.timedout) {
+                                msg = "Request timed out";
+                            } else if(response.statusText != null && response.statusText != "") {
+                                msg = response.statusText;
+                            } else {
+                                msg = "Unknown error";
                             }
                         }
 
