@@ -85,7 +85,7 @@ public class ImageCollector extends Thread {
     public void processWaiting() throws InterruptedException {
         join(getMaxResponseTime());
     }
-
+    
     public void run() {
         if ((getUrl() == null || getUrl().length() == 0) && realUrl == null) {
             return;
@@ -104,7 +104,15 @@ public class ImageCollector extends Thread {
             setStatus(ERROR);
         } 
     }
-    
+    /**
+     * Load the image with a http-get
+     * @param url The url to the image
+     * @param user username
+     * @param pass password
+     * @return The image
+     * @throws IOException
+     * @throws Exception 
+     */
     protected BufferedImage loadImage(String url, String user, String pass) throws IOException, Exception {
         HttpMethod method = null;
         try {
@@ -134,65 +142,67 @@ public class ImageCollector extends Thread {
         }
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**
      * @return the url
      */
     public String getUrl() {
         return url;
     }
-
+    
     /**
      * @param url the url to set
      */
     public void setUrl(String url) {
         this.url = url;
     }
-
+    
     public BufferedImage getBufferedImage() {
         return bufferedImage;
     }
-
+    
     public void setBufferedImage(BufferedImage bufferedImage) {
         this.bufferedImage = bufferedImage;
     }
-
+    
     public int getStatus() {
         return status;
     }
-
+    
     public void setStatus(int status) {
         this.status = status;
     }
-
+    
     public String getMessage() {
         return message;
     }
-
+    
     public void setMessage(String message) {
         this.message = message;
     }
-
+    
     public String getUsername() {
         return username;
     }
-
+    
     public void setUsername(String username) {
         this.username = username;
     }
-
+    
     public String getPassword() {
         return password;
     }
-
+    
     public void setPassword(String password) {
         this.password = password;
     }
-
+    
     public int getMaxResponseTime() {
         return maxResponseTime;
     }
-
+    
     public void setMaxResponseTime(int maxResponseTime) {
         this.maxResponseTime = maxResponseTime;
     }
+    //</editor-fold>
 }

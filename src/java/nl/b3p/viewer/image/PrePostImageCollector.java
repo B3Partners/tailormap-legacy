@@ -36,7 +36,8 @@ import org.jdom.JDOMException;
 import org.xml.sax.InputSource;
 
 /**
- *
+ * Class that gets the image in 2 steps. First sumbit the body and then recieve the url from the response.
+ * Get the image with the url in the response.
  * @author Roy Braam
  */
 public class PrePostImageCollector extends ImageCollector{
@@ -104,7 +105,14 @@ public class PrePostImageCollector extends ImageCollector{
         this.body = body;
     }
     //</editor-fold>
-
+    /**
+     * Recieve the url from the xml.
+     * @param returnXML The xml that is recieved bij doing a post request
+     * @return the url.
+     * @throws XPathExpressionException
+     * @throws JDOMException
+     * @throws IOException 
+     */
     private String getUrlFromXML(String returnXML) throws XPathExpressionException, JDOMException, IOException {
         String s=xPathImageURL.evaluate(new InputSource(new StringReader(returnXML)));
         if (s!=null && s.length() ==0){

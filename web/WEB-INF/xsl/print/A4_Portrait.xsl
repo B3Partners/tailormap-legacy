@@ -119,12 +119,12 @@
             <xsl:variable name="map-width-px-corrected" select="format-number(quality div $px-ratio,'0','MyFormat')"/>
             <xsl:variable name="map">
                 <xsl:value-of select="imageUrl"/>
-                <!--xsl:text>&amp;width=</xsl:text>
+                <xsl:text>&amp;width=</xsl:text>
                 <xsl:value-of select="$map-width-px-corrected"/>
                 <xsl:text>&amp;height=</xsl:text>
                 <xsl:value-of select="$map-height-px-corrected"/>
                 <xsl:text>&amp;bbox=</xsl:text>
-                <xsl:value-of select="$bbox-corrected"/-->
+                <xsl:value-of select="$bbox-corrected"/>
             </xsl:variable>
 
             <fo:block-container margin-top="0.5cm" height="17cm" xsl:use-attribute-sets="column-block">

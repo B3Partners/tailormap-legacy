@@ -53,6 +53,13 @@ public class CombineImageActionBean implements ActionBean {
     private String imageId;
     @Validate
     private String keepAlive;
+    //These settings can overwrite the earlier setttings (these depends on how big the image must be)
+    @Validate
+    private Integer width=null;
+    @Validate
+    private Integer height=null;
+    @Validate
+    private String bbox=null;
     
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public void setContext(ActionBeanContext context) {
@@ -85,6 +92,30 @@ public class CombineImageActionBean implements ActionBean {
 
     public void setKeepAlive(String keepAlive) {
         this.keepAlive = keepAlive;
+    }
+    
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public String getBbox() {
+        return bbox;
+    }
+
+    public void setBbox(String bbox) {
+        this.bbox = bbox;
     }
     //</editor-fold>
     @DefaultHandler
@@ -135,6 +166,8 @@ public class CombineImageActionBean implements ActionBean {
                     cis.setHeight(jRequest.getInt("height"));
                 }if (jRequest.has("srid")){
                     cis.setSrid(jRequest.getInt("srid"));
+                }if (jRequest.has("angle")){
+                    cis.setAngle(jRequest.getInt("angle"));
                 }
                 if (jRequest.has("quality")){
                     Integer quality = jRequest.getInt("quality");
@@ -179,13 +212,21 @@ public class CombineImageActionBean implements ActionBean {
         if (imageId==null || imageSettings.get(imageId)==null){
             throw new Exception("No imageId given");
         }
-        log.info("get    "+imageId+" sessionid: "+this.getContext().getRequest().getSession().getId());
         //final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
         final CombineImageSettings settings = imageSettings.get(imageId);
+        //if these settings are given then overwrite those in the CombineImageSettings
+        if (this.getWidth()!=null){
+            settings.setWidth(getWidth());
+        }if (this.getHeight()!=null){
+            settings.setHeight(getHeight());
+        }if (this.getBbox()!=null){
+            settings.setBbox(getBbox());
+        }
         if (getKeepAlive()==null || getKeepAlive().length()==0) {
             //getContext().getRequest().getSession().removeAttribute(imageId);
             imageSettings.remove(imageId);
         }
+        //stream the result.
         StreamingResolution res = new StreamingResolution(settings.getMimeType()) {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
@@ -210,5 +251,4 @@ public class CombineImageActionBean implements ActionBean {
         String val2 = Long.toString(rnum, Character.MAX_RADIX).toUpperCase();
         return val1 + val2;
     }
-    
 }

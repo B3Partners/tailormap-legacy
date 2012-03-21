@@ -31,14 +31,14 @@ public class CombineImagesHandler {
     public static void combineImage(OutputStream out, CombineImageSettings settings, 
             String returnMime, int maxResponseTime, String uname, String pw) throws Exception {
         
-        /* Bereken url's voor tiles */
+        /* Calc urls for tiles */
         List<TileImage> tilingImages = new ArrayList();
         if (settings.getTilingServiceUrl() != null) {            
             tilingImages = getTilingImages(settings);
         }
         
-        /**herbereken de bbox van de urls en gebruik die urls om het plaatje te maken.
-         * als er geen urls kunnen/hoeven worden berekend gebruik dan de ingegeven urls
+        /**
+         * Re calc the urls when needed.
          */        
         List normalUrls = settings.getCalculatedUrls();
         if (normalUrls == null) {
@@ -63,7 +63,7 @@ public class CombineImagesHandler {
             throw new Exception("No requests to combine.");
         }
 
-        //haal de plaatjes van de urls op.
+        //Get the images by the urls
         ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);
         BufferedImage[] bi = null;
         try {
@@ -86,9 +86,9 @@ public class CombineImagesHandler {
         }
 
         BufferedImage returnImage = null;
-        //combineer de opgehaalde plaatjes en als er een wktGeom is meegegeven teken die dan.
+        //Combine the images
         BufferedImage combinedImages = ImageTool.combineImages(bi, returnMime, alphas, tilingImages);
-
+        //if there is a wkt then add it to the image
         try {
             if (settings.getWktGeoms() != null) {
                 returnImage = ImageTool.drawGeometries(combinedImages, settings);

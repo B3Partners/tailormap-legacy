@@ -41,9 +41,9 @@ public class CombineImageSettings {
         return getCalculatedUrls(urls);
     }
     /**
-     * Geeft de url's terug met daarin de bbox met juist verhoudingen tov de width en height
-     * En de juiste Width en Height van de settings
-     * Tot nu alleen WMS urls ondersteund
+     * Return a list of CombineImagesUrl's with correct bbox,height and width
+     * @param oldList
+     * @return 
      */
     public List getCalculatedUrls(List oldList){
         List returnValue=new ArrayList();
@@ -360,10 +360,10 @@ public class CombineImageSettings {
         
     }
     /**
-     * 
+     * Calculate the rotation for a point
      * @param rotation The rotation in degrees.
-     * @param x
-     * @param y
+     * @param x x coord
+     * @param y y coord
      * @return a Double[] of length 2. First is the x, second the y.
      */
     private double[] calcRotation(Integer rotation, double x, double y) {
@@ -373,7 +373,10 @@ public class CombineImageSettings {
         returnValue[1]= x * Math.sin(rad) + y * Math.cos(rad);
         return returnValue;
     }
-
+    /**
+     * Get the request Bbox,height and width
+     * @return 
+     */
     public ImageBbox getRequestBbox() {
         Bbox correctedBbox= getCalculatedBbox();
         Integer reqWidth= this.width;

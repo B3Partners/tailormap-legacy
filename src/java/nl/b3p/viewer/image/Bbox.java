@@ -17,12 +17,10 @@
 package nl.b3p.viewer.image;
 
 /**
- *
+ * BBOX object.
  * @author Roy Braam
  */
 public class Bbox {
-    //start stepping through the array from the beginning
-
     private Double minx;
     private Double maxx;
     private Double miny;

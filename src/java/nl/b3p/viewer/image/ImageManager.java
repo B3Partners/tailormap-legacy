@@ -66,7 +66,7 @@ public class ImageManager {
 
     public void process() throws Exception {
 
-        // Hier worden de threads gestart
+        // Start threads
         ImageCollector ic = null;
         for (int i = 0; i < ics.size(); i++) {
             ic = (ImageCollector) ics.get(i);
@@ -75,7 +75,7 @@ public class ImageManager {
             }
         }
 
-        // Hier wordt op de threads gewacht tot ze klaar zijn.
+        // Wait for all threads to be ready
         for (int i = 0; i < ics.size(); i++) {
             ic = (ImageCollector) ics.get(i);
             if (ic.getStatus() == ImageCollector.ACTIVE) {//if (ic.isAlive()) { /
@@ -83,7 +83,11 @@ public class ImageManager {
             }
         }
     }
-
+    /**
+     * Combine all the images recieved
+     * @return a combined image
+     * @throws Exception 
+     */
     public BufferedImage[] getCombinedImages() throws Exception {
         ImageCollector ic = null;
         Iterator it = ics.iterator();
