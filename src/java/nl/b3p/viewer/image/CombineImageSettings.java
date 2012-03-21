@@ -23,6 +23,7 @@ public class CombineImageSettings {
     private Integer srid = 28992;
     private Integer width = null;
     private Integer height = null;
+    private Integer angle = null;
     private Color defaultWktGeomColor= Color.RED;
     private String mimeType="image/png";
     
@@ -52,10 +53,11 @@ public class CombineImageSettings {
         }else if(oldList==null){
             return returnValue;
         }        
-        Bbox correctedBbox= getCalculatedBbox();
+        ImageBbox imBBox = getRequestBbox();
+                
         for (int i=0; i < oldList.size(); i++){
             CombineImageUrl ciu = (CombineImageUrl) oldList.get(i);
-            returnValue.add(ciu.calculateNewUrl(width, height, correctedBbox));
+            returnValue.add(ciu.calculateNewUrl(imBBox));
         }
         if (returnValue.size()==oldList.size()){
             return returnValue;
@@ -64,9 +66,8 @@ public class CombineImageSettings {
         }
     }
     /**
-     * Geeft een kloppende bbox terug. Dus kijkt naar de width en height en past
-     * de bbox zo aan en returned die zodat je een bbox hebt die klopt met de width en height
-     * verhoudingen
+     * Corrects the BBOX to the ratio of the height / width.
+     * @return the new bbox
      */
     public Bbox getCalculatedBbox(){
         if (bbox == null || width == null || height == null) {
@@ -301,5 +302,91 @@ public class CombineImageSettings {
     public void setTilingResolutions(String tilingResolutions) {
         this.tilingResolutions = tilingResolutions;
     }
-    //</editor-fold>
+    
+    public Integer getAngle() {
+        return angle;
+    }
+
+    public void setAngle(Integer angle) {
+        this.angle = angle;
+    }
+    //</editor-fold>   
+    /**
+     * Create a new BBOX that covers the original and the rotated bbox
+     * @param bbox
+     * @param rotation
+     * @return 
+     */
+    private Bbox getBboxWithRotation(Bbox bbox, Integer rotation) {
+        if (rotation !=null && rotation > 0 && rotation < 360){
+            return bbox;
+        }
+        double centerX= bbox.getCenterX();
+        double centerY= bbox.getCenterY();
+        //calculate the rotated corners of the bbox;
+        //first transform BBOX rotation point to 0.0:
+        bbox.transform(-centerX,-centerY);
+        //store the calculated coords in a Double[][]
+        double[][] coords = new double[4][2];
+        //lower left
+        coords[0]=calcRotation(rotation, bbox.getMinx(),bbox.getMiny());
+        //lower right
+        coords[1]=calcRotation(rotation, bbox.getMaxx(),bbox.getMaxy());
+        //upper right
+        coords[2]=calcRotation(rotation, bbox.getMinx(),bbox.getMaxy());
+        //upper left;
+        coords[3]=calcRotation(rotation, bbox.getMinx(),bbox.getMaxy());
+        
+        //transform the rotation back;
+        for (int i=0; i < coords.length; i++){
+            coords[i][0]+=centerX;
+            coords[i][1]+=centerY;
+        }
+        //enlarge the orginal bbox with the  rotated bbox.
+        for (int i=0; i < coords.length; i++){
+            double x=coords[i][0];
+            double y=coords[i][1];
+            if (x < bbox.getMinx()){
+                bbox.setMinx(x);
+            }if (x > bbox.getMaxx()){
+                bbox.setMaxx(x);
+            }if (y < bbox.getMiny()){
+                bbox.setMiny(y);
+            }if (y > bbox.getMaxy()){
+                bbox.setMaxy(y);
+            }
+        }
+        return null;
+        
+    }
+    /**
+     * 
+     * @param rotation The rotation in degrees.
+     * @param x
+     * @param y
+     * @return a Double[] of length 2. First is the x, second the y.
+     */
+    private double[] calcRotation(Integer rotation, double x, double y) {
+        double rad = Math.toRadians(rotation);
+        double[] returnValue = new double[2];
+        returnValue[0]= x * Math.cos(rad) - y * Math.sin(rad);
+        returnValue[1]= x * Math.sin(rad) + y * Math.cos(rad);
+        return returnValue;
+    }
+
+    public ImageBbox getRequestBbox() {
+        Bbox correctedBbox= getCalculatedBbox();
+        Integer reqWidth= this.width;
+        Integer reqHeight= this.height;
+        if (this.angle !=null && this.angle > 0 && this.angle < 360){
+            Bbox reqBbox= getBboxWithRotation(correctedBbox,this.angle);
+            //make the widht/height larger/smaller according the calculated bbox.
+            Double floorWidth = Math.floor(reqBbox.getWidth()/correctedBbox.getWidth() * this.width);
+            Double floorHeight = Math.floor(reqBbox.getHeight()/correctedBbox.getHeight() * this.height);
+            reqWidth = floorWidth.intValue();
+            reqHeight = floorHeight.intValue();
+            correctedBbox=reqBbox;
+        }
+        return new ImageBbox(correctedBbox,reqWidth,reqHeight);
+    }
 }

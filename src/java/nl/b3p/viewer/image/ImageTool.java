@@ -173,9 +173,10 @@ public class ImageTool {
         }
         int width = 500;
         int height = 500;
-        if (settings.getWidth() != null && settings.getHeight() != null) {
-            width = settings.getWidth();
-            height = settings.getHeight();
+        ImageBbox imbbox = settings.getRequestBbox();
+        if (imbbox.getWidth() != null && imbbox.getHeight() != null) {
+            width = imbbox.getWidth();
+            height = imbbox.getHeight();
         } else {
             Integer[] hw = settings.getWidthAndHeightFromUrls();
             if (hw != null && hw.length == 2) {
@@ -183,7 +184,7 @@ public class ImageTool {
                 height = hw[1];
             }
         }
-        Bbox bbox = settings.getCalculatedBbox();
+        Bbox bbox = imbbox.getBbox();
         if (bbox == null) {
             bbox = settings.getBbox();
         }
@@ -191,7 +192,7 @@ public class ImageTool {
             bbox = settings.getBboxFromUrls();
         }
         if (bbox == null) {
-            log.error("Geen bbox gevonden in een url of als parameter.");
+            log.error("No BBOX found");
             throw new Exception("Can't find bbox in settings or URL");
         }
         return drawGeometries(bi, settings, srid, bbox, width, height);

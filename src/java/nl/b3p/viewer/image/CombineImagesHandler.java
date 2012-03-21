@@ -1,5 +1,7 @@
 package nl.b3p.viewer.image;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -26,6 +28,103 @@ public class CombineImagesHandler {
         combineImage(out, settings, returnMime, maxResponseTime, null, null);
     }
     
+    public static void combineImage(OutputStream out, CombineImageSettings settings, 
+            String returnMime, int maxResponseTime, String uname, String pw) throws Exception {
+        
+        /* Bereken url's voor tiles */
+        List<TileImage> tilingImages = new ArrayList();
+        if (settings.getTilingServiceUrl() != null) {            
+            tilingImages = getTilingImages(settings);
+        }
+        
+        /**herbereken de bbox van de urls en gebruik die urls om het plaatje te maken.
+         * als er geen urls kunnen/hoeven worden berekend gebruik dan de ingegeven urls
+         */        
+        List normalUrls = settings.getCalculatedUrls();
+        if (normalUrls == null) {
+            normalUrls = settings.getUrls();
+        }
+        
+        /* NOTE: Opletten dat de tiling combined images urls pas na de normale urls
+         * worden toegeveoegd aan de List zodat deze als eerste inde buffered images
+         * komen */
+        List urls = new ArrayList();
+        if (tilingImages != null && tilingImages.size() > 0) {
+            for (TileImage tileImage : tilingImages) {
+                urls.add(tileImage.getCombineImageUrl());
+            }
+        }
+        
+        if (normalUrls != null && normalUrls.size() > 0) {
+            urls.addAll(normalUrls);
+        }
+        
+        if (urls.size() < 1) {
+            throw new Exception("No requests to combine.");
+        }
+
+        //haal de plaatjes van de urls op.
+        ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);
+        BufferedImage[] bi = null;
+        try {
+            im.process();
+            bi = im.getCombinedImages();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        Float[] alphas = null;
+
+        for (int i = 0; i < urls.size(); i++) {
+            CombineImageUrl ciu = (CombineImageUrl) urls.get(i);
+            if (ciu.getAlpha() != null) {
+                if (alphas == null) {
+                    alphas = new Float[urls.size()];
+                }
+                alphas[i] = ciu.getAlpha();
+            }
+        }
+
+        BufferedImage returnImage = null;
+        //combineer de opgehaalde plaatjes en als er een wktGeom is meegegeven teken die dan.
+        BufferedImage combinedImages = ImageTool.combineImages(bi, returnMime, alphas, tilingImages);
+
+        try {
+            if (settings.getWktGeoms() != null) {
+                returnImage = ImageTool.drawGeometries(combinedImages, settings);
+            } else {
+                returnImage = combinedImages;
+            }
+        } catch (Exception e) {
+            log.error("Kan geometrien niet tekenen. Return image zonder alle geometrien: ", e);
+            returnImage = combinedImages;
+        }
+        //rotate the image back and cut the original bbox.
+        if (settings.getAngle()!=null &&settings.getAngle()!=0 && settings.getAngle()!=360){           
+            
+            //new img
+            BufferedImage rot = new BufferedImage(settings.getWidth(),settings.getHeight(),BufferedImage.TYPE_INT_ARGB_PRE);
+            Graphics2D gr=(Graphics2D) rot.getGraphics();
+            int h = returnImage.getHeight();
+            int w = returnImage.getWidth();
+            //first transform to 0.0 then rotate and then transform back to middle of the new image with the size that is requested.
+            AffineTransform xform = new AffineTransform();            
+            xform.translate(0.5*h, 0.5*w);
+            xform.rotate(Math.toRadians(360-settings.getAngle()));
+            xform.translate(-0.5*w+(w-settings.getWidth())/2, -0.5*h+(h-settings.getHeight())/2);
+            //xform.translate(0.5*w - (w-settings.getWidth())/2, 0.5*h -(h-settings.getHeight())/2);
+            
+            gr.drawImage(returnImage,xform,null);
+            gr.dispose();
+            returnImage=rot;
+        }   
+        
+        try {
+            ImageTool.writeImage(returnImage, returnMime, out);
+        } catch (Exception ex) {
+            log.error(ex);
+        }
+    }
     public static List<TileImage> getTilingImages(CombineImageSettings settings) 
             throws MalformedURLException, Exception {
         
@@ -33,12 +132,7 @@ public class CombineImagesHandler {
         
         /* Bbox van verzoek */        
         Bbox requestBbox = null;
-        if (settings.getBbox() != null) {            
-            Double requestMinX = settings.getBbox().getMinx();
-            Double requestMinY = settings.getBbox().getMiny();
-            Double requestMaxX = settings.getBbox().getMaxx();
-            Double requestMaxY = settings.getBbox().getMaxy();
-            
+        if (settings.getBbox() != null) {           
             requestBbox = settings.getBbox(); 
        }
         
@@ -191,92 +285,16 @@ public class CombineImagesHandler {
         
         tileIndex = Math.floor( (coord - serviceMin) / (tileSizeMapUnits + epsilon) );
         
-        if (tileIndex < 0)
+        if (tileIndex < 0) {
             tileIndex = 0.0;
+        }
         
         Double maxBbox = Math.floor( (serviceMax - serviceMin) / (tileSizeMapUnits + epsilon) );
         
-        if (tileIndex > maxBbox)
+        if (tileIndex > maxBbox) {
             tileIndex = maxBbox;
+        }
         
         return tileIndex.intValue();   
-    }
-    
-    public static void combineImage(OutputStream out, CombineImageSettings settings, 
-            String returnMime, int maxResponseTime, String uname, String pw) throws Exception {
-        
-        /* Bereken url's voor tiles */
-        List<TileImage> tilingImages = new ArrayList();
-        if (settings.getTilingServiceUrl() != null) {            
-            tilingImages = getTilingImages(settings);
-        }
-        
-        /**herbereken de bbox van de urls en gebruik die urls om het plaatje te maken.
-         * als er geen urls kunnen/hoeven worden berekend gebruik dan de ingegeven urls
-         */        
-        List normalUrls = settings.getCalculatedUrls();
-        if (normalUrls == null) {
-            normalUrls = settings.getUrls();
-        }
-        
-        /* NOTE: Opletten dat de tiling combined images urls pas na de normale urls
-         * worden toegeveoegd aan de List zodat deze als eerste inde buffered images
-         * komen */
-        List urls = new ArrayList();
-        if (tilingImages != null && tilingImages.size() > 0) {
-            for (TileImage tileImage : tilingImages) {
-                urls.add(tileImage.getCombineImageUrl());
-            }
-        }
-        
-        if (normalUrls != null && normalUrls.size() > 0) {
-            urls.addAll(normalUrls);
-        }
-        
-        if (urls.size() < 1) {
-            throw new Exception("No requests to combine.");
-        }
-
-        //haal de plaatjes van de urls op.
-        ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);
-        BufferedImage[] bi = null;
-        try {
-            im.process();
-            bi = im.getCombinedImages();
-        } catch (Exception e) {
-            throw e;
-        }
-
-        Float[] alphas = null;
-
-        for (int i = 0; i < urls.size(); i++) {
-            CombineImageUrl ciu = (CombineImageUrl) urls.get(i);
-            if (ciu.getAlpha() != null) {
-                if (alphas == null) {
-                    alphas = new Float[urls.size()];
-                }
-                alphas[i] = ciu.getAlpha();
-            }
-        }
-
-        BufferedImage returnImage = null;
-        //combineer de opgehaalde plaatjes en als er een wktGeom is meegegeven teken die dan.
-        BufferedImage combinedImages = ImageTool.combineImages(bi, returnMime, alphas, tilingImages);
-
-        try {
-            if (settings.getWktGeoms() != null) {
-                returnImage = ImageTool.drawGeometries(combinedImages, settings);
-            } else {
-                returnImage = combinedImages;
-            }
-        } catch (Exception e) {
-            log.error("Kan geometrien niet tekenen. Return image zonder alle geometrien: ", e);
-            returnImage = combinedImages;
-        }
-        try {
-            ImageTool.writeImage(returnImage, returnMime, out);
-        } catch (Exception ex) {
-            log.error(ex);
-        }
     }
 }

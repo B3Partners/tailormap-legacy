@@ -123,6 +123,9 @@ public class CombineImageUrl {
     }
     //</editor-fold>
 
+    public CombineImageUrl calculateNewUrl(ImageBbox imbbox) {
+        return calculateNewUrl(imbbox.getWidth(),imbbox.getHeight(),imbbox.getBbox());
+    }
     public CombineImageUrl calculateNewUrl(Integer width, Integer height, Bbox bbox) {
         CombineImageUrl ciu = this.clone();
         if (CombineImageUrl.WMS.equals(ciu.getProtocol())){
@@ -206,5 +209,4 @@ public class CombineImageUrl {
         ciu.setProtocol(protocol);
         return ciu;
     }
-
 }

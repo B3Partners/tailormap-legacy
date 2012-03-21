@@ -58,37 +58,55 @@ public class Bbox {
         maxy = b[3];
     }
 
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public double getMinx() {
         return minx;
     }
-
+    
     public void setMinx(double minx) {
         this.minx = minx;
     }
-
+    
     public double getMaxx() {
         return maxx;
     }
-
+    
     public void setMaxx(double maxx) {
         this.maxx = maxx;
     }
-
+    
     public double getMiny() {
         return miny;
     }
-
+    
     public void setMiny(double miny) {
         this.miny = miny;
     }
-
+    
     public double getMaxy() {
         return maxy;
     }
-
+    
     public void setMaxy(double maxy) {
         this.maxy = maxy;
     }
+    
+    public double getCenterX(){
+        return (this.maxx + this.minx)/2;
+    }
+    
+    public double getCenterY(){
+        return (this.maxy + this.miny)/2;
+    }
+    
+    public double getWidth(){
+        return this.maxx-this.minx;
+    }
+    
+    public double getHeight(){
+        return this.maxy-this.miny;
+    }
+    //</editor-fold>
 
     double[] toDoubleArray() {
         if (minx==null||miny==null||maxx==null||maxy==null){
@@ -100,7 +118,19 @@ public class Bbox {
         r[2] = maxx;
         r[3] = maxy;
         return r;
+    }    
+    /**
+     * Transforms this BBOX with the given x and y
+     * @param transformX x direction
+     * @param transformY y direction
+     */
+    public void transform(double transformX, double transformY) {
+        this.minx+=transformX;
+        this.maxx+=transformX;
+        this.miny+=transformY;
+        this.maxy+=transformY;
     }
+    
     @Override
     public String toString(){
         String returnValue="";
