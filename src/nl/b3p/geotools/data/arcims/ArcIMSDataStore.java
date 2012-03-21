@@ -28,6 +28,7 @@ import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 import nl.b3p.geotools.data.arcims.axl.AxlLayerInfo;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  *
@@ -40,21 +41,23 @@ public class ArcIMSDataStore extends ContentDataStore {
     private String user;
     private String passwd;
     private Integer timeout;
+    private CoordinateReferenceSystem crs;
     
     private ArcIMSServer arcims;
     
     private List<Name> typeNames;
     
     public ArcIMSDataStore(URL url, String serviceName) {
-        this(url, serviceName, null, null, null);
+        this(url, serviceName, null, null, null, null);
     }
     
-    public ArcIMSDataStore(URL url, String serviceName, String user, String passwd, Integer timeout) {
+    public ArcIMSDataStore(URL url, String serviceName, String user, String passwd, Integer timeout, CoordinateReferenceSystem crs) {
         this.url = url;
         this.serviceName = serviceName;
         this.user = user;
         this.passwd = passwd;
         this.timeout = timeout;
+        this.crs = crs;
     }
 
     public ArcIMSServer getArcIMSServer() throws IOException {
@@ -107,6 +110,10 @@ public class ArcIMSDataStore extends ContentDataStore {
             }
         }
         return null;
+    }
+    
+    public CoordinateReferenceSystem getCRS() {
+        return crs;
     }
     
     @Override
