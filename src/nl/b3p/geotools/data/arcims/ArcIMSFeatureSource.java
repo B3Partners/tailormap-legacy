@@ -85,6 +85,10 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
         return true;
     }
     
+    protected ArcIMSDataStore getArcIMSDataStore() {
+        return (ArcIMSDataStore)getDataStore();
+    }
+    
     @Override
     protected ReferencedEnvelope getBoundsInternal(Query query) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -102,7 +106,7 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
 
     @Override
     protected SimpleFeatureType buildFeatureType() throws IOException {       
-        AxlLayerInfo al = ((ArcIMSDataStore)getDataStore()).getAxlLayerInfo(entry.getTypeName());
+        AxlLayerInfo al = getArcIMSDataStore().getAxlLayerInfo(entry.getTypeName());
         AxlFClass fc = al.getFclass();
         
         SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
@@ -112,12 +116,13 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
         for(AxlFieldInfo f: fc.getFields()) {
             b.add(f.getName(), f.getBinding(fc));
         }
-             
+        
+        b.setCRS(getArcIMSDataStore().getCRS());
         return b.buildFeatureType();
     }
     
     protected String findRowIdAttribute() throws IOException {
-        AxlLayerInfo al = ((ArcIMSDataStore)getDataStore()).getAxlLayerInfo(entry.getTypeName());
+        AxlLayerInfo al = getArcIMSDataStore().getAxlLayerInfo(entry.getTypeName());
         AxlFClass fc = al.getFclass();
         for(AxlFieldInfo f: fc.getFields()) {
             if(AxlField.TYPE_ROW_ID == f.getType()) {
