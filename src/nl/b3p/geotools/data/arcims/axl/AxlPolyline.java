@@ -26,15 +26,15 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlPolygon implements AxlGeometry {
-    @XmlElement(name="RING")
-    private List<AxlRing> rings;
+public class AxlPolyline implements AxlGeometry {
+    @XmlElement(name="PATH")
+    private List<AxlCoords> paths;
 
-    public List<AxlRing> getRings() {
-        return rings;
+    public List<AxlCoords> getPaths() {
+        return paths;
     }
 
-    public void setRings(List<AxlRing> rings) {
-        this.rings = rings;
+    public void setPaths(List<AxlCoords> paths) {
+        this.paths = paths;
     }
 }

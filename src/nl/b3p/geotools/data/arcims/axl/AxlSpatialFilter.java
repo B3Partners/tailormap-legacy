@@ -16,7 +16,6 @@
  */
 package nl.b3p.geotools.data.arcims.axl;
 
-import java.util.List;
 import javax.xml.bind.annotation.*;
 
 /**
@@ -24,32 +23,45 @@ import javax.xml.bind.annotation.*;
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlFeature {
+public class AxlSpatialFilter {
+    public static final String RELATION_AREA_INTERSECTION = "area_intersection";
+    public static final String RELATION_ENVELOPE_INTERSECTION = "envelope_intersection";
     
-    @XmlElementWrapper(name="FIELDS")
-    @XmlElement(name="FIELD")
-    List<AxlField> fields;
+    @XmlAttribute 
+    private String relation = RELATION_AREA_INTERSECTION;
     
     @XmlElements({
+        @XmlElement(name = "ENVELOPE", type = AxlEnvelope.class),
         @XmlElement(name = "POLYGON", type = AxlPolygon.class),
         @XmlElement(name = "MULTIPOINT", type = AxlMultiPoint.class),
         @XmlElement(name = "POLYLINE", type = AxlPolyline.class)
     })    
-    private AxlGeometry geometry;
+    private AxlGeometry geometryOrEnvelope;
+    
+    @XmlElement(name = "BUFFER")
+    private AxlBuffer buffer;
 
-    public List<AxlField> getFields() {
-        return fields;
+    public AxlGeometry getGeometryOrEnvelope() {
+        return geometryOrEnvelope;
     }
 
-    public void setFields(List<AxlField> fields) {
-        this.fields = fields;
+    public void setGeometryOrEnvelope(AxlGeometry geometryOrEnvelope) {
+        this.geometryOrEnvelope = geometryOrEnvelope;
     }
 
-    public AxlGeometry getGeometry() {
-        return geometry;
+    public String getRelation() {
+        return relation;
     }
 
-    public void setGeometry(AxlGeometry geometry) {
-        this.geometry = geometry;
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
+
+    public AxlBuffer getBuffer() {
+        return buffer;
+    }
+
+    public void setBuffer(AxlBuffer buffer) {
+        this.buffer = buffer;
     }
 }

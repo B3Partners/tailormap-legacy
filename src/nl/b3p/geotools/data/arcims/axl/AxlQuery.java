@@ -49,5 +49,5 @@ public class AxlQuery {
 
     public void setWhere(String where) {
         this.where = where;
-    }
+    }    
 }

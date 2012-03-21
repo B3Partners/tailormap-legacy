@@ -24,19 +24,21 @@ import javax.xml.bind.annotation.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AxlGetFeatures implements AxlRequest {
-    public static String OUTPUTMODE_BINARY = "binary";
-    public static String OUTPUTMODE_XML    = "xml";
-    public static String OUTPUTMODE_NEWXML = "newxml";
-    
     @XmlAttribute
     private boolean attributes = true;
 
     @XmlAttribute
-    private int beginrecord = 0;
+    private int beginrecord = 1;
     
+    /**
+     * Always set to true, we need well-formed XML.
+     */
     @XmlAttribute
     private boolean checkesc = true;
     
+    /**
+     * Always set to true to simplify geometry parsing.
+     */
     @XmlAttribute
     private boolean compact = true;
     
@@ -52,6 +54,9 @@ public class AxlGetFeatures implements AxlRequest {
     @XmlAttribute
     private boolean globalenvelope = false;
     
+    /** 
+     * Always set to "newxml" to simplify XML parsing.
+     */
     @XmlAttribute
     private String outputmode = "newxml";
 
@@ -61,12 +66,12 @@ public class AxlGetFeatures implements AxlRequest {
     @XmlElement(name="LAYER")
     private AxlLayerInfo layer;
     
-    @XmlElement(name="QUERY")
+    @XmlElements({
+        @XmlElement(name = "QUERY", type = AxlQuery.class),
+        @XmlElement(name = "SPATIALQUERY", type = AxlSpatialQuery.class)
+    })    
     private AxlQuery query;
-    /*
-    @XmlElement(name="SPATIALQUERY")
-    private AxlSpatialQuery spatialQuery;
-*/
+
     public boolean isAttributes() {
         return attributes;
     }
@@ -81,22 +86,6 @@ public class AxlGetFeatures implements AxlRequest {
 
     public void setBeginrecord(int beginrecord) {
         this.beginrecord = beginrecord;
-    }
-
-    public boolean isCheckesc() {
-        return checkesc;
-    }
-
-    public void setCheckesc(boolean checkesc) {
-        this.checkesc = checkesc;
-    }
-
-    public boolean isCompact() {
-        return compact;
-    }
-
-    public void setCompact(boolean compact) {
-        this.compact = compact;
     }
 
     public boolean isEnvelope() {
@@ -129,14 +118,6 @@ public class AxlGetFeatures implements AxlRequest {
 
     public void setGlobalenvelope(boolean globalenvelope) {
         this.globalenvelope = globalenvelope;
-    }
-
-    public String getOutputmode() {
-        return outputmode;
-    }
-
-    public void setOutputmode(String outputmode) {
-        this.outputmode = outputmode;
     }
 
     public boolean isSkipfeatures() {

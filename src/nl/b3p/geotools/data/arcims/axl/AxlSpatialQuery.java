@@ -16,25 +16,21 @@
  */
 package nl.b3p.geotools.data.arcims.axl;
 
-import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
  * @author Matthijs Laan
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-public class AxlPolygon implements AxlGeometry {
-    @XmlElement(name="RING")
-    private List<AxlRing> rings;
+public class AxlSpatialQuery extends AxlQuery {
+    @XmlElement(name="SPATIALFILTER")
+    private AxlSpatialFilter spatialFilter;
 
-    public List<AxlRing> getRings() {
-        return rings;
+    public AxlSpatialFilter getSpatialFilter() {
+        return spatialFilter;
     }
 
-    public void setRings(List<AxlRing> rings) {
-        this.rings = rings;
+    public void setSpatialFilter(AxlSpatialFilter spatialFilter) {
+        this.spatialFilter = spatialFilter;
     }
 }

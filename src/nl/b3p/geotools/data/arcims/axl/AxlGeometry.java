@@ -16,25 +16,9 @@
  */
 package nl.b3p.geotools.data.arcims.axl;
 
-import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-
 /**
  *
  * @author Matthijs Laan
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-public class AxlPolygon implements AxlGeometry {
-    @XmlElement(name="RING")
-    private List<AxlRing> rings;
-
-    public List<AxlRing> getRings() {
-        return rings;
-    }
-
-    public void setRings(List<AxlRing> rings) {
-        this.rings = rings;
-    }
+public interface AxlGeometry {    
 }

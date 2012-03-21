@@ -25,7 +25,10 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author matthijsln
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlEnvelope {
+public class AxlEnvelope implements AxlGeometry {
+    
+    // No Doubles, decimal separator is locale dependant
+    
     @XmlAttribute
     private String minx;
     @XmlAttribute

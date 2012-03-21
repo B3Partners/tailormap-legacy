@@ -16,25 +16,30 @@
  */
 package nl.b3p.geotools.data.arcims.axl;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlPolygon implements AxlGeometry {
-    @XmlElement(name="RING")
-    private List<AxlRing> rings;
+public class AxlBuffer {
+    @XmlAttribute
+    private double distance; 
+    
+    // Omitted bufferunits, project - always use defaults
+    
+    // Omitted child elements, because parent element of buffer should only be
+    // SPATIALFILTER - we dont use it to buffer response features or select 
+    // features using another buffered layer
 
-    public List<AxlRing> getRings() {
-        return rings;
+    public double getDistance() {
+        return distance;
     }
 
-    public void setRings(List<AxlRing> rings) {
-        this.rings = rings;
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 }
