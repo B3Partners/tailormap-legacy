@@ -25,12 +25,15 @@ import org.geotools.data.ows.HTTPResponse;
 import org.geotools.data.ows.Response;
 import org.geotools.ows.ServiceException;
 import nl.b3p.geotools.data.arcims.axl.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  * @author matthijsln
  */
 public class ArcXMLRequest extends AbstractRequest {
+    private static final Log log = LogFactory.getLog(ArcXMLRequest.class);
 
     AxlRequest request;
     
@@ -81,7 +84,11 @@ public class ArcXMLRequest extends AbstractRequest {
     }
     
     public AxlResponse parseResponse(HTTPResponse httpr) throws Exception {
+        long startTime = System.currentTimeMillis();
         ArcXML axl = (ArcXML)ArcXML.getJaxbContext().createUnmarshaller().unmarshal(httpr.getResponseStream());
+        if(log.isDebugEnabled()) {
+            log.debug("ArcXML unmarshal time (includes server time): " + (System.currentTimeMillis() - startTime) + " ms");
+        }
         
         return axl.getResponse();
     }
