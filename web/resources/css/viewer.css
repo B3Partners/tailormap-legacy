@@ -88,3 +88,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     margin: 0px;
     padding: 0px;
 }
+
+.tristatenode .x-tree-checkbox {
+    background-position: 0 -39px;
+}
