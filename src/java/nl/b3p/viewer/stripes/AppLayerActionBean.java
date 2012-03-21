@@ -19,8 +19,10 @@ package nl.b3p.viewer.stripes;
 import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.ActionBean;
@@ -190,9 +192,9 @@ public class AppLayerActionBean implements ActionBean {
         } else {
 
             Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
-
+            SimpleFeatureType ft = null;
             if(layer != null) {
-                SimpleFeatureType ft = layer.getFeatureType();
+                ft = layer.getFeatureType();
                 if(ft != null) {
                     for(AttributeDescriptor ad: ft.getAttributes()) {
                         featureTypeAttributes.put(ad.getName(), ad);
@@ -200,6 +202,7 @@ public class AppLayerActionBean implements ActionBean {
                 }
             } 
             
+            Integer geometryAttributeIndex = null;
             JSONArray attributes = new JSONArray();
             for(ConfiguredAttribute ca: appLayer.getAttributes()) {
                 JSONObject j = ca.toJSONObject();
@@ -208,10 +211,20 @@ public class AppLayerActionBean implements ActionBean {
                 if(ad != null) {
                     j.put("alias", ad.getAlias());
                     j.put("type", ad.getType());
+
+                    if(ft != null && ca.getAttributeName().equals(ft.getGeometryAttribute())) {
+                        geometryAttributeIndex = attributes.length();
+                    }
                 }
                 attributes.put(j);
             }        
                        
+            if(ft != null) {
+                json.put("geometryAttribute", ft.getGeometryAttribute());
+            }
+            if(geometryAttributeIndex != null) {
+                json.put("geometryAttributeIndex", geometryAttributeIndex);
+            }
             json.put("attributes", attributes);
             json.put("success", Boolean.TRUE);
         }
@@ -246,27 +259,44 @@ public class AppLayerActionBean implements ActionBean {
 
                 Query q = new Query(fs.getName().toString());
                 
+                List<String> propertyNames = new ArrayList<String>();
+                boolean haveInvisibleProperties = false;
+                for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+                    if(ca.isVisible()) {
+                        propertyNames.add(ca.getAttributeName());
+                    } else {
+                        haveInvisibleProperties = true;
+                    }                    
+                }
+                if(haveInvisibleProperties) {
+                    // By default Query retrieves Query.ALL_NAMES
+                    // Query.NO_NAMES is an empty String array
+                    q.setPropertyNames(propertyNames);
+                }
+                
                 FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
                 
                 if(sort != null) {
                     
-                    String sortAttribute = sort;
+                    String sortAttribute = null;
                     if(arrays) {
                         int i = Integer.parseInt(sort.substring(1));
 
                         int j = 0;
-                        for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-                            if(ca.isVisible()) {
-                                if(j == i) {
-                                    sortAttribute = ca.getAttributeName();
-                                }
-                                j++;
+                        for(String name: propertyNames) {
+                            if(j == i) {
+                                sortAttribute = name;
                             }
+                            j++;
                         }
+                    } else {
+                        sortAttribute = sort;
                     }
-                    q.setSortBy(new SortBy[] {
-                        ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
-                    });
+                    if(sortAttribute != null) {
+                        q.setSortBy(new SortBy[] {
+                            ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
+                        });
+                    }
                 }
                 
                 total = fs.getCount(q);
@@ -292,22 +322,15 @@ public class AppLayerActionBean implements ActionBean {
                         if(arrays) {
                             JSONObject j = new JSONObject();
                             int idx = 0;
-                            for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-
-                                if(ca.isVisible()) {
-                                    Object value = f.getAttribute(ca.getAttributeName());
-                                    j.put("c" + idx++, formatValue(value));
-                                }
+                            for(String name: propertyNames) {
+                                Object value = f.getAttribute(name);
+                                j.put("c" + idx++, formatValue(value));
                             }    
                             features.put(j);                                
                         } else {
                             JSONObject j = new JSONObject();
-                            for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-
-                                if(ca.isVisible()) {
-                                    String name = ca.getAttributeName();
-                                    j.put(name, f.getAttribute(name));
-                                }
+                            for(String name: propertyNames) {
+                                j.put(name, f.getAttribute(name));
                             }                     
                             features.put(j);
                         }
