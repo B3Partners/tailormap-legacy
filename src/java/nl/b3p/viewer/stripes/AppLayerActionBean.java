@@ -24,7 +24,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
@@ -235,6 +237,67 @@ public class AppLayerActionBean implements ActionBean {
         
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
     }
+
+    private static final String CACHE_APPLAYER = "total_count_cache_applayer";
+    private static final String CACHE_TIME = "total_count_cache_time";
+    private static final String CACHE_COUNT = "total_count_cache";
+    
+    private static final int CACHE_MAX_AGE = 60 * 1000;
+    
+    /**
+     * Call this to clear the "total feature count" cached value when a new feature 
+     * is added to a feature source. Only clears the cache for the current session.
+     */
+    public static void clearTotalCountCache(ActionBeanContext context) {
+        HttpSession sess = context.getRequest().getSession();
+        sess.removeAttribute(CACHE_APPLAYER);
+        sess.removeAttribute(CACHE_TIME);
+        sess.removeAttribute(CACHE_COUNT);
+    }
+    
+    private int lookupTotalCountCache(Callable<Integer> countProducer) throws Exception {
+        HttpSession session = context.getRequest().getSession();
+        
+        Integer total = null;
+        Long age = null;
+        Long cacheAppLayerId = (Long)session.getAttribute(CACHE_APPLAYER);
+        if(appLayer.getId().equals(cacheAppLayerId)) {
+            Long time = (Long)session.getAttribute(CACHE_TIME);
+            if(time != null) {
+                age = System.currentTimeMillis() - time;
+                if(age <= CACHE_MAX_AGE) {
+                    total = (Integer)session.getAttribute(CACHE_COUNT);
+                }
+            }
+        }
+        
+        if(total != null) {
+            log.debug(String.format("Returning cached total count value %d which was cached %s ms ago for app layer id %d",
+                    total,
+                    age,
+                    appLayer.getId()));
+            return total;
+        } else {
+            long startTime = System.currentTimeMillis();
+            total = countProducer.call();
+            log.debug(String.format("Caching total count value %d which took %d ms to get for app layer id %d",
+                    total,
+                    System.currentTimeMillis() - startTime,
+                    appLayer.getId()));
+            
+            // Maybe only cache if getting total took longer than threshold?
+            
+            // Now a new feature is only counted for all users after CACHE_MAX_AGE 
+            // If clearTotalCountCache() is called then the new feature will be 
+            // counted for the current user/session).
+            
+            session.setAttribute(CACHE_APPLAYER, appLayer.getId());
+            session.setAttribute(CACHE_TIME, System.currentTimeMillis());
+            session.setAttribute(CACHE_COUNT, total);
+            
+            return total;
+        }
+    }
     
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
@@ -257,7 +320,7 @@ public class AppLayerActionBean implements ActionBean {
                 
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
-                Query q = new Query(fs.getName().toString());
+                final Query q = new Query(fs.getName().toString());
                 
                 List<String> propertyNames = new ArrayList<String>();
                 boolean haveInvisibleProperties = false;
@@ -299,7 +362,14 @@ public class AppLayerActionBean implements ActionBean {
                     }
                 }
                 
-                total = fs.getCount(q);
+
+                final FeatureSource fs2 = fs;
+                total = lookupTotalCountCache(new Callable<Integer>() {
+                    public Integer call() throws Exception {
+                        return fs2.getCount(q);
+                    }
+                });
+
                 if(total == -1) {
                     total = MAX_FEATURES;
                 }
