@@ -153,7 +153,7 @@ public class JDBCFeatureSource extends FeatureSource {
                             type = AttributeDescriptor.TYPE_DOUBLE;
                         }
                         
-                        if(sft.getGeometryAttribute() == null && type.startsWith("com.vividsolutions.jts.geom")) {
+                        if(sft.getGeometryAttribute() == null && binding.startsWith("com.vividsolutions.jts.geom")) {
                             sft.setGeometryAttribute(att.getName());
                         }
 
