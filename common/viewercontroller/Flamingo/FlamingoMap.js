@@ -231,7 +231,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *see @link Map.getResolution
      */
     getResolution : function (){
-        return this.getFrameworkMap().callMethod(this.getId(), "getScaleHint");
+        return this.getFrameworkMap().callMethod(this.getId(), "getScale");
     },
 
     /**

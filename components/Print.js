@@ -380,6 +380,7 @@ Ext.define ("viewer.components.Print",{
         if (newValue>0){
             this.correctQuality(newValue);
         } 
+        this.redrawPreview();
     },
     /**
      * Corrects the quality slider to the max quality possible with the given angle
