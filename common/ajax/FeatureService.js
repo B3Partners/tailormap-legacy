@@ -77,6 +77,7 @@ Ext.define("viewer.AppLayerService", {
                 
                 if(response.success) {
                     theAppLayer.attributes = response.attributes;
+                    theAppLayer.geometryAttributeIndex = response.geometryAttributeIndex;
                     successFunction(response.attributes);
                 } else {
                     if(failureFunction != undefined) {

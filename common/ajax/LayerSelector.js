@@ -20,7 +20,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.LayerSelector",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
     popupWin:null,
     layerList : null,
     layerArray : null,
