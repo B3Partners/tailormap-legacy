@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.referencing.CRS;
 /**
  *
  * @author jytte
@@ -58,6 +59,8 @@ public class ArcXMLFeatureSource extends FeatureSource {
         
         params.put(ArcIMSDataStoreFactory.USER.key, getUsername());
         params.put(ArcIMSDataStoreFactory.PASSWD.key, getPassword());
+        
+        params.put(ArcIMSDataStoreFactory.CRS.key, CRS.decode("EPSG:28992"));
         
         log.debug("Opening datastore using parameters: " + params);
         DataStore ds = null;
