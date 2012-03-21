@@ -16,6 +16,7 @@
  */
 package nl.b3p.geotools.data.arcims;
 
+import com.vividsolutions.jts.geom.GeometryFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -43,6 +44,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     
     private SimpleFeatureBuilder builder;
     private SimpleFeatureType featureType;
+    private GeometryFactory geometryFactory = new GeometryFactory();
     
     private AxlGetFeatures request;
     private AxlFeatures response;
@@ -192,7 +194,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
             Class binding = null;
             try {
                 binding = featureType.getType(f.getName()).getBinding();
-                builder.set(f.getName(), f.getConvertedValue(binding));
+                builder.set(f.getName(), f.getConvertedValue(binding, geometryFactory));
             } catch(Exception e) {
                 throw new IOException(String.format("Error converting field \"%s\" value \"%s\" to type %s: %s",
                         f.getName(),

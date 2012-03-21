@@ -16,17 +16,19 @@
  */
 package nl.b3p.geotools.data.arcims.axl;
 
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.*;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
+import nl.b3p.geotools.data.arcims.ArcXMLUtils;
 
 /**
  *
@@ -51,6 +53,9 @@ public class AxlField {
     
     @XmlAttribute
     private String value;
+    
+    @XmlTransient
+    private AxlFeature feature;
 
     public String getName() {
         return name;
@@ -72,7 +77,7 @@ public class AxlField {
         return new SimpleDateFormat("{ts 'YYYY-MM-dd HH:mm:ss'}");
     }
     
-    public Object getConvertedValue(Class binding) throws ParseException {
+    public Object getConvertedValue(Class binding, GeometryFactory geometryFactory) throws ParseException, IOException {
         if(value == null) {
             return null;
         }
@@ -92,17 +97,21 @@ public class AxlField {
             return Double.parseDouble(value.replace(',', '.'));
         } else if(binding.equals(Date.class)) {
             return new Date(Long.parseLong(value));
-        } else if(binding.equals(MultiLineString.class)) {
-            // TODO
-            return null;
-        } else if(binding.equals(MultiPolygon.class)) {
-            // TODO
-            return null;
-        } else if(binding.equals(MultiPoint.class)) {
-            // TODO
-            return null;
-        }
+        } else if(binding.getName().startsWith("com.vividsolutions.jts.geom.")) {
+            
+            if(this.feature == null) {
+                return null;
+            } else {
+                return ArcXMLUtils.convertGeometry(feature.getGeometry(), geometryFactory);
+            }
+        } 
            
         return null;
+    }
+    
+    void afterUnmarshal(Unmarshaller u, Object parent) {
+        if(parent instanceof AxlFeature) {
+            this.feature = (AxlFeature)parent;
+        }
     }
 }
