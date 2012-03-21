@@ -181,11 +181,7 @@ public class ArcIMSServer {
         request.performPostOutput(out);
         InputStream in = new ByteArrayInputStream(out.toByteArray());
 
-        try {
-            httpResponse = httpClient.post(finalURL, in, postContentType);
-        } finally {
-            in.close();
-        }
+        httpResponse = httpClient.post(finalURL, in, postContentType);
 
         return request.parseResponse(httpResponse);
     }
