@@ -89,11 +89,11 @@ Ext.define ("viewer.components.TOC",{
             if(contentItem.type ==  "level"){
                 var level = this.addLevel(contentItem.id);
                 if(level != null){
-                    nodes.push(level);
+                    nodes.push(level.node);
                 }
             }else if(contentItem.type == "appLayer"){
                 var layer = this.addLayer(contentItem.id);
-                nodes.push(layer);
+                nodes.push(layer.node);
             }
         }
         this.insertLayer(nodes);
@@ -122,23 +122,45 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.layerObj.info = level.info;
         }
         
+        var childsChecked = 0;
+        var totalChilds = 0;
+        
         if(level.children != undefined ){
             for(var i = 0 ; i < level.children.length; i++){
                 var l = this.addLevel(level.children[i]);
-                if(l != null){
-                    nodes.push(l);
+                if(l.node != null) {
+                    totalChilds++;
+                    if(l.tristate === 0) {
+                        totalChilds++;
+                        childsChecked++;
+                    } else if(l.tristate === 1) {
+                        childsChecked++;
+                    }
+                    nodes.push(l.node);
                 }
             }
         }
-        
         if(level.layers != undefined ){
             for(var j = 0 ; j < level.layers.length ; j ++){
-                nodes.push(this.addLayer(level.layers[j]));
+                var layer = this.addLayer(level.layers[j]);
+                totalChilds++;
+                if(layer.checked) childsChecked++;
+                nodes.push(layer.node);
             }
         }
-        
+        if(this.groupCheck) {
+            var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
+            if(tristate === 1) {
+                treeNodeLayer.checked = true;
+            } else if (tristate === 0) {
+                treeNodeLayer.cls = 'tristatenode';
+            }
+        }
         treeNodeLayer.children= nodes;
-        return treeNodeLayer;
+        return {
+            node: treeNodeLayer,
+            tristate: tristate
+        };
     },
     // Add a layer to the level
     addLayer : function (layerId){
@@ -160,10 +182,15 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.qtip= "Metadata voor de kaartlaag";
             treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
         }
+        var retChecked = false;
         if(this.layersChecked){
             treeNodeLayer.checked = appLayerObj.checked;
+            retChecked = appLayerObj.checked;
         }
-        return treeNodeLayer;        
+        return {
+            node: treeNodeLayer,
+            checked: retChecked
+        };
     },
     insertLayer : function (config){
         var root = this.panel.getRootNode();
@@ -200,16 +227,106 @@ Ext.define ("viewer.components.TOC",{
         }
         return null;
     },
-    /*************************  Event handlers ***********************************************************/
-    syncLayers : function (map,object){
-        var layer = object.layer;
-        var visible = object.visible;
-        var id = this.getAppLayerId(layer.id);
-        this.selectLayer (id,visible);
+    
+    setTriState: function(node) {
+        var me = this;
+        var checked = me.getNodeChecked(node);
+        var updateTree = false;
+        if(node.hasChildNodes()) {
+            // It is a folder
+            updateTree = true;
+            me.updateTreeNodes = [];
+            me.checkChildNodes(node, checked);
+            if(checked) {
+                me.updateTriStateClass(node, 1, 1);
+            } else {
+                me.updateTriStateClass(node, 0, 1);
+            }
+        }
+        if(node.parentNode.parentNode != null) {
+            me.updateTriState(node.parentNode);
+        }
+        // After the tree has been updated, update the map with all nodes involved
+        if(updateTree) {
+            for(var i = 0; i < me.updateTreeNodes.length; i++) {
+                me.updateMap(me.updateTreeNodes[i], checked);
+            }
+        }
     },
     
-    checkboxClicked : function(nodeObj,checked,toc){
-        this.checkClicked= true;
+    updateTriState: function(node) {
+        var me = this;
+        var totalChecked = 0;
+        var totalNodes = 0;
+        node.eachChild(function(childNode) {
+            totalNodes++;
+            if(me.getNodeChecked(childNode)) totalChecked++;
+            /* If a child node has a tristate, the parent should also have a tristate,
+             * thus we are adding extra nodes in the counter so the total number of nodes
+             * and the number of checked nodes is always unequal and there is always a "checked" node,
+             * for explanation why this is done, see the updateTriStateClass function for how the tristate is determined */
+            if(me.hasTriState(childNode)) {
+                totalNodes = totalNodes + 2;
+                totalChecked++;
+            }
+        });
+        me.updateTriStateClass(node, totalChecked, totalNodes);
+        if(node.parentNode.parentNode != null) {
+            me.updateTriState(node.parentNode);
+        }
+    },
+    
+    updateTriStateClass: function(node, totalChecked, totalNodes) {
+        var tristate = 0;
+        if(totalChecked == 0) {
+            tristate = -1;
+        } else if(totalChecked == totalNodes) {
+            tristate = 1;
+        }
+        if(node != null) {
+            if(tristate == -1) {
+                node.data.tristate = -1;
+                node.set('cls', '');
+                node.set('checked', false);
+            } else if(tristate == 1) {
+                node.data.tristate = 1;
+                node.set('cls', '');
+                node.set('checked', true);
+            } else {
+                node.data.tristate = 0;
+                node.set('cls', 'tristatenode');
+                node.set('checked', false);
+            }
+        }
+        return tristate;
+    },
+    
+    checkChildNodes: function(node, checked) {
+        var me = this;
+        node.eachChild(function(childNode) {
+            childNode.set('checked', checked);
+            me.updateTreeNodes.push(childNode);
+            if(childNode.hasChildNodes()) {
+                childNode.set('cls', '');
+                me.checkChildNodes(childNode, checked);
+            }
+        });
+    },
+    
+    getNodeChecked: function(node) {
+        if(Ext.isDefined(node.data) && Ext.isDefined(node.data.checked)) return node.data.checked;
+        if(Ext.isDefined(node.raw) && Ext.isDefined(node.raw.checked)) return node.raw.checked;
+        return false;
+    },
+    
+    hasTriState: function(node) {
+        if(Ext.isDefined(node.data) && Ext.isDefined(node.data.tristate)) {
+            if(node.data.tristate === 0) return true;
+        }
+        return false;
+    },
+    
+    updateMap: function(nodeObj, checked) {
         if(nodeObj.isLeaf()){
             var node = nodeObj.raw;
             if(node ===undefined){
@@ -223,6 +340,20 @@ Ext.define ("viewer.components.TOC",{
                 this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
             }
         }
+    },
+    
+    /*************************  Event handlers ***********************************************************/
+    syncLayers : function (map,object){
+        var layer = object.layer;
+        var visible = object.visible;
+        var id = this.getAppLayerId(layer.id);
+        this.selectLayer (id,visible);
+    },
+    
+    checkboxClicked : function(nodeObj,checked,toc){
+        this.checkClicked= true;
+        this.setTriState(nodeObj);
+        this.updateMap(nodeObj, checked);
     },
     // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
