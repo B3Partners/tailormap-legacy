@@ -24,6 +24,7 @@ import org.geotools.data.ows.AbstractRequest;
 import org.geotools.data.ows.HTTPResponse;
 import org.geotools.data.ows.Response;
 import org.geotools.ows.ServiceException;
+import nl.b3p.geotools.data.arcims.axl.*;
 
 /**
  *
@@ -79,7 +80,7 @@ public class ArcXMLRequest extends AbstractRequest {
         throw new UnsupportedOperationException("Not supported");
     }
     
-    public nl.b3p.geotools.data.arcims.AxlResponse parseResponse(HTTPResponse httpr) throws Exception {
+    public AxlResponse parseResponse(HTTPResponse httpr) throws Exception {
         ArcXML axl = (ArcXML)ArcXML.getJaxbContext().createUnmarshaller().unmarshal(httpr.getResponseStream());
         
         return axl.getResponse();

@@ -16,6 +16,7 @@
  */
 package nl.b3p.geotools.data.arcims;
 
+import nl.b3p.geotools.data.arcims.axl.AxlLayerInfo;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;

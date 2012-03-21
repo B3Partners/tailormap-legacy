@@ -14,37 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  *
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlFeatureCount {
-    @XmlAttribute
-    private int count;
+public class AxlFeature {
     
-    @XmlAttribute
-    private boolean hasmore;
+    @XmlElementWrapper(name="FIELDS")
+    @XmlElement(name="FIELD")
+    List<AxlField> fields;
+    
+    @XmlElement(name="POLYGON")
+    AxlPolygon polygon;
+    
+    @XmlElement(name="MULTIPOINT")
+    AxlCoords pointCoords;
+    
+    @XmlElementWrapper(name="POLYLINE")
+    @XmlElement(name="PATH")
+    List<AxlCoords> linePaths;
 
-    public int getCount() {
-        return count;
+    public List<AxlField> getFields() {
+        return fields;
     }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public boolean isHasmore() {
-        return hasmore;
-    }
-
-    public void setHasmore(boolean hasmore) {
-        this.hasmore = hasmore;
+    public void setFields(List<AxlField> fields) {
+        this.fields = fields;
     }
 }

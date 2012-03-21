@@ -27,6 +27,7 @@ import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.HTTPClient;
 import org.geotools.data.ows.HTTPResponse;
 import org.geotools.data.ows.SimpleHttpClient;
+import nl.b3p.geotools.data.arcims.axl.*;
 
 /**
  *
@@ -49,26 +50,32 @@ public class ArcIMSServer {
     
     protected class ArcIMSInfo implements org.geotools.data.ServiceInfo {
 
+        @Override
         public String getTitle() {
             return serviceName;
         }
 
+        @Override
         public Set<String> getKeywords() {
             return Collections.EMPTY_SET;
         }
 
+        @Override
         public String getDescription() {
             return getTitle();
         }
 
+        @Override
         public URI getPublisher() {
             return null;
         }
 
+        @Override
         public URI getSchema() {
             return null;
         }
 
+        @Override
         public URI getSource() {
             return null;
         }
@@ -184,16 +191,5 @@ public class ArcIMSServer {
         }
 
         return request.parseResponse(httpResponse);
-    }
-
-    public static void main(String[] args) throws Exception {     
-        ArcIMSServer s = new ArcIMSServer(new URL("http://gisopenbaar.toverijs3.nl/GeoJuli2008/ims"), "ondergrond_lf");
-        
-        ArcXML axl = new ArcXML();
-        axl.response = new AxlResponse();
-        axl.response.setServiceInfo(s.getAxlServiceInfo());
-        ArcXML.getJaxbContext().createMarshaller().marshal(axl, System.out);
-        
-        System.out.println("");
     }
 }

@@ -14,12 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -27,41 +25,37 @@ import javax.xml.bind.annotation.XmlElement;
  * @author matthijsln
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlFClass {
-    public static final String TYPE_POINT = "point";
-    public static final String TYPE_POLYGON = "polygon";
-    public static final String TYPE_LINE = "line";
+public class AxlResponse {
+    @XmlElement(name="SERVICEINFO")
+    private AxlServiceInfo serviceInfo;
     
-    @XmlAttribute
-    private String type;
+    @XmlElement(name="FEATURES")
+    private AxlFeatures features;
     
-    @XmlElement(name="ENVELOPE")
-    private AxlEnvelope envelope;
-    
-    @XmlElement(name="FIELD")
-    private List<AxlFieldInfo> fields;
+    @XmlElement(name="ERROR")
+    private String error;
 
-    public AxlEnvelope getEnvelope() {
-        return envelope;
+    public String getError() {
+        return error;
     }
 
-    public void setEnvelope(AxlEnvelope envelope) {
-        this.envelope = envelope;
+    public void setError(String error) {
+        this.error = error;
     }
 
-    public List<AxlFieldInfo> getFields() {
-        return fields;
+    public AxlServiceInfo getServiceInfo() {
+        return serviceInfo;
     }
 
-    public void setFields(List<AxlFieldInfo> fields) {
-        this.fields = fields;
+    public void setServiceInfo(AxlServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
     }
 
-    public String getType() {
-        return type;
+    public AxlFeatures getFeatures() {
+        return features;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public void setFeatures(AxlFeatures features) {
+        this.features = features;
+    }       
 }

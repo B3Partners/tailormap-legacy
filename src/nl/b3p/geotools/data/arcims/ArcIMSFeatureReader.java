@@ -16,6 +16,12 @@
  */
 package nl.b3p.geotools.data.arcims;
 
+import nl.b3p.geotools.data.arcims.axl.AxlGetFeatures;
+import nl.b3p.geotools.data.arcims.axl.AxlQuery;
+import nl.b3p.geotools.data.arcims.axl.AxlLayerInfo;
+import nl.b3p.geotools.data.arcims.axl.AxlFeature;
+import nl.b3p.geotools.data.arcims.axl.AxlFeatures;
+import nl.b3p.geotools.data.arcims.axl.AxlField;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import org.apache.commons.logging.Log;

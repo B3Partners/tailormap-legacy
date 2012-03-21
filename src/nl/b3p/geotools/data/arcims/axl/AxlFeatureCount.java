@@ -14,39 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlFeatures {
+public class AxlFeatureCount {
+    @XmlAttribute
+    private int count;
     
-    @XmlElement(name="FEATURE")
-    List<AxlFeature> features;
+    @XmlAttribute
+    private boolean hasmore;
 
-    @XmlElement(name="FEATURECOUNT")
-    AxlFeatureCount featureCount;
-    
-    public List<AxlFeature> getFeatures() {
-        return features;
+    public int getCount() {
+        return count;
     }
 
-    public void setFeatures(List<AxlFeature> features) {
-        this.features = features;
+    public void setCount(int count) {
+        this.count = count;
     }
 
-    public AxlFeatureCount getFeatureCount() {
-        return featureCount;
+    public boolean isHasmore() {
+        return hasmore;
     }
 
-    public void setFeatureCount(AxlFeatureCount featureCount) {
-        this.featureCount = featureCount;
+    public void setHasmore(boolean hasmore) {
+        this.hasmore = hasmore;
     }
 }

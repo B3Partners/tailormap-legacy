@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,37 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author matthijsln
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlResponse {
-    @XmlElement(name="SERVICEINFO")
-    private AxlServiceInfo serviceInfo;
-    
-    @XmlElement(name="FEATURES")
-    private AxlFeatures features;
-    
-    @XmlElement(name="ERROR")
-    private String error;
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public AxlServiceInfo getServiceInfo() {
-        return serviceInfo;
-    }
-
-    public void setServiceInfo(AxlServiceInfo serviceInfo) {
-        this.serviceInfo = serviceInfo;
-    }
-
-    public AxlFeatures getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(AxlFeatures features) {
-        this.features = features;
-    }       
+public class AxlProperties {
+    @XmlElement(name="ENVELOPE")
+    AxlEnvelope envelope;    
 }

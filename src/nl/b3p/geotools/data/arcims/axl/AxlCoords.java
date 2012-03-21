@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
- * @author matthijsln
+ * @author Matthijs Laan
  */
-public interface AxlRequest {
-    
+@XmlAccessorType(XmlAccessType.FIELD)
+public class AxlCoords {
+    @XmlElement(name="COORDS")
+    private String coords;
+
+    public String getCoords() {
+        return coords;
+    }
+
+    public void setCoords(String coords) {
+        this.coords = coords;
+    }
 }

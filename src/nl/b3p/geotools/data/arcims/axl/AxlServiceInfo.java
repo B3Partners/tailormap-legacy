@@ -14,67 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
  * @author matthijsln
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlEnvelope {
-    @XmlAttribute
-    private String minx;
-    @XmlAttribute
-    private String maxx;
-    @XmlAttribute
-    private String miny;
-    @XmlAttribute
-    private String maxy;
+public class AxlServiceInfo {
+    @XmlElement(name="PROPERTIES")
+    AxlProperties properties;
     
-    @XmlAttribute
-    private String name;
+    @XmlElement(name="LAYERINFO")
+    List<AxlLayerInfo> layers;
 
-    public String getName() {
-        return name;
+    public List<AxlLayerInfo> getLayers() {
+        return layers;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLayers(List<AxlLayerInfo> layers) {
+        this.layers = layers;
     }
 
-    public String getMaxx() {
-        return maxx;
+    public AxlProperties getProperties() {
+        return properties;
     }
 
-    public void setMaxx(String maxx) {
-        this.maxx = maxx;
+    public void setProperties(AxlProperties properties) {
+        this.properties = properties;
     }
-
-    public String getMaxy() {
-        return maxy;
-    }
-
-    public void setMaxy(String maxy) {
-        this.maxy = maxy;
-    }
-
-    public String getMinx() {
-        return minx;
-    }
-
-    public void setMinx(String minx) {
-        this.minx = minx;
-    }
-
-    public String getMiny() {
-        return miny;
-    }
-
-    public void setMiny(String miny) {
-        this.miny = miny;
-    }       
 }

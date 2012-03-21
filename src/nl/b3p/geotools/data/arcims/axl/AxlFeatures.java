@@ -14,40 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AxlQuery {
-    @XmlAttribute
-    private String where;
+public class AxlFeatures {
     
-    @XmlAttribute
-    @XmlList
-    private List<String> subfields;
+    @XmlElement(name="FEATURE")
+    List<AxlFeature> features;
 
-    public List<String> getSubfields() {
-        return subfields;
+    @XmlElement(name="FEATURECOUNT")
+    AxlFeatureCount featureCount;
+    
+    public List<AxlFeature> getFeatures() {
+        return features;
     }
 
-    public void setSubfields(List<String> subfields) {
-        this.subfields = subfields;
+    public void setFeatures(List<AxlFeature> features) {
+        this.features = features;
     }
 
-    public String getWhere() {
-        return where;
+    public AxlFeatureCount getFeatureCount() {
+        return featureCount;
     }
 
-    public void setWhere(String where) {
-        this.where = where;
+    public void setFeatureCount(AxlFeatureCount featureCount) {
+        this.featureCount = featureCount;
     }
 }

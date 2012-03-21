@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
 /**
  *
@@ -10,7 +10,7 @@ package nl.b3p.geotools.data.arcims;
  */
 public class AxlException extends Exception {
 
-    AxlException(String error) {
+    public AxlException(String error) {
         super(error);
     }    
 }

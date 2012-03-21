@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,15 +26,15 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Matthijs Laan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-class AxlCoords {
-    @XmlElement(name="COORDS")
-    private String coords;
+public class AxlPolygon {
+    @XmlElement(name="RING")
+    private List<AxlRing> rings;
 
-    public String getCoords() {
-        return coords;
+    public List<AxlRing> getRings() {
+        return rings;
     }
 
-    public void setCoords(String coords) {
-        this.coords = coords;
+    public void setRings(List<AxlRing> rings) {
+        this.rings = rings;
     }
 }

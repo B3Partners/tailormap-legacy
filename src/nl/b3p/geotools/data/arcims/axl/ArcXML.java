@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.geotools.data.arcims;
+package nl.b3p.geotools.data.arcims.axl;
 
 import java.util.Collections;
 import java.util.Set;
@@ -61,6 +61,10 @@ public class ArcXML {
     
     public AxlResponse getResponse() {
         return response;
+    }
+
+    public void setResponse(AxlResponse response) {
+        this.response = response;
     }
 
     public static JAXBContext getJaxbContext() {
