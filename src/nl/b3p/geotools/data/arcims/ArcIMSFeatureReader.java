@@ -39,7 +39,10 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     private Query query;
     private String[] internedPropertyNames;
     
+    private boolean initBeforeRequestDone = false;
+    
     private SimpleFeatureBuilder builder;
+    private SimpleFeatureType featureType;
     
     private AxlGetFeatures request;
     private AxlFeatures response;
@@ -99,8 +102,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         
         AxlGetFeatures r = new AxlGetFeatures();
         r.setLayer(new AxlLayerInfo(fs.getEntry().getTypeName()));
-        // TODO: set AxlQuery according to query
-        r.setQuery(new AxlQuery());     
+        buildAxlQuery(r);
         r.setSkipfeatures(true);
         log.debug(String.format("%s get feature count for layer %s",
                 fs.getDataStore().toString(),
@@ -114,6 +116,11 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
             throw new IOException("Error retrieving feature count from ArcIMS: " + e.toString(), e);
         }        
     }
+    
+    private void buildAxlQuery(AxlGetFeatures gf) {
+        // TODO: set AxlQuery according to query
+        gf.setQuery(new AxlQuery());                    
+    }
 
     @Override
     public SimpleFeatureType getFeatureType() {
@@ -125,19 +132,29 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         performRequest();
     }
     
+    private void initBeforeRequest() throws IOException {
+        if(initBeforeRequestDone) {
+            return;
+        }
+        
+        // Call to getFeatureType() will lead to GET_SERVICE_INFO request
+        featureType = getFeatureType();
+        
+        builder = new SimpleFeatureBuilder(featureType);
+        rowIdAttribute = fs.findRowIdAttribute();
+        
+        initBeforeRequestDone = true;        
+    }
+    
     protected void performRequest() throws IOException {
         if(request != null) {
             return;
         }
-        if(builder == null) {
-            builder = new SimpleFeatureBuilder(getFeatureType());
-            rowIdAttribute = fs.findRowIdAttribute();
-        }
+        initBeforeRequest();
                 
         request = new AxlGetFeatures();
         request.setLayer(new AxlLayerInfo(fs.getEntry().getTypeName()));
-        // TODO: set AxlQuery according to query        
-        request.setQuery(new AxlQuery());
+        buildAxlQuery(request);
         
         if(maxFeatures != null) {
             request.setFeaturelimit(maxFeatures);
@@ -157,7 +174,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     
     protected SimpleFeature buildFeature(AxlFeature axlf) throws IOException {
         String id = null;
-        
+
         for(AxlField f: axlf.getFields()) {
             if(rowIdAttribute != null && rowIdAttribute.equals(f.getName())) {
                 id = f.getValue();
@@ -174,7 +191,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
 
             Class binding = null;
             try {
-                binding = getFeatureType().getType(f.getName()).getBinding();
+                binding = featureType.getType(f.getName()).getBinding();
                 builder.set(f.getName(), f.getConvertedValue(binding));
             } catch(Exception e) {
                 throw new IOException(String.format("Error converting field \"%s\" value \"%s\" to type %s: %s",
