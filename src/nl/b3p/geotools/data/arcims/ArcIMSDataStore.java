@@ -39,20 +39,22 @@ public class ArcIMSDataStore extends ContentDataStore {
     private String serviceName;
     private String user;
     private String passwd;
+    private Integer timeout;
     
     private ArcIMSServer arcims;
     
     private List<Name> typeNames;
     
     public ArcIMSDataStore(URL url, String serviceName) {
-        this(url, serviceName, null, null);
+        this(url, serviceName, null, null, null);
     }
     
-    public ArcIMSDataStore(URL url, String serviceName, String user, String passwd) {
+    public ArcIMSDataStore(URL url, String serviceName, String user, String passwd, Integer timeout) {
         this.url = url;
         this.serviceName = serviceName;
         this.user = user;
         this.passwd = passwd;
+        this.timeout = timeout;
     }
 
     public ArcIMSServer getArcIMSServer() throws IOException {
@@ -60,6 +62,10 @@ public class ArcIMSDataStore extends ContentDataStore {
             HTTPClient client = new SimpleHttpClient();
             client.setUser(user);
             client.setPassword(passwd);
+            if(timeout != null) {
+                client.setConnectTimeout(timeout);
+                client.setReadTimeout(timeout);
+            }
 
             try {
                 arcims = new ArcIMSServer(url, serviceName, client);

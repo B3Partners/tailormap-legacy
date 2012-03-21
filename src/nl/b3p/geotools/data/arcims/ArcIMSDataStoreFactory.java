@@ -18,10 +18,11 @@ import org.geotools.data.DataStoreFactorySpi;
  */
 public class ArcIMSDataStoreFactory extends AbstractDataStoreFactory {
     
-    public static final DataStoreFactorySpi.Param PARAM_URL = new Param("url", URL.class, "url to a ArcIMS service");
-    public static final DataStoreFactorySpi.Param PARAM_SERVICENAME = new Param("service_name", String.class, "Service name parameter");    
-    public static final DataStoreFactorySpi.Param PARAM_USER = new Param("user", String.class, "Username", false);    
-    public static final DataStoreFactorySpi.Param PARAM_PASSWD = new Param("passwd", String.class, "Password", false);    
+    public static final DataStoreFactorySpi.Param URL = new Param("url", URL.class, "URL to a ArcIMS service");
+    public static final DataStoreFactorySpi.Param SERVICENAME = new Param("service_name", String.class, "ServiceName parameter if not in URL", false);    
+    public static final DataStoreFactorySpi.Param USER = new Param("user", String.class, "Username", false);    
+    public static final DataStoreFactorySpi.Param PASSWD = new Param("passwd", String.class, "Password", false);    
+    public static final DataStoreFactorySpi.Param TIMEOUT = new Param("timeout", Integer.class, "Timeout in ms; default 30000", false);
     
     @Override
     public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
@@ -31,10 +32,11 @@ public class ArcIMSDataStoreFactory extends AbstractDataStoreFactory {
     @Override
     public DataStore createNewDataStore(Map<String, Serializable> params) throws IOException {
         return new ArcIMSDataStore(
-                (URL)params.get(PARAM_URL.key), 
-                (String)params.get(PARAM_SERVICENAME.key),
-                (String)params.get(PARAM_USER.key),
-                (String)params.get(PARAM_PASSWD.key));
+                (URL)params.get(URL.key), 
+                (String)params.get(SERVICENAME.key),
+                (String)params.get(USER.key),
+                (String)params.get(PASSWD.key),
+                (Integer)params.get(TIMEOUT.key));
     }
 
     @Override
@@ -44,6 +46,6 @@ public class ArcIMSDataStoreFactory extends AbstractDataStoreFactory {
 
     @Override
     public Param[] getParametersInfo() {
-        return new Param[] { PARAM_URL, PARAM_SERVICENAME, PARAM_USER, PARAM_PASSWD };
+        return new Param[] { URL, SERVICENAME, USER, PASSWD, TIMEOUT };
     }    
 }
