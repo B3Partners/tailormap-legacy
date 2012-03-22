@@ -100,7 +100,7 @@ Ext.define("viewer.components.Component",{
             buttonIcon = options.icon;
             buttonWidth = me.defaultButtonWidth;
         } else if(appSprite != null) {
-            buttonCls = 'applicationSpriteClass buttonBaseClass buttonDefaultClass_normal ' + baseClass + '_normal';
+            buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
             buttonWidth = me.defaultButtonWidth;
             useSprite = true;
         } else {
@@ -174,7 +174,7 @@ Ext.define("viewer.components.Component",{
             var spriteConfig = {
                 gridSize: 55,
                 imageSize: 44,
-                innerImageSize: 24, // Should preferably be 16 to render nicely in popups
+                popupImageSize: 16, // Popups render 16x16 icons
                 columnConfig: {
                     normal: 3,
                     hover: 2,
@@ -197,12 +197,11 @@ Ext.define("viewer.components.Component",{
                 }
             };
             var styleContent = '.applicationSpriteClass { background-image: url(\'' + appSprite + '\') !important; } ';
-                styleContent += ' .buttonBaseClass { background-color: transparent; border-style: none; }';
                 styleContent += ' .buttonDefaultClass_normal { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
                 styleContent += ' .buttonDefaultClass_hover { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
                 styleContent += ' .buttonDefaultClass_click { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
 
-            var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.innerImageSize / 2);
+            var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.popupImageSize / 2);
             Ext.Object.each(spriteConfig.rowConfig, function(comp, row) {
                 var compClassName = comp.replace(/\./g, '');
                 Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
