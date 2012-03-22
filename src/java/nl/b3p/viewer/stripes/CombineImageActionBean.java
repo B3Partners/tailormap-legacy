@@ -123,8 +123,8 @@ public class CombineImageActionBean implements ActionBean {
         JSONObject jRequest = new JSONObject(params);
         JSONObject jResponse = new JSONObject();
         String error=null;
-        String orientation=jRequest.getString("orientation");
-        String pageFormat= jRequest.getString("pageformat");
+        String pageFormat = jRequest.has("pageformat") ? jRequest.getString("pageformat") : PrintActionBean.A4;
+        String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PrintActionBean.PORTRAIT;
         
         if (orientation==null || pageFormat ==null){
             error = "invalid parameters";

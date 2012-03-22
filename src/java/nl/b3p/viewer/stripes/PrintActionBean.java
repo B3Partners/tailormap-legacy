@@ -19,10 +19,13 @@ package nl.b3p.viewer.stripes;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -35,7 +38,6 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.print.PrintInfo;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
@@ -45,6 +47,7 @@ import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.log4j.Logger;
 import org.apache.xmlgraphics.util.MimeConstants;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,6 +98,23 @@ public class PrintActionBean implements ActionBean {
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
         }
+        if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
+            if(jRequest.has("legendUrl")){
+                ArrayList<String> legendUrls = new ArrayList<String>();
+                Object o = jRequest.get("legendUrl");
+                if (o instanceof String){
+                    legendUrls.add((String)o);
+                }else if (o instanceof JSONArray){
+                    JSONArray jarray=(JSONArray)o;
+                    for (int i=0; i < jarray.length();i++){
+                        if (jarray.get(i)!=null){
+                            legendUrls.add(jarray.getString(i));
+                        }
+                    }
+                }
+                info.setLegendUrls(legendUrls);
+            }
+        }
         
         final String mimeType;
         if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
@@ -144,10 +164,11 @@ public class PrintActionBean implements ActionBean {
 
             Fop fop = fopFactory.newFop(mimeType, foUserAgent, out);
 
+            //String s=printInfoToString(info);
             /* Setup Jaxb */
             JAXBContext jc = JAXBContext.newInstance(PrintInfo.class);
             JAXBSource src = new JAXBSource(jc, info);
-
+            
             /* Setup xslt */
             Source xsltSrc = new StreamSource(xslFile);
             //xsltSrc.setSystemId(path);
@@ -256,6 +277,16 @@ public class PrintActionBean implements ActionBean {
         this.params = params;
     }
     //</editor-fold>
+
+    private String printInfoToString(PrintInfo info) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(PrintInfo.class);
+        Marshaller m = context.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        StringWriter sw = new StringWriter();
+        m.marshal(info, sw);
+        String s=sw.toString();
+        return s;
+    }
 
     
 

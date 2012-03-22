@@ -20,12 +20,14 @@ package nl.b3p.viewer.print;
  *
  * @author Roy Braam
  */
+import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name="info")
-@XmlType(propOrder = {"title","subtitle","date","imageUrl","bbox","remark","quality"})
+@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality"})
 public class PrintInfo {
     private String title;
     private String subtitle;
@@ -34,6 +36,7 @@ public class PrintInfo {
     private String bbox;
     private String remark;
     private int quality;
+    private ArrayList<String> legendUrls;
 
     public PrintInfo() {
     }    
@@ -95,8 +98,18 @@ public class PrintInfo {
     public String getSubtitle() {
         return subtitle;
     }
-
+    
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
+    }
+
+    public void setLegendUrls(ArrayList<String> legendUrls) {
+        this.legendUrls=legendUrls;
+    }
+    
+    @XmlElementWrapper(name="legendUrls")
+    @XmlElement(name="legendUrl")
+    public ArrayList<String> getLegendUrls(){
+        return this.legendUrls;
     }
 }
