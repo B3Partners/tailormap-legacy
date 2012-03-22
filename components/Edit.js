@@ -23,6 +23,8 @@ Ext.define ("viewer.components.Edit",{
     vectorLayer:null,
     inputContainer:null,
     geomType:null,
+    mode:null,
+    toolMapClick:null,
     config:{
         title: "",
         iconUrl: "",
@@ -55,6 +57,15 @@ Ext.define ("viewer.components.Edit",{
             }
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        
+        this.toolMapClick = Ext.create ("viewer.components.tools.ToolMapClick",{
+            id: this.name,
+            handler:{
+                fn: this.mapClicked,
+                scope:this
+            },
+            viewerController: this.viewerController
+        });
         this.loadWindow();
         return this;
     },
@@ -118,7 +129,8 @@ Ext.define ("viewer.components.Edit",{
             },
             {
                 id: this.name + 'InputPanel',
-                xtype: "container",
+                border: 0,
+                xtype: "form",
                 autoScroll: true,
                 width: '100%',
                 flex: 1
@@ -166,12 +178,10 @@ Ext.define ("viewer.components.Edit",{
         ls.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
     layerChanged : function (item){
+        this.vectorLayer.removeAllFeatures();
+        this.mode=null;
         
         this.inputContainer.setLoading("Laad attributen...");
-        /* for( var i = 0 ; i < inputPanel.items.length ; i++){
-            var citem = inputPanel.items[i];
-            citem.remove();
-        }*/
         this.inputContainer.removeAll();
         var appLayer = this.viewerController.getApplayer(item.serviceId, item.name);
         
@@ -240,33 +250,88 @@ Ext.define ("viewer.components.Edit",{
             for(var i= 0 ; i < attributes.length ;i++){
                 var attribute = attributes[i];
                 if(attribute.editable){
-                    var input = Ext.create("Ext.form.field.Text",{
-                        name: attribute.name,
-                        fieldLabel: attribute.editAlias || attribute.name,
-                        renderTo: this.name + 'InputPanel'
-                    });
-                    this.inputContainer.add(input);
+                    var values = attribute.editValues;
+                    var input = null;
+                    if(values == undefined || values.length == 1){
+                        var fieldText = "";
+                        if(values!= undefined){
+                            fieldText = values[0];
+                        }
+                        input = Ext.create("Ext.form.field.Text",{
+                            name: attribute.name,
+                            fieldLabel: attribute.editAlias || attribute.name,
+                            renderTo: this.name + 'InputPanel',
+                            value:  fieldText
+                        });
+                    }else if (values.length > 1){
+                        Ext.each(values,function(value,index,original){
+                            original[index] = {id: value};
+                        });
+                         var valueStore = Ext.create('Ext.data.Store', {
+                            fields: ['id'],
+                            data : values
+                        });
 
+                        input = Ext.create('Ext.form.ComboBox', {
+                            fieldLabel: attribute.editAlias || attribute.name,
+                            store: valueStore,
+                            queryMode: 'local',
+                            displayField: 'id',
+                            name:attribute.name,
+                            valueField: 'id'
+                        });
+                    }
+                    this.inputContainer.add(input);
                 }
             }
         }else{
             gl.setText("Geometrietype onbekend. Editten niet mogelijk.");
         }
     },
+    setInputPanel : function (feature){
+        this.inputContainer.getForm().setValues(feature);
+    },
+    mapClicked : function (toolMapClick,comp){
+         this.toolMapClick.deactivateTool();
+        var coords = comp[1];
+        var x = coords.x;
+        var y = coords.y;
+        var resolution = this.viewerController.mapComponent.getMap().getResolution();
+        var feature = {
+            omtrek : "Erg groot, namelijk Noord Holland",
+            code : "2012",
+            wktgeom: "POLYGON((98914.7905763337 576961.290540899,101360.775481459 488905.833956381,166179.375467285 487071.345277537,174128.826408943 570234.832051804,146611.496226281 610593.582986375,98914.7905763337 576961.290540899))"
+        }
+        this.featureSelected(feature);
+    },
     createNew : function(){
+        this.vectorLayer.removeAllFeatures();
+        this.mode = "new";
         if(this.geomType != null){
             this.vectorLayer.drawFeature(this.geomType);
         }
     },
     edit : function(){
-        
+        this.vectorLayer.removeAllFeatures();
+        this.mode = "edit";
+        this.toolMapClick.activateTool();
+    },
+    featureSelected : function (feature){
+        this.inputContainer.getForm().setValues(feature);
+        var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
+            wktgeom: feature.wktgeom,
+            id: "T_0"
+        });
+        this.vectorLayer.addFeature(feat);
     },
     save : function(){
-        
+        var feature =this.inputContainer.getValues();
+        var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
+        feature.wktgeom = wkt;
     },
     cancel : function (){
-        
+        this.mode=null;
+        this.inputContainer.removeAll();
+        this.popup.hide();
     }
-
-    
 });

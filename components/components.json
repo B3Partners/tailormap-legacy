@@ -456,7 +456,7 @@
         className: "viewer.components.Edit",
         name: "Edit",
         shortName: "Ed",
-        sources: ["Edit.js"],
+        sources: ["tools/ToolMapClick.js","Edit.js"],
         configSource: ["SelectionWindowConfig.js","Edit-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
