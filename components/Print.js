@@ -27,6 +27,7 @@ Ext.define ("viewer.components.Print",{
     minQuality: 128,
     minWidth: 500,
     combineImageService: null,
+    legends:null,
     config:{
         name: "Print",
         title: "",
@@ -47,6 +48,7 @@ Ext.define ("viewer.components.Print",{
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
+        this.legends=new Array();
         
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
@@ -60,7 +62,48 @@ Ext.define ("viewer.components.Print",{
             tooltip: me.tooltip
         });
         
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
+        
         return this;
+    },
+    // Handler for changes to the visibility of layers
+    layerVisibilityChanged : function (map,object ){
+        var layer = object.layer;
+        var vis = object.visible;
+        if(vis){
+            this.addLegend(layer);
+        }else{
+           this.removeLegend(layer);
+        }
+    },
+    layerRemoved : function(map, object){
+        var layer = object.layer;
+        this.removeLegend(layer);
+    },
+    // Called when a layer is added
+    addLegend : function (layer){
+        var serviceId = layer.serviceId;
+        var layerName = layer.getAppLayerName();// TODO: not yet correct
+        var layerTitle = this.viewerController.getLayerTitle(serviceId,layerName);
+        var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
+        if (url!=null){
+            var legend = {
+                url: url,
+                id: layer.id,
+                name: layerTitle
+            };
+            this.legends.push(legend);
+        }
+    },
+    removeLegend: function (layer){
+        for (var i=0; i < this.legends.length; i++){
+            if (this.legends[i].id==layer.id){
+                this.legends.splice(i,1)
+                return;
+            }
+        }
     },
     /**
      * Called when the button is clicked. Opens the print window (if not already opened) and creates a form.
@@ -77,6 +120,7 @@ Ext.define ("viewer.components.Print",{
             this.setQuality();
         if (restart){            
             this.redrawPreview();
+            this.createLegendSelector();
         }
     },
     /**
@@ -84,7 +128,7 @@ Ext.define ("viewer.components.Print",{
      */
     createForm: function(){
         var me = this;
-        
+          
         this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,
@@ -102,9 +146,16 @@ Ext.define ("viewer.components.Print",{
                 xtype: 'container',
                 height: 200,
                 layout: 'hbox',
-                items: [{
+                width: '100%',
+                items: [/*{
                     xtype: "label",
                     text: "Kaart voorbeeld: "
+                }*/{
+                    xtype: 'container',
+                    id: 'legendContainer',
+                    height: 200,
+                    width: 200,
+                    items: [{}]
                 },{
                     xtype: 'image',
                     src: '',
@@ -112,7 +163,8 @@ Ext.define ("viewer.components.Print",{
                     height: 200,
                     style: {
                         border: "1px solid gray",
-                        "margin-left": "10px"
+                        "margin-left": "10px",
+                        'float': 'right'
                     }
                 }]                
             },{
@@ -226,7 +278,7 @@ Ext.define ("viewer.components.Print",{
                                 }]                            
                             },{
                                 xtype: 'checkbox',
-                                name: 'legenda',
+                                name: 'includeLegend',
                                 checked: me.getLegend(),
                                 boxLabel: 'Legenda toevoegen'
                             }]                        
@@ -345,8 +397,27 @@ Ext.define ("viewer.components.Print",{
     * Call to redraw the preview
     */
     redrawPreview: function (){
+        Ext.getCmp("previewImg").el.dom.src="";
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
+    },
+    /**
+     * 
+     */
+    createLegendSelector: function(){
+        var checkboxes= new Array();
+        for (var i=0; i < this.legends.length; i++){
+            checkboxes.push({
+                xtype: "checkbox",
+                boxLabel: this.legends[i].name,
+                name: 'legendUrl',
+                inputValue: this.legends[i].url,
+                id: 'legendCheckBox'+this.legends[i].id
+            });
+        }       
+        Ext.getCmp('legendContainer').removeAll();
+        Ext.getCmp('legendContainer').add(checkboxes);        
+        Ext.getCmp('legendContainer').doLayout();
     },
     /**
      * Set the quality from the map in the slider
@@ -544,10 +615,31 @@ Ext.define ("viewer.components.Print",{
             //if its a radiogroup get the values with the function and apply the values to the config.
             if ("radiogroup"==container.items.get(i).xtype){
                 Ext.apply(config, container.items.get(i).getValue());       
-            }else if ("container"==container.items.get(i).xtype){
+            }else if ("container"==container.items.get(i).xtype || "fieldcontainer"==container.items.get(i).xtype){
                 Ext.apply(config,this.getValuesFromContainer(container.items.get(i)));
-            }else if (container.items.get(i).name!=undefined)
-                config[container.items.get(i).name] = container.items.get(i).getValue();
+            }else if (container.items.get(i).name!=undefined){
+                var value=container.items.get(i).getValue();
+                if ("checkbox"==container.items.get(i).xtype){
+                    if (value==true){
+                        value = container.items.get(i).getSubmitValue();
+                    }else{
+                        value=null;
+                    }
+                }                    
+                if (value==null)
+                    continue;
+                if (config[container.items.get(i).name]==undefined){
+                    config[container.items.get(i).name] = value;
+                }else if (config[container.items.get(i).name] instanceof Array){
+                    config[container.items.get(i).name].push(value);
+                }else{
+                    var tmp = new Array();
+                    tmp.push(config[container.items.get(i).name]);
+                    tmp.push(value);
+                    config[container.items.get(i).name]=tmp;
+                }
+                
+            }
         }
         return config;
     }

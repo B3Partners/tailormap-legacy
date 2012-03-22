@@ -89,8 +89,9 @@ Ext.define ("viewer.components.Legend",{
             this.queue.addItem(legend);
         }
     },
-    layerRemoved : function(map, layerName){
-        this.removeLayer(layerName);
+    layerRemoved : function(map, object){
+        var layer = object.layer;
+        this.removeLayer(layer.getId());
     },
     removeLayer: function (layerName){
         var id = layerName+"-div";

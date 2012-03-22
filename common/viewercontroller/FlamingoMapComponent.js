@@ -442,7 +442,9 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             if (layerId.indexOf(id+"_")==0){
                 layerId = layerId.substring(id.length+1);
             }
-            component=layerId;
+            var layer=object.getLayer(layerId);            
+            component= new Object()
+            component.layer=layer;
         }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA){            
             var comp=new Object();
             comp.extent=component[2];
