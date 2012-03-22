@@ -270,6 +270,7 @@
         name: "TOC",
         sources: ["TOC.js"],
         configSource: ["TOC-config.js"],
+        singleton: true,
         restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"],
     },
     {
