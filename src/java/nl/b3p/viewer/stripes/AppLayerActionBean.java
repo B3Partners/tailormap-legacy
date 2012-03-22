@@ -51,6 +51,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +91,8 @@ public class AppLayerActionBean implements ActionBean {
     private String sort;
     @Validate
     private boolean arrays;
+    @Validate
+    private String filter;
     
     @Validate
     private boolean debug;
@@ -165,6 +168,14 @@ public class AppLayerActionBean implements ActionBean {
 
     public void setArrays(boolean arrays) {
         this.arrays = arrays;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
     //</editor-fold>
 
@@ -299,6 +310,57 @@ public class AppLayerActionBean implements ActionBean {
         }
     }
     
+    private List<String> setPropertyNames(Query q) {
+        List<String> propertyNames = new ArrayList<String>();
+        boolean haveInvisibleProperties = false;
+        for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+            if(ca.isVisible()) {
+                propertyNames.add(ca.getAttributeName());
+            } else {
+                haveInvisibleProperties = true;
+            }                    
+        }
+        if(haveInvisibleProperties) {
+            // By default Query retrieves Query.ALL_NAMES
+            // Query.NO_NAMES is an empty String array
+            q.setPropertyNames(propertyNames);
+        }
+        return propertyNames;
+    }
+    
+    private void setSortBy(Query q, List<String> propertyNames) {
+        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
+        
+        if(sort != null) {
+
+            String sortAttribute = null;
+            if(arrays) {
+                int i = Integer.parseInt(sort.substring(1));
+
+                int j = 0;
+                for(String name: propertyNames) {
+                    if(j == i) {
+                        sortAttribute = name;
+                    }
+                    j++;
+                }
+            } else {
+                sortAttribute = sort;
+            }
+            if(sortAttribute != null) {
+                q.setSortBy(new SortBy[] {
+                    ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
+                });
+            }
+        }                
+    }
+    
+    private void setFilter(Query q) throws Exception {
+        if(filter != null) {
+            q.setFilter(CQL.toFilter(filter));
+        }
+    }
+    
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
         JSONArray features = new JSONArray();
@@ -321,48 +383,10 @@ public class AppLayerActionBean implements ActionBean {
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
                 final Query q = new Query(fs.getName().toString());
+                List<String> propertyNames = setPropertyNames(q);
+                setSortBy(q, propertyNames);
+                setFilter(q);
                 
-                List<String> propertyNames = new ArrayList<String>();
-                boolean haveInvisibleProperties = false;
-                for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-                    if(ca.isVisible()) {
-                        propertyNames.add(ca.getAttributeName());
-                    } else {
-                        haveInvisibleProperties = true;
-                    }                    
-                }
-                if(haveInvisibleProperties) {
-                    // By default Query retrieves Query.ALL_NAMES
-                    // Query.NO_NAMES is an empty String array
-                    q.setPropertyNames(propertyNames);
-                }
-                
-                FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
-                
-                if(sort != null) {
-                    
-                    String sortAttribute = null;
-                    if(arrays) {
-                        int i = Integer.parseInt(sort.substring(1));
-
-                        int j = 0;
-                        for(String name: propertyNames) {
-                            if(j == i) {
-                                sortAttribute = name;
-                            }
-                            j++;
-                        }
-                    } else {
-                        sortAttribute = sort;
-                    }
-                    if(sortAttribute != null) {
-                        q.setSortBy(new SortBy[] {
-                            ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
-                        });
-                    }
-                }
-                
-
                 final FeatureSource fs2 = fs;
                 total = lookupTotalCountCache(new Callable<Integer>() {
                     public Integer call() throws Exception {
