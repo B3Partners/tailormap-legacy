@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         }
     },
     constructor: function (conf){
-        this.initConfig(conf);   
+        this.initConfig(conf);
         var con = document.createElement('div');
         con.style.height=  "100%";
         con.style["background"] = "#FFFFFF";
@@ -59,7 +59,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.x=parseInt(this.details.x);
             config.y=parseInt(this.details.y);
         }
-        
+
         this.popupWin = Ext.create('Ext.window.Window', config);
         if(this.showOnStartup){
             this.popupWin.show();
@@ -88,5 +88,8 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     enableBody : function(){
         Ext.getBody().unmask()
+    },
+    setIconClass: function(iconCls) {
+        this.popupWin.setIconCls(iconCls);
     }
 });

@@ -732,6 +732,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         return paramJSON;
     },
+    getApplicationSprite: function() {
+        if(Ext.isDefined(this.app.details) && Ext.isDefined(this.app.details.iconSprite)) {
+            return this.app.details.iconSprite;
+        }
+        return null;
+    },
     /**
      *Utility functions
      ***/

@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
  * Abstract component
  * For using a popup, set this.isPopup = true.
  * For rendering to the popup, use the this.popup.getContentId() function
- * The icon can be rendered to this.getDiv() 
- * 
+ * The icon can be rendered to this.getDiv()
+ *
  */
 Ext.define("viewer.components.Component",{
-    extend: "Ext.util.Observable", 
+    extend: "Ext.util.Observable",
     events: null,
     popup: null,
     config: {
@@ -32,7 +32,9 @@ Ext.define("viewer.components.Component",{
         div: new Object(),
         viewerController: new Object(),
         isPopup : false
-    }, 
+    },
+    defaultButtonWidth: 46,
+    defaultButtonHeight: 46,
     /**
     * @constructs
     * @param config.name {String} the unique name of the object
@@ -43,6 +45,7 @@ Ext.define("viewer.components.Component",{
     constructor: function(config){
         var me = this;
         me.initConfig(config);
+        me.createIconStylesheet();
         if(me.isPopup){
             me.popup = Ext.create("viewer.components.ScreenPopup",config);
             me.popup.popupWin.addListener("resize", function() {
@@ -56,6 +59,7 @@ Ext.define("viewer.components.Component",{
                     }
                 }
             });
+            me.popup.setIconClass(me.getPopupIcon());
         }
         if(me.name && me.title) {
             me.viewerController.layoutManager.setTabTitle(me.name, me.title);
@@ -82,15 +86,138 @@ Ext.define("viewer.components.Component",{
      * @param options.tooltip the tooltip for this button.
      */
     renderButton: function(options) {
-        var me = this;
+        var me = this,
+            appSprite = me.viewerController.getApplicationSprite(),
+            buttonIcon = null,
+            buttonText = "",
+            buttonCls = '',
+            buttonWidth = 'autoWidth',
+            baseClass = me.$className.replace(/\./g, ''),
+            useSprite = false;
+
+        me.options = options;
+        if(options.icon) {
+            buttonIcon = options.icon;
+            buttonWidth = me.defaultButtonWidth;
+        } else if(appSprite != null) {
+            buttonCls = 'applicationSpriteClass buttonBaseClass buttonDefaultClass_normal ' + baseClass + '_normal';
+            buttonWidth = me.defaultButtonWidth;
+            useSprite = true;
+        } else {
+            buttonText = (options.text || (me.name || ""));
+        }
+
         Ext.create('Ext.button.Button', {
-            text: (options.icon == '' ? (options.text || (me.name || "")) : ''),
+            text: buttonText,
+            cls: buttonCls,
             renderTo: me.div,
             scale: "large",
-            icon: options.icon || null,
+            icon: buttonIcon,
             tooltip: options.tooltip || null,
-            handler: options.handler
+            handler: options.handler,
+            width: buttonWidth,
+            style: {
+                height: me.defaultButtonHeight + 'px'
+            },
+            listeners: {
+                click: function(button) {
+                    if(useSprite) {
+                        button.removeCls(baseClass + '_normal');
+                        button.removeCls(baseClass + '_hover');
+                        button.removeCls('buttonDefaultClass_normal');
+                        button.removeCls('buttonDefaultClass_hover');
+                        button.addCls('buttonDefaultClass_click');
+                        button.addCls(baseClass + '_click');
+                    }
+                },
+                mouseover: function(button) {
+                    if(useSprite) {
+                        button.removeCls(baseClass + '_normal');
+                        button.removeCls(baseClass + '_click');
+                        button.removeCls('buttonDefaultClass_click');
+                        button.removeCls('buttonDefaultClass_normal');
+                        button.addCls('buttonDefaultClass_hover');
+                        button.addCls(baseClass + '_hover');
+                    }
+                },
+                mouseout: function(button) {
+                    if(useSprite) {
+                        button.removeCls(baseClass + '_click');
+                        button.removeCls(baseClass + '_hover');
+                        button.removeCls('buttonDefaultClass_click');
+                        button.removeCls('buttonDefaultClass_hover');
+                        button.addCls('buttonDefaultClass_normal');
+                        button.addCls(baseClass + '_normal');
+                    }
+                }
+            }
         });
+    },
+
+    getPopupIcon: function() {
+        var baseClassName = this.$className.replace(/\./g, '')
+        if(this.config.titlebarIcon) {
+            // We need to give a CSS class, so if in image is set, we are creating a new stylesheet... Improve??
+            var className = baseClassName + '_popupicon';
+            Ext.util.CSS.createStyleSheet('.' + className + ' { background-image: url(\'' + this.config.titlebarIcon + '\') !important; }', baseClassName + 'iconStyle');
+            return className;
+        }
+        return 'applicationSpriteClass ' + baseClassName + '_popup';
+    },
+
+    createIconStylesheet: function() {
+        // Creation of the icons stylesheet with all info regarding the sprite
+        var me = this,
+            appSprite = me.viewerController.getApplicationSprite();
+
+        if(appSprite !== null && !document.getElementById('appSpriteStyle')) {
+            var spriteConfig = {
+                gridSize: 55,
+                imageSize: 44,
+                innerImageSize: 24, // Should preferably be 16 to render nicely in popups
+                columnConfig: {
+                    normal: 3,
+                    hover: 2,
+                    click: 1
+                },
+                rowConfig: {
+                    'viewer.components.SelectionModule': 2,
+                    'viewer.components.Legend': 3,
+                    'viewer.components.BufferLayer': 4,
+                    'viewer.components.BufferObject': 5,
+                    'viewer.components.Search': 6,
+                    'viewer.components.Edit': 7,
+                    'viewer.components.Drawing': 8,
+                    'viewer.components.Bookmark': 9,
+                    'viewer.components.TransparencySlider': 10,
+                    'viewer.components.Influence': 11,
+                    'viewer.components.RelatedDocuments': 12,
+                    'viewer.components.AttributeList': 13,
+                    'viewer.components.Print': 15
+                }
+            };
+            var styleContent = '.applicationSpriteClass { background-image: url(\'' + appSprite + '\') !important; } ';
+                styleContent += ' .buttonBaseClass { background-color: transparent; border-style: none; }';
+                styleContent += ' .buttonDefaultClass_normal { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+                styleContent += ' .buttonDefaultClass_hover { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+                styleContent += ' .buttonDefaultClass_click { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+
+            var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.innerImageSize / 2);
+            Ext.Object.each(spriteConfig.rowConfig, function(comp, row) {
+                var compClassName = comp.replace(/\./g, '');
+                Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
+                // Button style
+                styleContent += ' .' + compClassName + '_' + state + ' { ' +
+                                'background-position: -' + ((col - 1) * spriteConfig.gridSize) + 'px -' + ((row - 1) * spriteConfig.gridSize) + 'px !important; ' +
+                                '}';
+                });
+                // Popupwindow style
+                styleContent += ' .' + compClassName + '_popup { ' +
+                                'background-position: -' + (((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px !important; ' +
+                                '}';
+            });
+            Ext.util.CSS.createStyleSheet(styleContent, 'appSpriteStyle');
+        }
     },
     /**
      * Bind an event to this component
