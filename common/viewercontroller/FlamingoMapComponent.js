@@ -381,7 +381,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var object = this.getObject(id);
         // onEvent is a general event, fired when a jsButton is hovered over, pressed or released. Here we specify which it was.
         if(event == "onEvent"){
-            
             if(component[1]["rollover"] || component[1]["rolloff"]){
                 event = viewer.viewercontroller.controller.Event.ON_EVENT_OVER;
             }else{
