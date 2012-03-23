@@ -27,16 +27,15 @@ Ext.define ("viewer.components.tools.PopupButton",{
         name: "zoomIn"
     },
     constructor: function (conf){        
+        this.popup = conf.viewerController.layoutManager.popupWin;
         conf.toggle = true;
         conf.enabled = false;
-        conf. selected =false;
+        conf.selected = !this.popup.popupWin.isHidden() ||false ;
         viewer.components.tools.PopupButton.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.popup = this.viewerController.layoutManager.popupWin;
         var me =this;
         this.popup.popupWin.addListener("show",function(){me.setSelectedState(true);},this);
         this.popup.popupWin.addListener("hide",function(){me.setSelectedState(false);},this);
-        
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.down, this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.up, this);
         return this;
