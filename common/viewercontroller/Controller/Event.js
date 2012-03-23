@@ -93,6 +93,10 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_EVENT_DOWN                         : "ON_EVENT_DOWN",
         /** @field */
         ON_EVENT_UP                           : "ON_EVENT_UP",
+        /** @field
+         * Occures when a hover event is thrown on a buuton
+         */
+        ON_EVENT_OVER                           : "ON_EVENT_OVER ",
         /** @field */
         ON_CLICK                              : "ON_CLICK",
         /** @field */

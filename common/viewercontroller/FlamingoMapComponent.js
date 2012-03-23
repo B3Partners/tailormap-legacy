@@ -34,6 +34,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     initEvents : function(){
         this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_DOWN]              	= "onEvent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_UP]                	= "onEvent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_OVER]                	= "onEvent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_CAPABILITIES]        	= "onGetCapabilities";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE]         	= "onConfigComplete";
         this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]		= "onGeometryDrawFinished";
@@ -380,11 +381,23 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var object = this.getObject(id);
         // onEvent is a general event, fired when a jsButton is hovered over, pressed or released. Here we specify which it was.
         if(event == "onEvent"){
-            if(component[1]["down"]){
-                event = viewer.viewercontroller.controller.Event.ON_EVENT_DOWN;
+            
+            if(component[1]["rollover"] || component[1]["rolloff"]){
+                event = viewer.viewercontroller.controller.Event.ON_EVENT_OVER;
             }else{
-                // TODO: specify more events. This is not ONLY ON_EVENT_UP, but also hover.
-                event = viewer.viewercontroller.controller.Event.ON_EVENT_UP;
+                if(component[1]["toggle"]){
+                    console.log("toggled:",component[1]);
+                    if(component[1]["selected"]){
+                        event = viewer.viewercontroller.controller.Event.ON_EVENT_DOWN;
+                        
+                    }else{
+                        event = viewer.viewercontroller.controller.Event.ON_EVENT_UP;
+                    }
+                }else{
+                    if(component[1]["down"]){
+                        event = viewer.viewercontroller.controller.Event.ON_EVENT_DOWN;
+                    }
+                }
             }
         }else{
             // Translate the specific name to the generic name. 

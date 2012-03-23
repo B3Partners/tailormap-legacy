@@ -28,7 +28,6 @@ Ext.define ("viewer.components.tools.PopupButton",{
     constructor: function (conf){        
         viewer.components.tools.PopupButton.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
-        this.popup = this.viewerController.sharedPopup;
         
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.down, this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.up, this);
@@ -38,9 +37,10 @@ Ext.define ("viewer.components.tools.PopupButton",{
      *  Handler for the down event on this button. Shows the popup window.
      **/
     down : function (button,comp){
-        this.popup.show();
+        this.viewerController.layoutManager.showStartupPopup();
     },
     up : function (button,comp){
+        this.viewerController.layoutManager.hideStartupPopup();
     }
 });
 
