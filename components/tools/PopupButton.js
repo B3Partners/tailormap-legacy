@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.tools.PopupButton",{
     extend: "viewer.components.tools.JSButton",
     popup:null,
+    
     config:{
         name: "zoomIn"
     },
@@ -30,7 +31,11 @@ Ext.define ("viewer.components.tools.PopupButton",{
         conf.enabled = false;
         conf. selected =false;
         viewer.components.tools.PopupButton.superclass.constructor.call(this, conf);
-        this.initConfig(conf);   
+        this.initConfig(conf);
+        this.popup = this.viewerController.layoutManager.popupWin;
+        var me =this;
+        this.popup.popupWin.addListener("show",function(){me.setSelectedState(true);},this);
+        this.popup.popupWin.addListener("hide",function(){me.setSelectedState(false);},this);
         
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.down, this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.up, this);
@@ -40,10 +45,10 @@ Ext.define ("viewer.components.tools.PopupButton",{
      *  Handler for the down event on this button. Shows the popup window.
      **/
     down : function (button,comp){
-        this.viewerController.layoutManager.showStartupPopup();
+        this.popup.show()
     },
     up : function (button,comp){
-        this.viewerController.layoutManager.hideStartupPopup();
+        this.popup.hide();
     }
 });
 

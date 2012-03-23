@@ -84,5 +84,8 @@ Ext.define ("viewer.components.tools.JSButton",{
     },
     getTagName: function (){
         return "JsButton";
+    },
+    setSelectedState : function (selected){
+        this.frameworkObject.callMethod(this.getId(),"setSelectedState",selected);
     }
 });
