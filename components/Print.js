@@ -408,16 +408,21 @@ Ext.define ("viewer.components.Print",{
      * 
      */
     createLegendSelector: function(){
-        var checkboxes= new Array();
+        var checkboxes= new Array();      
+        checkboxes.push({
+            xtype: "label",
+            text: "Opnemen in legenda:"
+        });
         for (var i=0; i < this.legends.length; i++){
             checkboxes.push({
                 xtype: "checkbox",
                 boxLabel: this.legends[i].name,
                 name: 'legendUrl',
                 inputValue: this.legends[i].url,
-                id: 'legendCheckBox'+this.legends[i].id
+                id: 'legendCheckBox'+this.legends[i].id,
+                checked: true
             });
-        }       
+        } 
         Ext.getCmp('legendContainer').removeAll();
         Ext.getCmp('legendContainer').add(checkboxes);        
         Ext.getCmp('legendContainer').doLayout();

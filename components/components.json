@@ -53,10 +53,10 @@
     },
 
     {
-        className: "viewer.components.tools.StreetViewTool",
+        className: "viewer.components.tools.StreetView",
         name: "Streetview",
         shortName: "Sv",
-        sources: ["StreetView.js"],
+        sources: ["../common/proj4js-compressed.js","tools/JSButton.js","tools/ToolMapClick.js","StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
