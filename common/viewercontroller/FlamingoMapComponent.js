@@ -388,7 +388,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 if(component[1]["toggle"]){
                     if(component[1]["selected"] && component[1]["down"]){
                         event = viewer.viewercontroller.controller.Event.ON_EVENT_DOWN;                        
-                    }else if (!component[1]["selected"] && !component[1]["down"]){
+                    }else if (!component[1]["selected"] && component[1]["down"]){
                         event = viewer.viewercontroller.controller.Event.ON_EVENT_UP;
                     }
                 }else{
