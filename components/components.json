@@ -538,18 +538,12 @@
                             iconUrl_up: "Icoon up",
                             iconUrl_over: "Icoon over",
                             iconUrl_sel: "Icoon selected",
-                            iconUrl_dis: "Icoon disabled",
-                            toggle: "Toggle",
-                            enabled: "Enabled",
-                            selected:"Selected"},
+                            iconUrl_dis: "Icoon disabled"},
             source: {tooltip: "Zoom out",
                      iconUrl_up: "http://localhost:8084/viewer/resources/images/buffer.png",
                      iconUrl_over: "http://localhost:8084/viewer/resources/images/buffer_over.png",
                      iconUrl_sel: "http://localhost:8084/viewer/resources/images/buffer_down.png",
-                     iconUrl_dis: "http://localhost:8084/viewer/resources/images/buffer.png",
-                     toggle: false,
-                     enabled: true,
-                     selected:false}
+                     iconUrl_dis: "http://localhost:8084/viewer/resources/images/buffer.png"}
         }
     }
 ]

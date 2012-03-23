@@ -26,6 +26,9 @@ Ext.define ("viewer.components.tools.PopupButton",{
         name: "zoomIn"
     },
     constructor: function (conf){        
+        conf.toggle = true;
+        conf.enabled = false;
+        conf. selected =false;
         viewer.components.tools.PopupButton.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
         
