@@ -25,7 +25,7 @@ Ext.define ("viewer.components.Print",{
     printForm: null,
     vl:null,
     minQuality: 128,
-    minWidth: 500,
+    minWidth: 550,
     combineImageService: null,
     legends:null,
     config:{
@@ -134,6 +134,7 @@ Ext.define ("viewer.components.Print",{
             bodyPadding: 5,
             width: "100%",
             height: "100%",
+            border: 0,
             renderTo: me.getContentDiv(),
             layout: {
                 type: 'vbox',
@@ -385,6 +386,8 @@ Ext.define ("viewer.components.Print",{
         this.printForm = Ext.create('Ext.form.Panel', {            
             renderTo: me.getContentDiv(),
             url: actionBeans["print"],
+            border: 0,
+            visible: false,
             standardSubmit: true,
             items: [{
                 xtype: "hidden",
