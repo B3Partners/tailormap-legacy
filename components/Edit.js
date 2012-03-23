@@ -180,6 +180,7 @@ Ext.define ("viewer.components.Edit",{
     layerChanged : function (item){
         this.vectorLayer.removeAllFeatures();
         this.mode=null;
+        this.viewerController.mapComponent.getMap().removeMarker("edit");
         
         this.inputContainer.setLoading("Laad attributen...");
         this.inputContainer.removeAll();
@@ -296,6 +297,7 @@ Ext.define ("viewer.components.Edit",{
         var coords = comp[1];
         var x = coords.x;
         var y = coords.y;
+        this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
         var resolution = this.viewerController.mapComponent.getMap().getResolution();
         var feature = {
             omtrek : "Erg groot, namelijk Noord Holland",
@@ -306,6 +308,7 @@ Ext.define ("viewer.components.Edit",{
     },
     createNew : function(){
         this.vectorLayer.removeAllFeatures();
+        this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if(this.geomType != null){
             this.vectorLayer.drawFeature(this.geomType);
@@ -332,6 +335,8 @@ Ext.define ("viewer.components.Edit",{
     cancel : function (){
         this.mode=null;
         this.inputContainer.removeAll();
+        this.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.vectorLayer.removeAllFeatures();
         this.popup.hide();
     }
 });
