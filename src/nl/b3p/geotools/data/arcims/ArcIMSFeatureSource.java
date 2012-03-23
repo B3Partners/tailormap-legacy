@@ -71,8 +71,7 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
     
     @Override
     protected boolean canFilter() {
-        // TODO: implement filter
-        return false;
+        return true;
     }        
     
     @Override
@@ -114,10 +113,13 @@ public class ArcIMSFeatureSource extends ContentFeatureSource {
         
         // Add AxlField.TYPE_ROW_ID first, default sort column
         for(AxlFieldInfo f: fc.getFields()) {
-            b.add(f.getName(), f.getBinding(fc));
+            if(f.getType() == AxlField.TYPE_SHAPE) {
+                b.add(f.getName(), f.getBinding(fc), getArcIMSDataStore().getCRS());
+            } else {
+                b.add(f.getName(), f.getBinding(fc));
+            }
         }
-        
-        b.setCRS(getArcIMSDataStore().getCRS());
+
         return b.buildFeatureType();
     }
     
