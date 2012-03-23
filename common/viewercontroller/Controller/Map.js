@@ -342,7 +342,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         Ext.Error.raise({msg: "Map.getWidth() Not implemented! Must be implemented in sub-class"});
     },
     /**
-     * 
+     * Get the height of the map in pixels
      */
     getHeight : function(){
         Ext.Error.raise({msg: "Map.getHeight() Not implemented! Must be implemented in sub-class"});
