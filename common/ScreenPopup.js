@@ -31,15 +31,12 @@ Ext.define ("viewer.components.ScreenPopup",{
             height: 600,
             changeablePosition:true,
             changeableSize:true,
+            items:null,
             position : 'center'
         }
     },
     constructor: function (conf){
         this.initConfig(conf);
-        var con = document.createElement('div');
-        con.style.height=  "100%";
-        con.style["background"] = "#FFFFFF";
-        con.style.width=  "100%";
         var config = {
             title: this.title || 'Titel',
             closable: true,
@@ -52,7 +49,6 @@ Ext.define ("viewer.components.ScreenPopup",{
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
-            contentEl : con,
             autoScroll: true
         };
         if(this.details.position == 'fixed'){
@@ -60,6 +56,17 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.y=parseInt(this.details.y);
         }
 
+        if(this.details.items){
+            config.items = this.details.items;
+            config.bodyStyle= { background: '#fff'};
+        }else{
+            var con = document.createElement('div');
+            con.style.height=  "100%";
+            con.style["background"] = "#FFFFFF";
+            con.style.width=  "100%";
+            config.contentEl = con;
+        }
+        
         this.popupWin = Ext.create('Ext.window.Window', config);
         if(this.showOnStartup){
             this.popupWin.show();
@@ -75,7 +82,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         return this;
     },
     getContentId : function (){
-        return this.popupWin.contentEl.id
+        return this.popupWin.contentEl.id;
     },
     show : function(){
         this.popupWin.show();

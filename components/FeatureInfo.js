@@ -40,6 +40,7 @@ Ext.define ("viewer.components.FeatureInfo",{
         //todo: else with configured attributes:
         
         var contentDiv=Ext.get(this.getContentDiv());
+        
         //contentDiv.applyStyles({position: "static"});
         return this;
     },
@@ -77,7 +78,9 @@ Ext.define ("viewer.components.FeatureInfo",{
     onFeatureInfo: function(map,options){          
         Ext.get(this.getContentDiv()).update("");
         Ext.get(this.getContentDiv()).appendChild(this.progressElement);
-        this.popup.show();
+        if(this.popup){
+            this.popup.show();
+        }
         this.setProgress(0);      
         
     },

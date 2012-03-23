@@ -31,8 +31,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** A map which stores the current instantiated layerObjects */
     layers : null,
     
-    /** The popup shared by (possible) multiple components  */
-    sharedPopup : null,
     /**
      * Creates a ViewerController and initializes the map container. 
      * 
@@ -162,6 +160,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var component = this.app.components[layoutComponent.componentName];
             component.config.div = layoutComponent.htmlId;
             component.config.isPopup = layoutComponent.isPopup;
+            component.config.hasSharedPopup = layoutComponent.hasSharedPopup;
             component.config.showOnStartup = layoutComponent.showOnStartup;
             this.createComponent(component.name, component.className, component.config, component.details);
         }
@@ -188,6 +187,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         try{
             var instance = Ext.create(className, config);
 
+            if(instance.hasSharedPopup){
+                instance.popup = this.layoutManager.popupWin;
+            }
             this.components[name] = {
                 className: className,
                 instance: instance

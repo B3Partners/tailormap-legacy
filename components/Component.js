@@ -31,7 +31,8 @@ Ext.define("viewer.components.Component",{
         name: "naam",
         div: new Object(),
         viewerController: new Object(),
-        isPopup : false
+        isPopup : false,
+        hasSharedPopup:false
     },
     defaultButtonWidth: 46,
     defaultButtonHeight: 46,

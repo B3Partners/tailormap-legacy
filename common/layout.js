@@ -23,7 +23,7 @@ Ext.define('viewer.LayoutManager', {
         left_menu: {region:'center', subregion:'west', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false,isPopup:true, defaultLayout: {width: 150}},
         top_menu: {region:'none'},
         content: {region:'center', subregion:'center', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false, defaultLayout: {}},
-        popupwindow: { region: 'popupwindow', useTabs: true },
+        popupwindow: { region: 'popupwindow', useTabs: true,hasSharedPopup:true },
         rightmargin_top: {region:'east', subregion:'center', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
         rightmargin_bottom: {region:'east', subregion:'south', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
         footer: {region:'south', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}}
@@ -173,24 +173,24 @@ Ext.define('viewer.LayoutManager', {
                 }
                 
                 var popupWindowConfig = {
-                    title: '???',
-                    closable: true,
-                    closeAction: 'hide',
-                    hideMode: 'offsets',
-                    width: width,
-                    height: height,
-                    resizable: true,
-                    draggable: true,
-                    layout: popupLayout,
-                    modal: false,
-                    renderTo: Ext.getBody(),
-                    autoScroll: true,
-                    items: componentItems,
-                    bodyStyle: {
-                        background: '#fff'
+                   title: '???',
+                   showOnStartup:true,
+                    details:{
+                        closable: true,
+                        closeAction: 'hide',
+                        hideMode: 'offsets',
+                        width: width,
+                        height: height,
+                        resizable: true,
+                        draggable: true,
+                        layout: popupLayout,
+                        modal: false,
+                        renderTo: Ext.getBody(),
+                        autoScroll: true,
+                        items: componentItems
                     }
                 };
-                me.popupWin = Ext.create('Ext.window.Window', popupWindowConfig);
+                me.popupWin = Ext.create('viewer.components.ScreenPopup', popupWindowConfig);
             }
         }
         return {};
@@ -330,6 +330,9 @@ Ext.define('viewer.LayoutManager', {
             if(regionDefaultConfig.showOnStartup) {
                 componentItem.showOnStartup = true;
             }
+            if(regionDefaultConfig.hasSharedPopup) {
+                componentItem.hasSharedPopup = true;
+            }
             me.componentList.push(componentItem);
             if(component.componentClass == "FlamingoMap" || component.componentClass == "OpenLayersMap") {
                 me.mapId = cmpId;
@@ -374,9 +377,6 @@ Ext.define('viewer.LayoutManager', {
             height: '100%',
             width: '100%'
         });
-        if(me.popupWin !== null) {
-            me.showStartupPopup();
-        }
     },
 
     getMapId: function() {
@@ -394,7 +394,6 @@ Ext.define('viewer.LayoutManager', {
             Ext.getCmp(me.tabComponents[componentId].tabId).tabBar.items.getAt(me.tabComponents[componentId].tabNo).setText(title);
         }
     },
-    
     showStartupPopup: function() {
         this.popupWin.show();
     },
