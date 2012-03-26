@@ -36,7 +36,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     },
     tool: null,    
     mapComponent: null,
-    events: [],
+    events: null,
     config :{
         id: "id",
         frameworkObject: new Object(),
@@ -44,6 +44,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     },
     constructor: function (config){
         this.initConfig(config);
+        this.events = [];
         this.addEvents(viewer.viewercontroller.controller.Event.ON_CLICK,viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,viewer.viewercontroller.controller.Event.ON_EVENT_UP);
         return this;
     },
