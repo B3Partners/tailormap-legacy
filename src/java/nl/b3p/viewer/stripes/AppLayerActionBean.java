@@ -250,6 +250,7 @@ public class AppLayerActionBean implements ActionBean {
     }
 
     private static final String CACHE_APPLAYER = "total_count_cache_applayer";
+    private static final String CACHE_FILTER = "total_count_cache_filter";
     private static final String CACHE_TIME = "total_count_cache_time";
     private static final String CACHE_COUNT = "total_count_cache";
     
@@ -262,6 +263,7 @@ public class AppLayerActionBean implements ActionBean {
     public static void clearTotalCountCache(ActionBeanContext context) {
         HttpSession sess = context.getRequest().getSession();
         sess.removeAttribute(CACHE_APPLAYER);
+        sess.removeAttribute(CACHE_FILTER);
         sess.removeAttribute(CACHE_TIME);
         sess.removeAttribute(CACHE_COUNT);
     }
@@ -273,11 +275,14 @@ public class AppLayerActionBean implements ActionBean {
         Long age = null;
         Long cacheAppLayerId = (Long)session.getAttribute(CACHE_APPLAYER);
         if(appLayer.getId().equals(cacheAppLayerId)) {
-            Long time = (Long)session.getAttribute(CACHE_TIME);
-            if(time != null) {
-                age = System.currentTimeMillis() - time;
-                if(age <= CACHE_MAX_AGE) {
-                    total = (Integer)session.getAttribute(CACHE_COUNT);
+            if((filter == null && session.getAttribute(CACHE_FILTER) == null)
+            || filter.equals(session.getAttribute(CACHE_FILTER))) {
+                Long time = (Long)session.getAttribute(CACHE_TIME);
+                if(time != null) {
+                    age = System.currentTimeMillis() - time;
+                    if(age <= CACHE_MAX_AGE) {
+                        total = (Integer)session.getAttribute(CACHE_COUNT);
+                    }
                 }
             }
         }
@@ -303,6 +308,7 @@ public class AppLayerActionBean implements ActionBean {
             // counted for the current user/session).
             
             session.setAttribute(CACHE_APPLAYER, appLayer.getId());
+            session.setAttribute(CACHE_FILTER, filter);
             session.setAttribute(CACHE_TIME, System.currentTimeMillis());
             session.setAttribute(CACHE_COUNT, total);
             
@@ -450,7 +456,7 @@ public class AppLayerActionBean implements ActionBean {
             json.put("message", message);
         }
 
-        return new StreamingResolution("application/json", new StringReader(json.toString()));    
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
     }
     
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
