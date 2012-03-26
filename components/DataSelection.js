@@ -235,7 +235,8 @@ Ext.define ("viewer.components.DataSelection",{
         var layerObj = this.layerSelector.getValue();
         var layer = this.viewerController.getLayer(layerObj.serviceId, layerObj.name)
        // layer.setQuery(cql);
-        this.viewerController.setFilter(cql,this.appLayer);
+        this.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,cql,this.appLayer);
+    
         console.log("CQL: " + cql);
     },
     getDataTabCQL : function (){
@@ -247,7 +248,7 @@ Ext.define ("viewer.components.DataSelection",{
                 if(i != 0 ){
                     cql += " AND ";
                 }
-                cql += item.id + "=\'" + item.getValue() + "\'";
+                cql += "\"" +item.id + "\"=\'" + item.getValue() + "\'";
             }
         }
         return cql;

@@ -123,7 +123,7 @@ Ext.define ("viewer.components.AttributeFilter",{
         if(!this.first){
             cql += this.logicOperator.getValue() + " ";
         }
-        cql += this.attribute;
+        cql += "\"" +  this.attribute + "\"";
         cql += this.operator.getValue();
         cql += "\'" + this.value.getValue() + "\'";
         return cql;
