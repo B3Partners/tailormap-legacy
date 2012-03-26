@@ -28,6 +28,7 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import nl.b3p.geotools.data.arcims.axl.*;
+import org.geotools.data.jdbc.FilterToSQLException;
 
 /**
  *
@@ -103,7 +104,11 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         
         AxlGetFeatures r = new AxlGetFeatures();
         r.setLayer(new AxlLayerInfo(fs.getEntry().getTypeName()));
-        buildAxlQuery(r);
+        try {
+            buildAxlQuery(r);
+        } catch(Exception e) {
+            throw new IOException("Error processing filter: " + e.toString(), e);
+        }
         r.setSkipfeatures(true);
         log.debug(String.format("%s get feature count for layer %s",
                 fs.getDataStore().toString(),
@@ -118,13 +123,23 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         }        
     }
     
-    private void buildAxlQuery(AxlGetFeatures gf) {
+    private void buildAxlQuery(AxlGetFeatures gf) throws FilterToSQLException {
 
         AxlSpatialQuery aq = new AxlSpatialQuery();
         gf.setQuery(aq);
         
         if(query.getPropertyNames() != null && query.getPropertyNames().length > 0) {
             aq.setSubfields(Arrays.asList(query.getPropertyNames()));
+        }
+        
+        if(query.getFilter() != null) {
+            FilterToArcXMLSQL visitor = new FilterToArcXMLSQL(aq);
+            visitor.setFeatureType(getFeatureType());
+            
+            String where = visitor.encodeToString(query.getFilter());
+            if(where.trim().length() > 0 && !where.trim().equals("1=1")) {
+                aq.setWhere(where);
+            }
         }
     }
 
@@ -160,7 +175,11 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
                 
         request = new AxlGetFeatures();
         request.setLayer(new AxlLayerInfo(fs.getEntry().getTypeName()));
-        buildAxlQuery(request);
+        try {
+            buildAxlQuery(request);
+        } catch(Exception e) {
+            throw new IOException("Error processing filter: " + e.toString(), e);
+        }
         
         if(maxFeatures != null) {
             request.setFeaturelimit(maxFeatures);
