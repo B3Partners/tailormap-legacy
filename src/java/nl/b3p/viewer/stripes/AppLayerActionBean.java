@@ -282,7 +282,7 @@ public class AppLayerActionBean implements ActionBean {
         Long cacheAppLayerId = (Long)session.getAttribute(CACHE_APPLAYER);
         if(appLayer.getId().equals(cacheAppLayerId)) {
             if((filter == null && session.getAttribute(CACHE_FILTER) == null)
-            || filter.equals(session.getAttribute(CACHE_FILTER))) {
+            || (filter != null && filter.equals(session.getAttribute(CACHE_FILTER)) )) {
                 Long time = (Long)session.getAttribute(CACHE_TIME);
                 if(time != null) {
                     age = System.currentTimeMillis() - time;
