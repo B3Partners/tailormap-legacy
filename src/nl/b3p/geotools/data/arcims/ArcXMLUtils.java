@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import nl.b3p.geotools.data.arcims.axl.*;
+import org.opengis.geometry.BoundingBox;
 
 /**
  *
@@ -29,7 +30,7 @@ import nl.b3p.geotools.data.arcims.axl.*;
  */
 public class ArcXMLUtils {
 
-    public static Geometry convertGeometry(AxlGeometry axlg, GeometryFactory gf) throws IOException {
+    public static Geometry convertToJTSGeometry(AxlGeometry axlg, GeometryFactory gf) throws IOException {
         
         if(axlg instanceof AxlMultiPoint) {
             return gf.createMultiPoint(parseAxlCoords(((AxlMultiPoint)axlg).getCoords()));
@@ -84,5 +85,91 @@ public class ArcXMLUtils {
         }
         
         return c.toArray(new Coordinate[] {});
+    }
+    
+    public static String toAxlCoords(Coordinate[] coords) {
+        StringBuilder sb = new StringBuilder();
+        
+        boolean first = true;
+        for(Coordinate c: coords) {
+            if(first) {
+                first = false;
+            } else {
+                sb.append(";");
+            }
+            sb.append(c.x);
+            sb.append(" ");
+            sb.append(c.y);
+        }
+        return sb.toString();
+    }
+    
+    public static AxlEnvelope convertToAxlEnvelope(BoundingBox bbox) {
+        AxlEnvelope e = new AxlEnvelope();
+        e.setMinx(bbox.getMinX() + "");
+        e.setMaxx(bbox.getMaxX() + "");
+        e.setMiny(bbox.getMinY() + "");
+        e.setMaxy(bbox.getMaxY() + "");
+        return e;        
+    }
+    
+    public static AxlEnvelope convertToAxlEnvelope(Polygon bbox) {
+        Coordinate c1 = bbox.getExteriorRing().getCoordinateN(0);
+        Coordinate c2 = bbox.getExteriorRing().getCoordinateN(2);
+        AxlEnvelope e = new AxlEnvelope();
+        e.setMinx(c1.x + "");
+        e.setMaxx(c2.x + "");
+        e.setMiny(c1.y + "");
+        e.setMaxy(c2.y + "");
+        return e;        
+    }
+        
+    public static AxlGeometry convertToAxlGeometry(Geometry g) {
+        if(g instanceof Point || g instanceof MultiPoint) {
+            AxlMultiPoint ag = new AxlMultiPoint();
+            ag.setCoords(toAxlCoords(g.getCoordinates()));
+            return ag;
+        } else if(g instanceof LineString || g instanceof MultiLineString) {
+            AxlPolyline ag = new AxlPolyline();
+            ag.setPaths(new ArrayList<AxlCoords>());
+            
+            if(g instanceof LineString) {
+                ag.getPaths().add(new AxlCoords(toAxlCoords(g.getCoordinates())));
+            } else {
+                for(int i = 0; i < g.getNumGeometries(); i++) {
+                    LineString ls = (LineString)g.getGeometryN(i);
+                    ag.getPaths().add(new AxlCoords(toAxlCoords(ls.getCoordinates())));
+                }
+            }
+            return ag;
+        } else if(g instanceof Polygon || g instanceof MultiPolygon) {
+            AxlPolygon ag = new AxlPolygon();
+            ag.setRings(new ArrayList<AxlRing>());
+            
+            if(g instanceof Polygon) {
+                ag.getRings().add(polygonToAxlRing((Polygon)g));
+            } else {
+                for(int i = 0; i < g.getNumGeometries(); i++) {
+                    Polygon p = (Polygon)g.getGeometryN(i);
+                    ag.getRings().add(polygonToAxlRing(p));
+                }
+            }
+            return ag;
+        }
+        return null;
+    }
+    
+    public static AxlRing polygonToAxlRing(Polygon p) {
+        AxlRing r = new AxlRing();
+        r.setCoords(toAxlCoords(p.getExteriorRing().getCoordinates()));
+        
+        if(p.getNumInteriorRing() > 0) {
+            r.setHoles(new ArrayList<AxlCoords>());
+            for(int i = 0; i < p.getNumInteriorRing(); i++) {
+                LineString hole = p.getInteriorRingN(i);
+                r.getHoles().add(new AxlCoords(toAxlCoords(hole.getCoordinates())));
+            }
+        }
+        return r;
     }
 }
