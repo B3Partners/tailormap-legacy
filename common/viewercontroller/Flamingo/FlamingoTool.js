@@ -5,7 +5,7 @@
  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     extend: "viewer.viewercontroller.controller.Tool",
-    enabledEvents: new Object(),    
+    enabledEvents: null,    
     config: {
         width: null,
         height: null,
@@ -33,6 +33,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         if (config.id){
             config.id=config.id.replace(/\./g,"_");
         }
+        this.enabledEvents=new Object();
         viewer.viewercontroller.flamingo.FlamingoTool.superclass.constructor.call(this, config);
         this.initConfig(config);
         return this;
