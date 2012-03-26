@@ -102,7 +102,7 @@ public class AxlField {
             if(this.feature == null) {
                 return null;
             } else {
-                return ArcXMLUtils.convertGeometry(feature.getGeometry(), geometryFactory);
+                return ArcXMLUtils.convertToJTSGeometry(feature.getGeometry(), geometryFactory);
             }
         } 
            
