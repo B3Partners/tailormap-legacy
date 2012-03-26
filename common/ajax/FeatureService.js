@@ -67,7 +67,7 @@ Ext.define("viewer.AppLayerService", {
         }        
         this.initConfig(config);     
     },
-    loadAttributes: function(theAppLayer, successFunction, failureFunction) {
+    loadAttributesAndDetails: function(theAppLayer, successFunction, failureFunction) {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
@@ -78,6 +78,8 @@ Ext.define("viewer.AppLayerService", {
                 if(response.success) {
                     theAppLayer.attributes = response.attributes;
                     theAppLayer.geometryAttributeIndex = response.geometryAttributeIndex;
+                    theAppLayer.geometryAttribute = response.geometryAttribute;
+                    theAppLayer.details = response.details;
                     successFunction(response.attributes);
                 } else {
                     if(failureFunction != undefined) {
