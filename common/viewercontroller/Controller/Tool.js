@@ -38,9 +38,9 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     mapComponent: null,
     events: null,
     config :{
-        id: "id",
-        frameworkObject: new Object(),
-        type: -1
+        id: null,
+        frameworkObject: null,
+        type: null
     },
     constructor: function (config){
         this.initConfig(config);
