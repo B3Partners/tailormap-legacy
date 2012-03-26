@@ -72,8 +72,12 @@ Ext.define ("viewer.components.tools.JSButton",{
         xml += " iconurl_over='"+this.iconUrl_over+"'";
         xml += " iconurl_sel='"+this.iconUrl_sel+"'";
         xml += " iconurl_dis='"+this.iconUrl_dis+"'";
-        xml += " visible='"+this.visible+"'";
-        xml += " enabled='"+this.enabled+"'";
+        if (this.visible!=undefined){
+            xml += " visible='"+this.visible+"'";
+        }
+        if (this.getEnabled()!=null){
+            xml += " enabled='"+this.enabled+"'";
+        }
         xml += " selected='"+this.selected+"'";
         xml += " toggle='"+this.toggle+"'";
         xml+=">";    

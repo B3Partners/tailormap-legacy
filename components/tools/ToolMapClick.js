@@ -44,7 +44,7 @@ Ext.define ("viewer.components.tools.ToolMapClick",{
      */
     addTool: function (){        
         var toolGroupId = this.mapComponent.getToolGroup();
-         var toolXml="<fmc:ToolGroup id='"+toolGroupId+"'>";
+        var toolXml="<fmc:ToolGroup id='"+toolGroupId+"'>";
         toolXml+="<fmc:ToolMapClick id='"+this.id+"' listento='"+ this.mapComponent.getMap().getId()+"'/>";
         toolXml+="</fmc:ToolGroup>";        
         this.frameworkObject.callMethod(this.mapComponent.flamingoId,'addComponent',toolXml);    
