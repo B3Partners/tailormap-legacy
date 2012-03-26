@@ -35,6 +35,13 @@ public class AxlBuffer {
     // SPATIALFILTER - we dont use it to buffer response features or select 
     // features using another buffered layer
 
+    public AxlBuffer() {
+    }
+    
+    public AxlBuffer(double distance) {
+        this.distance = distance;
+    }
+    
     public double getDistance() {
         return distance;
     }

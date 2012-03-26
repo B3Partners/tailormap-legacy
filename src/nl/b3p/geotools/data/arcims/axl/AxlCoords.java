@@ -29,6 +29,13 @@ public class AxlCoords {
     @XmlElement(name="COORDS")
     private String coords;
 
+    public AxlCoords() {
+    }
+    
+    public AxlCoords(String coords) {
+        this.coords = coords;
+    }
+    
     public String getCoords() {
         return coords;
     }
