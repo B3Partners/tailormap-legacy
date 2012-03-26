@@ -85,7 +85,6 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
                     // NPE when NullSortBy
                     qryString = query.toString();
                 } catch(Exception e) {
-                    log.error("query.toString()", e);
                     qryString = "<exception>";
                 }
             }
@@ -120,8 +119,13 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
     }
     
     private void buildAxlQuery(AxlGetFeatures gf) {
-        // TODO: set AxlQuery according to query
-        gf.setQuery(new AxlQuery());                    
+
+        AxlSpatialQuery aq = new AxlSpatialQuery();
+        gf.setQuery(aq);
+        
+        if(query.getPropertyNames() != null && query.getPropertyNames().length > 0) {
+            aq.setSubfields(Arrays.asList(query.getPropertyNames()));
+        }
     }
 
     @Override
