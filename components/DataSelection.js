@@ -63,7 +63,6 @@ Ext.define ("viewer.components.DataSelection",{
     loadWindow : function(){
         var config = {
             viewerController : this.viewerController,
-            restriction : "filterable",
             div: this.getContentDiv(),
             layers : this.layers
         };
@@ -216,7 +215,7 @@ Ext.define ("viewer.components.DataSelection",{
         };
         var filter = Ext.create("viewer.components.Filter",config);
         this.filters.push(filter);
-        // Insert before the checkboxs
+        // Insert before the checkbox
         this.filterTab.insert(this.filterTab.items.length - 1,filter.getUI());
     },
     applyFilter : function (){
@@ -224,7 +223,9 @@ Ext.define ("viewer.components.DataSelection",{
      
         cql += this.getDataTabCQL();
         if(this.filterActive.getValue()){
-            cql += " AND ";
+            if(cql != ""){
+                cql += " AND ";
+            }
             for ( var i = 0 ; i < this.filters.length;i++){
                 var filter = this.filters[i];
                 cql += filter.getCQL();
@@ -233,7 +234,8 @@ Ext.define ("viewer.components.DataSelection",{
         }
         var layerObj = this.layerSelector.getValue();
         var layer = this.viewerController.getLayer(layerObj.serviceId, layerObj.name)
-        layer.setQuery(cql);
+       // layer.setQuery(cql);
+        this.viewerController.setFilter(cql,this.appLayer);
         console.log("CQL: " + cql);
     },
     getDataTabCQL : function (){
@@ -241,10 +243,12 @@ Ext.define ("viewer.components.DataSelection",{
         var cql = "";
         for ( var i = 0 ; i < items.length;i++){
             var item = items[i];
-            if(i != 0 ){
-                cql += " AND ";
+            if(item.getValue() != ""){
+                if(i != 0 ){
+                    cql += " AND ";
+                }
+                cql += item.id + "=\'" + item.getValue() + "\'";
             }
-            cql += item.id + "=\'" + item.getValue() + "\'";
         }
         return cql;
     },
@@ -281,10 +285,11 @@ Ext.define ("viewer.components.DataSelection",{
         var attributeList = new Array();
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
-            if(attribute.selectable){
+            if(attribute.filterable){
                 attributeList.push({
                     id: attribute.id,
-                    title: attribute.alias || attribute.name
+                    title: attribute.alias || attribute.name,
+                    value: attribute.name
                 });
             }
         }

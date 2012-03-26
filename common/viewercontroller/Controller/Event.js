@@ -113,9 +113,15 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_SELECTEDCONTENT_CHANGE             : "ON_SELECTEDCONTENT_CHANGE",
         ON_MAP_CLICKED                        :  "ON_MAP_CLICKED",
         /** @field
-         *  Occurs when the active feature is changed. Note: Alse fired when the first point of a polygon is set, so the WKT may ben incorrect
+         *  Occurs when the active feature is changed. Note: Alse fired when the first point of a polygon is set, so the WKT may be incorrect
          */
-        ON_ACTIVE_FEATURE_CHANGED             :  "ON_ACTIVE_FEATURE_CHANGED"
+        ON_ACTIVE_FEATURE_CHANGED             :  "ON_ACTIVE_FEATURE_CHANGED",
+        
+        /**
+         * @field
+         * Occurs when a filter has been created. Fired by the ViewerController. The parameters are the filter and the layer.
+         */
+        ON_FILTER_ACTIVATED                     : "ON_FILTER_ACTIVATED"
         
     }
 });

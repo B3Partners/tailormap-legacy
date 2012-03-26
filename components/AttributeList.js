@@ -45,6 +45,7 @@ Ext.define ("viewer.components.AttributeList",{
             tooltip: me.tooltip
         });      
         this.loadWindow();
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
         return this;
     },
     getExtComponents: function() {
@@ -142,6 +143,12 @@ Ext.define ("viewer.components.AttributeList",{
         
         this.loadAttributes(appLayer);
     },
+    filterChanged : function (filter,appLayer){
+        var layer = this.viewerController.getApplayer(appLayer.serviceId, appLayer.layerName);
+        layer.filter = filter;
+        this.loadAttributes(layer);
+        
+    },
     initGrid: function(appLayer) {
         var me = this;
         
@@ -175,7 +182,10 @@ Ext.define ("viewer.components.AttributeList",{
             extend: 'Ext.data.Model',
             fields: attributeList
         });
-        
+        var filter = "";
+        if(appLayer.filter){
+            filter = "&filter="+appLayer.filter;
+        }
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
             model: this.name + 'Model',
@@ -184,7 +194,7 @@ Ext.define ("viewer.components.AttributeList",{
             proxy: {
                 type: 'ajax',
                 timeout: 40000,
-                url: appLayer.featureService.getStoreUrl() + "&arrays=1",
+                url: appLayer.featureService.getStoreUrl() + "&arrays=1"+filter,
                 reader: {
                     type: 'json',
                     root: 'features',

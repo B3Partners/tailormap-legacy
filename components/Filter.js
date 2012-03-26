@@ -42,7 +42,7 @@ Ext.define ("viewer.components.Filter",{
         this.id = Ext.id();
         this.attributeFilters = new Array();
         this.attributeStore = Ext.create('Ext.data.Store', {
-            fields: ['id', 'title'],
+            fields: ['id', 'title','value'],
             data : this.attributes
         });
 
@@ -51,7 +51,7 @@ Ext.define ("viewer.components.Filter",{
             store: this.attributeStore,
             queryMode: 'local',
             displayField: 'title',
-            valueField: 'title'
+            valueField: 'value'
         });
         var add = Ext.create('Ext.Button', { 
             text : '+',
@@ -66,7 +66,7 @@ Ext.define ("viewer.components.Filter",{
         var attribuutFilter = Ext.create("viewer.components.AttributeFilter",{
             first:true,
             id: this.id,
-            number:this.attributeFilters.length
+            number:1
         });
         this.attributeFilters.push(attribuutFilter);
         var attributeFilterUI = attribuutFilter.getUI();
@@ -141,12 +141,14 @@ Ext.define ("viewer.components.Filter",{
         if(this.logicOperator != null){
             cql += " " + this.logicOperator.getValue() + " ";
         }
+        cql += "(";
         for(var i = 0 ; i < this.attributeFilters.length;i++){
             var attribute = this.attributeCombobox.getValue();
             var af = this.attributeFilters[i];
             af.attribute = attribute;
             cql += af.getCQL();
         }
+        cql+= ")";
         return cql;
     }
 });

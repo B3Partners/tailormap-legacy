@@ -73,8 +73,8 @@ Ext.define ("viewer.components.AttributeFilter",{
             valueField: 'id'
         });
         this.value = Ext.create("Ext.form.field.Text",{
-            width: 50,
-            id: "value"
+            width: 100,
+            id: "value" + this.id
         });
         return this;
     },

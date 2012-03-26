@@ -31,6 +31,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** A map which stores the current instantiated layerObjects */
     layers : null,
     
+    /** The filter which applies to layers and attributelists*/
+    filter: null,
     /**
      * Creates a ViewerController and initializes the map container. 
      * 
@@ -527,6 +529,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getLayerMetadata : function (serviceId, layerName){  
         var layer = this.app.services[serviceId].layers[layerName];
         return layer.details["metadata.stylesheet"];
+    },
+    setFilter : function (filter,layer){
+        this.filter = filter;
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,filter,layer);
     },
     getComponentsByClassName : function(className) {
         var result = [];
