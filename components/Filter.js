@@ -88,6 +88,15 @@ Ext.define ("viewer.components.Filter",{
         });
       
         var vitems = [eersteAttribuutFilter];
+       /* var vf = Ext.create('Ext.Button', { 
+            text : 'Verwijder filter',
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.cancel
+                }
+            }
+        });*/
         this.container = Ext.create("Ext.form.FieldSet",{
             height: 125,
             width:380,
@@ -149,6 +158,7 @@ Ext.define ("viewer.components.Filter",{
             cql += af.getCQL();
         }
         cql+= ")";
+       
         return cql;
     }
 });
