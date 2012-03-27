@@ -52,7 +52,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     onAddLayer: function(map,layer){
         var maptipLayers=this.getMaptipLayers(layer);
-        if (maptipLayers.length >0){
+        if (maptipLayers && maptipLayers.length >0){
             layer.setMaptips(maptipLayers);
             //listen to the onMaptipData
             layer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMaptipData,this);       
