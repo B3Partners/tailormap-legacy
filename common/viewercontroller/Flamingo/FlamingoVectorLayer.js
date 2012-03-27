@@ -12,6 +12,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         geometrytypes: null,
         //@field true/false show measures of the drawing object
         showmeasures: null,
+        //@field true/false if true the point's in this layer can be dragged.
+        editable: null,
         //@field name of the label
         labelPropertyName: null,
         //@field the style
@@ -53,6 +55,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
             xml+= "geometrytypes='"+this.getGeometrytypes().join()+"' ";
         if (this.getShowmeasures()!=null)
             xml+= "showmeasures='"+this.getShowmeasures()+"' ";
+        if (this.getEditable()!=null){
+            xml+= "editable='"+this.getEditable()+"' ";
+        }
         xml+=">";
         xml+="<fmc:Property name='"+this.labelPropertyName+"' title='Label' type='SingleLine'/>";
         //add style

@@ -470,7 +470,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         layerObj.appLayerId = appLayer.id;
         this.mapComponent.getMap().addLayer(layerObj);  
     },
-    
+    /**
+     *Get map layer with id.
+     *@param id the id of the layer
+     *@return viewer.viewercontroller.controller.Layer object
+     */
     getLayerByLayerId : function (id){
         for (var i in this.app.services){
             var service = this.app.services[i];
@@ -479,6 +483,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var layer = service.layers[j];
                 if(id == layer.id){
                     return this.getLayer(service.id,layer.name);
+                }
+            }
+        }
+        return null;
+    },
+    /**
+     *Returns the layer of the service as configured.
+     *@param id the id of the layer
+     **/
+    getServiceLayerById: function (id){
+        for (var i in this.app.services){
+            var service = this.app.services[i];
+            
+            for(var j in service.layers){
+                var layer = service.layers[j];
+                if(id == layer.id){
+                    return layer;
                 }
             }
         }

@@ -39,7 +39,7 @@ Ext.define ("viewer.components.Search",{
     },
     renderButton: function() {
         var me = this;
-        this.superclass.renderButton.call(this,{
+        viewer.components.Search.superclass.renderButton.call(this,{
             text: me.title,
             icon: me.iconUrl,
             tooltip: me.tooltip,
@@ -49,19 +49,25 @@ Ext.define ("viewer.components.Search",{
         });
     },
     loadWindow : function(){
-        var configs = Ext.create('Ext.data.Store', {
-            fields: ['id', 'name', 'url'],
-            data : this.searchconfigs
+        this.form = Ext.create("Ext.form.Panel",{
+            frame: false,
+            items: this.getFormItems(),
+            renderTo: this.getContentDiv()
         });
-        
+        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
+    },
+    getFormItems: function(){
         var itemList = new Array();
-        
         if(this.searchconfigs.length == 1){
             itemList.push({
                 xtype: 'label',
                 text: 'Zoek op: '+ this.searchconfigs[0].name
             });
         }else{
+            var configs = Ext.create('Ext.data.Store', {
+                fields: ['id', 'name', 'url'],
+                data : this.searchconfigs
+            });
             itemList.push({
                 xtype: 'combo',
                 fieldLabel: 'Zoek op',
@@ -100,7 +106,7 @@ Ext.define ("viewer.components.Search",{
                 }
             }
         });
-        itemList.push({ 
+        /*itemList.push({ 
             xtype: 'button',
             text: 'Sluiten',
             listeners: {
@@ -109,14 +115,8 @@ Ext.define ("viewer.components.Search",{
                     fn: this.hideWindow
                 }
             }
-        });
-        
-        this.form = Ext.create("Ext.form.Panel",{
-            frame: false,
-            items: itemList,
-            renderTo: this.getContentDiv()
-        });
-        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
+        });*/
+        return itemList;
     },
     hideWindow : function(){
         this.popup.hide();
@@ -177,7 +177,7 @@ Ext.define ("viewer.components.Search",{
                 listeners: {
                     click:{
                         scope: me,
-                        fn: function(){me.zoomToExtent(result.location);}
+                        fn: function(){me.handleSearchResult(result.location);}
                     }
                 }
             });
@@ -197,7 +197,7 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
     },
-    zoomToExtent : function(location){
+    handleSearchResult : function(location){
         var newExtent = new Object();
         newExtent.minx=location.x-100;
         newExtent.miny=location.y-100;
