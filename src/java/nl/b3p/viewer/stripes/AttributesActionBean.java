@@ -36,6 +36,7 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
@@ -56,6 +57,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
@@ -363,7 +365,9 @@ public class AttributesActionBean implements ActionBean {
     
     private void setFilter(Query q) throws Exception {
         if(filter != null) {
-            q.setFilter(CQL.toFilter(filter));
+            Filter f = CQL.toFilter(filter);
+            f = (Filter)f.accept(new RemoveDistanceUnit(), null);
+            q.setFilter(f);
         }
     }
     
