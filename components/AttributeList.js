@@ -31,6 +31,7 @@ Ext.define ("viewer.components.AttributeList",{
     },    
     appLayer: null,
     featureService: null,
+    layerSelector:null,
     constructor: function (conf){        
         conf.width=  600;
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
@@ -99,8 +100,8 @@ Ext.define ("viewer.components.AttributeList",{
 //            layers: this.layers,
             div: this.name + 'LayerSelectorPanel'
         };
-        var ls = Ext.create("viewer.components.LayerSelector",config);
-        ls.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
 
     },
     showWindow : function (){
@@ -144,10 +145,14 @@ Ext.define ("viewer.components.AttributeList",{
         this.loadAttributes(appLayer);
     },
     filterChanged : function (filter,appLayer){
-        var layer = this.viewerController.getApplayer(appLayer.serviceId, appLayer.layerName);
-        layer.filter = filter;
-        this.loadAttributes(layer);
-        
+        var layer = this.layerSelector.getValue();
+        var selectedLayer = null;
+        if(layer != null){
+            selectedLayer = this.viewerController.getApplayer(layer.serviceId, layer.name);
+        }
+        if(selectedLayer == appLayer){
+            this.loadAttributes(selectedLayer);
+        }
     },
     initGrid: function(appLayer) {
         var me = this;
@@ -184,7 +189,7 @@ Ext.define ("viewer.components.AttributeList",{
         });
         var filter = "";
         if(appLayer.filter){
-            filter = "&filter="+encodeURIComponent(appLayer.filter);
+            filter = "&filter="+encodeURIComponent(appLayer.filter.getCQL());
         }
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,

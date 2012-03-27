@@ -144,6 +144,7 @@ Ext.define ("viewer.components.DataSelection",{
                 }
             }
         });
+         
         Ext.create('Ext.Button', { 
             text : 'Annuleren',
             renderTo: this.getContentDiv(),
@@ -233,11 +234,18 @@ Ext.define ("viewer.components.DataSelection",{
         
         }
         var layerObj = this.layerSelector.getValue();
-        var layer = this.viewerController.getLayer(layerObj.serviceId, layerObj.name)
+        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
+        
+        var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
+            id: this.name + this.layerSelector.getValue(),
+            cql: cql,
+            operator : "AND"
+        });
+        
        // layer.setQuery(cql);
-        this.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,cql,this.appLayer);
-    
-        console.log("CQL: " + cql);
+        this.viewerController.setFilter(filterWrapper,layer);
+        
+        console.log("CQL: " + layer.filter.getCQL());
     },
     getDataTabCQL : function (){
         var items = this.dataTab.items.items;

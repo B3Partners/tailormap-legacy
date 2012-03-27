@@ -549,6 +549,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layer = this.app.services[serviceId].layers[layerName];
         return layer.details["metadata.stylesheet"];
     },
+    setFilter : function (filter, layer){
+         if(!layer.filter){
+            layer.filter = Ext.create("viewer.components.CQLFilterWrapper",{
+                id: "",
+                cql: "",
+                operator : ""
+            });
+        }
+            
+        layer.filter.addOrReplace(filter);
+        
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,filter,layer);
+    },
     getComponentsByClassName : function(className) {
         var result = [];
         for(var name in this.components) {
