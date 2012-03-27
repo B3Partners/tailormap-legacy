@@ -45,7 +45,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     requestParams: {},
     renderTo: '',
     valueField: 'id',
-    titleField: 'title',
+    titleField: 'label',
     checked: [],
 
     constructor: function(config) {
@@ -114,6 +114,10 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             params: me.requestParams, 
             success: function ( result, request ) {
                 me.itemList = Ext.JSON.decode(result.responseText);
+                for(i in me.itemList) {
+                    var item = me.itemList[i];
+                    item.label = item.titleAlias || item.title || item.name;
+                }
                 me.render();
             },
             failure: function() {
