@@ -99,12 +99,16 @@ public class SearchActionBean implements ActionBean {
                 ConfiguredComponent comp = (ConfiguredComponent)it.next();
                 if(comp.getName().equals(componentName)){
                     JSONObject config = new JSONObject(comp.getConfig());
-                    JSONArray searchConfig = config.getJSONArray("searchconfigs");
-                    for(int i = 0; i < searchConfig.length(); i++){
-                        JSONObject search = (JSONObject)searchConfig.get(i);
-                        if(search.get("id").equals(searchName)){
-                            url = search.get("url").toString();
+                    if (config.has("searchconfigs")){
+                        JSONArray searchConfig = config.getJSONArray("searchconfigs");
+                        for(int i = 0; i < searchConfig.length(); i++){
+                            JSONObject search = (JSONObject)searchConfig.get(i);
+                            if(search.get("id").equals(searchName)){
+                                url = search.get("url").toString();
+                            }
                         }
+                    }else if (config.has("searchUrl")){
+                        url=config.getString("searchUrl");
                     }
                 }
             }
