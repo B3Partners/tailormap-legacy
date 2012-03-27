@@ -504,7 +504,7 @@
         name: "Invloedsgebied",
         shortName: "Ig",
         sources: ["Search.js","Influence.js"],
-        configSource: ["SelectionWindowConfig.js","Influence-config.js"],
+        configSource: ["tools/ToolMapClick.js","SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
     },
