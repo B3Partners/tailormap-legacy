@@ -63,7 +63,7 @@ Ext.define("viewer.AppLayerService", {
     },
     constructor: function(config) {        
         if(config.actionbeanUrl == null) {
-            config.actionbeanUrl = actionBeans["appLayer"];
+            config.actionbeanUrl = actionBeans["attributes"];
         }        
         this.initConfig(config);     
     },
@@ -94,6 +94,7 @@ Ext.define("viewer.AppLayerService", {
         });
     },
     getStoreUrl: function() {
-        return this.getActionbeanUrl() + "?store=1&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : "");
+        var url = this.getActionbeanUrl();
+        return Ext.urlAppend(url, "store=1&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : ""));
     }
 });
