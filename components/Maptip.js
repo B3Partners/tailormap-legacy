@@ -140,6 +140,8 @@ Ext.define ("viewer.components.Maptip",{
      * @return a array of layer names in the given layer that have a maptip configured.
      */
     getMaptipLayers: function(layer){
+        if (layer==null)
+            return null;
         var maptipLayers=new Array();
         var appLayers=this.viewerController.app.appLayers;
         var layersParam = layer.getLayers();
