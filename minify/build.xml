@@ -16,9 +16,10 @@
           <sources dir="${viewerhtml.path}/components">
             <file name="Component.js"/>
           </sources>
-		  <!--					The Screenpopup-->
+		  <!--					The common files-->
           <sources dir="${viewerhtml.path}/common">
             <file name="ScreenPopup.js"/>
+			<file name="CQLFilterWrapper.js"/>
           </sources>
 		  <!--					The server-side Ajax wrappers -->
           <sources dir="${viewerhtml.path}/common/ajax">
