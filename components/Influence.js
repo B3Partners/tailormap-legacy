@@ -159,13 +159,17 @@ Ext.define ("viewer.components.Influence",{
                 maxy: loc.y+zoomInRadius
             };
             this.viewerController.mapComponent.getMap().zoomToExtent(extent);
-            var wkt=this.getCircleAsPolygon(loc.x,loc.y,radius,32);
+            var wkt=this.makeCircleAsPolygon(loc.x,loc.y,radius,32);
             this.showGeometry(wkt);
             this.setFilter();
         }else{
             Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
         }
     },
+    /**
+     * Create the filter and add it to the selected AppLayer.
+     * If no geometryattribute available for layer, don't add the filter.
+     */
     setFilter: function(){
         var appLayer=this.getSelectedAppLayer();        
         if(appLayer.attributes == undefined) {   
@@ -189,6 +193,9 @@ Ext.define ("viewer.components.Influence",{
             }
         }
     },
+    /**
+     * Get the selected appLayer
+     */
     getSelectedAppLayer: function(){
         var appLayerId=Ext.getCmp('appLayers_' + this.name).getValue();
         if (appLayerId==null){
@@ -206,7 +213,14 @@ Ext.define ("viewer.components.Influence",{
         }
         return null;
     },
-    getCircleAsPolygon: function(x,y,radius,segments){
+    /**
+     * Make a WKT polygon that represents a circle
+     * @param x center x point
+     * @param y center y point
+     * @param radius the radius of the circle
+     * @param segments number of segments for the circle.
+     */
+    makeCircleAsPolygon: function(x,y,radius,segments){
         var coordinates = new Array();
         for (var i=0; i < segments; i++){
             var rad=Math.PI/(segments/2)*i;
@@ -229,6 +243,10 @@ Ext.define ("viewer.components.Influence",{
         wkt+="))";
         return wkt;
     },
+    /**
+     * Show the geometry on the map.
+     * @param geom the geometry as wkt that needs to be shown
+     */
     showGeometry: function(geom){        
         this.vectorLayer.removeAllFeatures();
         var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
