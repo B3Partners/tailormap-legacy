@@ -183,7 +183,7 @@ Ext.define ("viewer.components.Influence",{
             var radius = this.getRadius();
             var geomAttr= appLayer.geometryAttribute; 
             if (geomAttr!=undefined){
-                var filter="DWITHIN("+geomAttr+", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
+                var filter="DWITHIN(\""+geomAttr+"\", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
                 this.viewerController.setFilter(
                     Ext.create("viewer.components.CQLFilterWrapper",{
                         id: "filter_"+this.getName(),
