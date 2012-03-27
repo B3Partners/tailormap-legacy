@@ -18,16 +18,27 @@ package nl.b3p.geotools.filter.visitor;
 
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
+import org.opengis.filter.spatial.Beyond;
 import org.opengis.filter.spatial.DWithin;
 
 /**
  *
  * @author Matthijs Laan
  */
-public class RemoveDWithinDistanceUnit extends DuplicatingFilterVisitor {
+public class RemoveDistanceUnit extends DuplicatingFilterVisitor {
     @Override
     public Object visit(DWithin filter, Object data) {
         return CommonFactoryFinder.getFilterFactory2().dwithin(
+            filter.getExpression1(), 
+            filter.getExpression2(),
+            filter.getDistance(),
+            null, // fix Oracle does not know "meters" 
+            filter.getMatchAction());
+    }    
+    
+    @Override
+    public Object visit(Beyond filter, Object data) {
+        return CommonFactoryFinder.getFilterFactory2().beyond(
             filter.getExpression1(), 
             filter.getExpression2(),
             filter.getDistance(),
