@@ -46,7 +46,7 @@ public class LayerListHelper {
             if (editable && (l.getFeatureType() == null || !l.getFeatureType().isWriteable())) {
                 continue;
             }
-            if (influence && !appLayer.getDetails().containsKey("straalinvloedsgebied")) {
+            if (influence && !appLayer.getDetails().containsKey("influenceradius")) {
                 continue;
             }
             if (arc && !l.getService().getProtocol().startsWith("arc")) {
