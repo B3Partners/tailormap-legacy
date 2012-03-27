@@ -24,7 +24,7 @@ Ext.define ("viewer.components.tools.PopupButton",{
     popup:null,
     
     config:{
-        name: "zoomIn"
+        name: null
     },
     constructor: function (conf){        
         this.popup = conf.viewerController.layoutManager.popupWin;

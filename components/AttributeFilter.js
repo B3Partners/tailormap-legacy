@@ -107,12 +107,11 @@ Ext.define ("viewer.components.AttributeFilter",{
         items.push(this.value);
         
         this.container =  Ext.create("Ext.container.Container",{
-            width: 200,
+            width: 230,
             id:"attributeFilter-"+this.id+"-"+this.number,
             autoScroll:true,
             layout: {
-                type: 'hbox'/*,
-                align:'center'*/
+                type: 'hbox'
             },
             items:  items
         });
