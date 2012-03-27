@@ -109,16 +109,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var absoluteURIPrefix = "${absoluteURIPrefix}";
 
             var actionBeans = { 
-                "service": "<stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/>",
-                "feature": "<stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/>",
-                "sld": "<stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/>",
-                "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>",
-                "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>",
-                "geoserviceregistry": "<stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/>",
-                "attributes": "<stripes:url beanclass="nl.b3p.viewer.stripes.AttributesActionBean"/>",
-                "combineimage": "<stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/>",
-                "drawing" :  "<stripes:url beanclass="nl.b3p.viewer.stripes.DrawingActionBean"/>",
-                "print": "<stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/>"
+                "service":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/></js:quote>,
+                "feature":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/></js:quote>,
+                "sld":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/></js:quote>,
+                "bookmark":           <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/></js:quote>,
+                "layerlist":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/></js:quote>,
+                "geoserviceregistry": <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/></js:quote>,
+                "attributes":         <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.AttributesActionBean"/></js:quote>,
+                "combineimage":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/></js:quote>,
+                "drawing":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DrawingActionBean"/></js:quote>,
+                "print":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/></js:quote>,
+                "featureinfo":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureInfoActionBean"/></js:quote>
             };
              
             var appId = "${actionBean.application.id}";
