@@ -65,10 +65,10 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Matthijs Laan
  */
-@UrlBinding("/action/appLayer")
+@UrlBinding("/action/attributes")
 @StrictBinding
-public class AppLayerActionBean implements ActionBean {
-    private static final Log log = LogFactory.getLog(AppLayerActionBean.class);
+public class AttributesActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(AttributesActionBean.class);
     
     private static final int MAX_FEATURES = 50;
     

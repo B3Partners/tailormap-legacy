@@ -114,7 +114,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "bookmark": "<stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/>",
                 "layerlist": "<stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/>",
                 "geoserviceregistry": "<stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/>",
-                "appLayer": "<stripes:url beanclass="nl.b3p.viewer.stripes.AppLayerActionBean"/>",
+                "attributes": "<stripes:url beanclass="nl.b3p.viewer.stripes.AttributesActionBean"/>",
                 "combineimage": "<stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/>",
                 "drawing" :  "<stripes:url beanclass="nl.b3p.viewer.stripes.DrawingActionBean"/>",
                 "print": "<stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/>"
