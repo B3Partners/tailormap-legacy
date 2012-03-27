@@ -232,12 +232,6 @@ public class AppLayerActionBean implements ActionBean {
                 attributes.put(j);
             }
             
-            JSONObject details = new JSONObject();
-            for(Map.Entry<String,String> e: appLayer.getDetails().entrySet()) {
-                details.put(e.getKey(), e.getValue());
-            }
-            json.put("details", details);
-                       
             if(ft != null) {
                 json.put("geometryAttribute", ft.getGeometryAttribute());
             }
