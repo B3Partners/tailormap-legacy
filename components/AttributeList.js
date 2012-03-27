@@ -184,7 +184,7 @@ Ext.define ("viewer.components.AttributeList",{
         });
         var filter = "";
         if(appLayer.filter){
-            filter = "&filter="+appLayer.filter;
+            filter = "&filter="+encodeURIComponent(appLayer.filter);
         }
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
