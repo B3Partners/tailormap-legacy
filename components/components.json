@@ -503,8 +503,8 @@
         className: "viewer.components.Influence",
         name: "Invloedsgebied",
         shortName: "Ig",
-        sources: ["Search.js","Influence.js"],
-        configSource: ["tools/ToolMapClick.js","SelectionWindowConfig.js","Influence-config.js"],
+        sources: ["tools/ToolMapClick.js","Search.js","Influence.js"],
+        configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
     },
