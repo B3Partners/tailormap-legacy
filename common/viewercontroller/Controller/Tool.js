@@ -81,7 +81,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         return this.id;
     },
 
-    setVisible : function(){
+    setToolVisible : function(){
         Ext.Error.raise({msg: "Tool.setVisible() not implemented! Must be implemented in sub-class"});
     },
 

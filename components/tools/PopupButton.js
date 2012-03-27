@@ -29,7 +29,8 @@ Ext.define ("viewer.components.tools.PopupButton",{
     constructor: function (conf){        
         this.popup = conf.viewerController.layoutManager.popupWin;
         conf.toggle = true;
-        conf.enabled = false;
+        conf.enabled = true;
+        conf.visible = true;
         conf.selected = !this.popup.popupWin.isHidden() ||false ;
         viewer.components.tools.PopupButton.superclass.constructor.call(this, conf);
         this.initConfig(conf);
