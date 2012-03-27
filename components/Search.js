@@ -51,6 +51,7 @@ Ext.define ("viewer.components.Search",{
     loadWindow : function(){
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
+            bodyPadding: 5,
             items: this.getFormItems(),
             renderTo: this.getContentDiv()
         });
@@ -75,6 +76,7 @@ Ext.define ("viewer.components.Search",{
                 queryMode: 'local',
                 displayField: 'name',
                 valueField: 'id',
+                anchor: '100%',
                 id: 'searchName' + this.name
             });
         }
@@ -82,6 +84,7 @@ Ext.define ("viewer.components.Search",{
         itemList.push({ 
             xtype: 'textfield',
             name: 'searchfield',
+            anchor: '100%',
             id: 'searchfield' + this.name
         });
         itemList.push({ 
@@ -105,17 +108,7 @@ Ext.define ("viewer.components.Search",{
                     fn: this.cancel
                 }
             }
-        });
-        /*itemList.push({ 
-            xtype: 'button',
-            text: 'Sluiten',
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.hideWindow
-                }
-            }
-        });*/
+        });        
         return itemList;
     },
     hideWindow : function(){

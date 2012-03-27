@@ -78,16 +78,18 @@ Ext.define ("viewer.components.Influence",{
             text: 'Selecteer Kaartlaag'
         });        
         var layers=[];
-        for (var l =0; l < this.layers.length; l++){
-            var layerId=this.layers[l];
-            var layer = this.viewerController.getServiceLayerById(layerId);
-            var title = layer.titleAlias != undefined? layer.titleAlias : layer.title;
-            
-            var appLayer = this.viewerController.getApplayer(layer.serviceId,layer.name);
-            if (appLayer.details!=undefined && appLayer.details.influenceradius!=undefined){
-                layers.push({value: appLayer.id,'show': title});
-            }
-        }        
+        if (this.layers!=null){
+            for (var l =0; l < this.layers.length; l++){
+                var layerId=this.layers[l];
+                var layer = this.viewerController.getServiceLayerById(layerId);
+                var title = layer.titleAlias != undefined? layer.titleAlias : layer.title;
+
+                var appLayer = this.viewerController.getApplayer(layer.serviceId,layer.name);
+                if (appLayer.details!=undefined && appLayer.details.influenceradius!=undefined){
+                    layers.push({value: appLayer.id,'show': title});
+                }
+            }        
+        }
         var configs = Ext.create('Ext.data.Store', {
             fields: ['value','show'],
             data : layers
@@ -96,6 +98,7 @@ Ext.define ("viewer.components.Influence",{
             xtype: 'combo',
             store: configs,
             queryMode: 'local',
+            anchor: '100%',
             displayField: 'show',
             valueField: 'value',
             id: 'appLayers_' + this.name
