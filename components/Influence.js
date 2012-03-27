@@ -146,7 +146,7 @@ Ext.define ("viewer.components.Influence",{
      * @param location.y the y coord.
      */
     handleSearchResult: function (loc){
-        this.location=location;
+        this.location=loc;
         var radius = this.getRadius();
         //radius ==null if no layer is selected
         if (radius!=null){
@@ -161,20 +161,47 @@ Ext.define ("viewer.components.Influence",{
             this.viewerController.mapComponent.getMap().zoomToExtent(extent);
             var wkt=this.getCircleAsPolygon(loc.x,loc.y,radius,32);
             this.showGeometry(wkt);
+            this.setFilter();
         }else{
             Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
         }
+    },
+    setFilter: function(){
+        var appLayer=this.getSelectedAppLayer();        
+        if(appLayer.attributes == undefined) {   
+            var me = this;
+            this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
+                me.setFilter();
+            },function(e){
+                Ext.MessageBox.alert("Error", e);
+            });
+        }else{
+            var radius = this.getRadius();
+            var geomAttr= appLayer.geometryAttribute; 
+            if (geomAttr!=undefined){
+                var filter="DWITHIN("+geomAttr+", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
+                this.viewerController.setFilter(
+                    Ext.create("viewer.components.CQLFilterWrapper",{
+                        id: "filter_"+this.getName(),
+                        cql: filter,
+                        operator : "AND"
+                    }),appLayer);
+            }
+        }
+    },
+    getSelectedAppLayer: function(){
+        var appLayerId=Ext.getCmp('appLayers_' + this.name).getValue();
+        if (appLayerId==null){
+            return null;
+        }
+        return this.viewerController.app.appLayers[appLayerId];          
     },
     /**
      * Get the radius.
      */
     getRadius: function(){
-        var appLayerId=Ext.getCmp('appLayers_' + this.name).getValue();
-        if (appLayerId==null){
-            return null;
-        }
-        var appLayer=this.viewerController.app.appLayers[appLayerId];        
-        if (appLayer.details!=undefined && appLayer.details.influenceradius!=undefined){
+        var appLayer = this.getSelectedAppLayer();      
+        if (appLayer!=null && appLayer.details!=undefined && appLayer.details.influenceradius!=undefined){
             return Number(appLayer.details.influenceradius);
         }
         return null;
