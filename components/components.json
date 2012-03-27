@@ -477,7 +477,7 @@
         className: "viewer.components.DataSelection",
         name: "Data Selectie",
         shortName: "DS",
-        sources: ["CQLFilterWrapper.js","AttributeFilter.js","Filter.js","DataSelection.js"],
+        sources: ["AttributeFilter.js","Filter.js","DataSelection.js"],
         configSource: ["SelectionWindowConfig.js","DataSelection-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
