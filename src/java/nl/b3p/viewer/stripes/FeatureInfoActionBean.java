@@ -31,17 +31,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterVisitor;
-import org.opengis.filter.spatial.DWithin;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -54,6 +50,8 @@ public class FeatureInfoActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(FeatureInfoActionBean.class);
 
     private ActionBeanContext context;
+
+    private static final int TIMEOUT = 5000;
     
     @Validate
     private int limit = 10;
@@ -166,7 +164,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         error = "App layer or service not found";
                         break;
                     }
-                    Layer l = null;
+                    Layer l;
                     if(al != null) {
                         l = al.getService().getLayer(al.getLayerName());
                     } else {
@@ -179,9 +177,17 @@ public class FeatureInfoActionBean implements ActionBean {
                     if(l.getFeatureType() == null) {
                         error = "Layer has no feature type";
                     }
+                    
+                    Map<String,String> attributeAliases = new HashMap<String,String>();
+                    for(AttributeDescriptor ad: l.getFeatureType().getAttributes()) {
+                        if(ad.getAlias() != null) {
+                            attributeAliases.put(ad.getName(), ad.getAlias());
+                        }
+                    }
+                
                     String filter = query.optString("filter", null);
                     
-                    FeatureSource fs = l.getFeatureType().openGeoToolsFeatureSource();
+                    FeatureSource fs = l.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
                     
                     Query q = new Query(fs.getName().toString());
                     
@@ -209,7 +215,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     q.setFilter(f);
                     q.setMaxFeatures(limit);
                     
-                    JSONArray features = getJSONFeatures(fs, q, propertyNames);
+                    JSONArray features = getJSONFeatures(fs, q, propertyNames, attributeAliases);
                     response.put("features", features);
                 } while(false);
             } catch(Exception e) {
@@ -225,7 +231,7 @@ public class FeatureInfoActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));        
     }    
     
-    private static JSONArray getJSONFeatures(FeatureSource fs, Query q, List<String> propertyNames) throws IOException, JSONException {
+    private static JSONArray getJSONFeatures(FeatureSource fs, Query q, List<String> propertyNames, Map<String,String> attributeAliases) throws IOException, JSONException {
         FeatureIterator<SimpleFeature> it = fs.getFeatures(q).features();
         JSONArray features = new JSONArray();
         try {
@@ -236,7 +242,8 @@ public class FeatureInfoActionBean implements ActionBean {
                 j.put("id", f.getID());
                 
                 for(String name: propertyNames) {
-                    j.put(name, f.getAttribute(name));
+                    String alias = attributeAliases.get(name);
+                    j.put(alias != null ? alias : name, f.getAttribute(name));
                 }                     
                 features.put(j);
             }
