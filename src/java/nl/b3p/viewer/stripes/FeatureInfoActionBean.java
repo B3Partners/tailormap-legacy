@@ -68,6 +68,9 @@ public class FeatureInfoActionBean implements ActionBean {
     @Validate
     private String queryJSON;
     
+    @Validate
+    private boolean edit = false;
+    
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
         return context;
@@ -116,13 +119,21 @@ public class FeatureInfoActionBean implements ActionBean {
     public void setY(double y) {
         this.y = y;
     }
+
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
+    }
     //</editor-fold>
     
-    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q) {
+    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q, boolean edit, String geomAttribute) {
         List<String> propertyNames = new ArrayList<String>();
         boolean haveInvisibleProperties = false;
         for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-            if(ca.isVisible()) {
+            if((!edit && ca.isVisible()) || (edit && ca.isEditable()) || (edit && ca.getAttributeName().equals(geomAttribute))) {
                 propertyNames.add(ca.getAttributeName());
             } else {
                 haveInvisibleProperties = true;
@@ -180,9 +191,11 @@ public class FeatureInfoActionBean implements ActionBean {
                     }
                     
                     Map<String,String> attributeAliases = new HashMap<String,String>();
-                    for(AttributeDescriptor ad: l.getFeatureType().getAttributes()) {
-                        if(ad.getAlias() != null) {
-                            attributeAliases.put(ad.getName(), ad.getAlias());
+                    if(!edit) {
+                        for(AttributeDescriptor ad: l.getFeatureType().getAttributes()) {
+                            if(ad.getAlias() != null) {
+                                attributeAliases.put(ad.getName(), ad.getAlias());
+                            }
                         }
                     }
                 
@@ -192,16 +205,17 @@ public class FeatureInfoActionBean implements ActionBean {
                     
                     Query q = new Query(fs.getName().toString());
                     
+                    String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
+
                     List<String> propertyNames;
                     if(al != null) {
-                        propertyNames = setPropertyNames(al, q);
+                        propertyNames = setPropertyNames(al, q, edit, geomAttribute);
                     } else {
                         propertyNames = new ArrayList<String>();
                         for(AttributeDescriptor ad: l.getFeatureType().getAttributes()) {
                             propertyNames.add(ad.getName());
                         }
                     }
-                    String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
                     
                     String dwithin = String.format("DWITHIN(\"%s\", POINT(%f %f), %f, meters)",
                             geomAttribute,
@@ -240,12 +254,11 @@ public class FeatureInfoActionBean implements ActionBean {
                 SimpleFeature f = it.next();
 
                 JSONObject j = new JSONObject();
-                j.put("id", f.getID());
-                
                 for(String name: propertyNames) {
                     String alias = attributeAliases.get(name);
                     j.put(alias != null ? alias : name, f.getAttribute(name));
                 }                     
+                j.put("__fid", f.getID());
                 features.put(j);
             }
             return features;
