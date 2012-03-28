@@ -35,7 +35,9 @@ Ext.define ("viewer.components.ScreenPopup",{
             position : 'center'
         }
     },
+    component: null,
     constructor: function (conf){
+        var me = this;
         this.initConfig(conf);
         var config = {
             title: this.title || 'Titel',
@@ -79,7 +81,20 @@ Ext.define ("viewer.components.ScreenPopup",{
             this.popupWin.resizer.addListener("beforeresize",this.disableBody,this);
             this.popupWin.resizer.addListener("resize",this.enableBody,this);
         }
+        this.popupWin.addListener('hide', function() {
+            if(me.component) {
+                me.component.setButtonState('normal', true);
+            }
+        });
+        this.popupWin.addListener('show', function() {
+            if(me.component) {
+                me.component.setButtonState('click', true);
+            }
+        });
         return this;
+    },
+    setComponent: function(component) {
+        this.component = component;
     },
     getContentId : function (){
         return this.popupWin.contentEl.id;
@@ -98,5 +113,8 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     setIconClass: function(iconCls) {
         this.popupWin.setIconCls(iconCls);
+    },
+    isVisible: function() {
+        return this.popupWin.isVisible();
     }
 });

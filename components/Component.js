@@ -36,6 +36,7 @@ Ext.define("viewer.components.Component",{
     },
     defaultButtonWidth: 46,
     defaultButtonHeight: 46,
+    forceState: false,
     /**
     * @constructs
     * @param config.name {String} the unique name of the object
@@ -49,6 +50,7 @@ Ext.define("viewer.components.Component",{
         me.createIconStylesheet();
         if(me.isPopup){
             me.popup = Ext.create("viewer.components.ScreenPopup",config);
+            me.popup.setComponent(me);
             me.popup.popupWin.addListener("resize", function() {
                 me.doResize();
             });
@@ -85,7 +87,7 @@ Ext.define("viewer.components.Component",{
             buttonText = "",
             buttonCls = '',
             buttonWidth = 'autoWidth',
-            baseClass = me.$className.replace(/\./g, ''),
+            baseClass = this.getBaseClass(),
             useSprite = false;
 
         me.options = options;
@@ -100,55 +102,86 @@ Ext.define("viewer.components.Component",{
             buttonText = (options.text || (me.name || ""));
         }
 
-        Ext.create('Ext.button.Button', {
+        me.button = Ext.create('Ext.button.Button', {
             text: buttonText,
             cls: buttonCls,
             renderTo: me.div,
             scale: "large",
             icon: buttonIcon,
             tooltip: options.tooltip || null,
-            handler: options.handler,
+            handler: function() {
+                if(me.popup && me.popup.isVisible()) {
+                    me.popup.hide();
+                } else {
+                    options.handler();
+                }
+            },
             width: buttonWidth,
+            enableToggle: true,
             style: {
                 height: me.defaultButtonHeight + 'px'
             },
             listeners: {
                 click: function(button) {
-                    if(useSprite) {
-                        button.removeCls(baseClass + '_normal');
-                        button.removeCls(baseClass + '_hover');
-                        button.removeCls('buttonDefaultClass_normal');
-                        button.removeCls('buttonDefaultClass_hover');
-                        button.addCls('buttonDefaultClass_click');
-                        button.addCls(baseClass + '_click');
-                    }
+                    me.setButtonState('click');
                 },
                 mouseover: function(button) {
-                    if(useSprite) {
-                        button.removeCls(baseClass + '_normal');
-                        button.removeCls(baseClass + '_click');
-                        button.removeCls('buttonDefaultClass_click');
-                        button.removeCls('buttonDefaultClass_normal');
-                        button.addCls('buttonDefaultClass_hover');
-                        button.addCls(baseClass + '_hover');
-                    }
+                    me.setButtonState('hover');
                 },
                 mouseout: function(button) {
-                    if(useSprite) {
-                        button.removeCls(baseClass + '_click');
-                        button.removeCls(baseClass + '_hover');
-                        button.removeCls('buttonDefaultClass_click');
-                        button.removeCls('buttonDefaultClass_hover');
-                        button.addCls('buttonDefaultClass_normal');
-                        button.addCls(baseClass + '_normal');
-                    }
+                    me.setButtonState('normal');
                 }
             }
         });
     },
-
+    
+    setButtonState: function(state, forceState) {
+        var me = this,
+            appSprite = me.viewerController.getApplicationSprite(),
+            button = me.button,
+            baseClass = this.getBaseClass();
+        
+        if(!me.options.icon && appSprite != null && (!me.forceState || forceState)) {
+            if(state == 'hover') {
+                button.removeCls(baseClass + '_normal');
+                button.removeCls(baseClass + '_click');
+                button.removeCls('buttonDefaultClass_click');
+                button.removeCls('buttonDefaultClass_normal');
+                button.addCls('buttonDefaultClass_hover');
+                button.addCls(baseClass + '_hover');
+            }
+            else if(state == 'click') {
+                button.removeCls(baseClass + '_normal');
+                button.removeCls(baseClass + '_hover');
+                button.removeCls('buttonDefaultClass_normal');
+                button.removeCls('buttonDefaultClass_hover');
+                button.addCls('buttonDefaultClass_click');
+                button.addCls(baseClass + '_click');
+            }
+            else {
+                button.removeCls(baseClass + '_click');
+                button.removeCls(baseClass + '_hover');
+                button.removeCls('buttonDefaultClass_click');
+                button.removeCls('buttonDefaultClass_hover');
+                button.addCls('buttonDefaultClass_normal');
+                button.addCls(baseClass + '_normal');
+            }
+        }
+        if(state == 'click') me.button.toggle(false);
+        else if(me.button.pressed) me.button.toggle();
+        
+        // If state is forced previously (me.forceState = true) than disable me.forceState again,
+        // else set me.forceState = true so hovers etc. won't change the state
+        if(forceState && me.forceState) me.forceState = false;
+        else if(forceState && !me.forceState) me.forceState = forceState;
+    },
+    
+    getBaseClass: function() {
+        return this.$className.replace(/\./g, '');
+    },
+    
     getPopupIcon: function() {
-        var baseClassName = this.$className.replace(/\./g, '')
+        var baseClassName = this.getBaseClass();
         if(this.config.titlebarIcon) {
             // We need to give a CSS class, so if in image is set, we are creating a new stylesheet... Improve??
             var className = baseClassName + '_popupicon';
@@ -174,19 +207,19 @@ Ext.define("viewer.components.Component",{
                     click: 1
                 },
                 rowConfig: {
-                    'viewer.components.SelectionModule': 2,
-                    'viewer.components.Legend': 3,
-                    'viewer.components.BufferLayer': 4,
-                    'viewer.components.BufferObject': 5,
-                    'viewer.components.Search': 6,
-                    'viewer.components.Edit': 7,
-                    'viewer.components.Drawing': 8,
-                    'viewer.components.Bookmark': 9,
-                    'viewer.components.TransparencySlider': 10,
-                    'viewer.components.Influence': 11,
-                    'viewer.components.RelatedDocuments': 12,
-                    'viewer.components.AttributeList': 13,
-                    'viewer.components.Print': 15
+                    'viewercomponentsSelectionModule': 2,
+                    'viewercomponentsLegend': 3,
+                    'viewercomponentsBufferLayer': 4,
+                    'viewercomponentsBufferObject': 5,
+                    'viewercomponentsSearch': 6,
+                    'viewercomponentsEdit': 7,
+                    'viewercomponentsDrawing': 8,
+                    'viewercomponentsBookmark': 9,
+                    'viewercomponentsTransparencySlider': 10,
+                    'viewercomponentsInfluence': 11,
+                    'viewercomponentsRelatedDocuments': 12,
+                    'viewercomponentsAttributeList': 13,
+                    'viewercomponentsPrint': 15
                 }
             };
             var styleContent = '.applicationSpriteClass { background-image: url(\'' + appSprite + '\') !important; } ';
@@ -195,8 +228,7 @@ Ext.define("viewer.components.Component",{
                 styleContent += ' .buttonDefaultClass_click { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
 
             var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.popupImageSize / 2);
-            Ext.Object.each(spriteConfig.rowConfig, function(comp, row) {
-                var compClassName = comp.replace(/\./g, '');
+            Ext.Object.each(spriteConfig.rowConfig, function(compClassName, row) {
                 Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
                 // Button style
                 styleContent += ' .' + compClassName + '_' + state + ' { ' +
