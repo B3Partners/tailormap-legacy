@@ -85,5 +85,27 @@ Ext.define("viewer.FeatureInfo", {
                 }
             }
         });        
+    },
+    editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction) {
+        var query = [{appLayer: appLayer.id}];
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl,
+            params: {featureInfo: true, edit: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)},
+            timeout: 40000,
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText)[0];
+
+                if(response.error) {
+                    failureFunction("Error finding feature to edit: " + response.error);
+                } else {
+                    successFunction(response.features);
+                }
+            },
+            failure: function(result) {
+                if(failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });         
     }
 });
