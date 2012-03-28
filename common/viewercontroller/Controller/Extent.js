@@ -40,6 +40,11 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         wkt+=this.minx+" "+this.maxy+", ";
         wkt+=this.minx+" "+this.miny+"))";
         return wkt;
+    },
+    toString : function (){
+        var val="";
+        val+=this.minx+","+this.miny+","+this.maxx+","+this.maxy;
+        return val;
     }
     
 });

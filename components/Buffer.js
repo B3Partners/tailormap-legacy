@@ -23,6 +23,7 @@ Ext.define ("viewer.components.Buffer",{
     extend: "viewer.components.Component",
     layerSelector: null,
     radius:null,
+    imageLayer:null,
     config: {
         layers:null,
         title:null,
@@ -54,7 +55,7 @@ Ext.define ("viewer.components.Buffer",{
             layers : this.layers
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-       // this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
+        // this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
     
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
@@ -90,14 +91,21 @@ Ext.define ("viewer.components.Buffer",{
         var layer = this.layerSelector.getValue();
         var radius = this.radius.getValue();
         if(layer != null && radius != ""){
-            //layer.setBuffer(radius, layer.options.name);
+            var bbox = this.viewerController.mapComponent.getMap().getExtent().toString();
+            var width = this.viewerController.mapComponent.getMap().getWidth();
+            var height = this.viewerController.mapComponent.getMap().getHeight();
+            var url = absoluteURIPrefix + contextPath + "/action/Buffer";
+            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.name +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures=50";
+            url += attrs;
+            this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.name+"ImageLayer", url, bbox);
+            this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
         }
     },
     removeBuffer : function(){
+        var map = this.viewerController.mapComponent.getMap();
         var layer = this.layerSelector.getValue();
-        if(layer != null){
-            //layer.removeBuffer( layer.options.name);
-        }
+        var mapLayer = map.getLayer(this.name + layer.name+"ImageLayer");
+        map.removeLayer(mapLayer);
     },
     getExtComponents: function() {
         return Ext.Array.merge(
