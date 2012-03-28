@@ -131,14 +131,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 Ext.onReady(function() {
                     //TODO set the correct viewertype
                     viewerController = new viewer.viewercontroller.ViewerController("flamingo", null, config);
+                    Ext.EventManager.onWindowResize(function () {
+                        viewerController.resizeComponents();
+                    });
                 });
             }());
             
         </script>
 
-
-        <div id="wrapper" style="width: 100%; height: 100%;">
-
-        </div>
+        <div id="wrapper" style="width: 100%; height: 100%;"></div>
+        
     </body>
 </html>
