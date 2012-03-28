@@ -129,6 +129,14 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         config.options.dataframe="layers";        
         return new viewer.viewercontroller.flamingo.FlamingoArcServerLayer(config);
     },
+    createImageLayer : function (name, url, extent){
+        return Ext.create("viewer.viewercontroller.flamingo.FlamingoImageLayer",
+        {
+            id: name,
+            url: url,
+            extent : extent
+        });
+    },
     /**
      * Create a tool that is useable in Flamingo-mc
      * @See MapComponent.createTool
