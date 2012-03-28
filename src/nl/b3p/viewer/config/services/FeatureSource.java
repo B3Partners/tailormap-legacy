@@ -121,6 +121,8 @@ public abstract class FeatureSource {
     
     /* package */ abstract org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception;
     
+    /* package */ abstract org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception;
+
     public SimpleFeatureType getFeatureType(String typeName) {
         for(SimpleFeatureType sft: getFeatureTypes()) {
             if(sft.getTypeName().equals(typeName)) {

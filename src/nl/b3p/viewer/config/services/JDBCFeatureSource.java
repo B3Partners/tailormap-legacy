@@ -209,4 +209,9 @@ public class JDBCFeatureSource extends FeatureSource {
 
         return ds.getFeatureSource(sft.getTypeName());
     }
+    
+    @Override
+    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception {
+        return openGeoToolsFeatureSource(sft);
+    }    
 }

@@ -37,4 +37,9 @@ public class ArcGISFeatureSource extends FeatureSource {
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    @Override
+    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) {
+        return openGeoToolsFeatureSource(sft);
+    }    
 }

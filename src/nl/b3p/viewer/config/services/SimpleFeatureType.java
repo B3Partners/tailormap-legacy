@@ -121,6 +121,10 @@ public class SimpleFeatureType {
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource() throws Exception {
         return featureSource.openGeoToolsFeatureSource(this);
     }
+
+    public org.geotools.data.FeatureSource openGeoToolsFeatureSource(int timeout) throws Exception {
+        return featureSource.openGeoToolsFeatureSource(this, timeout);
+    }    
     
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();

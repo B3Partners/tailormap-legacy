@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.referencing.CRS;
 /**
  *
@@ -50,9 +51,19 @@ public class ArcXMLFeatureSource extends FeatureSource {
         this.serviceName = serviceName;
     }
 
-    
     public DataStore createDataStore() throws Exception {
+        return createDataStore(null);
+    }
+    
+    public DataStore createDataStore(Map extraDataStoreParams) throws Exception {
         Map params = new HashMap();
+            
+        // Params which can be overridden
+        if(extraDataStoreParams != null) {
+            params.putAll(extraDataStoreParams);
+        }
+        
+        // Params which can not be overridden below        
         
         params.put(ArcIMSDataStoreFactory.URL.key, new URL(getUrl()));
         params.put(ArcIMSDataStoreFactory.SERVICENAME.key, serviceName);
@@ -88,4 +99,13 @@ public class ArcXMLFeatureSource extends FeatureSource {
 
         return ds.getFeatureSource(sft.getTypeName());
     }
+    
+    @Override
+    org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception {
+        Map extraParams = new HashMap();
+        extraParams.put(ArcIMSDataStoreFactory.TIMEOUT.key, timeout);
+        DataStore ds = createDataStore(extraParams);
+
+        return ds.getFeatureSource(sft.getTypeName());
+    }     
 }

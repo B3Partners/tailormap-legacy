@@ -204,6 +204,15 @@ public class WFSFeatureSource extends FeatureSource {
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
         return openGeoToolsFeatureSource(sft, null);
     }
+
+    @Override
+    public org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception {
+        Map extraParams = new HashMap();
+        extraParams.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
+        DataStore ds = createDataStore(extraParams);
+
+        return ds.getFeatureSource(sft.getTypeName());
+    }
         
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, Map extraDataStoreParams) throws Exception {
         DataStore ds = createDataStore(extraDataStoreParams);
