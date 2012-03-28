@@ -217,7 +217,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         }
                     }
                     
-                    String dwithin = String.format("DWITHIN(\"%s\", POINT(%f %f), %f, meters)",
+                    String dwithin = String.format(Locale.ENGLISH,"DWITHIN(\"%s\", POINT(%f %f), %f, meters)",
                             geomAttribute,
                             x,
                             y,
