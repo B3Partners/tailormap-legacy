@@ -37,22 +37,22 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_OVER]                	= "onEvent";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_CAPABILITIES]        	= "onGetCapabilities";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE]         	= "onConfigComplete";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]		= "onGeometryDrawFinished";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_REQUEST]			= "onRequest";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                   = "onSetTool";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]		= "onIdentify";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS]		= "onIdentifyProgress";        
-        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA]	= "onIdentifyData";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]               = "onGeometryDrawFinished";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_REQUEST]                     = "onRequest";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                    = "onSetTool";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]            = "onIdentify";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS]   = "onIdentifyProgress";        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA]       = "onIdentifyData";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE] = "onUpdateComplete";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]     = "onReallyChangedExtent";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]              = "onChangeExtent";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                = "onAddLayer";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]                = "onRemoveLayer";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA]                = "onMaptipData";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                = "onMaptip";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]                = "onMaptipCancel";        
-        this.eventList[viewer.viewercontroller.controller.Event.ON_MAP_CLICKED]                = "onMapClicked";        
-        this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED]                = "onActiveFeatureChange";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]      = "onReallyChangedExtent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]               = "onChangeExtent";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                 = "onAddLayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]               = "onRemoveLayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA]                 = "onMaptipData";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP]                      = "onMaptip";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]               = "onMaptipCancel";        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MAP_CLICKED]                 = "onMapClicked";        
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED]      = "onActiveFeatureChange";
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -455,6 +455,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             var layer=object.getLayer(layerId);            
             component= new Object()
             component.layer=layer;
+        }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP){
+            var comp = new Object();    
+            comp.x=component[1];
+            comp.y=component[2];
+            comp.coord=component[3];
+            component=comp;
         }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA){            
             var comp=new Object();
             comp.extent=component[2];

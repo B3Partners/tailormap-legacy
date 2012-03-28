@@ -28,6 +28,8 @@ Ext.define ("viewer.components.Maptip",{
         height: null,
         width: null
     },
+    serverRequestEnabled: false,
+    featureInfo: null,
     /**
      * @constructor
      */
@@ -50,13 +52,91 @@ Ext.define ("viewer.components.Maptip",{
      * Event handler for when a layer is added to the map
      * @see event ON_LAYER_ADDED
      */
-    onAddLayer: function(map,layer){
-        var maptipLayers=this.getMaptipLayers(layer);
-        if (maptipLayers && maptipLayers.length >0){
-            layer.setMaptips(maptipLayers);
-            //listen to the onMaptipData
-            layer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMaptipData,this);       
-        }       
+    onAddLayer: function(map,mapLayer){
+        if (mapLayer==null)
+            return;
+        if(this.isMaptipLayer(mapLayer)){            
+            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+            //do server side getFeature.
+            if (layer.hasFeatureType){
+                this.activateServerRequest(true);
+            }else{
+                //let the mapComponent handle the getFeature
+                mapLayer.setMaptips(mapLayer.getLayers().split(","));
+                //listen to the onMaptipData
+                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMaptipData,this);       
+            }            
+        }
+    },
+    activateServerRequest: function (sr){       
+        if (sr==this.serverRequestEnabled){
+            return;
+        }
+        this.serverRequestEnabled=sr;
+        if (this.serverRequestEnabled){
+            this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
+            this.featureInfo=Ext.create("viewer.FeatureInfo", { viewerController: this.viewerController });
+        }else{
+            this.featureInfo=null;
+        }
+    },
+    doServerRequest: function(map,options){
+        if (!this.featureInfo){
+            return;
+        }        
+        var radius=4*map.getResolution();
+        var me=this;
+        this.featureInfo.featureInfo(options.coord.x,options.coord.y,radius,function(data){
+            options.data=data;
+            me.onDataReturned(options);
+        },this.onFailure);
+    },
+    onDataReturned: function(options){
+        //alert(layer);
+        var data=options.data;
+        var html="";            
+        //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
+        if (data==null || data =="null" || data==undefined){
+            return;
+        }
+        for (var layerIndex in data){            
+            var layer=data[layerIndex];
+            if (layer.error){
+                html+="<div class='maptip_feature'>";
+                    html+=layer.error;
+                html+="</div>"
+            }else{
+                var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
+                /*for (var index in data[layerName]){
+                    var feature=data[layerName][index];                    
+                    html+="<div class='maptip_feature'>";
+                        html+="<div class='maptip_title'>";
+                            html+=this.replaceByAttributes(appLayer.details["summary.title"],feature);
+                        html+="</div>";
+                        html+="<div class='maptip_image'>";
+                            html+="<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>";
+                        html+="</div>";
+                        html+="<div class='maptip_description'>";
+                            html+=this.replaceByAttributes(appLayer.details["summary.description"],feature);
+                        html+="</div>";                        
+                        html+="<div class='maptip_link'>";
+                            html+="<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>";
+                        html+="</div>";
+                    html+="</div>" ;                   
+                }*/
+            }
+        }
+        if (!Ext.isEmpty(html)){
+            var x= options.x;
+            var y= options.y;               
+            this.balloon.setPosition(x,y,true);
+            this.balloon.addContent(html);
+            this.balloon.show();
+        } 
+    },
+    onFailure: function(e){
+        Ext.MessageBox.alert("Error",e);
     },
     /**
      * Event handler for when a maptip returned data
@@ -137,28 +217,18 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * Gets the layers that have a maptip configured
      * @param layer a mapComponent layer.
-     * @return a array of layer names in the given layer that have a maptip configured.
+     * @return a string of layer names in the given layer that have a maptip configured.
      */
-    getMaptipLayers: function(layer){
-        if (layer==null)
-            return null;
-        var maptipLayers=new Array();
-        var appLayers=this.viewerController.app.appLayers;
-        var layersParam = layer.getLayers();
-        if (layersParam==null)
-            return null;
-        var layers=layersParam.split(",");
-        for (var i=0; i < layers.length; i++){   
-            var appLayer = this.getApplicationLayer(layers[i],layer.serviceId);
-            if (appLayer.details !=undefined &&
-                (appLayer.details["summary.description"]!=undefined ||
-                    appLayer.details["summary.image"]!=undefined ||
-                    appLayer.details["summary.link"]!=undefined ||
-                    appLayer.details["summary.title"]!=undefined)){
-                maptipLayers.push(layers[i]);
-            }
+    isMaptipLayer: function(layer){
+        var appLayer=this.viewerController.app.appLayers[layer.appLayerId];
+        if (appLayer.details !=undefined &&
+            (appLayer.details["summary.description"]!=undefined ||
+                appLayer.details["summary.image"]!=undefined ||
+                appLayer.details["summary.link"]!=undefined ||
+                appLayer.details["summary.title"]!=undefined)){
+            return true;
         }
-        return maptipLayers;
+        return false;
     },
     /**
      *Get the application layer

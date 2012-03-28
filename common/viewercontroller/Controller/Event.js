@@ -71,8 +71,16 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_LOADING_START                      : "ON_LOADING_START",
         /** @field */
         ON_LOADING_END                        : "ON_LOADING_END",
-        // Maptips
-        /** @field */
+        // Maptips        
+        /**
+         * @field
+         * Occures when the map wants a maptip.
+         * @param map the map where this event occured
+         * @param options.x x in pixels on the screen
+         * @param options.y y in pixels on the screen
+         * @param options.coord.x the x coord in world coords
+         * @param options.coord.y the y coord in world coords
+         */
         ON_MAPTIP                             : "ON_MAPTIP",        
         /** @field 
          * Occures when a maptip returns data
