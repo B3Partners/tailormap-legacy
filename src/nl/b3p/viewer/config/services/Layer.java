@@ -171,6 +171,8 @@ public class Layer {
             o.put("maxScale", maxScale);
         }
         
+        o.put("hasFeatureType", featureType != null);
+        
         /* Currently uninteresting to have in JSON tree. Enable with n+1 prevention
          * code in GeoService when required for all layers immediately, or use
          * AJAX request when only needed for a layer at a time.
