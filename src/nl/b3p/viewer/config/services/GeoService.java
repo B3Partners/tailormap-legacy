@@ -248,7 +248,7 @@ public abstract class GeoService {
         */
 
         if(layersToInclude == null || layersToInclude.contains(l.getName())) {
-            if(!l.isVirtual() && !layers.has(l.getName())) {
+            if(!l.isVirtual() && l.getName() != null && !layers.has(l.getName())) {
                 layers.put(l.getName(), l.toJSONObject());
             }
         }
