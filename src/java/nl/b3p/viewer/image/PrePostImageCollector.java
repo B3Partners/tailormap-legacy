@@ -40,21 +40,10 @@ import org.xml.sax.InputSource;
  * Get the image with the url in the response.
  * @author Roy Braam
  */
-public class PrePostImageCollector extends ImageCollector{
+public abstract class PrePostImageCollector extends ImageCollector{
     private static final Log log = LogFactory.getLog(PrePostImageCollector.class);
     private String body;
-    private static XPathExpression xPathImageURL;
     
-    static{
-        XPathFactory factory = XPathFactory.newInstance();
-        XPath xPath =  factory.newXPath();        
-        try {
-            xPathImageURL = xPath.compile("//ImageURL/text()");
-            
-        } catch (Exception ex) {
-            log.error("Error while creating xpath expr",ex);
-        }
-    }
     public PrePostImageCollector(CombineImageUrl ciu, int maxResponseTime){
         super(ciu,maxResponseTime);
         this.body=ciu.getBody();
@@ -113,11 +102,6 @@ public class PrePostImageCollector extends ImageCollector{
      * @throws JDOMException
      * @throws IOException 
      */
-    private String getUrlFromXML(String returnXML) throws XPathExpressionException, JDOMException, IOException {
-        String s=xPathImageURL.evaluate(new InputSource(new StringReader(returnXML)));
-        if (s!=null && s.length() ==0){
-            s=null;
-        }
-        return s;        
-    }
+    protected abstract String getUrlFromXML(String returnXML) throws XPathExpressionException, JDOMException, IOException;
+
 }

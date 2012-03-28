@@ -56,8 +56,10 @@ public class ImageManager {
                 CombineImageUrl ciu = (CombineImageUrl) o;
                 if (ciu.getProtocol().equals(CombineImageUrl.WMS)){
                     ic = new ImageCollector(ciu, maxResponseTime, uname, pw);
-                }else{
-                    ic = new PrePostImageCollector(ciu, maxResponseTime);
+                }else if (CombineImageUrl.ARCIMS.equals(ciu.getProtocol())){
+                    ic = new ArcImsImageCollector(ciu, maxResponseTime);
+                }else if (CombineImageUrl.ARCSERVER.equals(ciu.getProtocol())){
+                    ic = new ArcServerImageCollector(ciu, maxResponseTime);
                 }
             }
             ics.add(ic);
