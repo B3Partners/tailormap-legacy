@@ -281,6 +281,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'checkbox',
                                 name: 'includeLegend',
                                 checked: me.getLegend(),
+                                inputValue: true,
                                 boxLabel: 'Legenda toevoegen'
                             }]                        
                         },{
