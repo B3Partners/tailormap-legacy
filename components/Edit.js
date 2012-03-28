@@ -213,7 +213,7 @@ Ext.define ("viewer.components.Edit",{
     initAttributeInputs : function (appLayer){
         var attributes = appLayer.attributes;
         var type = "geometry";
-        if(appLayer.geometryAttributeIndex){
+        if(appLayer.geometryAttributeIndex != undefined || appLayer.geometryAttributeIndex != null ){
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
             type = geomAttribute.type;
         }

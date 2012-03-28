@@ -220,7 +220,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.filterTab.insert(this.filterTab.items.length - 1,filter.getUI());
     },
     applyFilter : function (){
-        var cql = "";
+        var cql = "(";
      
         cql += this.getDataTabCQL();
         if(this.filterActive.getValue()){
@@ -233,6 +233,7 @@ Ext.define ("viewer.components.DataSelection",{
             }
         
         }
+        cql += ")";
         var layerObj = this.layerSelector.getValue();
         var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
         
