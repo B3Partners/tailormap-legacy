@@ -52,6 +52,34 @@ Ext.define('select.TreeNode', {
     }
 });
 
+// Override van TreeStore to fix load function, used to refresh tree node
+Ext.define('Ext.ux.b3p.TreeStore', {
+    extend: 'Ext.data.TreeStore',
+    load: function(options) {
+        options = options || {};
+        options.params = options.params || {};
+        var me = this,
+            node = options.node || me.tree.getRootNode(),
+            root;
+        if (!node) {
+            node = me.setRootNode({
+                expanded: true
+            });
+        }
+        if (me.clearOnLoad) {
+            node.removeAll(false);
+        }
+        Ext.applyIf(options, {
+            node: node
+        });
+        options.params[me.nodeParam] = node ? node.getId() : 'root';
+        if (node) {
+            node.set('loading', true);
+        }
+        return me.callParent([options]);
+    }
+});
+
 Ext.define ("viewer.components.SelectionModule",{
     extend: "viewer.components.Component",
     
@@ -433,7 +461,7 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         
         if(me.config.selectLayers) {
-            var serviceStore = Ext.create("Ext.data.TreeStore", {
+            var serviceStore = Ext.create("Ext.ux.b3p.TreeStore", {
                 autoLoad: true,
                 proxy: {
                     type: 'ajax',
@@ -454,7 +482,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() == e.ENTER) {
-                                // Remote search
+                                me.filterRemote(me.treePanels.registryTree.treePanel, Ext.getCmp('registryTreeSearchField').getValue());
                             }
                         }
                     }},
@@ -462,7 +490,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         xtype: 'button',
                         text: 'Zoeken',
                         handler: function() {
-                            // Remote search
+                            me.filterRemote(me.treePanels.registryTree.treePanel, Ext.getCmp('registryTreeSearchField').getValue());
                         }
                     }
                 ]
@@ -506,6 +534,18 @@ Ext.define ("viewer.components.SelectionModule",{
             },
             tbar: null
         }));
+    },
+    
+    filterRemote: function(tree, textvalue) {
+        var treeStore = tree.getStore();
+        if(textvalue !== '') {
+            treeStore.getProxy().extraParams = {
+                search: 'search',
+                q: textvalue
+            };
+        }
+        treeStore.load();
+        treeStore.getProxy().extraParams = {};
     },
 
     filterNodes: function(tree, textvalue) {
