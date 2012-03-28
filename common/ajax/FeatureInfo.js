@@ -32,12 +32,15 @@ Ext.define("viewer.FeatureInfo", {
         var visibleAppLayers = {};
         
         for(var i in visibleLayerIds) {
-            var id = visibleLayerIds[i].split("_")[0];
+            var s = visibleLayerIds[i];
+            var idx = s.indexOf("_");
+            var id = s.substring(0,idx);
+            var layer = s.substring(idx+1);
             
             for(var appLayerId in viewerController.app.appLayers) {
                 var appLayer = viewerController.app.appLayers[appLayerId];
 
-                if(appLayer.serviceId == id) {
+                if(appLayer.serviceId == id && appLayer.layerName == layer) {
                     visibleAppLayers[appLayer.id] = true;
                 }
             }
@@ -50,7 +53,11 @@ Ext.define("viewer.FeatureInfo", {
         
         var queries = [];
         for(var id in visibleAppLayers) {
-            var query = { appLayer: id };
+            var appLayer = this.viewerController.app.appLayers[id];
+            var query = { appLayer: appLayer.id };
+            if(appLayer.filter) {
+                query.filter = appLayer.filter.getCQL();
+            }
             queries.push(query);
         }
         
