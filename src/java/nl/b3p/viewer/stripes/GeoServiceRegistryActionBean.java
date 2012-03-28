@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.util.List;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -41,6 +42,9 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     @Validate
     private String nodeId;
     
+    @Validate
+    private String q;
+    
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
         return context;
@@ -57,8 +61,17 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
     }
+
+    public String getQ() {
+        return q;
+    }
+
+    public void setQ(String q) {
+        this.q = q;
+    }
     //</editor-fold>
     
+    @DefaultHandler
     public Resolution load() throws JSONException {
 
         EntityManager em = Stripersist.getEntityManager();
@@ -139,5 +152,35 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         j.put("isLeaf", l.getChildren().isEmpty());
         j.put("isVirtual", l.isVirtual());
         return j;
+    }
+    
+    public Resolution search() throws JSONException {
+        
+        EntityManager em = Stripersist.getEntityManager();
+        
+        q = "%" + q.toLowerCase() + "%";
+        List<GeoService> results = em.createQuery("select distinct gs from GeoService gs "
+                + "left join gs.keywords kw "
+                + "where lower(gs.name) like :q "
+                + "or lower(kw) like :q2")
+                .setParameter("q", q)
+                .setParameter("q2", q)
+                .setMaxResults(10)
+                .getResultList();
+        
+        JSONArray jresults = new JSONArray();
+        
+        for(GeoService service: results) {
+            JSONObject j = new JSONObject();
+            j.put("id", "s" + service.getId());
+            j.put("service", service.toJSONObject(false));
+            j.put("name", service.getName());
+            j.put("type", "service");
+            j.put("isLeaf", service.getTopLayer() == null);
+            j.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
+            jresults.put(j);
+        }
+        
+        return new StreamingResolution("application/json", new StringReader(jresults.toString(4)));          
     }
 }
