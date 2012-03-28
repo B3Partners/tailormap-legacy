@@ -114,9 +114,11 @@ public class AttributeSourceActionBean implements ActionBean {
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
 
-        em.createQuery("update Layer set featureType = null where featureType in :fts")
-            .setParameter("fts", featureSource.getFeatureTypes())
-            .executeUpdate();
+        if(!featureSource.getFeatureTypes().isEmpty()) {
+            em.createQuery("update Layer set featureType = null where featureType in :fts")
+                .setParameter("fts", featureSource.getFeatureTypes())
+                .executeUpdate();
+        }
 
         em.remove(featureSource);
 
