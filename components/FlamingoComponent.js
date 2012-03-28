@@ -34,6 +34,9 @@ Ext.define ("viewer.components.FlamingoComponent",{
         }
         viewerController.mapComponent.addComponentXml(conf.xml);
         return this;
+    },
+    getExtComponents: function() {
+        return [];
     }
 });
 

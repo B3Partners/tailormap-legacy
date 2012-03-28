@@ -422,6 +422,19 @@ Ext.define ("viewer.components.Drawing",{
                 }
             });
         }
+    },
+    getExtComponents: function() {
+        return [
+            this.colorPicker.getId(),
+            this.label.getId(),
+            this.formdraw.getId(),
+            this.formselect.getId(),
+            this.title.getId(),
+            this.description.getId(),
+            this.formsave.getId(),
+            this.file.getId(),
+            this.formopen.getId()
+        ];
     }
 });
  

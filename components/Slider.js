@@ -66,5 +66,8 @@ Ext.define("viewer.components.Slider",{
             var layer = this.layers[i];
             layer.setAlpha(value);
         }
+    },
+    getExtComponents: function() {
+        return this.slider.getId();
     }
 });

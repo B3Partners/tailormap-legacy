@@ -96,6 +96,9 @@ Ext.define ("viewer.components.FeatureInfo",{
     },
     setProgress: function (progress){
         this.progressElement.update(""+progress+" %");
+    },
+    getExtComponents: function() {
+        return [];
     }
 });
 

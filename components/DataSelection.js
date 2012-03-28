@@ -70,7 +70,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
    
         // Make the tabs
-        Ext.create('Ext.tab.Panel', {
+        this.tabpanel = Ext.create('Ext.tab.Panel', {
             height: parseInt(this.details.height) - 100,
             width: parseInt(this.details.width)-40,
             hideMode: 'offsets',
@@ -134,7 +134,7 @@ Ext.define ("viewer.components.DataSelection",{
         // Add the first filter
         this.addFilter();
         // Make lower buttons
-        Ext.create('Ext.Button', { 
+        this.button1 = Ext.create('Ext.Button', { 
             text : 'Toepassen',
             renderTo: this.getContentDiv(),
             listeners: {
@@ -145,7 +145,7 @@ Ext.define ("viewer.components.DataSelection",{
             }
         });
          
-        Ext.create('Ext.Button', { 
+        this.button2 = Ext.create('Ext.Button', { 
             text : 'Annuleren',
             renderTo: this.getContentDiv(),
             listeners: {
@@ -308,5 +308,17 @@ Ext.define ("viewer.components.DataSelection",{
             filter.setNewAttributeList(attributeList);
         }
         this.createDataTab(appLayer);
+    },
+    getExtComponents: function() {
+        return Ext.Array.merge(
+            this.layerSelector.getExtComponents(),
+            [
+                this.tabpanel.getId(),
+                this.dataTab.getId(),
+                this.filterTab.getId(),
+                this.button1.getId(),
+                this.button2.getId()
+            ]
+        );
     }
 });

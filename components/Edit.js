@@ -71,7 +71,7 @@ Ext.define ("viewer.components.Edit",{
     },
     loadWindow : function (){
         var me =this;
-        Ext.create('Ext.container.Container', {
+        this.maincontainer = Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
             height: '100%',
@@ -338,5 +338,8 @@ Ext.define ("viewer.components.Edit",{
         this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
         this.popup.hide();
+    },
+    getExtComponents: function() {
+        return [ this.maincontainer.getId() ];
     }
 });

@@ -245,6 +245,10 @@ Ext.define ("viewer.components.Maptip",{
             }
         }
         return null;
+    },
+    
+    getExtComponents: function() {
+        return [];
     }
     
 });

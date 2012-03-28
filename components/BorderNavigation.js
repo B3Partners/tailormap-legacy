@@ -33,7 +33,10 @@ Ext.define ("viewer.components.BorderNavigation",{
         viewerController.mapComponent.addComponent(comp);
         
         return this;
-    }      
+    },
+    getExtComponents: function() {
+        return [];
+    }
 });
 
 

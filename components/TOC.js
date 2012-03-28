@@ -428,5 +428,9 @@ Ext.define ("viewer.components.TOC",{
             
         this.loadTree();
         this.loadInitLayers();
+    },
+    
+    getExtComponents: function() {
+        return [ this.panel.getId() ];
     }
 });

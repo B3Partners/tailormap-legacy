@@ -33,7 +33,10 @@ Ext.define ("viewer.components.ScaleBar",{
         viewerController.mapComponent.addComponent(comp);
         
         return this;
-    }      
+    },
+    getExtComponents: function() {
+        return [];
+    }
 });
 
 

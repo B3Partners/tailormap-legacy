@@ -86,7 +86,7 @@ Ext.define ("viewer.components.BufferObject",{
             renderTo: this.getContentDiv()
         });
         
-        Ext.create("Ext.button.Button",{
+        this.button1 = Ext.create("Ext.button.Button",{
             name: "selectObject" ,
             text: "Selecteer object op de kaart",
             renderTo: this.getContentDiv(),
@@ -99,7 +99,7 @@ Ext.define ("viewer.components.BufferObject",{
             }
         });
         
-        Ext.create("Ext.button.Button",{
+        this.button2 = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             text: "Huidige buffer verwijderen",
             renderTo: this.getContentDiv(),
@@ -130,5 +130,15 @@ Ext.define ("viewer.components.BufferObject",{
     },
     removeBuffer : function (){
         this.vectorLayer.removeAllFeatures();
+    },
+    getExtComponents: function() {
+        return Ext.Array.merge(
+            this.layerSelector.getExtComponents(),
+            [
+                this.radius.getId(),
+                this.button1.getId(),
+                this.button2.getId()
+            ]
+        );
     }
 });

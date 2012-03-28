@@ -774,6 +774,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
+    
+    resizeComponents: function() {
+        this.layoutManager.resizeLayout();
+        // We are execturing the doResize function manually on all components, instead of
+        // firing an event, because all components are required execute this function
+        for(var name in this.components) {
+            var component = this.components[name];
+            component.instance.resizeScreenComponent();
+        }
+        return true;
+    },
     /**
      *Utility functions
      ***/

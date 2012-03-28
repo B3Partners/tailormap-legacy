@@ -651,6 +651,10 @@ Ext.define ("viewer.components.Print",{
             }
         }
         return config;
+    },
+
+    getExtComponents: function() {
+        return [ this.panel.getId() ];
     }
 });
 

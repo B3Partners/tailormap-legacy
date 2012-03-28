@@ -37,6 +37,13 @@ Ext.define ("viewer.components.TransparencySlider",{
             this.sliderObjects.push(slider);
         }
         return this;
-    }      
+    },
+    getExtComponents: function() {
+        var components = [];
+        for(var slider in this.sliderObjects) {
+            components.push(this.sliderObjects[slider].getExtComponents());
+        }
+        return components;
+    }
 });
 

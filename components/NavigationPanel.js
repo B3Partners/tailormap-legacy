@@ -33,6 +33,9 @@ Ext.define ("viewer.components.NavigationPanel",{
         this.viewerController.mapComponent.addComponent(comp);
         
         return this;
-    }      
+    },
+    getExtComponents: function() {
+        return [];
+    }
 });
 

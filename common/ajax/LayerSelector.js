@@ -94,5 +94,8 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     getValue : function (){
         return this.combobox.getValue();
+    },
+    getExtComponents: function() {
+        return [ this.combobox.getId() ];
     }
 });

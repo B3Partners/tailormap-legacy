@@ -160,5 +160,8 @@ Ext.define ("viewer.components.Filter",{
         cql+= ")";
        
         return cql;
+    },
+    getExtComponents: function() {
+        return [ this.container.getId() ];
     }
 });

@@ -200,6 +200,9 @@ Ext.define ("viewer.components.Search",{
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",location.x,location.y,"marker");
         this.popup.hide();
+    },
+    getExtComponents: function() {
+        return [ this.form.getId() ];
     }
 });
 

@@ -126,5 +126,8 @@ Ext.define ("viewer.components.AttributeFilter",{
         cql += this.operator.getValue();
         cql += "\'" + this.value.getValue() + "\'";
         return cql;
+    },
+    getExtComponents: function() {
+        return [ this.container.getId() ];
     }
 });

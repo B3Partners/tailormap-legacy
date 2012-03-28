@@ -50,15 +50,7 @@ Ext.define("viewer.components.Component",{
         if(me.isPopup){
             me.popup = Ext.create("viewer.components.ScreenPopup",config);
             me.popup.popupWin.addListener("resize", function() {
-                if(me.getExtComponents) {
-                    var extComponents = me.getExtComponents();
-                    for(var i = 0; i < extComponents.length; i++) {
-                        var comp = Ext.getCmp(extComponents[i]);
-                        if(comp !== null) {
-                            comp.doLayout();
-                        }
-                    }
-                }
+                me.doResize();
             });
             me.popup.setIconClass(me.getPopupIcon());
         }
@@ -229,5 +221,32 @@ Ext.define("viewer.components.Component",{
      */
     bind : function(event,handler,scope,options){
         this.addListener(event,handler,options);
+    },    
+
+    isTool: function() {
+        // How can we check if the component is a tool?
+        return (this.superclass && (this.superclass.$className == 'viewer.viewercontroller.controller.Tool' || this.superclass.$className == 'viewer.components.tools.JSButton'));
+    },
+
+    resizeScreenComponent: function() {
+        if(!this.isTool() && !this.isPopup) {
+            this.doResize();
+        }
+    },
+
+    doResize: function() {
+        var me = this;
+        if(me.getExtComponents) {
+            var extComponents = me.getExtComponents();
+            for(var i = 0; i < extComponents.length; i++) {
+                var comp = Ext.getCmp(extComponents[i]);
+                if(comp !== null) {
+                    if(comp.doLayout) comp.doLayout();
+                    else if(comp.forceComponentLayout) comp.forceComponentLayout();
+                }
+            }
+        } else {
+            // if(!this.isTool()) console.log('Component ' + this.$className + ' should implement the getExtComponents function to be able to resize contents', this);
+        }
     }
 });

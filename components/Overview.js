@@ -25,5 +25,8 @@ Ext.define ("viewer.components.Overview",{
         viewer.components.Overview.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         return this;
-    }      
+    },
+    getExtComponents: function() {
+        return [];
+    }
 });

@@ -33,14 +33,17 @@ Ext.define ("viewer.components.HTML",{
     },
     loadHtml : function(){
         var parentDiv = Ext.get(this.div);
-        var height = parentDiv.getHeight();
-        var width = parentDiv.getWidth();
+        //var height = parentDiv.getHeight();
+        //var width = parentDiv.getWidth();
         this.container = Ext.create('Ext.container.Container', {
-            width: width,
-            height: height,
+            width: '100%',
+            height: '100%',
             html: this.html,
             renderTo: this.div,
             autoScroll: true
         });
+    },
+    getExtComponents: function() {
+        return [ this.container.getId() ];
     }
 });

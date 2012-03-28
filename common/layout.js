@@ -370,7 +370,7 @@ Ext.define('viewer.LayoutManager', {
 
     renderLayout: function(viewportItems) {
         var me = this;
-        Ext.create('Ext.container.Container', {
+        me.mainLayoutContainer = Ext.create('Ext.container.Container', {
             layout: 'border',
             items: viewportItems,
             renderTo: me.wrapperId,
@@ -400,6 +400,11 @@ Ext.define('viewer.LayoutManager', {
     
     hideStartupPopup: function() {
         this.popupWin.hide();
+    },
+
+    resizeLayout: function() {
+        var me = this;
+        me.mainLayoutContainer.doLayout();
     }
     
 });

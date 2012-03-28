@@ -76,7 +76,7 @@ Ext.define ("viewer.components.BufferLayer",{
             renderTo: this.getContentDiv()
         });
         
-        Ext.create("Ext.button.Button",{
+        this.button1 = Ext.create("Ext.button.Button",{
             name: "buffer" ,
             text: "Buffer",
             renderTo: this.getContentDiv(),
@@ -88,7 +88,7 @@ Ext.define ("viewer.components.BufferLayer",{
             }
         });
         
-        Ext.create("Ext.button.Button",{
+        this.button2 = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             text: "Huidige buffer verwijderen",
             renderTo: this.getContentDiv(),
@@ -112,5 +112,13 @@ Ext.define ("viewer.components.BufferLayer",{
         if(layer != null){
             layer.removeBuffer( layer.options.name);
         }
+    },
+    getExtComponents: function() {
+        return [
+            this.combobox.getId(),
+            this.radius.getId(),
+            this.button1.getId(),
+            this.button2.getId()
+        ];
     }
 });

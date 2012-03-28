@@ -111,6 +111,10 @@ Ext.define ("viewer.components.Legend",{
         };
         this.queue = Ext.create("viewer.components.ImageQueue",config);
         this.queue.load();
+    },
+    
+    getExtComponents: function() {
+        return [];
     }
 });
 /**

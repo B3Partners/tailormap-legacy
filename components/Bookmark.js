@@ -137,5 +137,8 @@ Ext.define ("viewer.components.Bookmark",{
         }else if(Ext.safariVersion != 0){
             alert("This browser doesn't support this function.");
         }
+    },
+    getExtComponents: function() {
+        return [ this.form.getId() ];
     }
 });

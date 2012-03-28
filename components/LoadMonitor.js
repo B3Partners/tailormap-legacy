@@ -32,6 +32,9 @@ Ext.define ("viewer.components.LoadMonitor",{
         viewerController.mapComponent.addComponent(comp);
         
         return this;
-    }      
+    },
+    getExtComponents: function() {
+        return [];
+    }
 });
 
