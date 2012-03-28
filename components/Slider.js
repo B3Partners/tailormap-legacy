@@ -54,7 +54,10 @@ Ext.define("viewer.components.Slider",{
             this.layers = new Array();
         }
         for( var i = 0 ; i < selectedLayers.length;i++){
-            this.layers.push(this.viewerController.getLayerByLayerId(this.selectedLayers[i]));
+            var layer = this.viewerController.getLayerByLayerId(this.selectedLayers[i]);
+            if(layer) {
+                this.layers.push();
+            }
         }
         return this;
     },
