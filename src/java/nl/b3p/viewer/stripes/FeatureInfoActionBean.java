@@ -175,7 +175,8 @@ public class FeatureInfoActionBean implements ActionBean {
                         break;
                     }
                     if(l.getFeatureType() == null) {
-                        error = "Layer has no feature type";
+                        response.put("noFeatureType",true);
+                        break;
                     }
                     
                     Map<String,String> attributeAliases = new HashMap<String,String>();
