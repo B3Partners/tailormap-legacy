@@ -60,9 +60,10 @@ public class ArcXMLFeatureSource extends FeatureSource {
         params.put(ArcIMSDataStoreFactory.USER.key, getUsername());
         params.put(ArcIMSDataStoreFactory.PASSWD.key, getPassword());
         
-        params.put(ArcIMSDataStoreFactory.CRS.key, CRS.decode("EPSG:28992"));
-        
         log.debug("Opening datastore using parameters: " + params);
+        
+        params.put(ArcIMSDataStoreFactory.CRS.key, CRS.decode("EPSG:28992"));
+
         DataStore ds = null;
         try {
             ds = DataStoreFinder.getDataStore(params);      
