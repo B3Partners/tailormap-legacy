@@ -108,7 +108,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             "addComponent",
             "<fmc:GIS xmlns:fmc='fmc' id='"+this.gisId+"' geometryeditable='true' alwaysdrawpoints='false'></fmc:GIS>");
         //add editMap
-        console.log("<fmc:EditMap xmlns:fmc='fmc' id='"+this.editMapId+"' editable='true' left='0' top='0%' height='100%' width='100%' bottom='bottom' listento='"+this.gisId+","+this.id+"'/>");
         this.getFrameworkMap().callMethod(
             this.getMapComponent().mainContainerId,
             "addComponent",

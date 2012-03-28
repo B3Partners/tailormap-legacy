@@ -13,7 +13,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         //@field true/false show measures of the drawing object
         showmeasures: null,
         //@field true/false if true the point's in this layer can be dragged.
-        editable: null,
+        editable: true,
         //@field name of the label
         labelPropertyName: null,
         //@field the style
