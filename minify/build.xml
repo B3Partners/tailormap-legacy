@@ -53,6 +53,7 @@
             <file name="FlamingoMap.js"/>
             <file name="FlamingoTool.js"/>
             <file name="FlamingoComponent.js"/>
+            <file name="FlamingoImageLayer.js"/>
           </sources>          
           <!--					The Flamingo-mc component 				-->
           <sources dir="${viewerhtml.path}/common/viewercontroller">          
