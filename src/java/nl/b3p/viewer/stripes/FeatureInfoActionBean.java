@@ -49,6 +49,8 @@ import org.stripesstuff.stripersist.Stripersist;
 public class FeatureInfoActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(FeatureInfoActionBean.class);
 
+    public static final String FID = "__fid";
+    
     private ActionBeanContext context;
 
     private static final int TIMEOUT = 5000;
@@ -258,7 +260,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     String alias = attributeAliases.get(name);
                     j.put(alias != null ? alias : name, f.getAttribute(name));
                 }                     
-                j.put("__fid", f.getID());
+                j.put(FID, f.getID());
                 features.put(j);
             }
             return features;
