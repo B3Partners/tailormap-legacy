@@ -60,6 +60,7 @@ Ext.define("viewer.FeatureInfo", {
             }
             queries.push(query);
         }
+        var me = this;
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
@@ -67,6 +68,15 @@ Ext.define("viewer.FeatureInfo", {
             timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
+                
+                for(var i in response) {
+                    var r = response[i];
+                    if(r.request.appLayer) {
+                        r.appLayer = me.viewerController.app.appLayers[r.request.appLayer];
+                    } else if(r.request.service) {
+                        r.service = me.viewerController.app.services[r.request.service];
+                    }
+                }
                 successFunction(response);
             },
             failure: function(result) {
