@@ -57,6 +57,7 @@ Ext.define("viewer.FeatureInfo", {
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: {featureInfo: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(queries)},
+            timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 successFunction(response);
