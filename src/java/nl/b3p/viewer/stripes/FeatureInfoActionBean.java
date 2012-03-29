@@ -70,7 +70,7 @@ public class FeatureInfoActionBean implements ActionBean {
     private String y;
     
     @Validate
-    private double distance;
+    private String distance;
     
     @Validate
     private String queryJSON;
@@ -95,14 +95,14 @@ public class FeatureInfoActionBean implements ActionBean {
         this.limit = limit;
     }
 
-    public double getDistance() {
+    public String getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    public void setDistance(String distance) {
         this.distance = distance;
     }
-
+    
     public String getQueryJSON() {
         return queryJSON;
     }
@@ -229,7 +229,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     Point point = new GeometryFactory().createPoint(new Coordinate(
                             Double.parseDouble(x),
                             Double.parseDouble(y)));
-                    Filter dwithin = ff.dwithin(ff.property(geomAttribute), ff.literal(point), distance, "meters");
+                    Filter dwithin = ff.dwithin(ff.property(geomAttribute), ff.literal(point), Double.parseDouble(distance), "meters");
 
                     Filter currentFilter = filter != null ? CQL.toFilter(filter) : null;
                     Filter f = currentFilter != null ? ff.and(dwithin, currentFilter) : dwithin;
