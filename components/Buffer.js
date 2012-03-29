@@ -120,11 +120,15 @@ Ext.define ("viewer.components.Buffer",{
         var layer = this.layerSelector.getValue();
         var radius = this.radius.getValue();
         if(layer != null && radius != ""){
+            this.removeBuffer();
             var bbox = this.viewerController.mapComponent.getMap().getExtent().toString();
             var width = this.viewerController.mapComponent.getMap().getWidth();
             var height = this.viewerController.mapComponent.getMap().getHeight();
             var url = absoluteURIPrefix + contextPath + "/action/Buffer";
-            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.name +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.maxFeatures + "&color="+this.color;
+            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.name +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.maxFeatures;
+            if(this.color != null){
+                    attrs += "&color="+this.color;
+            }
             url += attrs;
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.name+"ImageLayer", url, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
@@ -133,8 +137,12 @@ Ext.define ("viewer.components.Buffer",{
     removeBuffer : function(){
         var map = this.viewerController.mapComponent.getMap();
         var layer = this.layerSelector.getValue();
-        var mapLayer = map.getLayer(this.name + layer.name+"ImageLayer");
-        map.removeLayer(mapLayer);
+        if(layer != null){
+            var mapLayer = map.getLayer(this.name + layer.name+"ImageLayer");
+            if(mapLayer!=null){
+                map.removeLayer(mapLayer);
+            }
+        }
     },
     getExtComponents: function() {
         return Ext.Array.merge(
