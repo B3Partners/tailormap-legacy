@@ -24,6 +24,8 @@ Ext.define ("viewer.components.Buffer",{
     layerSelector: null,
     radius:null,
     imageLayer:null,
+    colorPicker:null,
+    color:null,
     config: {
         layers:null,
         title:null,
@@ -48,25 +50,36 @@ Ext.define ("viewer.components.Buffer",{
         this.popup.show();
     },
     loadWindow : function(){
-        
-        var config = {
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",{
             viewerController : this.viewerController,
             div: this.getContentDiv(),
+            id: this.name + "LayerSelector",
             layers : this.layers
-        };
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        // this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
-    
+        });    
+        
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
-            fieldLabel: "Straal",
-            renderTo: this.getContentDiv()
+            id: this.name + "Radius",
+            fieldLabel: "Straal"
         });
         
-        this.button1 = Ext.create("Ext.button.Button",{
+        this.colorPicker = Ext.create("Ext.ux.ColorField",{ 
+            showText: true,
+            name: 'color',
+            fieldLabel : "Kleur buffer",
+            id:'color' + this.name,
+            listeners :{
+                select : {
+                    fn: this.colorChanged,
+                    scope : this
+                }
+            }
+        });
+        
+        this.buffer = Ext.create("Ext.button.Button",{
             name: "buffer" ,
+            id: this.name + "BufferButton",
             text: "Buffer",
-            renderTo: this.getContentDiv(),
             listeners: {
                 click:{
                     scope: this,
@@ -75,16 +88,28 @@ Ext.define ("viewer.components.Buffer",{
             }
         });
         
-        this.button2 = Ext.create("Ext.button.Button",{
+        this.remove = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
+            id : this.name + "RemoveButton",
             text: "Huidige buffer verwijderen",
-            renderTo: this.getContentDiv(),
             listeners: {
                 click:{
                     scope: this,
                     fn: this.removeBuffer
                 }
             }
+        });
+        
+        Ext.create ("Ext.container.Container",{
+            layout: 'fit',
+            id: this.name +"Container",
+            renderTo : this.getContentDiv(),
+            items:[
+                this.radius,
+                this.colorPicker,
+                this.buffer,
+                this.remove
+            ]
         });
     },
     buffer : function (){
@@ -95,7 +120,7 @@ Ext.define ("viewer.components.Buffer",{
             var width = this.viewerController.mapComponent.getMap().getWidth();
             var height = this.viewerController.mapComponent.getMap().getHeight();
             var url = absoluteURIPrefix + contextPath + "/action/Buffer";
-            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.name +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures=50";
+            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.name +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures=50&color="+this.color;
             url += attrs;
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.name+"ImageLayer", url, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
@@ -112,9 +137,12 @@ Ext.define ("viewer.components.Buffer",{
             this.layerSelector.getExtComponents(),
             [
                 this.radius.getId(),
-                this.button1.getId(),
-                this.button2.getId()
+                this.buffer.getId(),
+                this.remove.getId()
             ]
         );
+    },
+    colorChanged : function (color){
+        this.color = color;
     }
 });

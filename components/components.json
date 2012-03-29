@@ -414,7 +414,7 @@
         className: "viewer.components.Buffer",
         name: "Buffer",
         shortName: "Bu",
-        sources: ["Buffer.js"],
+        sources: ["../common/ColorField.js","Buffer.js"],
         configSource: ["SelectionWindowConfig.js","Buffer-config.js"],
         restrictions: ["left_menu"],            
         type: "popup"
