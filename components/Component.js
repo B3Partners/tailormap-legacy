@@ -167,8 +167,11 @@ Ext.define("viewer.components.Component",{
                 button.addCls(baseClass + '_normal');
             }
         }
-        if(state == 'click') me.button.toggle(false);
-        else if(me.button.pressed) me.button.toggle();
+        if(state == 'click' && (!me.forceState || forceState) && !button.pressed) {
+            button.toggle();
+        } else if((!me.forceState || forceState) && button.pressed) {
+            button.toggle();
+        }
         
         // If state is forced previously (me.forceState = true) than disable me.forceState again,
         // else set me.forceState = true so hovers etc. won't change the state
