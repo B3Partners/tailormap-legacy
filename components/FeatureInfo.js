@@ -31,6 +31,17 @@ Ext.define ("viewer.components.FeatureInfo",{
         //show close button and dont close on mouse out.
         this.balloon.closeOnMouseOut=false;
         this.balloon.showCloseButton=true;
+        var me = this;
+        this.balloon.close = function(){            
+            me.balloon.setContent("");
+            me.balloon.hide();
+            var maptips= me.viewerController.getComponentsByClassName("viewer.components.Maptip");
+            for (var i =0; i < maptips.length;i++){
+                if (typeof maptips[i].setEnabled == 'function'){
+                    maptips[i].setEnabled(true);
+                }
+            }    
+        }
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
          //Add event when started the identify (clicked on the map)
@@ -71,6 +82,12 @@ Ext.define ("viewer.components.FeatureInfo",{
     ,onFeatureInfoStart: function(){
         this.balloon.setContent("");
         this.balloon.hide();
+        var maptips= this.viewerController.getComponentsByClassName("viewer.components.Maptip");
+        for (var i =0; i < maptips.length;i++){
+            if (typeof maptips[i].setEnabled == 'function'){
+                maptips[i].setEnabled(false);
+            }
+        }
     }
 });
 
