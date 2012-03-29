@@ -43,7 +43,6 @@ import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -65,10 +64,10 @@ public class FeatureInfoActionBean implements ActionBean {
     private int limit = 10;
     
     @Validate
-    private double x;
+    private String x;
     
     @Validate 
-    private double y;
+    private String y;
     
     @Validate
     private double distance;
@@ -112,19 +111,19 @@ public class FeatureInfoActionBean implements ActionBean {
         this.queryJSON = queryJSON;
     }
 
-    public double getX() {
+    public String getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(String x) {
         this.x = x;
     }
 
-    public double getY() {
+    public String getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(String y) {
         this.y = y;
     }
 
@@ -227,7 +226,9 @@ public class FeatureInfoActionBean implements ActionBean {
                     
                     FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
                     
-                    Point point = new GeometryFactory().createPoint(new Coordinate(x, y));
+                    Point point = new GeometryFactory().createPoint(new Coordinate(
+                            Double.parseDouble(x),
+                            Double.parseDouble(y)));
                     Filter dwithin = ff.dwithin(ff.property(geomAttribute), ff.literal(point), distance, "meters");
 
                     Filter currentFilter = filter != null ? CQL.toFilter(filter) : null;
