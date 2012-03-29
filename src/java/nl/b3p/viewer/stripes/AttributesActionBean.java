@@ -434,7 +434,7 @@ public class AttributesActionBean implements ActionBean {
                         } else {
                             JSONObject j = new JSONObject();
                             for(String name: propertyNames) {
-                                j.put(name, f.getAttribute(name));
+                                j.put(name, formatValue(f.getAttribute(name)));
                             }                     
                             features.put(j);
                         }
