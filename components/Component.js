@@ -223,6 +223,9 @@ Ext.define("viewer.components.Component",{
                     'viewercomponentsRelatedDocuments': 12,
                     'viewercomponentsAttributeList': 13,
                     'viewercomponentsPrint': 15
+                },
+                menuIconPosition: {
+                    x: 561
                 }
             };
             var styleContent = '.applicationSpriteClass { background-image: url(\'' + appSprite + '\') !important; } ';
@@ -240,7 +243,7 @@ Ext.define("viewer.components.Component",{
                 });
                 // Popupwindow style
                 styleContent += ' .' + compClassName + '_popup { ' +
-                                'background-position: -' + (((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px !important; ' +
+                                'background-position: -' + (spriteConfig.menuIconPosition.x + innerImageOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px !important; ' +
                                 '}';
             });
             Ext.util.CSS.createStyleSheet(styleContent, 'appSpriteStyle');
