@@ -29,11 +29,15 @@ Ext.define ("viewer.components.Buffer",{
     config: {
         layers:null,
         title:null,
+        maxFeatures:null,
         iconUrl:null
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.Buffer.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
+        if(this.maxFeatures == null){
+            this.maxFeatures = 50;
+        }
         var me = this;
         this.renderButton({
             handler: function(){
@@ -120,7 +124,7 @@ Ext.define ("viewer.components.Buffer",{
             var width = this.viewerController.mapComponent.getMap().getWidth();
             var height = this.viewerController.mapComponent.getMap().getHeight();
             var url = absoluteURIPrefix + contextPath + "/action/Buffer";
-            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.name +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures=50&color="+this.color;
+            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.name +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.maxFeatures + "&color="+this.color;
             url += attrs;
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.name+"ImageLayer", url, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);

@@ -22,7 +22,19 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId,configObject){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        this.createCheckBoxes(this.configObject.layers,{bufferable:true});
+        this.createCheckBoxes(this.configObject.layers,{bufferable:true}); 
+        this.addFormItems(configObject);
+    },
+    addFormItems: function(configObject){
+        this.form.add([
+            {
+                xtype: "textfield",
+                name: "maxFeatures",
+                id: "maxFeatures",
+                value: configObject.maxFeatures
+            }
+        ]);
+                 
     }
 });
 
