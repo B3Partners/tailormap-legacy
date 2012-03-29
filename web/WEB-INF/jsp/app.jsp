@@ -95,15 +95,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
-        <c:if test="${!empty actionBean.application.details.steunkleur1 && !empty actionBean.application.details.steunkleur2}">
-            <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1}" />
-            <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2}" />
-            <style type="text/css">
-                /* Main background colors */
-                .x-border-layout-ct {
-                    background-color: #E0E0E0;
-                }
+        <style type="text/css">
+            /* Main background colors */
+            .x-border-layout-ct {
+                background-color: #FFFFFF;
+            }
 
+            <c:if test="${!empty actionBean.application.details.steunkleur1 && !empty actionBean.application.details.steunkleur2}">
+                <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1}" />
+                <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2}" />
                 /* Popup borders & background colors (popup borders) */
                 .x-window-default {
                     border-color: ${steunkleur1};
@@ -134,7 +134,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-panel-header-default-top {
                     box-shadow: 0 1px 0 0 ${steunkleur1} inset;
                 }
-                
+
                 /* When using user-defined colors, disable header image in IE */
                 .x-nlg .x-panel-header-default-top, /* Panel headers */
                 .x-nlg .x-window-default-tl, /* this and below: Popup header and borders */
@@ -175,8 +175,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-window-header-text-default /* Popup header */ {
                     color: ${steunkleur2};
                 }
-            </style>
-        </c:if>
+            </c:if>
+        </style>
         
         ${actionBean.componentSourceHTML}
     </head>
