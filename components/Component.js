@@ -86,20 +86,19 @@ Ext.define("viewer.components.Component",{
             buttonIcon = null,
             buttonText = "",
             buttonCls = '',
-            buttonWidth = 'autoWidth',
+            buttonWidth = me.defaultButtonWidth,
             baseClass = this.getBaseClass(),
             useSprite = false;
 
         me.options = options;
         if(options.icon) {
             buttonIcon = options.icon;
-            buttonWidth = me.defaultButtonWidth;
         } else if(appSprite != null) {
             buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
-            buttonWidth = me.defaultButtonWidth;
             useSprite = true;
         } else {
             buttonText = (options.text || (me.name || ""));
+            buttonWidth = 'autoWidth';
         }
 
         me.button = Ext.create('Ext.button.Button', {
@@ -117,6 +116,7 @@ Ext.define("viewer.components.Component",{
                 }
             },
             width: buttonWidth,
+            height: me.defaultButtonHeight,
             enableToggle: true,
             style: {
                 height: me.defaultButtonHeight + 'px'
@@ -226,19 +226,20 @@ Ext.define("viewer.components.Component",{
                 },
                 menuIconPosition: {
                     x: 561
-                }
+                },
+                paddingCorrection: 3
             };
-            var styleContent = '.applicationSpriteClass { background-image: url(\'' + appSprite + '\') !important; } ';
-                styleContent += ' .buttonDefaultClass_normal { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
-                styleContent += ' .buttonDefaultClass_hover { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
-                styleContent += ' .buttonDefaultClass_click { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+            var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
+                styleContent += ' .buttonDefaultClass_normal button { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+                styleContent += ' .buttonDefaultClass_hover button { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+                styleContent += ' .buttonDefaultClass_click button { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
 
             var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.popupImageSize / 2);
             Ext.Object.each(spriteConfig.rowConfig, function(compClassName, row) {
                 Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
                 // Button style
-                styleContent += ' .' + compClassName + '_' + state + ' { ' +
-                                'background-position: -' + ((col - 1) * spriteConfig.gridSize) + 'px -' + ((row - 1) * spriteConfig.gridSize) + 'px !important; ' +
+                styleContent += ' .' + compClassName + '_' + state + ' button { ' +
+                                'background-position: -' + (((col - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px -' + (((row - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px !important; ' +
                                 '}';
                 });
                 // Popupwindow style
