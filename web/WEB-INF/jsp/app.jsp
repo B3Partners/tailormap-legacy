@@ -95,15 +95,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
-        <c:if test="${!empty actionBean.application.details.steunkleur1 || !empty actionBean.application.details.steunkleur2}">
-            <c:set var="steunkleur1" value="#A9A9A9" />
-            <c:if test="${!empty actionBean.application.details.steunkleur1}">
-                <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1}" />
-            </c:if>
-            <c:set var="steunkleur2" value="#333333" />
-            <c:if test="${!empty actionBean.application.details.steunkleur2}">
-                <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2}" />
-            </c:if>
+        <c:if test="${!empty actionBean.application.details.steunkleur1 && !empty actionBean.application.details.steunkleur2}">
+            <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1}" />
+            <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2}" />
             <style type="text/css">
                 /* Main background colors */
                 .x-border-layout-ct {
@@ -139,6 +133,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 /* Panel header colors */
                 .x-panel-header-default-top {
                     box-shadow: 0 1px 0 0 ${steunkleur1} inset;
+                }
+                
+                /* When using user-defined colors, disable header image in IE */
+                .x-nlg .x-panel-header-default-top, /* Panel headers */
+                .x-nlg .x-window-default-tl, /* this and below: Popup header and borders */
+                .x-nlg .x-window-default-tc,
+                .x-nlg .x-window-default-tr,
+                .x-nlg .x-window-default-ml,
+                .x-nlg .x-window-default-mc,
+                .x-nlg .x-window-default-mr,
+                .x-nlg .x-window-default-bl,
+                .x-nlg .x-window-default-bc,
+                .x-nlg .x-window-default-br,
+                .x-nlg .x-window-header-default-top-tl,
+                .x-nlg .x-window-header-default-top-tc,
+                .x-nlg .x-window-header-default-top-tr,
+                .x-nlg .x-window-header-default-top-ml,
+                .x-nlg .x-window-header-default-top-mc,
+                .x-nlg .x-window-header-default-top-mr,
+                .x-nlg .x-window-header-default-top-bl,
+                .x-nlg .x-window-header-default-top-bc,
+                .x-nlg .x-window-header-default-top-br{
+                    background-image: none;
+                    background-color: ${steunkleur1};
                 }
 
                 /* Panel border */
