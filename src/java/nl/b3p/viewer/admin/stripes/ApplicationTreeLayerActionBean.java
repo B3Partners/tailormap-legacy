@@ -154,29 +154,30 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
                 }
                 
                 //save editable
-                JSONObject attribute = attributesJSON.getJSONObject(i);
-                
-                if(attribute.has("editable")){
-                    appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
-                }
-                if(attribute.has("editalias")){
-                    appAttribute.setEditAlias(attribute.get("editalias").toString());
-                }
-                if(attribute.has("editvalues")){
-                    appAttribute.setEditValues(attribute.get("editvalues").toString());
-                }
-                if(attribute.has("editheight")){
-                    appAttribute.setEditHeight(attribute.get("editheight").toString());
-                }
+                if (attributesJSON.length() > i){
+                    JSONObject attribute = attributesJSON.getJSONObject(i);
 
-                //save selectable
-                if(attribute.has("selectable")){
-                    appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
+                    if(attribute.has("editable")){
+                        appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
+                    }
+                    if(attribute.has("editalias")){
+                        appAttribute.setEditAlias(attribute.get("editalias").toString());
+                    }
+                    if(attribute.has("editvalues")){
+                        appAttribute.setEditValues(attribute.get("editvalues").toString());
+                    }
+                    if(attribute.has("editheight")){
+                        appAttribute.setEditHeight(attribute.get("editheight").toString());
+                    }
+
+                    //save selectable
+                    if(attribute.has("selectable")){
+                        appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
+                    }
+                    if(attribute.has("filterable")){
+                        appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
+                    }
                 }
-                if(attribute.has("filterable")){
-                    appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
-                }
-                
                 i++;
             }
         }
@@ -197,7 +198,9 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
             JSONObject j = new JSONObject();
             j.put("id", appAttribute.getId());
             j.put("name", appAttribute.getAttributeName());
-            j.put("alias", attributesList.get(i).getAlias());
+            if (attributesList.size()> i){
+                j.put("alias", attributesList.get(i).getAlias());
+            }
             j.put("visible", appAttribute.isVisible());
             j.put("editable", appAttribute.isEditable());
             j.put("editalias", appAttribute.getEditAlias());
