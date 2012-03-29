@@ -90,7 +90,7 @@ Ext.define("viewer.FeatureInfo", {
         var query = [{appLayer: appLayer.id}];
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {featureInfo: true, edit: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)},
+            params: {featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)},
             timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText)[0];
