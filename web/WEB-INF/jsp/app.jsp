@@ -86,6 +86,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/Bookmark.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/CombineImage.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/FeatureInfo.js"></script>
+       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/EditFeature.js"></script>
             </c:when>
             <c:otherwise>
                 <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
@@ -121,7 +122,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "combineimage":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/></js:quote>,
                 "drawing":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DrawingActionBean"/></js:quote>,
                 "print":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/></js:quote>,
-                "featureinfo":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureInfoActionBean"/></js:quote>
+                "featureinfo":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureInfoActionBean"/></js:quote>,
+                "editfeature":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditFeatureActionBean"/></js:quote>
             };
              
             var appId = "${actionBean.application.id}";

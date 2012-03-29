@@ -30,6 +30,7 @@
 			<file name="LayerSelector.js"/>
 			<file name="CombineImage.js"/>
 			<file name="FeatureInfo.js"/>
+			<file name="EditFeature.js"/>
           </sources>          
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
