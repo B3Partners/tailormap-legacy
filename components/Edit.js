@@ -329,7 +329,7 @@ Ext.define ("viewer.components.Edit",{
         this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
         var featureInfo = Ext.create("viewer.FeatureInfo", {
             viewerController: this.viewerController
-            });
+        });
         var me =this;
         featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution(),layer, function (features){
             me.featuresReceived(features);
@@ -341,7 +341,7 @@ Ext.define ("viewer.components.Edit",{
             var feat = this.indexFeatureToNamedFeature(features[0]);
             this.handleFeature(feat);
         }else{
-        // Handel meerdere features af.
+            // Handel meerdere features af.
             this.createFeaturesGrid(features);
         }
     },
@@ -431,7 +431,9 @@ Ext.define ("viewer.components.Edit",{
             if(attribute.editable){
                 
                 var attIndex = index++;
-                
+                if(i == appLayer.geometryAttributeIndex){
+                    continue;
+                }
                 var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
                 attributeList.push({
                     name: "c" + attIndex,
@@ -448,14 +450,11 @@ Ext.define ("viewer.components.Edit",{
                 });
             }
         }
+        
         Ext.define(this.name + 'Model', {
             extend: 'Ext.data.Model',
             fields: attributeList
         });
-        var data = [];
-        for ( var i = 0 ; i < features.length ; i++){
-            
-        }
      
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
@@ -468,10 +467,21 @@ Ext.define ("viewer.components.Edit",{
             store: store,
             columns: columns
         });
+        var me =this;
         var container = Ext.create("Ext.container.Container",{
             id: this.name + "GridContainer",
-            layout: 'fit',
-            items:[grid]
+            //layout: 'fit',
+            items:[grid,{
+                    xtype: "button",
+                    id: this.name + "SelectFeatureButton",
+                    text: "Bewerk geselecteerd feature",
+                     listeners: {
+                        click:{
+                            scope: me,
+                            fn: me.selectFeature
+                        }
+                    }
+            }]
         });
         
         var window = Ext.create("Ext.window.Window",{
@@ -494,6 +504,11 @@ Ext.define ("viewer.components.Edit",{
             height: 30
         });*/
         window.show();
+    },
+    selectFeature :function() {
+      /*  var feature = Ext.getCmp('edit1Grid').getSelectionModel().getSelection().data;
+        this.handleFeature(feature);
+        Ext.getCmp(this.name + "FeaturesWindow").hide();*/
     },
     indexFeatureToNamedFeature : function (feature){
         var map = this.makeConversionMap();
