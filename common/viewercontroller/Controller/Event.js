@@ -24,18 +24,31 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param options.nr number of layers that are identified
          * @param options.total number of total layers that needs to be done.
          **/
-        ON_GET_FEATURE_INFO_PROGRESS          : "ON_GET_FEATURE_INFO_PROGRESS",
-        /** @field
-         * @param map the map object
-         * @param options the options returned
-         * @param options.extent the extent object where this info is done.
+        ON_GET_FEATURE_INFO_PROGRESS          : "ON_GET_FEATURE_INFO_PROGRESS",       
+        /**
+         * @field
+         * Occures when the map wants a maptip.
+         * @param map the map where this event occured
+         * @param options.x x in pixels on the screen
+         * @param options.y y in pixels on the screen
+         * @param options.coord.x the x coord in world coords
+         * @param options.coord.y the y coord in world coords
          */
         ON_GET_FEATURE_INFO                   : "ON_GET_FEATURE_INFO",
         /** @field 
-         * @param map the map object that generates the event
-         * @param options the options returned
-         * @param options.data the data. Looks like: data[layername][count][attribute name]= value
-         * @param options.extent the extent with .minx .miny .maxx .maxy
+         * Occures when a maptip returns data
+         * @param layer the layer where this event occured
+         * @param options a object with options
+         * @param options.data the data as a multi array
+         * @param options.x the x pixel (screen location)
+         * @param options.y the y pixel (screen location)
+         * @param options.coord.x the x world coord 
+         * @param options.coord.y the y world coord
+         * @param options.extent (not always available) the place where this maptip for is done.
+         * @param options.extent.minx (not always available) the minx world coord (world location)
+         * @param options.extent.miny (not always available) the miny world coord (world location)
+         * @param options.extent.maxx (not always available) the maxx world coord (world location)
+         * @param options.extent.maxy (not always available) the maxy world coord (world location)
          * @param options.nr nr of layer that is done
          * @param options.total total identifies that needs to be done
          **/        
@@ -87,9 +100,11 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param layer the layer where this event occured
          * @param options a object with options
          * @param options.data the data as a multi array
-         * @param options.extent the place where this maptip for is done.
-         * @param options.extent.x the x pixel (screen location)
-         * @param options.extent.y the y pixel (screen location)
+         * @param options.x the x pixel (screen location)
+         * @param options.y the y pixel (screen location)
+         * @param options.coord.x the x world coord 
+         * @param options.coord.y the y world coord
+         * @param options.extent (not always available) the place where this maptip for is done.
          * @param options.extent.minx (not always available) the minx world coord (world location)
          * @param options.extent.miny (not always available) the miny world coord (world location)
          * @param options.extent.maxx (not always available) the maxx world coord (world location)

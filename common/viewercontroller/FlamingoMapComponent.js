@@ -430,22 +430,69 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             //onchange tool is called for a tool group but event is registerd on the MapComponent
             id=this.getId();
             object = this.getObject(id);
-        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){            
-            component = {extent: component[1]};
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){     
+            /**
+         * @field
+         * Occures when the map wants a maptip.
+         * @param map the map where this event occured
+         * @param options.x x in pixels on the screen
+         * @param options.y y in pixels on the screen
+         * @param options.coord.x the x coord in world coords
+         * @param options.coord.y the y coord in world coords
+         */
+        //component = {extent: component[1]};
+            var me = this;
+            var extent=component[1];
+            var centerx=(extent.minx+extent.maxx)/2;
+            var centery=(extent.miny+extent.maxy)/2;
+            var pixel = object.coordinateToPixel(centerx,centery);
+            var comp= {
+                coord:{
+                    x: centerx,
+                    y: centery
+                },
+                x: pixel.x,
+                y: pixel.y                
+            };
+            component=comp;
+            
         }else if ( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS){
             component= {
                 nr: component[1],
                 total: component[2]
             };
-        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){
-            var newComponent = new Object();
-            var layerId=component[1];            
-            newComponent.layer = this.getMap().getLayerByFlamingoId(layerId);
-            newComponent.data = component[2];
-            newComponent.extent= component[3];
-            newComponent.nr = component[4];
-            newComponent.total=component[5];
-            component = newComponent;
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){           
+            var extent=component[2];
+            var centerx=(extent.minx+extent.maxx)/2;
+            var centery=(extent.miny+extent.maxy)/2;
+            var map= object.map;
+            var pixel = map.coordinateToPixel(centerx,centery);
+            var comp= {
+                coord:{
+                    x: centerx,
+                    y: centery
+                },
+                x: pixel.x,
+                y: pixel.y                
+            };
+            //comp.data = component[1];
+            comp.extent= extent;
+            comp.nr = component[3];
+            comp.total=component[4];
+            //correct the data
+            var data=[];
+            var i=0;
+            for (var layerName in component[1]){
+                data[i]={
+                    request : {
+                        appLayer: object.appLayerId
+                        
+                    },
+                    features: component[1][layerName]
+                };
+            }       
+            comp.data=data;
+            component = comp;
         }else if (event == viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
             var layerId=component[1];
             //remove id_ from the layer id

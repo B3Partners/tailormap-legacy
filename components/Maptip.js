@@ -53,10 +53,9 @@ Ext.define ("viewer.components.Maptip",{
      * @see event ON_LAYER_ADDED
      */
     onAddLayer: function(map,mapLayer){     
-        console.log(mapLayer);
         if (mapLayer==null)
             return;
-        if(this.isMaptipLayer(mapLayer)){            
+        if(this.isSummaryLayer(mapLayer)){            
             var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
             //do server side getFeature.
@@ -66,7 +65,7 @@ Ext.define ("viewer.components.Maptip",{
                 //let the mapComponent handle the getFeature
                 mapLayer.setMaptips(mapLayer.getLayers().split(","));
                 //listen to the onMaptipData
-                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapTipData,this);       
+                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);       
             }            
         }
     },
@@ -93,7 +92,7 @@ Ext.define ("viewer.components.Maptip",{
             me.onDataReturned(options);
         },this.onFailure);
     },
-    onMapTipData: function(layer,options){
+    onMapData: function(layer,options){
         this.onDataReturned(options);
     },
     onDataReturned: function(options){
@@ -251,7 +250,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param layer a mapComponent layer.
      * @return a string of layer names in the given layer that have a maptip configured.
      */
-    isMaptipLayer: function(layer){
+    isSummaryLayer: function(layer){
         var appLayer=this.viewerController.app.appLayers[layer.appLayerId];
         if (appLayer.details !=undefined &&
             (appLayer.details["summary.description"]!=undefined ||

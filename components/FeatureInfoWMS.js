@@ -19,27 +19,13 @@
  * Monitor's the loading with a loadingbar
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.FeatureInfo",{
-    extend: "viewer.components.Maptip",   
+Ext.define ("viewer.components.FeatureInfoWMS",{
+    extend: "viewer.components.Component",   
     progressElement: null,
     constructor: function (conf){
-        //don't call maptip constructor but that of super maptip.
-        viewer.components.Maptip.superclass.constructor.call(this, conf);        
-        this.initConfig(conf);   
-        //make the balloon
-        this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloonFeatureInfo",this.width,this.height);
-        //listen to the on addlayer
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
-         //Add event when started the identify (clicked on the map)
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
-        //listen to the onmaptipcancel
-        //this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
-        //Add the maptip component to the framework
-        //conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
-        //this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
-        //this.getViewerController().mapComponent.addComponent(this.maptipComponent);        
-        return this;
-        /*if (this.popup){
+        viewer.components.FeatureInfo.superclass.constructor.call(this, conf);        
+        //this.initConfig(conf);   
+        if (this.popup){
             this.popup.hide();
         }
         this.progressElement = new Ext.Element(document.createElement("div"));
@@ -56,44 +42,8 @@ Ext.define ("viewer.components.FeatureInfo",{
         var contentDiv=Ext.get(this.getContentDiv());
         
         //contentDiv.applyStyles({position: "static"});
-        return this;*/
-        
-    },    
-    /**
-     * Event handler for when a layer is added to the map
-     * @see event ON_LAYER_ADDED
-     */
-    onAddLayer: function(map,mapLayer){     
-        if (mapLayer==null)
-            return;
-        if(this.isSummaryLayer(mapLayer)){            
-            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-            //do server side getFeature.
-            if (layer.hasFeatureType){
-                this.activateServerRequest(true);
-            }else{
-                //listen to the onMaptipData
-                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
-            }            
-        }
+        return this;
     },
-    activateServerRequest: function (sr){       
-        if (sr==this.serverRequestEnabled){
-            return;
-        }
-        this.serverRequestEnabled=sr;
-        if (this.serverRequestEnabled){
-            this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
-            this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
-        }else{
-            this.featureInfo=null;
-        }
-    }
-    ,onFeatureInfoStart: function(){
-        this.balloon.setContent("");
-        this.balloon.hide();
-    }/*,
     onGetFeatureInfoData: function(map,options){
         var contentDiv=Ext.get(this.getContentDiv());
         var data=options.data;
@@ -149,6 +99,6 @@ Ext.define ("viewer.components.FeatureInfo",{
     },
     getExtComponents: function() {
         return [];
-    }*/
+    }
 });
 
