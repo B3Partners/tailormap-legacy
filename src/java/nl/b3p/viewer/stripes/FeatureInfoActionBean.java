@@ -16,6 +16,9 @@
  */
 package nl.b3p.viewer.stripes;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
@@ -31,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
@@ -38,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Expression;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -219,15 +225,14 @@ public class FeatureInfoActionBean implements ActionBean {
                         }
                     }
                     
-                    String dwithin = String.format(Locale.ENGLISH,"DWITHIN(\"%s\", POINT(%f %f), %f, meters)",
-                            geomAttribute,
-                            x,
-                            y,
-                            distance);
+                    FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
                     
-                    filter = filter != null ? "(" + dwithin + ") AND (" + filter + ")" : dwithin;
+                    Point point = new GeometryFactory().createPoint(new Coordinate(x, y));
+                    Filter dwithin = ff.dwithin(ff.property(geomAttribute), ff.literal(point), distance, "meters");
+
+                    Filter currentFilter = filter != null ? CQL.toFilter(filter) : null;
+                    Filter f = currentFilter != null ? ff.and(dwithin, currentFilter) : dwithin;
                     
-                    Filter f = CQL.toFilter(filter);
                     f = (Filter)f.accept(new RemoveDistanceUnit(), null);
                     q.setFilter(f);
                     q.setMaxFeatures(limit);
