@@ -22,9 +22,12 @@ Ext.define ("viewer.components.Edit",{
     extend: "viewer.components.Component",
     vectorLayer:null,
     inputContainer:null,
-    geomType:null,
+    showGeomType:null,
+    newGeomType:null,
     mode:null,
+    layerSelector:null,
     toolMapClick:null,
+    currentFID:null,
     config:{
         title: "",
         iconUrl: "",
@@ -47,7 +50,7 @@ Ext.define ("viewer.components.Edit",{
         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
             id: this.name + 'VectorLayer',
             name: this.name + 'VectorLayer',
-            geometrytypes:["Circle","Polygon","Point","LineString"],
+            geometrytypes:["Circle","Polygon","MultiPolygon","Point", "LineString"],
             showmeasures:false,
             style: {
                 fillcolor: "0xFF0000",
@@ -59,7 +62,7 @@ Ext.define ("viewer.components.Edit",{
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         
         this.toolMapClick = Ext.create ("viewer.components.tools.ToolMapClick",{
-            id: this.name,
+            id: this.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
                 scope:this
@@ -99,6 +102,8 @@ Ext.define ("viewer.components.Edit",{
                 items:[
                 {
                     xtype: 'button',
+                    id: this.name +"newButton",
+                    disabled: true,
                     tooltip: "Nieuw",
                     text: "Nieuw",
                     listeners: {
@@ -110,7 +115,9 @@ Ext.define ("viewer.components.Edit",{
                 },
                 {
                     xtype: 'button',
+                    id : this.name + "editButton",
                     tooltip: "Bewerk",
+                    disabled: true,
                     text: "Bewerk",
                     listeners: {
                         click:{
@@ -120,7 +127,7 @@ Ext.define ("viewer.components.Edit",{
                     }
                 },
                 {
-                    id : "geomLabel",
+                    id : this.name + "geomLabel",
                     margin: 5,
                     text: '',
                     xtype: "label"
@@ -142,6 +149,7 @@ Ext.define ("viewer.components.Edit",{
                 items:[
                 {
                     xtype: 'button',
+                    id : this.name + "cancelButton",
                     tooltip: "Annuleren",
                     text: "Annuleren",
                     listeners: {
@@ -153,6 +161,7 @@ Ext.define ("viewer.components.Edit",{
                 },
                 {
                     xtype: 'button',
+                    id : this.name + "saveButton",
                     tooltip: "Opslaan",
                     text: "Opslaan",
                     listeners: {
@@ -171,27 +180,30 @@ Ext.define ("viewer.components.Edit",{
         var config = {
             viewerController : this.viewerController,
             restriction : "hasConfiguredLayers",
+            id : this.name + "layerSelector",
             layers: this.layers,
             div: this.name + 'LayerSelectorPanel'
         };
-        var ls = Ext.create("viewer.components.LayerSelector",config);
-        ls.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
     layerChanged : function (item){
-        this.vectorLayer.removeAllFeatures();
-        this.mode=null;
-        this.viewerController.mapComponent.getMap().removeMarker("edit");
-        
-        this.inputContainer.setLoading("Laad attributen...");
-        this.inputContainer.removeAll();
-        var appLayer = this.viewerController.getApplayer(item.serviceId, item.name);
-        
-        this.loadAttributes(appLayer);
-        this.inputContainer.setLoading(false);
+        if(item != null){
+            this.vectorLayer.removeAllFeatures();
+            this.mode=null;
+            this.viewerController.mapComponent.getMap().removeMarker("edit");
+
+            this.inputContainer.setLoading("Laad attributen...");
+            Ext.getCmp("edit1editButton").setDisabled(false);
+            Ext.getCmp("edit1newButton").setDisabled(false);
+            this.inputContainer.removeAll();
+            var appLayer = this.viewerController.getApplayer(item.serviceId, item.name);
+
+            this.loadAttributes(appLayer);
+            this.inputContainer.setLoading(false);
+        }
     },
     loadAttributes: function(appLayer) {
-        // this.clear();
-        
         this.appLayer = appLayer;
         
         var me = this;
@@ -217,23 +229,30 @@ Ext.define ("viewer.components.Edit",{
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
             type = geomAttribute.type;
         }
-        this.geomType = type;
+        this.showGeomType = type;
         var possible = true;
         var tekst = "";
         switch(type){
             case "multipolygon":
+                this.showGeomType = "MultiPolygon";
+                this.newGeomType = "Polygon";
+                tekst = "vlak";
+                break;
             case "polygon":
-                this.geomType = "Polygon";
+                this.showGeomType = "Polygon";
+                this.newGeomType = "Polygon";
                 tekst = "vlak";
                 break;
             case "multipoint":
             case "point":
-                this.geomType = "Point";
+                this.showGeomType = "Point";
+                this.newGeomType = "Point";
                 tekst = "punt";
                 break;
             case "multilinestring":
             case "linestring":
-                this.geomType = "LineString";
+                this.showGeomType = "LineString";
+                this.newGeomType = "LineString";
                 tekst = "lijn";
                 break;
             case "geometry":
@@ -243,7 +262,7 @@ Ext.define ("viewer.components.Edit",{
                 break;
         }
         
-        var gl = Ext.getCmp("geomLabel");
+        var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
             tekst=  'Bewerk het ' + tekst + " op de kaart";
             gl.setText(tekst);
@@ -266,9 +285,11 @@ Ext.define ("viewer.components.Edit",{
                         });
                     }else if (values.length > 1){
                         Ext.each(values,function(value,index,original){
-                            original[index] = {id: value};
+                            original[index] = {
+                                id: value
+                            };
                         });
-                         var valueStore = Ext.create('Ext.data.Store', {
+                        var valueStore = Ext.create('Ext.data.Store', {
                             fields: ['id'],
                             data : values
                         });
@@ -293,25 +314,52 @@ Ext.define ("viewer.components.Edit",{
         this.inputContainer.getForm().setValues(feature);
     },
     mapClicked : function (toolMapClick,comp){
-         this.toolMapClick.deactivateTool();
+        this.toolMapClick.deactivateTool();
+        Ext.get(this.getContentDiv()).mask("Haalt features op...")
         var coords = comp[1];
         var x = coords.x;
         var y = coords.y;
+        
+        var layerObj = this.layerSelector.getValue();
+        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
         this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
-        var resolution = this.viewerController.mapComponent.getMap().getResolution();
-        var feature = {
-            omtrek : "Erg groot, namelijk Noord Holland",
-            code : "2012",
-            wktgeom: "POLYGON((98914.7905763337 576961.290540899,101360.775481459 488905.833956381,166179.375467285 487071.345277537,174128.826408943 570234.832051804,146611.496226281 610593.582986375,98914.7905763337 576961.290540899))"
+        var featureInfo = Ext.create("viewer.FeatureInfo", {
+            viewerController: this.viewerController
+            });
+        var me =this;
+        featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution(),layer, function (features){
+            me.featuresReceived(features);
+        },this.failed);
+        
+    },
+    featuresReceived : function (features){
+        if(features.length == 1){
+            this.handleFeature(features[0]);
+        }else{
+        // Handel meerdere features af.
         }
-        this.featureSelected(feature);
+    },
+    handleFeature : function (feature){
+        this.inputContainer.getForm().setValues(feature);
+        this.currentFID = feature.__fid;
+        var wkt = feature[this.appLayer.geometryAttribute];
+        var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
+            wktgeom: wkt,
+            id: "T_0"
+        });
+        this.vectorLayer.addFeature(feat);
+        Ext.get(this.getContentDiv()).unmask()
+    },
+    failed : function (msg){
+        Ext.Msg.alert('Mislukt',msg);
+        Ext.get(this.getContentDiv()).unmask()
     },
     createNew : function(){
         this.vectorLayer.removeAllFeatures();
         this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
-        if(this.geomType != null){
-            this.vectorLayer.drawFeature(this.geomType);
+        if(this.newGeomType != null){
+            this.vectorLayer.drawFeature(this.newGeomType);
         }
     },
     edit : function(){
@@ -319,21 +367,39 @@ Ext.define ("viewer.components.Edit",{
         this.mode = "edit";
         this.toolMapClick.activateTool();
     },
-    featureSelected : function (feature){
-        this.inputContainer.getForm().setValues(feature);
-        var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
-            wktgeom: feature.wktgeom,
-            id: "T_0"
-        });
-        this.vectorLayer.addFeature(feat);
-    },
     save : function(){
         var feature =this.inputContainer.getValues();
         var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
-        feature.wktgeom = wkt;
+        feature[this.appLayer.geometryAttribute] = wkt;
+        if(this.mode == "edit"){
+            feature.__fid = this.currentFID;
+        }
+        
+        var layerObj = this.layerSelector.getValue();
+        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
+        Ext.create("viewer.EditFeature", {
+            viewerController: this.viewerController
+        })
+        .edit(
+            layer,
+            feature,
+            this.saveSucces, 
+            this.failed);
+    },
+    saveSucces : function (fid){
+        Ext.Msg.alert('Gelukt',"Het feature is aangepast.");
+        this.currentFID = fid;
+        this.viewerController.mapComponent.getMap().update();
+    },
+    saveFailed : function (msg){
+        Ext.Msg.alert('Mislukt',msg);
     },
     cancel : function (){
+        Ext.getCmp("edit1editButton").setDisabled(true);
+        Ext.getCmp("edit1newButton").setDisabled(true);
         this.mode=null;
+        this.layerSelector.combobox.select(null);
+        Ext.getCmp( this.name +"geomLabel").setText("");
         this.inputContainer.removeAll();
         this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
