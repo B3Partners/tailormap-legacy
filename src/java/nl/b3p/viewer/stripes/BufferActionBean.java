@@ -67,6 +67,8 @@ public class BufferActionBean implements ActionBean {
     private Integer buffer;
     @Validate
     private Integer maxFeatures = 250;
+    @Validate
+    private String color;
     
     private final Integer MAX_FEATURES = 250;
     
@@ -138,6 +140,14 @@ public class BufferActionBean implements ActionBean {
         this.maxFeatures = maxFeatures;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     //</editor-fold>
     
     @DefaultHandler
@@ -148,7 +158,11 @@ public class BufferActionBean implements ActionBean {
             cis.setBbox(bbox);
             cis.setWidth(width);
             cis.setHeight(height);
-            cis.setDefaultWktGeomColor(Color.RED);
+            Color c = Color.RED;
+            if(color != null){
+                c = Color.decode("#"+color);
+            }
+            cis.setDefaultWktGeomColor(c);
 
             List<CombineImageWkt> wkts = getFeatures(cis.getBbox());
             cis.setWktGeoms(wkts);
