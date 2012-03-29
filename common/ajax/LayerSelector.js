@@ -95,6 +95,11 @@ Ext.define ("viewer.components.LayerSelector",{
     getValue : function (){
         return this.combobox.getValue();
     },
+    getSelectedAppLayer : function (){
+        var layerObj = this.getValue();
+        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
+        return layer;
+    },
     getExtComponents: function() {
         return [ this.combobox.getId() ];
     }
