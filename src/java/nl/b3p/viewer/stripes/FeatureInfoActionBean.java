@@ -153,7 +153,7 @@ public class FeatureInfoActionBean implements ActionBean {
         List<String> propertyNames = new ArrayList<String>();
         boolean haveInvisibleProperties = false;
         for(ConfiguredAttribute ca: appLayer.getAttributes()) {
-            if((!edit && ca.isVisible()) || (edit && ca.isEditable()) || (edit && ca.getAttributeName().equals(geomAttribute))) {
+            if((!edit && ca.isVisible()) || (edit && ca.isEditable())) {
                 propertyNames.add(ca.getAttributeName());
             } else {
                 haveInvisibleProperties = true;
