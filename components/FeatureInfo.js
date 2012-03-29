@@ -22,7 +22,8 @@
 Ext.define ("viewer.components.FeatureInfo",{
     extend: "viewer.components.Maptip",   
     progressElement: null,
-    constructor: function (conf){
+    constructor: function (conf){    
+        conf.isPopup=true;
         //don't call maptip constructor but that of super maptip.
         viewer.components.Maptip.superclass.constructor.call(this, conf);        
         this.initConfig(conf);   

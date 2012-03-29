@@ -34,7 +34,8 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * @constructor
      */
-    constructor: function (conf){        
+    constructor: function (conf){     
+        conf.isPopup=true;
         viewer.components.Maptip.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         //make the balloon
@@ -151,13 +152,14 @@ Ext.define ("viewer.components.Maptip",{
                         var detailDiv = new Ext.Element(document.createElement("div"));
                         detailDiv.addCls("maptip_detail");
                         //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                        var detailLink = new Ext.Element(document.createElement("a"));
+                        var detailElem=document.createElement("a");
+                        detailElem.href='javascript: void(0)';
+                        var detailLink = new Ext.Element(detailElem);
                         detailLink.addListener("click",
                             function (evt,el,o){
                                 me.showDetails(feature);
                             },
                             this);
-                        detailLink.href = "javascript:void(0)";
                         detailLink.insertHtml("beforeEnd","Detail");
                         detailDiv.appendChild(detailLink);
                         leftColumnDiv.appendChild(detailDiv);
@@ -187,7 +189,19 @@ Ext.define ("viewer.components.Maptip",{
         } 
     },
     showDetails: function(feature){
-        alert(feature);
+        //alert(feature);        
+        //alert(this.popup);
+        var cDiv=Ext.get(this.getContentDiv());
+        var html="<table style='width: 100%;'>";
+        for( var key in feature){
+            html+="<tr>"
+            html+="<td><b>"+key+"</b></td>";
+            html+="<td>"+feature[key]+"</td>";
+            html+="</tr>"
+        }
+        html+="</table>";
+        cDiv.update(html);     
+        this.popup.show();
     },
     onFailure: function(e){
         Ext.MessageBox.alert("Error",e);
