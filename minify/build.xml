@@ -24,6 +24,7 @@
 		  <!--					The server-side Ajax wrappers -->
           <sources dir="${viewerhtml.path}/common/ajax">
             <file name="ServiceInfo.js"/>
+            <file name="CSWClient.js"/>
             <file name="FeatureService.js"/>
             <file name="SLD.js"/>
             <file name="Bookmark.js"/>

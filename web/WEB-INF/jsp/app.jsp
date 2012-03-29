@@ -81,6 +81,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/LayerSelector.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/ServiceInfo.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/CSWClient.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/FeatureService.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/SLD.js"></script>
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/Bookmark.js"></script>
