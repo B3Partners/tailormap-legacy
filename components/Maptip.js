@@ -76,7 +76,7 @@ Ext.define ("viewer.components.Maptip",{
         this.serverRequestEnabled=sr;
         if (this.serverRequestEnabled){
             this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
-            this.featureInfo=Ext.create("viewer.FeatureInfo", { viewerController: this.viewerController });
+            this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
         }else{
             this.featureInfo=null;
         }
@@ -94,8 +94,9 @@ Ext.define ("viewer.components.Maptip",{
     },
     onDataReturned: function(options){
         //alert(layer);
-        var data=options.data;
-        var html="";            
+        var me = this;
+        var data=options.data;        
+        var components=[];    
         //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
         if (data==null || data =="null" || data==undefined){
             return;
@@ -103,37 +104,77 @@ Ext.define ("viewer.components.Maptip",{
         for (var layerIndex in data){            
             var layer=data[layerIndex];
             if (layer.error){
-                html+="<div class='maptip_feature'>";
-                    html+=layer.error;
-                html+="</div>"
+                var errorDiv = new Ext.Element(document.createElement("div"));
+                errorDiv.addCls("maptip_error");
+                errorDiv.insertHtml("beforeEnd",layer.error);    
+                components.push(errorDiv);
             }else{
                 var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
-                /*for (var index in data[layerName]){
-                    var feature=data[layerName][index];                    
-                    html+="<div class='maptip_feature'>";
-                        html+="<div class='maptip_title'>";
-                            html+=this.replaceByAttributes(appLayer.details["summary.title"],feature);
-                        html+="</div>";
-                        html+="<div class='maptip_image'>";
-                            html+="<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>";
-                        html+="</div>";
-                        html+="<div class='maptip_description'>";
-                            html+=this.replaceByAttributes(appLayer.details["summary.description"],feature);
-                        html+="</div>";                        
-                        html+="<div class='maptip_link'>";
-                            html+="<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>";
-                        html+="</div>";
-                    html+="</div>" ;                   
-                }*/
+                var layerName= appLayer.layerName;
+                for (var index in layer.features){
+                    var feature = layer.features[index];
+                    var featureDiv = new Ext.Element(document.createElement("div"));
+                    featureDiv.addCls("maptip_feature");
+                    featureDiv.id="f"+appLayer.serviceId+"_"+layerName+"_"+index;
+                    //left column
+                    var leftColumnDiv = new Ext.Element(document.createElement("div"));
+                    leftColumnDiv.addCls("maptip_leftcolumn");
+                        //title
+                        var titleDiv = new Ext.Element(document.createElement("div"));
+                        titleDiv.addCls("maptip_title");
+                        titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature));
+                        leftColumnDiv.appendChild(titleDiv);
+                        //description
+                        var descriptionDiv = new Ext.Element(document.createElement("div"));
+                        descriptionDiv.addCls("maptip_description");
+                        descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description"],feature));
+                        leftColumnDiv.appendChild(descriptionDiv);
+                        //link
+                        var linkDiv = new Ext.Element(document.createElement("div"));
+                        linkDiv.addCls("maptip_link");
+                        linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>");
+                        leftColumnDiv.appendChild(linkDiv);
+                        //detail
+                        var detailDiv = new Ext.Element(document.createElement("div"));
+                        detailDiv.addCls("maptip_detail");
+                        //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
+                        var detailLink = new Ext.Element(document.createElement("a"));
+                        detailLink.addListener("click",
+                            function (evt,el,o){
+                                me.showDetails(feature);
+                            },
+                            this);
+                        detailLink.href = "javascript:void(0)";
+                        detailLink.insertHtml("beforeEnd","Detail");
+                        detailDiv.appendChild(detailLink);
+                        leftColumnDiv.appendChild(detailDiv);
+                    
+                    featureDiv.appendChild(leftColumnDiv);
+                    
+                    var rightColumnDiv = new Ext.Element(document.createElement("div"));
+                    rightColumnDiv.addCls("maptip_rightcolumn");
+                    
+                        var imageDiv = new Ext.Element(document.createElement("div"));
+                        imageDiv.addCls("maptip_image");
+                        imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>");
+                        rightColumnDiv.appendChild(imageDiv);
+                    
+                    featureDiv.appendChild(rightColumnDiv);
+                    
+                    components.push(featureDiv);
+                }
             }
         }
-        if (!Ext.isEmpty(html)){
+        if (!Ext.isEmpty(components)){
             var x= options.x;
             var y= options.y;               
             this.balloon.setPosition(x,y,true);
-            this.balloon.addContent(html);
+            this.balloon.addElements(components);
             this.balloon.show();
         } 
+    },
+    showDetails: function(feature){
+        alert(feature);
     },
     onFailure: function(e){
         Ext.MessageBox.alert("Error",e);
@@ -142,7 +183,7 @@ Ext.define ("viewer.components.Maptip",{
      * Event handler for when a maptip returned data
      * @see event ON_MAPTIP_DATA
      */
-    onMaptipData: function(layer,options){
+   /* onMaptipData: function(layer,options){
         //alert(layer);
         var html="";            
         //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
@@ -155,20 +196,7 @@ Ext.define ("viewer.components.Maptip",{
             var appLayer =  this.viewerController.getApplayer(layer.serviceId,applayerName);
             for (var index in data[layerName]){
                 var feature=data[layerName][index];                    
-                html+="<div class='maptip_feature'>";
-                    html+="<div class='maptip_title'>";
-                        html+=this.replaceByAttributes(appLayer.details["summary.title"],feature);
-                    html+="</div>";
-                    html+="<div class='maptip_image'>";
-                        html+="<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>";
-                    html+="</div>";
-                    html+="<div class='maptip_description'>";
-                        html+=this.replaceByAttributes(appLayer.details["summary.description"],feature);
-                    html+="</div>";                        
-                    html+="<div class='maptip_link'>";
-                        html+="<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>";
-                    html+="</div>";
-                html+="</div>"                    
+                                  
             }
         }
         if (!Ext.isEmpty(html)){
@@ -182,7 +210,7 @@ Ext.define ("viewer.components.Maptip",{
             this.balloon.addContent(html);
             this.balloon.show();
         }        
-    },
+    },*/
     /**
      * Event handler for the ON_MAPTIP_CANCEL event
      * @see event ON_MAPTIP_CANCEL
@@ -600,6 +628,14 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         if (element==null)
             return;
         element.insertHtml("beforeEnd", value);
+    }
+    this.addElements = function (elements){
+        var element=this.getContentElement();
+        if (element==null)
+            return;
+        for (var i=0; i < elements.length; i++){
+            element.appendChild(elements[i]);
+        }
     }
     this.hide = function(){
         if (this.balloon!=undefined)

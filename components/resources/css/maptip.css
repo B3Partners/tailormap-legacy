@@ -79,18 +79,31 @@
 /*** Features css ***/
 .maptip_feature{
 }
-.maptip_feature div{
-    width: 100%;
+.maptip_feature div{    
     float: left;
     clear: right;
 }
+.maptip_leftcolumn{
+    width: 75%;
+}
+.maptip_rightcolumn{
+    width: 25%;
+}
 .maptip_title{
+    width: 100%;
     font-weight: bold;
 }
 .maptip_image{
+    width: 100%;
     float: right;
 }
 .maptip_description{
+    width: 100%;
 }
 .maptip_link{
+    width: 60%;
+    clear: none;
+}
+.maptip_detail{
+    width: 40%;
 }
