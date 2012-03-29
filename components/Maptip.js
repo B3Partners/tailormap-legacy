@@ -41,7 +41,7 @@ Ext.define ("viewer.components.Maptip",{
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //listen to the onmaptipcancel
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onDataReturned,this);        
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
@@ -52,7 +52,8 @@ Ext.define ("viewer.components.Maptip",{
      * Event handler for when a layer is added to the map
      * @see event ON_LAYER_ADDED
      */
-    onAddLayer: function(map,mapLayer){
+    onAddLayer: function(map,mapLayer){     
+        console.log(mapLayer);
         if (mapLayer==null)
             return;
         if(this.isMaptipLayer(mapLayer)){            
@@ -65,7 +66,7 @@ Ext.define ("viewer.components.Maptip",{
                 //let the mapComponent handle the getFeature
                 mapLayer.setMaptips(mapLayer.getLayers().split(","));
                 //listen to the onMaptipData
-                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMaptipData,this);       
+                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapTipData,this);       
             }            
         }
     },
@@ -91,6 +92,9 @@ Ext.define ("viewer.components.Maptip",{
             options.data=data;
             me.onDataReturned(options);
         },this.onFailure);
+    },
+    onMapTipData: function(layer,options){
+        this.onDataReturned(options);
     },
     onDataReturned: function(options){
         //alert(layer);

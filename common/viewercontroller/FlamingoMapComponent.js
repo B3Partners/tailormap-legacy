@@ -471,8 +471,24 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             component=comp;
         }else if (event == viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA){            
             var comp=new Object();
-            comp.extent=component[2];
-            comp.data=component[1];
+            comp.coord=component[2];
+            //comp.data=component[1];
+            comp.x = component[2].x;
+            comp.y = component[2].y;
+            comp.coord.x=component[2].minx;
+            comp.coord.y=component[2].miny;            
+            var data=[];
+            var i=0;
+            for (var layerName in component[1]){
+                data[i]={
+                    request : {
+                        appLayer: object.appLayerId
+                        
+                    },
+                    features: component[1][layerName]
+                };
+            }            
+            comp.data=data;
             component=comp;
         }else if(event == viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED ||event == viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED){
             var layerName = component[1].fmc_layername;
