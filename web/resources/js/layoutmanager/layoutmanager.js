@@ -198,6 +198,10 @@ Ext.onReady(function() {
                                                     '<input type="checkbox" id="' + layoutRegion.get('id') + '_useTabs" />' + 
                                                 '</div>';
                 }
+                layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
+                                                'Achtergrondkleur: ' + 
+                                                '<input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 100%;" />' + 
+                                            '</div>';
                 layoutRegionElement.insertHtml('beforeEnd',
                     '<div class="layout_title">' +
                         '<strong class="layoutregion_title">' + changeCaseFirstLetter(layoutRegion.get('id').replace('_', ' '), false) + '</strong><br />' + 
@@ -353,6 +357,13 @@ Ext.onReady(function() {
                             }
                             Ext.fly(regionId + '_useTabs').dom.checked = checked;
                         }
+                        var bgcolor = '';
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['bgcolor'])) {
+                            bgcolor = layoutJson[regionId]['layout']['bgcolor'];
+                        }
+                        Ext.fly(regionId + '_bgcolor').set({
+                            value: bgcolor
+                        });
                     }
                     if(Ext.isDefined(layoutJson[regionId]['components'])) {
                         Ext.Array.each(layoutJson[regionId]['components'], function(componentref, index) {
@@ -574,7 +585,8 @@ Ext.onReady(function() {
                 }
             }
             Ext.apply(layoutConfig, {
-                'useTabs': useTabs
+                'useTabs': useTabs,
+                'bgcolor': Ext.fly(regionId + '_bgcolor').getValue() || ''
             });
             layout[regionId] = {
                 "layout": layoutConfig,
