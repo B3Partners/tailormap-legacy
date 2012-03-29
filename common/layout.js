@@ -147,11 +147,18 @@ Ext.define('viewer.LayoutManager', {
                         extLayout = { type: 'hbox', align: 'stretch' };
                     }
                 }
+                var style = {};
+                if(regionlayout.bgcolor != '') {
+                    style = {
+                        backgroundColor: regionlayout.bgcolor
+                    };
+                }
                 return Ext.apply({
                     xtype: 'container',
                     region: regionid,
                     layout: extLayout,
-                    items: componentItems
+                    items: componentItems,
+                    style: style
                 }, layout);
             } else if(regionitems[0].regionDefaultConfig.region == "popupwindow") {
                 
@@ -242,11 +249,18 @@ Ext.define('viewer.LayoutManager', {
                     extLayout = { type: 'hbox', align: 'stretch' };
                 }
             }
+            var style = {};
+            if(regionlayout.bgcolor != '') {
+                style = {
+                    backgroundColor: regionlayout.bgcolor
+                };
+            }
             if(item.regionDefaultConfig.subregion != "none") {
                 items[item.regionDefaultConfig.subregion] = Ext.apply({
                     xtype: 'container',
                     items: componentItems,
-                    layout: extLayout
+                    layout: extLayout,
+                    style: style
                 }, sublayout);
             }
         });

@@ -191,7 +191,7 @@ Ext.define("viewer.components.Component",{
             Ext.util.CSS.createStyleSheet('.' + className + ' { background-image: url(\'' + this.config.titlebarIcon + '\') !important; }', baseClassName + 'iconStyle');
             return className;
         }
-        return 'applicationSpriteClass ' + baseClassName + '_popup';
+        return 'applicationSpriteClassPopup ' + baseClassName + '_popup';
     },
 
     createIconStylesheet: function() {
@@ -230,6 +230,7 @@ Ext.define("viewer.components.Component",{
                 paddingCorrection: 3
             };
             var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
+                styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';
                 styleContent += ' .buttonDefaultClass_normal button { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
                 styleContent += ' .buttonDefaultClass_hover button { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
                 styleContent += ' .buttonDefaultClass_click button { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
