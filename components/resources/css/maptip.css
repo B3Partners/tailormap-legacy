@@ -71,7 +71,7 @@
 }
 .balloonCloseButton{
     position: absolute;
-    background: url("../images/close.gif") no-repeat scroll 0 0 transparent;
+    background: url("../images/maptip/close.gif") no-repeat scroll 0 0 transparent;
     height: 17px;
     width: 17px;
     cursor: pointer;

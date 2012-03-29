@@ -28,36 +28,14 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.initConfig(conf);   
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloonFeatureInfo",this.width,this.height);
+        //show close button and dont close on mouse out.
+        this.balloon.closeOnMouseOut=false;
+        this.balloon.showCloseButton=true;
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
          //Add event when started the identify (clicked on the map)
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
-        //listen to the onmaptipcancel
-        //this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
-        //Add the maptip component to the framework
-        //conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
-        //this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
-        //this.getViewerController().mapComponent.addComponent(this.maptipComponent);        
-        return this;
-        /*if (this.popup){
-            this.popup.hide();
-        }
-        this.progressElement = new Ext.Element(document.createElement("div"));
-        this.progressElement.addCls("featureinfo_progress");
-        //Add event when started the identify (clicked on the map)
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfo,this);
-        
-        //TODO if no attribute data configuration available:
-        //register ondata event.
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onGetFeatureInfoData,this);
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_PROGRESS,this.onProgress,this);
-        //todo: else with configured attributes:
-        
-        var contentDiv=Ext.get(this.getContentDiv());
-        
-        //contentDiv.applyStyles({position: "static"});
-        return this;*/
-        
+        return this;        
     },    
     /**
      * Event handler for when a layer is added to the map
@@ -93,62 +71,6 @@ Ext.define ("viewer.components.FeatureInfo",{
     ,onFeatureInfoStart: function(){
         this.balloon.setContent("");
         this.balloon.hide();
-    }/*,
-    onGetFeatureInfoData: function(map,options){
-        var contentDiv=Ext.get(this.getContentDiv());
-        var data=options.data;
-        var dataAdded=false;
-        var html="";
-        html+="<div class='featureinfo_layer'>";
-        for (var layerName in data){
-            var appLayer = this.viewerController.getApplayer(options.layer.serviceId,layerName);
-            html+="<div class='featureinfo_layertitle'>"
-                //TODO: Use the alias of the layer???
-                html+=appLayer.layerName;          
-            html+="</div>";
-            html+="<div class='featureinfo_features'>";
-            for (var index in data[layerName]){
-                dataAdded=true;
-                html+="<div class='featureinfo_layername'>"+layerName+"</div>";
-                html+="<div class='featureinfo_attributes'>";
-                for (var attributeName in data[layerName][index]){
-                    html+="<div class='featureinfo_attr'>";
-                        html+="<div class='featureinfo_attrname'>"+attributeName+"</div>";
-                        html+="<div class='featureinfo_attrvalue'>"+data[layerName][index][attributeName]+"</div>";
-                    html+="</div>";
-                }
-                html+="</div>";
-            }            
-            html+="</div>";
-        }
-        html+="</div>";
-        if(dataAdded)
-            contentDiv.insertHtml("beforeEnd", html);                
-    },
-    onFeatureInfo: function(map,options){          
-        Ext.get(this.getContentDiv()).update("");
-        Ext.get(this.getContentDiv()).appendChild(this.progressElement);
-        if(this.popup){
-            this.popup.show();
-        }
-        this.setProgress(0);      
-        
-    },
-    onProgress: function(map,options){
-        if (options.total==options.nr){
-            this.progressElement.hide();
-        }else{
-            this.progressElement.show();
-            //calculate the percentage but add 1 to both because we begin at 0
-            var percentage=100/(options.total+1) * (options.nr+1);
-            this.setProgress(percentage);      
-        }
-    },
-    setProgress: function (progress){
-        this.progressElement.update(""+progress+" %");
-    },
-    getExtComponents: function() {
-        return [];
-    }*/
+    }
 });
 
