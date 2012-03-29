@@ -39,7 +39,7 @@ Ext.define('select.TreeNode', {
         var nodeType = '';
         if(fieldName == "icon") {
             nodeType = this.get('type');
-            if(nodeType == "category" || nodeType == "level") return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
+            if(nodeType == "category" || nodeType == "level" || nodeType == "cswresult") return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
             if(nodeType == "maplevel") return contextPath + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
             if(nodeType == "layer" || nodeType == "appLayer") return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
             if(nodeType == "service") return contextPath + '/viewer-html/components/resources/images/selectionModule/serviceok.png';
@@ -273,13 +273,23 @@ Ext.define ("viewer.components.SelectionModule",{
                             {id: 'radioRegistry', name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {id: 'radioCustom', name: 'layerSource', boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {xtype: 'textfield', hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
-                            {xtype: 'combo', store: [ ['wms','WMS'], /*['csw','CSW'],*/ ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Selecteer'},
+                            {xtype: 'combo', store: [ ['wms','WMS'], ['csw','CSW'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Selecteer'},
                             {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
                                 var protocol = Ext.getCmp('customServiceUrlSelect').getValue();
+                                var url = Ext.getCmp('customServiceUrlTextfield').getValue();
                                 if(protocol == 'csw') {
-                                    // do something with CSW
+                                    var csw = Ext.create("viewer.CSWClient", {
+                                        url: url
+                                    });
+                                    csw.loadInfo(
+                                        function(results) {
+                                            me.populateCSWTree(results);
+                                        },
+                                        function(msg) {
+                                            Ext.MessageBox.alert("Foutmelding", msg);
+                                        }
+                                    );
                                 } else {
-                                    var url = Ext.getCmp('customServiceUrlTextfield').getValue();
                                     var si = Ext.create("viewer.ServiceInfo", {
                                         protocol: protocol,
                                         url: url
@@ -635,7 +645,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 }
             }
         }
-        me.insertTreeNode(levels, me.treePanels.applicationTree.treePanel);
+        me.insertTreeNode(levels, me.treePanels.applicationTree.treePanel.getRootNode());
     },
 
     loadSelectedLayers: function() {
@@ -658,7 +668,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 nodes.push(layer);
             }
         }
-        me.insertTreeNode(nodes, me.treePanels.selectionTree.treePanel);
+        me.insertTreeNode(nodes, rootNode);
     },
 
     addLevel: function(levelId, showChildren, showLayers) {
@@ -712,12 +722,13 @@ Ext.define ("viewer.components.SelectionModule",{
         return treeNodeLayer;
     },
     
-    createNode: function (nodeid, nodetext, serviceid, leaf) {
+    createNode: function (nodeid, nodetext, serviceid, leaf, expanded) {
+        if(typeof expanded === "undefined") expanded = true;
         return {
             text: nodetext,
             name: nodetext,
             id: nodeid,
-            expanded: true,
+            expanded: expanded,
             leaf: leaf,
             origData: {
                 id: nodeid.substring(1),
@@ -726,11 +737,12 @@ Ext.define ("viewer.components.SelectionModule",{
         };
     },
 
-    insertTreeNode: function(node, treepanel) {
+    insertTreeNode: function(node, root, autoExpand) {
         var me = this;
-        var root = treepanel.getRootNode();
-        root.appendChild(node);
-        root.expand();
+        if(typeof autoExpand == "undefined") autoExpand = true;
+        var addedNode = root.appendChild(node);
+        if(autoExpand) root.expand();
+        return addedNode;
     },
     
     handleSourceChange: function(field, newval) {
@@ -767,11 +779,17 @@ Ext.define ("viewer.components.SelectionModule",{
         }
     },
     
-    populateCustomServiceTree: function(userService) {
+    populateCustomServiceTree: function(userService, node, autoExpand) {
         var me = this;
-        var rootNode = me.treePanels.customServiceTree.treePanel.getRootNode();
-        // First remove all current children
-        rootNode.removeAll(true);
+        if(typeof node === "undefined") {
+            node = me.treePanels.customServiceTree.treePanel.getRootNode();
+            // First remove all current children
+            var delNode;
+            while (delNode = node.childNodes[0]) {
+                node.removeChild(delNode);
+            }
+        }
+        if(typeof autoExpand === "undefined") autoExpand = true;
         // Create service node
         var userServiceId = 'us' + (++me.addedServicesCount);
         userService.id = userServiceId;
@@ -780,7 +798,48 @@ Ext.define ("viewer.components.SelectionModule",{
         var serviceNode = me.createNode('s' + userServiceId, userService.name, null, false);
         serviceNode.type = 'service';
         serviceNode.children = me.createCustomNodesList(userService.topLayer, userServiceId);
-        me.insertTreeNode(serviceNode, me.treePanels.customServiceTree.treePanel);
+        me.insertTreeNode(serviceNode, node, autoExpand);
+    },
+    
+    populateCSWTree: function(results) {
+        var me = this;
+        var rootNode = me.treePanels.customServiceTree.treePanel.getRootNode();
+        // First remove all current children
+        var delNode;
+        while (delNode = rootNode.childNodes[0]) {
+            rootNode.removeChild(delNode);
+        }
+        // Create service node
+        for(var i in results) {
+            me.addCSWResult(results[i], rootNode);
+        }
+    },
+    
+    addCSWResult: function(cswResult, rootNode) {
+        var me = this;
+        var userServiceId = 'csw' + (++me.addedServicesCount);
+        cswResult.id = userServiceId;
+        var cswNode = me.createNode('csw' + userServiceId, cswResult.label, null, false, false);
+        cswNode.type = 'cswresult';
+        var addedNode = me.insertTreeNode(cswNode, rootNode, false);
+        addedNode.data.loadedService = false;
+        addedNode.addListener('beforeexpand', function() {
+            if(addedNode && !addedNode.data.loadedService) {
+                addedNode.data.loadedService = true;
+                var si = Ext.create("viewer.ServiceInfo", {
+                    protocol: cswResult.protocol,
+                    url: cswResult.url
+                });
+                si.loadInfo(
+                    function(info) {
+                        me.populateCustomServiceTree(info, addedNode, true);
+                    },
+                    function(msg) {
+                        Ext.MessageBox.alert("Foutmelding", msg);
+                    }
+                );
+            }
+        });
     },
     
     createCustomNodesList: function(node, userServiceId) {
