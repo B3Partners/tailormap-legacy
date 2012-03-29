@@ -95,11 +95,11 @@
         className: "viewer.components.FeatureInfo",
         name: "Feature info",
         shortName: "Fi",
-        sources: ["FeatureInfo.js"],
+        sources: ["Maptip.js","FeatureInfo.js"],
         closureCompilerSafe: true,
         type : "popup",
         singleton: true,
-        restrictions: ["popupwindow"],
+        restrictions: ["content"],
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip", title: "Titel", titlebarIcon:"Titelbalk icoon"},
             source: {tooltip: "Feature info", title : "", titlebarIcon:""}
