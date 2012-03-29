@@ -21,6 +21,8 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -78,6 +80,9 @@ public class FeatureInfoActionBean implements ActionBean {
     @Validate
     private boolean edit = false;
     
+    @Validate
+    private boolean arrays = false;
+    
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
         return context;
@@ -133,6 +138,14 @@ public class FeatureInfoActionBean implements ActionBean {
 
     public void setEdit(boolean edit) {
         this.edit = edit;
+    }
+
+    public boolean isArrays() {
+        return arrays;
+    }
+
+    public void setArrays(boolean arrays) {
+        this.arrays = arrays;
     }
     //</editor-fold>
     
@@ -254,7 +267,7 @@ public class FeatureInfoActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));        
     }    
     
-    private static JSONArray getJSONFeatures(FeatureSource fs, Query q, List<String> propertyNames, Map<String,String> attributeAliases) throws IOException, JSONException {
+    private JSONArray getJSONFeatures(FeatureSource fs, Query q, List<String> propertyNames, Map<String,String> attributeAliases) throws IOException, JSONException {
         FeatureIterator<SimpleFeature> it = fs.getFeatures(q).features();
         JSONArray features = new JSONArray();
         try {
@@ -262,10 +275,19 @@ public class FeatureInfoActionBean implements ActionBean {
                 SimpleFeature f = it.next();
 
                 JSONObject j = new JSONObject();
-                for(String name: propertyNames) {
-                    String alias = attributeAliases.get(name);
-                    j.put(alias != null ? alias : name, f.getAttribute(name));
-                }                     
+
+                if(arrays) {
+                    int idx = 0;
+                    for(String name: propertyNames) {
+                        Object value = f.getAttribute(name);
+                        j.put("c" + idx++, formatValue(value));
+                    }    
+                } else {
+                    for(String name: propertyNames) {
+                        String alias = attributeAliases.get(name);
+                        j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
+                    }                     
+                }
                 j.put(FID, f.getID());
                 features.put(j);
             }
@@ -275,4 +297,17 @@ public class FeatureInfoActionBean implements ActionBean {
             fs.getDataStore().dispose();
         }
     }
+    
+    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    
+    private Object formatValue(Object value) {
+        if(value instanceof Date) {
+            // JSON has no date type so format the date as it is used for 
+            // display, not calculation
+            return dateFormat.format((Date)value);
+        } else {
+            return value;
+        }
+    }
+    
 }
