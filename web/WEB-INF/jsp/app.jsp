@@ -95,6 +95,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
+        <c:if test="${!empty actionBean.application.details.steunkleur1 || !empty actionBean.application.details.steunkleur2}">
+            <c:set var="steunkleur1" value="#A9A9A9" />
+            <c:if test="${!empty actionBean.application.details.steunkleur1}">
+                <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1}" />
+            </c:if>
+            <c:set var="steunkleur2" value="#333333" />
+            <c:if test="${!empty actionBean.application.details.steunkleur2}">
+                <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2}" />
+            </c:if>
+            <style type="text/css">
+                /* Main background colors */
+                .x-border-layout-ct {
+                    background-color: #E0E0E0;
+                }
+
+                /* Popup borders & background colors (popup borders) */
+                .x-window-default {
+                    border-color: ${steunkleur1};
+                    box-shadow: 0 1px 0 0 ${steunkleur1} inset, 0 -1px 0 0 ${steunkleur1} inset, -1px 0 0 0 ${steunkleur1} inset, 1px 0 0 0 ${steunkleur1} inset;
+                    background-color: ${steunkleur1};
+                }
+
+                /* Popup window header */
+                .x-window-header-default-top {
+                    background-color: ${steunkleur1}; /* Header background color */
+                    box-shadow: 0 1px 0 0 ${steunkleur1} inset, -1px 0 0 0 ${steunkleur1} inset, 1px 0 0 0 ${steunkleur1} inset;
+                }
+
+                /* Popup content colors */
+                .x-window-body-default {
+                    background-color: ${steunkleur1};  /* Visible when dragging the popup  */
+                    border-color: ${steunkleur1}; /* Border round the content */
+                }
+
+                /* Panel header colors */
+                .x-panel-header-default {
+                    background-color: ${steunkleur1};
+                    background-image: -moz-linear-gradient(center top , ${steunkleur1}, ${steunkleur1});
+                    border-color: ${steunkleur1};
+                }
+
+                /* Panel header colors */
+                .x-panel-header-default-top {
+                    box-shadow: 0 1px 0 0 ${steunkleur1} inset;
+                }
+
+                /* Panel border */
+                .x-panel-default {
+                    border-color: ${steunkleur1};
+                }
+
+                /* Textcolor */
+                .x-panel-body-default /* Panels (tree's, etc.) */,
+                .x-panel-header-text-default /* Panel headers */,
+                .x-window-body-default /* Popup body */,
+                .x-border-layout-ct /* Main containers */,
+                .x-body /* Body class */,
+                .x-btn, .x-btn-inner, .x-btn .x-btn-inner /* Button classes */,
+                .x-form-field /* Form fields */,
+                .x-window-header-text-default /* Popup header */ {
+                    color: ${steunkleur2};
+                }
+            </style>
+        </c:if>
+        
         ${actionBean.componentSourceHTML}
     </head>
     <body>
