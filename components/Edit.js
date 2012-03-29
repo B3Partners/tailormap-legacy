@@ -28,6 +28,7 @@ Ext.define ("viewer.components.Edit",{
     layerSelector:null,
     toolMapClick:null,
     currentFID:null,
+    geometryEditable:null,
     config:{
         title: "",
         iconUrl: "",
@@ -198,7 +199,6 @@ Ext.define ("viewer.components.Edit",{
             Ext.getCmp("edit1newButton").setDisabled(false);
             this.inputContainer.removeAll();
             var appLayer = this.viewerController.getApplayer(item.serviceId, item.name);
-
             this.loadAttributes(appLayer);
             this.inputContainer.setLoading(false);
         }
@@ -224,6 +224,7 @@ Ext.define ("viewer.components.Edit",{
     },
     initAttributeInputs : function (appLayer){
         var attributes = appLayer.attributes;
+        this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
         var type = "geometry";
         if(appLayer.geometryAttributeIndex != undefined || appLayer.geometryAttributeIndex != null ){
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
@@ -272,6 +273,9 @@ Ext.define ("viewer.components.Edit",{
                 if(attribute.editable){
                     var values = attribute.editValues;
                     var input = null;
+                    if(i == appLayer.geometryAttributeIndex){
+                        continue;
+                    }
                     if(values == undefined || values.length == 1){
                         var fieldText = "";
                         if(values!= undefined){
@@ -334,20 +338,24 @@ Ext.define ("viewer.components.Edit",{
     },
     featuresReceived : function (features){
         if(features.length == 1){
-            this.handleFeature(features[0]);
+            var feat = this.indexFeatureToNamedFeature(features[0]);
+            this.handleFeature(feat);
         }else{
         // Handel meerdere features af.
+            this.createFeaturesGrid(features);
         }
     },
     handleFeature : function (feature){
         this.inputContainer.getForm().setValues(feature);
         this.currentFID = feature.__fid;
-        var wkt = feature[this.appLayer.geometryAttribute];
-        var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
-            wktgeom: wkt,
-            id: "T_0"
-        });
-        this.vectorLayer.addFeature(feat);
+        if(this.geometryEditable){
+            var wkt = feature[this.appLayer.geometryAttribute];
+            var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
+                wktgeom: wkt,
+                id: "T_0"
+            });
+            this.vectorLayer.addFeature(feat);
+        }
         Ext.get(this.getContentDiv()).unmask()
     },
     failed : function (msg){
@@ -358,7 +366,7 @@ Ext.define ("viewer.components.Edit",{
         this.vectorLayer.removeAllFeatures();
         this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
-        if(this.newGeomType != null){
+        if(this.newGeomType != null && this.geometryEditable){
             this.vectorLayer.drawFeature(this.newGeomType);
         }
     },
@@ -369,8 +377,11 @@ Ext.define ("viewer.components.Edit",{
     },
     save : function(){
         var feature =this.inputContainer.getValues();
-        var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
-        feature[this.appLayer.geometryAttribute] = wkt;
+        
+        if(this.geometryEditable){
+            var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
+            feature[this.appLayer.geometryAttribute] = wkt;
+        }
         if(this.mode == "edit"){
             feature.__fid = this.currentFID;
         }
@@ -407,5 +418,108 @@ Ext.define ("viewer.components.Edit",{
     },
     getExtComponents: function() {
         return [ this.maincontainer.getId() ];
+    },
+    createFeaturesGrid : function (features){
+        
+        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var attributes = appLayer.attributes;
+        var index = 0;
+        var attributeList = new Array();
+        var columns = new Array();
+        for(var i= 0 ; i < attributes.length ;i++){
+            var attribute = attributes[i];
+            if(attribute.editable){
+                
+                var attIndex = index++;
+                
+                var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
+                attributeList.push({
+                    name: "c" + attIndex,
+                    type : 'string'
+                });
+                columns.push({
+                    id: "c" +attIndex,
+                    text:colName,
+                    dataIndex: "c" + attIndex,
+                    flex: 1,
+                    filter: {
+                        xtype: 'textfield'
+                    }
+                });
+            }
+        }
+        Ext.define(this.name + 'Model', {
+            extend: 'Ext.data.Model',
+            fields: attributeList
+        });
+        var data = [];
+        for ( var i = 0 ; i < features.length ; i++){
+            
+        }
+     
+        var store = Ext.create('Ext.data.Store', {
+            pageSize: 10,
+            model: this.name + 'Model',
+            data:features
+        });
+
+        var grid = Ext.create('Ext.grid.Panel',  {
+            id: this.name + 'Grid',
+            store: store,
+            columns: columns
+        });
+        var container = Ext.create("Ext.container.Container",{
+            id: this.name + "GridContainer",
+            layout: 'fit',
+            items:[grid]
+        });
+        
+        var window = Ext.create("Ext.window.Window",{
+            id: this.name + "FeaturesWindow",
+            width: 500,
+            height: 400,
+            layout: 'fit',
+            title: "Kies één feature",
+            items: [container]
+        });
+        
+        /*
+        this.pager = Ext.create('Ext.PagingToolbar', {
+            id: this.name + 'Pager',
+            store: store,
+            displayInfo: true,
+            displayMsg: 'Feature {0} - {1} van {2}',
+            emptyMsg: "Geen features om weer te geven",
+            renderTo: this.name + 'PagerPanel',
+            height: 30
+        });*/
+        window.show();
+    },
+    indexFeatureToNamedFeature : function (feature){
+        var map = this.makeConversionMap();
+        var newFeature = {};
+        for (var key in feature){
+            var namedIndex = map[key];
+            var value = feature[key];
+            if(namedIndex != undefined){
+                newFeature[namedIndex] = value;
+            }else{
+                newFeature[key] = value;
+            }
+        }
+        return newFeature;
+    },
+    makeConversionMap : function (){
+        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var attributes = appLayer.attributes;
+        var map = {};
+        var index = 0;
+        for (var i = 0 ; i < attributes.length ;i++){
+            if(attributes[i].editable){
+                map["c"+index] = attributes[i].name;
+                index++;
+            }
+        }
+        return map;
     }
 });
