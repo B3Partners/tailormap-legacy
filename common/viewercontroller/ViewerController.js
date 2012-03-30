@@ -371,7 +371,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@param layerName the name of the layer
      *@return the application layer JSON object.
      */
-    getApplayer : function (serviceId, layerName){
+    getAppLayer : function (serviceId, layerName){
         for ( var i in this.app.appLayers){
             var appLayer = this.app.appLayers[i];
             if(appLayer.layerName== layerName && appLayer.serviceId == serviceId){
@@ -379,6 +379,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         return null;
+    },
+    /**
+     * @deprecated Wrong casing in method name, use getAppLayer()
+     */
+    getApplayer: function(serviceId, layerName) {
+        return this.getAppLayer(serviceId, layerName);
     },
     
     getAppLayerFeatureService: function(appLayer) {
