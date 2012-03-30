@@ -420,7 +420,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             retryonerror: 1,
             ratio: 1,
             id: id,
-            showerrors: true,
+            /*showerrors: true,*/
             initService: false
         };
 
