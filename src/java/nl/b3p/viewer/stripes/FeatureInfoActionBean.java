@@ -172,6 +172,8 @@ public class FeatureInfoActionBean implements ActionBean {
         
         JSONArray responses = new JSONArray();
         
+        FeatureSource fs = null;
+        
         for(int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
             
@@ -221,7 +223,7 @@ public class FeatureInfoActionBean implements ActionBean {
                 
                     String filter = query.optString("filter", null);
                     
-                    FeatureSource fs = l.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    fs = l.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
                     
                     Query q = new Query(fs.getName().toString());
                     
@@ -260,6 +262,9 @@ public class FeatureInfoActionBean implements ActionBean {
             } finally {
                 if(error != null) {
                     response.put("error", error);
+                }
+                if(fs != null) {
+                    fs.getDataStore().dispose();
                 }
             }
         }

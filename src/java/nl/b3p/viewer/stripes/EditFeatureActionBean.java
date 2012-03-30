@@ -100,6 +100,7 @@ public class EditFeatureActionBean  implements ActionBean {
         json.put("success", Boolean.FALSE);
         String error = null;
     
+        FeatureSource fs = null;
         try {
             do {
                 if(appLayer == null) {
@@ -118,7 +119,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
 
-                FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource();
+                fs = layer.getFeatureType().openGeoToolsFeatureSource();
                 
                 if(!(fs instanceof SimpleFeatureStore)) {
                     error = "Feature source does not support editing";
@@ -143,6 +144,10 @@ public class EditFeatureActionBean  implements ActionBean {
             error = e.toString();
             if(e.getCause() != null) {
                 error += "; cause: " + e.getCause().toString();
+            }
+        } finally {
+            if(fs != null) {
+                fs.getDataStore().dispose();
             }
         }
                 
