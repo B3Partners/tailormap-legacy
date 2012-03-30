@@ -35,7 +35,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     },
     getCQL : function (){
         var val = this.getInternalCQL();
-        val = val.trim();
+        val = Ext.String.trim(val);
         for (var i = 0 ; i < this.logicOperators.length;i++){
             var op = this.logicOperators[i];
             if(val.indexOf(op) == 0){
