@@ -30,6 +30,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.GeometryType;
 
 /**
  *
@@ -153,7 +154,7 @@ public class JDBCFeatureSource extends FeatureSource {
                             type = AttributeDescriptor.TYPE_DOUBLE;
                         }
                         
-                        if(sft.getGeometryAttribute() == null && binding.startsWith("com.vividsolutions.jts.geom")) {
+                        if(sft.getGeometryAttribute() == null && gtType instanceof GeometryType) {
                             sft.setGeometryAttribute(att.getName());
                         }
 
