@@ -160,10 +160,11 @@ Ext.define ("viewer.components.Maptip",{
                         //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
                         var detailElem=document.createElement("a");
                         detailElem.href='javascript: void(0)';
+                        detailElem.feature=feature;
                         var detailLink = new Ext.Element(detailElem);
                         detailLink.addListener("click",
-                            function (evt,el,o){
-                                me.showDetails(appLayer,feature);
+                            function (evt,el,o){ 
+                                me.showDetails(appLayer,el.feature);
                             },
                             this);
                         detailLink.insertHtml("beforeEnd","Detail");
@@ -197,8 +198,6 @@ Ext.define ("viewer.components.Maptip",{
         } 
     },
     showDetails: function(appLayer,feature){
-        //alert(feature);        
-        //alert(this.popup);
         var cDiv=Ext.get(this.getContentDiv());
         cDiv.update("");
         /*
