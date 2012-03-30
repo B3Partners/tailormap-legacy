@@ -224,11 +224,13 @@ Ext.define ("viewer.components.Edit",{
     },
     initAttributeInputs : function (appLayer){
         var attributes = appLayer.attributes;
-        this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
         var type = "geometry";
         if(appLayer.geometryAttributeIndex != undefined || appLayer.geometryAttributeIndex != null ){
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
             type = geomAttribute.type;
+            this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
+        }else{
+            this.geometryEditable = false;
         }
         this.showGeomType = type;
         var possible = true;
@@ -265,7 +267,11 @@ Ext.define ("viewer.components.Edit",{
         
         var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
-            tekst=  'Bewerk het ' + tekst + " op de kaart";
+            if(this.geometryEditable){
+                tekst = 'Bewerk het ' + tekst + " op de kaart";
+            }else{
+                tekst = 'Geometrie mag niet bewerkt worden.';
+            }
             gl.setText(tekst);
 
             for(var i= 0 ; i < attributes.length ;i++){
@@ -311,7 +317,7 @@ Ext.define ("viewer.components.Edit",{
                 }
             }
         }else{
-            gl.setText("Geometrietype onbekend. Editten niet mogelijk.");
+            gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
         }
     },
     setInputPanel : function (feature){
@@ -334,7 +340,6 @@ Ext.define ("viewer.components.Edit",{
         featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution(),layer, function (features){
             me.featuresReceived(features);
         },this.failed);
-        
     },
     featuresReceived : function (features){
         if(features.length == 1){
@@ -364,6 +369,7 @@ Ext.define ("viewer.components.Edit",{
     },
     createNew : function(){
         this.vectorLayer.removeAllFeatures();
+        this.inputContainer.getForm().reset()
         this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if(this.newGeomType != null && this.geometryEditable){
@@ -420,7 +426,6 @@ Ext.define ("viewer.components.Edit",{
         return [ this.maincontainer.getId() ];
     },
     createFeaturesGrid : function (features){
-        
         var appLayer = this.layerSelector.getSelectedAppLayer();
         var attributes = appLayer.attributes;
         var index = 0;
@@ -461,54 +466,93 @@ Ext.define ("viewer.components.Edit",{
             model: this.name + 'Model',
             data:features
         });
-
-        var grid = Ext.create('Ext.grid.Panel',  {
-            id: this.name + 'Grid',
-            store: store,
-            columns: columns
-        });
+        
         var me =this;
+        var grid = Ext.create('Ext.grid.Panel',  {
+            id: this.name + 'GridFeaturesWindow',
+            store: store,
+            columns: columns,
+            listeners:{
+                itemdblclick:{
+                    scope: me,
+                    fn: me.itemDoubleClick
+                }
+            }
+        });
+        
+        var pager =Ext.create('Ext.PagingToolbar', {
+            id: this.name + 'PagerFeaturesWindow',
+            store: store,
+            displayInfo: true,
+            displayMsg: 'Feature {0} - {1} van {2}',
+            emptyMsg: "Geen features om weer te geven",
+            height: 30
+        });
+        
+        
         var container = Ext.create("Ext.container.Container",{
-            id: this.name + "GridContainer",
-            //layout: 'fit',
-            items:[grid,{
+            id: this.name + "GridContainerFeaturesWindow",
+            width: "100%",
+            height: "100%",
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items:[
+            {
+                id: this.name + 'GridPanelFeaturesWindow',
+                xtype: "container",
+                autoScroll: true,
+                width: '100%',
+                flex: 1,
+                items:[grid]
+            },{
+                id: this.name + 'PagerPanelFeaturesWindow',
+                xtype: "container",
+                width: '100%',
+                height: 30,
+                items:[pager]
+            },{
+                id: this.name + 'ButtonPanelFeaturesWindow',
+                xtype: "container",
+                width: '100%',
+                height: 30,
+                items:[{
                     xtype: "button",
-                    id: this.name + "SelectFeatureButton",
+                    id: this.name + "SelectFeatureButtonFeaturesWindow",
                     text: "Bewerk geselecteerd feature",
-                     listeners: {
+                    listeners: {
                         click:{
                             scope: me,
                             fn: me.selectFeature
                         }
                     }
-            }]
+                }]
+            }
+            ]
         });
         
         var window = Ext.create("Ext.window.Window",{
             id: this.name + "FeaturesWindow",
             width: 500,
-            height: 400,
+            height: 300,
             layout: 'fit',
             title: "Kies één feature",
             items: [container]
         });
         
-        /*
-        this.pager = Ext.create('Ext.PagingToolbar', {
-            id: this.name + 'Pager',
-            store: store,
-            displayInfo: true,
-            displayMsg: 'Feature {0} - {1} van {2}',
-            emptyMsg: "Geen features om weer te geven",
-            renderTo: this.name + 'PagerPanel',
-            height: 30
-        });*/
         window.show();
     },
+    itemDoubleClick : function (gridview,row){
+        this.featuresReceived ([row.data]);
+        Ext.getCmp(this.name + "FeaturesWindow").destroy();
+    },
     selectFeature :function() {
-      /*  var feature = Ext.getCmp('edit1Grid').getSelectionModel().getSelection().data;
-        this.handleFeature(feature);
-        Ext.getCmp(this.name + "FeaturesWindow").hide();*/
+        var grid = Ext.getCmp('edit1Grid');
+        var selection = grid.getSelectionModel().getSelection()[0];
+        var feature = selection.data;
+        this.featuresReceived ([feature]);
+        Ext.getCmp(this.name + "FeaturesWindow").destroy();
     },
     indexFeatureToNamedFeature : function (feature){
         var map = this.makeConversionMap();
