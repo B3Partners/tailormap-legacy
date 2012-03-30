@@ -37,34 +37,19 @@ Ext.define("viewer.FeatureInfo", {
             var id = s.substring(0,idx);
             var layer = s.substring(idx+1);
             
-            for(var appLayerId in viewerController.app.appLayers) {
-                var appLayer = viewerController.app.appLayers[appLayerId];
-
-                if(appLayer.serviceId == id && appLayer.layerName == layer) {
-                    visibleAppLayers[appLayer.id] = true;
-                }
+            var appLayer = viewerController.getAppLayer(id, layer);
+            if(appLayer != null) {
+                visibleAppLayers[appLayer.id] = true;
             }
         }
         return visibleAppLayers;
 
     },
-    featureInfo: function(x, y, distance, successFunction, failureFunction) {
-        var visibleAppLayers = this.getVisibleAppLayers();
-        
-        var queries = [];
-        for(var id in visibleAppLayers) {
-            var appLayer = this.viewerController.app.appLayers[id];
-            var query = { appLayer: appLayer.id };
-            if(appLayer.filter) {
-                query.filter = appLayer.filter.getCQL();
-            }
-            queries.push(query);
-        }
+    featureInfoInternal: function(params, successFunction, failureFunction) {
         var me = this;
-        
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {featureInfo: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(queries)},
+            params: params,
             timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
@@ -86,6 +71,44 @@ Ext.define("viewer.FeatureInfo", {
             }
         });        
     },
+    featureInfo: function(x, y, distance, successFunction, failureFunction) {
+        var visibleAppLayers = this.getVisibleAppLayers();
+        
+        var queries = [];
+        for(var id in visibleAppLayers) {
+            var appLayer = this.viewerController.app.appLayers[id];
+            var query = { appLayer: appLayer.id };
+            if(appLayer.filter) {
+                query.filter = appLayer.filter.getCQL();
+            }
+            queries.push(query);
+        }
+        
+        var params = {featureInfo: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(queries)};
+
+        this.featureInfoInternal(params, successFunction, failureFunction);
+    },
+    layersFeatureInfo: function(x, y, distance, appLayers, successFunction, failureFunction) {
+
+        var visibleAppLayers = this.getVisibleAppLayers();
+        
+        var queries = [];
+        for(var i in appLayers) {
+            var appLayer = appLayers[i];
+            
+            if(visibleAppLayers[appLayer.id] === true) {
+                var query = { appLayer: appLayer.id };
+                if(appLayer.filter) {
+                    query.filter = appLayer.filter.getCQL();
+                }
+                queries.push(query);
+            }
+        }
+        
+        var params = {featureInfo: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(queries)};
+
+        this.featureInfoInternal(params, successFunction, failureFunction);
+    },    
     editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction) {
         var query = [{appLayer: appLayer.id}];
         Ext.Ajax.request({
