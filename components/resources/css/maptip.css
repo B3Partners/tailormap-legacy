@@ -76,34 +76,58 @@
     width: 17px;
     cursor: pointer;
 }
-/*** Features css ***/
-.maptip_feature{
+/*** Features (feature info and maptip) css ***/
+.feature_summary_feature{
 }
-.maptip_feature div{    
+.feature_summary_feature div{    
     float: left;
     clear: right;
 }
-.maptip_leftcolumn{
+.feature_summary_leftcolumn{
     width: 75%;
 }
-.maptip_rightcolumn{
+.feature_summary_rightcolumn{
     width: 25%;
 }
-.maptip_title{
+.feature_summary_title{
     width: 100%;
     font-weight: bold;
 }
-.maptip_image{
+.feature_summary_image{
     width: 100%;
     float: right;
 }
-.maptip_description{
+.feature_summary_description{
     width: 100%;
 }
-.maptip_link{
+.feature_summary_link{
     width: 60%;
     clear: none;
 }
-.maptip_detail{
+.feature_summary_detail{
     width: 40%;
 }
+/*details window*/
+.feature_detail_feature{
+    padding: 5px;
+    width: 100%;
+}
+.feature_detail_feature div{
+    width: 100%;
+    margin-top: 10px;
+}
+.feature_detail_title{
+    font-weight: bold;
+}
+.feature_detail_description{}
+.feature_detail_image{}
+.feature_detail_link{}
+.feature_detail_description_attr{}
+.feature_detail_attr{}
+.feature_detail_attr table{
+    width: 100%;
+}
+.feature_detail_attr_key{
+    font-weight: bold;
+}
+.feature_detail_attr_value{}
