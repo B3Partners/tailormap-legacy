@@ -588,8 +588,8 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         var centerCoord= this.webMapController.getMap().getCenter();
         //var centerPixel= this.webMapController.getMap().coordinateToPixel(centerCoord.x,centerCoord.y);
         //var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);        
-        var centerX = this.mapDiv.getWidth(); 
-        var centerY = this.mapDiv.getHeight();
+        var centerX = this.mapDiv.getWidth()/2; 
+        var centerY = this.mapDiv.getHeight()/2;
         //determine the left and top.
         if (x > centerX){
             this.leftOfPoint=true;
