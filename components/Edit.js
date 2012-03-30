@@ -412,6 +412,10 @@ Ext.define ("viewer.components.Edit",{
         Ext.Msg.alert('Mislukt',msg);
     },
     cancel : function (){
+        this.resetForm();
+        this.popup.hide();
+    },
+    resetForm : function (){
         Ext.getCmp("edit1editButton").setDisabled(true);
         Ext.getCmp("edit1newButton").setDisabled(true);
         this.mode=null;
@@ -420,7 +424,6 @@ Ext.define ("viewer.components.Edit",{
         this.inputContainer.removeAll();
         this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
-        this.popup.hide();
     },
     getExtComponents: function() {
         return [ this.maincontainer.getId() ];
@@ -479,17 +482,6 @@ Ext.define ("viewer.components.Edit",{
                 }
             }
         });
-        
-        var pager =Ext.create('Ext.PagingToolbar', {
-            id: this.name + 'PagerFeaturesWindow',
-            store: store,
-            displayInfo: true,
-            displayMsg: 'Feature {0} - {1} van {2}',
-            emptyMsg: "Geen features om weer te geven",
-            height: 30
-        });
-        
-        
         var container = Ext.create("Ext.container.Container",{
             id: this.name + "GridContainerFeaturesWindow",
             width: "100%",
@@ -507,12 +499,6 @@ Ext.define ("viewer.components.Edit",{
                 flex: 1,
                 items:[grid]
             },{
-                id: this.name + 'PagerPanelFeaturesWindow',
-                xtype: "container",
-                width: '100%',
-                height: 30,
-                items:[pager]
-            },{
                 id: this.name + 'ButtonPanelFeaturesWindow',
                 xtype: "container",
                 width: '100%',
@@ -525,6 +511,17 @@ Ext.define ("viewer.components.Edit",{
                         click:{
                             scope: me,
                             fn: me.selectFeature
+                        }
+                    }
+                },
+                {
+                    xtype: "button",
+                    id: this.name + "CancelFeatureButtonFeaturesWindow",
+                    text: "Annuleren",
+                    listeners: {
+                        click:{
+                            scope: me,
+                            fn: me.cancelSelectFeature
                         }
                     }
                 }]
@@ -552,6 +549,11 @@ Ext.define ("viewer.components.Edit",{
         var selection = grid.getSelectionModel().getSelection()[0];
         var feature = selection.data;
         this.featuresReceived ([feature]);
+        Ext.getCmp(this.name + "FeaturesWindow").destroy();
+    },
+    cancelSelectFeature : function (){
+        this.resetForm();
+        Ext.get(this.getContentDiv()).unmask()
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
     },
     indexFeatureToNamedFeature : function (feature){
