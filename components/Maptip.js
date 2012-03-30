@@ -168,10 +168,11 @@ Ext.define ("viewer.components.Maptip",{
                         var detailElem=document.createElement("a");
                         detailElem.href='javascript: void(0)';
                         detailElem.feature=feature;
+                        detailElem.appLayer=appLayer;
                         var detailLink = new Ext.Element(detailElem);
                         detailLink.addListener("click",
                             function (evt,el,o){ 
-                                me.showDetails(appLayer,el.feature);
+                                me.showDetails(el.appLayer,el.feature);
                             },
                             this);
                         detailLink.insertHtml("beforeEnd","Detail");
