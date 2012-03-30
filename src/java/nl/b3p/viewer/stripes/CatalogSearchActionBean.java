@@ -23,17 +23,11 @@ import java.util.Map;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.csw.client.CswClient;
-import nl.b3p.csw.client.CswSmartRequestCreator;
 import nl.b3p.csw.client.InputBySearch;
 import nl.b3p.csw.client.OutputBySearch;
-import nl.b3p.csw.jaxb.csw.GetRecords;
 import nl.b3p.csw.server.CswServable;
 import nl.b3p.csw.server.GeoNetworkCswServer;
-import nl.b3p.csw.util.CswClientFactory;
 import nl.b3p.csw.util.OnlineResource;
-import nl.b3p.csw.util.Protocol;
-import org.jdom.Document;
-import org.jdom.output.XMLOutputter;
 import org.json.*;
 
 /**
@@ -96,9 +90,6 @@ public class CatalogSearchActionBean implements ActionBean {
             CswClient client = new CswClient(server);
             InputBySearch input = new InputBySearch(q);
             OutputBySearch output = client.search(input);            
-
-            XMLOutputter outputter = new XMLOutputter();        
-            outputter.output(output.getXml(), System.out);
 
             Map<URI, List<OnlineResource>> map = output.getResourcesMap();
             for (List<OnlineResource> resourceList : map.values()) {
