@@ -141,6 +141,9 @@ Ext.define("viewer.components.Component",{
             button = me.button,
             baseClass = this.getBaseClass();
         
+        if (!me.options || !me.button){
+            return;
+        }
         if(!me.options.icon && appSprite != null && (!me.forceState || forceState)) {
             if(state == 'hover') {
                 button.removeCls(baseClass + '_normal');

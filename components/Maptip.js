@@ -26,7 +26,8 @@ Ext.define ("viewer.components.Maptip",{
     config: {
         maptipdelay: null,
         height: null,
-        width: null        
+        width: null,
+        maxDescLength: 30
     },
     serverRequestEnabled: false,
     featureInfo: null,
@@ -144,7 +145,13 @@ Ext.define ("viewer.components.Maptip",{
                         if (appLayer.details && appLayer.details["summary.description"]){
                             var descriptionDiv = new Ext.Element(document.createElement("div"));
                             descriptionDiv.addCls("feature_summary_description");
-                            descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description"],feature));
+                            var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature);
+                            //remove html layout
+                            var desc = desc.replace(/(<([^>]+)>)/ig,"");
+                            if (desc && desc.length > this.maxDescLength){
+                                desc=desc.substr(0, this.maxDescLength)+"...";
+                            }
+                            descriptionDiv.insertHtml("beforeEnd",desc);
                             leftColumnDiv.appendChild(descriptionDiv);
                         }
                         //link
@@ -223,7 +230,12 @@ Ext.define ("viewer.components.Maptip",{
         if (appLayer.details && appLayer.details["summary.image"]){
             var imageDiv = new Ext.Element(document.createElement("div"));
             imageDiv.addCls("feature_detail_image");
-            imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>");
+            var img = "<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"' ";
+            if (this.popup.config.details && this.popup.config.details.width){
+                img+="style='max-width: "+(this.popup.config.details.width-40)+"px;'";
+            }
+            img+="/>";
+            imageDiv.insertHtml("beforeEnd",img);
             featureDiv.appendChild(imageDiv);
         }
         //link
