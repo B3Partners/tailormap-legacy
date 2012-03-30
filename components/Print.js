@@ -327,8 +327,7 @@ Ext.define ("viewer.components.Print",{
             },{
                 //button container 2b
                 xtype: 'container',
-                frame: true,
-                border: true,
+                frame: false,
                 style: {
                     paddingTop: "5px"
                 },
