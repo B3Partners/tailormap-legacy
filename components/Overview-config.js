@@ -33,13 +33,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             frame: false,
             bodyPadding: me.formPadding,
             width: me.formWidth,
-            items: [{ 
-                xtype: 'textfield',
-                fieldLabel: 'Tooltip',
-                name: 'tooltip',
-                value: config.tooltip,
-                labelWidth:me.labelWidth
-            },{
+            items: [{
                 xtype: "label",
                 text: "Layout",
                 style: "font-weight: bold;"
@@ -52,7 +46,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 items: [{
                     boxLabel: 'Toon overzichtskaart in popup', 
                     name: 'position', 
-                    inputValue: 'poup' , 
+                    inputValue: 'popup' , 
                     checked: true
                 },
                 {
@@ -64,7 +58,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             },
             {
                 xtype: "label",
-                text: "Breedte",
+                text: "Afmetingen",
                 style: "font-weight: bold;"
             },
             { 
@@ -79,6 +73,32 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Hoogte',
                 name: 'height',
                 value: config.height,
+                labelWidth:me.labelWidth
+            },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Links',
+                name: 'left',
+                value: config.left,
+                labelWidth:me.labelWidth
+            },
+            { 
+                xtype: 'textfield',
+                fieldLabel: 'Boven',
+                name: 'top',
+                value: config.top,
+                labelWidth:me.labelWidth
+            },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Onder',
+                name: 'bottom',
+                value: config.bottom,
+                labelWidth:me.labelWidth
+            },
+            { 
+                xtype: 'textfield',
+                fieldLabel: 'Rechts',
+                name: 'right',
+                value: config.right,
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
