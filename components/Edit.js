@@ -195,8 +195,6 @@ Ext.define ("viewer.components.Edit",{
             this.viewerController.mapComponent.getMap().removeMarker("edit");
 
             this.inputContainer.setLoading("Laad attributen...");
-            Ext.getCmp("edit1editButton").setDisabled(false);
-            Ext.getCmp("edit1newButton").setDisabled(false);
             this.inputContainer.removeAll();
             var appLayer = this.viewerController.getApplayer(item.serviceId, item.name);
             this.loadAttributes(appLayer);
@@ -267,6 +265,8 @@ Ext.define ("viewer.components.Edit",{
         
         var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
+            Ext.getCmp("edit1editButton").setDisabled(false);
+            Ext.getCmp("edit1newButton").setDisabled(false);
             if(this.geometryEditable){
                 tekst = 'Bewerk het ' + tekst + " op de kaart";
             }else{
@@ -318,6 +318,8 @@ Ext.define ("viewer.components.Edit",{
             }
         }else{
             gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
+            Ext.getCmp("edit1editButton").setDisabled(true);
+            Ext.getCmp("edit1newButton").setDisabled(true);
         }
     },
     setInputPanel : function (feature){
