@@ -523,7 +523,7 @@
         shortName: "Oz",
         sources: ["Overview.js"],
         configSource: ["Overview-config.js"],
-        restrictions: ["top_menu"]
+        restrictions: ["content"]
      },
     {
         className: "viewer.components.Print",
@@ -533,6 +533,14 @@
         configSource: ["SelectionWindowConfig.js","Print-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
+    },
+    {
+        className: "viewer.components.LayerSwitch",
+        name: "LayerSwitch",
+        shortName: "LS",
+        sources: ["LayerSwitch.js"],
+        configSource: ["LayerSwitch-config.js"],
+        restrictions: ["content"]
     },
     {
         className: "viewer.components.tools.PopupButton",
