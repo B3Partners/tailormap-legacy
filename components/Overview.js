@@ -66,7 +66,7 @@ Ext.define ("viewer.components.Overview",{
             position += " bottom ='" + this.bottom + "'";
         }
         if(this.position == "popup"){
-            var window = "<cmc:Window xmlns:cmc='cmc' id='"+ this.name + "Window' "+ position +" width='"+this.width+"' height='"+this.height+"'>";
+            var window = "<cmc:Window xmlns:cmc='cmc' id='"+ this.name + "Window' "+ position +" width='"+this.width+"' height='"+this.height+"' canclose='false'>";
             window += "<fmc:Container id='"+ this.name + "windowcontainer' left='0' width='100%' height='100%' top='0' backgroundcolor='#FFFFFF'>";
             window += xml;
             window += "</fmc:Container>";
