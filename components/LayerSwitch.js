@@ -22,6 +22,12 @@
 Ext.define ("viewer.components.LayerSwitch",{
     extend: "viewer.components.Component",
     container: null,
+    states:null,
+    layers:null,
+    levels:null,
+    prev:null,
+    appLayers:null,
+    button:null,
     config: {
     },
     constructor: function (conf){        
@@ -31,26 +37,94 @@ Ext.define ("viewer.components.LayerSwitch",{
         return this;
     },
     loadComponent : function (){
-        Ext.create('Ext.button.Cycle', {
+        var p = Ext.get(this.div).parent();
+        var pid = p.id;
+        this.loadLayers();
+        
+        this.button = Ext.create('Ext.button.Cycle', {
             showText: true,
-            prependText: 'View as ',
-            renderTo: Ext.getBody(),
+            renderTo:  pid,
+            width: "100%",
+                top: '300px',
+            style: {
+                marginBottom: '10px'
+            },
+            floating: true,
             menu: {
                 id: 'view-type-menu',
-                items: [{
-                    text: 'text only',
-                    iconCls: 'view-text',
-                    checked: true
-                },{
-                    text: 'HTML',
-                    iconCls: 'view-html'
-                }]
+                items: this.states
             },
-            changeHandler: function(cycleBtn, activeItem) {
+            listeners:{
+                change:{
+                    fn: this.layerChanged,
+                    scope: this
+                }
             }
         });
+        this.button.setPosition(600, 30);
+    },
+    loadLayers : function(){
+        this.layers = new Array();
+        this.levels = this.viewerController.app.levels;
+        this.appLayers = this.viewerController.app.appLayers;
+        var backgroundRoot;
+        // Find root background
+        for ( var i in this.levels){
+            var level = this.levels[i];
+            if(level.name == "Achtergrond"){
+                backgroundRoot = level;
+                break;
+            }
+        }
+        this.states = new Array();
+        this.addLevel(backgroundRoot);
+        
+    },
+    addLevel : function (level){
+        if(level.name != "Achtergrond"){
+            this.states.push({
+                text: level.name,
+                iconCls: 'view-html'
+            });
+        }
+        if(level.layers){
+            if(this.layers[level.name] == undefined ){
+                this.layers[level.name] = new Array();
+            }
+            this.addLayers(level.layers,level)
+        }
+        if(level.children){
+            for(var i = 0 ; i < level.children.length ;i++){
+                var l = this.levels[level.children[i]];
+                this.addLevel(l);
+            }
+        }
+    },
+    addLayers : function (layers, level){
+        for( var i = 0 ; i < layers.length ;i++){
+            var appLayerObj = this.appLayers[layers[i]];
+            this.layers[level.name].push( {
+                serviceId : appLayerObj.serviceId,
+                layerName : appLayerObj.layerName
+            });
+        }
+    },
+    layerChanged : function (button, active){
+        var levelName = active.text;
+        var layers = this.layers[levelName];
+        this.setLayersActive(layers, true);
+        if(this.prev != null){
+            this.setLayersActive(this.prev,false);
+        }
+        this.prev = layers;
+    },
+    setLayersActive : function (layerArray, visible){
+         for( var i = 0 ; i < layerArray.length ;i++){
+            var layerObj = layerArray[i];
+            this.viewerController.setLayerVisible(layerObj.serviceId, layerObj.layerName, visible);
+        }
     },
     getExtComponents: function() {
-        return [];
+        return [this.button];
     }
 });
