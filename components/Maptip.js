@@ -117,7 +117,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param options options that is given by the event
      */
     onDataReturned: function(options){        
-        //if not enabled stop
+        //if not enabled: stop
         if (!this.enabled){
             return;
         }
@@ -312,7 +312,6 @@ Ext.define ("viewer.components.Maptip",{
      * @see event ON_MAPTIP_CANCEL
      */
     onMaptipCancel: function (map){
-        console.log("OnMapTipCancel");
         this.balloon.hideAfterMouseOut();
     },
     /**
