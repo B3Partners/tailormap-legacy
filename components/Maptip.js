@@ -32,6 +32,7 @@ Ext.define ("viewer.components.Maptip",{
     serverRequestEnabled: false,
     featureInfo: null,
     enabled: true,
+    lastPosition: null,
     /**
      * @constructor
      */
@@ -108,6 +109,16 @@ Ext.define ("viewer.components.Maptip",{
             this.onDataReturned(options);
     },
     onDataReturned: function(options){
+        if (this.lastPosition){
+            if (this.lastPosition.x != options.x ||
+                this.lastPosition.y != options.y){
+                this.balloon.setContent("");
+            }
+        }else{
+            this.lastPosition = new Object();
+        }
+        this.lastPosition.x = options.x;
+        this.lastPosition.y = options.y;
         //alert(layer);
         var me = this;
         var data=options.data;        
