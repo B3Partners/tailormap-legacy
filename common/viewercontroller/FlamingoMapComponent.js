@@ -22,7 +22,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     constructor :function (viewerController, domId){
         viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId);
         this.viewerController = viewerController;
-        var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", "flamingo", "100%", "100%", "8", "#FFFFFF");
+        var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);
         this.viewerObject = document.getElementById("flamingo");
