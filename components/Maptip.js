@@ -117,9 +117,15 @@ Ext.define ("viewer.components.Maptip",{
      * @param options options that is given by the event
      */
     onDataReturned: function(options){        
+        //if not enabled stop
         if (!this.enabled){
             return;
         }
+        //if the mouse is in the balloon, stop. Dont show new data.
+        if (this.balloon.isMouseOver()){
+            return;
+        }
+        //if position is not the last position remove content
         if (this.lastPosition){
             if (this.lastPosition.x != options.x ||
                 this.lastPosition.y != options.y){
@@ -306,6 +312,7 @@ Ext.define ("viewer.components.Maptip",{
      * @see event ON_MAPTIP_CANCEL
      */
     onMaptipCancel: function (map){
+        console.log("OnMapTipCancel");
         this.balloon.hideAfterMouseOut();
     },
     /**
