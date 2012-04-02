@@ -104,11 +104,22 @@ Ext.define ("viewer.components.Maptip",{
             me.onDataReturned(options);
         },this.onFailure);
     },
+    /**
+     * Handles when the mapping framework returns with data
+     * @param layer the layer
+     * @param options the options of the event
+     */
     onMapData: function(layer,options){
-        if (this.enabled)
             this.onDataReturned(options);
     },
-    onDataReturned: function(options){
+    /**
+     * Handle the data that is returned.
+     * @param options options that is given by the event
+     */
+    onDataReturned: function(options){        
+        if (!this.enabled){
+            return;
+        }
         if (this.lastPosition){
             if (this.lastPosition.x != options.x ||
                 this.lastPosition.y != options.y){
@@ -216,6 +227,11 @@ Ext.define ("viewer.components.Maptip",{
             this.balloon.show();
         } 
     },
+    /**
+     * Handles the show details click.
+     * @param appLayer the applayer for the details
+     * @param feature the feature that must be shown
+     */
     showDetails: function(appLayer,feature){
         var cDiv=Ext.get(this.getContentDiv());
         cDiv.update("");
@@ -325,6 +341,10 @@ Ext.define ("viewer.components.Maptip",{
         var appLayer=this.viewerController.app.appLayers[layer.appLayerId];
         return this.isSummaryAppLayer(appLayer);
     },
+    /**
+     * Check if the given applayer is a summary layer.
+     * @param appLayer the applayer that must be checked
+     */
     isSummaryAppLayer: function (appLayer){
         if (appLayer.details !=undefined &&
             (appLayer.details["summary.description"]!=undefined ||

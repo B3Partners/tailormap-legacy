@@ -15,13 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * LoadMonitor object.
- * Monitor's the loading with a loadingbar
+ * FeatureInfo component
+ * Shows feature info.
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.FeatureInfo",{
     extend: "viewer.components.Maptip",   
     progressElement: null,
+    /**
+     * Overwrite constructor to set some other settings then maptip.
+     */
     constructor: function (conf){    
         conf.isPopup=true;
         //don't call maptip constructor but that of super maptip.
@@ -68,6 +71,9 @@ Ext.define ("viewer.components.FeatureInfo",{
             }            
         }
     },
+    /**
+     * Activate Server Request so that a serverRequest is done when needed.
+     */
     activateServerRequest: function (sr){       
         if (sr==this.serverRequestEnabled){
             return;
@@ -80,6 +86,9 @@ Ext.define ("viewer.components.FeatureInfo",{
             this.featureInfo=null;
         }
     }
+    /**
+     * When a feature info starts.
+     */
     ,onFeatureInfoStart: function(){
         this.balloon.setContent("");
         this.balloon.hide();
