@@ -30,6 +30,7 @@ Ext.define ("viewer.components.Maptip",{
         maxDescLength: 30
     },
     serverRequestEnabled: false,
+    serverRequestLayers: null,
     featureInfo: null,
     enabled: true,
     lastPosition: null,
@@ -65,7 +66,7 @@ Ext.define ("viewer.components.Maptip",{
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
             //do server side getFeature.
             if (layer.hasFeatureType){
-                this.activateServerRequest(true);
+                this.addLayerInServerRequest(appLayer);
             }else{
                 //let the mapComponent handle the getFeature
                 mapLayer.setMaptips(mapLayer.getLayers().split(","));
@@ -78,17 +79,17 @@ Ext.define ("viewer.components.Maptip",{
      * Enable doing server requests.
      * @param sr true/false
      */
-    activateServerRequest: function (sr){       
-        if (sr==this.serverRequestEnabled){
-            return;
-        }
-        this.serverRequestEnabled=sr;
-        if (this.serverRequestEnabled){
+    addLayerInServerRequest: function (appLayer){ 
+        //first time register for event and make featureinfo ajax request handler.
+        if (!this.serverRequestEnabled){
             this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
             this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
-        }else{
-            this.featureInfo=null;
+            this.serverRequestEnabled = true;
         }
+        if (this.serverRequestLayers ==null){
+            this.serverRequestLayers=new Array();
+        }
+        this.serverRequestLayers.push(appLayer);
     },
     /**
      * Do a server request
@@ -99,7 +100,7 @@ Ext.define ("viewer.components.Maptip",{
         }        
         var radius=4*map.getResolution();
         var me=this;
-        this.featureInfo.featureInfo(options.coord.x,options.coord.y,radius,function(data){
+        this.featureInfo.layersFeatureInfo(options.coord.x,options.coord.y,radius,this.serverRequestLayers,function(data){
             options.data=data;
             me.onDataReturned(options);
         },this.onFailure);
