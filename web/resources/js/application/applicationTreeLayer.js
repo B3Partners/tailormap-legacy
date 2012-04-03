@@ -52,7 +52,7 @@ Ext.onReady(function() {
         data : [
             {"type":"geometry", "label":"Onbekend (alleen bewerken)"},
             {"type":"point", "label":"Punt"},
-            {"type":"line", "label":"Lijn"},
+            {"type":"linestring", "label":"Lijn"},
             {"type":"polygon", "label":"Vlak"}
         ]
     });
