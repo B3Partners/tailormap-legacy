@@ -16,8 +16,9 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.*;
 import javax.persistence.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -83,4 +84,13 @@ public class AttributeDescriptor {
         this.type = type;
     }
     //</editor-fold>
+    
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject j = new JSONObject();
+        j.put("id", id);
+        j.put("name", name);
+        j.put("alias", alias);
+        j.put("type", type);
+        return j;
+    }
 }
