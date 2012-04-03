@@ -225,7 +225,11 @@ Ext.define ("viewer.components.Edit",{
         var type = "geometry";
         if(appLayer.geometryAttributeIndex != undefined || appLayer.geometryAttributeIndex != null ){
             var geomAttribute = appLayer.attributes[appLayer.geometryAttributeIndex];
-            type = geomAttribute.type;
+            if(geomAttribute.editValues != undefined && geomAttribute.editValues !=null && geomAttribute.editValues.length >= 1){
+                type = geomAttribute.editValues[0]
+            }else{
+                type = geomAttribute.type;
+            }
             this.geometryEditable = appLayer.attributes[appLayer.geometryAttributeIndex].editable;
         }else{
             this.geometryEditable = false;
@@ -257,6 +261,9 @@ Ext.define ("viewer.components.Edit",{
                 tekst = "lijn";
                 break;
             case "geometry":
+                possible = true;
+                this.geomNewType = null;
+                break;
             default:
                 this.geomType = null;
                 possible = false;
@@ -266,11 +273,15 @@ Ext.define ("viewer.components.Edit",{
         var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
             Ext.getCmp("edit1editButton").setDisabled(false);
-            Ext.getCmp("edit1newButton").setDisabled(false);
-            if(this.geometryEditable){
-                tekst = 'Bewerk het ' + tekst + " op de kaart";
-            }else{
-                tekst = 'Geometrie mag niet bewerkt worden.';
+            if(this.newGeomType != null){
+                Ext.getCmp("edit1newButton").setDisabled(false);
+                tekst = "Geometrie mag alleen bewerkt worden";
+            }else{ 
+                if(this.geometryEditable){
+                    tekst = 'Bewerk een ' + tekst + " op de kaart";
+                }else{
+                    tekst = 'Geometrie mag niet bewerkt worden.';
+                }
             }
             gl.setText(tekst);
 
