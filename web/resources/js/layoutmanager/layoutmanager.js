@@ -35,7 +35,7 @@ Ext.onReady(function() {
         {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[]},
         {id:'leftmargin_bottom', htmlId:'layout_left_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
         {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, configureHeight: false, configureWidth: true, addedComponents:[]},
-        {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: false, configureWidth: false, addedComponents:[]},
+        {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: true, configureWidth: false, addedComponents:[]},
         {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[]},
         {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, addedComponents:[]},
         {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[]},
