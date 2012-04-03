@@ -113,7 +113,7 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
                     }
                 }
                 //set editable
-                makeAttributeJSONArray(attributesJSON);
+                makeAttributeJSONArray(attributesJSON,attributesList);
             }
         }
         
@@ -189,7 +189,7 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
         return new ForwardResolution(JSP);
     }
     
-    private void makeAttributeJSONArray(JSONArray array) throws JSONException{
+    private void makeAttributeJSONArray(JSONArray array, List<AttributeDescriptor> ftAttributes) throws JSONException{
         List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
         int i = 0;
         for(Iterator it = appAttributes.iterator(); it.hasNext();){
@@ -208,6 +208,14 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
             j.put("editheight", appAttribute.getEditHeight());
             j.put("filterable", appAttribute.isFilterable());
             j.put("selectable", appAttribute.isSelectable());
+            
+            for(AttributeDescriptor ad: ftAttributes) {
+                if(ad.getName().equals(appAttribute.getAttributeName())) {
+                    j.put("featureTypeAttribute", ad.toJSONObject());
+                    break;
+                }
+            }
+            
             array.put(j);
             
             i++;
