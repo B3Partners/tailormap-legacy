@@ -44,6 +44,12 @@ Ext.define ("viewer.components.Maptip",{
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon",this.width,this.height);
         this.balloon.zIndex = this.balloon.zIndex+1;
+        //set the offset of the map
+        var mapTopOffset=this.viewerController.getLayoutHeight('top_menu');
+        if (mapTopOffset<0){
+            mapTopOffset=0;
+        }
+        this.balloon.offsetY+=Number(mapTopOffset);
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //listen to the onmaptipcancel

@@ -226,8 +226,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 listento: lt,
                 width: "100%",
                 height: "100",
-                left: "10",
-                top: "10"                
+                left: "5",
+                top: "5"                
             });
             this.toolGroupCreated=true;
         }
@@ -282,6 +282,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         if (!(map instanceof viewer.viewercontroller.flamingo.FlamingoMap)){
             Ext.Error.raise({msg: "FlamingoMapComponent.addMap(): The given map is not of the type 'FlamingoMap'"});
         }
+        this.viewerObject.callMethod(this.mainContainerId,'addComponent',map.toXML()); 
         this.maps.push(map);
     },
     /**
@@ -366,15 +367,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         name=""+name;                
         if(this.getMap(name)!= null){
             return this.getMap(name);
-        }else if (this.getMap().getLayer(name)!=null){
+        }else if (this.getMap() && this.getMap().getLayer(name)!=null){
             return this.getMap().getLayer(name);
-        }else if(name.indexOf(this.getMap().getId()+"_")==0 && this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){        
+        }else if(this.getMap() && name.indexOf(this.getMap().getId()+"_")==0 && this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){        
             return this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,"")));
         }else if(this.getTool(name) != null){
             return this.getTool(name);
         }else if(name == this.getId()){
             return this;
-        }else if(this.getMap().editMapId){
+        }else if(this.getMap() && this.getMap().editMapId){
         }else{
             return null;
         }

@@ -95,12 +95,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // XXX how to setup options before creating the map container - and keep
         // them general...
         
-        //console.log("Creating map");
-        var map = this.mapComponent.createMap("map", {
-            /*viewerController: this*/
-        });
-        // ??? why doesn't MapContainer keep track of references to maps itself?
-        this.mapComponent.addMap(map);
+        
         
         this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
         
@@ -124,7 +119,27 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         try {            
             // XXX viewer.js: initializeButtons();
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
-
+           
+            var mapTop=this.getLayoutHeight('top_menu');
+            if (mapTop<0){
+                mapTop=0;
+            }
+            var map = this.mapComponent.createMap("map", {
+                viewerController: this,
+                options: {
+                    left: 0,
+                    top: mapTop,
+                    width: "100%",
+                    bottom: "bottom",
+                    visible: "true",
+                    fullextent : "12000,304000,280000,620000",
+                    extent: "12000,304000,280000,620000",
+                    resolutions: "156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505",
+                    extenthistory: "10"
+                }
+            });
+            this.mapComponent.addMap(map);
+            
             this.initializeConfiguredComponents();
             var layersloaded = this.bookmarkValuesFromURL();
             // When there are no layers loaded from bookmark the startmap layers are loaded,
@@ -780,7 +795,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
-    
+    /**
+     * Gets the layout height for a layout container
+     * @param layoutid the id that represents the container for example: 'top_menu'
+     * @returns a number 
+     */
+    getLayoutHeight: function(layoutid){
+        var height=0;
+        var layoutObject=this.app.layout[layoutid];
+        if (layoutObject &&
+            layoutObject.layout &&
+            layoutObject.layout.height){
+            height=layoutObject.layout.height;                
+        }
+        return height;
+    },
     resizeComponents: function() {
         this.layoutManager.resizeLayout();
         // We are execturing the doResize function manually on all components, instead of

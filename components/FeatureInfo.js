@@ -32,6 +32,12 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.initConfig(conf);   
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloonFeatureInfo",this.width,this.height);
+        //set the offset of the map
+        var mapTopOffset=this.viewerController.getLayoutHeight('top_menu');
+        if (mapTopOffset<0){
+            mapTopOffset=0;
+        }
+        this.balloon.offsetY+=Number(mapTopOffset);
         //show close button and dont close on mouse out.
         this.balloon.closeOnMouseOut=false;
         this.balloon.showCloseButton=true;

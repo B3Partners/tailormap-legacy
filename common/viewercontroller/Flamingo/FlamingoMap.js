@@ -11,6 +11,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     enabledEvents: new Object(),
     editMapId: null,
     gisId: 'gis',
+    config: {
+        options: {}
+    },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
         this.initConfig(config);        
@@ -259,6 +262,19 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      */
     getHeight : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "getMovieClipHeight");
+    },
+    toXML: function(){
+        var xml="";
+        xml+="<fmc:Map";
+        xml+=" xmlns:fmc=\"fmc\"";
+        xml+=" id=\""+this.getId()+"\"";
+        for (var key in this.options){
+            xml+=" "+key+"=\""+this.options[key]+"\"";
+        }
+        xml+=">";
+        xml+="<fmc:LayerIdentifyIcon id=\"identifyicon\"/>";
+		xml+="</fmc:Map>";
+        return xml;
     },
     /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
