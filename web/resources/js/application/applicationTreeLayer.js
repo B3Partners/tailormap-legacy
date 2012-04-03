@@ -46,6 +46,17 @@ Ext.onReady(function() {
             }
         }
     };
+    
+    var geomTypesStore = Ext.create('Ext.data.Store', {
+        fields: ['type', 'label'],
+        data : [
+            {"type":"geometry", "label":"Onbekend (alleen bewerken)"},
+            {"type":"point", "label":"Punt"},
+            {"type":"line", "label":"Lijn"},
+            {"type":"polygon", "label":"Vlak"}
+        ]
+    });
+    
     var editAllowed = false;
     var filterAllowed = false;
     if(Ext.isArray(attributes) && attributes.length > 0) {
@@ -55,6 +66,47 @@ Ext.onReady(function() {
             var name = attribute.alias || attribute.name;
             if(editable) {
                 var possibleValues = Ext.JSON.decode(attribute.editvalues);
+                
+                var possibleValuesFormItems = [
+                                { fieldLabel: 'Mogelijke waarden', 
+                                    name: 'editvalues', id: 'editvalues' + attribute.id, value: possibleValues, xtype: 'textfield', size: 100 },
+                                { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {
+                                    click: function() {
+                                        getDBValues(attribute.id);
+                                    }
+                                }}
+                            ];
+                
+                if(attribute.featureTypeAttribute != undefined) {
+                    var type = attribute.featureTypeAttribute.type;
+                    
+                    var geomTypes = ["geometry","point","multipoint","linestring","multilinestring","polygon","multipolygon"];
+                    
+                    if(Ext.Array.contains(geomTypes, type)) {
+                        
+                        if(possibleValues) {
+                            type = possibleValues[0];
+                        }
+                        
+                        // edit only for single geometries
+                        type = type.replace("multi","");
+                        
+                        possibleValuesFormItems = [{
+                            fieldLabel: 'Geometrietype', 
+                            store: geomTypesStore,
+                            xtype: 'combobox',
+                            name: 'editvalues', 
+                            id: 'editvalues' + attribute.id, 
+                            queryMode: 'local',
+                            displayField: 'label',
+                            valueField: 'type',                            
+                            value: type, 
+                            size: 40 
+                            },
+                        ];
+                    }
+                }
+                
                 editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                     id: 'edit' + attribute.id,
                     title: name + (attribute.editable ? ' (&times;)' : ''),
@@ -70,15 +122,7 @@ Ext.onReady(function() {
                         {
                             xtype: 'container',
                             layout: 'hbox',
-                            items: [
-                                { fieldLabel: 'Mogelijke waarden', 
-                                    name: 'editvalues', id: 'editvalues' + attribute.id, value: possibleValues, xtype: 'textfield', size: 100 },
-                                { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {
-                                    click: function() {
-                                        getDBValues(attribute.id);
-                                    }
-                                }}
-                            ]
+                            items: possibleValuesFormItems
                         },
                         { fieldLabel: 'Hoogte', name: 'editheight', value: attribute.editheight, xtype: 'textfield' }
                     ]
