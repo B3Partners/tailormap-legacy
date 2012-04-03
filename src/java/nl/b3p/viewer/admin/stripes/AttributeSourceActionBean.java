@@ -185,7 +185,9 @@ public class AttributeSourceActionBean implements ActionBean {
     public Resolution saveEdit() {
         featureSource.setName(name);
         featureSource.setUsername(username);
-        featureSource.setPassword(password);
+        if(password != null) {
+            featureSource.setPassword(password);
+        }
         
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
