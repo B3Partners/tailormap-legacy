@@ -178,17 +178,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-panel-default {
                     border-color: ${steunkleur1};
                 }
-
+                
                 /* Textcolor */
+                .x-panel-header-text-default /* Panel headers */,
+                .x-window-header-text-default /* Popup header */ {
+                    color: ${steunkleur2};
+                }
+            </c:if>
+            <c:if test="${!empty actionBean.application.details.font}">
+                /* Textcolor */
+                .x-grid-row .x-grid-cell /* Tree */,
+                .x-grid-cell /* Tree */,
                 .x-panel-body-default /* Panels (tree's, etc.) */,
                 .x-panel-header-text-default /* Panel headers */,
                 .x-window-body-default /* Popup body */,
                 .x-border-layout-ct /* Main containers */,
                 .x-body /* Body class */,
                 .x-btn, .x-btn-inner, .x-btn .x-btn-inner /* Button classes */,
+                .x-field /* Form fields */,
+                .x-tab /* Tabs */,
+                .x-tab button /* Tabs */,
                 .x-form-field /* Form fields */,
+                .x-form-item /* Form items */,
                 .x-window-header-text-default /* Popup header */ {
-                    color: ${steunkleur2};
+                    font-family: ${actionBean.application.details.font};
                 }
             </c:if>
         </style>
@@ -243,7 +256,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
         </script>
 
-        <div id="wrapper" style="width: 100%; height: 100%;"></div>
+        <c:set var="maxWidth" value="none" />
+        <c:set var="maxHeight" value="none" />
+        <c:if test="${!empty actionBean.application.details.maxWidth && actionBean.application.details.maxWidth != 0}">
+            <c:set var="maxWidth" value="${actionBean.application.details.maxWidth}px" />
+        </c:if>
+        <c:if test="${!empty actionBean.application.details.maxHeight && actionBean.application.details.maxHeight != 0}">
+            <c:set var="maxHeight" value="${actionBean.application.details.maxHeight}px" />
+        </c:if>
+        <div id="wrapper" style="width: 100%; height: 100%; max-width: ${maxWidth}; max-height: ${maxHeight}; margin-left: auto; margin-right: auto;"></div>
         
     </body>
 </html>
