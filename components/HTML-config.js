@@ -25,14 +25,24 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         //create html Editor
         var value="";
-        if (config && config.html){
-            value=config.html;
+        var title="";
+        if (config) {
+            if(config.html) value=config.html;
+            if(config.title) title=config.title;
         }
         
         Ext.tip.QuickTipManager.init();  // enable tooltips
+        this.titleField = Ext.create('Ext.form.field.Text', {
+            fieldLabel: 'Titel (optioneel, wordt gebruikt voor tabbladen)',
+            name: 'title',
+            value: title,
+            labelWidth: 275,
+            width: 500,
+            renderTo: Ext.get(parentid)
+        });
         this.htmlEditor=Ext.create('Ext.form.HtmlEditor', {
             width: 750,
-            height: 490,
+            height: 460,
             value: value,
             renderTo: Ext.get(parentid)
         });  
@@ -41,6 +51,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     getConfiguration: function(){
         var config = new Object();
         config.html= this.htmlEditor.getValue();
+        config.title= this.titleField.getValue();
         return config;
     }
 });

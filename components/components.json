@@ -10,7 +10,7 @@
  * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
  * 
  * restrictions: Array with region-ids to which the component can be dragged
- *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,
+ *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,content_bottom
  *   popupwindow,rightmargin_top,rightmargin_bottom,footer
  * 
  * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
@@ -238,7 +238,7 @@
             }
         },
         singleton: true,
-        restrictions: ["content"]        
+        restrictions: ["content_bottom"]        
     },
     {
         className: "viewer.components.Coordinates",
@@ -247,7 +247,7 @@
         sources: ["Coordinates.js"],
         closureCompilerSafe: true,        
         singleton: true,
-        restrictions: ["content"]        
+        restrictions: ["content_bottom"]        
     }, 
     {
         className: "viewer.components.FlamingoComponent",
@@ -307,10 +307,10 @@
         closureCompilerSafe: true,
         extPropertyGridConfigs: {
             propertyNames: {               
-                name: "Naam"
+                title: "Titel"
             },
             source: {
-                name: "Legenda"
+                title: "Legenda"
             }
         },
         singleton: true,

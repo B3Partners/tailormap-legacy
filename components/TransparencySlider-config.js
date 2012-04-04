@@ -21,21 +21,46 @@ Ext.define("viewer.components.CustomConfiguration",{
     filterableCheckboxes:null,
     constructor: function (parentid,config){
         var sliders = [];
-        if(config != null && config.sliders != null){
-            sliders = config.sliders;
+        var title = "";
+        if(config != null) {
+            if(config.sliders != null) sliders = config.sliders;
+            if(config.title != null) title = config.title;
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+        this.container = Ext.create('Ext.container.Container', {
+            width: 765,
+            height: 490,
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [{
+                xtype: 'textfield',
+                id: 'componentTransparencyTitle',
+                fieldLabel: 'Titel',
+                name: 'title',
+                value: title,
+                labelWidth: 275,
+                width: 500
+            },{
+                xtype: 'container',
+                flex: 1,
+                html: '<div id="selectionGridContainer" style="width: 100%; height: 100%;"></div>'
+            }],
+            renderTo: 'config'
+        });
         filterableCheckboxes = Ext.create('Ext.ux.b3p.SelectionGrid', {
             requestUrl: contextPath+"/action/componentConfigLayerList",
             requestParams: {
                 appId:applicationId
             },
-            renderTo: 'config',
+            renderTo: 'selectionGridContainer',
             sliders: sliders
         });
     },
     getConfiguration: function(){
         var config = new Object();
+        config.title = Ext.getCmp('componentTransparencyTitle').getValue();
         config.sliders = filterableCheckboxes.getSliders();
         return config;
     }
