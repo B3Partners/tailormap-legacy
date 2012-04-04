@@ -433,7 +433,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     this.balloonWidth=300;
     this.balloonHeight=300;
     this.balloonCornerSize=20;
-    this.balloonArrowHeight=40;
+    this.balloonArrowHeight=20;
     this.balloonContent=null;    
     this.mouseIsOverElement=new Object();
     this.maptipId=0;
@@ -441,7 +441,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     this.showCloseButton=false;
     this.zIndex=13000;
     //because click events still needs to be handled by the map, move the balloon a bit
-    this.offsetX=3;
+    this.offsetX=1;
     this.offsetY=0;
     this.roundImgPath=contextPath+"/viewer-html/components/resources/images/maptip/round.png";
     this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";
@@ -563,10 +563,11 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         this.balloon.appendChild(bottomRight);
         
         //arrows
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
-        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none;'><img src='"+this.arrowImgPath+"'/></div>");
+        console.log("<div class='balloonArrow balloonArrowTopRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+this.balloonArrowHeight+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+this.balloonArrowHeight+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(2*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
+        this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(3*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
         
         //content        
         var balloonContentEl = document.createElement("div");
