@@ -59,9 +59,12 @@ Ext.define ("viewer.components.TOC",{
                 children: []
             }
         });
+        
+        var title = "";
+        if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;        
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
-            title: this.title,
+            title: title,
             height: "100%",
             useArrows: true,
             rootVisible: false,

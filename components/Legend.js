@@ -27,17 +27,27 @@ Ext.define ("viewer.components.Legend",{
     queue : null,
     legends : null,
     config:{
-        name: "Legend",
-        title: "",
+        // name: "Legend",
+        title: "Legend",
         titlebarIcon : "",
         tooltip : ""
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        var legendContainer = document.getElementById(this.getContentDiv());
-      
-        legendContainer.style.overflow = "auto";
+        
+        var title = "";
+        if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        this.panel = Ext.create('Ext.panel.Panel', {
+            renderTo: this.getContentDiv(),
+            title: title,
+            height: "100%",
+            html: '<div id="' + this.name + 'legendContainer" style="width: 100%; height: 100%; padding: 10px;"></div>'
+        });
+        
+        this.legendContainer = document.getElementById(this.name + 'legendContainer');
+        this.legendContainer.style.overflow = "auto";
+        
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
@@ -97,8 +107,7 @@ Ext.define ("viewer.components.Legend",{
         var id = layerName+"-div";
         var node =document.getElementById(id);
         if (node!=null){
-            var div = document.getElementById(this.getContentDiv());
-            div.removeChild(node);
+            this.legendContainer.removeChild(node);
         }
     },
     // Start the legend: make a list of images to be retrieved, make a queue and start it
@@ -107,14 +116,14 @@ Ext.define ("viewer.components.Legend",{
         var config ={
             legends: this.legends, 
             queueSize: 1,
-            div: this.getContentDiv()
+            div: this.legendContainer
         };
         this.queue = Ext.create("viewer.components.ImageQueue",config);
         this.queue.load();
     },
     
     getExtComponents: function() {
-        return [];
+        return [ this.panel.getId() ];
     }
 });
 /**
@@ -187,11 +196,10 @@ Ext.define("viewer.components.Image",{
         this.initConfig(config);
     },
     loadImage: function (){
-        var plek = document.getElementById(this.div);
         var div = document.createElement("div");
         div.id = this.item.id + "-div";
         div.innerHTML = "<h3>"+ this.item.title+"</h3>";
-        plek.appendChild(div);
+        this.div.appendChild(div);
         this.legendimg = document.createElement("img");
         div.appendChild(this.legendimg);
         this.legendimg.name = this.item.title;

@@ -28,11 +28,13 @@ Ext.define("viewer.components.Slider",{
     config:{
         selectedLayers: [],
         name : "",
+        title: "",
         initialTransparency: 75
     },
     constructor : function (conf){
         viewer.components.Slider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+               
         this.slider = Ext.create('Ext.slider.Single', {
             width: 200,
             value: this.initialTransparency,
@@ -41,7 +43,7 @@ Ext.define("viewer.components.Slider",{
             labelAlign: "top",
             minValue: 0,
             maxValue: 100,
-            renderTo: this.div,
+            renderTo: conf.sliderContainer,
             listeners:{
                 change: {                    
                     fn: this.sliderChanged,

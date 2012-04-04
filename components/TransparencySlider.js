@@ -30,6 +30,16 @@ Ext.define ("viewer.components.TransparencySlider",{
         viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         
+        var title = "";
+        if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        this.panel = Ext.create('Ext.panel.Panel', {
+            renderTo: this.getContentDiv(),
+            title: title,
+            height: "100%",
+            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px;"></div>'
+        });
+        conf.sliderContainer = this.name + 'slidersContainer';
+        
         for(var i = 0 ; i < this.sliders.length ; i ++){
             
             var config = Ext.Object.merge(conf, this.sliders[i]);
@@ -39,7 +49,7 @@ Ext.define ("viewer.components.TransparencySlider",{
         return this;
     },
     getExtComponents: function() {
-        var components = [];
+        var components = [ this.panel.getId() ];
         for(var slider in this.sliderObjects) {
             components.push(this.sliderObjects[slider].getExtComponents());
         }

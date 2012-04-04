@@ -23,6 +23,7 @@ Ext.define('viewer.LayoutManager', {
         left_menu: {region:'center', subregion:'west', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false,isPopup:true, defaultLayout: {width: 150}},
         top_menu: {region:'none'},
         content: {region:'center', subregion:'center', columnOrientation: 'horizontal', subRegionOrientation: 'vertical', singleComponentBlock: true, useTabs: false, defaultLayout: {}},
+        content_bottom: {region:'none'},
         popupwindow: { region: 'popupwindow', useTabs: true,hasSharedPopup:true },
         rightmargin_top: {region:'east', subregion:'center', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {width: 250}},
         rightmargin_bottom: {region:'east', subregion:'south', columnOrientation: 'vertical', subRegionOrientation: 'vertical', useTabs: true, defaultLayout: {height: 250}},
@@ -179,10 +180,15 @@ Ext.define('viewer.LayoutManager', {
                     popupLayout = { type: 'hbox', align: 'stretch' };
                 }
                 
+                var title = ' ';
+                if(regionlayout.title && regionlayout.title != '') {
+                    title = regionlayout.title;
+                }
+                
                 var popupWindowConfig = {
-                   title: '???',
+                   title: title,
                    showOnStartup:true,
-                    details:{
+                   details:{
                         closable: true,
                         closeAction: 'hide',
                         hideMode: 'offsets',
@@ -367,6 +373,15 @@ Ext.define('viewer.LayoutManager', {
                     tabNo: index
                 }
             });
+            var tabBarLayout = {};
+            if(regionlayout.bgcolor != '') {
+                tabBarLayout = {
+                    style: {
+                        backgroundColor: regionlayout.bgcolor,
+                        backgroundImage: 'none' // Otherwise backgroundcolor is overridden by image
+                    }
+                };
+            }
             var tabcomponent = {
                 xtype: 'tabpanel',
                 id: cmpId,
@@ -375,7 +390,8 @@ Ext.define('viewer.LayoutManager', {
                 defaults: {
                     hideMode: 'offsets'
                 },
-                items: componentItems
+                items: componentItems,
+                tabBar: tabBarLayout
             };
             return tabcomponent;
         }
@@ -404,10 +420,16 @@ Ext.define('viewer.LayoutManager', {
     setTabTitle: function(componentId, title) {
         // Not sure if this works, don't know for sure how to set a tab title
         var me = this;
-        if(Ext.isDefined(me.tabComponents[componentId])) {
+        if(me.isTabComponent(componentId)) {
             Ext.getCmp(me.tabComponents[componentId].tabId).tabBar.items.getAt(me.tabComponents[componentId].tabNo).setText(title);
         }
     },
+    
+    isTabComponent: function(componentId) {
+        var me = this;
+        return Ext.isDefined(me.tabComponents[componentId]);
+    },
+    
     showStartupPopup: function() {
         this.popupWin.show();
     },

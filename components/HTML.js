@@ -23,7 +23,8 @@ Ext.define ("viewer.components.HTML",{
     extend: "viewer.components.Component",
     container: null,
     config: {
-        html: ""
+        html: "",
+        title: ""
     },
     constructor: function (conf){        
         viewer.components.HTML.superclass.constructor.call(this, conf);
