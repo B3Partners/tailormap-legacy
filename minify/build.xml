@@ -56,11 +56,26 @@
             <file name="FlamingoTool.js"/>
             <file name="FlamingoComponent.js"/>
             <file name="FlamingoImageLayer.js"/>
-          </sources>          
+          </sources>   
+
+		<!--					The OpenLayers implementation		-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers">
+            <file name="OpenLayersLayer.js"/>
+            <file name="OpenLayersWMSLayer.js"/>
+            <file name="OpenLayersVectorLayer.js"/>
+            <file name="OpenLayersImageLayer.js"/>
+            <file name="OpenLayersTMSLayer.js"/>
+            <file name="OpenLayersTool.js"/>
+            <file name="OpenLayersIdentifyTool.js"/>
+            <file name="OpenLayersMap.js"/>
+            <file name="Utils.js"/>
+          </sources> 
+		  
           <!--					The Flamingo-mc component 				-->
           <sources dir="${viewerhtml.path}/common/viewercontroller">          
             <file name="MapComponent.js"/>
-            <file name="FlamingoMapComponent.js"/>            
+            <file name="FlamingoMapComponent.js"/>     
+            <file name="OpenLayersMapComponent.js"/>          
           </sources>
         </jscomp>
 	</target>

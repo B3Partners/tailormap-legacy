@@ -22,7 +22,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <title><c:out value="${actionBean.application.name}"/></title>
-
+        
+        <c:choose>
+            <c:when test="${!empty param.viewer && param.viewer == 'openlayers'}">
+                <c:set var="viewerType" value="openlayers"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="viewerType" value="flamingo"/>
+            </c:otherwise>
+        </c:choose>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
@@ -37,10 +45,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
 
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
-        <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
+        <c:if test="${viewerType == 'flamingo'}">
+            <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
+        </c:if>
+        <c:if test="${viewerType == 'openlayers'}">
+            <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/${param.debug == true ? 'lib/' : ''}OpenLayers.js"></script>
+        </c:if>
         <c:choose>
             <c:when test="${param.debug == true}">
-                <!-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use -->
+                <!-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use -->  
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/ViewerController.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/Component.js"></script>
 
@@ -53,15 +66,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Tool.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Component.js"></script>
 
-                <!--script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersLayer.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersWMSLayer.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersVectorLayer.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersImageLayer.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTMSLayer.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTool.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersIdentifyTool.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/OpenLayersMap.js"></script>
-                <script type="text/javascript" src="scripts/viewer-html/common/viewercontroller/OpenLayers/Utils.js"></script-->
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersWMSLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersVectorLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersImageLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTMSLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTool.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersIdentifyTool.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersMap.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/Utils.js"></script>
 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoLayer.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoWMSLayer.js"></script>
@@ -75,7 +88,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoComponent.js"></script>
 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>                
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>  
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayersMapComponent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
                 
@@ -218,7 +232,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           
                 Ext.onReady(function() {
                     //TODO set the correct viewertype
-                    viewerController = new viewer.viewercontroller.ViewerController("flamingo", null, config);
+                    
+                    var viewerType = "${viewerType}";
+                    viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config);
                     Ext.EventManager.onWindowResize(function () {
                         viewerController.resizeComponents();
                     });
