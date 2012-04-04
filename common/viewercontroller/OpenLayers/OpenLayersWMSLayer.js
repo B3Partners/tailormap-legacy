@@ -3,45 +3,51 @@
  * @constructor
  * @description
  */
-function OpenLayersWMSLayer(olLayerObject,id){
-    if (!olLayerObject instanceof OpenLayers.Layer.WMS){
-        Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+olLayerObject});
-    }
-    OpenLayersLayer.call(this,olLayerObject,id);
-    this.getFeatureInfoControl=null;
-    this.mapTipControl=null;
-}
-OpenLayersWMSLayer.prototype = new OpenLayersLayer();
-OpenLayersWMSLayer.prototype.constructor= OpenLayersWMSLayer;
+Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
+    extend: "viewer.viewercontroller.openlayers.OpenLayersLayer",
+    constructor : function (frameworkLayer){
+        viewer.viewercontroller.openlayers.OpenLayersWMSLayer.superclass.constructor.call(this,{});
+        // TODO: see if this can be prettier: when giving an OpenLayers object to initConfig, it will be cloned, which results in a stackoverflow
+        this.frameworkLayer = frameworkLayer;
+//    / /   this.initConfig(config);        
+         if (!this.frameworkLayer instanceof OpenLayers.Layer.WMS){
+                Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+this.frameworkLayer});
+            }
+            this.getFeatureInfoControl=null;
+            this.mapTipControl=null;
+    },
 
-/**
- *Gets the last wms request-url of this layer
- *@returns the WMS getMap Reqeust.
- */
-OpenLayersWMSLayer.prototype.getURL = function(){
-    return this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent());
-}
-/**
- *Set a OGC-WMS param and refresh the layer
- */
-OpenLayersWMSLayer.prototype.setOGCParams= function(newParams){
-    this.getFrameworkLayer().mergeNewParams(newParams);
-}
-/**
- *Get Feature
- */
-OpenLayersWMSLayer.prototype.setGetFeatureInfoControl = function(controller){
-    this.getFeatureInfoControl=controller;
-}
-OpenLayersWMSLayer.prototype.getGetFeatureInfoControl = function(){
-    return this.getFeatureInfoControl;
-}
-/**
- *Maptip:
- */
-OpenLayersWMSLayer.prototype.setMapTipControl = function(controller){
-    this.mapTipControl=controller;
-}
-OpenLayersWMSLayer.prototype.getMapTipControl = function(){
-    return this.mapTipControl;
-}
+    /**
+    *Gets the last wms request-url of this layer
+    *@returns the WMS getMap Reqeust.
+    */
+    getURL : function(){
+        return this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent());
+    },
+    /**
+    *Set a OGC-WMS param and refresh the layer
+    */
+    setOGCParams: function(newParams){
+        this.getFrameworkLayer().mergeNewParams(newParams);
+    },
+    /**
+    *Get Feature
+    */
+    setGetFeatureInfoControl : function(controller){
+        this.getFeatureInfoControl=controller;
+    },
+    
+    getGetFeatureInfoControl : function(){
+        return this.getFeatureInfoControl;
+    },
+    /**
+    *Maptip:
+    */
+    setMapTipControl : function(controller){
+        this.mapTipControl=controller;
+    },
+    
+    getMapTipControl : function(){
+        return this.mapTipControl;
+    }
+});

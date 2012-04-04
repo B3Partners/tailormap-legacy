@@ -12,7 +12,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     editMapId: null,
     gisId: 'gis',
     config: {
-        options: {}
+        options: null,
+        viewerController:null
     },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);

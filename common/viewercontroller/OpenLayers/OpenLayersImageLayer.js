@@ -3,12 +3,13 @@
  * @constructor
  * @description
  */
-function OpenLayersImageLayer (olLayerObject, id){
-    if (!olLayerObject instanceof OpenLayers.Layer.Image){
-        Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+olLayerObject});
+Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
+    extend: "viewer.viewercontroller.openlayers.OpenLayersLayer",
+    constructor : function (config){
+        viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.constructor.call(this, config);
+        this.initConfig(config);
+        if (!this.frameworkLayer instanceof OOpenLayers.Layer.Image){
+            Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.Image'. But: "+this.frameworkLayer});
+        }
     }
-    OpenLayersLayer.call(this,olLayerObject,id);
-}
-
-OpenLayersImageLayer.prototype = new OpenLayersLayer();
-OpenLayersImageLayer.prototype.constructor= OpenLayersImageLayer;
+});

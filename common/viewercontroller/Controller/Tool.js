@@ -55,12 +55,12 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         //MapComponent is working with ids instead of names
         conf.id=this.name;
         //Let the Mapcomponent create the specific tool
-        tool = viewerController.mapComponent.createTool(conf);   
-        if (tool==null){
+        this.tool = this.viewerController.mapComponent.createTool(conf);   
+        if (this.tool==null){
             throw new Error("Tool not initialized! Initialize the tool before the addTool");            
         }
         //Add the tool
-        viewerController.mapComponent.addTool(tool);
+        this.viewerController.mapComponent.addTool(this.tool);
     },
     fire : function (event,options){
         this.fireEvent(event,this,options);

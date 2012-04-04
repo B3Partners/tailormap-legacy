@@ -61,27 +61,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         this.layers = {};
         
+        if(mapId == null && this.layoutManager != null) {
+            mapId = this.layoutManager.getMapId();
+        }
         if(viewerType == "flamingo") {
-            if(mapId == null && this.layoutManager != null) {
-                mapId = this.layoutManager.getMapId();
-            }
             //console.log("Creating FlamingoMapComponent, mapId = " + mapId);
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId);
         } else if(viewerType == "openlayers") {
-            throw "OpenLayers currently not supported!";
-        /*
-            this.mapComponent= new OpenLayersController();
-            this.mapOptions = {
-                projection: new OpenLayers.Projection("EPSG:28992"),
-                allOverlays: true,
-                units :'m',
-                resolutions: [512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125],
-                controls : [new OpenLayers.Control.Navigation({
-                    zoomBoxEnabled: true
-                }),new OpenLayers.Control.ArgParser()],
-                events: []            
-            };
-            */            
+            this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId);
         }
 
         /* XXX move to constructor? */
@@ -98,7 +85,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         
         this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
-        
+        if(viewerType == "openlayers") {
+            this.mapComponent.handleEvent(this.mapComponent.getSpecificEventName(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE));
+        }
     },
     
     isDebug: function() {
@@ -190,7 +179,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         
         // XXX
-        if(className == "FlamingoMap") {
+        if(className == "FlamingoMap" || className == "OpenLayersMap") {
             return null;
         }
 
