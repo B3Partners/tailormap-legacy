@@ -395,4 +395,12 @@ public class Application {
         
         return copy;
     }
+
+    public void setMaxWidth(String maxWidth) {
+        this.details.put("maxWidth", maxWidth);
+    }
+    
+    public void setMaxHeight(String maxHeight) {
+        this.details.put("maxHeight", maxHeight);
+    }
 }
