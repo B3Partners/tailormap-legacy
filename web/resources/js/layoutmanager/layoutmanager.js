@@ -37,7 +37,8 @@ Ext.onReady(function() {
         {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, configureHeight: false, configureWidth: true, addedComponents:[]},
         {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: true, configureWidth: false, addedComponents:[]},
         {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[]},
-        {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, addedComponents:[]},
+        {id:'content_bottom', htmlId:'layout_content_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, addedComponents:[]},
+        {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, configureTitle: true, addedComponents:[]},
         {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[]},
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
         {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]}
@@ -198,6 +199,12 @@ Ext.onReady(function() {
                                                     '<input type="checkbox" id="' + layoutRegion.get('id') + '_useTabs" />' + 
                                                 '</div>';
                 }
+                if(layoutRegion.get('configureTitle')) {
+                    layoutRegionConfigHtml +=   '<div class="tabsconfig" style="clear: left;">' + 
+                                                'Popup titel: ' + 
+                                                '<input type="text" id="' + layoutRegion.get('id') + '_title" style="width: 100%;" />' + 
+                                            '</div>';
+                }
                 layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
                                                 'Achtergrondkleur: ' + 
                                                 '<input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 100%;" />' + 
@@ -356,6 +363,15 @@ Ext.onReady(function() {
                                 checked = layoutJson[regionId]['layout']['useTabs'];
                             }
                             Ext.fly(regionId + '_useTabs').dom.checked = checked;
+                        }
+                        if(layoutRegion.get('configureTitle')) {
+                            var title = '';
+                            if(Ext.isDefined(layoutJson[regionId]['layout']['title'])) {
+                                bgcolor = layoutJson[regionId]['layout']['title'];
+                            }
+                            Ext.fly(regionId + '_title').set({
+                                value: title
+                            });
                         }
                         var bgcolor = '';
                         if(Ext.isDefined(layoutJson[regionId]['layout']['bgcolor'])) {
@@ -540,7 +556,8 @@ Ext.onReady(function() {
         height: 600,
         layout: 'fit',
         modal: true,
-        contentEl: 'configPage'
+        contentEl: 'configPage',
+        resizable: false
     });
     
     function editComponent(componentData) {
@@ -584,6 +601,11 @@ Ext.onReady(function() {
                     useTabs = true;
                 }
             }
+            if(region.get('configureTitle')) {
+                Ext.apply(layoutConfig, {
+                    'title': Ext.fly(regionId + '_title').getValue() || ''
+                });
+            }
             Ext.apply(layoutConfig, {
                 'useTabs': useTabs,
                 'bgcolor': Ext.fly(regionId + '_bgcolor').getValue() || ''
@@ -597,10 +619,14 @@ Ext.onReady(function() {
             "layout": Ext.JSON.encode(layout)
         };
         
+        var maxWidth = Ext.fly('app_max_width').getValue() || 0;
+        var maxHeight = Ext.fly('app_max_height').getValue() || 0;
         Ext.Ajax.request({ 
             url: layoutSaveUrl, 
             params: { 
-                layout: response
+                layout: response,
+                maxWidth: maxWidth,
+                maxHeight: maxHeight
             }, 
             success: function ( result, request ) { 
                 if(displaySuccessMessage){

@@ -67,6 +67,10 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private List<String> groups = new ArrayList<String>();
     @Validate(on = "saveApplicationLayout")
     private String layout;
+    @Validate(on = "saveApplicationLayout")
+    private String maxWidth;
+    @Validate(on = "saveApplicationLayout")
+    private String maxHeight;
     @Validate(on = "saveComponentConfig")
     private String componentLayout;
     private Boolean loadCustomConfig = false;
@@ -143,6 +147,22 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public void setLayout(String layout) {
         this.layout = layout;
+    }
+    
+    public String getMaxHeight() {
+        return maxHeight;
+    }
+
+    public void setMaxHeight(String maxHeight) {
+        this.maxHeight = maxHeight;
+    }
+
+    public String getMaxWidth() {
+        return maxWidth;
+    }
+
+    public void setMaxWidth(String maxWidth) {
+        this.maxWidth = maxWidth;
     }
 
     public String getComponentLayout() {
@@ -316,6 +336,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             }
 
             application.setLayout(layout);
+            application.setMaxWidth(maxWidth);
+            application.setMaxHeight(maxHeight);
             em.persist(application);
             em.getTransaction().commit();
         } catch (JSONException ex) {

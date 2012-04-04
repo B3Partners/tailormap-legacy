@@ -30,8 +30,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Layoutmanager: ${actionBean.application.name} <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if></h1>
-
+            <h1 id="layoutManagerTitle">Layoutmanager: ${actionBean.application.name} <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if></h1>
+            <c:set var="maxWidth" value="" />
+            <c:if test="${!empty actionBean.application.details.maxWidth}">
+                <c:set var="maxWidth" value="${actionBean.application.details.maxWidth}" />
+            </c:if>
+            <c:set var="maxHeight" value="" />
+            <c:if test="${!empty actionBean.application.details.maxHeight}">
+                <c:set var="maxHeight" value="${actionBean.application.details.maxHeight}" />
+            </c:if>
+            <div id="layoutManagerApplicationSettings"> Maximale breedte: <input id="app_max_width" type="text" name="app_max_width" value="${maxWidth}" /> px | Maximale hoogte: <input id="app_max_height" type="text" name="app_max_height" value="${maxHeight}" /> px</div>
             <div id="component-container">
 
             </div>
@@ -54,6 +62,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <div id="center_center_center">
                             <div id="layout_top_menu" class="content-container"></div>
                             <div id="layout_content" class="content-container"></div>
+                            <div id="layout_content_bottom" class="content-container"></div>
                             <div id="layout_popupwindow" class="content-container"></div>
                         </div>
                     </div>

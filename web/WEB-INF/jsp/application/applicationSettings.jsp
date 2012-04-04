@@ -45,12 +45,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td><stripes:text name="version" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
-                        <td>Steunkleur 1:</td>
+                        <td>Steunkleur 1 (achtergrond):</td>
                         <td><stripes:text name="details['steunkleur1']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
-                        <td>Steunkleur 2:</td>
+                        <td>Steunkleur 2 (tekstkleur):</td>
                         <td><stripes:text name="details['steunkleur2']" maxlength="255" size="30"/></td>
+                    </tr>
+                    <tr>
+                        <td>Tekst font:</td>
+                        <td><stripes:text name="details['font']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
                         <td>Spritebestand icoontjes:</td>
