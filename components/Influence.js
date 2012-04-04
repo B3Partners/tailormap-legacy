@@ -63,6 +63,7 @@ Ext.define ("viewer.components.Influence",{
             }
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        
         return this;
     },
     /**
@@ -154,7 +155,7 @@ Ext.define ("viewer.components.Influence",{
         //radius ==null if no layer is selected
         if (radius!=null){
             this.viewerController.mapComponent.getMap().setMarker("influence",loc.x,loc.y);
-            var zoomInRadius=radius*10;
+            var zoomInRadius=radius*3;
             var extent = {
                 minx: loc.x-zoomInRadius,
                 maxx: loc.x+zoomInRadius,
@@ -162,8 +163,7 @@ Ext.define ("viewer.components.Influence",{
                 maxy: loc.y+zoomInRadius
             };
             this.viewerController.mapComponent.getMap().zoomToExtent(extent);
-            var wkt=this.makeCircleAsPolygon(loc.x,loc.y,radius,32);
-            this.showGeometry(wkt);
+            this.showInfluence(loc.x,loc.y,radius);
             this.setFilter();
         }else{
             Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
@@ -248,9 +248,12 @@ Ext.define ("viewer.components.Influence",{
     },
     /**
      * Show the geometry on the map.
-     * @param geom the geometry as wkt that needs to be shown
+     * @param x the x coordinate of the point
+     * @param y the y coordinate of the point
+     * @param radius the radius of th influence
      */
-    showGeometry: function(geom){        
+    showInfluence: function(x,y,radius){   
+        var geom=this.makeCircleAsPolygon(x,y,radius,32);
         this.vectorLayer.removeAllFeatures();
         var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
             wktgeom: geom,

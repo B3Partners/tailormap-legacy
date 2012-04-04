@@ -20,6 +20,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         this.enabledEvents=new Object();
         return this;
     },
+    /**
+     * Get's the frameworklayer: the viewer specific layer.
+     */
+    getFrameworkLayer : function(){
+        return this.map.getFrameworkMap();
+    },
     
     toXML : function(){
         Ext.Error.raise({msg: "FlamingoLayer.toXML(): .toXML() must be made!"});

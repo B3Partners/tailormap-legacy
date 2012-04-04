@@ -32,13 +32,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     constructor: function (config){
         this.initConfig(config);
     },
-    
-    /**
-     * Get's the frameworklayer: the viewer specific layer.
-     */
-    getFrameworkLayer : function(){
-        return this.frameworkLayer;
-    },
+        
     /**
      *Gets a option of this layer
      *@return the option value or null if not exists

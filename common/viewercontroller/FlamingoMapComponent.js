@@ -134,7 +134,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         {
             id: name,
             url: url,
-            extent : extent
+            extent : extent,
+            frameworkLayer : this.viewerObject
         });
     },
     /**

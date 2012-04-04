@@ -50,7 +50,7 @@ Ext.define ("viewer.components.FeatureInfo",{
                 if (typeof maptips[i].setEnabled == 'function'){
                     maptips[i].setEnabled(true);
                 }
-            }    
+            }
         }
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);

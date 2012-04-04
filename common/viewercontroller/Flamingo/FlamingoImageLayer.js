@@ -17,7 +17,7 @@
 /**
  * @class 
  * @constructor
- * @description Flamingo WMS layer class 
+ * @description Flamingo Image layer class 
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
@@ -71,7 +71,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         return this.id;
     },
     reload : function (){
-        this.getFrameworkLayer().callMethod(mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
+        this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setConfig",this.toXML() );
     },
     setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
