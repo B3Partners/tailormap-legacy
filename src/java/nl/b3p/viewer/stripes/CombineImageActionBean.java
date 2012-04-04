@@ -16,13 +16,14 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.awt.Color;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -132,31 +133,48 @@ public class CombineImageActionBean implements ActionBean {
             try{
                 CombineImageSettings cis = new CombineImageSettings();            
                 //get the requests
-                JSONArray requests = jRequest.getJSONArray("requests");
-                for (int r=0; r < requests.length(); r++){
-                    CombineImageUrl ciu = null;
-                    JSONObject request=requests.getJSONObject(r);
-                    
-                    String protocol = null;
-                    if (request.has("protocol")){
-                        protocol=request.getString("protocol");
+                if (jRequest.has("requests")){
+                    JSONArray requests = jRequest.getJSONArray("requests");
+                    for (int r=0; r < requests.length(); r++){
+                        CombineImageUrl ciu = null;
+                        JSONObject request=requests.getJSONObject(r);
+
+                        String protocol = null;
+                        if (request.has("protocol")){
+                            protocol=request.getString("protocol");
+                        }
+                        if (CombineImageUrl.ARCSERVER.equals(protocol)){
+                            ciu= new CombineArcServerUrl();
+                        }else if (CombineImageUrl.ARCIMS.equals(protocol)){
+                            ciu= new CombineArcIMSUrl();
+                        }else{
+                            ciu = new CombineImageUrl();
+                        }
+                        ciu.setProtocol(protocol);
+                        ciu.setUrl(request.getString("url"));
+                        if (request.has("alpha")){
+                            Double alpha=request.getDouble("alpha");
+                            ciu.setAlpha(alpha.floatValue());
+                        }
+                        ciu.setBody(request.getString("body"));                    
+
+                        cis.addUrl(ciu);
                     }
-                    if (CombineImageUrl.ARCSERVER.equals(protocol)){
-                        ciu= new CombineArcServerUrl();
-                    }else if (CombineImageUrl.ARCIMS.equals(protocol)){
-                        ciu= new CombineArcIMSUrl();
-                    }else{
-                        ciu = new CombineImageUrl();
+                }
+                if (jRequest.has("geometries")){
+                    JSONArray geometries = jRequest.getJSONArray("geometries");
+                    List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
+                    for (int g=0; g < geometries.length(); g++){
+                        JSONObject geom = geometries.getJSONObject(g);
+                        if (geom.has("wkt")){
+                            CombineImageWkt ciw = new CombineImageWkt(geom.getString("wkt"));
+                            if (geom.has("color")){
+                                ciw.setColor(geom.getString("color"));
+                            }
+                            wkts.add(ciw);
+                        }
                     }
-                    ciu.setProtocol(protocol);
-                    ciu.setUrl(request.getString("url"));
-                    if (request.has("alpha")){
-                        Double alpha=request.getDouble("alpha");
-                        ciu.setAlpha(alpha.floatValue());
-                    }
-                    ciu.setBody(request.getString("body"));                    
-                    
-                    cis.addUrl(ciu);
+                    cis.setWktGeoms(wkts);
                 }
                 if (jRequest.has("bbox")){
                     cis.setBbox(jRequest.getString("bbox"));                
@@ -184,7 +202,7 @@ public class CombineImageActionBean implements ActionBean {
                     imageId= uniqueId();
                 }
                 //this.getContext().getRequest().getSession().setAttribute(imageId, cis);
-                //todo: better fix....
+                //TODO: better fix....
                 if (imageSettings.size()>100){                    
                     imageSettings.clear();
                 }

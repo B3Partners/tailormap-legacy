@@ -59,20 +59,21 @@ public class CombineImagesHandler {
             urls.addAll(normalUrls);
         }
         
-        if (urls.size() < 1) {
-            throw new Exception("No requests to combine.");
-        }
-
-        //Get the images by the urls
-        ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);
         BufferedImage[] bi = null;
-        try {
-            im.process();
-            bi = im.getCombinedImages();
-        } catch (Exception e) {
-            throw e;
+        
+        if (urls.size() >0 ) {
+            //Get the images by the urls
+            ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);        
+            try {
+                im.process();
+                bi = im.getCombinedImages();
+            } catch (Exception e) {
+                throw e;
+            }
+        }else{
+            bi = new BufferedImage[1];
+            bi[0]=new BufferedImage(settings.getWidth(),settings.getHeight(),BufferedImage.TYPE_INT_ARGB_PRE);
         }
-
         Float[] alphas = null;
 
         for (int i = 0; i < urls.size(); i++) {
