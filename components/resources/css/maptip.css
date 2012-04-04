@@ -45,22 +45,13 @@
     right: 0px;
     top: 0px;
 }
-.balloonArrowTopRight img{
-    /*left: -20px;*/
-}
 .balloonArrowBottomLeft{
     left: 0px;
     bottom: 0px;
 }
-.balloonArrowBottomLeft img{
-    /*left: -40px;*/
-}
 .balloonArrowBottomRight{
     right: 0px;
     bottom: 0px;
-}
-.balloonArrowBottomRight img{
-    /*left: -60px;*/
 }
 /*Balloon Content*/
 .balloonContent{
