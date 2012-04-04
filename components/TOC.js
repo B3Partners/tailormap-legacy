@@ -189,6 +189,9 @@ Ext.define ("viewer.components.TOC",{
         if(this.layersChecked){
             treeNodeLayer.checked = appLayerObj.checked;
             retChecked = appLayerObj.checked;
+        } else if(appLayerObj.checked) {
+            treeNodeLayer.hidden_check = appLayerObj.checked;
+            retChecked = appLayerObj.checked;
         }
         return {
             node: treeNodeLayer,
@@ -281,6 +284,7 @@ Ext.define ("viewer.components.TOC",{
     
     updateTriStateClass: function(node, totalChecked, totalNodes) {
         var tristate = 0;
+        if(!this.groupCheck) return tristate;
         if(totalChecked == 0) {
             tristate = -1;
         } else if(totalChecked == totalNodes) {
@@ -307,7 +311,10 @@ Ext.define ("viewer.components.TOC",{
     checkChildNodes: function(node, checked) {
         var me = this;
         node.eachChild(function(childNode) {
-            childNode.set('checked', checked);
+            if(me.layersChecked || (childNode.hasChildNodes() && me.groupCheck)) childNode.set('checked', checked);
+            else {
+                childNode.set('hidden_check', checked);
+            }
             me.updateTreeNodes.push(childNode);
             if(childNode.hasChildNodes()) {
                 childNode.set('cls', '');
@@ -317,8 +324,14 @@ Ext.define ("viewer.components.TOC",{
     },
     
     getNodeChecked: function(node) {
-        if(Ext.isDefined(node.data) && Ext.isDefined(node.data.checked)) return node.data.checked;
-        if(Ext.isDefined(node.raw) && Ext.isDefined(node.raw.checked)) return node.raw.checked;
+        if(Ext.isDefined(node.data)) {
+            if(Ext.isDefined(node.data.checked)) return node.data.checked;
+            if(Ext.isDefined(node.data.hidden_check)) return node.data.hidden_check;
+        }
+        if(Ext.isDefined(node.raw)) {
+            if(Ext.isDefined(node.raw.checked)) return node.raw.checked;
+            if(Ext.isDefined(node.raw.hidden_check)) return node.raw.hidden_check;
+        }
         return false;
     },
     
