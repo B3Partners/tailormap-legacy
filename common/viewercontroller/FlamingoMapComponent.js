@@ -183,12 +183,28 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      * @param configuration has all the xml configurations that are passed to the flamingo call.
      */
     createToolGroup : function(configuration){
+        var layout= this.viewerController.getLayout('top_menu');
+        var height= layout.height ? layout.height : -1;        
         var xml="";
+        if (height>=0){
+            var heightParam=height;
+            if (layout.heightmeasure){
+                heightParam+= layout.heightmeasure == "px" ? "" : layout.heightmeasure;
+            }
+            xml+="<fmc:Container top='0' width='100%' height='"+heightParam+"'";
+            if (layout.bgcolor){
+                xml+="backgroundcolor='"+layout.bgcolor+"'";
+            }
+            xml+=">";
+        }
         xml+="<fmc:ToolGroup ";
         for (var key in configuration){
             xml+=key+"=\""+configuration[key]+"\" ";
         }
-        xml+="></fmc:ToolGroup>";
+        xml+="></fmc:ToolGroup>";        
+        if (height>=0){
+             xml+="</fmc:Container>";
+        }
         this.viewerObject.callMethod(this.mainContainerId,'addComponent',xml);        
     },
     /**

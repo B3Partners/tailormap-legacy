@@ -109,9 +109,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js: initializeButtons();
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
            
-            var mapTop=this.getLayoutHeight('top_menu');
-            if (mapTop<0){
-                mapTop=0;
+            var topMenuLayout=this.getLayout('top_menu');
+            var mapTop= topMenuLayout.height ? topMenuLayout.height : 0;
+            if (topMenuLayout.heightmeasure){
+                mapTop+= topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
             }
             var map = this.mapComponent.createMap("map", {
                 viewerController: this,
@@ -791,13 +792,24 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     getLayoutHeight: function(layoutid){
         var height=0;
-        var layoutObject=this.app.layout[layoutid];
+        var layoutObject=this.getLayout(layoutid);
         if (layoutObject &&
-            layoutObject.layout &&
-            layoutObject.layout.height){
-            height=layoutObject.layout.height;                
+            layoutObject.height){
+            height=layoutObject.height;                
         }
         return height;
+    },
+    /**
+     *Get the layout of the region
+     *@param layoutregion id of the region. For example: 'top_menu'
+     */
+    getLayout: function (layoutRegion){
+        var layoutObject=this.app.layout[layoutRegion];
+        if (layoutObject &&
+            layoutObject.layout){
+            return layoutObject.layout;
+        }
+        return null;
     },
     resizeComponents: function() {
         this.layoutManager.resizeLayout();
