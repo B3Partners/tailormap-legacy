@@ -14,6 +14,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     constructor: function(config,frameworkMap){
         this.initConfig(config);
         this.frameworkMap = frameworkMap;
+        this.frameworkMap.centerLayerContainer();
         viewer.viewercontroller.openlayers.OpenLayersMap.superclass.constructor.call(this, config);
          if (!( this.frameworkMap instanceof OpenLayers.Map)){
             throw("The given map is not of the type 'OpenLayers.Map'");

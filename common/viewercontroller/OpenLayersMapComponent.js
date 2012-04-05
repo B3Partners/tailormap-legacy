@@ -16,17 +16,18 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.pointButton = null;
         this.lineButton = null;
         this.polygonButton = null;
-        this.mapOptions = {
-            projection: new OpenLayers.Projection("EPSG:28992"),
+        var maxBounds=new OpenLayers.Bounds(120000,304000,280000,620000);
+        this.mapOptions =  {
+            projection:new OpenLayers.Projection("EPSG:28992"),
+            maxExtent: maxBounds,
             allOverlays: true,
             units :'m',
             resolutions: [512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125],
+            resolution: 512,
             controls : [new OpenLayers.Control.Navigation({
-            zoomBoxEnabled: true
-            }),new OpenLayers.Control.ArgParser()],
-            events: []            
-        };  
-        
+                    zoomBoxEnabled: false
+                }),new OpenLayers.Control.ArgParser()]
+        };
         return this;
     },
 
@@ -93,10 +94,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var maxExtent = options["maxExtent"];
         //var maxBounds = new OpenLayers.Bounds(maxExtent.minx,maxExtent.miny,maxExtent.maxx,maxExtent.maxy);
         
-        var maxBounds=new OpenLayers.Bounds(120000,304000,280000,620000);
+        var maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
+        this.mapOptions["center"] = maxBounds.getCenterLonLat();
       //  Ext.apply(options,this.mapOptions);
         options["maxExtent"] = maxBounds;
-        var map=new OpenLayers.Map(this.domId,options);
+        var map=new OpenLayers.Map(this.domId,this.mapOptions);
         var olMap = Ext.create("viewer.viewercontroller.openlayers.OpenLayersMap",{
             viewerController:this.viewerController
         },map);
@@ -109,7 +111,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     
     createWMSLayer : function(name, wmsurl,ogcParams,options){
         options["id"]=null;
-        options["isBaseLayer"]=false;
+        options["isBaseLayer"]=true;
         options["singleTile"]=true;
         options["transitionEffect"] = "resize";
         options["events"] = new Object();
