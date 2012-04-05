@@ -65,13 +65,13 @@ Ext.define ("viewer.components.InfluenceImage",{
     },
     /**
      */
-    addImage: function(imageUrl,bbox){
+    addImage: function(imageUrl,bbox){        
         if (this.imageLayer==null){
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + "ImageLayer", imageUrl, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
-        }else{
-            this.imageLayer.setUrl(imageUrl);
-            this.imageLayer.setExtent(bbox);
+        }else{            
+            this.imageLayer.applyUrl(imageUrl);
+            this.imageLayer.applyExtent(bbox);
             this.imageLayer.reload();
         }
     },

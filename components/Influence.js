@@ -161,10 +161,11 @@ Ext.define ("viewer.components.Influence",{
                 maxx: loc.x+zoomInRadius,
                 miny: loc.y-zoomInRadius,
                 maxy: loc.y+zoomInRadius
-            };
-            this.viewerController.mapComponent.getMap().zoomToExtent(extent);
+            };            
             this.showInfluence(loc.x,loc.y,radius);
             this.setFilter();
+            
+            this.viewerController.mapComponent.getMap().zoomToExtent(extent);
         }else{
             Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
         }

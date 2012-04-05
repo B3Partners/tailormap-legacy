@@ -71,7 +71,19 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         return this.id;
     },
     reload : function (){
-        this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setConfig",this.toXML() );
+        this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
+    },
+    applyUrl: function(url){
+        this.url=url;
+        if (this.getFrameworkLayer()!=null){
+            this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","url",url);
+        }
+    },
+    applyExtent: function(extent){
+        this.extent=extent;
+        if (this.getFrameworkLayer()!=null){
+            this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","extent",extent);
+        }
     },
     setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);

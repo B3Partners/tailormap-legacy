@@ -24,6 +24,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
      * Get's the frameworklayer: the viewer specific layer.
      */
     getFrameworkLayer : function(){
+        if (this.map==null){
+            return null;
+        }
         return this.map.getFrameworkMap();
     },
     

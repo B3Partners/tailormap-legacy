@@ -508,19 +508,19 @@
         configXML: "<fmc:Window id=\"[id]\" left=\"[left]\" top=\"[top]\" width=\"[width]\" height=\"[height]\"/>",
         restrictions: ["content"]
     },
-    /*{
+    {
         className: "viewer.components.Influence",
-        name: "Invloedsgebied",
-        shortName: "Ig",
+        name: "Invloedsgebied met geometry",
+        shortName: "Igg",
         sources: ["tools/ToolMapClick.js","Search.js","Influence.js"],
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
-    },*/
+    },
     {
         className: "viewer.components.InfluenceImage",
-        name: "Invloedsgebied",
-        shortName: "Ig",
+        name: "Invloedsgebied plaatje",
+        shortName: "Igi",
         sources: ["tools/ToolMapClick.js","Search.js","Influence.js","InfluenceImage.js"],
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
