@@ -189,10 +189,12 @@ Ext.define ("viewer.components.SelectionModule",{
         var extComponents = [];
         extComponents.push('selectionModuleMainContainer');
         extComponents.push('selectionModuleFormContainer');
+        extComponents.push('selectionModuleCustomFormContainer');
         extComponents.push('selectionModuleTreeContentContainer');
         extComponents.push('selectionModuleSaveFormContainer');
         extComponents.push('selectionModuleTreesContainer');
         extComponents.push('selectionModuleFormFieldContainer');
+        extComponents.push('selectionModuleCustomFormFieldContainer');
         return Ext.Array.merge(extComponents, me.getActiveTreePanels());
     },
     
@@ -238,11 +240,10 @@ Ext.define ("viewer.components.SelectionModule",{
     loadCustomService: function() {
         var me = this;
         
-        var protocol = Ext.getCmp('customServiceUrlSelect').getValue();
-        var url = Ext.getCmp('customServiceUrlTextfield').getValue();
-        var q = Ext.getCmp('customServiceTreeSearchField').getValue();
-        if(protocol == 'csw') {
-            me.customType = "csw";
+        var protocol = '', url = '', q = '';
+        if(me.customServiceType == 'csw') {
+            url = Ext.getCmp('cswServiceUrlTextfield').getValue();
+            q = Ext.getCmp('cswSearchTextfield').getValue();
             var csw = Ext.create("viewer.CSWClient", {
                 url: url,
                 q: q
@@ -256,7 +257,8 @@ Ext.define ("viewer.components.SelectionModule",{
                 }
             );
         } else {
-            me.customType = "custom";
+            protocol = Ext.getCmp('customServiceUrlSelect').getValue();
+            url = Ext.getCmp('customServiceUrlTextfield').getValue();
             var si = Ext.create("viewer.ServiceInfo", {
                 protocol: protocol,
                 url: url
@@ -309,9 +311,40 @@ Ext.define ("viewer.components.SelectionModule",{
                             {id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {id: 'radioRegistry', name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
                             {id: 'radioCustom', name: 'layerSource', boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
-                            {xtype: 'textfield', hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
-                            {xtype: 'combo', store: [ ['wms','WMS'], ['csw','CSW'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Selecteer'},
+                            {id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}}
+                        ]
+                    }],
+                    height: 30,
+                    padding: '5px',
+                    border: 0,
+                    id: 'selectionModuleFormContainer'
+                },
+                {
+                    // Form above the trees with radiobuttons and textfields
+                    xtype: 'form',
+                    items: [{
+                        xtype: 'fieldcontainer',
+                        id: 'selectionModuleCustomFormFieldContainer',
+                        layout: 'hbox',
+                        border: 0,
+                        defaults: {
+                            xtype: 'textfield',
+                            style: {
+                                marginRight: '5px'
+                            }
+                        },
+                        width: '100%',
+                        height: '100%',
+                        defaultType: 'textfield',
+                        items: [
+                            {hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
+                            {xtype: 'combo', store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Selecteer'},
                             {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
+                                    me.loadCustomService();
+                            }},
+                            {hidden: true, id: 'cswServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
+                            {hidden: true, id: 'cswSearchTextfield', flex: 1, emptyText:'Zoekterm'},
+                            {xtype: 'button', text: 'CSW doorzoeken', hidden: true, id: 'cswServiceUrlButton', handler: function() {
                                     me.loadCustomService();
                             }}
                         ]
@@ -319,7 +352,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     height: 35,
                     padding: '5px',
                     border: 0,
-                    id: 'selectionModuleFormContainer'
+                    id: 'selectionModuleCustomFormContainer'
                 },
                 {
                     xtype: 'container',
@@ -526,11 +559,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() == e.ENTER) {
-                                if(me.customType == "custom") {
-                                    me.filterNodes(me.treePanels.customServiceTree.treePanel, Ext.getCmp('customServiceTreeSearchField').getValue());
-                                } else {
-                                    me.loadCustomService();
-                                }
+                                me.filterNodes(me.treePanels.customServiceTree.treePanel, Ext.getCmp('customServiceTreeSearchField').getValue());
                             }
                         }
                     }},
@@ -538,11 +567,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         xtype: 'button',
                         text: 'Zoeken',
                         handler: function() {
-                            if(me.customType == "custom") {
-                                me.filterNodes(me.treePanels.customServiceTree.treePanel, Ext.getCmp('customServiceTreeSearchField').getValue());
-                            } else {
-                                me.loadCustomService();
-                            }
+                            me.filterNodes(me.treePanels.customServiceTree.treePanel, Ext.getCmp('customServiceTreeSearchField').getValue());
                         }
                     }
                 ]
@@ -593,26 +618,32 @@ Ext.define ("viewer.components.SelectionModule",{
                         addParents(node.parentNode);
                     }
                 };
-                node.expand(false, function() {// expand all nodes
-                    if(node.hasChildNodes()) {
-                        node.eachChild(function(childNode) {
-                            if(childNode.isLeaf()) {
-                                if(!re.test(childNode.data.text)) {
-                                    me.treePanels[treePanelType].filteredNodes.push(childNode.get('id'));
-                                } else {
+                if(node.get('type') != 'cswresult' || (node.get('type') == 'cswresult') && node.data.loadedService) {
+                    node.expand(false, function() {// expand all nodes
+                        if(node.hasChildNodes()) {
+                            node.eachChild(function(childNode) {
+                                if(childNode.isLeaf()) {
+                                    if(!re.test(childNode.data.text)) {
+                                        me.treePanels[treePanelType].filteredNodes.push(childNode.get('id'));
+                                    } else {
+                                        addParents(childNode.parentNode);
+                                    }
+                                } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
                                     addParents(childNode.parentNode);
+                                } else {
+                                    filter(childNode);
                                 }
-                            } else if(!childNode.hasChildNodes() && re.test(childNode.data.text)) {// empty folder, but name matches
-                                addParents(childNode.parentNode);
-                            } else {
-                                filter(childNode);
-                            }
-                        });
-                    }
+                            });
+                        }
+                        if(!re.test(node.data.text)) {
+                            me.treePanels[treePanelType].filteredNodes.push(node.get('id'));
+                        }
+                    });
+                } else {
                     if(!re.test(node.data.text)) {
                         me.treePanels[treePanelType].filteredNodes.push(node.get('id'));
                     }
-                });
+                }
             };
             visibleParents = [];
             filter(rootNode);
@@ -770,11 +801,17 @@ Ext.define ("viewer.components.SelectionModule",{
         var applicationTreeContainer = Ext.get('applicationTreeContainer');
         var registryTreeContainer = Ext.get('registryTreeContainer');
         var customTreeContainer = Ext.get('customTreeContainer');
+        var cswServiceUrlTextfield = Ext.getCmp('cswServiceUrlTextfield');
+        var cswSearchTextfield = Ext.getCmp('cswSearchTextfield');
+        var cswServiceUrlButton = Ext.getCmp('cswServiceUrlButton');
         
         if(newval) {
             customServiceUrlTextfield.setVisible(false);
             customServiceUrlSelect.setVisible(false);
             customServiceUrlButton.setVisible(false);
+            cswServiceUrlTextfield.setVisible(false);
+            cswSearchTextfield.setVisible(false);
+            cswServiceUrlButton.setVisible(false);
             applicationTreeContainer.setStyle('visibility', 'hidden');
             registryTreeContainer.setStyle('visibility', 'hidden');
             customTreeContainer.setStyle('visibility', 'hidden');
@@ -787,11 +824,20 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.activeTree = me.treePanels.registryTree.treePanel;
             }
             if(field.id == 'radioCustom') {
+                me.customServiceType = 'custom';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
                 customServiceUrlTextfield.setVisible(true);
                 customServiceUrlSelect.setVisible(true);
                 customServiceUrlButton.setVisible(true);
+            }
+            if(field.id == 'radioCSW') {
+                me.customServiceType = 'csw';
+                customTreeContainer.setStyle('visibility', 'visible');
+                me.activeTree = me.treePanels.customServiceTree.treePanel;
+                cswServiceUrlTextfield.setVisible(true);
+                cswSearchTextfield.setVisible(true);
+                cswServiceUrlButton.setVisible(true);
             }
         }
     },

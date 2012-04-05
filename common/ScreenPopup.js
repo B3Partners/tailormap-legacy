@@ -85,6 +85,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             if(me.component) {
                 me.component.setButtonState('normal', true);
             }
+            me.enableBody();
         });
         this.popupWin.addListener('show', function() {
             if(me.component) {
