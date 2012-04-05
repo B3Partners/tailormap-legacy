@@ -1,0 +1,15 @@
+.x-htmleditor-imageupload {background: url(../images/image_upload.png) 0 0 no-repeat !important}
+.x-htmleditor-imageupload-thumbcontainer{width:64px;height:64px;overflow:hidden;line-height:64px;text-align:center;margin:auto}
+.x-htmleditor-imageupload-thumbcontainer img{vertical-align:middle;width: expression(this.width > 64 ? 64: this.width);height: expression(this.height > 64 ? 64: this.height);max-width:64px;max-height:64px;}
+.x-htmleditor-imageupload-cropdialog {background: url(../images/editor_background.gif) !important}
+.x-htmleditor-imageupload-editbutton {background: url(../images/image_upload.png) 0 0 no-repeat !important}
+.x-htmleditor-imageupload-deletebutton {background: url(../images/trash.gif) 0 0 no-repeat !important}
+.x-htmleditor-imageupload-cropbutton{background: url(../images/image_crop.gif) 0 0 no-repeat !important}
+.x-htmleditor-imageupload-rotatebutton{background: url(../images/image_rotate.png) 0 0 no-repeat !important}
+.x-htmleditor-imageupload-resizebutton{background: url(../images/image_resize.gif) 0 0 no-repeat !important}
+.x-htmleditor-imageupload-delete{display:block;background: url(../images/delete.gif) 0 0 no-repeat !important;width:12px;height:12px;margin:4px}
+.x-htmleditor-imageupload-delete:hover{background: url(../images/delete.gif) 0 -13px no-repeat !important;}
+.x-htmleditor-imageupload-constrain{background: url(../images/constrain.gif) 0 0 no-repeat !important}
+.x-htmleditor-imageupload-unconstrain{background: url(../images/constrain.gif) 0 -48px no-repeat !important}
+.x-htmleditor-imageupload-name{float:right;padding:20px 10px 0 0;}
+.x-htmleditor-imageupload-thumb{width:56px;height:56px;float:right}
