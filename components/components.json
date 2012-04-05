@@ -101,8 +101,18 @@
         singleton: true,
         restrictions: ["content"],
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "Tooltip", title: "Titel", titlebarIcon:"Titelbalk icoon"},
-            source: {tooltip: "Feature info", title : "", titlebarIcon:""}
+            propertyNames: {
+                title: "Detailscherm titel", 
+                titlebarIcon:"Detailscherm titelbalk icoon",
+                height: 'Samenvatting hoogte',
+                width: 'Samenvatting breedte'
+            },
+            source: {      
+                title : "Details", 
+                titlebarIcon: "",
+                height : 300, 
+                width: 300    
+            }
         }
     },
     {
@@ -425,16 +435,21 @@
         shortName: "Mt",
         sources: ["Maptip.js"],
         restrictions: ["content"],
+        type : "popup",
         extPropertyGridConfigs: {
             propertyNames: {
                 maptipdelay: "Maptip Delay",
-                height: 'hoogte',
-                width: 'width'
+                height: 'Samenvatting hoogte',
+                width: 'Samenvatting breedte',
+                title: "Detailscherm titel", 
+                titlebarIcon:"Detailscherm titelbalk icoon"
             },
             source: {
                 maptipdelay: 500,
                 height: 300,
-                width: 300
+                width: 300,                
+                title : "", 
+                titlebarIcon: ""
             }
         }             
     },
