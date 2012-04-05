@@ -66,6 +66,10 @@ Ext.define ("viewer.components.TOC",{
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
+            autoScroll: true,
+            viewConfig: {
+                height: '100%'
+            },
             useArrows: true,
             rootVisible: false,
             floating: false,

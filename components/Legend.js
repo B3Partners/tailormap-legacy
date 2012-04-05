@@ -42,7 +42,7 @@ Ext.define ("viewer.components.Legend",{
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'legendContainer" style="width: 100%; height: 100%; padding: 10px;"></div>'
+            html: '<div id="' + this.name + 'legendContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>'
         });
         
         this.legendContainer = document.getElementById(this.name + 'legendContainer');

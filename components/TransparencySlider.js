@@ -36,7 +36,7 @@ Ext.define ("viewer.components.TransparencySlider",{
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px;"></div>'
+            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>'
         });
         conf.sliderContainer = this.name + 'slidersContainer';
         

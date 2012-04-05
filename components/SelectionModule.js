@@ -161,7 +161,7 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         me.loadSelectedLayers();
         me.activeTree = me.treePanels.applicationTree.treePanel;
-        
+
         me.popup.popupWin.addListener('hide', me.hideTreeContainers);
         me.popup.popupWin.addListener('show', me.showTreeContainers);
         me.popup.popupWin.addListener("dragstart", me.hideTreeContainers);
@@ -477,8 +477,11 @@ Ext.define ("viewer.components.SelectionModule",{
             xtype: 'treepanel',
             rootVisible: false,
             useArrows: true,
+            height: "100%",
             autoScroll: true,
-            height: '100%',
+            viewConfig: {
+                height: '100%'
+            },
             animate: false,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {

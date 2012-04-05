@@ -33,9 +33,10 @@ Ext.define ("viewer.components.AttributeList",{
     featureService: null,
     layerSelector:null,
     constructor: function (conf){        
-        conf.width=  600;
+        var minwidth = 600;
+        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
+        this.initConfig(conf);
         var me = this;
         this.renderButton({
             handler: function(){
