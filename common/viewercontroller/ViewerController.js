@@ -326,8 +326,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
    
     initLayers : function (){
-
-        for(var i in this.app.selectedContent) {
+        for( var i = this.app.selectedContent.length -1 ; i >= 0 ; i--){
             var content = this.app.selectedContent[i];
             if(content.type == "appLayer") {
                 this.initAppLayer(content.id);
@@ -347,13 +346,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     initLevel: function(levelId) {
         var level = this.app.levels[levelId];
         if(level.layers) {
-            for(var i in level.layers) {
+            for (var i = level.layers.length - 1 ; i >= 0 ; i--){
                 this.initAppLayer(level.layers[i]);
             }
         }
         
         if(level.children) {
-            for(var i in level.children) {
+            for (var i = level.children.length - 1 ; i >= 0 ; i--){
                 this.initLevel(level.children[i]);
             }
         }
