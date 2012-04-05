@@ -44,7 +44,13 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: 750,
             height: 460,
             value: value,
-            renderTo: Ext.get(parentid)
+            renderTo: Ext.get(parentid) /*,
+            plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', {
+                    dragResize: false,
+                    dragWheel: false,
+                    submitUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php',
+                    managerUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php'
+            })] */
         });  
         return this;
     },
