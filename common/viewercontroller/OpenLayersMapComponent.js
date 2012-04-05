@@ -25,7 +25,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             resolutions: [512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125],
             resolution: 512,
             controls : [new OpenLayers.Control.Navigation({
-                    zoomBoxEnabled: false
+                    zoomBoxEnabled: true
                 }),new OpenLayers.Control.ArgParser()]
         };
         return this;
@@ -56,8 +56,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     getPanel : function(){
         if (this.panel==null){
-            this.panel=new OpenLayers.Control.Panel();
-            this.maps[0].getFrameworkMap().addControl(this.panel);
+            this.createPanel();
         }
         return this.panel;
     },
@@ -65,7 +64,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      * @description Creates a OpenLayers.Control.Panel and adds it to the map
      */
     createPanel : function (id){
-        var paneel= new OpenLayers.Control.Panel();
+        var paneel= new OpenLayers.Control.Panel({
+            saveState: true
+        });
         this.panel = paneel;
         this.maps[0].getFrameworkMap().addControl(this.panel);
     },
@@ -183,7 +184,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      *  layer: the layer that is needed for some drawing tools
      *  All other openlayer options.
      **/
-    createTool : function (id,type, options){
+    createTool : function (conf){
+        var type = conf.type;
+        var id = conf.id;
+        var options = {};
         if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE){
             //TODO: Deze crap weg! Afzonderlijke buttons aanmaken en niet in de controller plaatsen! Maar in lijst van tools
             //  var container = params["container"];
@@ -316,6 +320,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.PanZoomBar(options),type)
         }else if (type == viewer.viewercontroller.controller.Tool.LAYER_SWITCH){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.LayerSwitcher(options),type);
+        }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.ZoomBox(options),type)
+        }else if(type == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.ZoomOut(options),type)
         }else{
             throw ("Type >" + type + "< not recognized. Please use existing type.");
         }
@@ -369,7 +377,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         }else if(tool.getType() == viewer.viewercontroller.controller.Tool.ZOOM_BAR){
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-        } else{
+        } else {
             var ft = tool.getFrameworkTool();
             this.getPanel().addControls([tool.getFrameworkTool()]);
         }

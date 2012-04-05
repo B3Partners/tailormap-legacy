@@ -462,12 +462,27 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 .olControlPanel .olControlDragPanItemInactive {
     background-image: url("../default/img/pan_off.png");
 }
+
 .olControlPanel .olControlZoomBoxItemInactive {    
     background-image: url("img/zoom_box_off.png");
 }
 .olControlPanel .olControlZoomBoxItemActive {    
     background-image: url("img/zoom_box_on.png");
-}/*
+}
+.olControlPanel .olControlZoomOutItemActive {    
+    background-image: url("img/zoom_out_on.png");
+}
+.olControlPanel .olControlZoomOutItemInactive {    
+    background-image: url("img/zoom_out_off.png");
+}
+
+.olControlMeasureItemInactive{
+    background-image: url("img/measure_off.png");
+}
+.olControlMeasureItemActive{
+    background-image: url("img/measure_on.png");
+}
+/*
 .olControlPanel .olControlZoomToMaxExtentItemInactive {
     width:  18px;
     height: 18px;
@@ -551,3 +566,17 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 .olControlPanel .olControlDrawFeaturePolygonItemActive{
     background-image: url("../default/img/draw_polygon_on.png");
 }*/
+
+/*For measure tool tip*/
+.olControlMeasureValue{
+    background-color: white;
+    border: 1px solid #444;
+    padding: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    opacity:0.85;
+}
+.olControlMeasureValue div{
+    opacity:1;
+    font-weight: bold;
+}
