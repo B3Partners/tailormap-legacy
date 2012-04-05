@@ -508,7 +508,7 @@
         configXML: "<fmc:Window id=\"[id]\" left=\"[left]\" top=\"[top]\" width=\"[width]\" height=\"[height]\"/>",
         restrictions: ["content"]
     },
-    {
+    /*{
         className: "viewer.components.Influence",
         name: "Invloedsgebied met geometry",
         shortName: "Igg",
@@ -516,7 +516,7 @@
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
-    },
+    },*/
     {
         className: "viewer.components.InfluenceImage",
         name: "Invloedsgebied plaatje",
