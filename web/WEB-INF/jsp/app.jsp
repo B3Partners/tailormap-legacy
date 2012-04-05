@@ -48,10 +48,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${viewerType == 'flamingo'}">
             <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         </c:if>
-        <c:if test="${viewerType == 'openlayers'}">
+        <!--c:if test="${viewerType == 'openlayers'}"-->
             <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/OpenLayers.js"></script>
             <!--script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/lib/OpenLayers.js"></script-->
-        </c:if>
+        <!--/c:if-->
         <c:choose>
             <c:when test="${param.debug == true}">
                 <!-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use -->  
