@@ -272,7 +272,7 @@ Ext.define ("viewer.components.Edit",{
         
         var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
-            Ext.getCmp("edit1editButton").setDisabled(false);
+            Ext.getCmp(this.name +"editButton").setDisabled(false);
             if(this.newGeomType != null){
                 Ext.getCmp(this.name +"newButton").setDisabled(false);
                 tekst = "Geometrie mag alleen bewerkt worden";
@@ -429,8 +429,8 @@ Ext.define ("viewer.components.Edit",{
         this.popup.hide();
     },
     resetForm : function (){
-        Ext.getCmp("edit1editButton").setDisabled(true);
-        Ext.getCmp("edit1newButton").setDisabled(true);
+        Ext.getCmp(this.name +"editButton").setDisabled(true);
+        Ext.getCmp(this.name +"newButton").setDisabled(true);
         this.mode=null;
         this.layerSelector.combobox.select(null);
         Ext.getCmp( this.name +"geomLabel").setText("");
