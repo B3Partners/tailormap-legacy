@@ -55,6 +55,7 @@ public class ApplicationActionBean implements ActionBean {
     private String componentSourceHTML;
     private String appConfigJSON;
 
+    private String viewerType;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public String getName() {
@@ -112,6 +113,14 @@ public class ApplicationActionBean implements ActionBean {
     public void setAppConfigJSON(String appConfigJSON) {
         this.appConfigJSON = appConfigJSON;
     }
+    
+    public String getViewerType(){
+        return viewerType;
+    }
+    
+    public void setViewerType(String viewerType){
+        this.viewerType = viewerType;
+    }
     //</editor-fold>
 
     static Application findApplication(String name, String version) {
@@ -144,6 +153,7 @@ public class ApplicationActionBean implements ActionBean {
         buildComponentSourceHTML();
         
         appConfigJSON = application.toJSON();
+        this.viewerType = retrieveViewerType();
         
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
@@ -212,5 +222,19 @@ public class ApplicationActionBean implements ActionBean {
         }
 
         componentSourceHTML = sb.toString();
+    }
+    
+    private String retrieveViewerType (){
+        String type = "FlamingoMap";
+        String typePrefix = "viewer.mapcomponents";
+        Set<ConfiguredComponent> components = application.getComponents();
+        for (ConfiguredComponent component : components) {
+            String className = component.getClassName();
+            if(className.startsWith(typePrefix)){
+                type = className.substring(typePrefix.length() +1);
+                break;
+            }
+        }
+        return type;
     }
 }

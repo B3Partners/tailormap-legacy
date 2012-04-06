@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title><c:out value="${actionBean.application.name}"/></title>
         
         <c:choose>
-            <c:when test="${!empty param.viewer && param.viewer == 'openlayers'}">
+            <c:when test="${actionBean.viewerType == 'OpenLayersMap'}">
                 <c:set var="viewerType" value="openlayers"/>
             </c:when>
             <c:otherwise>
@@ -48,10 +48,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${viewerType == 'flamingo'}">
             <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         </c:if>
-        <!--c:if test="${viewerType == 'openlayers'}"-->
             <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/OpenLayers.js"></script>
             <!--script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/lib/OpenLayers.js"></script-->
-        <!--/c:if-->
+
         <c:choose>
             <c:when test="${param.debug == true}">
                 <!-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use -->  
