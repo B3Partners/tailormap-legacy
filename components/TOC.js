@@ -39,7 +39,6 @@ Ext.define ("viewer.components.TOC",{
         this.initConfig(config);
         this.loadTree();
         this.loadInitLayers();
-        this.adjustBackgroundLayers();
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         return this;
@@ -60,6 +59,8 @@ Ext.define ("viewer.components.TOC",{
                 children: []
             }
         });
+        
+        store.addListener("beforeexpand",this.beforeExpand, this);
         
         var title = "";
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;        
@@ -118,7 +119,9 @@ Ext.define ("viewer.components.TOC",{
             id: "level-"+level.id,
             expanded: !level.background,
             expandable: !level.background,
+            collapsible: !level.background,
             leaf: false,
+            background: level.background,
             layerObj: {
                 serviceId: level.id
             }
@@ -171,6 +174,14 @@ Ext.define ("viewer.components.TOC",{
             tristate: tristate
         };
     },
+    // Fix for not expanding backgroundlayers: not expandable nodes don't have expand button, but doubleclick does expand
+    beforeExpand : function (node){
+        if(node.data.background){
+            return false;
+        }else{
+            return true;
+        }
+    },
     // Add a layer to the level
     addLayer : function (layerId){
         var appLayerObj = this.appLayers[layerId];
@@ -213,24 +224,6 @@ Ext.define ("viewer.components.TOC",{
         var root = this.panel.getRootNode();
         root.appendChild(config);
         root.expand()
-    },
-    // set the backgroundlayers to not visible. This way, the tree still has the layers and they can be set (in)visible by the containing node, but the're not individually controllable.
-    adjustBackgroundLayers : function (){
-        var root = this.panel.getStore().getRootNode();
-        var childs = root.childNodes;
-        var view = this.panel.getView();
-        var store = this.panel.getStore();
-        for( var i = 0 ; i < childs.length; i++){
-            var child = childs[i];
-            for( var j = 0 ; j < child.childNodes.length ; j++){
-                if(child.childNodes[i].raw.background){
-                    var backgroundlayer = child.childNodes[j];
-                    var node = store.getNodeById(backgroundlayer.data.id);
-                    var el = Ext.fly(view.getNodeByRecord(node));
-                    el.setDisplayed(false);
-                }
-            }
-        }
     },
     selectLayers : function (layers,checked){
         for(var i = 0 ; i< layers.length;i++){
