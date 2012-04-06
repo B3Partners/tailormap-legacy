@@ -39,6 +39,7 @@ Ext.define ("viewer.components.TOC",{
         this.initConfig(config);
         this.loadTree();
         this.loadInitLayers();
+        this.adjustBackgroundLayers();
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         return this;
@@ -115,7 +116,8 @@ Ext.define ("viewer.components.TOC",{
         var treeNodeLayer = {
             text: level.name, 
             id: "level-"+level.id,
-            expanded: true,
+            expanded: !level.background,
+            expandable: !level.background,
             leaf: false,
             layerObj: {
                 serviceId: level.id
@@ -180,6 +182,7 @@ Ext.define ("viewer.components.TOC",{
             id: "layer-"+appLayerObj.id,
             expanded: true,
             leaf: true,
+            background: appLayerObj.background,
             layerObj: {
                 service: service.id,
                 layerName : appLayerObj.layerName
@@ -197,6 +200,10 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.hidden_check = appLayerObj.checked;
             retChecked = appLayerObj.checked;
         }
+        
+        if(appLayerObj.background){
+            treeNodeLayer.displayed = false;
+        }
         return {
             node: treeNodeLayer,
             checked: retChecked
@@ -206,6 +213,24 @@ Ext.define ("viewer.components.TOC",{
         var root = this.panel.getRootNode();
         root.appendChild(config);
         root.expand()
+    },
+    // set the backgroundlayers to not visible. This way, the tree still has the layers and they can be set (in)visible by the containing node, but the're not individually controllable.
+    adjustBackgroundLayers : function (){
+        var root = this.panel.getStore().getRootNode();
+        var childs = root.childNodes;
+        var view = this.panel.getView();
+        var store = this.panel.getStore();
+        for( var i = 0 ; i < childs.length; i++){
+            var child = childs[i];
+            for( var j = 0 ; j < child.childNodes.length ; j++){
+                if(child.childNodes[i].raw.background){
+                    var backgroundlayer = child.childNodes[j];
+                    var node = store.getNodeById(backgroundlayer.data.id);
+                    var el = Ext.fly(view.getNodeByRecord(node));
+                    el.setDisplayed(false);
+                }
+            }
+        }
     },
     selectLayers : function (layers,checked){
         for(var i = 0 ; i< layers.length;i++){
