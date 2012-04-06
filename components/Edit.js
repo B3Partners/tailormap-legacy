@@ -262,7 +262,7 @@ Ext.define ("viewer.components.Edit",{
                 break;
             case "geometry":
                 possible = true;
-                this.geomNewType = null;
+                this.newGeomType = null;
                 break;
             default:
                 this.geomType = null;
@@ -274,7 +274,7 @@ Ext.define ("viewer.components.Edit",{
         if(possible){
             Ext.getCmp("edit1editButton").setDisabled(false);
             if(this.newGeomType != null){
-                Ext.getCmp("edit1newButton").setDisabled(false);
+                Ext.getCmp(this.name +"newButton").setDisabled(false);
                 tekst = "Geometrie mag alleen bewerkt worden";
             }else{ 
                 if(this.geometryEditable){
@@ -329,8 +329,8 @@ Ext.define ("viewer.components.Edit",{
             }
         }else{
             gl.setText("Geometrietype onbekend. Bewerken niet mogelijk.");
-            Ext.getCmp("edit1editButton").setDisabled(true);
-            Ext.getCmp("edit1newButton").setDisabled(true);
+            Ext.getCmp(this.name +"editButton").setDisabled(true);
+            Ext.getCmp(this.name +"newButton").setDisabled(true);
         }
     },
     setInputPanel : function (feature){
