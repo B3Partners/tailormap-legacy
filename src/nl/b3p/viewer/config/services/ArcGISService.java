@@ -118,7 +118,7 @@ public class ArcGISService extends GeoService {
         l.setTitle(agsl.getString("name"));
 
         l.getDetails().put("arcgis_type", agsl.getString("type"));
-        l.getDetails().put("arcgis_currentVersion", agsl.get("currentVersion").toString());        
+        l.getDetails().put("arcgis_currentVersion", agsl.optString("currentVersion", null));        
         l.getDetails().put("arcgis_description", agsl.getString("description"));        
         l.getDetails().put("arcgis_geometryType", agsl.getString("geometryType"));  
         l.getDetails().put("arcgis_capabilities", agsl.getString("capabilities"));        
@@ -141,11 +141,14 @@ public class ArcGISService extends GeoService {
         } catch(JSONException e) {
         }
 
+        // XXX implemented in ArcGISDataStore
+        // XXX sometimes geometry field not in field list but layer has geometryType
        JSONArray fields = agsl.getJSONArray("fields");
        if(fields.length() > 0) {
             SimpleFeatureType sft = new SimpleFeatureType();
             sft.setFeatureSource(fs);
-            sft.setTypeName(l.getTitle());  
+            sft.setTypeName(l.getName());
+            sft.setDescription(l.getTitle());  
             sft.setWriteable(false);
            
             for(int i = 0; i < fields.length(); i++) {
