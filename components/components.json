@@ -33,23 +33,23 @@
 
 [
     {
-        className: "FlamingoMap",
+        className: "viewer.mapcomponents.FlamingoMap",
         name: "Flamingo Map",
         shortName: "Fm",
         restrictions: ["content"],
 
         singleton: true,
-        notInCombinationWith: ["OpenLayersMap"]
+        notInCombinationWith: ["viewer.mapcomponents.OpenLayersMap"]
     },
 
     {
-        className: "OpenLayersMap",
+        className: "viewer.mapcomponents.OpenLayersMap",
         name: "OpenLayers Map",
         shortName: "Om",
 
         singleton: true,
         restrictions: ["content"],
-        notInCombinationWith: ["FlamingoMap"]
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"]
     },
 
     {
