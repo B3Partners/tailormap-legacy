@@ -36,15 +36,16 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.geotools.data.arcgis.ArcGISDataStoreFactory;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
-import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.config.services.WFSFeatureSource;
+import nl.b3p.viewer.config.services.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.httpcache4j.cache.HTTPCache;
+import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
+import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStoreFactory;
@@ -98,6 +99,8 @@ public class AttributesActionBean implements ActionBean {
     
     @Validate
     private boolean debug;
+    @Validate
+    private boolean noCache;
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
@@ -179,8 +182,16 @@ public class AttributesActionBean implements ActionBean {
     public void setFilter(String filter) {
         this.filter = filter;
     }
-    //</editor-fold>
 
+    public boolean isNoCache() {
+        return noCache;
+    }
+
+    public void setNoCache(boolean noCache) {
+        this.noCache = noCache;
+    }
+    //</editor-fold>
+    
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         // TODO check if user has rights to appLayer
@@ -371,6 +382,39 @@ public class AttributesActionBean implements ActionBean {
         }
     }
     
+    private static final int MAX_CACHE_SIZE = 50;
+    
+    private static HTTPCache cache;
+    private static synchronized HTTPCache getHTTPCache() {
+        
+        if(cache != null) {
+            if(cache.getStorage().size() > MAX_CACHE_SIZE) {
+                log.debug("Clearing HTTP cache after reaching max size of " + MAX_CACHE_SIZE);
+                // XXX No way to remove items according to strategy?
+                cache.clear();
+            } else {
+                if(log.isDebugEnabled()) {
+                    log.debug(String.format("Using HTTP cache; size=%d hits=%d misses=%d hit ratio=%f",
+                            cache.getStorage().size(),
+                            cache.getStatistics().getHits(),
+                            cache.getStatistics().getMisses(),
+                            cache.getStatistics().getHitRatio())
+                    );
+                }
+            }
+            return cache;
+        }
+           
+        log.debug("Creating new HTTP cache");
+        cache = new HTTPCache(
+            new MemoryCacheStorage(), // XXX unchangeable capacity of 1000 is way too high
+                                      // should cache based on body size...
+                                      // So clear cache if size exceeds MAX_CACHE_SIZE
+            HTTPClientResponseResolver.createMultithreadedInstance()
+        );                    
+        return cache;
+    }
+    
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
         JSONArray features = new JSONArray();
@@ -386,7 +430,17 @@ public class AttributesActionBean implements ActionBean {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
                     fs = ((WFSFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                } else if(layer.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) {
+                    Map extraDataStoreParams = new HashMap();
+                    if(isDebug()) {
+                        extraDataStoreParams.put(ArcGISDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
+                    }
+                    if(!isNoCache()) {
+                        extraDataStoreParams.put(ArcGISDataStoreFactory.HTTP_CACHE.key, getHTTPCache());
+                    }
+                    fs = ((ArcGISFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
                 } else {
+                    
                     fs = layer.getFeatureType().openGeoToolsFeatureSource();
                 }
                 
