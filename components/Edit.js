@@ -358,21 +358,25 @@ Ext.define ("viewer.components.Edit",{
         if(features.length == 1){
             var feat = this.indexFeatureToNamedFeature(features[0]);
             this.handleFeature(feat);
-        }else{
+        }else if(features.length == 0){
+            this.handleFeature(null);
+        } else{
             // Handel meerdere features af.
             this.createFeaturesGrid(features);
         }
     },
     handleFeature : function (feature){
-        this.inputContainer.getForm().setValues(feature);
-        this.currentFID = feature.__fid;
-        if(this.geometryEditable){
-            var wkt = feature[this.appLayer.geometryAttribute];
-            var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
-                wktgeom: wkt,
-                id: "T_0"
-            });
-            this.vectorLayer.addFeature(feat);
+        if(feature != null){
+            this.inputContainer.getForm().setValues(feature);
+            this.currentFID = feature.__fid;
+            if(this.geometryEditable){
+                var wkt = feature[this.appLayer.geometryAttribute];
+                var feat = Ext.create("viewer.viewercontroller.controller.Feature",{
+                    wktgeom: wkt,
+                    id: "T_0"
+                });
+                this.vectorLayer.addFeature(feat);
+            }
         }
         Ext.get(this.getContentDiv()).unmask()
     },
