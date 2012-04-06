@@ -63,7 +63,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setLeft("0");           
         }else if(config.type==viewer.viewercontroller.controller.Component.SCALEBAR){
             this.setTagName("Scalebar");
-            this.setBottom("bottom-10");
+            this.setBottom("bottom +20");
             this.setRight("right -50");
             this.setWidth("200");
             if (this.getUnits()==null)
