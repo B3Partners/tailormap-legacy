@@ -72,6 +72,7 @@ Ext.define ("viewer.components.InfluenceImage",{
         }else{            
             this.imageLayer.applyUrl(imageUrl);
             this.imageLayer.applyExtent(bbox);
+            this.imageLayer.setVisible(true);
             this.imageLayer.reload();
         }
     },
@@ -80,5 +81,13 @@ Ext.define ("viewer.components.InfluenceImage",{
      */
     imageFailure: function(error){
         console.log(error);
+    },
+    /**
+     * 
+     */
+    removeFromMap: function(){
+        if (this.imageLayer){
+            this.imageLayer.setVisible(false);
+        }
     }
 });

@@ -24,6 +24,7 @@ Ext.define ("viewer.components.Search",{
     form: null,
     searchResult: null,
     results: null,
+    margin: "0 5 0 0",
     config:{
         title: null,
         iconUrl: null,
@@ -90,6 +91,7 @@ Ext.define ("viewer.components.Search",{
         itemList.push({ 
             xtype: 'button',
             text: 'Zoeken',
+            margin: this.margin,
             listeners: {
                 click:{
                     scope: this,
@@ -100,6 +102,7 @@ Ext.define ("viewer.components.Search",{
         itemList.push({ 
             xtype: 'button',
             text: 'Annuleren',
+            margin: this.margin,
             name: 'cancel',
             id: 'cancel'+ this.name,
             listeners: {
@@ -149,8 +152,7 @@ Ext.define ("viewer.components.Search",{
         }else{
             Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevult te worden.");
             // search request is not complete
-        }
-        
+        }        
         this.form.getChildByElement("cancel"+ this.name).setVisible(true);
     },
     showSearchResults : function(){
@@ -159,7 +161,7 @@ Ext.define ("viewer.components.Search",{
             html = "Er zijn geen resultaten gevonden.";
         }
         var me = this;
-        
+        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         var buttonList = new Array();
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];

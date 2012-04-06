@@ -28,6 +28,8 @@ Ext.define ("viewer.components.Influence",{
     },
     location: null,
     vectorLayer: null,
+    removeButton: null,
+    markerId: 'influence_marker',
     /**
      * Constructor for influence
      * @constructor
@@ -39,6 +41,8 @@ Ext.define ("viewer.components.Influence",{
             name: conf.searchName
         }];
         viewer.components.Influence.superclass.constructor.call(this, conf);
+        this.removeButton=this.form.getChildByElement(this.name+"_remove")
+        this.removeButton.setVisible(false);
         //this.initConfig(conf);        
         this.toolMapClick = Ext.create ("viewer.components.tools.ToolMapClick",{
             id: this.name,
@@ -62,8 +66,7 @@ Ext.define ("viewer.components.Influence",{
                 strokeopacity: 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        
+        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);        
         return this;
     },
     /**
@@ -108,17 +111,32 @@ Ext.define ("viewer.components.Influence",{
         
         itemList.push({
             xtype: 'label',
+            margin: this.margin,
             text: 'of'            
         });
         itemList.push({
             xtype: 'button',
             text: 'Locatie aanwijzen op kaart',
+            margin: this.margin,
             listeners: {
                 click:{
                     scope: this,
                     fn: this.locationOnMap
                 }
             }            
+        });
+        
+        itemList.push({
+            xtype: 'button',
+            text: 'Verwijder invloedsgebied',
+            margin: this.margin,
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.removeInfluence
+                }
+            },
+            id: this.name+"_remove"
         });
         
         return itemList;
@@ -129,6 +147,26 @@ Ext.define ("viewer.components.Influence",{
     locationOnMap: function(){
         this.toolMapClick.activateTool();
         this.popup.hide();
+    },
+    /**
+     * Remove the influence filter and the map geom
+     */
+    removeInfluence: function(){
+        this.removeFromMap();
+        this.removeButton.setVisible(false);
+        this.location=null;
+        this.viewerController.mapComponent.getMap().removeMarker(this.markerId);
+        if (this.getSelectedAppLayer()){
+            this.viewerController.removeFilter("filter_"+this.getName(),this.getSelectedAppLayer());
+        }
+    },    
+    /**
+     * Remove the influence from the map
+     */
+    removeFromMap: function() {
+        if (this.vectorLayer){
+            this.vectorLayer.removeAllFeatures();
+        }
     },
     /**
      * Triggers when there is clicked on the map with the mapclick tool
@@ -154,7 +192,7 @@ Ext.define ("viewer.components.Influence",{
         var radius = this.getRadius();
         //radius ==null if no layer is selected
         if (radius!=null){
-            this.viewerController.mapComponent.getMap().setMarker("influence",loc.x,loc.y);
+            this.viewerController.mapComponent.getMap().setMarker(this.markerId,loc.x,loc.y);
             var zoomInRadius=radius*3;
             var extent = {
                 minx: loc.x-zoomInRadius,
@@ -165,17 +203,18 @@ Ext.define ("viewer.components.Influence",{
             this.showInfluence(loc.x,loc.y,radius);
             this.setFilter();
             
-            this.viewerController.mapComponent.getMap().zoomToExtent(extent);
+            this.viewerController.mapComponent.getMap().zoomToExtent(extent);            
+            this.removeButton.setVisible(true);
         }else{
             Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
-        }
+        }        
     },
     /**
      * Create the filter and add it to the selected AppLayer.
      * If no geometryattribute available for layer, don't add the filter.
      */
     setFilter: function(){
-        var appLayer=this.getSelectedAppLayer();        
+        var appLayer=this.getSelectedAppLayer();           
         if(appLayer.attributes == undefined) {   
             var me = this;
             this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){

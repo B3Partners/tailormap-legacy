@@ -579,6 +579,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,filter,layer);
     },
+    /**
+     * Remove a filter from the given applayer
+     * @param filterId the id of the filter
+     * @param layer the app layer
+     */
+    removeFilter: function(filterId,layer){
+        if (layer.filter){
+            layer.filter.removeFilterById(filterId);
+        }
+    },
     getComponentsByClassName : function(className) {
         var result = [];
         for(var name in this.components) {
