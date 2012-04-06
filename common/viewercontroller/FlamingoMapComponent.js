@@ -12,6 +12,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     toolGroupCreated: false,
     flamingoId: "flamingo",
     mainContainerId: "mainContainer",
+    bottomContainerId: null,
     toolMargin: 30,
     viewerController: null,
     enabledEvents: new Object(),
@@ -261,7 +262,23 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             });
         }
         viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
-        this.viewerObject.callMethod(this.mainContainerId,'addComponent',component.toXML()); 
+        
+        var container=this.mainContainerId;
+        var xml=component.toXML();
+        //these components can be added to the bottom if its configured in the layout.
+        if (component.type==viewer.viewercontroller.controller.Component.SCALEBAR || 
+            component.type==viewer.viewercontroller.controller.Component.COORDINATES ){
+            if (this.viewerController.getLayoutHeight("content_bottom")>=0 && this.bottomContainerId==null){                
+                this.bottomContainerId=this.createBottomContent();
+            }
+            if (this.bottomContainerId){
+                container=this.bottomContainerId;
+            }
+        }
+        if (container){
+            //add the component.
+            this.viewerObject.callMethod(container,'addComponent',xml);         
+        }
         if (component.type==viewer.viewercontroller.controller.Component.MAPTIP){
             //if it's a maptip check for the maptipdelay. If not set, set it.
             var maptipdelay= this.viewerObject.callMethod(this.getMap().id,'getMaptipdelay');             
@@ -269,6 +286,29 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 this.viewerObject.callMethod(this.getMap().id,'setMaptipdelay',component.getMaptipdelay()); 
             }
         }
+    },
+    /**
+     * Create the bottomcontent container
+     * @param component. The first component
+     * @return the id of the new container of null if it's not created
+     */
+    createBottomContent : function(){
+        var blayout=this.viewerController.getLayout('content_bottom')
+        var height = blayout && blayout.height && blayout.height >=0 ? blayout.height : -1;
+        if (height>0){            
+            if (blayout.heightmeasure){
+                height+= blayout.heightmeasure == "px" ? "" : blayout.heightmeasure;
+            }            
+            var xml="<fmc:Container id='bottomContainer' bottom='bottom' width='100%' height='"+height+"'";
+            if (blayout.bgcolor){
+                xml+="backgroundcolor='"+blayout.bgcolor+"'";
+            }
+            xml+=">";            
+            xml+="</fmc:Container>";
+            this.addComponentXml(xml);
+            return "bottomContainer";
+        }
+        return null;
     },
     /**
      */

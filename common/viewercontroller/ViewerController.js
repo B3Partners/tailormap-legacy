@@ -790,7 +790,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @returns a number 
      */
     getLayoutHeight: function(layoutid){
-        var height=0;
+        var height=-1;
         var layoutObject=this.getLayout(layoutid);
         if (layoutObject &&
             layoutObject.height){
