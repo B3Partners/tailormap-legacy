@@ -108,11 +108,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         try {            
             // XXX viewer.js: initializeButtons();
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
-           
+            //if there is a height set for the top_menu start the map lower.
             var topMenuLayout=this.getLayout('top_menu');
             var mapTop= topMenuLayout.height ? topMenuLayout.height : 0;
             if (topMenuLayout.heightmeasure){
                 mapTop+= topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
+            }
+            //if there is a height set for the content_bottom the map bottom is changed.
+            var contentBottomLayout=this.getLayout('content_bottom');
+            var mapBottom= contentBottomLayout.height ? contentBottomLayout.height : 0;
+            if (contentBottomLayout.heightmeasure){
+                mapBottom+= contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
             }
             var map = this.mapComponent.createMap("map", {
                 viewerController: this,
@@ -120,7 +126,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     left: 0,
                     top: mapTop,
                     width: "100%",
-                    bottom: "bottom",
+                    bottom: "bottom -"+mapBottom,
                     visible: "true",
                     fullextent : "12000,304000,280000,620000",
                     extent: "12000,304000,280000,620000",
@@ -167,6 +173,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             component.config.isPopup = layoutComponent.isPopup;
             component.config.hasSharedPopup = layoutComponent.hasSharedPopup;
             component.config.showOnStartup = layoutComponent.showOnStartup;
+            component.config.regionName = layoutComponent.regionName;
             this.createComponent(component.name, component.className, component.config, component.details);
         }
         

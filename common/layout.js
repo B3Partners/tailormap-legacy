@@ -126,7 +126,7 @@ Ext.define('viewer.LayoutManager', {
             }
         } else {
             regionlayout = regionitems[0].regionConfig.layout;
-            var componentItems = me.createComponents(regionitems[0].regionConfig.components, regionitems[0].regionDefaultConfig, regionlayout);
+            var componentItems = me.createComponents(regionitems[0].regionConfig.components, regionitems[0].regionDefaultConfig, regionlayout,regionitems[0].name);
             componentItems = me.getRegionContent(componentItems, regionlayout);
             if(regionitems[0].regionDefaultConfig.region != "none" && regionitems[0].regionDefaultConfig.region != "popupwindow") {
                 layout = regionitems[0].regionDefaultConfig.defaultLayout;
@@ -215,7 +215,7 @@ Ext.define('viewer.LayoutManager', {
         Ext.Array.each(regionitems, function(item, index) {
             var sublayout = {};
             var regionlayout = item.regionConfig.layout;
-            var componentItems = me.createComponents(item.regionConfig.components, item.regionDefaultConfig, regionlayout);
+            var componentItems = me.createComponents(item.regionConfig.components, item.regionDefaultConfig, regionlayout,item.name);
             componentItems = me.getRegionContent(componentItems, regionlayout);
             if(item.regionDefaultConfig.columnOrientation == 'vertical') {
                 if(item.regionDefaultConfig.subregion != 'center') {
@@ -294,7 +294,7 @@ Ext.define('viewer.LayoutManager', {
         return centerItem;
     },
 
-    createComponents: function(components, regionDefaultConfig, regionlayout) {
+    createComponents: function(components, regionDefaultConfig, regionlayout,regionName) {
         var componentItems = [];
         var cmpId = null;
         var me = this;
@@ -352,6 +352,9 @@ Ext.define('viewer.LayoutManager', {
             }
             if(regionDefaultConfig.hasSharedPopup) {
                 componentItem.hasSharedPopup = true;
+            }
+            if(regionName){
+                componentItem.regionName=regionName;
             }
             me.componentList.push(componentItem);
             if(component.componentClass == "viewer.mapcomponents.FlamingoMap" || component.componentClass == "viewer.mapcomponents.OpenLayersMap") {

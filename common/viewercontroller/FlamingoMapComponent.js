@@ -266,8 +266,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var container=this.mainContainerId;
         var xml=component.toXML();
         //these components can be added to the bottom if its configured in the layout.
-        if (component.type==viewer.viewercontroller.controller.Component.SCALEBAR || 
-            component.type==viewer.viewercontroller.controller.Component.COORDINATES ){
+        if (component.config.regionName=="content_bottom"){
             if (this.viewerController.getLayoutHeight("content_bottom")>=0 && this.bottomContainerId==null){                
                 this.bottomContainerId=this.createBottomContent();
             }
