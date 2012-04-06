@@ -354,7 +354,7 @@ Ext.define('viewer.LayoutManager', {
                 componentItem.hasSharedPopup = true;
             }
             me.componentList.push(componentItem);
-            if(component.componentClass == "FlamingoMap" || component.componentClass == "OpenLayersMap") {
+            if(component.componentClass == "viewer.mapcomponents.FlamingoMap" || component.componentClass == "viewer.mapcomponents.OpenLayersMap") {
                 me.mapId = cmpId;
             }
             first = false;

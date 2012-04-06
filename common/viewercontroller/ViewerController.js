@@ -180,7 +180,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         
         // XXX
-        if(className == "FlamingoMap" || className == "OpenLayersMap") {
+        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap") {
             return null;
         }
 
