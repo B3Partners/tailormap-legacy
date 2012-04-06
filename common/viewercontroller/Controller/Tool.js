@@ -40,7 +40,8 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     config :{
         id: null,
         frameworkObject: null,
-        type: null
+        type: null,
+        visible: true
     },
     constructor: function (config){
         this.initConfig(config);

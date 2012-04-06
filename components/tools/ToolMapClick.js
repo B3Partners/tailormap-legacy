@@ -28,6 +28,7 @@ Ext.define ("viewer.components.tools.ToolMapClick",{
     },
     constructor: function (conf){              
         viewer.components.tools.ToolMapClick.superclass.constructor.call(this, conf);
+        this.visible=false;
         this.id = conf.id + "_toolMapClick";
         this.initConfig(conf);
         this.mapComponent = this.viewerController.mapComponent;

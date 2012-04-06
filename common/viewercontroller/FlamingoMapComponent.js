@@ -229,9 +229,18 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         toolXml+=tool.toXML();
         toolXml+="</fmc:ToolGroup>";        
         this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
-        if (this.tools.length ==1){
-            this.activateTool(tool.getId());
+        var toolsVisible=0;
+        if (tool.getVisible()){
+            for (var i=0; i < this.tools.length; i++){
+                if (this.tools[i].getVisible()){
+                    toolsVisible++;
+                }
+            }
+            if (toolsVisible ==1){
+                this.activateTool(tool.getId());
+            }
         }
+        
     },
     getToolGroup : function(tool){
         if (!this.toolGroupCreated){
