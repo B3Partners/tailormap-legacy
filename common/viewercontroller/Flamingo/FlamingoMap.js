@@ -8,6 +8,7 @@
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     extend: "viewer.viewercontroller.controller.Map",
+    posAttrNames: ["left","right","top","bottom","width","height"],
     enabledEvents: new Object(),
     editMapId: null,
     gisId: 'gis',
@@ -112,9 +113,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             "addComponent",
             "<fmc:GIS xmlns:fmc='fmc' id='"+this.gisId+"' geometryeditable='true' alwaysdrawpoints='false'></fmc:GIS>");
         //add editMap
-        var editmapXml="<fmc:EditMap xmlns:fmc='fmc' id='"+this.editMapId+"' editable='true'";
-        for (var key in this.config.options){
-            editmapXml+=" "+key+"='"+this.config.options[key]+"'";
+        var positionAttributesMap=this.getPositionAttributes();
+        var editmapXml="<fmc:EditMap xmlns:fmc='fmc' id='"+this.editMapId+"' editable='true'";        
+        for (var key in positionAttributesMap){
+            editmapXml+=" "+key+"='"+positionAttributesMap[key]+"'";
         }
         editmapXml+="listento='"+this.gisId+","+this.id+"'/>";
         
@@ -269,6 +271,21 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      */
     getHeight : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "getMovieClipHeight");
+    },
+    /**
+     * returns all the position attributes configured for this element.
+     * @returns object with the set positionattributes (left,bottom,widht etc.)
+     */
+    getPositionAttributes: function(){        
+        var attr={};
+        for (var i= 0; i < this.posAttrNames.length; i++){
+            var attrName=this.posAttrNames[i];
+            if (this.options[attrName]){
+                attr[attrName]=this.options[attrName];
+            }
+        }
+        return attr;
+        
     },
     toXML: function(){
         var xml="";

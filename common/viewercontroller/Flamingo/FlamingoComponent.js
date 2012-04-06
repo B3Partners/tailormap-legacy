@@ -57,10 +57,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         //translate type to tagName
         if(config.type==viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
             this.setTagName("BorderNavigation");
-            this.setWidth("100%");
-            this.setHeight("100%");
-            this.setTop("0");
-            this.setLeft("0");           
+            //because the bordernavigation needs the bounds of the map:
+            var attrPosMap= config.viewerController.mapComponent.getMap().getPositionAttributes();
+            for (var key in attrPosMap){
+                this[key]=attrPosMap[key];
+            }              
         }else if(config.type==viewer.viewercontroller.controller.Component.SCALEBAR){
             this.setTagName("Scalebar");
             this.setBottom("bottom +20");
