@@ -359,7 +359,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param appLayer the applayer that must be checked
      */
     isSummaryAppLayer: function (appLayer){
-        if (appLayer.details !=undefined &&
+        if (appLayer && appLayer.details !=undefined &&
             (appLayer.details["summary.description"]!=undefined ||
                 appLayer.details["summary.image"]!=undefined ||
                 appLayer.details["summary.link"]!=undefined ||
