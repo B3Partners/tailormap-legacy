@@ -26,6 +26,7 @@ Ext.define ("viewer.components.TOC",{
     appLayers :  null,
     service : null,
     levels : null,
+    backgroundLayers: null,
     checkClicked : false,
     popup:null,
     config: {
@@ -37,6 +38,7 @@ Ext.define ("viewer.components.TOC",{
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.initConfig(config);
+        this.backgroundLayers = new Array();
         this.loadTree();
         this.loadInitLayers();
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
@@ -105,13 +107,15 @@ Ext.define ("viewer.components.TOC",{
                 nodes.push(layer.node);
             }
         }
+        // Create background
+        this.createBackgroundLevel(nodes);
         this.insertLayer(nodes);
     },
     // Add a level to the tree, and load all it's levels and applayers
     addLevel : function (levelId){
         var nodes = new Array();
         var level = this.levels[levelId];
-        if(level.background && !this.showBaselayers ){
+        if(level.background && !this.showBaselayers){
             return null;
         }
         var treeNodeLayer = {
@@ -169,10 +173,57 @@ Ext.define ("viewer.components.TOC",{
             }
         }
         treeNodeLayer.children= nodes;
-        return {
+        var node = {
             node: treeNodeLayer,
             tristate: tristate
         };
+        if(level.background){
+            this.addToBackground(node);
+            return null;
+        }else{
+            return node;
+        }
+    },
+    addToBackground : function (node){
+        this.backgroundLayers.push(node);
+    },
+    createBackgroundLevel : function (nodes){
+        if(this.backgroundLayers.length > 0){
+            var nodesArray = new Array();
+            var childsChecked = 0;
+            var totalChilds = 0;
+            for(var i = 0 ; i < this.backgroundLayers.length; i++){
+                var l = this.backgroundLayers[i];
+                if(l.node != null) {
+                    totalChilds++;
+                    if(l.tristate === 0) {
+                        totalChilds++;
+                        childsChecked++;
+                    } else if(l.tristate === 1) {
+                        childsChecked++;
+                    }
+                    nodesArray.push(l.node);
+                }
+            }
+            var background = {
+                text: "Achtergrond", 
+                id: this.name + "Achtergrond",
+                expanded: true,
+                expandable: true,
+                collapsible : true,
+                leaf: false,
+                background: false,
+                checked : false,
+                children: nodesArray
+            };
+            var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
+            if(tristate === 1) {
+                background.checked = true;
+            } else if (tristate === 0) {
+                background.cls = 'tristatenode';
+            }
+            nodes.push(background);
+        }
     },
     // Fix for not expanding backgroundlayers: not expandable nodes don't have expand button, but doubleclick does expand
     beforeExpand : function (node){
@@ -210,11 +261,7 @@ Ext.define ("viewer.components.TOC",{
         } else if(appLayerObj.checked) {
             treeNodeLayer.hidden_check = appLayerObj.checked;
             retChecked = appLayerObj.checked;
-        }
-        
-        if(appLayerObj.background){
-            treeNodeLayer.displayed = false;
-        }
+        }        
         return {
             node: treeNodeLayer,
             checked: retChecked
@@ -451,16 +498,16 @@ Ext.define ("viewer.components.TOC",{
         }
     },
     setNodeChecked : function (item,visible){
-            var a = 0;
+        var a = 0;
     },
-/*/
+    /*/
          * Set node Checked
          * <input class="x-tree-checkbox" type="button" role="checkbox">
 >>> Ext.get(item).select ('input').elements[0]
 <input class="x-tree-checkbox x-tree-checkbox-checked" type="button" aria-checked="true" role="checkbox">
         
          */
-        // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
+    // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
     selectedContentChanged : function (){
         this.panel.destroy();
             
