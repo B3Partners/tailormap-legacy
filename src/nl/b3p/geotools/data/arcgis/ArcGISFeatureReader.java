@@ -210,6 +210,7 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         }
         params.put("objectIds", sb.toString());
         
+        // XXX should use POST for large number of ids
         JSONObject response = fs.getArcGISDataStore().getServerJSONResponse(typeName + "/query", params);
         
         JSONArray features = (JSONArray)response.get("features");

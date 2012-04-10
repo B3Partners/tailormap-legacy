@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Map;
-import nl.b3p.geotools.data.arcims.ArcIMSDataStore;
-import org.codehaus.httpcache4j.cache.HTTPCache;
+//import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.geotools.data.AbstractDataStoreFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
@@ -39,7 +38,7 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
     public static final DataStoreFactorySpi.Param TIMEOUT = new Param("timeout", Integer.class, "Timeout in ms; default 30000", false);
     public static final DataStoreFactorySpi.Param TRY_GZIP = new Param("try_gzip", Boolean.class, "Request server to use gzip compression", false);
     public static final DataStoreFactorySpi.Param CRS = new Param("crs", CoordinateReferenceSystem.class, "Coordinate reference system", false);
-    public static final DataStoreFactorySpi.Param HTTP_CACHE = new Param("http_cache", HTTPCache.class, "HTTPCache instance to improve performance", false);
+    //public static final DataStoreFactorySpi.Param HTTP_CACHE = new Param("http_cache", HTTPCache.class, "HTTPCache instance to enable HTTP caching", false);
     
     @Override
     public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
@@ -55,7 +54,7 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
                 (Integer)params.get(TIMEOUT.key),
                 (Boolean)params.get(TRY_GZIP.key),
                 (CoordinateReferenceSystem)params.get(CRS.key),
-                (HTTPCache)params.get(HTTP_CACHE.key)
+                null//(HTTPCache)params.get(HTTP_CACHE.key)
         );
     }
 
@@ -66,6 +65,6 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
 
     @Override
     public Param[] getParametersInfo() {
-        return new Param[] { URL, USER, PASSWD, TIMEOUT, TRY_GZIP, CRS, HTTP_CACHE };
+        return new Param[] { URL, USER, PASSWD, TIMEOUT, TRY_GZIP, CRS/*, HTTP_CACHE*/ };
     }    
 }

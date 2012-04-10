@@ -24,31 +24,59 @@ import java.util.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.httpcache4j.cache.HTTPCache;
-import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
-import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
-import org.geotools.data.DataStore;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
+//import org.codehaus.httpcache4j.cache.HTTPCache;
 import org.geotools.data.ows.HTTPClient;
 import org.geotools.data.ows.HTTPResponse;
 import org.geotools.data.ows.SimpleHttpClient;
 import org.geotools.data.store.ContentDataStore;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.NameImpl;
-import org.geotools.referencing.CRS;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
+ * DataStore for ArcGIS Server REST API for MapServer or FeatureServer (read-only) services. 
+ * <p>
+ * Because of the nature of the REST API, paging is not suited for stateless 
+ * code such as web pages. When you request a FeatureReader with a Query with
+ * paging parameters set using {@link org.geotools.data.Query#setStartIndex} and
+ * {@link org.geotools.data.Query#setMaxFeatures}, the data store must always
+ * request all object ids matching the rest of the query and then request the
+ * features in the page using the object ids. If the feature collection is very
+ * large this can take a long time.
+ * <p>
+ * It is possible to request the object ids matching the Query using {@link ArcGISFeatureReader#getObjectIds()}
+ * and use this List later on to request features with {@link ArcGISFeatureReader#getFeaturesByObjectIds(java.util.List)}.
+ * The list with object ids can be cached where appropriate and be used to request a 
+ * sublist for paging.
+ * <p>
+ * Unfortunately the object ids cannot be used as a row id in a query to pass on 
+ * the start index and max features. While sometimes the object ids start at 1 
+ * and increment for each subsequent feature, this is not guaranteed.
+ * <p>
+ * Although ArcGIS server sends ETag headers in response to requests, there is
+ * not really a performance improvement using conditional HTTP requests - with
+ * very large feature collections the performance is abysmal no matter what. 
+ * Because of this the HTTP cache (using {@link <a href=http://httpcache4j.codehaus.org/">HttpCache4j</a>})
+ * is disabled by default so the HttpCache4j libraries are not required. To enable
+ * HTTP caching you must patch HttpCache4j to support non-conformant ETag headers
+ * sent by ESRI (see {@link CachingHTTPClient}), rename CachingHTTPClient.java.disabled
+ * and uncomment the relevant lines in this class and {@link ArcGISDataStoreFactory}. 
+ * Then pass a HTTPCache instance to the constructor or using the HTTP_CACHE
+ * Param for the factory. 
+ * <p>
+ * When reading features ArcGIS server may produce invalid JSON when it apparently 
+ * has an invalid coordinate and sends "*****************" instead. Like non-well
+ * formed XML we do not accept this so ArcGISFeatureReader.next() may throw an exception 
+ * (consistently, the ESRI WFS server also produces invalid posLists this way).
+ * <p>
+ * The standard ESRI spatial querying restrictions apply: only one spatial operator
+ * ony the default geometry is supported and can only be combined with other 
+ * attribute queries in a Boolean AND.
  *
  * @author Matthijs Laan
  */
@@ -69,14 +97,13 @@ public class ArcGISDataStore extends ContentDataStore {
 
     private Map<String,JSONObject> layersById = new HashMap<String,JSONObject>();
 
-    private HTTPCache httpCache;
     private HTTPClient client;
     
     public ArcGISDataStore(URL url) {
         this(url, null, null, null, null, null, null);
     }
     
-    public ArcGISDataStore(URL url, String user, String passwd, Integer timeout, Boolean gzip, CoordinateReferenceSystem crs, HTTPCache httpCache) {
+    public ArcGISDataStore(URL url, String user, String passwd, Integer timeout, Boolean gzip, CoordinateReferenceSystem crs, Object httpCache) {
         this.url = url;
         this.crs = crs;        
         
@@ -93,16 +120,15 @@ public class ArcGISDataStore extends ContentDataStore {
             throw new IllegalArgumentException("URL must contain \"/rest/\"");
         }         
 
-        this.httpCache = httpCache;
-        
-        if(httpCache != null) {
-            client = new CachingHTTPClient(httpCache);
-            if(!Boolean.FALSE.equals(gzip)) {
-                ((CachingHTTPClient)client).setGzip(true);
-            }
-        } else {
+        // Uncomment to enable HttpCache4j
+        //if(httpCache != null) {
+        //    client = new CachingHTTPClient((HTTPCache)httpCache);
+        //    if(!Boolean.FALSE.equals(gzip)) {
+        //        ((CachingHTTPClient)client).setGzip(true);
+        //    }
+        //} else {
             client = new SimpleHttpClient();
-        }
+        //}
 
         client.setUser(user);
         client.setPassword(passwd);
@@ -239,86 +265,4 @@ public class ArcGISDataStore extends ContentDataStore {
     public String toString() {
         return "ArcGISDataStore URL=" + url.toString();
     }    
-    
-    public static void main(String... args) throws Exception {
-        CoordinateReferenceSystem crs = CRS.decode("EPSG:28992");
-        
-        HTTPCache cache = new HTTPCache(
-            new MemoryCacheStorage(),
-            HTTPClientResponseResolver.createMultithreadedInstance()
-        );
-        
-        DataStore ds = new ArcGISDataStore(
-                new URL("http://gisopenbaar.toverijs3.nl/ArcGIS/rest/services/VenB/vergunningen_bekendmakingen/MapServer"),
-                null,
-                null,
-                null,
-                null,
-                crs, cache);
-/*
-        print(ds);*/
-        
-        ds = new ArcGISDataStore(
-                new URL("http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/SanFrancisco/311Incidents/FeatureServer"),
-                "pietje",
-                "puk",
-                null,
-                null,
-                crs, cache);
-
-        print(ds);
-        Thread.sleep(5000);
-        print(ds);        
-        /*
-        ds = new ArcGISDataStore(
-                new URL("http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Petroleum/KSFields/FeatureServer"),
-                null,
-                null,
-                null,
-                crs);
-
-        print(ds);*/
-    }
-    
-    private static void print(DataStore ds) throws Exception {
-        System.out.println(ds);
-
-        String[] typeNames = ds.getTypeNames();
-        
-        for(String t: typeNames) {
-            System.out.println("Type name: " + t);
-            try {
-                FeatureSource fs = ds.getFeatureSource(t);
-                //System.out.println("Feature source: " + fs);
-                //System.out.println("Count: " + fs.getCount(Query.ALL));
-                
-                Query q = new Query();
-                q.setStartIndex(2);
-                q.setMaxFeatures(150);
-                FeatureCollection fc = fs.getFeatures(q);
-
-                FeatureIterator<SimpleFeature> it = fc.features();
-                try {
-                    while(it.hasNext()) {
-                        SimpleFeature f = (SimpleFeature)it.next();
-                        
-                        StringBuilder sb = new StringBuilder();
-                        for(AttributeDescriptor ad: f.getFeatureType().getAttributeDescriptors()) {
-                            sb.append(", ");
-                            sb.append(ad.getLocalName());
-                            sb.append("=");
-                            sb.append(f.getAttribute(ad.getLocalName()));
-                        }
-                        System.out.println(f.getID() + ": " + f.getDefaultGeometry() + sb.toString());
-                    }
-                } finally {
-                    it.close();                        
-                    fs.getDataStore().dispose();
-                }
-                
-            } catch(Exception e) {
-                e.printStackTrace();
-            }            
-        }
-    }
 }
