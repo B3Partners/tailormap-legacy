@@ -43,9 +43,9 @@ import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.httpcache4j.cache.HTTPCache;
-import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
-import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
+//import org.codehaus.httpcache4j.cache.HTTPCache;
+//import org.codehaus.httpcache4j.cache.MemoryCacheStorage;
+//import org.codehaus.httpcache4j.client.HTTPClientResponseResolver;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStoreFactory;
@@ -383,7 +383,7 @@ public class AttributesActionBean implements ActionBean {
     }
     
     private static final int MAX_CACHE_SIZE = 50;
-    
+/*    
     private static HTTPCache cache;
     private static synchronized HTTPCache getHTTPCache() {
         
@@ -414,7 +414,7 @@ public class AttributesActionBean implements ActionBean {
         );                    
         return cache;
     }
-    
+*/    
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
         JSONArray features = new JSONArray();
@@ -430,7 +430,7 @@ public class AttributesActionBean implements ActionBean {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
                     fs = ((WFSFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
-                } else if(layer.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) {
+                } /*else if(layer.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     if(isDebug()) {
                         extraDataStoreParams.put(ArcGISDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
@@ -439,7 +439,7 @@ public class AttributesActionBean implements ActionBean {
                         extraDataStoreParams.put(ArcGISDataStoreFactory.HTTP_CACHE.key, getHTTPCache());
                     }
                     fs = ((ArcGISFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
-                } else {
+                }*/ else {
                     
                     fs = layer.getFeatureType().openGeoToolsFeatureSource();
                 }
