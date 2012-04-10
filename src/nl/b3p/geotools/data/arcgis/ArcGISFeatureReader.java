@@ -22,10 +22,13 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
+import org.geotools.data.jdbc.FilterToSQLException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -84,7 +87,12 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         if(objectIds != null) {
             return objectIds;
         }
-        Map<String,String> params = createQueryParams();
+        Map<String,String> params = null;
+        try {
+            params = createQueryParams();
+        } catch (FilterToSQLException ex) {
+            throw new IOException(ex);
+        }
         params.put("returnIdsOnly", "true");
         
         try {
@@ -123,21 +131,22 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         } 
     }
 
-    private Map<String,String> createQueryParams() {
+    private Map<String,String> createQueryParams() throws FilterToSQLException {
         Map<String,String> params = new HashMap<String,String>();
         params.put("f","json");
-                
-        /*if(query.getFilter() != null) {
-            FilterToArcXMLSQL visitor = new FilterToArcXMLSQL(aq);
+         
+        String where;
+        if(query.getFilter() != null) {
+            FilterToArcGISSQL visitor = new FilterToArcGISSQL();
             visitor.setFeatureType(getFeatureType());
             
-            String where = visitor.encodeToString(query.getFilter());
-            if(where.trim().length() > 0 && !where.trim().equals("1=1")) {
-                aq.setWhere(where);
-            }
-        }*/
+            where = visitor.encodeToString(query.getFilter());
+            params.putAll(visitor.getSpatialParams());
+        } else {
+            where = "1=1"; // where parameter is required
+        }
                 
-        params.put("where", "1=1");
+        params.put("where", where);
         return params;
     }
     

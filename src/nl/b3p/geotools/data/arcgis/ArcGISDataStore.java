@@ -75,8 +75,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * (consistently, the ESRI WFS server also produces invalid posLists this way).
  * <p>
  * The standard ESRI spatial querying restrictions apply: only one spatial operator
- * ony the default geometry is supported and can only be combined with other 
- * attribute queries in a Boolean AND.
+ * with the default geometry and a literal geometry operand is supported and can 
+ * only be combined with other attribute queries in a Boolean AND.
  *
  * @author Matthijs Laan
  */
