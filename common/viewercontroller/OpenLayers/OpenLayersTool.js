@@ -7,16 +7,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     extend: "viewer.viewercontroller.controller.Tool",
     onActiveHandler:null,
     controls:null,
-    constructor : function (id,frameworkTool,type){
-        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, {});
-        this.frameworkTool = frameworkTool;
-        this.id = id;
-        this.type = type;
+    constructor : function (conf,frameworkObject){
+        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);        
+        /*this.id = id;
+        this.type = type;*/
+        this.frameworkObject = frameworkObject;
+        //this.initConfig({});
         this.controls = new Array();
         this.onActiveHandler = new Object();
         return this;
     },
-
+    
     register : function (event,handler){
         var specificName = webMapController.getSpecificEventName(event);
         if(this.type == Tool.BUTTON){
@@ -45,7 +46,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
         return this.id;
     },
 
-    setVisible : function(visibility){
+    setToolVisible : function(visibility){
+        this.setVisible(visibility);
         if (visibility){
             this.getFrameworkTool().panel_div.style.display="block";
         }else{

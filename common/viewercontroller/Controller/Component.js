@@ -22,7 +22,7 @@ Ext.define("viewer.viewercontroller.controller.Component",{
     extend: "Ext.util.Observable",
     config :{
         id: "id",
-        frameworkObject: new Object(),
+        frameworkObject: null,
         type: -1
     },
     constructor: function (config){

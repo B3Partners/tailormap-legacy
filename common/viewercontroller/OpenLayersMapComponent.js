@@ -11,7 +11,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     mapOptions:null,
     constructor :function (viewerController, domId){
         viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController,domId);
-        this.viewerController = viewerController;
         this.domId = domId;
         this.pointButton = null;
         this.lineButton = null;
@@ -227,9 +226,17 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.NavigationHistory(options),type);
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.ZoomBox(options),type);
+            return new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.ZoomBox(options));
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.DragPan(options),type)
+            return new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.DragPan(options))
         }else if (type==viewer.viewercontroller.controller.Tool.BUTTON){
             if (!options){
                 options=new Object();
@@ -255,16 +262,15 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
             if (!options){
                 options=new Object();
-            }
-            options["displayClass"]="olControl"+id;
+            }//olControlidentify
+            options["displayClass"]="olControlidentify";
             options["type"]=OpenLayers.Control.TYPE_TOOL;
-            var identifyTool = new OpenLayersIdentifyTool(id,new OpenLayers.Control(options),type);
-            identifyTool.getFrameworkTool().events.register("activate",this,this.activateGetFeatureControls);
-            identifyTool.getFrameworkTool().events.register("deactivate",this,this.deactivateGetFeatureControls);
-
-            identifyTool.setGetFeatureInfoHandler(options["handlerGetFeatureHandler"]);
-            identifyTool.setBeforeGetFeatureInfoHandler(options["handlerBeforeGetFeatureHandler"]);
-
+            var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control(options));
+            
             //this.getMap().setGetFeatureInfoControl(identifyTool);
             return identifyTool;
         }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
@@ -299,7 +305,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 }
             }
 
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, options),type);
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.Measure( OpenLayers.Handler.Path, options));
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
                 if (measureValueDiv){                
@@ -321,9 +331,17 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type == viewer.viewercontroller.controller.Tool.LAYER_SWITCH){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.LayerSwitcher(options),type);
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.ZoomBox(options),type)
+            return new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.ZoomBox(options))
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.ZoomOut(options),type)
+            return new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.ZoomOut(options))
         }else{
             throw ("Type >" + type + "< not recognized. Please use existing type.");
         }

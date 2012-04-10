@@ -14,15 +14,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     mainContainerId: "mainContainer",
     bottomContainerId: null,
     toolMargin: 30,
-    viewerController: null,
     enabledEvents: new Object(),
     /**
      * 
      * @constructur
      */
     constructor :function (viewerController, domId){
-        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId);
-        this.viewerController = viewerController;
+        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId);        
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);

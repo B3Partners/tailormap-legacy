@@ -15,9 +15,12 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     tools : new Array(),
     events: new Array(),
     components: new Array(),
-    panel : null,
-    constructor :function (viewerObject){       
-        this.initEvents();     
+    panel : null,    
+    viewerController: null,
+    
+    constructor :function (viewerController){       
+        this.initEvents();
+        this.viewerController=viewerController;
         this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);    
         return this;
     },

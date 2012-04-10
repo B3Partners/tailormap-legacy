@@ -70,8 +70,12 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     registerEvent : function (event,handler){
         this.addListener(event,handler);
     },
+    /**
+     * Returns the framework object
+     * @deprecated use getFrameworkObject
+     */
     getFrameworkTool : function(){
-        return this.frameworkTool;
+        return this.frameworkObject;
     },
 
     getType : function(){

@@ -493,14 +493,14 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 }
 .olControlPanel .olControlb_bufferItemActive{
     background-image: url("img/buffer_tool.png");
-}
+}*/
 .olControlPanel .olControlidentifyItemActive{
     background-image: url("img/identify_on.png");
 }
 .olControlPanel .olControlidentifyItemInactive{
     background-image: url("img/identify_off.png");
 }
-
+/*
 .olControlPanel .olControlb_highlightItemInactive{
     background-image: url("img/polygon_select.png");
 }
