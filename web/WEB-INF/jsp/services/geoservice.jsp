@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
+<div id="formcontent">        
 <p>
     <stripes:errors/>
     <stripes:messages/>
@@ -57,8 +58,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:hidden name="category"/>
     <stripes:hidden name="service"/>
 
-    <c:if test="${!edit}"><h1>Nieuwe service toevoegen aan <c:out value="${actionBean.category.name}"/></h1></c:if>
-    <c:if test="${edit}"><h1>Service <c:out value="${actionBean.service.name}"/> bewerken</h1></c:if>
+    <c:if test="${!edit}"><h1 id="headertext">Nieuwe service toevoegen aan <c:out value="${actionBean.category.name}"/></h1></c:if>
+    <c:if test="${edit}"><h1 id="headertext">Service <c:out value="${actionBean.service.name}"/> bewerken</h1></c:if>
     
     <p>
     <script type="text/javascript">
@@ -67,10 +68,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.fly('useUrlTr').setVisible(protocol == "wms");
             Ext.fly('serviceNameTr').setVisible(protocol == "arcims");            
         }
-
+        Ext.onReady(function() {
+            appendPanel('headertext', 'formcontent');
+        });
         Ext.onReady(checkProtocol);
     </script>    
-    <table>
+    <table class="formtable">
         <tr>
             <td>URL van de service:</td>
             <td><stripes:text name="url" maxlength="255" size="80" disabled="${edit}"/></td>
@@ -87,7 +90,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <tr id="useUrlTr">
             <td colspan="2">
                 <label>
-                    <stripes:checkbox name="overrideUrl"/>Gebruik altijd ingevulde URL in plaats van URLs in GetCapabilities
+                    <stripes:checkbox name="overrideUrl"/> Gebruik altijd ingevulde URL in plaats van URLs in GetCapabilities
                 </label>
             </td>
         </tr>
@@ -122,25 +125,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </table>
     </p>
     
-    <c:choose>
-        <c:when test="${!edit}">
-            <stripes:submit name="add" value="Service inladen"/>
-            <stripes:submit name="cancel" value="Annuleren"/>
-        </c:when>
-        <c:otherwise>
-            <stripes:submit name="save" value="Opslaan"/>
-            <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
-            <stripes:submit name="cancel" value="Annuleren"/>
-            <script type="text/javascript">
-                function deleteServiceConfirm() {
-                    return confirm('Weet u zeker dat u deze service wilt verwijderen?');
-                }
-            </script>
-        </c:otherwise>
-    </c:choose>
+    <div class="submitbuttons">
+        <c:choose>
+            <c:when test="${!edit}">
+                <stripes:submit name="add" value="Service inladen"/>
+                <stripes:submit name="cancel" value="Annuleren"/>
+            </c:when>
+            <c:otherwise>
+                <stripes:submit name="save" value="Opslaan"/>
+                <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
+                <stripes:submit name="cancel" value="Annuleren"/>
+                <script type="text/javascript">
+                    function deleteServiceConfirm() {
+                        return confirm('Weet u zeker dat u deze service wilt verwijderen?');
+                    }
+                </script>
+            </c:otherwise>
+        </c:choose>
+    </div>
 </c:if>
             
 </stripes:form>
+    
+</div>
             
     </stripes:layout-component>
 </stripes:layout-render>

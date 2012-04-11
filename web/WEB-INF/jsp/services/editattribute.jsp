@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk Attribuutbron</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <div id="formcontent">
         <p>
             <stripes:errors/>
             <stripes:messages/>
@@ -30,7 +31,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean">
                 <stripes:hidden name="attribute" value="${actionBean.attribute.id}"/>
                 <c:if test="${actionBean.context.eventName == 'edit'}">
-                <table>
+                <h1 id="headertext">Attribuut bewerken</h1>
+                <table class="formtable">
                     <tr>
                         <td>Alias:</td>
                         <td><stripes:text name="attribute.alias" maxlength="255" size="30"/></td>
@@ -40,9 +42,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td><stripes:text name="attribute.name" maxlength="255" size="30" disabled="true"/></td>
                     </tr>
                 </table>
-
-                <stripes:submit name="save" value="Opslaan"/>
-                <stripes:submit name="cancel" value="Annuleren"/>
+                <div class="submitbuttons">
+                    <stripes:submit name="save" value="Opslaan"/>
+                    <stripes:submit name="cancel" value="Annuleren"/>
+                </div>
             </c:if>
             <c:if test="${actionBean.context.eventName == 'save'}">
                 <script type="text/javascript">
@@ -53,6 +56,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </script>
             </c:if>
         </stripes:form>
-
+        </div>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                appendPanel('headertext', 'formcontent');
+            });
+        </script>
     </stripes:layout-component>
 </stripes:layout-render>

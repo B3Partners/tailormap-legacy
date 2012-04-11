@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Edit documenten</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <div id="formcontent">
         <p>
             <stripes:errors/>
             <stripes:messages/>
@@ -31,9 +32,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
-                    <h1>bewerken</h1>
+                    <h1 id="headertext">Document bewerken</h1>
                     <stripes:hidden name="document" value="${actionBean.document.id}"/>
-                    <table>
+                    <table class="formtable">
                         <tr>
                             <td>Naam:</td>
                             <td><stripes:text name="document.name" maxlength="255" size="30"/></td>
@@ -47,9 +48,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td><stripes:text name="document.url" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
-
-                    <stripes:submit name="save" value="Opslaan"/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <div class="submitbuttons">
+                        <stripes:submit name="save" value="Opslaan"/>
+                        <stripes:submit name="cancel" value="Annuleren"/>
+                    </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save'}">
                     <script type="text/javascript">
@@ -65,6 +67,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </stripes:form>
-
+        </div>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                appendPanel('headertext', 'formcontent');
+            });
+        </script>
     </stripes:layout-component>
 </stripes:layout-render>

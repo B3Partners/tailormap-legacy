@@ -26,6 +26,27 @@ function getParent() {
     }
 }
 
+function appendPanel(header, content, container) {
+    var headerobj = document.getElementById(header);
+    var contentobj = document.getElementById(content);
+    if(headerobj && contentobj) {
+        var headercontent = headerobj.textContent;
+        headerobj.style.display = 'none';
+        contentobj.className += ' insidePanel';
+        
+        var panelContainer = container || Ext.getBody();
+        var panel = Ext.create('Ext.panel.Panel', {
+            title: headercontent,
+            contentEl: contentobj,
+            width: '100%',
+            renderTo: panelContainer
+        });
+        Ext.EventManager.onWindowResize(function () {
+            panel.doLayout();
+        });
+    }
+}
+
 // Default grid config
 var defaultGridConfig = {
     autoWidth: true,

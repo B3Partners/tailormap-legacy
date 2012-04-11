@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk Attribuutbron</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <div id="formcontent">
         <p>
             <stripes:errors/>
             <stripes:messages/>
@@ -30,10 +31,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}"> 
-                    <h1>Attribuutbron bewerken</h1>
+                    <h1 id="headertext">Attribuutbron bewerken</h1>
 
                     <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
-                    <table>
+                    <table class="formtable">
                         <tr>
                             <td>Naam:</td>
                             <td><stripes:text name="name" maxlength="255" size="30"/></td>
@@ -64,13 +65,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
-
-                    <stripes:submit name="saveEdit" value="Opslaan"/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <div class="submitbuttons">
+                        <stripes:submit name="saveEdit" value="Opslaan"/>
+                        <stripes:submit name="cancel" value="Annuleren"/>
+                    </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'newAttributeSource' || actionBean.context.eventName == 'save'}">
                     
-                            <h1>Nieuwe attribuutbron toevoegen</h1>
+                            <h1 id="headertext">Nieuwe attribuutbron toevoegen</h1>
                             <p>
                             <script type="text/javascript">
                                 function checkProtocol() {
@@ -101,10 +103,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         }
                                     }
                                 }
-                                
                                 Ext.onReady(checkProtocol);
                             </script>    
-                            <table>
+                            <table class="formtable">
                                 <tr>
                                     <td>Type:</td>
                                     <td>
@@ -164,10 +165,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
                                 </tr>
                             </table>
-
-                            <stripes:submit name="save" value="Opslaan"/>
-                            <stripes:submit name="cancel" value="Annuleren"/>
-                        
+                            <div class="submitbuttons">
+                                <stripes:submit name="save" value="Opslaan"/>
+                                <stripes:submit name="cancel" value="Annuleren"/>
+                            </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'saveEdit'}">
                     <script type="text/javascript">
@@ -198,5 +199,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </stripes:form>
+        </div>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                appendPanel('headertext', 'formcontent');
+            });
+        </script>
     </stripes:layout-component>
 </stripes:layout-render>

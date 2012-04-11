@@ -31,16 +31,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <h1>Attributen</h1><br />
 
-            <p>Attributen beheren voor</p>
-            <select name="featureSourceId" id="featureSourceId">
-                <option value="1">Kies..</option>
-                <c:forEach var="source" items="${actionBean.featureSources}">
-                    <option value="${source.id}"><c:out value="${source.name}"/></option>
-                </c:forEach>
-            </select>
-            <select name="simpleFeatureTypeId" id="simpleFeatureTypeId">
-                <option value="1">Kies..</option>
-            </select>
+            <div style="margin-bottom: 10px;">
+                <p>Attributen beheren voor</p>
+                <select name="featureSourceId" id="featureSourceId">
+                    <option value="1">Kies..</option>
+                    <c:forEach var="source" items="${actionBean.featureSources}">
+                        <option value="${source.id}"><c:out value="${source.name}"/></option>
+                    </c:forEach>
+                </select>
+                <select name="simpleFeatureTypeId" id="simpleFeatureTypeId">
+                    <option value="1">Kies..</option>
+                </select>
+            </div>
 
             <div id="grid-container" class="attribute"></div>
             <div id="form-container" class="attribute">

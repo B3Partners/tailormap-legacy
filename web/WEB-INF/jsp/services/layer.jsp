@@ -23,16 +23,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk layer</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <div id="formcontent">
         <p>
             <stripes:errors/>
             <stripes:messages/>
         </p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayerActionBean">
-                <c:if test="${actionBean.context.eventName == 'edit'}"> 
-                <h1>Layer bewerken</h1>
+
+                <h1 id="headertext">Layer bewerken</h1>
                 <stripes:hidden name="layer" value="${actionBean.layer.id}"/>
 
-                <table>
+                <table class="formtable">
                     <tr>
                         <td>Naam: 
                         <td><stripes:text name="layer.titleAlias" maxlength="255" size="30"/></td>
@@ -79,28 +80,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                             <c:forEach var="group" items="${actionBean.allGroups}">
                                 <stripes:checkbox name="groupsRead" value="${group.name}"/>
-                                <stripes:checkbox name="groupsWrite" value="${group.name}"/>${group.name}<br>
+                                <stripes:checkbox name="groupsWrite" value="${group.name}"/> ${group.name}<br />
                             </c:forEach>
 
                         </td>
                     </tr>
+                    <c:if test="${not empty actionBean.applicationsUsedIn}">
                     <tr>
                         <td>
                             <h1>Kaartlaag wordt gebruikt in de volgende applicaties:</h1>
-                            <c:if test="${not empty actionBean.applicationsUsedIn}">
-                                <c:forEach var="name" items="${actionBean.applicationsUsedIn}">
-                                    <c:out value="${name}"/><br>
-                                </c:forEach>
-                            </c:if>
+                            <c:forEach var="name" items="${actionBean.applicationsUsedIn}">
+                                <c:out value="${name}"/><br />
+                            </c:forEach>
                         </td>
                     </tr>
+                    </c:if>
                 </table>
 
-                <stripes:submit name="save" value="Kaartlaag opslaan"/>
-                <stripes:submit name="cancel" value="Annuleren"/>
-                
+                <div class="submitbuttons">
+                    <stripes:submit name="save" value="Kaartlaag opslaan"/>
+                    <stripes:submit name="cancel" value="Annuleren"/>
+                </div>
                 <script type="text/javascript">
                     Ext.onReady(function() {
+                        appendPanel('headertext', 'formcontent');
                         var featureSourceId = Ext.get('featureSourceId');
                         var simpleFeatureTypeId = Ext.get('simpleFeatureTypeId');
                         featureSourceId.on('change', function() {
@@ -155,7 +158,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     });
                 </script>
                 
-            </c:if>
         </stripes:form>
 
         <c:if test="${actionBean.context.eventName == 'save'}">
@@ -166,6 +168,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 }
             </script>
         </c:if>
-
+        </div>
     </stripes:layout-component>
 </stripes:layout-render>

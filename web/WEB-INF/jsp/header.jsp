@@ -68,7 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </security:allowed>                            
             </li>
         </ul>
-        <div id="userinfo" style="color: white; float: right">
+        <div id="userinfo">
             Ingelogd als: <b><c:out value="${pageContext.request.remoteUser}"/> | </b>
             <stripes:link style="color: white" href="/logout.jsp">Uitloggen</stripes:link>
         </div>

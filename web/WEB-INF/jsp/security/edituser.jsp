@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Edit gebruiker</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <div id="formcontent">
         <p>
             <stripes:errors/>
             <stripes:messages/>
@@ -31,10 +32,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
-                    <h1>bewerken</h1>
+                    <h1 id="headertext">Gebruiker bewerken</h1>
                     <stripes:hidden name="user" value="${actionBean.user.username}"/>
 
-                    <table>
+                    <table class="formtable">
                         <tr>
                             <td>
                                 <table>
@@ -80,16 +81,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <h1>Groepen:</h1>
                                 
                                     <c:forEach var="group" items="${actionBean.allGroups}">
-                                        <stripes:checkbox name="groups" value="${group.name}"/>${group.name}<br>
+                                        <stripes:checkbox name="groups" value="${group.name}"/> ${group.name}<br />
                                     </c:forEach>
                                 
                             </td>
                         </tr>
                     </table>
-
-
-                    <stripes:submit name="save" value="Opslaan"/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <div class="submitbuttons">
+                        <stripes:submit name="save" value="Opslaan"/>
+                        <stripes:submit name="cancel" value="Annuleren"/>
+                    </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save'}">
                         <script type="text/javascript">
@@ -105,7 +106,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </stripes:form>
-
+        </div>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                appendPanel('headertext', 'formcontent');
+            });
+        </script>
     </stripes:layout-component>
 </stripes:layout-render>
 

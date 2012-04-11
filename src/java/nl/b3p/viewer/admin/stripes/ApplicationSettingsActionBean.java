@@ -211,7 +211,6 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         application.setAuthenticatedRequired(authenticatedRequired);
         
-        application.getDetails().clear();
         application.getDetails().putAll(details);        
     }
     

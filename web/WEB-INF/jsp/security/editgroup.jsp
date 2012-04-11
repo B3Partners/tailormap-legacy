@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Edit gebruiker groep</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <div id="formcontent">
         <p>
             <stripes:errors/>
             <stripes:messages/>
@@ -31,21 +32,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GroupActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
-                    <h1>bewerken</h1>
+                    <h1 id="headertext">Gebruikers groep bewerken</h1>
                     <stripes:hidden name="group" value="${actionBean.group.name}"/>
-                    <table>
+                    <table class="formtable">
                         <tr>
                             <td>Naam:</td>
                             <td><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
-                            <td>Extra informatie:</td>
+                            <td valign="top">Extra informatie:</td>
                             <td><stripes:textarea name="description" cols="27" rows="4"/></td>
                         </tr>
                     </table>
-
-                    <stripes:submit name="save" value="Opslaan"/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <div class="submitbuttons">
+                        <stripes:submit name="save" value="Opslaan"/>
+                        <stripes:submit name="cancel" value="Annuleren"/>
+                    </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save'}">
                         <script type="text/javascript">
@@ -61,6 +63,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </stripes:form>
-
+        </div>
+        <script type="text/javascript">
+            Ext.onReady(function() {
+                appendPanel('headertext', 'formcontent');
+            });
+        </script>
     </stripes:layout-component>
 </stripes:layout-render>

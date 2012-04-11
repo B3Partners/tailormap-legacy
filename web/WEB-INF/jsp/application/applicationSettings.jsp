@@ -26,19 +26,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-            <div id="content">
+        <div id="content">
+        <div id="formcontent">
                 <p>
                 <stripes:errors/>
                 <stripes:messages/>
-                <h1>Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
+                <h1 id="headertext">Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
                 </p>
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean">
                     <stripes:hidden name="application" value="${actionBean.application}"/>
-                <table>
+                <table class="formtable">
                     <tr>
                         <td>Naam:</td>
                         <td><stripes:text name="name" maxlength="255" size="30"/></td>
-                        <td rowspan="9">Opmerkingen<br><stripes:textarea cols="80" rows="5" name="details['opmerking']"/></td>
+                        <td rowspan="13" valign="top">Opmerkingen<br><stripes:textarea cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px;" /></td>
                     </tr>
                     <tr>
                         <td>Versie:</td>
@@ -94,14 +95,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="3"/>
                         </td>
                     </tr>
-                </table>   
-                    <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht<br>
-                    <stripes:submit name="save" value="Opslaan"/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
-                    <input type="hidden" name="copy" value="1" disabled="true"/>
-                    <input type="button" value="Maak kopie" onclick="return confirmCopy();"/>                                    
+                    <tr>
+                        <td colspan="2">
+                            <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht
+                        </td>
+                    </tr>
+                </table>
+                    
+                    <div class="submitbuttons">
+                        <stripes:submit name="save" value="Opslaan"/>
+                        <stripes:submit name="cancel" value="Annuleren"/>
+                        <input type="hidden" name="copy" value="1" disabled="true"/>
+                        <input type="button" value="Maak kopie" onclick="return confirmCopy();"/>
+                    </div>
                 </stripes:form>
             </div>
+        </div>
 <script type="text/javascript">
     var activelink = 'menu_instellingen';
 
@@ -125,6 +134,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
         });  
     }
+    Ext.onReady(function() {
+        appendPanel('headertext', 'formcontent', 'content');
+    });
 </script>
     </stripes:layout-component>
 </stripes:layout-render>
