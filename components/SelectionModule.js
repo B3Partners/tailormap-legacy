@@ -161,6 +161,8 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         me.loadSelectedLayers();
         me.activeTree = me.treePanels.applicationTree.treePanel;
+        
+        me.applyTreeScrollFix();
 
         me.popup.popupWin.addListener('hide', me.hideTreeContainers);
         me.popup.popupWin.addListener('show', me.showTreeContainers);
@@ -206,6 +208,14 @@ Ext.define ("viewer.components.SelectionModule",{
         if(me.treePanels.customServiceTree.treePanel != null) panels.push(me.treePanels.customServiceTree.treePanel.id);
         if(me.treePanels.selectionTree.treePanel != null) panels.push(me.treePanels.selectionTree.treePanel.id);
         return panels;
+    },
+    
+    applyTreeScrollFix: function() {
+        var me = this;
+        var treePanels = me.getActiveTreePanels();
+        for(var i = 0; i < treePanels.length; i++) {
+            Ext.getCmp(treePanels[i]).getView().setHeight('100%');
+        }
     },
     
     initViewerControllerData: function() {
@@ -479,9 +489,6 @@ Ext.define ("viewer.components.SelectionModule",{
             useArrows: true,
             height: "100%",
             autoScroll: true,
-            viewConfig: {
-                height: '100%'
-            },
             animate: false,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
