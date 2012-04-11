@@ -219,7 +219,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
     },
    
-   addAppLayer:function(appLayer) {
+    addAppLayer:function(appLayer) {
        if(this.app.appLayers[appLayer.id] == undefined) {
            this.app.appLayers[appLayer.id] = appLayer;
        }
@@ -367,6 +367,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     setLayerVisible : function (serviceId, layerName, visible){
         var layer = this.getLayer(serviceId, layerName);
+        layer.visible = visible;
         this.mapComponent.getMap().setLayerVisible(layer, visible);
     },
     getLayer : function (serviceId, layerName){
@@ -522,6 +523,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
+    /** 
+     * Receives an array with serviceId_layerId entries
+     **/
     getVisibleLayerIds : function (){
         var layers = this.layers;
         var layerArray = new Array();
@@ -533,9 +537,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return layerArray;
     },
-    /** 
-     * Receives an array with serviceId_layerId entries
-     **/
     setLayersVisible : function (layers,checked){
         for ( var i = 0 ; i < layers.length ; i++){
             var layer = layers[i];
