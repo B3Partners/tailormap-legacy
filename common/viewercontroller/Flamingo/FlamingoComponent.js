@@ -34,7 +34,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         listenTo: null,
         //for scalebar:
         units: null,
-        maptipdelay: 500
+        maptipdelay: 500,
+        //for coordinates
+        decimals: null
     },       
     /** Create a new FlamingoTool
      *@construct
@@ -139,6 +141,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             xml+=" listento='"+this.getListenTo()+"'";
         if (this.getUnits()!=null)
             xml+=" units='"+this.getUnits()+"'";
+        if (this.getDecimals()!=null)
+            xml+=" decimals='"+this.getDecimals()+"'";
         return xml;
     },
     /**

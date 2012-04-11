@@ -14,7 +14,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         top: null,
         bottom: null,
         tooltip: null,
-        listenTo: null
+        listenTo: null,
+        //for measure
+        decimals: null,
+        magicnumber: null,
+        units: null
     },       
     /** Create a new FlamingoTool
      *@construct
@@ -67,7 +71,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         if (this.getRight()!=null)
             xml+=" right='"+this.getRight()+"'";
         if (this.getBottom()!=null)
-            xml+=" bottom='"+this.getBottom()+"'";        
+            xml+=" bottom='"+this.getBottom()+"'";
+        if (this.getDecimals()!=null)
+            xml+=" decimals='"+this.getDecimals()+"'";
+        if (this.getMagicnumber()!=null)
+            xml+=" magicnumber='"+this.getMagicnumber()+"'";
+        if (this.getUnits()!=null)
+            xml+=" units='"+this.getUnits()+"'";
         if (this.getListenTo()!=null){
             xml+=" listento='"+this.getListenTo()+"'";
         }

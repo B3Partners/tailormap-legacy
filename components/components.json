@@ -171,8 +171,18 @@
         restrictions: ["top_menu"],
 
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "Tooltip"},
-            source: {tooltip: "Measure"}
+            propertyNames: {
+                tooltip: "Tooltip",
+                units: "Eenheden",
+                magicnumber: "Delen door",
+                decimals: "Decimalen"
+            },
+            source: {
+                tooltip: "Measure",
+                units: "",
+                decimals: 2,
+                magicnumber: ""  
+            }
         }
     }, 
     {
@@ -255,7 +265,15 @@
         name: "Coordinates",
         shortName: "Coörd",
         sources: ["Coordinates.js"],
-        closureCompilerSafe: true,        
+        closureCompilerSafe: true,   
+        extPropertyGridConfigs: {
+            propertyNames: {               
+                decimals: "Decimalen"
+            },
+            source: {
+                decimals: 2
+            }
+        },
         singleton: true,
         restrictions: ["content_bottom"]        
     }, 
