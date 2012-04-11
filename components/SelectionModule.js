@@ -697,7 +697,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var rootLevel = me.levels[me.rootLevel];
         if(Ext.isDefined(rootLevel.children)) {
             for(var i = 0 ; i < rootLevel.children.length; i++) {
-                var l = me.addLevel(rootLevel.children[i], true, false);
+                var l = me.addLevel(rootLevel.children[i], true, false, false);
                 if(l !== null) {
                     levels.push(l);
                 }
@@ -712,12 +712,15 @@ Ext.define ("viewer.components.SelectionModule",{
         
         var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
         // First remove all current children, could be a reload of the screen
-        rootNode.removeAll(false);
+        var delNode;
+        while (delNode = rootNode.childNodes[0]) {
+            rootNode.removeChild(delNode);
+        }
         
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
             if(contentItem.type ==  "level") {
-                var level = me.addLevel(contentItem.id, false, false);
+                var level = me.addLevel(contentItem.id, false, false, true);
                 if(level != null){
                     nodes.push(level);
                 }
@@ -729,13 +732,13 @@ Ext.define ("viewer.components.SelectionModule",{
         me.insertTreeNode(nodes, rootNode);
     },
 
-    addLevel: function(levelId, showChildren, showLayers) {
+    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers) {
         var me = this;
         if(!Ext.isDefined(me.levels[levelId])) {
             return null;
         }
         var level = me.levels[levelId];
-        if(level.background) {
+        if(level.background && !showBackgroundLayers) {
             return null;
         }
         var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false);
@@ -750,7 +753,7 @@ Ext.define ("viewer.components.SelectionModule",{
             var nodes = [];
             if(Ext.isDefined(level.children)) {
                 for(var i = 0 ; i < level.children.length; i++) {
-                    var l = me.addLevel(level.children[i], showChildren, showLayers);
+                    var l = me.addLevel(level.children[i], showChildren, showLayers, showBackgroundLayers);
                     if(l !== null) {
                         nodes.push(l);
                     }
