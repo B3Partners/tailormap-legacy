@@ -75,19 +75,31 @@ Ext.define ("viewer.components.LayerSelector",{
                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
             }
         });
-       
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
         return this;
     },
     initLayers : function (){
         this.layerArray = new Array();
+        var visibleLayers = this.viewerController.getVisibleLayerIds();
         var store = this.combobox.getStore();
-        for (var i = 0 ; i < this.layerList.length ;i++){
-            var l = this.layerList[i];
-            l.title = l.titleAlias || l.title ;
-            l.layer = l;
-            store.add(l);
+        store.removeAll();
+        if(this.layerList != null){
+            for (var i = 0 ; i < this.layerList.length ;i++){
+                var l = this.layerList[i];
+                for ( var j = 0 ; j < visibleLayers.length ;j++){
+
+                    var index = visibleLayers[j].indexOf("_");
+                    var service = visibleLayers[j].substring(0,index);
+                    var layername = visibleLayers[j].substring(index+1);
+
+                    if (service == l.serviceId && layername == l.name){
+                        l.title = l.titleAlias || l.title ;
+                        l.layer = l;
+                        store.add(l);
+                    }
+                }
+            }
         }
-        
     },
     changed :function (combobox,item,previousSelected){
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,item,previousSelected,this);
@@ -102,5 +114,9 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     getExtComponents: function() {
         return [ this.combobox.getId() ];
+    },
+    
+    layerVisibilityChanged : function (map,object){
+        this.initLayers();
     }
 });
