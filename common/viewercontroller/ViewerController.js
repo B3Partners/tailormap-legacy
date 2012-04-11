@@ -279,6 +279,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@return the level that is parent of this applayer or null if not found.
      */    
     getAppLayerParent: function(appLayerId){
+        //make sure its a string so the compare works.
+        appLayerId=""+appLayerId;
         for (var levelId in this.app.levels){
             var level = this.app.levels[levelId];
             if (level.layers){
@@ -295,6 +297,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@return the level that is parent of this level or null if not found.
      */    
     getLevelParent: function(levelId){
+        //make sure its a string so the compare works.
+        levelId=""+levelId;
         for (var lid in this.app.levels){
             var level = this.app.levels[lid];
             if (level.children){
@@ -319,7 +323,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 documents[doc.id]=doc;
             }
         }
-        var parentLevel=this.getLevelParent(level);
+        var parentLevel=this.getLevelParent(level.id);
         if (parentLevel!=null){
             var parentDocuments= this.getDocumentsInLevel(parentLevel);
             Ext.apply(documents,parentDocuments);
