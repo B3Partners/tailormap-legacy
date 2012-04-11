@@ -58,7 +58,7 @@ Ext.define("viewer.components.Slider",{
         for( var i = 0 ; i < selectedLayers.length;i++){
             var layer = this.viewerController.getLayerByLayerId(this.selectedLayers[i]);
             if(layer) {
-                this.layers.push();
+                this.layers.push(layer);
             }
         }
         return this;
