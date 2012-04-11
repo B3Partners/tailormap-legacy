@@ -28,6 +28,7 @@ Ext.define ("viewer.components.Influence",{
     },
     location: null,
     vectorLayer: null,
+    layerSelector:null,
     removeButton: null,
     markerId: 'influence_marker',
     /**
@@ -67,6 +68,16 @@ Ext.define ("viewer.components.Influence",{
             }
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);        
+        
+        
+        var config = {
+            viewerController : this.viewerController,
+            restriction : "hasConfiguredLayers",
+            id : this.name + "layerSelector",
+            layers: this.layers,
+            div: this.name + 'LayerSelectorPanel'
+        };
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);        
         return this;
     },
     /**
@@ -77,35 +88,12 @@ Ext.define ("viewer.components.Influence",{
         var itemList=viewer.components.Influence.superclass.getFormItems.call(this);
         //the items that must be placed before the search items.
         var formItemsBefore = new Array();
+       
         formItemsBefore.push({
-            xtype: 'label',
-            text: 'Selecteer Kaartlaag'
-        });        
-        var layers=[];
-        if (this.layers!=null){
-            for (var l =0; l < this.layers.length; l++){
-                var layerId=this.layers[l];
-                var layer = this.viewerController.getServiceLayerById(layerId);
-                var title = layer.titleAlias != undefined? layer.titleAlias : layer.title;
-
-                var appLayer = this.viewerController.getApplayer(layer.serviceId,layer.name);
-                if (appLayer.details!=undefined && appLayer.details.influenceradius!=undefined){
-                    layers.push({value: appLayer.id,'show': title});
-                }
-            }        
-        }
-        var configs = Ext.create('Ext.data.Store', {
-            fields: ['value','show'],
-            data : layers
-        });
-        formItemsBefore.push({
-            xtype: 'combo',
-            store: configs,
-            queryMode: 'local',
-            anchor: '100%',
-            displayField: 'show',
-            valueField: 'value',
-            id: 'appLayers_' + this.name
+            id: this.name + 'LayerSelectorPanel',
+            xtype: "container",
+            width: '100%',
+            height: 25
         });
         itemList= formItemsBefore.concat(itemList);
         
@@ -179,7 +167,10 @@ Ext.define ("viewer.components.Influence",{
         var coords = comp[1];
         var x = coords.x;
         var y = coords.y;        
-        this.handleSearchResult({x: x,y: y});
+        this.handleSearchResult({
+            x: x,
+            y: y
+        });
     },
     /**
      * Handle the searchResult if there is clicked on one of the found results.
@@ -240,11 +231,7 @@ Ext.define ("viewer.components.Influence",{
      * Get the selected appLayer
      */
     getSelectedAppLayer: function(){
-        var appLayerId=Ext.getCmp('appLayers_' + this.name).getValue();
-        if (appLayerId==null){
-            return null;
-        }
-        return this.viewerController.app.appLayers[appLayerId];          
+        return this.layerSelector.getSelectedAppLayer();       
     },
     /**
      * Get the radius.
