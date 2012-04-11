@@ -38,7 +38,6 @@ Ext.define ("viewer.components.TOC",{
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.initConfig(config);
-        this.backgroundLayers = new Array();
         this.loadTree();
         this.loadInitLayers();
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
@@ -48,6 +47,7 @@ Ext.define ("viewer.components.TOC",{
     // Build the tree
     loadTree : function(){        
         // Get the current state of the map
+        this.backgroundLayers = new Array();
         this.selectedContent = this.viewerController.app.selectedContent;
         this.appLayers = this.viewerController.app.appLayers;
         this.levels = this.viewerController.app.levels;
@@ -510,7 +510,6 @@ Ext.define ("viewer.components.TOC",{
     // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
     selectedContentChanged : function (){
         this.panel.destroy();
-            
         this.loadTree();
         this.loadInitLayers();
     },
