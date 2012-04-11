@@ -562,7 +562,7 @@ Ext.define ("viewer.components.Edit",{
         Ext.getCmp(this.name + "FeaturesWindow").destroy();
     },
     selectFeature :function() {
-        var grid = Ext.getCmp('edit1Grid');
+        var grid = Ext.getCmp(this.name + 'GridFeaturesWindow');
         var selection = grid.getSelectionModel().getSelection()[0];
         var feature = selection.data;
         this.featuresReceived ([feature]);
