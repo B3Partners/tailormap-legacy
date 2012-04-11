@@ -167,7 +167,7 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     {
                         xtype: 'button',
-                        icon: this.iconPath+"shape_square_red.png",
+                        icon: this.iconPath+"shape_circle_red.png",
                         tooltip: "Teken een cirkel",
                         listeners: {
                             click:{
