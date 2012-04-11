@@ -494,16 +494,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             //onchange tool is called for a tool group but event is registerd on the MapComponent
             id=this.getId();
             object = this.getObject(id);
-        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){     
-            /**
-         * @field
-         * Occures when the map wants a maptip.
-         * @param map the map where this event occured
-         * @param options.x x in pixels on the screen
-         * @param options.y y in pixels on the screen
-         * @param options.coord.x the x coord in world coords
-         * @param options.coord.y the y coord in world coords
-         */
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){                 
         //component = {extent: component[1]};
             var me = this;
             var extent=component[1];
@@ -564,7 +555,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 layerId = layerId.substring(id.length+1);
             }
             var layer=object.getLayer(layerId);
-            component=layer;
+            component={layer: layer};
         }else if(event == viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED){
             var layerId=component[1];
             //remove id_ from the layer id

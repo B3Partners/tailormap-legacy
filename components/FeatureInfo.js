@@ -62,7 +62,8 @@ Ext.define ("viewer.components.FeatureInfo",{
      * Event handler for when a layer is added to the map
      * @see event ON_LAYER_ADDED
      */
-    onAddLayer: function(map,mapLayer){     
+    onAddLayer: function(map,options){
+        var mapLayer=options.layer;
         if (mapLayer==null)
             return;
         if(this.isSummaryLayer(mapLayer)){            
@@ -70,7 +71,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
             //do server side getFeature.
             if (layer.hasFeatureType){
-                this.activateServerRequest(true);
+                this.addLayerInServerRequest(appLayer);
             }else{
                 //listen to the onMaptipData
                 mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
@@ -78,24 +79,25 @@ Ext.define ("viewer.components.FeatureInfo",{
         }
     },
     /**
-     * Activate Server Request so that a serverRequest is done when needed.
+     * Enable doing server requests.
+     * @param appLayer the applayer
      */
-    activateServerRequest: function (sr){       
-        if (sr==this.serverRequestEnabled){
-            return;
-        }
-        this.serverRequestEnabled=sr;
-        if (this.serverRequestEnabled){
+    addLayerInServerRequest: function (appLayer){ 
+        //first time register for event and make featureinfo ajax request handler.
+        if (!this.serverRequestEnabled){
             this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
             this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
-        }else{
-            this.featureInfo=null;
+            this.serverRequestEnabled = true;
         }
-    }
+        if (this.serverRequestLayers ==null){
+            this.serverRequestLayers=new Array();
+        }
+        this.serverRequestLayers.push(appLayer);
+    },    
     /**
      * When a feature info starts.
      */
-    ,onFeatureInfoStart: function(){
+    onFeatureInfoStart: function(){
         this.balloon.setContent("");
         this.balloon.hide();
         var maptips= this.viewerController.getComponentsByClassName("viewer.components.Maptip");

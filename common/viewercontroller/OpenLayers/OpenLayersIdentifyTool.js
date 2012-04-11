@@ -5,6 +5,7 @@
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersIdentifyTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
+    olMap: null,
     constructor : function (conf,frameworkTool){
         if (conf.type!=viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO){
             Ext.Error.raise({msg: "OpenLayersIdentifyTool.constructor(): A OpenLayersIdentifyTool needs to be of type: Tool.GET_FEATURE_INFO"});
@@ -14,13 +15,25 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersIdentifyTool",{
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
 
-        //this.viewerController.getMap();
+        this.olMap=this.viewerController.mapComponent.getMap().getFrameworkMap();
         return this;
     },
     activate: function(){
-        alert("activate");
+        this.olMap.events.register("click", this, this.handleClick);
     },
     deactivate: function(){
-        alert("deactivate");
-    }
+        this.olMap.events.unregister("click", this, this.handleClick);
+    },
+    handleClick: function(event){
+        var opx = this.olMap.getLonLatFromPixel(event.xy)
+        var options = {
+            x: event.xy.x,
+            y: event.xy.y,
+            coord: {
+                x: opx.lon,
+                y: opx.lat
+            }
+        };
+        this.viewerController.mapComponent.getMap().fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
+    }  
 });

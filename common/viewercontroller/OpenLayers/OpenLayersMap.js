@@ -96,8 +96,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                 layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_START,this.layerBeginLoading);
             }*/
         }
-
         this.getFrameworkMap().addLayer(layer.getFrameworkLayer());
+        this.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,{
+            layer: layer
+        });
     },
     /**
         *remove the specific layer. See @link Map.removeLayer

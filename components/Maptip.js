@@ -64,7 +64,8 @@ Ext.define ("viewer.components.Maptip",{
      * Event handler for when a layer is added to the map
      * @see event ON_LAYER_ADDED
      */
-    onAddLayer: function(map,mapLayer){     
+    onAddLayer: function(map,options){     
+        var mapLayer = options.layer;
         if (mapLayer==null)
             return;
         if(this.isSummaryLayer(mapLayer)){            
@@ -83,7 +84,7 @@ Ext.define ("viewer.components.Maptip",{
     },
     /**
      * Enable doing server requests.
-     * @param sr true/false
+     * @param appLayer the applayer
      */
     addLayerInServerRequest: function (appLayer){ 
         //first time register for event and make featureinfo ajax request handler.
@@ -618,7 +619,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
 
-        this.webMapController.registerEvent(Event.ON_FINISHED_CHANGE_EXTENT,webMapController.getMap(), this.setPosition,this);
+        this.webMapController.getMap().registerEvent(Event.ON_FINISHED_CHANGE_EXTENT,this.setPosition,this);
     }
 
     /**
@@ -753,7 +754,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
     /*Remove the balloon*/
     this.remove = function(){
         this.balloon.remove();
-        this.webMapController.unRegisterEvent(Event.ON_FINISHED_CHANGE_EXTENT,webMapController.getMap(), this.setPosition,this);
+        this.webMapController.getMap().unRegisterEvent(Event.ON_FINISHED_CHANGE_EXTENT,webMapController.getMap(), this.setPosition,this);
         delete this.balloon;
     }
     /*Get the DOM element where the content can be placed.*/
