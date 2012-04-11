@@ -26,10 +26,10 @@ Ext.define("viewer.components.Slider",{
     slider: null,
     layers : null,
     config:{
-        selectedLayers: [],
-        name : "",
-        title: "",
-        initialTransparency: 75
+        selectedLayers: null,
+        name : null,
+        title: null,
+        initialTransparency: 0
     },
     constructor : function (conf){
         viewer.components.Slider.superclass.constructor.call(this, conf);
