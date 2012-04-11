@@ -80,7 +80,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setTagName("NavigationControl");
             this.setTop("50");
             this.setLeft("20");
-            this.setHeight("300");
+            if (this.getHeight()==null)
+                this.setHeight("300");
         }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){           
             this.setTagName("Maptip");
         }else if (config.type == viewer.viewercontroller.controller.Component.LOADMONITOR){           
