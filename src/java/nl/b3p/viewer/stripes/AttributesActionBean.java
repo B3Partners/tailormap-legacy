@@ -375,7 +375,7 @@ public class AttributesActionBean implements ActionBean {
     }
     
     private void setFilter(Query q) throws Exception {
-        if(filter != null) {
+        if(filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
             q.setFilter(f);

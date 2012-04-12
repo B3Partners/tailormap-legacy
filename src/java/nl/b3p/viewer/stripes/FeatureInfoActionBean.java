@@ -246,7 +246,7 @@ public class FeatureInfoActionBean implements ActionBean {
                             Double.parseDouble(y)));
                     Filter dwithin = ff.dwithin(ff.property(geomAttribute), ff.literal(point), Double.parseDouble(distance), "meters");
 
-                    Filter currentFilter = filter != null ? CQL.toFilter(filter) : null;
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
                     Filter f = currentFilter != null ? ff.and(dwithin, currentFilter) : dwithin;
                     
                     f = (Filter)f.accept(new RemoveDistanceUnit(), null);
