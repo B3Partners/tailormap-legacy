@@ -155,7 +155,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         appendPanel('headertext', 'formcontent', 'content');
         var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
             width: 475,
-            height: 400,
+            height: 350,
             value: Ext.get('details_opmerkingen').dom.value,
             renderTo: 'details_opmerkingen_container' /*,
             plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', {
