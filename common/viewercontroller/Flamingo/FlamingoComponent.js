@@ -36,7 +36,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         units: null,
         maptipdelay: 500,
         //for coordinates
-        decimals: null
+        decimals: null,
+        //for navigation panel
+        showZoomerButtons: null
     },       
     /** Create a new FlamingoTool
      *@construct
@@ -82,6 +84,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setLeft("20");
             if (this.getHeight()==null)
                 this.setHeight("300");
+            this.setShowZoomerButtons(false);
         }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){           
             this.setTagName("Maptip");
         }else if (config.type == viewer.viewercontroller.controller.Component.LOADMONITOR){           
@@ -144,6 +147,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             xml+=" units='"+this.getUnits()+"'";
         if (this.getDecimals()!=null)
             xml+=" decimals='"+this.getDecimals()+"'";
+        if (this.getShowZoomerButtons()!=null)
+            xml+=" showzoomerbuttons='"+this.getShowZoomerButtons()+"'";
         return xml;
     },
     /**
