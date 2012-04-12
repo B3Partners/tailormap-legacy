@@ -597,12 +597,14 @@ Ext.define ("viewer.components.Print",{
         var layers=this.viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
-            var request=layer.getMapRequest();
-            if (request){
-                request.protocol=layer.getType();
-                if (layer.getAlpha()!=null)
-                    request.alpha = layer.getAlpha();           
-                printLayers.push(request);
+            if (layer.visible){
+                var request=layer.getMapRequest();
+                if (request){
+                    request.protocol=layer.getType();
+                    if (layer.getAlpha()!=null)
+                        request.alpha = layer.getAlpha();           
+                    printLayers.push(request);
+                }
             }
         }
         values.requests=printLayers;        
