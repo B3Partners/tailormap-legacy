@@ -256,9 +256,17 @@ Ext.define ("viewer.components.TOC",{
                 layerName : appLayerObj.layerName
             }
         };
-        if(serviceLayer.details != undefined && serviceLayer.details ["metadata.stylesheet"] != undefined){
-            treeNodeLayer.qtip= "Metadata voor de kaartlaag";
-            treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
+        if(serviceLayer.details != undefined){
+            if(serviceLayer.details ["metadata.stylesheet"] != undefined){
+                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
+                treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
+            }
+            
+            if(serviceLayer.details ["download.url"] != undefined){
+                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
+                treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
+            }
+            
         }
         var retChecked = false;
         if(this.layersChecked){
@@ -458,7 +466,7 @@ Ext.define ("viewer.components.TOC",{
         }
         var layerName = node.text;
         if(node.leaf){
-            if(node.layerObj.metadata!= undefined){
+            if(node.layerObj.metadata!= undefined || node.layerObj.download!= undefined ){
                 var config = {
                     details:{
                         width : 700,
@@ -470,13 +478,24 @@ Ext.define ("viewer.components.TOC",{
                 if(this.popup != null){
                     this.popup.hide();
                 }
+                
+                var html = "";
+                if(node.layerObj.metadata != undefined){
+                    html += "<a target='_BLANK' href='" +node.layerObj.metadata + "'>Metadata</a>";
+                }
+                if(node.layerObj.download != undefined){
+                    if(html != ""){
+                        html += "<br/>";
+                    }
+                    html += "<a target='_BLANK' href='" +node.layerObj.download+ "'>Downloadlink</a>";
+                }
                 this.popup = Ext.create("viewer.components.ScreenPopup",config);
                 var panelConfig={
                     renderTo : this.popup.getContentId(),
                     frame: false,
-                    html: node.layerObj.metadata
+                    html: html
                 }
-                var panel = Ext.create ("Ext.panel.Panel",panelConfig);
+                Ext.create ("Ext.panel.Panel",panelConfig);
                 this.popup.show();
             }
         }else if(!node.leaf){
