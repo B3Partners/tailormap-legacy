@@ -521,8 +521,10 @@ Ext.define ("viewer.components.TOC",{
             // Check for not existing/visible layers (ie. layers in (background) levels 
             if(record != null){
                 if(this.isInScale(scale, layer.minScale, layer.maxScale)){
+                    record.classList.remove("toc-outofscale");
                     record.classList.add("toc-inscale");
                 }else{
+                    record.classList.remove("toc-inscale");
                     record.classList.add( "toc-outofscale");
                 }
             }
