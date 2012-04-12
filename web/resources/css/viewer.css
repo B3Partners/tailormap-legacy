@@ -92,3 +92,11 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .tristatenode .x-tree-checkbox {
     background-position: 0 -39px;
 }
+
+.toc-outofscale {
+    color : gray;
+}
+
+.toc-inscale {
+    color: black;
+}
