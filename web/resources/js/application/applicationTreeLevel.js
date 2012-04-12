@@ -135,6 +135,19 @@ Ext.onReady(function() {
         });
     }
     
+    var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
+        width: 475,
+        height: 400,
+        value: Ext.get('context_textarea').dom.value,
+        renderTo: 'context-tab' /*,
+        plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', {
+                dragResize: false,
+                dragWheel: false,
+                submitUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php',
+                managerUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php'
+        })] */
+    });
+    
     Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-display');   
     Ext.createWidget('tabpanel', {
         renderTo: 'tabs',
@@ -150,5 +163,6 @@ Ext.onReady(function() {
     Ext.get('levelform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('selecteddocsinput').set({value:docsSelectie.getSelection()});
+        Ext.get('context_textarea').dom.value = htmlEditor.getValue();
     });
 });

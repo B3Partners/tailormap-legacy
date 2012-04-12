@@ -50,7 +50,7 @@ function appendPanel(header, content, container) {
 // Default grid config
 var defaultGridConfig = {
     autoWidth: true,
-    autoHeight: true,
+    height: '100%',
     disableSelection: false,
     loadMask: true,
     viewConfig: {

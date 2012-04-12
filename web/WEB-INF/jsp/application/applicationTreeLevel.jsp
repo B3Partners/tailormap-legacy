@@ -74,7 +74,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                         <div id="context-tab" class="tabdiv">
                             <h1>Context:</h1>
-                            <stripes:textarea cols="150" rows="5" name="level.info"/><br>
+                            <stripes:textarea cols="150" rows="5" name="level.info" id="context_textarea" style="display: none;" /><br>
                         </div>
                     </div>
             </c:if>

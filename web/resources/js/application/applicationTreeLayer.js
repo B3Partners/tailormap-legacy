@@ -34,6 +34,8 @@ Ext.onReady(function() {
         collapsible: true,
         titleCollapse: true,
         hideCollapseTool: true,
+        bodyPadding: '8px 10px',
+        collapsedCls: 'headerCollapsed',
         fieldDefaults: {
             labelWidth: 150,
             size: 40
@@ -69,7 +71,7 @@ Ext.onReady(function() {
                 
                 var possibleValuesFormItems = [
                                 { fieldLabel: 'Mogelijke waarden', 
-                                    name: 'editvalues', id: 'editvalues' + attribute.id, value: possibleValues, xtype: 'textfield', size: 100 },
+                                    name: 'editvalues', id: 'editvalues' + attribute.id, value: possibleValues, xtype: 'textfield', flex: 1 },
                                 { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {
                                     click: function() {
                                         getDBValues(attribute.id);
@@ -102,7 +104,7 @@ Ext.onReady(function() {
                             valueField: 'type',                            
                             value: type, 
                             size: 40 
-                            },
+                            }
                         ];
                     }
                 }
@@ -110,6 +112,7 @@ Ext.onReady(function() {
                 editPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                     id: 'edit' + attribute.id,
                     title: name + (attribute.editable ? ' (&times;)' : ''),
+                    iconCls: "edit-icon-bw",
                     collapsed: collapsed,
                     items: [
                         { fieldLabel: 'Bewerkbaar', name: 'editable', inputValue: 1, checked: attribute.editable, xtype: 'checkbox', listeners: {
@@ -132,6 +135,7 @@ Ext.onReady(function() {
             filterPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                 id: 'filter' + attribute.id,
                 title: name + (isEnabled ? ' (&times;)' : ''),
+                iconCls: "edit-icon-bw",
                 collapsed: collapsed,
                 items: [
                     { fieldLabel: 'Filterbaar / Selecteerbaar', name: 'filterable_selectable', inputValue: 1, checked: isEnabled, xtype: 'checkbox',  labelWidth: 150, listeners: {
@@ -174,7 +178,7 @@ Ext.onReady(function() {
             width: '100%',
             title: 'Edit',
             padding: 10,
-            height: 550,
+            height: 475,
             layout: 'auto',
             autoScroll: true,
             items: editPanelItems
@@ -191,7 +195,7 @@ Ext.onReady(function() {
             width: '100%',
             title: 'Filter / Selectie',
             padding: 10,
-            height: 550,
+            height: 475,
             layout: 'auto',
             autoScroll: true,
             items: filterPanelItems

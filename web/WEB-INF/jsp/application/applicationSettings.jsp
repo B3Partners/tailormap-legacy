@@ -33,13 +33,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:messages/>
                 <h1 id="headertext">Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
                 </p>
-                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean">
+                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm">
                     <stripes:hidden name="application" value="${actionBean.application}"/>
-                <table class="formtable">
+                <table class="formtable" style="float: left; width: 45%;">
                     <tr>
                         <td>Naam:</td>
                         <td><stripes:text name="name" maxlength="255" size="30"/></td>
-                        <td rowspan="13" valign="top">Opmerkingen<br><stripes:textarea cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px;" /></td>
                     </tr>
                     <tr>
                         <td>Versie:</td>
@@ -82,6 +81,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>
                             lo-x <stripes:text name="startExtent.minx" maxlength="255" size="8"/>
                             lo-y <stripes:text name="startExtent.miny" maxlength="255" size="8"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>
                             rb-x <stripes:text name="startExtent.maxx" maxlength="255" size="8"/>
                             rb-y <stripes:text name="startExtent.maxy" maxlength="255" size="8"/>
                         </td>
@@ -91,6 +95,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>
                             lo-x <stripes:text name="maxExtent.minx" maxlength="255" size="8"/>
                             lo-y <stripes:text name="maxExtent.miny" maxlength="255" size="8"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>
                             rb-x <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
                             rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
                         </td>
@@ -101,6 +110,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </td>
                     </tr>
                 </table>
+                  
+                <div style="float: right; width: 50%;">
+                    Opmerkingen
+                    <div id="details_opmerkingen_container" style="margin-top: 5px;">
+                        <stripes:textarea id="details_opmerkingen" cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px; display: none;" />
+                    </div>
+                </div>
+                    <div style="clear: both;"></div>
                     
                     <div class="submitbuttons">
                         <stripes:submit name="save" value="Opslaan"/>
@@ -136,6 +153,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     }
     Ext.onReady(function() {
         appendPanel('headertext', 'formcontent', 'content');
+        var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
+            width: 475,
+            height: 400,
+            value: Ext.get('details_opmerkingen').dom.value,
+            renderTo: 'details_opmerkingen_container' /*,
+            plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', {
+                    dragResize: false,
+                    dragWheel: false,
+                    submitUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php',
+                    managerUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php'
+            })] */
+        });
+        Ext.get('settingsForm').on('submit', function() {
+            Ext.get('details_opmerkingen').dom.value = htmlEditor.getValue();
+        });
     });
 </script>
     </stripes:layout-component>

@@ -30,6 +30,10 @@ Ext.onReady(function() {
             if(menuItem) {
                 menuItem.addCls('active');
                 menuItem.findParent('.menu-level1', 10, true).addCls('menuclicked');
+                var parent = menuItem.parent().parent();
+                if(parent && parent.hasCls('dropdownmenu')) {
+                    Ext.fly('dropdownmenulink').addCls('active');
+                }
             }
         }
     }
