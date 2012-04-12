@@ -74,12 +74,13 @@ input[type="radio"], input[type="checkbox"] {
     margin-bottom: 5px;
 }
 
-input[type="button"], input[type="submit"] {
+input[type="submit"], .extlikebutton {
     background-color: #f8f8f8;
+    background-image: url("/@{baseurl}/extjs/resources/themes/images/gray/btn/btn-default-small-bg.gif");
+    background-repeat: repeat-x;
 	background-image: linear-gradient(top, #ffffff,#eeeeee);
 	background-image: -moz-linear-gradient(top, #ffffff,#eeeeee);
 	background-image: -ms-linear-gradient(top, #ffffff,#eeeeee);
-	background-image: none;
 	background-image: -o-linear-gradient(top, #ffffff,#eeeeee);
 	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eeeeee));
 	background-image: -webkit-linear-gradient(top, #ffffff,#eeeeee);
@@ -99,7 +100,7 @@ input[type="button"], input[type="submit"] {
     height: auto;
 }
 
-input[type="button"]:hover, input[type="submit"]:hover {
+input[type="submit"]:hover, .extlikebutton:hover {
     background-color: #f3f3f3;
 	background-image: linear-gradient(top, #fbfbfb,#e9e9e9);
 	background-image: -moz-linear-gradient(top, #fbfbfb,#e9e9e9);
@@ -277,6 +278,7 @@ input[type="button"]:hover, input[type="submit"]:hover {
     &.user {
         .gridcontainer
     }
+    min-height: 315px;
 }
 
 #layoutManagerTitle {
@@ -313,6 +315,24 @@ input[type="button"]:hover, input[type="submit"]:hover {
             }
         }
     }
+}
+
+.savebutton-icon {
+    background-image: url("/@{baseurl}/resources/images/save.png");
+}
+.removebutton-icon {
+    background-image: url("/@{baseurl}/resources/images/delete.png");
+}
+.addbutton-icon {
+    background-image: url("/@{baseurl}/resources/images/add.png");
+}
+.edit-icon {
+    background-image: url("/@{baseurl}/resources/images/wrench.png");
+}
+.edit-icon-bw {
+    margin-bottom: 0px;
+    margin-top: -3px;
+    background-image: url("/@{baseurl}/resources/images/wrench_bw.png");
 }
 
 #layout-container {
@@ -370,7 +390,7 @@ input[type="button"]:hover, input[type="submit"]:hover {
             }
             &:hover {
                 .wrangler, .remove {
-                    background-image: url("/@{baseurl}/resources/images/wrench.png");
+                    .edit-icon;
                     cursor: pointer;
                     width: 16px;
                     height: 16px;
@@ -447,16 +467,6 @@ input[type="button"]:hover, input[type="submit"]:hover {
         margin-top: 5px;
     }
 }
-.savebutton-icon {
-    background-image: url("/@{baseurl}/resources/images/save.png");
-}
-.removebutton-icon {
-    background-image: url("/@{baseurl}/resources/images/delete.png");
-}
-.addbutton-icon {
-    background-image: url("/@{baseurl}/resources/images/add.png");
-}
-
 
 /* Slider config */
 .main-slider-container {

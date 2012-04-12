@@ -30,7 +30,7 @@ function appendPanel(header, content, container) {
     var headerobj = document.getElementById(header);
     var contentobj = document.getElementById(content);
     if(headerobj && contentobj) {
-        var headercontent = headerobj.textContent;
+        var headercontent = headerobj.innerText || headerobj.textContent;
         headerobj.style.display = 'none';
         contentobj.className += ' insidePanel';
         

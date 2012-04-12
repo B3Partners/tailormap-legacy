@@ -69,7 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                     </div>
                     <div id="settings-tab" class="x-hide-display">
-                        <table>
+                        <table class="formtable">
                             <tr>
                                 <td>Transparantie beginwaarde:</td>
                                 <td><stripes:text name="details['transparency']" maxlength="255" size="30"/></td>
@@ -118,6 +118,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     var attributes = ${actionBean.attributesJSON};
                     var getDBValuesUrl = '';
                     var editable = ${actionBean.editable};
+                    var imagesPath = "${contextPath}/resources/images/";
                 </script>
                 <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
             </c:if>
