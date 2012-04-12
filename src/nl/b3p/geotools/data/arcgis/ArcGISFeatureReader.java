@@ -253,18 +253,6 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         return DataUtilities.collection(features);
     }
         
-    public static Geometry arcJSONtoJTSGeometry(JSONObject j, Class binding, GeometryFactory gf) {
-        if(binding.equals(Point.class)) {
-            Object jx = j.get("x");
-            Object jy = j.get("y");
-            double x = jx instanceof Long ? ((Long)jx).doubleValue() : (Double)jx;
-            double y = jy instanceof Long ? ((Long)jy).doubleValue() : (Double)jy;
-            return gf.createPoint(new Coordinate(x,y));
-        } else {
-            return null;
-        }
-    }
-
     protected SimpleFeature buildFeature(JSONObject jf) throws IOException {
         String id = null;
         
@@ -296,7 +284,7 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         JSONObject jg = (JSONObject)jf.get("geometry");
         if(jg != null) {
             AttributeDescriptor ad = featureType.getGeometryDescriptor();
-            Geometry g = arcJSONtoJTSGeometry(jg, ad.getType().getBinding(), geometryFactory);
+            Geometry g = ArcGISUtils.convertToJTSGeometry(jg, ad.getType().getBinding(), geometryFactory);
             builder.set(ad.getName(), g);
         }
         

@@ -17,8 +17,10 @@
 package nl.b3p.geotools.data.arcgis;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import nl.b3p.geotools.data.arcims.FilterToArcXMLSQL;
@@ -31,10 +33,7 @@ import org.opengis.filter.PropertyIsLike;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
-import org.opengis.filter.spatial.BBOX;
-import org.opengis.filter.spatial.BinarySpatialOperator;
-import org.opengis.filter.spatial.DWithin;
-import org.opengis.filter.spatial.Intersects;
+import org.opengis.filter.spatial.*;
 
 /**
  * Convert a Filter to a where statement and separate spatial operator. See 
@@ -46,6 +45,23 @@ public class FilterToArcGISSQL extends FilterToSQL {
     protected Map spatialParams = new HashMap();
     
     boolean spatialOperatorAllowed = true;
+    
+    private static final Map<Class, String> spatialOperators;
+    
+    static {
+        Map<Class,String> sops = new HashMap<Class, String>();        
+        sops.put(Intersects.class, "esriSpatialRelIntersects");
+        sops.put(Contains.class, "esriSpatialRelContains");
+        sops.put(BBOX.class, "esriSpatialRelEnvelopeIntersects");
+        sops.put(Overlaps.class, "esriSpatialRelOverlaps");
+        sops.put(Touches.class, "esriSpatialRelTouches");
+        sops.put(Within.class, "esriSpatialRelWithin");
+        
+        // Not natively supported by ArcGIS, use intersect with buffered geometry
+        sops.put(DWithin.class, "esriSpatialRelIntersects");
+        
+        spatialOperators = Collections.unmodifiableMap(sops);
+    }
     
     public FilterToArcGISSQL() {
         this(null);
@@ -70,13 +86,12 @@ public class FilterToArcGISSQL extends FilterToSQL {
         caps.addType(PropertyIsBetween.class);
         caps.addType(PropertyIsLike.class);
         
+        // XXX does this work?
         caps.addType(Id.class);
         
-        caps.addType(BBOX.class);
-        caps.addType(Intersects.class);
-        
-        // TODO: support by buffering geometry...
-        caps.addType(DWithin.class);
+        for(Class clazz: spatialOperators.keySet()) {
+            caps.addType(clazz);
+        }
         
         caps.addType(FilterCapabilities.SIMPLE_ARITHMETIC);
 
@@ -123,24 +138,27 @@ public class FilterToArcGISSQL extends FilterToSQL {
         }
         
         Geometry geom = (Geometry)geometry.getValue();
-        
-        
-        // TODO set spatial params
-        /*if(filter instanceof BBOX) {
-            axlFilter.setGeometryOrEnvelope(ArcXMLUtils.convertToAxlEnvelope((Polygon)geom));
-            axlFilter.setRelation(AxlSpatialFilter.RELATION_ENVELOPE_INTERSECTION);
-        } else if(filter instanceof Intersects) {
-            
-            axlFilter.setGeometryOrEnvelope(ArcXMLUtils.convertToAxlGeometry(geom));
-            axlFilter.setRelation(AxlSpatialFilter.RELATION_AREA_INTERSECTION);
 
-        } else if(filter instanceof DWithin) {
+        for(Map.Entry<Class,String> spatialOp: spatialOperators.entrySet()) {
+            if(spatialOp.getKey().isAssignableFrom(filter.getClass())) {
+                spatialParams.put("spatialRel", spatialOp.getValue());
+                break;
+            }
+        }
+
+        spatialParams.put("geometryType", ArcGISUtils.getGeometryType(geom));
+        
+        if(filter instanceof BBOX) {
+            spatialParams.put("geometry", ArcGISUtils.convertToArcJSONEnvelope((Polygon)geom).toJSONString());
+        } else if (filter instanceof DWithin) {
+            Geometry buffered = geom.buffer(((DWithin)filter).getDistance());
+            spatialParams.put("geometryType", ArcGISUtils.getGeometryType(buffered));
+            spatialParams.put("geometry", ArcGISUtils.convertToArcJSONGeometry(buffered).toJSONString());
+        } else {
+            spatialParams.put("geometry", ArcGISUtils.convertToArcJSONGeometry(geom).toJSONString());
+        }
+        
             
-            axlFilter.setGeometryOrEnvelope(ArcXMLUtils.convertToAxlGeometry(geom));
-            axlFilter.setRelation(AxlSpatialFilter.RELATION_AREA_INTERSECTION);
-            
-            axlFilter.setBuffer(new AxlBuffer(((DWithin)filter).getDistance()));
-        }*/
         try {
             out.write("1=1");
         } catch (IOException ex) {

@@ -124,13 +124,13 @@ public class ArcGISFeatureSource extends ContentFeatureSource {
         for(Object o: fields) {
             JSONObject f = (JSONObject)o;
 
-            Class binding = getBinding((String)f.get("type"));
+            Class binding = ArcGISUtils.getBinding((String)f.get("type"));
 
             // Sometimes there is a field of type esriFieldTypeGeometry            
             if(binding.equals(Geometry.class)) {
                 
                 // check layer geometry type
-                binding = getGeometryBinding((String)layer.get("geometryType"));
+                binding = ArcGISUtils.getGeometryBinding((String)layer.get("geometryType"));
                 b.add((String)f.get("name"), binding, getArcGISDataStore().getCRS());
             } else {
                 b.add((String)f.get("name"), binding);
@@ -140,52 +140,10 @@ public class ArcGISFeatureSource extends ContentFeatureSource {
         // If there wasn't a field with type esriFieldTypeGeometry, create a
         // default geometry according to the geometryType property of the layer
         if(b.getDefaultGeometry() == null) {
-            Class binding = getGeometryBinding((String)layer.get("geometryType"));
+            Class binding = ArcGISUtils.getGeometryBinding((String)layer.get("geometryType"));
             b.add(DEFAULT_GEOMETRY_ATTRIBUTE_NAME, binding, getArcGISDataStore().getCRS());
         }
         return b.buildFeatureType();
     }
-
-    private Class getGeometryBinding(String esriGeometryType) {
-        // These are the only geometry types which have a JSON syntax described 
-        // in the API docs.
-        if("esriGeometryPolyline".equals(esriGeometryType)) {
-            return MultiLineString.class;
-        } else if("esriGeometryMultipoint".equals(esriGeometryType)) {
-            return MultiPoint.class;
-        } else if("esriGeometryPoint".equals(esriGeometryType)) {
-            return Point.class;
-        } else if("esriGeometryPolygon".equals(esriGeometryType)) {
-            return Polygon.class;
-        } else {
-            throw new IllegalArgumentException("geometryType not supported: " + esriGeometryType);
-        }        
-    }
     
-    private Class getBinding(String esriType) {
-        
-        if(esriType.equals("esriFieldTypeGeometry")) {
-            return Geometry.class;
-        } else if(esriType.equals("esriFieldTypeDate")) {
-            return Date.class;
-        } else if(esriType.equals("esriFieldTypeDouble")) {
-            return Double.class;
-        } else if(esriType.equals("esriFieldTypeGUID")) {
-            return String.class;
-        } else if(esriType.equals("esriFieldTypeGlobalID")) {
-            return String.class;
-        } else if(esriType.equals("esriFieldTypeInteger")) {
-            return Integer.class;
-        } else if(esriType.equals("esriFieldTypeOID")) {
-            return Integer.class;
-        } else if(esriType.equals("esriFieldTypeSingle")) {
-            return Float.class;
-        } else if(esriType.equals("esriFieldTypeSmallInteger")) {
-            return Integer.class;
-        } else if(esriType.equals("esriFieldTypeString")) {
-            return String.class;
-        } else {
-            return String.class;
-        }
-    }
 }
