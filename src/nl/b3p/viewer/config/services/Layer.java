@@ -33,6 +33,12 @@ public class Layer {
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
     public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
     
+    private static Set interestingDetails = new HashSet<String>(Arrays.asList(new String[] { 
+        EXTRA_KEY_METADATA_URL, 
+        EXTRA_KEY_METADATA_STYLESHEET_URL,
+        EXTRA_KEY_DOWNLOAD_URL
+    }));        
+            
     @Id
     private Long id;
 
@@ -173,18 +179,18 @@ public class Layer {
         
         o.put("hasFeatureType", featureType != null);
         
-        /* Currently uninteresting to have in JSON tree. Enable with n+1 prevention
-         * code in GeoService when required for all layers immediately, or use
-         * AJAX request when only needed for a layer at a time.
-         
+        /* Only include "interesting" details in JSON */
+        
         if(!details.isEmpty()) {
             JSONObject d = new JSONObject();
             o.put("details", d);
             for(Map.Entry<String,String> e: details.entrySet()) {
-                d.put(e.getKey(), e.getValue());
+                if(interestingDetails.contains(e.getKey())) {
+                    d.put(e.getKey(), e.getValue());
+                }
             }        
         }
-        */
+        
         
         return o;
     }

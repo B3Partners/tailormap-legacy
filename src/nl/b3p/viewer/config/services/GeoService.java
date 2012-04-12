@@ -153,11 +153,11 @@ public abstract class GeoService {
      * The cache is not updated on changes, so will only represent the database
      * state when loadLayerTree() was last called.
      */
-    public void loadLayerTree() {
+    public List<Layer> loadLayerTree() {
         if(!Stripersist.getEntityManager().contains(this)) {
             // Not a persistent entity (for example when loading user specified 
             // service)
-            return;
+            return Collections.EMPTY_LIST;
         }
         
         // XXX Oracle specific
@@ -179,6 +179,7 @@ public abstract class GeoService {
                 parentChildren.add(l);
             }
         }      
+        return layerEntities;
     }
     
     public List<Layer> getLayerChildrenCache(Layer l) {
@@ -212,18 +213,16 @@ public abstract class GeoService {
             
             if(Stripersist.getEntityManager().contains(this)) {
                    
-                loadLayerTree();          
+                List<Layer> layerEntities = loadLayerTree();          
 
-                // Prevent n+1 queries
-                /* Currently disabled as Layer.details is not included in JSON at
-                * the moment. Reenable this when it is required
-                *
-                Stripersist.getEntityManager().createQuery("from Layer l "
-                        + "left join fetch l.details "
-                        + "where l in (:layers)")
-                        .setParameter("layers", layerEntities)
-                        .getResultList();
-                */
+                if(!layerEntities.isEmpty()) {
+                    // Prevent n+1 queries
+                    Stripersist.getEntityManager().createQuery("from Layer l "
+                            + "left join fetch l.details "
+                            + "where l in (:layers)")
+                            .setParameter("layers", layerEntities)
+                            .getResultList();
+                }
             }
 
             JSONObject layers = new JSONObject();
