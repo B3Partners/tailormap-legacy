@@ -42,6 +42,7 @@ Ext.define ("viewer.components.TOC",{
         this.loadInitLayers();
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
+        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
         return this;
     },
     // Build the tree
@@ -500,21 +501,56 @@ Ext.define ("viewer.components.TOC",{
     setNodeChecked : function (item,visible){
         var a = 0;
     },
-    /*/
-         * Set node Checked
-         * <input class="x-tree-checkbox" type="button" role="checkbox">
->>> Ext.get(item).select ('input').elements[0]
-<input class="x-tree-checkbox x-tree-checkbox-checked" type="button" aria-checked="true" role="checkbox">
-        
-         */
     // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
     selectedContentChanged : function (){
         this.panel.destroy();
         this.loadTree();
         this.loadInitLayers();
     },
-    
+    extentChanged : function (map,obj){
+        
+        var scale = map.getScale(obj[1]);
+        
+        this.checkScaleLayer(this.panel.getRootNode(),scale);
+    },
+    checkScaleLayer : function (child,scale){
+        if(child.isLeaf()){
+            var layerObj = child.raw.layerObj;
+            var layer = this.viewerController.app.services[layerObj.service].layers[layerObj.layerName];
+            var record = this.panel.getView().getNodeByRecord(child);
+            // Check for not existing/visible layers (ie. layers in (background) levels 
+            if(record != null){
+                if(this.isInScale(scale, layer.minScale, layer.maxScale)){
+                    record.classList.add("toc-inscale");
+                }else{
+                    record.classList.add( "toc-outofscale");
+                }
+            }
+        }else{
+            for ( var i = 0 ; i < child.childNodes.length ; i++){
+                var childNode = child.childNodes[i];
+                this.checkScaleLayer (childNode, scale);
+            }
+        }
+        
+    },
     getExtComponents: function() {
         return [ this.panel.getId() ];
+    },
+    isInScale : function ( scale, min, max ){
+        var inScale = true;
+        if(min){
+            if(scale < min){
+                inScale  = false;
+            }
+        }
+        
+        if(max){
+            if( scale > max){
+                inScale = false;
+            }
+        }
+        
+        return inScale;
     }
 });

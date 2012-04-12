@@ -235,14 +235,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *see @link Map.getScale
      *@deprecated use: getResolution because it returns the resolution and not the scale
      */
-    getScale : function (){
-        return this.getResolution();
+    getScale : function (extent){
+        return this.getResolution(extent);
     },
     /**
      *see @link Map.getResolution
      */
-    getResolution : function (){
-        return this.getFrameworkMap().callMethod(this.getId(), "getScale");
+    getResolution : function (extent){
+        return this.getFrameworkMap().callMethod(this.getId(), "getScale",extent);
     },
 
     /**
