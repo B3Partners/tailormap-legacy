@@ -40,6 +40,7 @@ Ext.define ("viewer.components.TOC",{
         this.initConfig(config);
         this.loadTree();
         this.loadInitLayers();
+        
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
@@ -111,6 +112,10 @@ Ext.define ("viewer.components.TOC",{
         // Create background
         this.createBackgroundLevel(nodes);
         this.insertLayer(nodes);
+        
+        var map = this.viewerController.mapComponent.getMap();
+        var scale = map.getScale(map.getExtent());
+        this.checkScaleLayer(this.panel.getRootNode(),scale);
     },
     // Add a level to the tree, and load all it's levels and applayers
     addLevel : function (levelId){
