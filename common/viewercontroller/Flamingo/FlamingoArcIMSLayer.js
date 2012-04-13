@@ -26,6 +26,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         viewer.viewercontroller.flamingo.FlamingoArcIMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         this.type=viewer.viewercontroller.controller.Layer.ARCIMS_TYPE;
+        this.options["layerOrder"]=true;
         return this;
     },
     
