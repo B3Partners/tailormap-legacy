@@ -22,6 +22,20 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+        this.form.add([{
+            xtype: 'textfield',
+            fieldLabel: 'Toppositie',
+            name: 'top',
+            value: (config != null && config.top != undefined) ? config.top : '',
+            labelWidth:this.top
+        },
+        {
+            xtype: 'textfield',
+            fieldLabel: 'Linkerpositie',
+            name: 'left',
+            value: (config != null && config.left != undefined) ? config.left : '',
+            labelWidth:this.left
+        }]);
         return this;
     }
 });

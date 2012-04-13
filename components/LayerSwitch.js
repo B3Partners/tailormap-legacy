@@ -29,6 +29,8 @@ Ext.define ("viewer.components.LayerSwitch",{
     appLayers:null,
     button:null,
     config: {
+        top:null,
+        left:null
     },
     constructor: function (conf){        
         viewer.components.LayerSwitch.superclass.constructor.call(this, conf);
@@ -45,7 +47,7 @@ Ext.define ("viewer.components.LayerSwitch",{
             showText: true,
             renderTo:  pid,
             width: "100%",
-                top: '300px',
+            top:  '30px',
             style: {
                 marginBottom: '10px'
             },
@@ -61,7 +63,7 @@ Ext.define ("viewer.components.LayerSwitch",{
                 }
             }
         });
-        this.button.setPosition(600, 30);
+        this.button.setPosition(this.left,this.top);
     },
     loadLayers : function(){
         this.layers = new Array();
