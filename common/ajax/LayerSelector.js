@@ -61,20 +61,26 @@ Ext.define ("viewer.components.LayerSelector",{
         if(this.layers != null){
             requestParams["layers"]= this.layers;
             requestParams["hasConfiguredLayers"]= true;
-        }
-        
-        var me = this;
-        Ext.Ajax.request({ 
-            url: requestPath, 
-            params: requestParams, 
-            success: function ( result, request ) {
-                me.layerList = Ext.JSON.decode(result.responseText);
-                me.initLayers();
-            },
-            failure: function(a,b,c) {
-                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+            this.layerList = new Array();
+            for ( var i = 0 ; i < this.layers.length ;i++){
+                var l = this.viewerController.getServiceLayerById(this.layers[i]);
+                this.layerList.push(l);
+                this.initLayers();
             }
-        });
+        }else{
+            var me = this;
+            Ext.Ajax.request({ 
+                url: requestPath, 
+                params: requestParams, 
+                success: function ( result, request ) {
+                    me.layerList = Ext.JSON.decode(result.responseText);
+                    me.initLayers();
+                },
+                failure: function(a,b,c) {
+                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+                }
+            });
+        }
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
         return this;
     },
@@ -91,7 +97,6 @@ Ext.define ("viewer.components.LayerSelector",{
                     var index = visibleLayers[j].indexOf("_");
                     var service = visibleLayers[j].substring(0,index);
                     var layername = visibleLayers[j].substring(index+1);
-
                     if (service == l.serviceId && layername == l.name){
                         l.title = l.titleAlias || l.title ;
                         l.layer = l;
