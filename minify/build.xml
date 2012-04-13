@@ -32,6 +32,7 @@
 			<file name="CombineImage.js"/>
 			<file name="FeatureInfo.js"/>
 			<file name="EditFeature.js"/>
+			<file name="ArcQueryUtil.js"/>            
           </sources>          
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
