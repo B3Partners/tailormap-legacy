@@ -453,6 +453,10 @@ Ext.define ("viewer.components.TOC",{
         this.checkClicked= true;
         this.setTriState(nodeObj);
         this.updateMap(nodeObj, checked);
+        
+        var scale = this.viewerController.mapComponent.getMap().getScale();
+        
+        this.checkScaleLayer(nodeObj,scale);
     },
     // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
