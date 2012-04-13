@@ -64,9 +64,11 @@ Ext.define ("viewer.components.LayerSelector",{
             this.layerList = new Array();
             for ( var i = 0 ; i < this.layers.length ;i++){
                 var l = this.viewerController.getServiceLayerById(this.layers[i]);
-                this.layerList.push(l);
-                this.initLayers();
+                if(l != null){
+                    this.layerList.push(l);
+                }
             }
+            this.initLayers();
         }else{
             var me = this;
             Ext.Ajax.request({ 
