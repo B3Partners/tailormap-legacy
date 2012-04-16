@@ -74,6 +74,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </td>
                     </tr>
                     <tr>
+                        <td>Kaartbeeld kan gefilterd worden (OGC):</td>
+                        <td>
+                            <stripes:checkbox name="details['filterable']"  />
+                        </td>
+                    </tr>
+                    <tr>
                         <td valign="top">
                             <h1>Groepen:</h1>
                             L &nbsp; B <br>
