@@ -461,7 +461,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (layer.queryable){
                 ogcOptions.query_layers= layer.name;
             }
-            layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options);
+            layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
                 
             this.layers[id] = layerObj;
         }else if(service.protocol == "arcims" || service.protocol == "arcgis"){
@@ -481,10 +481,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
-                layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.serviceName, options);
+                layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.serviceName, options,this);
             }else{                
                 options.type= "ArcGIS";
-                layerObj = this.mapComponent.createArcServerLayer(layerName,server,servlet,null, options);
+                layerObj = this.mapComponent.createArcServerLayer(layerName,server,servlet,null, options,this);
             }
             this.layers[id] = layerObj;
         }

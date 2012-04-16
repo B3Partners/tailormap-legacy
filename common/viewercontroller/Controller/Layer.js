@@ -27,7 +27,8 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     config :{
         id: "id",
         frameworkLayer: null,
-        options: null
+        options: null,
+        viewerController: null
     },
     constructor: function (config){
         this.initConfig(config);

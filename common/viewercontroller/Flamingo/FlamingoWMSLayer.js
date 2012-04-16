@@ -92,12 +92,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
     },
     setQuery : function (filter){
-        var me = this;
-        var f = function(sld) { 
-            me.options["SLD_BODY"] = encodeURIComponent(sld);
-            me.reload();
-        };
-        var sld = Ext.create("viewer.SLD",{});
-        sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,f);
+        var service = this.viewerController.app.services[this.serviceId];
+        var layer = service.layers[this.options.name];
+        if(layer.details != undefined){
+            var filterable =layer.details["filterable"];
+            if(filterable != undefined && filterable != null ){
+                filterable = Ext.JSON.decode(filterable);
+                if(filterable){
+                    var me = this;
+                    var f = function(sld) { 
+                        me.options["SLD_BODY"] = encodeURIComponent(sld);
+                        me.reload();
+                    };
+                    var sld = Ext.create("viewer.SLD",{});
+                    sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,f);
+                }
+            }
+        }
     }
 });

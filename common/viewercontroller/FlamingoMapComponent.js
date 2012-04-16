@@ -70,7 +70,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      *See @link MapComponent.createWMSLayer
      */
-    createWMSLayer : function(name, url,ogcParams,options){
+    createWMSLayer : function(name, url,ogcParams,options,viewerController){
         var object=new Object();
         object["name"]=name;
         object["url"]=url;
@@ -91,7 +91,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var config = {
             id: ide,
             options: object,
-            frameworkLayer : this.viewerObject
+            frameworkLayer : this.viewerObject,
+            viewerController: viewerController
         };
         return new viewer.viewercontroller.flamingo.FlamingoWMSLayer(config);
     },
