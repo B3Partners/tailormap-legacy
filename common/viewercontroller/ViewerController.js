@@ -579,8 +579,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 operator : ""
             });
         }
-            
         layer.filter.addOrReplace(filter);
+        
+        var mapLayer = this.getLayer(layer.serviceId,layer.layerName);
+        mapLayer.setQuery(filter);
         
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,filter,layer);
     },

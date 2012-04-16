@@ -245,7 +245,6 @@ Ext.define ("viewer.components.DataSelection",{
             operator : "AND"
         });
         
-       // layer.setQuery(cql);
         this.viewerController.setFilter(filterWrapper,layer);
         
         console.log("CQL: " + layer.filter.getCQL());

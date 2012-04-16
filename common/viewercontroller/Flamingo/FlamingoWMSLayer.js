@@ -27,15 +27,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
      
         xml+=" url=\""+this.getOption("url");
         //fix for SLD support in flamingo
-        if (this.getOption("sld") && this.getOption("url")){
+        if (this.getOption("SLD_BODY") && this.getOption("url")){
             xml+=this.getOption("url").indexOf("?")>=0 ? "&" : "?";
-            xml+="sld="+this.getOption("sld")+"&";
+            xml+="SLD_BODY="+this.getOption("SLD_BODY")+"&";
         }
         xml+="\"";
         for (var optKey in this.options){
             //skip these options.
             if (optKey.toLowerCase()== "url" ||
-                optKey.toLowerCase()== "sld"){}
+                optKey.toLowerCase()== "sld_body"){}
             else{
                 xml+=" "+optKey+"=\""+this.options[optKey]+"\"";
             }
@@ -65,11 +65,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         return this.id;
     },
     reload : function (){
-        this.getFrameworkLayer().callMethod(mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
+        this.getFrameworkLayer().callMethod(this.map.getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
     setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
         this.visible = visible;
+        this.options["visible"] = visible;
     },
     getLegendGraphic : function () {
         var url = this.options.url;
@@ -89,5 +90,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
     passMaptips: function(){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
+    },
+    setQuery : function (filter){
+        var me = this;
+        var f = function(sld) { 
+            me.options["SLD_BODY"] = encodeURIComponent(sld);
+            me.reload();
+        };
+        var sld = Ext.create("viewer.SLD",{});
+        sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,f);
     }
 });
