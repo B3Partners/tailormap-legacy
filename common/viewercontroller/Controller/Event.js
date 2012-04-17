@@ -65,6 +65,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param options.layer the layer that is added.
          **/
         ON_LAYER_ADDED                        : "ON_LAYER_ADDED",
+        /**
+         * @field
+         * Occures when a layer is removed from the map.
+         * @param map the map object 
+         * @param options.layer the layer that is removed.
+         */
         ON_LAYER_REMOVED                        : "ON_LAYER_REMOVED",
         /**
          *@field
