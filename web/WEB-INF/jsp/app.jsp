@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/featureinfo.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/relatedDocuments.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
         
         
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
@@ -56,6 +57,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <!-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use -->  
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/ViewerController.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/Component.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/components/LogMessage.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/components/Logger.js"></script>
 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Map.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Layer.js"></script>

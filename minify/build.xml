@@ -15,6 +15,8 @@
           <!--					The Components               -->
           <sources dir="${viewerhtml.path}/components">
             <file name="Component.js"/>
+            <file name="LogMessage.js"/>
+            <file name="Logger.js"/>
           </sources>
 		  <!--					The common files-->
           <sources dir="${viewerhtml.path}/common">
