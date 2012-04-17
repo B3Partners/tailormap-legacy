@@ -35,8 +35,8 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     },
     getCQL : function (){
         var val = this.getInternalCQL();
-        val = Ext.String.trim(val);
         for (var i = 0 ; i < this.logicOperators.length;i++){
+            val = Ext.String.trim(val);
             var op = this.logicOperators[i];
             if(val.indexOf(op) == 0){
                 val = val.substr(op.length);
@@ -45,7 +45,11 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         return val;
     },
     getInternalCQL : function (){
-        var returnValue = " " + this.operator + " " + this.cql;
+        var returnValue = "";
+            
+        if(this.cql != ""){
+            returnValue = " " + this.operator + " " + this.cql;
+        }
         for(var i = 0 ; i < this.filters.length;i++){
             var f = this.filters[i];
             returnValue += f.getInternalCQL();
