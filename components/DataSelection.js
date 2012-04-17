@@ -247,7 +247,7 @@ Ext.define ("viewer.components.DataSelection",{
         
         this.viewerController.setFilter(filterWrapper,layer);
         
-        console.log("CQL: " + layer.filter.getCQL());
+        //console.log("CQL: " + layer.filter.getCQL());
     },
     getDataTabCQL : function (){
         var items = this.dataTab.items.items;

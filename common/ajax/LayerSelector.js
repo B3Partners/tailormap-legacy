@@ -116,6 +116,9 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     getSelectedAppLayer : function (){
         var layerObj = this.getValue();
+        if (layerObj==null){
+            return null;
+        }
         var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
         return layer;
     },

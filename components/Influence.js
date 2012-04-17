@@ -192,9 +192,7 @@ Ext.define ("viewer.components.Influence",{
                 maxy: loc.y+zoomInRadius
             };            
             this.showInfluence(loc.x,loc.y,radius);
-            this.setFilter();
-            
-            this.viewerController.mapComponent.getMap().zoomToExtent(extent);            
+            this.setFilter(extent);
             this.removeButton.setVisible(true);
         }else{
             Ext.MessageBox.alert("Onvolledig", "Er is geen Kaartlaag geselecteerd");
@@ -203,13 +201,14 @@ Ext.define ("viewer.components.Influence",{
     /**
      * Create the filter and add it to the selected AppLayer.
      * If no geometryattribute available for layer, don't add the filter.
+     * 
      */
-    setFilter: function(){
+    setFilter: function(extent){
         var appLayer=this.getSelectedAppLayer();           
         if(appLayer.attributes == undefined) {   
             var me = this;
             this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
-                me.setFilter();
+                me.setFilter();                
             },function(e){
                 Ext.MessageBox.alert("Error", e);
             });
@@ -224,6 +223,12 @@ Ext.define ("viewer.components.Influence",{
                         cql: filter,
                         operator : "AND"
                     }),appLayer);
+            }
+            if (extent){
+                var me = this;
+                setTimeout(function (){
+                    me.viewerController.mapComponent.getMap().zoomToExtent(extent);
+                },1000);
             }
         }
     },

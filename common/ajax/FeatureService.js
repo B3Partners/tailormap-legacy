@@ -27,7 +27,7 @@ Ext.define("viewer.DirectFeatureService", {
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["feature"];
         }        
-        console.log("DirectFeatureService init", this.config);        
+        //console.log("DirectFeatureService init", this.config);        
     },
     loadAttributes: function(successFunction, failureFunction) {
         
