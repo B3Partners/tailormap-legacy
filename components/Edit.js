@@ -265,23 +265,23 @@ Ext.define ("viewer.components.Edit",{
                 this.newGeomType = null;
                 break;
             default:
-                this.geomType = null;
+                this.newGeomType = null;
                 possible = false;
                 break;
         }
         
         var gl = Ext.getCmp( this.name +"geomLabel");
         if(possible){
-            Ext.getCmp(this.name +"editButton").setDisabled(false);
-            if(this.newGeomType != null){
-                Ext.getCmp(this.name +"newButton").setDisabled(false);
-                tekst = "Geometrie mag alleen bewerkt worden";
-            }else{ 
-                if(this.geometryEditable){
-                    tekst = 'Bewerk een ' + tekst + " op de kaart";
-                }else{
-                    tekst = 'Geometrie mag niet bewerkt worden.';
+            if(this.geometryEditable){
+                Ext.getCmp(this.name +"editButton").setDisabled(false);
+                if(this.newGeomType == null){
+                    tekst = "Geometrie mag alleen bewerkt worden";
+                }else{ 
+                    Ext.getCmp(this.name +"newButton").setDisabled(false);
+                    tekst = 'Bewerk een ' + tekst+ " op de kaart";
                 }
+            }else{
+                tekst = 'Geometrie mag niet bewerkt worden.';
             }
             gl.setText(tekst);
 
