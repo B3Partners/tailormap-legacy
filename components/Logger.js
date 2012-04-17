@@ -77,7 +77,9 @@ Ext.define ("viewer.components.Logger",{
             }); 
             
             this.messageDiv=new Ext.Element(document.createElement("div"))
+            this.messageDiv.addCls("logger_messages");
             cDiv.appendChild(this.messageDiv);
+            
             for (var i=0; i < this.messages.length; i++){
                 this.messageDiv.appendChild(this.messages[i].toHtmlElement());
             }            

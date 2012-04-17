@@ -5,16 +5,20 @@
     Description:
         Purpose of the stylesheet follows.
 */
-
-.logging_error{
+.logger_messages div{
     margin-left: 5px;
+    padding-left: 20px;
+}
+
+.logger_error{
+    background: url(../images/logger/error.gif) no-repeat;   
     color: #ff0000;
 }
-.logging_warning{
-    margin-left: 5px;
-    color: yellow;
+.logger_warning{
+    background: url(../images/logger/warning.gif) no-repeat;
+    color: black;
 }
-.logging_info{
-    margin-left: 5px;
+.logger_info{
+    background: url(../images/logger/info.gif) no-repeat;
     color: grey;
 }
