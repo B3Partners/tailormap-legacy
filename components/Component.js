@@ -224,6 +224,7 @@ Ext.define("viewer.components.Component",{
                     'viewercomponentsBookmark': 9,
                     'viewercomponentsTransparencySlider': 10,
                     'viewercomponentsInfluence': 11,
+                    'viewercomponentsInfluenceImage': 11,
                     'viewercomponentsRelatedDocuments': 12,
                     'viewercomponentsAttributeList': 13,
                     'viewercomponentsPrint': 15
