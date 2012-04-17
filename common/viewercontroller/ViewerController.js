@@ -120,6 +120,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (contentBottomLayout.heightmeasure){
                 mapBottom+= contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
             }
+            var max = this.app.maxExtent;
+            var maxExtent = Ext.create("viewer.viewercontroller.controller.Extent",max.minx, max.miny, max.maxx, max.maxy);
+            var start = this.app.startExtent;
+            var startExtent = Ext.create("viewer.viewercontroller.controller.Extent",start.minx, start.miny, start.maxx, start.maxy);
             var map = this.mapComponent.createMap("map", {
                 viewerController: this,
                 options: {
@@ -128,8 +132,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     width: "100%",
                     bottom: "bottom -"+mapBottom,
                     visible: "true",
-                    fullextent : "12000,304000,280000,620000",
-                    extent: "12000,304000,280000,620000",
+                    fullextent : maxExtent.toString(),
+                    extent: startExtent.toString(),
                     /*resolutions: "156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505",*/
                     extenthistory: "10"
                 }
