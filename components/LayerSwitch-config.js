@@ -22,20 +22,39 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        this.form.add([{
-            xtype: 'textfield',
-            fieldLabel: 'Toppositie',
-            name: 'top',
-            value: (config != null && config.top != undefined) ? config.top : '',
-            labelWidth:this.top
-        },
-        {
-            xtype: 'textfield',
-            fieldLabel: 'Linkerpositie',
-            name: 'left',
-            value: (config != null && config.left != undefined) ? config.left : '',
-            labelWidth:this.left
-        }]);
+        var me = this;
+        this.form = new Ext.form.FormPanel({
+            url: 'Home/SubmitForm',
+            frame: false,
+            title: 'Configureer dit component',
+            bodyPadding: me.formPadding,
+            defaults: {
+                anchor: '100%'
+            },
+            width: me.formWidth,
+            items: [{
+                xtype: 'textfield',
+                fieldLabel: 'Toppositie',
+                name: 'top',
+                value: (config != null && config.top != undefined) ? config.top : '',
+                labelWidth:me.labelWidth
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: 'Linkerpositie',
+                name: 'left',
+                value: (config != null && config.left != undefined) ? config.left : '',
+                labelWidth:me.labelWidth
+            }],
+            renderTo: parentid
+        });
         return this;
+    },
+    getConfiguration: function(){
+        var config = new Object();
+        for( var i = 0 ; i < this.form.items.length ; i++){
+            config[this.form.items.get(i).name] = this.form.items.get(i).value;
+        }
+        return config;
     }
 });

@@ -46,7 +46,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         this.button = Ext.create('Ext.button.Cycle', {
             showText: true,
             renderTo:  pid,
-            width: "100%",
+           // width: "100%",
             top:  '30px',
             style: {
                 marginBottom: '10px'
@@ -63,7 +63,7 @@ Ext.define ("viewer.components.LayerSwitch",{
                 }
             }
         });
-        this.button.setPosition(this.left,this.top);
+        this.button.setPosition(Ext.JSON.decode(this.left),Ext.JSON.decode(this.top));
     },
     loadLayers : function(){
         this.layers = new Array();
