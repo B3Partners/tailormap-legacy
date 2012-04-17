@@ -155,10 +155,7 @@ Ext.define ("viewer.components.Maptip",{
         for (var layerIndex in data){            
             var layer=data[layerIndex];
             if (layer.error){
-                var errorDiv = new Ext.Element(document.createElement("div"));
-                errorDiv.addCls("feature_summary_error");
-                errorDiv.insertHtml("beforeEnd",layer.error);    
-                components.push(errorDiv);
+                this.viewerController.logger.error(layer.error);
             }else{
                 var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
                 var layerName= appLayer.layerName;
@@ -313,7 +310,8 @@ Ext.define ("viewer.components.Maptip",{
         this.popup.show();
     },
     onFailure: function(e){
-        Ext.MessageBox.alert("Error",e);
+        this.viewerController.logger.error(e);
+        //Ext.MessageBox.alert("Error",e);
     },
     /**
      * Event handler for the ON_MAPTIP_CANCEL event
