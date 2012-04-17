@@ -413,8 +413,10 @@ Ext.define ("viewer.components.Drawing",{
                         this.vectorLayer.adjustStyle();
                         this.vectorLayer.addFeature(featureObject);
                     }
-                    var extent = o.result.extent;
-                    this.viewerController.mapComponent.getMap().zoomToExtent(extent);
+                    if(features.length > 0){
+                        var extent = o.result.extent;
+                        this.viewerController.mapComponent.getMap().zoomToExtent(extent);
+                    }
         
                 },
                 failure: function (){
