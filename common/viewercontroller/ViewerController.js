@@ -30,7 +30,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     /** A map which stores the current instantiated layerObjects */
     layers : null,
-    
+    /** A logger    */
+    logger: null,
     /**
      * Creates a ViewerController and initializes the map container. 
      * 
@@ -45,6 +46,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @constructor
      */
     constructor: function(viewerType, mapId, app) {
+        this.logger = Ext.create("viewer.components.Logger");
         this.app = app;
         
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));

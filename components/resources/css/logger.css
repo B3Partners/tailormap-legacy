@@ -1,0 +1,20 @@
+/* 
+    Document   : logger
+    Created on : 17-apr-2012, 15:48:30
+    Author     : Roy Braam
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.logging_error{
+    margin-left: 5px;
+    color: #ff0000;
+}
+.logging_warning{
+    margin-left: 5px;
+    color: yellow;
+}
+.logging_info{
+    margin-left: 5px;
+    color: grey;
+}
