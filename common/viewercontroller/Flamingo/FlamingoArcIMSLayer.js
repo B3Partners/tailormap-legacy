@@ -33,10 +33,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     getTagName: function(){
         return "LayerArcIMS";
     },
-    setQuery : function (query){
-        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setLayerProperty", this.id,"query", query);
-        this.map.update();
-    },
     // Call the setLayerProperty to set the buffer radius. It must be a object with a radius property
     setBuffer : function (radius,layer){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id,"setLayerProperty", layer,"buffer",{radius:radius});
@@ -46,5 +42,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     removeBuffer: function(layer){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setLayerProperty", layer,"buffer");
         this.map.update();
+    },
+    setQuery : function (filter){
+        var me = this;
+        var f = function(query) { 
+            console.log("Set query: "+query);
+            me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
+            me.update();
+        };
+        var util = Ext.create("viewer.ArcQueryUtil");
+        console.log("getCQL: "+filter.getCQL());
+        util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
     }
 });

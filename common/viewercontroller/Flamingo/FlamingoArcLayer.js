@@ -71,7 +71,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     },
 
     reload : function (){
-        this.getFrameworkLayer().callMethod(mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
+        this.getFrameworkLayer().callMethod(this.mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
 
     getName : function (){

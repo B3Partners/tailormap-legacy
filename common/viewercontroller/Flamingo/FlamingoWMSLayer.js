@@ -105,7 +105,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
                         me.reload();
                     };
                     var sld = Ext.create("viewer.SLD",{});
-                    sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,f);
+                    sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,console.log);
                 }
             }
         }

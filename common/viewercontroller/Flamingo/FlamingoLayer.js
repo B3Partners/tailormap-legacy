@@ -67,6 +67,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     getType: function(){
         return this.type;
     },
+    update: function(){
+        return this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
+    },
     /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
      * so flamingo is allowed to broadcast the event.
@@ -83,4 +86,5 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
             }
         }     
     }
+    
 });
