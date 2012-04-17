@@ -351,7 +351,7 @@ Ext.define ("viewer.components.Edit",{
             viewerController: this.viewerController
         });
         var me =this;
-        featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution(),layer, function (features){
+        featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution() * 4,layer, function (features){
             me.featuresReceived(features);
         },this.failed);
     },
