@@ -696,6 +696,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var layername = values[x].substring(index+1);
                 if(appLayer.layerName == layername && appLayer.serviceId == service){
                     isBookmarked = true;
+                    break;
                 }
             }
             
