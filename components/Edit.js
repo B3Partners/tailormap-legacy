@@ -71,6 +71,7 @@ Ext.define ("viewer.components.Edit",{
             viewerController: this.viewerController
         });
         this.loadWindow();
+        this.popup.popupWin.addListener("beforehide",this.resetForm,this);  
         return this;
     },
     loadWindow : function (){
