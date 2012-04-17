@@ -96,7 +96,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         };
         return new viewer.viewercontroller.flamingo.FlamingoWMSLayer(config);
     },
-    createArcConfig: function(name,server,servlet,mapservice,options){
+    createArcConfig: function(name,server,servlet,mapservice,options,viewerController){
         /*var object=new Object();
         object["name"]=name;
         object["server"]=server;
@@ -111,31 +111,33 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         var config ={
             id: ide,
             options: options,
-            frameworkLayer : this.viewerObject
+            frameworkLayer : this.viewerObject,
+            viewerController: viewerController
         };
         return config;
     },
-    createArcIMSLayer : function(name,server,servlet,mapservice,options){
-        var config=this.createArcConfig(name,server,servlet,mapservice,options);
+    createArcIMSLayer : function(name,server,servlet,mapservice,options,viewerController){
+        var config=this.createArcConfig(name,server,servlet,mapservice,options,viewerController);
         return new viewer.viewercontroller.flamingo.FlamingoArcIMSLayer(config);
     },
-    createArcServerLayer : function(name,server,servlet,mapservice,options){    
+    createArcServerLayer : function(name,server,servlet,mapservice,options,viewerController){    
         var newMapservice= servlet.substring(21,servlet.toLowerCase().indexOf("/mapserver"));
         mapservice=newMapservice;
-        var config=this.createArcConfig(name,server,servlet,mapservice,options);
+        var config=this.createArcConfig(name,server,servlet,mapservice,options,viewerController);
         //xxx for REST remove the next line.
         delete config.options.servlet;        
         config.options.esriArcServerVersion="9.3";
         config.options.dataframe="layers";        
         return new viewer.viewercontroller.flamingo.FlamingoArcServerLayer(config);
     },
-    createImageLayer : function (name, url, extent){
+    createImageLayer : function (name, url, extent,viewerController){
         return Ext.create("viewer.viewercontroller.flamingo.FlamingoImageLayer",
         {
             id: name,
             url: url,
             extent : extent,
-            frameworkLayer : this.viewerObject
+            frameworkLayer : this.viewerObject,
+            viewerController: viewerController
         });
     },
     /**
