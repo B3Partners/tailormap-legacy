@@ -120,10 +120,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (contentBottomLayout.heightmeasure){
                 mapBottom+= contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
             }
+            
             var max = this.app.maxExtent;
-            var maxExtent = Ext.create("viewer.viewercontroller.controller.Extent",max.minx, max.miny, max.maxx, max.maxy);
+            var maxExtent ="12000,304000,280000,620000";
+            if(max != undefined){
+                maxExtent = Ext.create("viewer.viewercontroller.controller.Extent",max.minx, max.miny, max.maxx, max.maxy);
+            }
+            var startExtent = "12000,304000,280000,620000";
             var start = this.app.startExtent;
-            var startExtent = Ext.create("viewer.viewercontroller.controller.Extent",start.minx, start.miny, start.maxx, start.maxy);
+            if(start){
+                startExtent = Ext.create("viewer.viewercontroller.controller.Extent",start.minx, start.miny, start.maxx, start.maxy);
+            }
             var map = this.mapComponent.createMap("map", {
                 viewerController: this,
                 options: {
