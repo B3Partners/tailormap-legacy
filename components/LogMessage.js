@@ -40,7 +40,7 @@ Ext.define ("viewer.components.LogMessage",{
     toHtmlElement: function(){
         var el=new Ext.Element(document.createElement("div"));        
         el.addCls('logger_'+this.getType());
-        el.insertHtml("beforeEnd",this.getMessage());
+        el.insertHtml("beforeEnd",this.date.toString()+": <br/>"+this.getMessage());
         return el;
     }
 });
