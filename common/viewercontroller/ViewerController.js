@@ -593,9 +593,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         layer.filter.addOrReplace(filter);
         
         var mapLayer = this.getLayer(layer.serviceId,layer.layerName);
-        mapLayer.setQuery(filter);
+        mapLayer.setQuery(layer.filter);
         
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,filter,layer);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,layer.filter,layer);
     },
     /**
      * Remove a filter from the given applayer
