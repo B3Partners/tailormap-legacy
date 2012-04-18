@@ -156,6 +156,13 @@ Ext.onReady(function() {
                             { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right' },
                             { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right' }
                         ]
+                    },
+                    {
+                        xtype: 'textfield',
+                        name: 'default' + attribute.id,
+                        id: 'default' + attribute.id,
+                        fieldLabel: 'Defaultwaarde',
+                        value: attribute.defaultValue
                     }
                 ]
             })));
@@ -243,6 +250,10 @@ function getJson() {
         }
         newAttribute.filterable = Ext.getCmp('filterable' + attribute.id).getValue();
         newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();
+        var defaultVal = Ext.getCmp('default' + attribute.id).getValue();
+        if(defaultVal != ""){
+            newAttribute.defaultValue = defaultVal;
+        }
         currentAttributes.push(newAttribute);
     });
     return Ext.JSON.encode(currentAttributes);

@@ -33,69 +33,61 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationtreelayer")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
-public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
+@RolesAllowed({"Admin", "ApplicationAdmin"})
+public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
+
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLayer.jsp";
-    
     @Validate
     private ApplicationLayer applicationLayer;
-    
     private List<Group> allGroups;
-    
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
     @Validate
     private List<String> groupsWrite = new ArrayList<String>();
-    
     @Validate
-    private Map<String,String> details = new HashMap<String,String>();
-    
+    private Map<String, String> details = new HashMap<String, String>();
     private List<AttributeDescriptor> attributesList = new ArrayList<AttributeDescriptor>();
-    
     @Validate
     private List<String> selectedAttributes = new ArrayList<String>();
-    
     private boolean editable;
-    
     @Validate
     private JSONArray attributesJSON = new JSONArray();
-    
+
     @DefaultHandler
     public Resolution view() {
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         return new ForwardResolution(JSP);
     }
-    
+
     @DontValidate
     public Resolution edit() throws JSONException {
-        if(applicationLayer != null){
+        if (applicationLayer != null) {
             details = applicationLayer.getDetails();
-                    
+
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
-            
-            Layer layer = (Layer)Stripersist.getEntityManager().createQuery("from Layer "
+
+            Layer layer = (Layer) Stripersist.getEntityManager().createQuery("from Layer "
                     + "where service = :service "
-                    + "and name = :name")
-                    .setParameter("service", applicationLayer.getService())
-                    .setParameter("name", applicationLayer.getLayerName())
-                    .getSingleResult();
-            
-            if(layer.getFeatureType() != null){
+                    + "and name = :name").setParameter("service", applicationLayer.getService()).setParameter("name", applicationLayer.getLayerName()).getSingleResult();
+
+            if (layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
                 editable = sft.isWriteable();
                 attributesList = sft.getAttributes();
-                
+
                 /*
-                 * When a layer has attributes, but the applicationLayer doesn't have configuredAttributes,
-                 * (because attributes where added after layer was added to an applicationTree)
-                 * the configuredAttributes are made and saved for the applicationLayer.
-                 * Otherwise the user can never configure edit and selection/filter.
+                 * When a layer has attributes, but the applicationLayer doesn't
+                 * have configuredAttributes, (because attributes where added
+                 * after layer was added to an applicationTree) the
+                 * configuredAttributes are made and saved for the
+                 * applicationLayer. Otherwise the user can never configure edit
+                 * and selection/filter.
                  */
-                if((applicationLayer.getAttributes() == null || applicationLayer.getAttributes().size() < 1) && (attributesList != null && attributesList.size() > 0)){
-                    for(Iterator it = attributesList.iterator(); it.hasNext();){
-                        AttributeDescriptor attribute = (AttributeDescriptor)it.next();
+                if ((applicationLayer.getAttributes() == null || applicationLayer.getAttributes().size() < 1) && (attributesList != null && attributesList.size() > 0)) {
+                    for (Iterator it = attributesList.iterator(); it.hasNext();) {
+                        AttributeDescriptor attribute = (AttributeDescriptor) it.next();
                         ConfiguredAttribute confAttribute = new ConfiguredAttribute();
                         confAttribute.setAttributeName(attribute.getName());
                         Stripersist.getEntityManager().persist(confAttribute);
@@ -104,120 +96,115 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
                     Stripersist.getEntityManager().persist(applicationLayer);
                     Stripersist.getEntityManager().getTransaction().commit();
                 }
-                
-                for(Iterator it = applicationLayer.getAttributes().iterator(); it.hasNext();){
-                    ConfiguredAttribute ca = (ConfiguredAttribute)it.next();
+
+                for (Iterator it = applicationLayer.getAttributes().iterator(); it.hasNext();) {
+                    ConfiguredAttribute ca = (ConfiguredAttribute) it.next();
                     //set visible
-                    if(ca.isVisible()){
+                    if (ca.isVisible()) {
                         selectedAttributes.add(ca.getAttributeName());
                     }
                 }
                 //set editable
-                makeAttributeJSONArray(attributesJSON,attributesList);
+                makeAttributeJSONArray(attributesJSON, attributesList);
             }
         }
-        
+
         return new ForwardResolution(JSP);
     }
-    
-    @Before(stages=LifecycleStage.BindingAndValidation)
+
+    @Before(stages = LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
     }
-    
+
     public Resolution save() throws JSONException {
         applicationLayer.getDetails().clear();
         applicationLayer.getDetails().putAll(details);
-        
+
         applicationLayer.getReaders().clear();
-        for(String groupName: groupsRead) {
+        for (String groupName : groupsRead) {
             applicationLayer.getReaders().add(groupName);
         }
-        
+
         applicationLayer.getWriters().clear();
-        for(String groupName: groupsWrite) {
+        for (String groupName : groupsWrite) {
             applicationLayer.getWriters().add(groupName);
         }
-        
-        if(applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0){
+
+        if (applicationLayer.getAttributes() != null && applicationLayer.getAttributes().size() > 0) {
             List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
             int i = 0;
-            
-            for(Iterator it = appAttributes.iterator(); it.hasNext();){
-                ConfiguredAttribute appAttribute = (ConfiguredAttribute)it.next();
+
+            for (Iterator it = appAttributes.iterator(); it.hasNext();) {
+                ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
                 //save visible
-                if(selectedAttributes.contains(appAttribute.getAttributeName())){
+                if (selectedAttributes.contains(appAttribute.getAttributeName())) {
                     appAttribute.setVisible(true);
-                }else{
+                } else {
                     appAttribute.setVisible(false);
                 }
-                
+
                 //save editable
-                if (attributesJSON.length() > i){
+                if (attributesJSON.length() > i) {
                     JSONObject attribute = attributesJSON.getJSONObject(i);
 
-                    if(attribute.has("editable")){
+                    if (attribute.has("editable")) {
                         appAttribute.setEditable(new Boolean(attribute.get("editable").toString()));
                     }
-                    if(attribute.has("editalias")){
+                    if (attribute.has("editalias")) {
                         appAttribute.setEditAlias(attribute.get("editalias").toString());
                     }
-                    if(attribute.has("editvalues")){
+                    if (attribute.has("editvalues")) {
                         appAttribute.setEditValues(attribute.get("editvalues").toString());
                     }
-                    if(attribute.has("editheight")){
+                    if (attribute.has("editheight")) {
                         appAttribute.setEditHeight(attribute.get("editheight").toString());
                     }
 
                     //save selectable
-                    if(attribute.has("selectable")){
+                    if (attribute.has("selectable")) {
                         appAttribute.setSelectable(new Boolean(attribute.get("selectable").toString()));
                     }
-                    if(attribute.has("filterable")){
+                    if (attribute.has("filterable")) {
                         appAttribute.setFilterable(new Boolean(attribute.get("filterable").toString()));
+                    }
+
+                    if (attribute.has("defaultValue")) {
+                        appAttribute.setDefaultValue(attribute.get("defaultValue").toString());
                     }
                 }
                 i++;
             }
         }
-        
+
         Stripersist.getEntityManager().persist(applicationLayer);
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
         return new ForwardResolution(JSP);
     }
-    
-    private void makeAttributeJSONArray(JSONArray array, List<AttributeDescriptor> ftAttributes) throws JSONException{
+
+    private void makeAttributeJSONArray(JSONArray array, List<AttributeDescriptor> ftAttributes) throws JSONException {
         List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
         int i = 0;
-        for(Iterator it = appAttributes.iterator(); it.hasNext();){
-            ConfiguredAttribute appAttribute = (ConfiguredAttribute)it.next();
-            
-            JSONObject j = new JSONObject();
-            j.put("id", appAttribute.getId());
-            j.put("name", appAttribute.getAttributeName());
-            if (attributesList.size()> i){
+        for (Iterator it = appAttributes.iterator(); it.hasNext();) {
+            ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
+
+            JSONObject j = appAttribute.toJSONObject();
+
+            if (attributesList.size() > i) {
                 j.put("alias", attributesList.get(i).getAlias());
             }
-            j.put("visible", appAttribute.isVisible());
-            j.put("editable", appAttribute.isEditable());
-            j.put("editalias", appAttribute.getEditAlias());
-            j.put("editvalues", appAttribute.getEditValues());
-            j.put("editheight", appAttribute.getEditHeight());
-            j.put("filterable", appAttribute.isFilterable());
-            j.put("selectable", appAttribute.isSelectable());
-            
-            for(AttributeDescriptor ad: ftAttributes) {
-                if(ad.getName().equals(appAttribute.getAttributeName())) {
+            for (AttributeDescriptor ad : ftAttributes) {
+                if (ad.getName().equals(appAttribute.getAttributeName())) {
                     j.put("featureTypeAttribute", ad.toJSONObject());
                     break;
                 }
             }
-            
+
             array.put(j);
-            
+
             i++;
         }
     }
@@ -226,7 +213,7 @@ public class ApplicationTreeLayerActionBean  extends ApplicationActionBean {
     public ApplicationLayer getApplicationLayer() {
         return applicationLayer;
     }
-    
+
     public void setApplicationLayer(ApplicationLayer applicationLayer) {
         this.applicationLayer = applicationLayer;
     }
