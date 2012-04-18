@@ -124,10 +124,20 @@ Ext.onReady(function() {
     },{
         contentEl:'documents-tab', 
         title: 'Documenten'
-    },{
-        contentEl:'context-tab', 
-        title: 'Context'
     }];
+
+    tabconfig.push({
+        xtype: 'htmleditor',
+        id: 'extContextHtmlEditor',
+        title: 'Context',
+        width: 475,
+        maxWidth: 475,
+        height: 400,
+        maxHeight: 400,
+        padding: 10,
+        value: Ext.get('context_textarea').dom.value
+    });
+
     if(layersAllowed) {
         tabconfig.unshift({
             contentEl:'tree-tab', 
@@ -135,26 +145,15 @@ Ext.onReady(function() {
         });
     }
     
-    var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
-        width: 475,
-        height: 400,
-        value: Ext.get('context_textarea').dom.value,
-        renderTo: 'context-tab' /*,
-        plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', {
-                dragResize: false,
-                dragWheel: false,
-                submitUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php',
-                managerUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php'
-        })] */
-    });
-    
-    Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-display');   
+    Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-offsets');
     Ext.createWidget('tabpanel', {
         renderTo: 'tabs',
         width: '100%',
         activeTab: 0,
-        defaults :{
-            bodyPadding: 10
+        hideMode: 'offsets',
+        defaults: {
+            bodyPadding: 10,
+            hideMode: 'offsets'
         },
         layoutOnTabChange: true,
         items: tabconfig
@@ -163,6 +162,6 @@ Ext.onReady(function() {
     Ext.get('levelform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('selecteddocsinput').set({value:docsSelectie.getSelection()});
-        Ext.get('context_textarea').dom.value = htmlEditor.getValue();
+        Ext.get('context_textarea').dom.value = Ext.getCmp('extContextHtmlEditor').getValue();
     });
 });

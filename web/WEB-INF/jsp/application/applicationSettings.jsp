@@ -46,11 +46,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </tr>
                     <tr>
                         <td>Steunkleur 1 (achtergrond):</td>
-                        <td><stripes:text name="details['steunkleur1']" maxlength="255" size="15"/></td>
+                        <td>
+                            <stripes:text name="details['steunkleur1']" maxlength="255" size="15" style="float: left;" id="steunkleur1" />
+                            <div id="steunkleur_colorpicker1" style="float: left;"></div>
+                            <div style="clear: both;"></div>
+                        </td>
                     </tr>
                     <tr>
                         <td>Steunkleur 2 (tekstkleur):</td>
-                        <td><stripes:text name="details['steunkleur2']" maxlength="255" size="15"/></td>
+                        <td>
+                            <stripes:text name="details['steunkleur2']" maxlength="255" size="15" style="float: left;" id="steunkleur2" />
+                            <div id="steunkleur_colorpicker2" style="float: left;"></div>
+                            <div style="clear: both;"></div>
+                        </td>
                     </tr>
                     <tr>
                         <td>Tekst font:</td>
@@ -63,10 +71,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <tr>
                         <td>Stylesheet metadata:</td>
                         <td><stripes:text name="details['stylesheetMetadata']" maxlength="255" size="60"/></td>
-                    </tr>
-                    <tr>
-                        <td>Stylesheet feature info:</td>
-                        <td><stripes:text name="details['stylesheetfeatureInfo']" maxlength="255" size="60"/></td>
                     </tr>
                     <tr>
                         <td>Stylesheet printen:</td>
@@ -128,6 +132,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </stripes:form>
             </div>
         </div>
+
+<script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/ColorPickerButton.js"></script>
 <script type="text/javascript">
     var activelink = 'menu_instellingen';
 
@@ -151,6 +157,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
         });  
     }
+
     Ext.onReady(function() {
         appendPanel('headertext', 'formcontent', 'content');
         var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
@@ -167,6 +174,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         });
         Ext.get('settingsForm').on('submit', function() {
             Ext.get('details_opmerkingen').dom.value = htmlEditor.getValue();
+        });
+        Ext.create('Ext.ux.b3p.ColorPickerButton', {
+            startColor: '${actionBean.application.details['steunkleur1']}',
+            renderTo: 'steunkleur_colorpicker1',
+            textfield: 'steunkleur1'
+        });
+        Ext.create('Ext.ux.b3p.ColorPickerButton', {
+            startColor: '${actionBean.application.details['steunkleur2']}',
+            renderTo: 'steunkleur_colorpicker2',
+            textfield: 'steunkleur2'
         });
     });
 </script>

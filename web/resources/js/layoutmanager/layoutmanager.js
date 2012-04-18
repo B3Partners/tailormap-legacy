@@ -206,8 +206,8 @@ Ext.onReady(function() {
                                             '</div>';
                 }
                 layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
-                                                'Achtergrondkleur: ' + 
-                                                '<input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 100%;" />' + 
+                                                '<div style="float: left;">Achtergrondkleur:</div>' + 
+                                                '<div style="float: left; clear: left; width: 90px;"><input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 60px; float: left;" /><div id="colorpicker_' + layoutRegion.get('id') + '_bgcolor" style="float: left;"></div></div>' + 
                                             '</div>';
                 layoutRegionElement.insertHtml('beforeEnd',
                     '<div class="layout_title">' +
@@ -379,6 +379,14 @@ Ext.onReady(function() {
                         }
                         Ext.fly(regionId + '_bgcolor').set({
                             value: bgcolor
+                        });
+                        var openOnLeft = false;
+                        if(regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom') openOnLeft = true;
+                        Ext.create('Ext.ux.b3p.ColorPickerButton', {
+                            startColor: bgcolor,
+                            renderTo: 'colorpicker_' + regionId + '_bgcolor',
+                            textfield: regionId + '_bgcolor',
+                            openOnLeft: openOnLeft
                         });
                     }
                     if(Ext.isDefined(layoutJson[regionId]['components'])) {

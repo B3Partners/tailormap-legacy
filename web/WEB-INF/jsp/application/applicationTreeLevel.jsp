@@ -72,10 +72,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <stripes:hidden id="selecteddocsinput" name="selecteddocs" />
                         </div>
 
-                        <div id="context-tab" class="tabdiv">
-                            <h1>Context:</h1>
-                            <stripes:textarea cols="150" rows="5" name="level.info" id="context_textarea" style="display: none;" /><br>
-                        </div>
                     </div>
             </c:if>
             <c:if test="${actionBean.context.eventName == 'save'}">
@@ -87,7 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                 </script>
             </c:if>
-
+            <stripes:textarea cols="150" rows="5" name="level.info" id="context_textarea" style="display: none;" />
         </stripes:form>
         <c:if test="${actionBean.context.eventName == 'edit'}">
             <script type="text/javascript">

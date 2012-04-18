@@ -91,6 +91,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:otherwise>
             </c:choose>
         </script>
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/ColorPickerButton.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/layoutmanager.js"></script>
 
     </stripes:layout-component>

@@ -72,11 +72,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table class="formtable">
                             <tr>
                                 <td>Transparantie beginwaarde:</td>
-                                <td><stripes:text name="details['transparency']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['transparency']" maxlength="255" size="10"/></td>
                             </tr>
                             <tr>
                                 <td>Straalinvloedsgebied:</td>
-                                <td><stripes:text name="details['influenceradius']" maxlength="255" size="30"/></td>
+                                <td><stripes:text name="details['influenceradius']" maxlength="255" size="10"/></td>
                             </tr>
                             <tr>
                                 <td>Samenvatting - titel:</td>
