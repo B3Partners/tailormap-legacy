@@ -184,7 +184,7 @@ Ext.define ("viewer.components.Influence",{
         //radius ==null if no layer is selected
         if (radius!=null){
             this.viewerController.mapComponent.getMap().setMarker(this.markerId,loc.x,loc.y);
-            var zoomInRadius=radius*3;
+            var zoomInRadius=radius*1.5;
             var extent = {
                 minx: loc.x-zoomInRadius,
                 maxx: loc.x+zoomInRadius,
