@@ -85,6 +85,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             if (this.getHeight()==null)
                 this.setHeight("300");
             this.setShowZoomerButtons(false);
+            
+            if (config.tooltip_pan_right!=undefined){
+                this.addString("tooltip_west",config.tooltip_pan_right);
+            }
+            if (config.tooltip_pan_left!=undefined){
+                this.addString("tooltip_east",config.tooltip_pan_left);
+            }
+            if (config.tooltip_pan_up!=undefined){
+                this.addString("tooltip_north",config.tooltip_pan_up);
+            }
+            if (config.tooltip_pan_down!=undefined){
+                this.addString("tooltip_south",config.tooltip_pan_down);
+            }
+            if (config.tooltip_slider!=undefined){
+                this.addString("tooltip_slider",config.tooltip_slider);
+            }
         }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){           
             this.setTagName("Maptip");
         }else if (config.type == viewer.viewercontroller.controller.Component.LOADMONITOR){           
