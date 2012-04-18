@@ -101,7 +101,7 @@ Ext.define ("viewer.components.Search",{
         });
         itemList.push({ 
             xtype: 'button',
-            text: 'Reset',
+            text: 'Zoekactie afbreken',
             margin: this.margin,
             name: 'cancel',
             id: 'cancel'+ this.name,
