@@ -22,3 +22,7 @@
     background: url(../images/logger/info.gif) no-repeat;
     color: grey;
 }
+.logger_icon{
+    position: absolute;
+    background: url(../images/logger/warning.gif) no-repeat;    
+}

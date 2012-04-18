@@ -24,7 +24,9 @@ Ext.define ("viewer.components.Logger",{
     },
     popup: null,
     messageDiv:null,
-    messages: null,    
+    messages: null, 
+    iconDiv: null,
+    iconSize: 16,
     constructor: function (conf){        
         this.initConfig(conf);
         this.messages = new Array();        
@@ -44,16 +46,17 @@ Ext.define ("viewer.components.Logger",{
      */
     message: function(message,type){  
         var newMessage=Ext.create("viewer.components.LogMessage",{message: message,type:type})
-        this.messages.push(newMessage);
+        this.messages.push(newMessage);        
         //if popup is created, add the html element for this message.
         if (this.popup!=null){            
-            this.messageDiv.appendChild(newMessage.toHtmlElement());
-        }            
+            this.messageDiv.appendChild(newMessage.toHtmlElement());           
+        }
+        this.setIconVisible(true);
     },
     show: function(){
         //if popup is null, create new one.
         if (this.popup ==null){
-            this.popup = Ext.create("viewer.components.ScreenPopup",{});            
+            this.popup = Ext.create("viewer.components.ScreenPopup",this.config);            
             var cDiv=Ext.get(this.popup.getContentId());            
             Ext.create('Ext.container.Container',{
                 renderTo: this.popup.getContentId(),                
@@ -76,7 +79,7 @@ Ext.define ("viewer.components.Logger",{
                 }
             }); 
             
-            this.messageDiv=new Ext.Element(document.createElement("div"))
+            this.messageDiv=new Ext.Element(document.createElement("div"));
             this.messageDiv.addCls("logger_messages");
             cDiv.appendChild(this.messageDiv);
             
@@ -89,6 +92,32 @@ Ext.define ("viewer.components.Logger",{
     clear: function(){
         this.messageDiv.update("");
         this.messages= new Array();
+        this.setIconVisible(false);
+    },
+    /**
+     * Set icon visible
+     * @param vis boolean, true or false
+     */
+    setIconVisible: function(vis){           
+        if (vis && this.iconDiv==null){
+            this.iconDiv=new Ext.Element(document.createElement("div"));
+            this.iconDiv.addCls("logger_icon");
+            this.iconDiv.applyStyles({
+                left: "0px",
+                top: (Ext.getBody().getHeight()-this.iconSize) +"px",
+                width: this.iconSize+"px",
+                height: this.iconSize+"px"
+            });
+            this.iconDiv.on("click",function (){
+                this.show();
+                this.setIconVisible(false);
+            },this);
+            
+            Ext.getBody().appendChild(this.iconDiv);            
+        }
+        if(this.iconDiv!=null){
+            this.iconDiv.setVisible(vis);
+        }
     }
 });
 
