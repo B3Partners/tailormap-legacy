@@ -422,6 +422,11 @@ Ext.define ("viewer.components.SelectionModule",{
                         height: 22,
                         handler: function() {
                             me.addSelectedLayers();
+                        },
+                        listeners: {
+                            afterrender: function(button) {
+                                me.fixButtonLayout(button);
+                            }
                         }
                     },
                     {
@@ -431,6 +436,11 @@ Ext.define ("viewer.components.SelectionModule",{
                         height: 22,
                         handler: function() {
                             me.removeSelectedNodes();
+                        },
+                        listeners: {
+                            afterrender: function(button) {
+                                me.fixButtonLayout(button);
+                            }
                         }
                     },
                     {xtype: 'container', html: '<div></div>', flex: 1}
@@ -449,6 +459,11 @@ Ext.define ("viewer.components.SelectionModule",{
                         height: 22,
                         handler: function() {
                             me.moveNode('up');
+                        },
+                        listeners: {
+                            afterrender: function(button) {
+                                me.fixButtonLayout(button);
+                            }
                         }
                     },
                     {
@@ -458,6 +473,11 @@ Ext.define ("viewer.components.SelectionModule",{
                         height: 22,
                         handler: function() {
                             me.moveNode('down');
+                        },
+                        listeners: {
+                            afterrender: function(button) {
+                                me.fixButtonLayout(button);
+                            }
                         }
                     },
                     {xtype: 'container', html: '<div></div>', flex: 1}
@@ -465,6 +485,15 @@ Ext.define ("viewer.components.SelectionModule",{
             ],
             renderTo: 'treeSelectionContainer'
         });
+    },
+    
+    fixButtonLayout: function(button) {
+        // Dirty hack to fix icon problem
+        if(Ext.isIE9) {
+            Ext.Array.each(Ext.fly(button.el).query('.x-btn-inner'), function(obj) {
+                obj.className = '';
+            });
+        }
     },
     
     initTrees: function() {
