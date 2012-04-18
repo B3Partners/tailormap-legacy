@@ -82,10 +82,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             this.setTagName("NavigationControl");
             this.setTop("50");
             this.setLeft("20");
-            if (this.getHeight()==null)
+            if (this.getHeight()==null|| this.getHeight()=="")
                 this.setHeight("300");
-            this.setShowZoomerButtons(false);
-            
+            if (config.show_zoom_buttons!=undefined)
+                this.setShowZoomerButtons(config.show_zoom_buttons);            
             if (config.tooltip_pan_right!=undefined){
                 this.addString("tooltip_west",config.tooltip_pan_right);
             }

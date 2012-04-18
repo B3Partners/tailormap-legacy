@@ -334,7 +334,8 @@
                 tooltip_pan_left: "Tooltip pan links",
                 tooltip_pan_up: "Tooltip pan omhoog",
                 tooltip_pan_down: "Tooltip pan omlaag",
-                tooltip_slider: "Tooltip slider"      
+                tooltip_slider: "Tooltip slider",
+                show_zoom_buttons: "Show zoom buttons"
             },
             source: {             
                 width: "",
@@ -343,7 +344,8 @@
                 tooltip_pan_left: "Pan naar links",
                 tooltip_pan_up: "Pan omhoog",
                 tooltip_pan_down: "Pan omlaag",
-                tooltip_slider: "Sleep om te zoomen"      
+                tooltip_slider: "Sleep om te zoomen",
+                show_zoom_buttons: false
             }
         }
     },
