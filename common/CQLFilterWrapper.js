@@ -60,13 +60,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         this.filters.push(filter);
     },
     removeFilter : function (filter){
-        for(var i = 0 ; i < this.filters.length;i++){
-            var f = this.filters[i];
-            if(f.id == filter.id){
-                this.filters.splice(i,1);
-                break;
-            }
-        }
+        this.removeFilterById(filter.id);
     },
     removeFilterById : function (id){
         for(var i = 0 ; i < this.filters.length;i++){

@@ -607,6 +607,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     removeFilter: function(filterId,layer){
         if (layer.filter){
             layer.filter.removeFilterById(filterId);
+            if(layer.filter.filters.length == 0){
+                layer.filter = null;
+            }
         }
     },
     getComponentsByClassName : function(className) {
