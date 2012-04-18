@@ -53,9 +53,10 @@ Ext.define ("viewer.components.ScreenPopup",{
             renderTo: Ext.getBody(),
             autoScroll: true
         };
-        if(this.details.position == 'fixed'){
-            config.x=parseInt(this.details.x);
-            config.y=parseInt(this.details.y);
+        if(this.details.position == 'fixed') {
+            var wrapper = Ext.get('wrapper');
+            config.x = parseInt(this.details.x) + wrapper.getX();
+            config.y = parseInt(this.details.y) + wrapper.getY();
         }
 
         if(this.details.items){
