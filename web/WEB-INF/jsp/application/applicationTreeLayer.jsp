@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform">
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
-            <c:if test="${actionBean.context.eventName == 'edit'}">
+            <c:if test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'save'}">
                 <h1>Bewerken kaartlaag</h1>
                 <br>
                 <stripes:submit name="save" value="Opslaan" />
@@ -72,7 +72,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <table class="formtable">
                             <tr>
                                 <td>Transparantie beginwaarde:</td>
-                                <td><stripes:text name="details['transparency']" maxlength="255" size="10"/></td>
+                                <td>
+                                    <stripes:text name="details['transparency']" maxlength="255" size="10" style="display: none;" id="details_transparency" />
+                                    <div id="details_transparency_slider"></div>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Straalinvloedsgebied:</td>

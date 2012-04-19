@@ -239,6 +239,20 @@ Ext.onReady(function() {
                         value: Ext.get('details_summary_description').dom.value,
                         renderTo: 'details_summary_description_container'
                     });
+                    Ext.create('Ext.slider.Single', {
+                        width: 200,
+                        value: Ext.get('details_transparency').dom.value || 0,
+                        increment: 1,
+                        minValue: 0,
+                        maxValue: 100,
+                        margin: '0px 2px 0px 0px',
+                        renderTo: 'details_transparency_slider',
+                        listeners: {
+                            changecomplete: function(slider, val) {
+                                Ext.get('details_transparency').dom.value = val;
+                            }
+                        }
+                    });
                     htmlEditorRendered = true;
                 }
             }
