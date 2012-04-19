@@ -26,6 +26,9 @@ import java.util.*;
 @Entity
 @Table(name="group_")
 public class Group {
+    public static final Set<String> NOBODY_AUTHORIZED = new HashSet<String>(Arrays.asList(new String[] { null }));
+    public static final Set<String> EVERYBODY_AUTHORIZED = Collections.EMPTY_SET;
+    
     @Id
     private String name;
 
