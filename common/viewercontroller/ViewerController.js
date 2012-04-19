@@ -32,6 +32,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     layers : null,
     /** A logger    */
     logger: null,
+    /** Layers initialized?*/
+    layersInitialized: false,
     /**
      * Creates a ViewerController and initializes the map container. 
      * 
@@ -349,7 +351,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.layers = [];
     },
    
-    initLayers : function (){
+    initLayers : function (){        
         for( var i = this.app.selectedContent.length -1 ; i >= 0 ; i--){
             var content = this.app.selectedContent[i];
             if(content.type == "appLayer") {
@@ -358,13 +360,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.initLevel(content.id);
             }
         }
+        this.layersInitialized=true;
     },
     
     initAppLayer: function(appLayerId) {
         var appLayer = this.app.appLayers[appLayerId];
         //console.log(appLayer.layerName);
-        this.setLayerVisible(appLayer.serviceId, appLayer.layerName, appLayer.checked);
-        
+        var layer = this.getOrCreateLayer(appLayer.serviceId,appLayer.layerName);
+        this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
     },
     
     initLevel: function(levelId) {
@@ -381,15 +384,45 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
     },
-    
+    /**
+     * Set the layer visible
+     * @param serviceId serviceId
+     * @param layerName layerName
+     * @param visible true or false.
+     */
     setLayerVisible : function (serviceId, layerName, visible){
         var layer = this.getLayer(serviceId, layerName);
+        //xxx is also done in setVisible of layer....
         layer.visible = visible;
         this.mapComponent.getMap().setLayerVisible(layer, visible);
     },
+    /**
+     * Get the layer or null if not found
+     * @param serviceId serviceId
+     * @param layerName layerName
+     * @return viewer.viewercontroller.controller.Layer object or null if no layer found
+     */
     getLayer : function (serviceId, layerName){
         var id = serviceId + "_" + layerName;
-        if(this.layers[id] == undefined){
+        if(this.layers[id] == undefined){            
+            if (!this.layersInitialized){
+                this.logger.warning("HEY! Layers not initialized! Hold your horses! Just wait for the LAYER_ADDED event!");
+            }else{
+                this.logger.warning("Hmmm. Layer not added... Create it.");
+            }
+            return null;
+        }
+        return this.layers[id];
+    },
+    /**
+     * get or create (if not already created) the map layer with serviceId and layerName
+     * @param serviceId serviceId
+     * @param layerName layerName
+     * @return viewer.viewercontroller.controller.Layer object.
+     */
+    getOrCreateLayer: function(serviceId,layerName){
+        var id = serviceId + "_" + layerName;
+        if(this.layers[id] == undefined){            
             this.createLayer(serviceId,layerName);
         }
         return this.layers[id];

@@ -51,6 +51,22 @@ Ext.define("viewer.components.Slider",{
                 }
             }
         });
+        
+        return this;
+    },
+    sliderChanged: function (slider,value){
+        if (this.layers==null){
+            this.initLayers();
+        }
+        for(var i = 0 ; i< this.layers.length ;i++){
+            var layer = this.layers[i];
+            layer.setAlpha(value);
+        }
+    },
+    getExtComponents: function() {
+        return this.slider.getId();
+    },
+    initLayers: function(){
         var selectedLayers = this.selectedLayers;
         if(this.layers == null){
             this.layers = new Array();
@@ -61,15 +77,5 @@ Ext.define("viewer.components.Slider",{
                 this.layers.push(layer);
             }
         }
-        return this;
-    },
-    sliderChanged: function (slider,value){
-        for(var i = 0 ; i< this.layers.length ;i++){
-            var layer = this.layers[i];
-            layer.setAlpha(value);
-        }
-    },
-    getExtComponents: function() {
-        return this.slider.getId();
     }
 });
