@@ -85,7 +85,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             if (this.getHeight()==null|| this.getHeight()=="")
                 this.setHeight("300");
             if (config.show_zoom_buttons!=undefined)
-                this.setShowZoomerButtons(config.show_zoom_buttons);            
+                this.setShowZoomerButtons(config.show_zoom_buttons);
             if (config.tooltip_pan_right!=undefined){
                 this.addString("tooltip_west",config.tooltip_pan_right);
             }
