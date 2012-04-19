@@ -52,7 +52,12 @@ Ext.define("viewer.components.Slider",{
             }
         });
         
+        // TODO: Check EVENT, is this the right event to listen to?
+        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,this.applySlider,this);        
         return this;
+    },
+    applySlider: function() {
+        if(this.slider) this.sliderChanged(this.slider, this.slider.getValue());
     },
     sliderChanged: function (slider,value){
         if (this.layers==null){
