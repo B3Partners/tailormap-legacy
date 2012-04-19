@@ -32,7 +32,13 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
         conf.type = viewer.viewercontroller.controller.Tool.DEFAULT;
         this.initTool(conf);
         if (this.getNavigationPanel()){
-            navComp=Ext.create("viewer.components.NavigationPanel",{});
+            var confNav ={};
+            Ext.apply(confNav,conf);
+            
+            this.navComp=Ext.create("viewer.components.NavigationPanel",{
+                name: conf.name+"_navPan",
+                viewerController: this.viewerController
+            });
         }
         return this;
     }
