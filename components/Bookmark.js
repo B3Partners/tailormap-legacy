@@ -86,6 +86,7 @@ Ext.define ("viewer.components.Bookmark",{
     showWindow : function(){
         var paramJSON = this.viewerController.getBookmarkUrl();
         var parameters = "";
+        
         for ( var i = 0 ; i < paramJSON["params"].length ; i ++){
             var param = paramJSON["params"][i];
             if(param.name == 'url'){
@@ -106,21 +107,24 @@ Ext.define ("viewer.components.Bookmark",{
                 parameters += param.name +"="+ param.value +"&";
             }
         }
-        
         this.url += parameters;
 
         var me = this;
-        Ext.create("viewer.Bookmark").createBookmark(Ext.JSON.encode(paramJSON),function(code){me.succesCompactUrl(code);},function(code){me.failureCompactUrl(code);});
-
-        this.form.getChildByElement("bookmark").setValue(this.url);
-        this.popup.show();
+        Ext.create("viewer.Bookmark").createBookmark(
+            Ext.JSON.encode(paramJSON),
+            function(code){me.succesCompactUrl(code);},
+            function(code){me.failureCompactUrl(code);}
+        );
     },
     succesCompactUrl : function(code){
         this.compUrl = this.baseUrl+"bookmark="+code;
         this.form.getChildByElement("compactlink").setValue(this.compUrl);
+        this.form.getChildByElement("bookmark").setValue(this.url);
+        this.popup.show();
     },
     failureCompactUrl : function(code){
-        // 
+        // TODO: error message?
+        this.viewerController.logger.error(code);
     },
     hideWindow : function(){
         this.popup.hide();
