@@ -39,6 +39,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     checkBackendOnMove: false,
     backendCheckUrl: '',
     checkedLayers: [],
+    onlyMoveRootLevels: false,
 
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -92,6 +93,9 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.treeContainer,
             width: 225,
             height: 400,
+            viewConfig: {
+                height: '100%'
+            },
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.addNode(record);
@@ -161,9 +165,18 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.selectedLayersContainer,
             width: 225,
             height: 400,
+            viewConfig: {
+                height: '100%'
+            },
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.removeLayers();
+                },
+                itemclick: function(view, record, item, index, event, eOpts) {
+                    if(me.onlyMoveRootLevels) {
+                        if(record.parentNode.parentNode === null) me.disableMoveButtons(false);
+                        else me.disableMoveButtons(true);
+                    }
                 }
             }
         });
@@ -186,6 +199,9 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             listeners: {
                 click: function() {
                     me.addSelectedLayers()
+                },
+                afterrender: function(button) {
+                    me.fixButtonLayout(button);
                 }
             }
         });
@@ -198,11 +214,14 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             listeners: {
                 click: function() {
                     me.removeLayers();
+                },
+                afterrender: function(button) {
+                    me.fixButtonLayout(button);
                 }
             }
         });
 
-        Ext.create('Ext.Button', {
+        me.moveUpButton = Ext.create('Ext.Button', {
             icon: me.moveUpIcon,
             width: 23,
             height: 22,
@@ -210,11 +229,14 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             listeners: {
                 click: function() {
                     me.moveNode('up');
+                },
+                afterrender: function(button) {
+                    me.fixButtonLayout(button);
                 }
             }
         });
 
-        Ext.create('Ext.Button', {
+        me.moveDownButton = Ext.create('Ext.Button', {
             icon: me.moveDownIcon,
             width: 23,
             height: 22,
@@ -222,9 +244,27 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             listeners: {
                 click: function() {
                     me.moveNode('down');
+                },
+                afterrender: function(button) {
+                    me.fixButtonLayout(button);
                 }
             }
         });
+    },
+    
+    disableMoveButtons: function(disable) {
+        var me = this;
+        me.moveUpButton.setDisabled(disable);
+        me.moveDownButton.setDisabled(disable);
+    },
+    
+    fixButtonLayout: function(button) {
+        // Dirty hack to fix icon problem
+        if(Ext.isIE9) {
+            Ext.Array.each(Ext.fly(button.el).query('.x-btn-inner'), function(obj) {
+                obj.className = '';
+            });
+        }
     },
     
     handleLayerCheckChange: function(record, recordid, checked) {

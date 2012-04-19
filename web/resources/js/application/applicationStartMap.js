@@ -95,7 +95,8 @@ Ext.onReady(function() {
         returnJson: true,
         checkBackendOnMove: true,
         backendCheckUrl: backendCheckUrl,
-        checkedLayers: checkedLayers
+        checkedLayers: checkedLayers,
+        onlyMoveRootLevels: true
     }));
     
     Ext.get('startmapform').on('submit', function() {

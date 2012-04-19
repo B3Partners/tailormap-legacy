@@ -138,6 +138,9 @@ Ext.onReady(function() {
         renderTo: 'tree-container',
         width: 230,
         height: 400,
+        viewConfig: {
+            height: '100%'
+        },
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
                 if(record.get('type') == "category") {
