@@ -87,8 +87,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td><stripes:text name="details['summary.image']" maxlength="255" size="30"/></td>
                             </tr>
                             <tr>
-                                <td>Samenvatting - omschrijving:</td>
-                                <td><stripes:textarea name="details['summary.description']" rows="5" cols="27"/></td>
+                                <td valign="top">Samenvatting - omschrijving:</td>
+                                <td>
+                                    <div id="details_summary_description_container" style="width: 475px; height: 150px;"></div>
+                                    <stripes:textarea name="details['summary.description']" rows="5" cols="27" style="display: none;" id="details_summary_description" />
+                                </td>
                             </tr>
                             <tr>
                                 <td>Samenvatting - link:</td>

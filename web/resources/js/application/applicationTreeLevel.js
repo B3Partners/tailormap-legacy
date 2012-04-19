@@ -124,19 +124,10 @@ Ext.onReady(function() {
     },{
         contentEl:'documents-tab', 
         title: 'Documenten'
+    },{
+        contentEl:'context-tab', 
+        title: 'Context'
     }];
-
-    tabconfig.push({
-        xtype: 'htmleditor',
-        id: 'extContextHtmlEditor',
-        title: 'Context',
-        width: 475,
-        maxWidth: 475,
-        height: 400,
-        maxHeight: 400,
-        padding: 10,
-        value: Ext.get('context_textarea').dom.value
-    });
 
     if(layersAllowed) {
         tabconfig.unshift({
@@ -145,6 +136,7 @@ Ext.onReady(function() {
         });
     }
     
+    var htmlEditorRendered = false;
     Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-offsets');
     Ext.createWidget('tabpanel', {
         renderTo: 'tabs',
@@ -156,7 +148,24 @@ Ext.onReady(function() {
             hideMode: 'offsets'
         },
         layoutOnTabChange: true,
-        items: tabconfig
+        items: tabconfig,
+        listeners: {
+            tabchange: function(panel, activetab, previoustab) {
+                if(activetab.contentEl && activetab.contentEl === 'context-tab' && !htmlEditorRendered) {
+                    // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
+                    Ext.create('Ext.form.field.HtmlEditor', {
+                        id: 'extContextHtmlEditor',
+                        width: 475,
+                        maxWidth: 475,
+                        height: 400,
+                        maxHeight: 400,
+                        value: Ext.get('context_textarea').dom.value,
+                        renderTo: 'contextHtmlEditorContainer'
+                    });
+                    htmlEditorRendered = true;
+                }
+            }
+        }
     });
     
     Ext.get('levelform').on('submit', function() {

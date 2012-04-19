@@ -71,6 +71,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <div style="clear: both;"></div>
                             <stripes:hidden id="selecteddocsinput" name="selecteddocs" />
                         </div>
+                        
+                        <div id="context-tab" class="tabdiv">
+                            <stripes:textarea cols="150" rows="5" name="level.info" id="context_textarea" style="display: none;" />
+                            <div id="contextHtmlEditorContainer" style="width: 475px; height: 400px;"></div>
+                        </div>
 
                     </div>
             </c:if>
@@ -83,7 +88,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                 </script>
             </c:if>
-            <stripes:textarea cols="150" rows="5" name="level.info" id="context_textarea" style="display: none;" />
         </stripes:form>
         <c:if test="${actionBean.context.eventName == 'edit'}">
             <script type="text/javascript">
