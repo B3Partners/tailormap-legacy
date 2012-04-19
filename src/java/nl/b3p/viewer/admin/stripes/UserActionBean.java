@@ -18,12 +18,17 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.*;
+import nl.b3p.viewer.config.services.Layer;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
@@ -385,4 +390,256 @@ public class UserActionBean implements ActionBean {
         return j;
     }
     
+    @Validate
+    Application application;
+    
+    List<Application> applications;
+
+    Set<String> roles;
+        
+    Map<Layer,Set<String>[]> protectedLayers = new HashMap<Layer,Set<String>[]>();
+    Set<Layer> authorizedLayers = Collections.EMPTY_SET;
+    Set<Layer> authorizedEditableLayers = Collections.EMPTY_SET;    
+    
+    Map<Level,Set<String>> protectedLevels = new HashMap<Level,Set<String>>();
+    Map<ApplicationLayer,Set<String>[]> protectedAppLayers = new HashMap<ApplicationLayer,Set<String>[]>();
+    Set<Level> authorizedLevels = Collections.EMPTY_SET;
+    Set<ApplicationLayer> authorizedAppLayers = Collections.EMPTY_SET;
+    Set<ApplicationLayer> authorizedEditableAppLayers = Collections.EMPTY_SET;
+
+    //<editor-fold defaultstate="collapsed" desc="getters and setters for authorization collections">
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+
+    public List<Application> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
+    }
+
+    public Set<ApplicationLayer> getAuthorizedAppLayers() {
+        return authorizedAppLayers;
+    }
+
+    public void setAuthorizedAppLayers(Set<ApplicationLayer> authorizedAppLayers) {
+        this.authorizedAppLayers = authorizedAppLayers;
+    }
+
+    public Set<ApplicationLayer> getAuthorizedEditableAppLayers() {
+        return authorizedEditableAppLayers;
+    }
+
+    public void setAuthorizedEditableAppLayers(Set<ApplicationLayer> authorizedEditableAppLayers) {
+        this.authorizedEditableAppLayers = authorizedEditableAppLayers;
+    }
+
+    public Set<Layer> getAuthorizedEditableLayers() {
+        return authorizedEditableLayers;
+    }
+
+    public void setAuthorizedEditableLayers(Set<Layer> authorizedEditableLayers) {
+        this.authorizedEditableLayers = authorizedEditableLayers;
+    }
+
+    public Set<Layer> getAuthorizedLayers() {
+        return authorizedLayers;
+    }
+
+    public void setAuthorizedLayers(Set<Layer> authorizedLayers) {
+        this.authorizedLayers = authorizedLayers;
+    }
+
+    public Set<Level> getAuthorizedLevels() {
+        return authorizedLevels;
+    }
+
+    public void setAuthorizedLevels(Set<Level> authorizedLevels) {
+        this.authorizedLevels = authorizedLevels;
+    }
+
+    public Map<Layer, Set<String>[]> getProtectedLayers() {
+        return protectedLayers;
+    }
+
+    public void setProtectedLayers(Map<Layer, Set<String>[]> protectedLayers) {
+        this.protectedLayers = protectedLayers;
+    }
+
+    public Map<Level, Set<String>> getProtectedLevels() {
+        return protectedLevels;
+    }
+
+    public void setProtectedLevels(Map<Level, Set<String>> protectedLevels) {
+        this.protectedLevels = protectedLevels;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public Map<ApplicationLayer, Set<String>[]> getProtectedAppLayers() {
+        return protectedAppLayers;
+    }
+
+    public void setProtectedAppLayers(Map<ApplicationLayer, Set<String>[]> protectedAppLayers) {
+        this.protectedAppLayers = protectedAppLayers;
+    }
+    //</editor-fold>
+    
+    public Resolution authorizations() {
+        EntityManager em = Stripersist.getEntityManager();
+
+        // We currently ignore protected categories - not accessible via user interface
+        
+        // Determine which layers are not authorized for everyone        
+        List<Layer> rootLayers = em.createQuery("select distinct s.topLayer from GeoService s").getResultList();
+        for(Layer rootLayer: rootLayers) {
+            checkLayerAuthorizations(rootLayer, Group.EVERYBODY_AUTHORIZED, Group.EVERYBODY_AUTHORIZED);
+        }
+        
+        roles = new HashSet<String>();
+        for(Group g: user.getGroups()) {
+            roles.add(g.getName());
+        }
+        if(!roles.isEmpty()) {
+            
+            authorizedLayers = new HashSet<Layer>();
+            authorizedEditableLayers = new HashSet<Layer>();
+            
+            for(Map.Entry<Layer,Set<String>[]> e: protectedLayers.entrySet()) {
+                
+                Set<String> readers = e.getValue()[0];
+                Set<String> writers = e.getValue()[1];
+                
+                if(readers.equals(Group.EVERYBODY_AUTHORIZED) || !Collections.disjoint(readers, roles)) {
+                    authorizedLayers.add(e.getKey());
+                }
+                if(writers.equals(Group.EVERYBODY_AUTHORIZED) || !Collections.disjoint(writers, roles)) {
+                    authorizedEditableLayers.add(e.getKey());
+                }
+            }
+        }
+        
+        applications = em.createQuery("from Application order by name, version").getResultList();
+        if(application != null) {
+            
+            // Determine which levels are not authorized for everyone
+            checkLevelAuthorizations(application.getRoot(), Group.EVERYBODY_AUTHORIZED);
+            
+            if(!roles.isEmpty()) {
+                authorizedLevels = new HashSet<Level>();
+                
+                for(Map.Entry<Level,Set<String>> e: protectedLevels.entrySet()) {
+                    Set<String> readers = e.getValue();
+                    if(readers.equals(Group.EVERYBODY_AUTHORIZED) || !Collections.disjoint(readers, roles)) {
+                        authorizedLevels.add(e.getKey());
+                    }
+                }
+                authorizedAppLayers = new HashSet<ApplicationLayer>();
+                authorizedEditableAppLayers = new HashSet<ApplicationLayer>();
+                
+                for(Map.Entry<ApplicationLayer,Set<String>[]> e: protectedAppLayers.entrySet()) {
+
+                    Set<String> readers = e.getValue()[0];
+                    Set<String> writers = e.getValue()[1];
+
+                    if(readers.equals(Group.EVERYBODY_AUTHORIZED) || !Collections.disjoint(readers, roles)) {
+                        authorizedAppLayers.add(e.getKey());
+                    }
+                    if(writers.equals(Group.EVERYBODY_AUTHORIZED) || !Collections.disjoint(writers, roles)) {
+                        authorizedEditableAppLayers.add(e.getKey());
+                    }
+                }
+            }            
+        }
+        
+        return new ForwardResolution("/WEB-INF/jsp/security/authorizations.jsp");
+    }
+    
+    private static Set<String> inheritAuthorizations(Set<String> current, Set<String> _new) {
+        
+        if(_new.equals(Group.EVERYBODY_AUTHORIZED)) {
+            // must be copied on write
+            return current;
+        } else {
+            
+            if(current.equals(Group.EVERYBODY_AUTHORIZED)) {
+                return new HashSet<String>(_new);
+            } else {
+                HashSet<String> copy = new HashSet<String>(current);
+                copy.retainAll(_new);
+                if(copy.isEmpty()) {
+                    return Group.NOBODY_AUTHORIZED;
+                } else {
+                    return copy;
+                }                        
+            }
+        }
+    }    
+    
+    private void checkLayerAuthorizations(Layer l, Set<String> currentReaders, Set<String> currentWriters) {
+        
+        currentReaders = inheritAuthorizations(currentReaders, l.getReaders());
+        
+        currentWriters = inheritAuthorizations(currentWriters, l.getWriters());
+
+        if(!currentReaders.equals(Group.EVERYBODY_AUTHORIZED) || !currentWriters.equals(Group.EVERYBODY_AUTHORIZED)) {
+            protectedLayers.put(l, new Set[] { currentReaders, currentWriters });            
+        }
+        
+        for(Layer child: l.getChildren()) {
+            checkLayerAuthorizations(child, currentReaders, currentWriters);
+        }
+    }
+    
+    private void checkLevelAuthorizations(Level l, Set<String> currentReaders) {
+        currentReaders = inheritAuthorizations(currentReaders, l.getReaders());
+        
+        if(!currentReaders.equals(Group.EVERYBODY_AUTHORIZED)) {
+            protectedLevels.put(l, currentReaders);
+        }                
+        
+        for(ApplicationLayer al: l.getLayers()) {
+            if(al != null) {
+                checkAppLayerAuthorizations(al, currentReaders);
+            }
+        }        
+                
+        for(Level child: l.getChildren()) {
+            checkLevelAuthorizations(child, currentReaders);
+        }
+    }
+    
+    private void checkAppLayerAuthorizations(ApplicationLayer al, Set<String> currentReaders) {
+
+        currentReaders = inheritAuthorizations(currentReaders, al.getReaders());
+        
+        // check the layer referenced by this appLayer
+        Layer l = al.getService().getLayer(al.getLayerName());
+
+        Set<String> currentWriters = al.getWriters();
+        
+        if(l != null && protectedLayers.containsKey(l)) {
+            Set<String>[] auths = protectedLayers.get(l);
+            Set<String> layerReaders = auths[0];
+            Set<String> layerWriters = auths[1];
+            currentReaders = inheritAuthorizations(currentReaders, layerReaders);
+            currentWriters = inheritAuthorizations(currentWriters, layerWriters);
+        }
+        
+        if(!currentReaders.equals(Group.EVERYBODY_AUTHORIZED) || !currentWriters.equals(Group.EVERYBODY_AUTHORIZED)) {
+            protectedAppLayers.put(al, new Set[] { currentReaders, currentWriters } );
+        }
+    }
 }

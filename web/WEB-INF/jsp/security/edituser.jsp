@@ -90,6 +90,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div class="submitbuttons">
                         <stripes:submit name="save" value="Opslaan"/>
                         <stripes:submit name="cancel" value="Annuleren"/>
+                        
+                        <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="authorizations">
+                            <stripes:param name="user" value="${actionBean.user}"/>
+                        </stripes:url>
+                        <stripes:button name="authorizations" onclick="window.open(${js:quote(url)})" value="Autorisatieoverzicht"/>
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save'}">
