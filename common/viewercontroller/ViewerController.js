@@ -155,8 +155,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var layersloaded = this.bookmarkValuesFromURL();
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
-                this.initLayers();
+                this.initLayers();                
             }
+            this.layersInitialized=true;
             
             
         // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
@@ -349,38 +350,69 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     clearLayers: function() {
         this.mapComponent.getMap().removeAllLayers();
         this.layers = [];
-    },
-   
-    initLayers : function (){        
-        for( var i = this.app.selectedContent.length -1 ; i >= 0 ; i--){
-            var content = this.app.selectedContent[i];
-            if(content.type == "appLayer") {
-                this.initAppLayer(content.id);
-            } else {
-                this.initLevel(content.id);
+    },    
+    /**
+     *Initialize layers and levels
+     *@param background true/false/undefined. 
+     *True if only the background levels and layers must be initialized, false only the other level and layers must be initialized
+     *and undefined if both must be initialized (first background, then foreground)
+     */
+    initLayers : function (background){
+        if (background==undefined){
+            //first the background
+            this.initLayers(true);
+            //then the forground (on top)
+            this.initLayers(false);
+        }else{
+            for( var i = this.app.selectedContent.length -1 ; i >= 0 ; i--){
+                var content = this.app.selectedContent[i];
+                if(content.type == "appLayer") {
+                    this.initAppLayer(content.id,background);
+                } else {
+                    this.initLevel(content.id,background);
+                }
             }
+        
         }
-        this.layersInitialized=true;
+        
     },
-    
-    initAppLayer: function(appLayerId) {
+      
+    /**
+     *Initialize applayers
+     *@param background true/false/undefined. 
+     *True if only the background levels and layers must be initialized, false only the other level and layers must be initialized
+     *and undefined if both must be initialized (first background, then foreground)
+     */    
+    initAppLayer: function(appLayerId,background) {
         var appLayer = this.app.appLayers[appLayerId];
+        if (appLayer.background!=background){
+            return;
+        }
         //console.log(appLayer.layerName);
         var layer = this.getOrCreateLayer(appLayer.serviceId,appLayer.layerName);
         this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
     },
-    
-    initLevel: function(levelId) {
+      
+    /**
+     *Initialize layers and levels
+     *@param background true/false/undefined. 
+     *True if only the background levels and layers must be initialized, false only the other level and layers must be initialized
+     *and undefined if both must be initialized (first background, then foreground)
+     */
+    initLevel: function(levelId,background) {
         var level = this.app.levels[levelId];
+        if (level.background!=background){
+            return;
+        }
         if(level.layers) {
             for (var i = level.layers.length - 1 ; i >= 0 ; i--){
-                this.initAppLayer(level.layers[i]);
+                this.initAppLayer(level.layers[i],background);
             }
         }
         
         if(level.children) {
             for (var i = level.children.length - 1 ; i >= 0 ; i--){
-                this.initLevel(level.children[i]);
+                this.initLevel(level.children[i],background);
             }
         }
     },
