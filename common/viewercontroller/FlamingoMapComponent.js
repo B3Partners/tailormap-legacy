@@ -601,6 +601,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             var featureObj = Ext.create("viewer.viewercontroller.controller.Feature",component[1]);
             component = featureObj;
             object = layerObj;
+        }else if (event == viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE){
+            if(!this.viewerController.layersInitialized){
+                return;
+            }
         }
         if(object != undefined){
             object.fire(event,component);

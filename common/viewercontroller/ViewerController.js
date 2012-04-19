@@ -440,7 +440,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (!this.layersInitialized){
                 this.logger.warning("HEY! Layers not initialized! Hold your horses! Just wait for the LAYER_ADDED event!");
             }else{
-                this.logger.warning("Hmmm. Layer not added... Create it.");
+                this.logger.warning("Hmmm. Layer not available. Return null. ServiceId: "+serviceId+" Layer: "+layerName);
             }
             return null;
         }
