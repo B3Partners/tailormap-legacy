@@ -117,7 +117,7 @@ Ext.define ("viewer.components.Legend",{
         this.makeLegendList();
         var config ={
             legends: this.legends, 
-            queueSize: 1,
+            queueSize: 2,
             div: this.legendContainer
         };
         this.queue = Ext.create("viewer.components.ImageQueue",config);
@@ -207,8 +207,9 @@ Ext.define("viewer.components.Image",{
         this.legendimg.name = this.item.title;
         this.legendimg.id = this.item.id;
         this.legendimg.alt = "Legenda " + this.item.title;
+        this.legendimg.imgObj = this;        
+        this.legendimg.onabort=this.treeImageError;
         this.legendimg.onerror=this.treeImageError;
-        this.legendimg.imgObj = this;
         this.legendimg.onload=this.treeImageOnload;
         
         this.legendimg.className = 'treeLegendImage';
@@ -217,7 +218,7 @@ Ext.define("viewer.components.Image",{
     treeImageOnload : function (){
         this.imgObj.queue.imageLoaded(this.imgObj.legendimg,this.imgObj.item);
     },
-    treeImageError :function (){
+    treeImageError :function (){  
         this.imgObj.queue.queueSize++;
     }
 });
