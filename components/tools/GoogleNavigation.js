@@ -26,19 +26,21 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
         navigationPanel : true
     },
     navComp: null,
-    constructor: function (conf){        
+    constructor: function (conf){   
+        var confNav ={};
+        Ext.apply(confNav,conf);
         viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, conf);
         this.initConfig(conf); 
         conf.type = viewer.viewercontroller.controller.Tool.DEFAULT;
         this.initTool(conf);
-        if (this.getNavigationPanel()){
-            var confNav ={};
-            Ext.apply(confNav,conf);
-            
-            this.navComp=Ext.create("viewer.components.NavigationPanel",{
-                name: conf.name+"_navPan",
-                viewerController: this.viewerController
-            });
+        if (this.getNavigationPanel()){            
+            delete confNav.div;
+            delete confNav.details;
+            delete confNav.regionName;
+            delete confNav.type;            
+            confNav.id += "_navPan",
+            confNav.name += "_navPan",
+            this.navComp=Ext.create("viewer.components.NavigationPanel",confNav);
         }
         return this;
     }
