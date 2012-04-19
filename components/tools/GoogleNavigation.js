@@ -27,18 +27,15 @@ Ext.define ("viewer.components.tools.GoogleNavigation",{
     },
     navComp: null,
     constructor: function (conf){   
+        //copy the configuration before it's changed.
         var confNav ={};
         Ext.apply(confNav,conf);
+        
         viewer.components.tools.GoogleNavigation.superclass.constructor.call(this, conf);
         this.initConfig(conf); 
         conf.type = viewer.viewercontroller.controller.Tool.DEFAULT;
         this.initTool(conf);
-        if (this.getNavigationPanel()){            
-            delete confNav.div;
-            delete confNav.details;
-            delete confNav.regionName;
-            delete confNav.type;            
-            confNav.id += "_navPan",
+        if (this.getNavigationPanel()){  
             confNav.name += "_navPan",
             this.navComp=Ext.create("viewer.components.NavigationPanel",confNav);
         }
