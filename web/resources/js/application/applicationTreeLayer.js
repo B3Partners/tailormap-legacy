@@ -132,6 +132,7 @@ Ext.onReady(function() {
                 })));
             }
             var isEnabled = (attribute.filterable || attribute.selectable) || false;
+            var defaultValueHidden = !(attribute.selectable || false);
             filterPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                 id: 'filter' + attribute.id,
                 title: name + (isEnabled ? ' (&times;)' : ''),
@@ -154,7 +155,10 @@ Ext.onReady(function() {
                         items: [
                             { xtype: 'displayfield', fieldLabel: 'Attribuut gebruiken bij' },
                             { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right' },
-                            { id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right' }
+                            { 
+                                id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right',
+                                listeners: {change: function(field, newval) { var comp = Ext.getCmp('default' + attribute.id); comp.setVisible(false); if(newval) comp.setVisible(true); }}
+                            }
                         ]
                     },
                     {
@@ -162,7 +166,9 @@ Ext.onReady(function() {
                         name: 'default' + attribute.id,
                         id: 'default' + attribute.id,
                         fieldLabel: 'Defaultwaarde',
-                        value: attribute.defaultValue
+                        value: attribute.defaultValue,
+                        hidden: defaultValueHidden,
+                        hideMode: 'visibility'
                     }
                 ]
             })));
