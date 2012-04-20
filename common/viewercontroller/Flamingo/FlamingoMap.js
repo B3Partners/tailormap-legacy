@@ -97,12 +97,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      **/
     removeLayer:function(layer){
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
-            Ext.Error.raise({msg: "FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer"});
-        //call super function
-        this.superclass.removeLayer.call(this,layer);
+            Ext.Error.raise({msg: "FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer"});        
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
-        }
+        } 
+        //call super function
+        this.superclass.removeLayer.call(this,layer);
     },
     
     addEditMap: function(){

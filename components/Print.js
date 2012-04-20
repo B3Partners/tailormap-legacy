@@ -98,10 +98,12 @@ Ext.define ("viewer.components.Print",{
         }
     },
     removeLegend: function (layer){
-        for (var i=0; i < this.legends.length; i++){
-            if (this.legends[i].id==layer.id){
-                this.legends.splice(i,1)
-                return;
+        if (layer!=null){
+            for (var i=0; i < this.legends.length; i++){
+                if (this.legends[i].id==layer.id){
+                    this.legends.splice(i,1)
+                    return;
+                }
             }
         }
     },
