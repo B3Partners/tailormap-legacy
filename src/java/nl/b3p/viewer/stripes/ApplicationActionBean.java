@@ -56,6 +56,8 @@ public class ApplicationActionBean implements ActionBean {
     private String appConfigJSON;
 
     private String viewerType;
+    
+    private String loginUrl;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public String getName() {
@@ -121,6 +123,14 @@ public class ApplicationActionBean implements ActionBean {
     public void setViewerType(String viewerType){
         this.viewerType = viewerType;
     }
+
+    public String getLoginUrl() {
+        return loginUrl;
+    }
+
+    public void setLoginUrl(String loginUrl) {
+        this.loginUrl = loginUrl;
+    }
     //</editor-fold>
 
     static Application findApplication(String name, String version) {
@@ -148,6 +158,18 @@ public class ApplicationActionBean implements ActionBean {
         if(application == null) {
             getContext().getValidationErrors().addGlobalError(new LocalizableError("app.notfound", name + (version != null ? " v" + version : "")));
             return new ForwardResolution("/WEB-INF/jsp/error.jsp");
+        }
+        
+        RedirectResolution login = new RedirectResolution(LoginActionBean.class)
+                .addParameter("name", name) // binded parameters not included ?
+                .addParameter("version", version)                     
+                .addParameter("debug", debug)
+                .includeRequestParameters(true);
+        
+        loginUrl = login.getUrl(context.getLocale()); 
+        
+        if(application.isAuthenticatedRequired() && context.getRequest().getRemoteUser() == null) {
+            return login;
         }
 
         buildComponentSourceHTML();

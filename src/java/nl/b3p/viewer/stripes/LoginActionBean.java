@@ -18,8 +18,6 @@ package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.app.Application;
-import org.json.JSONException;
 
 /**
  *
@@ -30,19 +28,10 @@ import org.json.JSONException;
 public class LoginActionBean implements ActionBean {
     
     private ActionBeanContext context;
+
+    @Validate
+    private boolean actuallyLogin;
     
-    @Validate
-    private String bookmarkParams;
-    
-    @Validate
-    private String name;
-
-    @Validate
-    private String version;
-
-    @Validate
-    private boolean debug;
-
     public ActionBeanContext getContext() {
         return context;
     }
@@ -51,39 +40,28 @@ public class LoginActionBean implements ActionBean {
         this.context = context;
     }
 
-    public String getBookmarkParams() {
-        return bookmarkParams;
+    public boolean isActuallyLogin() {
+        return actuallyLogin;
     }
 
-    public void setBookmarkParams(String bookmarkParams) {
-        this.bookmarkParams = bookmarkParams;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
+    public void setActuallyLogin(boolean actuallyLogin) {
+        this.actuallyLogin = actuallyLogin;
     }
     
-    public Resolution forward() throws JSONException {
-        return new RedirectResolution(ApplicationActionBean.class).includeRequestParameters(true);  
+    @DefaultHandler
+    public Resolution forward() {
+        return new RedirectResolution(ApplicationActionBean.class).includeRequestParameters(true);
+    }
+    
+    public Resolution logout() {
+        if(actuallyLogin) {
+            return forward();
+        }
+        
+        context.getRequest().getSession().invalidate();
+
+        // Avoid immediately logging out again because include request parameters
+        // includes logout=true parameter leading to this handler being executed
+        return new RedirectResolution(ApplicationActionBean.class).includeRequestParameters(true).addParameter("actuallyLogin", true);
     }
 }
