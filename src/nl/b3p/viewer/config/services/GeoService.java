@@ -58,7 +58,14 @@ public abstract class GeoService {
     private Set<String> keywords = new HashSet<String>();
     
     @Transient
+    private List<Layer> layers;
+    
+    @Transient
     private Map<Layer,List<Layer>> childrenByParent = null;
+    
+    @Basic(optional=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date authorizationsModified = new Date();
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
@@ -132,8 +139,16 @@ public abstract class GeoService {
     public void setMonitoringEnabled(boolean monitoringEnabled) {
         this.monitoringEnabled = monitoringEnabled;
     }
-    //</editor-fold>
 
+    public Date getAuthorizationsModified() {
+        return authorizationsModified;
+    }
+
+    public void setAuthorizationsModified(Date authorizationsModified) {
+        this.authorizationsModified = authorizationsModified;
+    }
+    //</editor-fold>
+      
     public GeoService loadFromUrl(String url, Map params) throws Exception {
         return loadFromUrl(url, params, new WaitPageStatus());
     }
@@ -143,6 +158,11 @@ public abstract class GeoService {
     public String getProtocol() {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }
+
+
+    public void authorizationsModified() {
+        authorizationsModified = new Date();
+    }    
     
     /** To prevent a lot of SQL requests walking a tree structure of entities,
      * load all layers using an efficient query. The Layers.children collections
@@ -154,6 +174,10 @@ public abstract class GeoService {
      * state when loadLayerTree() was last called.
      */
     public List<Layer> loadLayerTree() {
+        if(layers != null) {
+            return layers;
+        }
+        
         if(!Stripersist.getEntityManager().contains(this)) {
             // Not a persistent entity (for example when loading user specified 
             // service)
@@ -162,14 +186,14 @@ public abstract class GeoService {
         
         // XXX Oracle specific
         // Retrieve layer tree structure in single query
-        List<Layer> layerEntities = Stripersist.getEntityManager().createNativeQuery(
+        layers = Stripersist.getEntityManager().createNativeQuery(
             "select * from layer start with id = :rootId connect by parent = prior id",
             Layer.class)
             .setParameter("rootId", topLayer.getId())
             .getResultList();   
       
         childrenByParent = new HashMap<Layer,List<Layer>>();
-        for(Layer l: layerEntities) {               
+        for(Layer l: layers) {               
             if(l.getParent() != null) {
                 List<Layer> parentChildren = childrenByParent.get(l.getParent());
                 if(parentChildren == null) {
@@ -179,7 +203,7 @@ public abstract class GeoService {
                 parentChildren.add(l);
             }
         }      
-        return layerEntities;
+        return layers;
     }
     
     public List<Layer> getLayerChildrenCache(Layer l) {
@@ -281,6 +305,7 @@ public abstract class GeoService {
      * @return the Layer or null if not found
      */
     public Layer getLayer(String layerName) {
+        loadLayerTree();
         return getLayer(layerName,topLayer);
     }
     /**

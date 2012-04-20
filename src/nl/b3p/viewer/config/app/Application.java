@@ -76,7 +76,7 @@ public class Application {
     })
     private BoundingBox maxExtent;
 
-    private boolean authenticatedRequired;
+    private boolean authenticatedRequired ;
 
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private Level root;
@@ -84,6 +84,10 @@ public class Application {
     @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="application")
     private Set<ConfiguredComponent> components = new HashSet<ConfiguredComponent>();
 
+    @Basic(optional=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date authorizationsModified = new Date();    
+    
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
@@ -172,8 +176,86 @@ public class Application {
     public void setStartExtent(BoundingBox startExtent) {
         this.startExtent = startExtent;
     }
-    //</editor-fold>
 
+    public Date getAuthorizationsModified() {
+        return authorizationsModified;
+    }
+
+    public void setAuthorizationsModified(Date authorizationsModified) {
+        this.authorizationsModified = authorizationsModified;
+    }
+    //</editor-fold>
+    
+    public static class TreeCache {
+        List<Level> levels;
+        Map<Level,List<Level>> childrenByParent;
+        List<ApplicationLayer> applicationLayers;
+
+        public List<ApplicationLayer> getApplicationLayers() {
+            return applicationLayers;
+        }
+
+        public List<Level> getChildren(Level l) {
+            List<Level> children = childrenByParent.get(l);
+            if(children == null) {
+                return Collections.EMPTY_LIST;
+            } else {
+                return children;
+            }
+        }
+
+        public List<Level> getLevels() {
+            return levels;
+        }
+    }
+    
+    @Transient
+    private TreeCache treeCache;
+    
+    public TreeCache loadTreeCache() {
+        if(treeCache == null) {
+            // XXX Oracle specific, use recursive CTE for other dialects
+            // Retrieve level tree structure in single query
+            
+            treeCache = new TreeCache();
+            
+            treeCache.levels = Stripersist.getEntityManager().createNativeQuery(
+                "select * from level_ start with id = :rootId connect by parent = prior id",
+                Level.class)
+                .setParameter("rootId", root.getId())
+                .getResultList();
+            
+            // Prevent n+1 queries for each level            
+            Stripersist.getEntityManager().createQuery("from Level l "
+                    + "left join fetch l.layers "
+                    + "where l in (:levels) ")
+                    .setParameter("levels", treeCache.levels)
+                    .getResultList();    
+            
+            treeCache.childrenByParent = new HashMap();
+            treeCache.applicationLayers = new ArrayList();
+            
+            for(Level l: treeCache.levels) {
+                treeCache.applicationLayers.addAll(l.getLayers());
+                
+                if(l.getParent() != null) {
+                    List<Level> parentChildren = treeCache.childrenByParent.get(l.getParent());
+                    if(parentChildren == null) {
+                        parentChildren = new ArrayList<Level>();
+                        treeCache.childrenByParent.put(l.getParent(), parentChildren);
+                    }
+                    parentChildren.add(l);
+                }
+            }
+            
+        }
+        return treeCache;
+    }
+
+    public void authorizationsModified() {
+        authorizationsModified = new Date();
+    }
+    
     /**
      * Create a JSON representation for use in browser to start this application
      * @return
@@ -204,49 +286,23 @@ public class Application {
         
         if(root != null) {
             o.put("rootLevel", root.getId().toString());
-            
-            // XXX Oracle specific
-            // Retrieve level tree structure in single query
-            
-            List<Level> levelEntities = Stripersist.getEntityManager().createNativeQuery(
-                "select * from level_ start with id = :rootId connect by parent = prior id",
-                Level.class)
-                .setParameter("rootId", root.getId())
-                .getResultList();
+
+            loadTreeCache();
             
             // Prevent n+1 queries for each level            
             Stripersist.getEntityManager().createQuery("from Level l "
                     + "left join fetch l.documents "
-                    + "left join fetch l.layers "
                     + "left join fetch l.readers "
                     + "where l in (:levels) ")
-                    .setParameter("levels", levelEntities)
-                    .getResultList();
-            
-            Map<Level,List<Level>> childrenByParent = new HashMap<Level,List<Level>>();
-            List<ApplicationLayer> appLayerEntities = new ArrayList<ApplicationLayer>();
-            
-            for(Level l: levelEntities) {
-                appLayerEntities.addAll(l.getLayers());
-                
-                if(l.getParent() != null) {
-                    List<Level> parentChildren = childrenByParent.get(l.getParent());
-                    if(parentChildren == null) {
-                        parentChildren = new ArrayList<Level>();
-                        childrenByParent.put(l.getParent(), parentChildren);
-                    }
-                    parentChildren.add(l);
-                }
-            }
+                    .setParameter("levels", treeCache.levels)
+                    .getResultList();            
 
-            if(!appLayerEntities.isEmpty()) {
+            if(!treeCache.applicationLayers.isEmpty()) {
                 // Prevent n+1 queries for each ApplicationLayer            
                 Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
                         + "left join fetch al.details "
-                        + "left join fetch al.readers "
-                        + "left join fetch al.writers "
                         + "where al in (:alayers) ")
-                        .setParameter("alayers", appLayerEntities)
+                        .setParameter("alayers", treeCache.applicationLayers)
                         .getResultList();
             }
 
@@ -258,7 +314,7 @@ public class Application {
             o.put("selectedContent", selectedContent);         
             
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, childrenByParent, false);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false);
 
             Collections.sort(selectedObjects, new Comparator() {
 
@@ -291,7 +347,7 @@ public class Application {
             }
            
             Map<GeoService,Set<String>> usedLayersByService = new HashMap<GeoService,Set<String>>();
-            visitLevelForUsedServicesLayers(root, childrenByParent, usedLayersByService);
+            visitLevelForUsedServicesLayers(root, usedLayersByService);
 
             if(!usedLayersByService.isEmpty()) {
                 JSONObject services = new JSONObject();
@@ -319,7 +375,7 @@ public class Application {
         return o.toString(4);
     }
     
-    private static void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, Map<Level,List<Level>> childrenByParent, boolean parentIsBackground) throws JSONException {
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground) throws JSONException {
         JSONObject o = l.toJSONObject(false);
         o.put("background", l.isBackground() || parentIsBackground);
         levels.put(l.getId().toString(), o);
@@ -338,18 +394,18 @@ public class Application {
             }
         }
         
-        List<Level> children = childrenByParent.get(l);
+        List<Level> children = treeCache.childrenByParent.get(l);
         if(children != null) {
             JSONArray jsonChildren = new JSONArray();
             o.put("children", jsonChildren);
             for(Level child: children) {
                 jsonChildren.put(child.getId().toString());
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, childrenByParent, l.isBackground());
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground());
             }
         }
     }
     
-    private static void visitLevelForUsedServicesLayers(Level l, Map<Level,List<Level>> childrenByParent, Map<GeoService,Set<String>> usedLayersByService) {
+    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService) {
                 
         for(ApplicationLayer al: l.getLayers()) {
             GeoService gs = al.getService();
@@ -361,10 +417,10 @@ public class Application {
             }
             usedLayers.add(al.getLayerName());
         }
-        List<Level> children = childrenByParent.get(l);
+        List<Level> children = treeCache.childrenByParent.get(l);
         if(children != null) {        
             for(Level child: children) {
-                visitLevelForUsedServicesLayers(child, childrenByParent, usedLayersByService);
+                visitLevelForUsedServicesLayers(child, usedLayersByService);
             }        
         }
     }
