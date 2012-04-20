@@ -377,10 +377,12 @@
         closureCompilerSafe: true,
         extPropertyGridConfigs: {
             propertyNames: {               
-                title: "Titel"
+                title: "Titel",
+                showBackground: "Toon achtergrond kaarten"
             },
             source: {
-                title: "Legenda"
+                title: "Legenda",
+                showBackground: false
             }
         },
         singleton: true,

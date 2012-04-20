@@ -346,7 +346,28 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return documents;
     },
+    /**
+     * Check if this applayer is a background
+     * @param appLayer the applayer
+     */
+    isBackgroundAppLayer: function (appLayer){
+        if (appLayer.background){
+            return true;
+        }
+        return this.isBackgroundLevel(this.getAppLayerParent(appLayer.id));
+    },
+    isBackgroundLevel: function(level){
+        if (level){
+            if (level.background){
+                return true;
+            }
+            return this.isBackgroundLevel(this.getLevelParent(level.id));
+        }
+        return false;
+    },
 
+    /** Remove all layers
+     */
     clearLayers: function() {
         this.mapComponent.getMap().removeAllLayers();
         this.layers = [];

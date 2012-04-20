@@ -30,7 +30,8 @@ Ext.define ("viewer.components.Legend",{
         // name: "Legend",
         title: "Legend",
         titlebarIcon : "",
-        tooltip : ""
+        tooltip : "",
+        showBackground: false
     },
     constructor: function (conf){
         viewer.components.Legend.superclass.constructor.call(this, conf);
@@ -85,10 +86,22 @@ Ext.define ("viewer.components.Legend",{
            this.removeLayer(layer.id);
         }
     },
-    // Called when a layer is added
+    /**
+     * Called when a layer is added
+     * @param layer a viewer.viewercontroller.controller.Layer
+     */
     addLayer : function (layer){
         var serviceId = layer.serviceId;
-        var layerName = layer.getAppLayerName();// TODO: not yet correct
+        var layerName = layer.getAppLayerName();// TODO: not yet correct        
+        //show backgrounds == false then don't show backgrounds.
+        if (!this.getShowBackground()){
+            //var appLayer=this.viewerController.getAppLayer(serviceId,layerName);
+            var appLayer=this.viewerController.app.appLayers[layer.appLayerId];            
+            var background=this.viewerController.isBackgroundAppLayer(appLayer);
+            if (background){
+                return;
+            }
+        }
         var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
         if (url!=null){
             var legend = {
