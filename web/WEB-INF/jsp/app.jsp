@@ -247,6 +247,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
                 "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>
             };
+            
+            function updateLoginInfo() {
+                <c:if test="${pageContext.request.remoteUser != null}">
+                    var link = document.getElementById("loginLink");
+                    if(link) {
+                        link.innerHTML = "Uitloggen";
+                        link.onclick = logout;
+                    }
+                    var info = document.getElementById("loginInfo");
+                    if(info) {
+                        info.innerHTML = "Ingelogd als <b>" + <js:quote>${pageContext.request.remoteUser}</js:quote> + "</b>";
+                    }
+                </c:if>
+            }
+            
+            function login() {
+                window.location.href = <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"/></js:quote>;
+            }
+            
+            function logout() {
+                window.location.href = 
+                    <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}">
+                        <stripes:param name="logout" value="true"/></stripes:url></js:quote>;
+            }
              
             var appId = "${actionBean.application.id}";
             var viewerController;
@@ -260,7 +284,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config);
                     Ext.EventManager.onWindowResize(function () {
                         viewerController.resizeComponents();
-                    });
+                    });        
+                    
+                    viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, updateLoginInfo);
                 });
             }());
             
