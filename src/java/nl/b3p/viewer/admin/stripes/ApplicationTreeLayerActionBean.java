@@ -55,8 +55,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     @DefaultHandler
     public Resolution view() {
-        Stripersist.getEntityManager().getTransaction().commit();
-
         return new ForwardResolution(JSP);
     }
 
@@ -94,6 +92,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                         applicationLayer.getAttributes().add(confAttribute);
                     }
                     Stripersist.getEntityManager().persist(applicationLayer);
+                    application.authorizationsModified();
                     Stripersist.getEntityManager().getTransaction().commit();
                 }
 
@@ -179,6 +178,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         }
 
         Stripersist.getEntityManager().persist(applicationLayer);
+        application.authorizationsModified();
         Stripersist.getEntityManager().getTransaction().commit();
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));

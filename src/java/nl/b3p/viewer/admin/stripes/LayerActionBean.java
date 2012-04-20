@@ -240,6 +240,7 @@ public class LayerActionBean implements ActionBean {
         }
 
         Stripersist.getEntityManager().persist(layer);
+        layer.getService().authorizationsModified();
         Stripersist.getEntityManager().getTransaction().commit();
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));

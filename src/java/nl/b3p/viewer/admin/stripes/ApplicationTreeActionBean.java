@@ -278,6 +278,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
         em.persist(l);
         em.persist(parent);
+        application.authorizationsModified();
         em.getTransaction().commit();
 
         final JSONObject j = new JSONObject();

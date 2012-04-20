@@ -98,6 +98,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             getContext().getMessages().add(new SimpleMessage("Het niveau is verwijderd"));
         }
         
+        application.authorizationsModified();        
         Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);
@@ -183,6 +184,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 Level parent = level.getParent();
                 parent.getChildren().remove(level);
                 Stripersist.getEntityManager().remove(level);
+                application.authorizationsModified();
                 Stripersist.getEntityManager().getTransaction().commit();
 
                 json.put("success", Boolean.TRUE);
@@ -251,6 +253,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         }
         
         Stripersist.getEntityManager().persist(level);
+        application.authorizationsModified();
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
