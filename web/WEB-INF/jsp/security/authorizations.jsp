@@ -15,6 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --%>
 
+<%@page import="nl.b3p.viewer.util.Coalesce"%>
+<%@page import="nl.b3p.viewer.config.services.GeoService"%>
+<%@page import="org.stripesstuff.stripersist.Stripersist"%>
+<%@page import="nl.b3p.viewer.config.security.Authorizations"%>
 <%@page import="java.util.Set"%>
 <%@page import="nl.b3p.viewer.config.app.ApplicationLayer"%>
 <%@page import="nl.b3p.viewer.config.app.Level"%>
@@ -45,33 +49,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
            Set readers, writers;
         %>
         <table class="formtable" border="1">
-            <tr><th>ID</th><th>Naam</th><th>Service ID en naam</th><th>Rechten voor <c:out value="${actionBean.user.username}"/></th><th>Lezen groepen</th><th>Schrijven groepen</th>
-            <c:forEach var="e" items="<%= actionBean.getProtectedLayers().entrySet()%>">
-                <c:set var="l" value="${e.key}"/>
-                <c:set var="readers" value="${e.value[0]}"/>
-                <c:set var="writers" value="${e.value[1]}"/>
-                <tr>
-                    <td>${l.id}</td>
-                    <td><c:out value="${l.name}"/></td>
-                    <td>${l.service.id} - <c:out value="${l.service.name}"/></td>
-                    <td>
-                        <%
-                          Layer layer = (Layer)pageContext.getAttribute("l");
-                          if(actionBean.getAuthorizedLayers().contains(layer)) {
-                              boolean editable = actionBean.getAuthorizedEditableLayers().contains(layer);
-                              out.print("<span style=\"color: green !important\">Lezen" + (editable ? " en schrijven" : "") + "</span>");
-                          } else {
-                              out.print("<span style=\"color: red !important\">Geen</span>");
-                          } 
-                        %>
-                    </td>
-                    <%
-                        readers = (Set)pageContext.getAttribute("readers");
-                        writers = (Set)pageContext.getAttribute("writers");
-                    %>
-                    <td><%= readers.isEmpty() ? "<i>iedereen</i>" : (readers.iterator().next() == null ? "<i>niemand</i>" : readers.toString()) %></td>
-                    <td><%= writers.isEmpty() ? "<i>iedereen</i>" : (writers.iterator().next() == null ? "<i>niemand</i>" : writers.toString()) %></td>
-                </tr>
+            <tr><th>ID</th><th>Naam</th></th><th>Rechten voor <c:out value="${actionBean.user.username}"/></th><th>Lezen groepen</th><th>Schrijven groepen</th>
+            <c:forEach var="e" items="<%= Authorizations.serviceCache.entrySet() %>">
+                <c:set var="gsId" value="${e.key}"/>
+                <c:set var="protectedLayers" value="${e.value.protectedLayers}"/>
+                
+                <c:if test="${!empty protectedLayers}">
+                    <% GeoService gs = Stripersist.getEntityManager().find(GeoService.class, pageContext.getAttribute("gsId")); %>
+                    <tr>
+                        <th colspan="5" style="text-align: center">service ${gsId} - <c:out value="<%= gs.getName() %>"/> - <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${e.value.modified}"/></th>
+                    </tr>
+                    
+                    <c:forEach var="e" items="${protectedLayers}">
+                        <c:set var="layerId" value="${e.key}"/>
+                        <c:set var="readers" value="${e.value.readers}"/>
+                        <c:set var="writers" value="${e.value.writers}"/>
+                        <% Layer layer = Stripersist.getEntityManager().find(Layer.class, pageContext.getAttribute("layerId")); %>
+                        
+                        <tr>
+                            <td>${layerId}</td>
+                            <td><c:out value="<%= layer.getName() %>"/></td>
+                            <td>
+                                <%
+                                if(actionBean.getAuthorizedLayers().contains(layer)) {
+                                    boolean editable = actionBean.getAuthorizedEditableLayers().contains(layer);
+                                    out.print("<span style=\"color: green !important\">Lezen" + (editable ? " en schrijven" : "") + "</span>");
+                                } else {
+                                    out.print("<span style=\"color: red !important\">Geen</span>");
+                                } 
+                                %>
+                            </td>
+                            <%
+                                readers = (Set)pageContext.getAttribute("readers");
+                                writers = (Set)pageContext.getAttribute("writers");
+                            %>
+                            <td><%= readers.isEmpty() ? "<i>iedereen</i>" : (readers.iterator().next() == null ? "<i>niemand</i>" : readers.toString()) %></td>
+                            <td><%= writers.isEmpty() ? "<i>iedereen</i>" : (writers.iterator().next() == null ? "<i>niemand</i>" : writers.toString()) %></td>
+                        </tr>
+                        
+                    </c:forEach>
+                </c:if>
             </c:forEach>
         </table>
             
@@ -81,15 +98,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <p style="font-style: italic; padding: 5px">Niveau's die voor alle groepen geautoriseerd zijn worden niet getoond.</p>
             <table class="formtable" border="1">
                 <tr><th>ID</th><th>Naam</th><th>Toegang voor <c:out value="${actionBean.user.username}"/></th><th>Groepen met toegang</th>
-                <c:forEach var="e" items="<%= actionBean.getProtectedLevels().entrySet()%>">
-                    <c:set var="l" value="${e.key}"/>
-                    <c:set var="readers" value="${e.value}"/>
+                <c:forEach var="e" items="<%= actionBean.getApplicationCache().getProtectedLevels().entrySet()%>">
+                    <c:set var="levelId" value="${e.key}"/>
+                    <c:set var="readers" value="${e.value.readers}"/>
+                    <% Level level = Stripersist.getEntityManager().find(Level.class, pageContext.getAttribute("levelId")); %>
+                    
                     <tr>
-                        <td>${l.id}</td>
-                        <td><c:out value="${l.name}"/></td>
+                        <td>${levelId}</td>
+                        <td><c:out value="<%= level.getName() %>"/></td>
                         <td>
                             <%
-                            Level level = (Level)pageContext.getAttribute("l");
                             if(actionBean.getAuthorizedLevels().contains(level)) {
                                 out.print("<span style=\"color: green !important\">Ja</span>");
                             } else {
@@ -108,18 +126,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <p style="font-style: italic; padding: 5px">Kaartlagen die voor alle groepen geautoriseerd zijn worden niet getoond.</p>
             <table class="formtable" border="1">
                 <tr><th>ID</th><th>Service ID en naam</th><th>Kaartlaag</th><th>Rechten voor <c:out value="${actionBean.user.username}"/></th><th>Lezen groepen</th><th>Schrijven groepen</th>
-                <c:forEach var="e" items="<%= actionBean.getProtectedAppLayers().entrySet()%>">
-                    <c:set var="al" value="${e.key}"/>
-                    <c:set var="readers" value="${e.value[0]}"/>
-                    <c:set var="writers" value="${e.value[1]}"/>
+                <c:forEach var="e" items="<%= actionBean.getApplicationCache().getProtectedAppLayers().entrySet()%>">
+                    <c:set var="alId" value="${e.key}"/>
+                    <c:set var="readers" value="${e.value.readers}"/>
+                    <c:set var="writers" value="${e.value.writers}"/>
+                    <% ApplicationLayer applicationLayer = Stripersist.getEntityManager().find(ApplicationLayer.class, pageContext.getAttribute("alId"));
+                       Layer alLayer = applicationLayer.getService().getLayer(applicationLayer.getLayerName());
+                    %>
+                    
                     <tr>
-                        <td>${al.id}</td>
-                        <td><c:out value="${al.service.id} - ${al.service.name}"/></td>
-                        <td>${al.layerName}</td>
+                        <td>${alId}</td>
+                        <td><%= applicationLayer.getService().getId() %> - <c:out value="<%= applicationLayer.getService().getName() %>"/></td>
+                        <td><%= alLayer != null ? Coalesce.coalesce(alLayer.getTitleAlias(), alLayer.getTitle(), alLayer.getName()) : applicationLayer.getLayerName() %></td>
                         <td><%
-                            ApplicationLayer al = (ApplicationLayer)pageContext.getAttribute("al");
-                            if(actionBean.getAuthorizedAppLayers().contains(al)) {
-                                boolean editable = actionBean.getAuthorizedEditableAppLayers().contains(al);
+                            if(actionBean.getAuthorizedAppLayers().contains(applicationLayer)) {
+                                boolean editable = actionBean.getAuthorizedEditableAppLayers().contains(applicationLayer);
                                 out.print("<span style=\"color: green !important\">Lezen" + (editable ? " en schrijven" : "") + "</span>");
                             } else {
                                 out.print("<span style=\"color: red !important\">Geen</span>");
