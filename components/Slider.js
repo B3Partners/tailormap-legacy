@@ -34,7 +34,7 @@ Ext.define("viewer.components.Slider",{
     constructor : function (conf){
         viewer.components.Slider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-               
+        this.layers=new Array();
         this.slider = Ext.create('Ext.slider.Single', {
             width: 200,
             value: this.initialTransparency,
@@ -52,35 +52,39 @@ Ext.define("viewer.components.Slider",{
             }
         });
         
-        // TODO: Check EVENT, is this the right event to listen to?
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,this.applySlider,this);        
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        
         return this;
     },
-    applySlider: function() {
-        if(this.slider) this.sliderChanged(this.slider, this.slider.getValue());
-    },
-    sliderChanged: function (slider,value){
-        if (this.layers==null){
-            this.initLayers();
+    onAddLayer: function(map,options){        
+        var mapLayer=options.layer;  
+        var appLayer = this.viewerController.app.appLayers[mapLayer.appLayerId];
+        //check if this slider needs to change values for the layer
+        var serviceLayer=this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+        if (Ext.Array.contains(this.selectedLayers,serviceLayer.id)){            
+            this.layers.push(mapLayer);
+            if(this.slider){
+                this.applySlider(mapLayer,this.slider.getValue());
+            }
         }
+    },
+    /**
+     * Apply the slider to the given layer.
+     * @param mapLayer a viewer.viewercontroller.controller.Layer
+     */
+    applySlider: function(mapLayer,value) {
+        mapLayer.setAlpha(value);
+    },
+    /**
+     * Slider changed.
+     */
+    sliderChanged: function (slider,value){       
         for(var i = 0 ; i< this.layers.length ;i++){
             var layer = this.layers[i];
-            layer.setAlpha(value);
+            this.applySlider(layer,value);
         }
     },
     getExtComponents: function() {
         return this.slider.getId();
-    },
-    initLayers: function(){
-        var selectedLayers = this.selectedLayers;
-        if(this.layers == null){
-            this.layers = new Array();
-        }
-        for( var i = 0 ; i < selectedLayers.length;i++){
-            var layer = this.viewerController.getLayerByLayerId(this.selectedLayers[i]);
-            if(layer) {
-                this.layers.push(layer);
-            }
-        }
-    }
+    }    
 });

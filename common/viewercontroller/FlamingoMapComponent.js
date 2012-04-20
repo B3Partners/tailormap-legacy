@@ -558,6 +558,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 layerId = layerId.substring(id.length+1);
             }
             var layer=object.getLayer(layerId);
+            //layer not found? don't throw event.
+            if (layer==null){
+                return;
+            }
             component={layer: layer};
         }else if(event == viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED){
             var layerId=component[1];
