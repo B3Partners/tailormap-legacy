@@ -425,8 +425,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     setLayerVisible : function (serviceId, layerName, visible){
         var layer = this.getLayer(serviceId, layerName);
         //xxx is also done in setVisible of layer....
-        layer.visible = visible;
-        this.mapComponent.getMap().setLayerVisible(layer, visible);
+        if (layer){
+            layer.visible = visible;
+            this.mapComponent.getMap().setLayerVisible(layer, visible);
+        }
     },
     /**
      * Get the layer or null if not found
@@ -438,7 +440,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var id = serviceId + "_" + layerName;
         if(this.layers[id] == undefined){            
             if (!this.layersInitialized){
-                this.logger.warning("HEY! Layers not initialized! Hold your horses! Just wait for the LAYER_ADDED event!");
+                this.logger.warning("Layers not initialized! Wait for the layers to be added!");
             }/*else{
                 this.logger.warning("Hmmm. Layer not available. Return null. ServiceId: "+serviceId+" Layer: "+layerName);
             }*/

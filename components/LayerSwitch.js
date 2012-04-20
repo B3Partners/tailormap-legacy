@@ -73,7 +73,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         // Find root background
         for ( var i in this.levels){
             var level = this.levels[i];
-            if(level.name == "Achtergrond"){
+            if(level.background && !level.layers){
                 backgroundRoot = level;
                 break;
             }
@@ -83,7 +83,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         
     },
     addLevel : function (level){
-        if(level.name != "Achtergrond"){
+        if(!level.background || level.layers){
             this.states.push({
                 text: level.name,
                 iconCls: 'view-html'

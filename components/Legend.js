@@ -197,6 +197,9 @@ Ext.define("viewer.components.Image",{
     constructor : function (config){
         this.initConfig(config);
     },
+    /**
+     * Start loading
+     */
     loadImage: function (){
         var div = document.createElement("div");
         div.id = this.item.id + "-div";
@@ -215,9 +218,15 @@ Ext.define("viewer.components.Image",{
         this.legendimg.className = 'treeLegendImage';
         this.legendimg.src = this.item.src;
     },
+    /**
+     * If images is loaded
+     */
     treeImageOnload : function (){
         this.imgObj.queue.imageLoaded(this.imgObj.legendimg,this.imgObj.item);
     },
+    /**
+     * Called when images has error.
+     */
     treeImageError :function (){  
         this.imgObj.queue.queueSize++;
     }
