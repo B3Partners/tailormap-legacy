@@ -293,6 +293,8 @@ function getJson() {
         var defaultVal = Ext.getCmp('default' + attribute.id).getValue();
         if(defaultVal != ""){
             newAttribute.defaultValue = defaultVal;
+        }else{
+            delete newAttribute.defaultValue;
         }
         currentAttributes.push(newAttribute);
     });
