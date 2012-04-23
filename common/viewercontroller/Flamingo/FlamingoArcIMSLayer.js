@@ -44,12 +44,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         this.map.update();
     },
     setQuery : function (filter){
-        var me = this;
-        var f = function(query) { 
-            me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
-            me.update();
-        };
-        var util = Ext.create("viewer.ArcQueryUtil");
-        util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
+        if(filter){
+            var me = this;
+            var f = function(query) { 
+                me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
+                me.update();
+            };
+            var util = Ext.create("viewer.ArcQueryUtil");
+            util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
+        }
     }
 });
