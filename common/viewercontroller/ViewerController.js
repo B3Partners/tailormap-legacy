@@ -501,6 +501,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 });
             } else {
                 appLayer.featureService = Ext.create("viewer.AppLayerService", { 
+                    appId: this.app.id,
                     appLayer: appLayer,
                     debug: this.isDebug()                    
                 });

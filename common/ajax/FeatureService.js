@@ -58,6 +58,7 @@ Ext.define("viewer.DirectFeatureService", {
 Ext.define("viewer.AppLayerService", {
     config: {
         actionbeanUrl: null,
+        appId: null,
         appLayer: null,
         debug: false
     },
@@ -71,7 +72,7 @@ Ext.define("viewer.AppLayerService", {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {attributes: true, appLayer: this.appLayer.id},
+            params: {attributes: true, application: this.appId, appLayer: this.appLayer.id},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
@@ -95,6 +96,6 @@ Ext.define("viewer.AppLayerService", {
     },
     getStoreUrl: function() {
         var url = this.getActionbeanUrl();
-        return Ext.urlAppend(url, "store=1&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : ""));
+        return Ext.urlAppend(url, "store=1&application=" + this.appId + "&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : ""));
     }
 });
