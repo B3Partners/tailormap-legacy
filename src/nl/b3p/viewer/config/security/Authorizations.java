@@ -100,6 +100,8 @@ public class Authorizations {
     /** Humongous lock for everything, but should be locked for only short times */
     private static final Object LOCK = new Object();
     
+    private static final String ROLES_ATTRIBUTE = Authorizations.class.getName() + ".roles";
+    
     /**
      * The set of role names which mean nobody has access; a set which only contains
      * null.
@@ -178,14 +180,20 @@ public class Authorizations {
      */
     private static Map<Long, ApplicationCache> applicationCache = new HashMap();
     
-    private static Set<String> getRoles(HttpServletRequest request) {
+    public static Set<String> getRoles(HttpServletRequest request) {
 
         if(request.getRemoteUser() == null) {
             return Collections.EMPTY_SET;
         }
         
-        return new HashSet<String>(Stripersist.getEntityManager().createQuery("select g.name from User u join u.groups g where u.username = :username")
+        Set<String> roles = (Set<String>)request.getAttribute(ROLES_ATTRIBUTE);
+        
+        if(roles == null) {
+            roles = new HashSet<String>(Stripersist.getEntityManager().createQuery("select g.name from User u join u.groups g where u.username = :username")
                 .setParameter("username", request.getRemoteUser()).getResultList());
+            request.setAttribute(ROLES_ATTRIBUTE, roles);
+        }
+        return roles;
     }
     
     private static boolean isReadAuthorized(HttpServletRequest request, Read auths) {
@@ -296,7 +304,17 @@ public class Authorizations {
         if(!isAppLayerWriteAuthorized(app, al, request)) {
             throw new Exception(unauthMsg(request,true) + " application layer #" + al.getId());
         }
-    }       
+    }   
+    
+    public static boolean isConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request) {
+        return isReadAuthorized(request, new Read(component.getReaders()));
+    }
+    
+    public static void checkConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request) throws Exception {
+        if(!isReadAuthorized(request, new Read(component.getReaders()))) {
+            throw new Exception(unauthMsg(request,true) + " configured component #" + component.getName() + " of app #" + component.getApplication().getId());
+        }
+    }    
         
     /**
      * Returns set of authorized readers and writers for this layer. If null is

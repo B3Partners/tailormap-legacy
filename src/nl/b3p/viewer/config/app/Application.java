@@ -18,6 +18,8 @@ package nl.b3p.viewer.config.app;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
@@ -185,7 +187,7 @@ public class Application {
         this.authorizationsModified = authorizationsModified;
     }
     //</editor-fold>
-    
+
     public static class TreeCache {
         List<Level> levels;
         Map<Level,List<Level>> childrenByParent;
@@ -260,7 +262,7 @@ public class Application {
      * Create a JSON representation for use in browser to start this application
      * @return
      */
-    public String toJSON() throws JSONException {
+    public String toJSON(HttpServletRequest request) throws JSONException {
         JSONObject o = new JSONObject();
 
         o.put("id", id);
@@ -369,7 +371,9 @@ public class Application {
         JSONObject c = new JSONObject();
         o.put("components", c);
         for(ConfiguredComponent comp: components) {
-            c.put(comp.getName(), comp.toJSON());
+            if(Authorizations.isConfiguredComponentAuthorized(comp, request)) {
+                c.put(comp.getName(), comp.toJSON());
+            }
         }
 
         return o.toString(4);
