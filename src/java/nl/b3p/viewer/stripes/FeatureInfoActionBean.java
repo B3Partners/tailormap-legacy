@@ -27,8 +27,10 @@ import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
@@ -63,6 +65,9 @@ public class FeatureInfoActionBean implements ActionBean {
     private static final int TIMEOUT = 5000;
     
     @Validate
+    private Application application;
+    
+    @Validate
     private int limit = 10;
     
     @Validate
@@ -92,6 +97,14 @@ public class FeatureInfoActionBean implements ActionBean {
         this.context = context;
     }
 
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+    
     public int getLimit() {
         return limit;
     }
@@ -197,6 +210,17 @@ public class FeatureInfoActionBean implements ActionBean {
                         error = "App layer or service not found";
                         break;
                     }
+                    if(!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest())) {
+                        error = "Not authorized";
+                        break;
+                    }
+                    // Edit component does not handle this very gracefully
+                    // but the error when saving is ok
+                    
+                    //if(edit && !Authorizations.isAppLayerWriteAuthorized(application, al, context.getRequest())) {
+                    //    error = "U heeft geen rechten om deze kaartlaag te bewerken";
+                    //    break;
+                    //}
                     Layer l;
                     if(al != null) {
                         l = al.getService().getLayer(al.getLayerName());
