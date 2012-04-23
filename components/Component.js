@@ -284,7 +284,7 @@ Ext.define("viewer.components.Component",{
             var extComponents = me.getExtComponents();
             for(var i = 0; i < extComponents.length; i++) {
                 var comp = Ext.getCmp(extComponents[i]);
-                if(comp !== null) {
+                if(comp!=undefined && comp != null) {
                     if(comp.doLayout) comp.doLayout();
                     else if(comp.forceComponentLayout) comp.forceComponentLayout();
                 }
