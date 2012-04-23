@@ -30,7 +30,7 @@ Ext.define("viewer.EditFeature", {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
+            params: {application: this.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
