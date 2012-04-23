@@ -115,13 +115,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
             //if there is a height set for the top_menu start the map lower.
             var topMenuLayout=this.getLayout('top_menu');
-            var mapTop= topMenuLayout.height ? topMenuLayout.height : 0;
+            var mapTop= topMenuLayout.height && topMenuLayout>=0 ? topMenuLayout.height : 0;
             if (topMenuLayout.heightmeasure){
                 mapTop+= topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
             }
             //if there is a height set for the content_bottom the map bottom is changed.
             var contentBottomLayout=this.getLayout('content_bottom');
-            var mapBottom= contentBottomLayout.height ? contentBottomLayout.height : 0;
+            var mapBottom= contentBottomLayout.height && contentBottomLayout.height>=0? contentBottomLayout.height : 0;
             if (contentBottomLayout.heightmeasure){
                 mapBottom+= contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
             }
@@ -443,8 +443,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     getLayer : function (serviceId, layerName){
         var id = serviceId + "_" + layerName;
-        if(this.layers[id] == undefined){            
-            if (!this.layersInitialized){
+        if(this.layers[id] == undefined){  
+            if (!this.layersInitialized && this.isDebug()){
                 this.logger.warning("Layers not initialized! Wait for the layers to be added!");
             }/*else{
                 this.logger.warning("Hmmm. Layer not available. Return null. ServiceId: "+serviceId+" Layer: "+layerName);
