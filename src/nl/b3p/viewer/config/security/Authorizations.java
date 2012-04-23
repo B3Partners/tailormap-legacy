@@ -275,7 +275,7 @@ public class Authorizations {
     }
     
     public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) {
-        if(app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
+        if(app == null || app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
@@ -291,7 +291,7 @@ public class Authorizations {
     }    
     
     public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) {
-        if(app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
+        if(app == null || app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
