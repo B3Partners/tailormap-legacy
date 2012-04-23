@@ -247,9 +247,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
                 "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>
             };
+        
+            var user = null;
             
-            function updateLoginInfo() {
-                <c:if test="${pageContext.request.remoteUser != null}">
+            var updateLoginInfo = function() { };
+            <c:if test="${actionBean.user != null}">
+                user = ${actionBean.user};
+                
+                updateLoginInfo = function() {
                     var link = document.getElementById("loginLink");
                     if(link) {
                         link.innerHTML = "Uitloggen";
@@ -257,10 +262,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                     var info = document.getElementById("loginInfo");
                     if(info) {
-                        info.innerHTML = "Ingelogd als <b>" + <js:quote>${pageContext.request.remoteUser}</js:quote> + "</b>";
+                        info.innerHTML = "Ingelogd als <b>" + user.name + "</b>";
                     }
-                </c:if>
-            }
+                }
+            </c:if>
             
             function login() {
                 window.location.href = <js:quote><stripes:url prependContext="true" value="${actionBean.loginUrl}"/></js:quote>;
@@ -285,7 +290,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     Ext.EventManager.onWindowResize(function () {
                         viewerController.resizeComponents();
                     });        
-                    
+                                        
                     viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, updateLoginInfo);
                 });
             }());
