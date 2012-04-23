@@ -284,8 +284,8 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
         component.getReaders().clear();
         component.setReaders(new HashSet<String>(groups));
-
         em.persist(component);
+        application.authorizationsModified();
         em.getTransaction().commit();
 
         return config();
