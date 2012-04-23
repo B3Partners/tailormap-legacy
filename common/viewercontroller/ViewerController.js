@@ -115,7 +115,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
             //if there is a height set for the top_menu start the map lower.
             var topMenuLayout=this.getLayout('top_menu');
-            var mapTop= topMenuLayout.height && topMenuLayout>=0 ? topMenuLayout.height : 0;
+            var mapTop= topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0;
             if (topMenuLayout.heightmeasure){
                 mapTop+= topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
             }
