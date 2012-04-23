@@ -397,8 +397,6 @@ public class UserActionBean implements ActionBean {
     
     List<Application> applications;
 
-    Set<String> roles;
-
     Set<Layer> authorizedLayers = Collections.EMPTY_SET;
     Set<Layer> authorizedEditableLayers = Collections.EMPTY_SET;    
     
@@ -453,11 +451,8 @@ public class UserActionBean implements ActionBean {
         for(GeoService service: services) {
             Authorizations.getLayerAuthorizations(service.getTopLayer());
         }
-        
-        roles = new HashSet<String>();
-        for(Group g: user.getGroups()) {
-            roles.add(g.getName());
-        }
+
+        Set<String> roles = new HashSet<String>(groups);
         
         if(!roles.isEmpty()) {
             
