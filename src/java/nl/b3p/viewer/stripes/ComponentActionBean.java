@@ -30,6 +30,7 @@ import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
+import nl.b3p.viewer.config.security.Authorizations;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,7 +61,7 @@ public class ComponentActionBean implements ActionBean {
 
     private Application application;
     private ViewerComponent component;
-
+    
     private ActionBeanContext context;
 
     private static final Map<String,Object[]> minifiedSourceCache = new HashMap<String,Object[]>();
@@ -121,9 +122,10 @@ public class ComponentActionBean implements ActionBean {
         if(application != null && className != null) {
             for(ConfiguredComponent cc: application.getComponents()) {
                 if(cc.getClassName().equals(className)) {
-
-                    // TODO: check readers, return SC_FORBIDDEN if not authorized
-                    component = cc.getViewerComponent();
+                    
+                    if(Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                        component = cc.getViewerComponent();
+                    }
                     break;
                 }
             }
@@ -134,6 +136,10 @@ public class ComponentActionBean implements ActionBean {
     public Resolution source() throws IOException {
         File[] files = null;
 
+        if(className != null && component == null) {
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "User not authorized for this components' source");
+        }
+        
         if(component == null) {
             // All source files for all components for this application
 
@@ -146,10 +152,11 @@ public class ComponentActionBean implements ActionBean {
             List<File> fileList = new ArrayList<File>();
 
             for(ConfiguredComponent cc: comps) {
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                    continue;
+                }
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
-
-                    // TODO: check readers, skip if not authorized
 
                     if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
                         fileList.addAll(Arrays.asList(cc.getViewerComponent().getSources()));
