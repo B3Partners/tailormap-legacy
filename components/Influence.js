@@ -163,6 +163,7 @@ Ext.define ("viewer.components.Influence",{
      */
     mapClicked : function (toolMapClick,comp){                
         this.toolMapClick.deactivateTool();
+        this.layerSelector.initLayers();
         this.popup.show();
         var coords = comp[1];
         var x = coords.x;

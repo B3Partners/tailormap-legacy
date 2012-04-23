@@ -51,6 +51,7 @@ Ext.define ("viewer.components.Buffer",{
         return this;
     },
     buttonClick : function (){
+        this.layerSelector.initLayers();
         this.popup.show();
     },
     loadWindow : function(){

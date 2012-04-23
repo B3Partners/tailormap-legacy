@@ -57,11 +57,11 @@ Ext.define ("viewer.components.DataSelection",{
         return this;
     },
     showWindow : function (){
+        this.layerSelector.initLayers();
         this.popup.show();
     },
     showAndForceLayer : function (layer){
         this.layerSelector.addForcedLayer(layer);
-        this.layerSelector.initLayers();
         this.showWindow();
     },
     removeForcedLayer : function (layer){

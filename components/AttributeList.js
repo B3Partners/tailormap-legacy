@@ -40,6 +40,7 @@ Ext.define ("viewer.components.AttributeList",{
         var me = this;
         this.renderButton({
             handler: function(){
+                me.layerSelector.initLayers();
                 me.showWindow();
             },
             text: me.title,

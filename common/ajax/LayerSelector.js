@@ -71,7 +71,6 @@ Ext.define ("viewer.components.LayerSelector",{
                     this.layerList.push(l);
                 }
             }
-            this.initLayers();
         }else{
             var me = this;
             Ext.Ajax.request({ 
@@ -79,7 +78,6 @@ Ext.define ("viewer.components.LayerSelector",{
                 params: requestParams, 
                 success: function ( result, request ) {
                     me.layerList = Ext.JSON.decode(result.responseText);
-                    me.initLayers();
                 },
                 failure: function(a,b,c) {
                     Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");

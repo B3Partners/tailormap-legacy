@@ -41,6 +41,7 @@ Ext.define ("viewer.components.Edit",{
         var me = this;
         this.renderButton({
             handler: function(){
+                me.layerSelector.initLayers();
                 me.popup.show();
             },
             text: me.title,
