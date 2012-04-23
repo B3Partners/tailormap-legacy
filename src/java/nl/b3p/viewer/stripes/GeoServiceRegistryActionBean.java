@@ -21,6 +21,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
@@ -113,24 +114,27 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             
             GeoService gs = em.find(GeoService.class, new Long(id));
             // GeoService may be invalid and not have a top layer
-            if(gs.getTopLayer() != null) {
-                // TODO check readers
+            if(gs.getTopLayer() != null && Authorizations.isLayerReadAuthorized(gs.getTopLayer(), context.getRequest())) {
                 
                 for(Layer sublayer: gs.getTopLayer().getChildren()) {
-                    JSONObject j = layerJSON(sublayer);
-                    j.put("parentid", nodeId);
-                    children.put(j);
+                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest())) {
+                        JSONObject j = layerJSON(sublayer);
+                        j.put("parentid", nodeId);
+                        children.put(j);
+                    }
                 }
             }
         } else if(type.equals("l")) {
             Layer layer = em.find(Layer.class, new Long(id));
-            for(Layer sublayer: layer.getChildren()) {
-                
-                // TODO check readers
-                
-                JSONObject j = layerJSON(sublayer);
-                j.put("parentid", nodeId);
-                children.put(j);
+            if(Authorizations.isLayerReadAuthorized(layer, context.getRequest())) {
+                for(Layer sublayer: layer.getChildren()) {
+
+                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest())) {
+                        JSONObject j = layerJSON(sublayer);
+                        j.put("parentid", nodeId);
+                        children.put(j);
+                    }
+                }
             }
         }
         
