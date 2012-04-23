@@ -27,19 +27,14 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpSession;
-import net.sourceforge.stripes.action.ActionBean;
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.After;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.geotools.data.arcgis.ArcGISDataStoreFactory;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,6 +73,9 @@ public class AttributesActionBean implements ActionBean {
     private ActionBeanContext context;
     
     @Validate
+    private Application application;
+    
+    @Validate
     private ApplicationLayer appLayer;
     
     private Layer layer = null;
@@ -102,6 +100,8 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private boolean noCache;
     
+    private boolean unauthorized;
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
         return context;
@@ -109,6 +109,14 @@ public class AttributesActionBean implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
     }
     
     public ApplicationLayer getAppLayer() {
@@ -194,7 +202,6 @@ public class AttributesActionBean implements ActionBean {
     
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
-        // TODO check if user has rights to appLayer
 
         try {
             layer = (Layer)Stripersist.getEntityManager().createQuery("from Layer where service = :service and name = :n order by virtual desc")
@@ -207,6 +214,15 @@ public class AttributesActionBean implements ActionBean {
         }
     }
     
+    @Before(stages=LifecycleStage.EventHandling)
+    public void checkAuthorization() {
+        
+        if(application == null || appLayer == null 
+                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
+            unauthorized = true;
+        }
+    }
+    
     public Resolution attributes() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -215,6 +231,8 @@ public class AttributesActionBean implements ActionBean {
 
         if(appLayer == null) {
             error = "Invalid parameters";
+        } else if(unauthorized) {
+            error = "Not authorized";
         } else {
 
             Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
@@ -417,6 +435,13 @@ public class AttributesActionBean implements ActionBean {
 */    
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
+        
+        if(unauthorized) {
+            json.put("success", false);
+            json.put("message", "Not authorized");
+            return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
+        }
+        
         JSONArray features = new JSONArray();
         json.put("features", features);
         
