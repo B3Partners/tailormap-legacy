@@ -26,6 +26,8 @@ Ext.define ("viewer.components.LayerSelector",{
     layerArray : null,
     combobox : null,
     div: null,
+    // An array of layers whom visibility must be forced in the layerSelector
+    forcedLayers : null,
     config: {
         viewerController: new Object(),
         restriction : null,
@@ -33,6 +35,7 @@ Ext.define ("viewer.components.LayerSelector",{
     }, 
     constructor: function (conf){        
         this.initConfig(conf);   
+        this.forcedLayers = new Array();
         var layers = Ext.create('Ext.data.Store', {
             fields: ['id', 'title','layer'],
             data : []
@@ -86,9 +89,31 @@ Ext.define ("viewer.components.LayerSelector",{
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
         return this;
     },
+    addForcedLayer : function (forcedLayer){
+        var dupe = false;
+        for ( var i = 0 ; i < this.forcedLayers.length; i++){
+            if(this.forcedLayers[i] == forcedLayer){
+                dupe = true;
+                break;
+            }
+        }
+        if(!dupe){
+            this.forcedLayers.push(forcedLayer);
+        }
+    },
+    removeForcedLayer : function (forcedLayer){
+        for( var i = this.forcedLayers.length -1 ; i >= 0 ; i--){
+            if(this.forcedLayers[i]==forcedLayer){
+                this.forcedLayers.splice(i,1);
+            }
+        }
+    },
     initLayers : function (){
         this.layerArray = new Array();
         var visibleLayers = this.viewerController.getVisibleLayerIds();
+        for(var i = 0 ; i < this.forcedLayers.length; i++){
+            visibleLayers.push(this.forcedLayers[i]);
+        }
         var store = this.combobox.getStore();
         store.removeAll();
         if(this.layerList != null){
@@ -125,7 +150,6 @@ Ext.define ("viewer.components.LayerSelector",{
     getExtComponents: function() {
         return [ this.combobox.getId() ];
     },
-    
     layerVisibilityChanged : function (map,object){
         this.initLayers();
     }

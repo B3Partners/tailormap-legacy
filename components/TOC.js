@@ -174,7 +174,8 @@ Ext.define ("viewer.components.TOC",{
             var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
             if(tristate === 1) {
                 treeNodeLayer.checked = true;
-            } else if (tristate === 0) {
+            }
+            else if (tristate === 0) {
                 treeNodeLayer.cls = 'tristatenode';
             }
         }
@@ -189,6 +190,49 @@ Ext.define ("viewer.components.TOC",{
         }else{
             return node;
         }
+    },
+    // Add a layer to the level
+    addLayer : function (layerId){
+        var appLayerObj = this.appLayers[layerId];
+        var service = this.services[appLayerObj.serviceId];
+        var serviceLayer = service.layers[appLayerObj.layerName];
+        var layerTitle = this.viewerController.getLayerTitle(service.id, appLayerObj.layerName); // TODO: Search title
+        // TODO do the check for dataselection layers (when attributes for that are present) for visible layers in selectedcontent 
+        var treeNodeLayer = {
+            text: layerTitle,
+            id: "layer-"+appLayerObj.id,
+            expanded: true,
+            leaf: true,
+            background: appLayerObj.background,
+            layerObj: {
+                service: service.id,
+                layerName : appLayerObj.layerName
+            }
+        };
+        if(serviceLayer.details != undefined){
+            if(serviceLayer.details ["metadata.stylesheet"] != undefined){
+                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
+                treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
+            }
+            
+            if(serviceLayer.details ["download.url"] != undefined){
+                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
+                treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
+            }
+            
+        }
+        var retChecked = false;
+        if(this.layersChecked){
+            treeNodeLayer.checked = appLayerObj.checked;
+            retChecked = appLayerObj.checked;
+        } else if(appLayerObj.checked) {
+            treeNodeLayer.hidden_check = appLayerObj.checked;
+            retChecked = appLayerObj.checked;
+        }        
+        return {
+            node: treeNodeLayer,
+            checked: retChecked
+        };
     },
     addToBackground : function (node){
         this.backgroundLayers.push(node);
@@ -225,7 +269,8 @@ Ext.define ("viewer.components.TOC",{
             var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
             if(tristate === 1) {
                 background.checked = true;
-            } else if (tristate === 0) {
+            }
+            else if (tristate === 0) {
                 background.cls = 'tristatenode';
             }
             nodes.push(background);
@@ -238,48 +283,6 @@ Ext.define ("viewer.components.TOC",{
         }else{
             return true;
         }
-    },
-    // Add a layer to the level
-    addLayer : function (layerId){
-        var appLayerObj = this.appLayers[layerId];
-        var service = this.services[appLayerObj.serviceId];
-        var serviceLayer = service.layers[appLayerObj.layerName];
-        var layerTitle = this.viewerController.getLayerTitle(service.id, appLayerObj.layerName); // TODO: Search title
-        var treeNodeLayer = {
-            text: layerTitle,
-            id: "layer-"+appLayerObj.id,
-            expanded: true,
-            leaf: true,
-            background: appLayerObj.background,
-            layerObj: {
-                service: service.id,
-                layerName : appLayerObj.layerName
-            }
-        };
-        if(serviceLayer.details != undefined){
-            if(serviceLayer.details ["metadata.stylesheet"] != undefined){
-                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
-                treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
-            }
-            
-            if(serviceLayer.details ["download.url"] != undefined){
-                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
-                treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
-            }
-            
-        }
-        var retChecked = false;
-        if(this.layersChecked){
-            treeNodeLayer.checked = appLayerObj.checked;
-            retChecked = appLayerObj.checked;
-        } else if(appLayerObj.checked) {
-            treeNodeLayer.hidden_check = appLayerObj.checked;
-            retChecked = appLayerObj.checked;
-        }        
-        return {
-            node: treeNodeLayer,
-            checked: retChecked
-        };
     },
     insertLayer : function (config){
         var root = this.panel.getRootNode();
@@ -434,13 +437,87 @@ Ext.define ("viewer.components.TOC",{
             var layer = node.layerObj;
     
             if(checked){
-                this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
+                this.checkDataselection(layer.service, layer.layerName, function(check,toc){
+                    if (!check){
+                        this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
+                    }else{
+                        nodeObj.set('checked', false);
+                        toc.setTriState(nodeObj);
+                    }
+                });
             }else{
                 this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
             }
         }
     },
     
+    checkDataselection : function (serviceId, layerName,callBack){
+        var appLayer = this.viewerController.getAppLayer(serviceId, layerName);
+        
+        var featureService = this.viewerController.getAppLayerFeatureService(appLayer);
+        if(appLayer != null){
+            var me = this;
+            // check if featuretype was loaded
+            if(appLayer.attributes == undefined) {
+                featureService.loadAttributes(appLayer, function(attributes) {
+                    callBack(me.checkAppLayerForDataselection(appLayer),me);
+                });
+            } else {
+                callBack(this.checkAppLayerForDataselection(appLayer),me);
+            }
+        }else{
+            return callBack(true,me);
+        }
+    },
+    checkAppLayerForDataselection : function ( appLayer){
+        var selectableAttributes = this.hasSelectableAttributes(appLayer);
+        if( selectableAttributes >= 0 && (appLayer.filter == undefined || appLayer.filter == null)){
+            var dsArray = this.viewerController.getComponentsByClassName("viewer.components.DataSelection");
+            if( dsArray.length == 0){
+                Ext.Msg.alert('Mislukt', 'Dataselectiemodule niet beschikbaar, kaartlaag kan niet weergegeven worden.');
+                return false;
+            }else{
+                for( var j = 0 ; j < dsArray.length ; j++){
+                    var ds = dsArray[j];
+                    ds.showAndForceLayer(appLayer.serviceId + "_" + appLayer.layerName);
+                    var me = appLayer;
+                    this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
+                        if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
+                            this.viewerController.setLayerVisible(layer.serviceId, layer.layerName, true);
+                            ds.removeForcedLayer(layer.serviceId +"_"+ layer.layerName);
+                            var nodeId = "layer-" + appLayer.id;
+                            var node = this.panel.getRootNode().findChild("id",nodeId,true);
+                            node.set('checked', true);
+                            this.setTriState(node);
+                            
+                        }
+                    },this);
+                    /* TODO add functionality to select a layer in the layerselector, so the filter can be applied to the layer when all attributes have defaults
+                     *if(selectableAttributes == 1){
+                        ds.applyFilter();
+                    }*/
+                }
+                return true;
+            }
+        }else{
+            return false;
+        }
+    },
+    hasSelectableAttributes : function (appLayer){
+        // -1: no selectable attributes, 0: has selectable attributes but not all have defaults, 1: has selectable attributes and all have defaults
+        var selectableAttributes = -1;
+        for ( var i = 0 ; i < appLayer.attributes.length; i++){
+            if(appLayer.attributes[i].selectable){
+                if(appLayer.attributes[i].defaultValue != undefined){
+                    selectableAttributes = 1;
+                }else{
+                    selectableAttributes = 0;
+                    break;
+                }
+            }
+        }
+        return selectableAttributes;
+    },
     /*************************  Event handlers ***********************************************************/
     syncLayers : function (map,object){
         var layer = object.layer;
@@ -450,9 +527,9 @@ Ext.define ("viewer.components.TOC",{
     },
     
     checkboxClicked : function(nodeObj,checked,toc){
+        this.updateMap(nodeObj, checked);
         this.checkClicked= true;
         this.setTriState(nodeObj);
-        this.updateMap(nodeObj, checked);
         
         var scale = this.viewerController.mapComponent.getMap().getScale();
         
@@ -536,9 +613,7 @@ Ext.define ("viewer.components.TOC",{
         this.loadInitLayers();
     },
     extentChanged : function (map,obj){
-        
         var scale = map.getScale(obj[1]);
-        
         this.checkScaleLayer(this.panel.getRootNode(),scale);
     },
     checkScaleLayer : function (child,scale){
@@ -575,13 +650,11 @@ Ext.define ("viewer.components.TOC",{
                 inScale  = false;
             }
         }
-        
         if(max){
             if( scale > max){
                 inScale = false;
             }
         }
-        
         return inScale;
     }
 });

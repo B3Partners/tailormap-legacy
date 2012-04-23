@@ -56,9 +56,17 @@ Ext.define ("viewer.components.DataSelection",{
         this.loadWindow();
         return this;
     },
-    
     showWindow : function (){
         this.popup.show();
+    },
+    showAndForceLayer : function (layer){
+        this.layerSelector.addForcedLayer(layer);
+        this.layerSelector.initLayers();
+        this.showWindow();
+    },
+    removeForcedLayer : function (layer){
+        this.layerSelector.removeForcedLayer(layer);
+        this.layerSelector.initLayers();
     },
     loadWindow : function(){
         var config = {
@@ -162,16 +170,18 @@ Ext.define ("viewer.components.DataSelection",{
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.selectable){
-                if(true){ // TODO Check if attribute has a list of distinct values
-                    dataSelectieAttributes.push({
-                        xtype: "textfield",
-                        id: attribute.name,
-                        name: attribute.name,
-                        fieldLabel: attribute.alias || attribute.name,
-                        labelWidth:200
-                    });
+                var defaultVal = "";
+                if(attribute.defaultValue != undefined){
+                    defaultVal = attribute.defaultValue; 
                 }
-               
+                dataSelectieAttributes.push({
+                    xtype: "textfield",
+                    id: attribute.name,
+                    name: attribute.name,
+                    fieldLabel: attribute.alias || attribute.name,
+                    labelWidth:200,
+                    value : defaultVal
+                });
             }
         }
         
@@ -247,7 +257,7 @@ Ext.define ("viewer.components.DataSelection",{
         
         this.viewerController.setFilter(filterWrapper,layer);
         
-        //console.log("CQL: " + layer.filter.getCQL());
+    //console.log("CQL: " + layer.filter.getCQL());
     },
     getDataTabCQL : function (){
         var items = this.dataTab.items.items;
@@ -315,12 +325,12 @@ Ext.define ("viewer.components.DataSelection",{
         return Ext.Array.merge(
             this.layerSelector.getExtComponents(),
             [
-                this.tabpanel.getId(),
-                this.dataTab.getId(),
-                this.filterTab.getId(),
-                this.button1.getId(),
-                this.button2.getId()
+            this.tabpanel.getId(),
+            this.dataTab.getId(),
+            this.filterTab.getId(),
+            this.button1.getId(),
+            this.button2.getId()
             ]
-        );
+            );
     }
 });
