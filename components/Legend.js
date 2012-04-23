@@ -25,7 +25,8 @@
 Ext.define ("viewer.components.Legend",{
     extend: "viewer.components.Component",
     queue : null,
-    legends : null,
+    legends : null,    
+    initLegends: null,
     config:{
         // name: "Legend",
         title: "Legend",
@@ -36,7 +37,7 @@ Ext.define ("viewer.components.Legend",{
     constructor: function (conf){
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        
+        this.legends={};
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
         this.panel = Ext.create('Ext.panel.Panel', {
@@ -58,7 +59,7 @@ Ext.define ("viewer.components.Legend",{
     // Construct the list of images to be retrieved by the queue
     makeLegendList : function (){
         var visibleLayers = this.viewerController.getVisibleLayerIds();
-        this.legends = new Array();
+        this.initLegends = new Array();
         for(var i = 0 ; i<visibleLayers.length;i++){
             var id = visibleLayers[i];
             var service = id.substring(0,id.indexOf("_"));
@@ -72,7 +73,7 @@ Ext.define ("viewer.components.Legend",{
                     title: layerName,
                     id: id
                 };
-                this.legends.push(legend);
+                this.initLegends.push(legend);
             }
         }
     },
@@ -92,7 +93,13 @@ Ext.define ("viewer.components.Legend",{
      */
     addLayer : function (layer){
         var serviceId = layer.serviceId;
-        var layerName = layer.getAppLayerName();// TODO: not yet correct        
+        var layerName = layer.getAppLayerName();// TODO: not yet correct  
+        
+        //if already added return;
+        if(this.legends[serviceId  + "_"+ layerName]){
+            return;
+        }
+        
         //show backgrounds == false then don't show backgrounds.
         if (!this.getShowBackground()){
             //var appLayer=this.viewerController.getAppLayer(serviceId,layerName);
@@ -108,6 +115,7 @@ Ext.define ("viewer.components.Legend",{
                 title: layerName,
                 id: serviceId  + "_"+ layerName
             };
+            this.legends[serviceId  + "_"+ layerName]=true;
             this.queue.addItem(legend);
         }
     },
@@ -123,12 +131,15 @@ Ext.define ("viewer.components.Legend",{
         if (node!=null){
             this.legendContainer.removeChild(node);
         }
+        if (this.legends[layerName]){
+            delete this.legends[layerName];
+        }
     },
     // Start the legend: make a list of images to be retrieved, make a queue and start it
     start : function (){
         this.makeLegendList();
         var config ={
-            legends: this.legends, 
+            legends: this.initLegends, 
             queueSize: 2,
             div: this.legendContainer
         };
