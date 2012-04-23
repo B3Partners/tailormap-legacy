@@ -60,7 +60,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(app.layout) {
             //console.log("Creating layout");
             this.layoutManager = Ext.create('viewer.LayoutManager', {
-                layout: app.layout
+                layout: app.layout,
+                configuredComponents: app.components
             });            
         }
         this.layers = {};
@@ -185,12 +186,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         for(var i = 0; i < list.length; i++) {
             var layoutComponent = list[i];
             var component = this.app.components[layoutComponent.componentName];
-            component.config.div = layoutComponent.htmlId;
-            component.config.isPopup = layoutComponent.isPopup;
-            component.config.hasSharedPopup = layoutComponent.hasSharedPopup;
-            component.config.showOnStartup = layoutComponent.showOnStartup;
-            component.config.regionName = layoutComponent.regionName;
-            this.createComponent(component.name, component.className, component.config, component.details);
+            if(component) {
+                component.config.div = layoutComponent.htmlId;
+                component.config.isPopup = layoutComponent.isPopup;
+                component.config.hasSharedPopup = layoutComponent.hasSharedPopup;
+                component.config.showOnStartup = layoutComponent.showOnStartup;
+                component.config.regionName = layoutComponent.regionName;
+                this.createComponent(component.name, component.className, component.config, component.details);
+            }
         }
         
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING);

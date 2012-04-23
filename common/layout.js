@@ -30,6 +30,7 @@ Ext.define('viewer.LayoutManager', {
         footer: {region:'south', columnOrientation: 'horizontal', useTabs: false, defaultLayout: {height: 150}}
     },
     layout: {},
+    configuredComponents: {},
     layoutItems: {},
     mapId: '',
     componentList: [],
@@ -54,14 +55,22 @@ Ext.define('viewer.LayoutManager', {
         // console.log('VIEWPORTITEMS: ', viewportItems);
         me.renderLayout(viewportItems);
     },
-
+    
+    filterComponentList: function(components) {
+        var me = this;
+        var result = Ext.Array.filter(components, function(comp) {
+            return me.configuredComponents[comp.name] != undefined;
+        });
+        return result;
+    },
+    
     createRegionList: function() {
         var me = this;
         var layoutItems = {};
 
         Ext.Object.each(me.layout, function(regionid, regionconfig) {
             // If region has components, add it to the list
-            if(regionconfig.components.length > 0) {
+            if(me.filterComponentList(regionconfig.components).length > 0) {
                 // Fetch default config
                 var defaultConfig = me.defaultRegionSettings[regionid];
                 // Layoutregions are added throug array because 1 Ext region (e.g. west) can have multiple regions
@@ -126,7 +135,7 @@ Ext.define('viewer.LayoutManager', {
             }
         } else {
             regionlayout = regionitems[0].regionConfig.layout;
-            var componentItems = me.createComponents(regionitems[0].regionConfig.components, regionitems[0].regionDefaultConfig, regionlayout,regionitems[0].name);
+            var componentItems = me.createComponents(me.filterComponentList(regionitems[0].regionConfig.components), regionitems[0].regionDefaultConfig, regionlayout,regionitems[0].name);
             componentItems = me.getRegionContent(componentItems, regionlayout);
             if(regionitems[0].regionDefaultConfig.region != "none" && regionitems[0].regionDefaultConfig.region != "popupwindow") {
                 layout = regionitems[0].regionDefaultConfig.defaultLayout;
@@ -215,7 +224,7 @@ Ext.define('viewer.LayoutManager', {
         Ext.Array.each(regionitems, function(item, index) {
             var sublayout = {};
             var regionlayout = item.regionConfig.layout;
-            var componentItems = me.createComponents(item.regionConfig.components, item.regionDefaultConfig, regionlayout,item.name);
+            var componentItems = me.createComponents(me.filterComponentList(item.regionConfig.components), item.regionDefaultConfig, regionlayout,item.name);
             componentItems = me.getRegionContent(componentItems, regionlayout);
             if(item.regionDefaultConfig.columnOrientation == 'vertical') {
                 if(item.regionDefaultConfig.subregion != 'center') {
