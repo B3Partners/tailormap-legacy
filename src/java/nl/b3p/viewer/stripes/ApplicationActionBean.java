@@ -22,6 +22,7 @@ import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
+import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
@@ -29,7 +30,9 @@ import net.sourceforge.stripes.validation.Validate;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
+import nl.b3p.viewer.config.security.Authorizations;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -56,6 +59,8 @@ public class ApplicationActionBean implements ActionBean {
     private String appConfigJSON;
 
     private String viewerType;
+    
+    private JSONObject user;
     
     private String loginUrl;
 
@@ -124,6 +129,14 @@ public class ApplicationActionBean implements ActionBean {
         this.viewerType = viewerType;
     }
 
+    public JSONObject getUser() {
+        return user;
+    }
+
+    public void setUser(JSONObject user) {
+        this.user = user;
+    }
+
     public String getLoginUrl() {
         return loginUrl;
     }
@@ -168,20 +181,53 @@ public class ApplicationActionBean implements ActionBean {
         
         loginUrl = login.getUrl(context.getLocale()); 
         
-        if(application.isAuthenticatedRequired() && context.getRequest().getRemoteUser() == null) {
+        String username = context.getRequest().getRemoteUser();
+        if(application.isAuthenticatedRequired() && username == null) {
             return login;
         }
 
+        if(username != null) {
+            user = new JSONObject();
+            user.put("name", username);
+            JSONObject roles = new JSONObject();
+            user.put("roles", roles);
+            for(String role: Authorizations.getRoles(context.getRequest())) {
+                roles.put(role, Boolean.TRUE);
+            }
+        }
+        
         buildComponentSourceHTML();
         
-        appConfigJSON = application.toJSON();
+        appConfigJSON = application.toJSON(context.getRequest());
         this.viewerType = retrieveViewerType();
         
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
-
+    
+    /**
+     * Build a hash key to make the single component source for all components
+     * cacheable but updateable when the roles of the user change. This is not
+     * meant to be a secure hash, the roles of a user are not secret.
+     */
+    public static int getRolesCachekey(HttpServletRequest request) {
+        Set<String> roles = Authorizations.getRoles(request);
+        
+        if(roles.isEmpty()) {
+            return 0;
+        }
+        
+        List<String> sorted = new ArrayList<String>(roles);
+        Collections.sort(sorted);
+        
+        int hash = 0;
+        for(String role: sorted) {
+            hash = hash ^ role.hashCode();
+        }
+        return hash;
+    }
+    
     private void buildComponentSourceHTML() throws IOException {
-
+       
         StringBuilder sb = new StringBuilder();
 
         // Sort components by classNames, so order is always the same for debugging
@@ -192,6 +238,11 @@ public class ApplicationActionBean implements ActionBean {
             
             Set<String> classNamesDone = new HashSet<String>();
             for(ConfiguredComponent cc: comps) {
+                
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                    continue;
+                }
+                
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
 
@@ -224,12 +275,24 @@ public class ApplicationActionBean implements ActionBean {
             int hash = 0;
             Set<String> classNamesDone = new HashSet<String>();
             for(ConfiguredComponent cc: comps) {
+                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
+                    continue;
+                }
+                
                 if(!classNamesDone.contains(cc.getClassName())) {
                     hash = hash ^ cc.getClassName().hashCode();
                 } else {
                     classNamesDone.add(cc.getClassName());
                 }
             }
+            if(user != null) {
+                // Update component sources when roles of user change
+                hash = hash ^ getRolesCachekey(context.getRequest());
+                
+                // Update component sources when roles of configured components
+                // may have changed
+                hash = hash ^ (int)application.getAuthorizationsModified().getTime();
+            }            
 
             String url = new ForwardResolution(ComponentActionBean.class, "source")
                     .addParameter("app", name)
