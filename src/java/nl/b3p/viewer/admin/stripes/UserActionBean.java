@@ -452,7 +452,12 @@ public class UserActionBean implements ActionBean {
             Authorizations.getLayerAuthorizations(service.getTopLayer());
         }
 
-        Set<String> roles = new HashSet<String>(groups);
+        Set<String> roles = new HashSet<String>();
+        if(user != null) {
+            for(Group g: user.getGroups()) {
+                roles.add(g.getName());
+            }
+        }        
         
         if(!roles.isEmpty()) {
             
