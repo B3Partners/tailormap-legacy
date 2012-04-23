@@ -18,6 +18,8 @@ package nl.b3p.viewer.config.app;
 
 import java.util.*;
 import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Document;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
@@ -148,10 +150,10 @@ public class Level {
     }
 
     public JSONObject toJSONObject() throws JSONException {
-        return toJSONObject(true);
+        return toJSONObject(true,null,null);
     }
     
-    public JSONObject toJSONObject(boolean includeChildrenIds) throws JSONException {
+    public JSONObject toJSONObject(boolean includeChildrenIds, Application app, HttpServletRequest request) throws JSONException {
         JSONObject o = new JSONObject();
  
         /* TODO check readers */
@@ -174,7 +176,9 @@ public class Level {
             JSONArray ls = new JSONArray();
             o.put("layers", ls);
             for(ApplicationLayer l: layers) {
-                ls.put(l.getId().toString());
+                if(request == null || Authorizations.isAppLayerReadAuthorized(app, l, request)) {
+                    ls.put(l.getId().toString());
+                }
             }            
         }
         
@@ -183,7 +187,9 @@ public class Level {
                 JSONArray cs = new JSONArray();
                 o.put("children", cs);
                 for(Level l: children) {
-                    cs.put(l.getId().toString());
+                    if(request == null || Authorizations.isLevelReadAuthorized(app, l, request)) {
+                        cs.put(l.getId().toString());
+                    }
                 }
             }
         }

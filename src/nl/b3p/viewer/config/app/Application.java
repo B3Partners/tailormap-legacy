@@ -294,7 +294,6 @@ public class Application {
             // Prevent n+1 queries for each level            
             Stripersist.getEntityManager().createQuery("from Level l "
                     + "left join fetch l.documents "
-                    + "left join fetch l.readers "
                     + "where l in (:levels) ")
                     .setParameter("levels", treeCache.levels)
                     .getResultList();            
@@ -316,7 +315,7 @@ public class Application {
             o.put("selectedContent", selectedContent);         
             
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, request);
 
             Collections.sort(selectedObjects, new Comparator() {
 
@@ -349,7 +348,7 @@ public class Application {
             }
            
             Map<GeoService,Set<String>> usedLayersByService = new HashMap<GeoService,Set<String>>();
-            visitLevelForUsedServicesLayers(root, usedLayersByService);
+            visitLevelForUsedServicesLayers(root, usedLayersByService, request);
 
             if(!usedLayersByService.isEmpty()) {
                 JSONObject services = new JSONObject();
@@ -379,8 +378,12 @@ public class Application {
         return o.toString(4);
     }
     
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground) throws JSONException {
-        JSONObject o = l.toJSONObject(false);
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request) throws JSONException {
+        if(!Authorizations.isLevelReadAuthorized(this, l, request)) {
+            System.out.printf("Level %d %s unauthorized\n", l.getId(), l.getName());
+            return;
+        }
+        JSONObject o = l.toJSONObject(false, this, request);
         o.put("background", l.isBackground() || parentIsBackground);
         levels.put(l.getId().toString(), o);
         
@@ -389,6 +392,10 @@ public class Application {
         }
         
         for(ApplicationLayer al: l.getLayers()) {
+            if(!Authorizations.isAppLayerReadAuthorized(this, al, request)) {
+                System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
+                continue;
+            }
             JSONObject p = al.toJSONObject();
             p.put("background", l.isBackground() || parentIsBackground);
             appLayers.put(al.getId().toString(), p);
@@ -404,14 +411,20 @@ public class Application {
             o.put("children", jsonChildren);
             for(Level child: children) {
                 jsonChildren.put(child.getId().toString());
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground());
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request);
             }
         }
     }
     
-    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService) {
-                
+    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService, HttpServletRequest request) {
+        if(!Authorizations.isLevelReadAuthorized(this, l, request)) {
+            return;
+        }
+        
         for(ApplicationLayer al: l.getLayers()) {
+            if(!Authorizations.isAppLayerReadAuthorized(this, al, request)) {
+                continue;
+            }            
             GeoService gs = al.getService();
             
             Set<String> usedLayers = usedLayersByService.get(gs);
@@ -424,7 +437,7 @@ public class Application {
         List<Level> children = treeCache.childrenByParent.get(l);
         if(children != null) {        
             for(Level child: children) {
-                visitLevelForUsedServicesLayers(child, usedLayersByService);
+                visitLevelForUsedServicesLayers(child, usedLayersByService, request);
             }        
         }
     }
