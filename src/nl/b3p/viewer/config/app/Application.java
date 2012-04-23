@@ -393,11 +393,12 @@ public class Application {
         
         for(ApplicationLayer al: l.getLayers()) {
             if(!Authorizations.isAppLayerReadAuthorized(this, al, request)) {
-                System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
+                //System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
                 continue;
             }
             JSONObject p = al.toJSONObject();
             p.put("background", l.isBackground() || parentIsBackground);
+            p.put("editAuthorized", Authorizations.isAppLayerWriteAuthorized(this, al, request));
             appLayers.put(al.getId().toString(), p);
             
             if(al.getSelectedIndex() != null) {
