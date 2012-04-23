@@ -25,7 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +61,9 @@ public class EditFeatureActionBean  implements ActionBean {
     private ActionBeanContext context;
     
     @Validate
+    private Application application;
+    
+    @Validate
     private String feature;
 
     @Validate
@@ -75,6 +80,14 @@ public class EditFeatureActionBean  implements ActionBean {
     
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
     }
     
     public String getFeature() {
@@ -105,6 +118,10 @@ public class EditFeatureActionBean  implements ActionBean {
             do {
                 if(appLayer == null) {
                     error = "App layer or service not found";
+                    break;
+                }
+                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                    error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
                 layer = appLayer.getService().getLayer(appLayer.getLayerName());
