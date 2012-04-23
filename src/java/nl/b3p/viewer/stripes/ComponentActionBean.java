@@ -125,8 +125,8 @@ public class ComponentActionBean implements ActionBean {
                     
                     if(Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
                         component = cc.getViewerComponent();
+                        break;
                     }
-                    break;
                 }
             }
         }
