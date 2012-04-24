@@ -150,7 +150,17 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @field
          * Occurs when a filter has been created. Fired by the ViewerController. The parameters are the filter and the layer.
          */
-        ON_FILTER_ACTIVATED                     : "ON_FILTER_ACTIVATED"
+        ON_FILTER_ACTIVATED                     : "ON_FILTER_ACTIVATED",
         
+        /**
+         * @field
+         * Occurs when a control/tool is activated
+         */
+        ON_ACTIVATE                             : "ON_ACTIVATE",
+        /**
+         * @field
+         * Occurs when a control/tool is activated
+         */
+        ON_DEACTIVATE                           : "ON_DEACTIVATE"
     }
 });

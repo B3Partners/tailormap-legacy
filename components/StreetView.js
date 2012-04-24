@@ -55,6 +55,9 @@ Ext.define ("viewer.components.tools.StreetView",{
             viewerController: this.viewerController
         });
         
+        this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVATE,this.onActivate,this);
+        this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_DEACTIVATE,this.onDeactivate,this);
+        
         this.button= Ext.create("viewer.components.tools.JSButton",{
             name: this.getName(),
             iconUrl_up: this.iconUrl_up,
@@ -70,6 +73,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);
+        
         //TODO don't set SRS hardcoded        
 		Proj4js.defs["EPSG:28992"] = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs";
 		Proj4js.defs["EPSG:4236"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
@@ -95,10 +99,33 @@ Ext.define ("viewer.components.tools.StreetView",{
         Proj4js.transform(source,dest,point);
         return point;
     },
-    buttonDown : function(button,object){
+    /**
+     *The next functions will synchronize the button and the tool.
+     */
+    /**
+     * When the button is hit and toggled true
+     * @param button the button
+     * @param object the options.        
+     */
+    buttonDown : function(button,object){        
         this.toolMapClick.activateTool();
     },
+    /**
+     * When the button is hit and toggled false
+     */
     buttonUp: function(button,object){
         this.toolMapClick.deactivateTool();
+    },    
+    /**
+     * raised when the tool is activated.
+     */    
+    onActivate: function (){
+        this.button.setSelectedState(true);
+    },
+    /**
+     * raised when the tool is deactivated.
+     */
+    onDeactivate: function(){
+        this.button.setSelectedState(false);
     }
 });

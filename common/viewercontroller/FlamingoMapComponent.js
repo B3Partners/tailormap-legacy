@@ -52,6 +52,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL]               = "onMaptipCancel";        
         this.eventList[viewer.viewercontroller.controller.Event.ON_MAP_CLICKED]                 = "onMapClicked";        
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED]      = "onActiveFeatureChange";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                    = "onActivate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                  = "onDeactivate";
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -497,6 +499,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             //onchange tool is called for a tool group but event is registerd on the MapComponent
             id=this.getId();
             object = this.getObject(id);
+        }else if(event==viewer.viewercontroller.controller.Event.ON_ACTIVATE){
+            console.log("On Activate");
+        }else if(event==viewer.viewercontroller.controller.Event.ON_DEACTIVATE){
+            console.log("On Deactivate");
         }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO){                 
         //component = {extent: component[1]};
             var me = this;
