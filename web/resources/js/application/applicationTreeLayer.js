@@ -203,6 +203,7 @@ Ext.onReady(function() {
         });
     }
     if(filterAllowed) {
+        filterPanelItems.unshift({id: 'dataselectionLabel', text: "Bij deze attributen moet een dataselectie component geconfigureerd worden!", xtype: 'label'});
         tabconfig.push({
             xtype: 'container',
             width: '100%',
