@@ -39,12 +39,13 @@ Ext.define ("viewer.components.Edit",{
         viewer.components.Edit.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
         var me = this;
-        this.layers = Ext.Array.filter(this.layers, function(layerId) {
-                       
-            // XXX must check editAuthorized in appLayer
-            // cannot get that from this layerId
-            return true;            
-        });
+        if (this.layers!=null){
+            this.layers = Ext.Array.filter(this.layers, function(layerId) {
+                // XXX must check editAuthorized in appLayer
+                // cannot get that from this layerId
+                return true;            
+            });
+        }
         this.renderButton({
             handler: function(){
                 me.layerSelector.initLayers();
