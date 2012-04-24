@@ -93,7 +93,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </table>
             
         <c:if test="${actionBean.application != null}">
-            <h2 style="padding-top: 5px">Autorisaties voor applicatie <c:out value="${actionBean.application.name} ${actionBean.application.version != null ? 'v' + actionBean.application.version : ''}"/></h2>
+            <h2 style="padding-top: 5px">Autorisaties voor applicatie <c:out value="${actionBean.application.name}"/> <c:if test="${actionBean.application.version != null}">v${actionBean.application.version}</c:if></h2>
             <h3 style="padding-top: 5px">Niveau's</h2>
             <p style="font-style: italic; padding: 5px">Niveau's die voor alle groepen geautoriseerd zijn worden niet getoond.</p>
             <table class="formtable" border="1">
@@ -164,7 +164,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <p style="padding: 5px">
                 Bekijk autorisaties voor applicatie: <stripes:select name="application">
                     <c:forEach var="app" items="${actionBean.applications}">
-                        <stripes:option value="${app}"><c:out value="${app.name} ${app.version != null ? 'v' + app.version : ''}"/></stripes:option>
+                        <stripes:option value="${app}"><c:out value="${app.name}"/>  <c:if test="${app.version != null}">v${app.version}</c:if></stripes:option>
                     </c:forEach>
                 </stripes:select>
                 </p>
