@@ -108,12 +108,11 @@ public class CombineImagesHandler {
             Graphics2D gr=(Graphics2D) rot.getGraphics();
             int h = returnImage.getHeight();
             int w = returnImage.getWidth();
-            //first transform to 0.0 then rotate and then transform back to middle of the new image with the size that is requested.
-            AffineTransform xform = new AffineTransform();            
-            xform.translate(0.5*h, 0.5*w);
-            xform.rotate(Math.toRadians(360-settings.getAngle()));
-            xform.translate(-0.5*w+(w-settings.getWidth())/2, -0.5*h+(h-settings.getHeight())/2);
-            //xform.translate(0.5*w - (w-settings.getWidth())/2, 0.5*h -(h-settings.getHeight())/2);
+            
+            //transform to mid and then rotate with anchor point the mid of the image.
+            AffineTransform xform = new AffineTransform();   
+            xform.setToTranslation((settings.getWidth()-w),(settings.getHeight()-h)/2);            
+            xform.rotate(Math.toRadians(360-settings.getAngle()),w/2,h/2);
             
             gr.drawImage(returnImage,xform,null);
             gr.dispose();

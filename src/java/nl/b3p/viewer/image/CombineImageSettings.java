@@ -317,46 +317,45 @@ public class CombineImageSettings {
      * @param rotation
      * @return 
      */
-    private Bbox getBboxWithRotation(Bbox bbox, Integer rotation) {
-        if (rotation !=null && rotation > 0 && rotation < 360){
-            return bbox;
+    private Bbox getBboxWithRotation(Bbox bb, Integer rotation) {
+        //copy the bbox
+        Bbox newBbox = new Bbox(bb);
+        if (rotation ==null || rotation <= 0 || rotation >= 360){
+            return newBbox;
         }
-        double centerX= bbox.getCenterX();
-        double centerY= bbox.getCenterY();
+        double centerX= newBbox.getCenterX();
+        double centerY= newBbox.getCenterY();
         //calculate the rotated corners of the bbox;
         //first transform BBOX rotation point to 0.0:
-        bbox.transform(-centerX,-centerY);
+        newBbox.transform(-centerX,-centerY);
         //store the calculated coords in a Double[][]
         double[][] coords = new double[4][2];
         //lower left
-        coords[0]=calcRotation(rotation, bbox.getMinx(),bbox.getMiny());
+        coords[0]=calcRotation(rotation, newBbox.getMinx(),newBbox.getMiny());
         //lower right
-        coords[1]=calcRotation(rotation, bbox.getMaxx(),bbox.getMaxy());
+        coords[1]=calcRotation(rotation, newBbox.getMaxx(),newBbox.getMiny());
         //upper right
-        coords[2]=calcRotation(rotation, bbox.getMinx(),bbox.getMaxy());
+        coords[2]=calcRotation(rotation, newBbox.getMaxx(),newBbox.getMaxy());
         //upper left;
-        coords[3]=calcRotation(rotation, bbox.getMinx(),bbox.getMaxy());
+        coords[3]=calcRotation(rotation, newBbox.getMinx(),newBbox.getMaxy());
         
-        //transform the rotation back;
-        for (int i=0; i < coords.length; i++){
-            coords[i][0]+=centerX;
-            coords[i][1]+=centerY;
-        }
         //enlarge the orginal bbox with the  rotated bbox.
         for (int i=0; i < coords.length; i++){
             double x=coords[i][0];
             double y=coords[i][1];
-            if (x < bbox.getMinx()){
-                bbox.setMinx(x);
-            }if (x > bbox.getMaxx()){
-                bbox.setMaxx(x);
-            }if (y < bbox.getMiny()){
-                bbox.setMiny(y);
-            }if (y > bbox.getMaxy()){
-                bbox.setMaxy(y);
+            if (x < newBbox.getMinx()){
+                newBbox.setMinx(x);
+            }if (x > newBbox.getMaxx()){
+                newBbox.setMaxx(x);
+            }if (y < newBbox.getMiny()){
+                newBbox.setMiny(y);
+            }if (y > newBbox.getMaxy()){
+                newBbox.setMaxy(y);
             }
         }
-        return null;
+        //transform the new bbox back
+        newBbox.transform(centerX,centerY);
+        return newBbox;
         
     }
     /**

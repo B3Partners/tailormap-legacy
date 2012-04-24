@@ -141,4 +141,17 @@ public class Bbox {
         returnValue+=getMaxy();
         return returnValue;
     }
+    /**
+     * Give wkt of this bbox.
+     */
+    public String toWKT(){
+        String s="POLYGON((";
+        s+=getMinx()+" "+getMiny()+",";
+        s+=getMinx()+" "+getMaxy()+",";
+        s+=getMaxx()+" "+getMaxy()+",";
+        s+=getMaxx()+" "+getMiny()+",";
+        s+=getMinx()+" "+getMiny();
+        s+="))";
+        return s;
+    }
 }
