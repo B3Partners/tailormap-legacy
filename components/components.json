@@ -529,8 +529,8 @@
             },
             source: {
                 loadingText: "Bezig met laden...[percentage]%",
-                left: 0,
-                top: 0
+                left: "20",
+                top: "100"
             }
         }             
     },

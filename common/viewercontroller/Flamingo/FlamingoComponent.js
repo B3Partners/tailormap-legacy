@@ -108,6 +108,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             if (this.getWidth()==null){
                 this.setWidth("200");
             }
+            if (this.getLeft()==null){
+                this.setLeft("20");
+            }
+            if (this.getTop()==null){
+                this.setTop("100");
+            }
             if (config.loadingText!=undefined){
                 this.addString("loading",config.loadingText);
                 this.addString("waiting",config.loadingText);
