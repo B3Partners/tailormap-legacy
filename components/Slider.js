@@ -58,13 +58,16 @@ Ext.define("viewer.components.Slider",{
     },
     onAddLayer: function(map,options){        
         var mapLayer=options.layer;  
-        var appLayer = this.viewerController.app.appLayers[mapLayer.appLayerId];
-        //check if this slider needs to change values for the layer
-        var serviceLayer=this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-        if (Ext.Array.contains(this.selectedLayers,serviceLayer.id)){            
-            this.layers.push(mapLayer);
-            if(this.slider){
-                this.applySlider(mapLayer,this.slider.getValue());
+        //only if configured with a applayer
+        if (mapLayer.appLayerId){
+            var appLayer = this.viewerController.app.appLayers[mapLayer.appLayerId];
+            //check if this slider needs to change values for the layer
+            var serviceLayer=this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+            if (Ext.Array.contains(this.selectedLayers,serviceLayer.id)){            
+                this.layers.push(mapLayer);
+                if(this.slider){
+                    this.applySlider(mapLayer,this.slider.getValue());
+                }
             }
         }
     },

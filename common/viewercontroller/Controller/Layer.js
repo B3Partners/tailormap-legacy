@@ -22,8 +22,8 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     map:null,
     visible: false,
     //service id from where this layer is created
-    serviceId: 0,
-    appLayerId: 0,
+    serviceId: null,
+    appLayerId: null,
     config :{
         id: "id",
         frameworkLayer: null,
