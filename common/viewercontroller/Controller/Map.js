@@ -167,7 +167,8 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         this.layers=newLayerArray;
         return currentIndex;
     },
-        /**
+    
+    /**
      * Sets a layer visible/invisible
      */
     setLayerVisible : function (layer, visible){

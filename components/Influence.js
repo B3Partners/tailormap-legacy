@@ -35,12 +35,16 @@ Ext.define ("viewer.components.Influence",{
      * Constructor for influence
      * @constructor
      */
-    constructor: function (conf){        
-        conf.searchconfigs=[{
-            id: 1,
-            url: conf.searchUrl,
-            name: conf.searchName
-        }];
+    constructor: function (conf){     
+        if(conf.searchUrl && conf.searchUrl!=""){
+            conf.searchconfigs=[{
+                id: 1,
+                url: conf.searchUrl,
+                name: conf.searchName
+            }];
+        }else{
+            conf.searchconfigs=[];
+        }
         viewer.components.Influence.superclass.constructor.call(this, conf);
         this.removeButton=this.form.getChildByElement(this.name+"_remove")
         this.removeButton.setVisible(false);
@@ -96,12 +100,14 @@ Ext.define ("viewer.components.Influence",{
             height: 25
         });
         itemList= formItemsBefore.concat(itemList);
-        
-        itemList.push({
-            xtype: 'label',
-            margin: this.margin,
-            text: 'of'            
-        });
+        //only if there is a search button add the or label
+        if (this.searchconfigs.length> 0){
+            itemList.push({
+                xtype: 'label',
+                margin: this.margin,
+                text: 'of'            
+            });
+        }
         itemList.push({
             xtype: 'button',
             text: 'Locatie aanwijzen op kaart',

@@ -59,13 +59,13 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
     },
     getFormItems: function(){
-        var itemList = new Array();
+        var itemList = new Array();        
         if(this.searchconfigs.length == 1){
             itemList.push({
                 xtype: 'label',
                 text: 'Zoek op: '+ this.searchconfigs[0].name
             });
-        }else{
+        }else if (this.searchconfigs.length > 1 ){
             var configs = Ext.create('Ext.data.Store', {
                 fields: ['id', 'name', 'url'],
                 data : this.searchconfigs
@@ -81,24 +81,26 @@ Ext.define ("viewer.components.Search",{
                 id: 'searchName' + this.name
             });
         }
+        if (this.searchconfigs.length> 0){
+            itemList.push({ 
+                xtype: 'textfield',
+                name: 'searchfield',
+                anchor: '100%',
+                id: 'searchfield' + this.name
+            });
         
-        itemList.push({ 
-            xtype: 'textfield',
-            name: 'searchfield',
-            anchor: '100%',
-            id: 'searchfield' + this.name
-        });
-        itemList.push({ 
-            xtype: 'button',
-            text: 'Zoeken',
-            margin: this.margin,
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.search
+            itemList.push({ 
+                xtype: 'button',
+                text: 'Zoeken',
+                margin: this.margin,
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: this.search
+                    }
                 }
-            }
-        });
+            });
+        }
         itemList.push({ 
             xtype: 'button',
             text: 'Zoekactie afbreken',
