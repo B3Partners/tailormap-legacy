@@ -37,6 +37,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
             <div id="form-container" class="applicaties">
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean">
+                    <stripes:hidden name="version"/>
+                    <stripes:hidden name="name"/>
+                    <stripes:hidden name="applicationWorkversion"/>
                     <stripes:submit name="newApplication" value="Nieuwe applicatie"/>
                 </stripes:form>
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
@@ -45,6 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript">
                 var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="getGridData"/>';
                 var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" event="view"/>';
+                var workversionurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="makeWorkVersion"/>';
                 var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>';
                 var activelink = 'menu_kiesapplicatie';
                 

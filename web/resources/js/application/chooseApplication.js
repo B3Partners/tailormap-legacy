@@ -88,10 +88,15 @@ Ext.onReady(function(){
                 header: '',
                 dataIndex: 'id',
                 flex: 1,
-                renderer: function(value) {
-                    return Ext.String.format('<a href="'+ editurl + '&application=' +'{0} ">Activeren</a>', value) +
-                           ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
+                renderer: function(value, style, row) {
+                    var data = row.data;
+                    if(data.published == "Ja"){
+                        return Ext.String.format('<a href="#" onclick="return makeWorkVersion({0});">Maak werkversie</a>', value);
+                    }else{
+                        return Ext.String.format('<a href="'+ editurl + '&application=' +'{0} ">Activeren</a>', value) +
+                            ' | ' +
+                            Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
+                    }
                 },
                 sortable: false
             }
@@ -120,7 +125,6 @@ function editObject(objId) {
 }
 
 function removeObject(objId) {
-    
     var appRecord = Ext.getCmp('editGrid').store.getById(objId);
     
     Ext.MessageBox.show({
@@ -129,11 +133,9 @@ function removeObject(objId) {
         buttons: Ext.MessageBox.OKCANCEL,
         fn: function(btn){
             if(btn=='ok'){
-
                 Ext.get('editFrame').dom.src = deleteurl + '?applicationToDelete=' + objId;
                 var gridCmp = Ext.getCmp('editGrid')
                 gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
-
             }
         }
     });  
@@ -141,6 +143,27 @@ function removeObject(objId) {
     return false;
 }
 
+function makeWorkVersion(objId){     
+    var appRecord = Ext.getCmp('editGrid').store.getById(objId);
+    Ext.MessageBox.show({
+        title: 'Werkversie applicatie',
+        msg: 'Versietoevoeging:',
+        buttons: Ext.MessageBox.OKCANCEL,
+        prompt:true,
+        fn: function(btn, text){
+            if(btn=='ok' && text){
+                var frm = document.forms[0];
+                frm.name.value = appRecord.get("name");
+                frm.applicationWorkversion.value=objId;
+                frm.version.value=text;
+                frm.action = "makeWorkVersion";
+                frm.submit();
+            }
+        }
+    });  
+    return false;
+}
+
 function reloadGrid(){
-    Ext.getCmp('editGrid').getStore().load();
+Ext.getCmp('editGrid').getStore().load();
 }

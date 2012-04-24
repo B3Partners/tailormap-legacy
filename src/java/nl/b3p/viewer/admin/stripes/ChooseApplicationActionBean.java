@@ -18,6 +18,7 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -56,8 +57,16 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     @Validate
     private JSONArray filter;
     
+    @Validate 
+    private String name;
+    @Validate
+    private String version;
+    @Validate
+    private Application applicationWorkversion;
+    
     @Validate
     private Application applicationToDelete;
+    
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public String getDir() {
@@ -115,6 +124,32 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     public void setApplicationToDelete(Application applicationToDelete) {
         this.applicationToDelete = applicationToDelete;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Application getApplicationWorkversion() {
+        return applicationWorkversion;
+    }
+
+    public void setApplicationWorkversion(Application applicationWorkversion) {
+        this.applicationWorkversion = applicationWorkversion;
+    }
+    
+    
     //</editor-fold>
     
     @DefaultHandler
@@ -255,6 +290,50 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                response.getWriter().print(grid.toString());
            }
         };
+    }
+    
+    public Resolution makeWorkVersion(){
+        try {
+            Object o = Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name AND version = :version")
+                .setMaxResults(1)
+                .setParameter("name", name)
+                .setParameter("version", version)
+                .getSingleResult();
+            
+            getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" en versie \"{1}\" bestaat al", name,version));
+            return new RedirectResolution(this.getClass());
+        } catch(NoResultException nre) {
+        }
+
+        try {
+            
+            Application copy = applicationWorkversion.deepCopy();
+            copy.setVersion(version);
+            // don't save changes to original app
+            Stripersist.getEntityManager().detach(applicationWorkversion);
+
+            Stripersist.getEntityManager().persist(copy);
+            Stripersist.getEntityManager().getTransaction().commit();
+
+            getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
+            setApplication(copy);   
+            
+            return new ForwardResolution(ApplicationSettingsActionBean.class);
+        } catch(Exception e) {
+            log.error(String.format("Error copying application #%d named %s %swith new name %s",
+                    applicationWorkversion.getId(),
+                    applicationWorkversion.getName(),
+                    applicationWorkversion.getVersion() == null ? "" : "v" + applicationWorkversion.getVersion() + " ",
+                    name), e);
+            String ex = e.toString();
+            Throwable cause = e.getCause();
+            while(cause != null) {
+                ex += ";\n<br>" + cause.toString();
+                cause = cause.getCause();
+            }
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het maken van werkversie applicatie: " + ex));
+            return new ForwardResolution(JSP);
+        }
     }
     
     private JSONObject getGridRow(int i, String name, String published, String owner) throws JSONException {       
