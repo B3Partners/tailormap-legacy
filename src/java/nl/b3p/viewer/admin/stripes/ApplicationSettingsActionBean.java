@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
@@ -316,5 +317,63 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij kopieren applicatie: " + ex));
             return new ForwardResolution(JSP);
         }
+    }
+    
+    public Resolution publish (){
+        // Find current published application and make backup
+        try {
+            Application oldPublished = (Application)Stripersist.getEntityManager().createQuery("from Application where name = :name AND version IS null")
+                .setMaxResults(1)
+                .setParameter("name", name)
+                .getSingleResult();
+            
+            Date nowDate = new Date(System.currentTimeMillis());
+            SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+            sdf.applyPattern("HH-mm_dd-MM-yyyy");
+            String now = sdf.format(nowDate);
+            String uniqueVersion = findUniqueVersion(name, "B_"+now );
+            oldPublished.setVersion(uniqueVersion);
+            Stripersist.getEntityManager().persist(oldPublished);
+            Stripersist.getEntityManager().getTransaction().commit();
+            
+        } catch(NoResultException nre) {
+        }
+        application.setVersion(null);
+        Stripersist.getEntityManager().persist(application);
+        Stripersist.getEntityManager().getTransaction().commit();
+        setApplication(application);
+        
+        return new RedirectResolution(this.getClass()).flash(this);
+    }
+    
+      /**
+     * Checks if a Application with given name already exists and if needed
+     * returns name with sequence number in brackets added to make it unique.
+     * @param name Name to make unique
+     * @return A unique name for a FeatureSource
+     */
+    public static String findUniqueVersion(String name, String version) {
+        int uniqueCounter = 0;
+        while(true) {
+            String testVersion;
+            if(uniqueCounter == 0) {
+                testVersion = version;
+            } else {
+                testVersion = version + " (" + uniqueCounter + ")";
+            }
+            try {
+                Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name AND version = :version")
+                    .setParameter("name", name)
+                    .setParameter("version", testVersion)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+                uniqueCounter++;
+            } catch(NoResultException nre) {
+                version = testVersion;
+                break;
+            }
+        }  
+        return version;
     }
 }
