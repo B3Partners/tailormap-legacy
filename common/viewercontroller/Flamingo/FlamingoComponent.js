@@ -104,10 +104,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         }else if (config.type == viewer.viewercontroller.controller.Component.MAPTIP){           
             this.setTagName("Maptip");
         }else if (config.type == viewer.viewercontroller.controller.Component.LOADMONITOR){           
-            this.setTagName("MonitorLayer");
-            this.setLeft("100");
-            this.setTop("100");
-            this.setWidth("200");
+            this.setTagName("MonitorMap");
+            if (this.getWidth()==null){
+                this.setWidth("200");
+            }
             if (config.loadingText!=undefined){
                 this.addString("loading",config.loadingText);
                 this.addString("waiting",config.loadingText);

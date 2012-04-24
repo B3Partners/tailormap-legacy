@@ -524,9 +524,13 @@
         extPropertyGridConfigs: {
             propertyNames: {
                 loadingText: "Laad tekst",
+                left: "Positie vanaf links",
+                top: "Positie vanaf boven"
             },
             source: {
-                loadingText: "Bezig met laden...",
+                loadingText: "Bezig met laden...[percentage]%",
+                left: 0,
+                top: 0
             }
         }             
     },
