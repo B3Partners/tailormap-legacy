@@ -455,7 +455,9 @@ public class UserActionBean implements ActionBean {
         Set<String> roles = new HashSet<String>();
         if(user != null) {
             for(Group g: user.getGroups()) {
-                roles.add(g.getName());
+                if(g != null) {
+                    roles.add(g.getName());
+                }
             }
         }        
         
