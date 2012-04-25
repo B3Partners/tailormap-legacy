@@ -30,7 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <div id="content">
-            <h1 id="layoutManagerTitle">Layoutmanager: ${actionBean.application.name} <c:if test="${!empty actionBean.application.version}">(v${actionBean.application.version})</c:if></h1>
             <c:set var="maxWidth" value="" />
             <c:if test="${!empty actionBean.application.details.maxWidth}">
                 <c:set var="maxWidth" value="${actionBean.application.details.maxWidth}" />
