@@ -370,6 +370,7 @@ input[type="submit"]:hover, .extlikebutton:hover {
         .regionconfig {
             margin: 5px;
             border: 1px solid @maincolor;
+            background-color: White;
             padding: 5px;
             float: left;
             .widthconfig, .heightconfig, .tabsconfig {
@@ -381,6 +382,13 @@ input[type="submit"]:hover, .extlikebutton:hover {
             }
             input[type='checkbox'] {
                 width: auto;
+            }
+            &#regionconfig_left_menu {
+                /* Exception for left menu config, need to be absolute, otherwise
+                   it would render below components and other regions */
+                width: 130px;
+                position: absolute;
+                z-index: 50;
             }
         }
         .component-block {

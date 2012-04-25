@@ -93,7 +93,7 @@ Ext.onReady(function() {
         model: 'LayoutRegion',
         data: layoutRegions
     });
-        
+    
     Ext.create('Ext.view.View', {
         cls: 'component-view',
         tpl: '<tpl for=".">' +
@@ -212,7 +212,7 @@ Ext.onReady(function() {
                 layoutRegionElement.insertHtml('beforeEnd',
                     '<div class="layout_title">' +
                         '<strong class="layoutregion_title">' + changeCaseFirstLetter(layoutRegion.get('id').replace('_', ' '), false) + '</strong><br />' + 
-                        '<div class="regionconfig">' + 
+                        '<div class="regionconfig" id="regionconfig_' + layoutRegion.get('id') + '">' + 
                             '<u>Visuele configuratie</u><br />' + 
                             layoutRegionConfigHtml +
                         '</div>' + 
@@ -221,7 +221,18 @@ Ext.onReady(function() {
                 );
                 if(hasLayoutConfiguration) {
                     layoutRegionElement.child('.layout_title').child('.layoutregion_title').on('click', function(event, obj) {
-                        layoutRegionElement.child('.layout_title').child('.regionconfig').toggle(true);
+                        layoutRegionElement.child('.layout_title').child('.regionconfig').toggle(false);
+                        /* Below is a layout fix for component items, preventing them to be partially invisible when a scrollbar appeared */
+                        layoutRegionsStore.each(function(region) {
+                            if(Ext.Array.contains(['content', 'content_bottom', 'popupwindow'], region.get('id'))) {
+                                if(region.regionContainer && region.regionContainer.items) {
+                                    var containerWidth = region.regionContainer.getWidth();
+                                    region.regionContainer.items.each(function(item) {
+                                        item.setWidth(containerWidth);
+                                    });
+                                }
+                            }
+                        });
                     });
                 }
                 layoutRegionElement.child('.layout_title').child('.regionconfig').setVisibilityMode(2).setVisible(false);
