@@ -257,8 +257,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));
-        
-        return new ForwardResolution(JSP);
+        return edit();
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
