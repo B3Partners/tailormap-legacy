@@ -157,7 +157,7 @@ Ext.onReady(function() {
                             { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right' },
                             { 
                                 id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right',
-                                listeners: {change: function(field, newval) { var comp = Ext.getCmp('default' + attribute.id); comp.setVisible(false); if(newval) comp.setVisible(true); }}
+                                listeners: {change: function(field, newval) { var comp = Ext.getCmp('default' + attribute.id); var label = Ext.getCmp('dataselectionLabel' + attribute.id); comp.setVisible(false); label.setVisible(false); if(newval){ comp.setVisible(true);label.setVisible(true);}}}
                             }
                         ]
                     },
@@ -169,7 +169,10 @@ Ext.onReady(function() {
                         value: attribute.defaultValue,
                         hidden: defaultValueHidden,
                         hideMode: 'visibility'
-                    }
+                    },
+                    {id: 'dataselectionLabel' + attribute.id, text: "Bij deze attributen moet een dataselectie component geconfigureerd worden!", xtype: 'label',
+                        hidden: defaultValueHidden,
+                        hideMode: 'visibility'}
                 ]
             })));
             collapsed = true;
@@ -203,7 +206,6 @@ Ext.onReady(function() {
         });
     }
     if(filterAllowed) {
-        filterPanelItems.unshift({id: 'dataselectionLabel', text: "Bij deze attributen moet een dataselectie component geconfigureerd worden!", xtype: 'label'});
         tabconfig.push({
             xtype: 'container',
             width: '100%',
