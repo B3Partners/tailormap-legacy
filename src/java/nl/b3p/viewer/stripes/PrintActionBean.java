@@ -115,6 +115,13 @@ public class PrintActionBean implements ActionBean {
                 info.setLegendUrls(legendUrls);
             }
         }
+        if (jRequest.has("angle")){
+            int angle = jRequest.getInt("angle");
+            angle = angle % 360;
+            //because the map viewport is rotated the actual map rotation is negative
+            angle = 360-angle;
+            info.setAngle(angle);
+        }
         
         final String mimeType;
         if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
@@ -169,6 +176,10 @@ public class PrintActionBean implements ActionBean {
             JAXBContext jc = JAXBContext.newInstance(PrintInfo.class);
             JAXBSource src = new JAXBSource(jc, info);
             
+            JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
+            StringWriter sw = new StringWriter();
+            jaxbContext.createMarshaller().marshal(info, sw);
+            String s = sw.toString();
             /* Setup xslt */
             Source xsltSrc = new StreamSource(xslFile);
             //xsltSrc.setSystemId(path);

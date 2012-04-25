@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name="info")
-@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality"})
+@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle"})
 public class PrintInfo {
     private String title;
     private String subtitle;
@@ -36,6 +36,7 @@ public class PrintInfo {
     private String bbox;
     private String remark;
     private int quality;
+    private int angle;
     private ArrayList<String> legendUrls;
 
     public PrintInfo() {
@@ -111,5 +112,14 @@ public class PrintInfo {
     @XmlElement(name="legendUrl")
     public ArrayList<String> getLegendUrls(){
         return this.legendUrls;
+    }
+
+    @XmlElement(name="angle")
+    public int getAngle() {
+        return angle;
+    }
+
+    public void setAngle(int angle) {
+        this.angle = angle;
     }
 }
