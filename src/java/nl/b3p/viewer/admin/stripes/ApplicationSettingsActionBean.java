@@ -136,12 +136,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             if(application.getOwner() != null){
                 owner = application.getOwner().getUsername();
             }
-            if(application.getStartExtent() != null){
-                startExtent = application.getStartExtent();
-            }
-            if(application.getMaxExtent() != null){
-                maxExtent = application.getMaxExtent();
-            }
+            startExtent = application.getStartExtent();
+            maxExtent = application.getMaxExtent();
             name = application.getName();
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
@@ -204,12 +200,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             User appOwner = Stripersist.getEntityManager().find(User.class, owner);
             application.setOwner(appOwner);
         }
-        if(startExtent != null){
-            application.setStartExtent(startExtent);
-        }
-        if(maxExtent != null){
-            application.setMaxExtent(maxExtent);
-        }
+        application.setStartExtent(startExtent);
+
+        application.setMaxExtent(maxExtent);
+
         application.setAuthenticatedRequired(authenticatedRequired);
         
         application.getDetails().putAll(details);        
