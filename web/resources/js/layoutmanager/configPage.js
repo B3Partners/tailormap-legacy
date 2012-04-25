@@ -32,12 +32,29 @@ Ext.onReady(function(){
             if(metadata.extPropertyGridConfigs && metadata.extPropertyGridConfigs.propertyNames) {
                 propertyNames = metadata.extPropertyGridConfigs.propertyNames;
             }
+            /* 
+             * Check if all source config items exist in the metadata source items,
+             * sometimes other items like isPopup would show up in the property grid,
+             * because they are added to the configuration automatically, while these
+             * are not configurable options. All configurable options should be in the
+             * metadata source items
+             */
+            var extConfigSource = {};
+            if(metadata.extPropertyGridConfigs && metadata.extPropertyGridConfigs.source) {
+                Ext.Object.each(source, function(key, value) {
+                    if(metadata.extPropertyGridConfigs.source.hasOwnProperty(key)) {
+                        extConfigSource[key] = value;
+                    }
+                });
+            } else {
+                extConfigSource = source;
+            }
             propertyGrid = Ext.create('Ext.grid.property.Grid', {
                 title: 'Pas de instellingen aan',
                 renderTo: "config",
                 hideHeaders:true,
                 nameColumnWidth: 300,
-                source: source,
+                source: extConfigSource,
                 propertyNames: propertyNames
             });
         }
