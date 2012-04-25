@@ -109,6 +109,7 @@ Ext.define ("viewer.components.Filter",{
     setNewAttributeList : function (list){
         this.attributeStore.loadData(list,false);
         this.attributeCombobox.clearValue();
+        this.attributes = list;
     },
     //Add a new attributefilter (to expand this filter)
     addAttributeFilter : function (){
@@ -154,12 +155,23 @@ Ext.define ("viewer.components.Filter",{
         for(var i = 0 ; i < this.attributeFilters.length;i++){
             var attribute = this.attributeCombobox.getValue();
             var af = this.attributeFilters[i];
+            var type = this.getAttributeType(attribute);
             af.attribute = attribute;
+            af.attributeType = type;
             cql += af.getCQL();
         }
         cql+= ")";
        
         return cql;
+    },
+    getAttributeType : function (name){
+        for(var i = 0 ; i < this.attributes.length ;i++){
+            var attr = this.attributes[i];
+            if(attr.value == name){
+                return attr.type;
+            }
+        }
+        return null;
     },
     getExtComponents: function() {
         return [ this.container.getId() ];

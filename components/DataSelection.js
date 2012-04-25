@@ -177,6 +177,7 @@ Ext.define ("viewer.components.DataSelection",{
                 dataSelectieAttributes.push({
                     xtype: "textfield",
                     id: attribute.name,
+                    dataType: attribute.type,
                     name: attribute.name,
                     fieldLabel: attribute.alias || attribute.name,
                     labelWidth:200,
@@ -268,7 +269,15 @@ Ext.define ("viewer.components.DataSelection",{
                 if(i != 0 ){
                     cql += " AND ";
                 }
-                cql += "\"" +item.id + "\"=\'" + item.getValue() + "\'";
+                cql += "\"" +item.id + "\"=";
+                var attributeType = item.dataType;
+                if(attributeType && attributeType.toLowerCase() == "string"){
+                    cql += "\'";
+                }  
+                cql += item.getValue();
+                if(attributeType && attributeType.toLowerCase() == "string"){
+                    cql += "\'";
+                }
             }
         }
         return cql;
@@ -310,7 +319,8 @@ Ext.define ("viewer.components.DataSelection",{
                 attributeList.push({
                     id: attribute.id,
                     title: attribute.alias || attribute.name,
-                    value: attribute.name
+                    value: attribute.name,
+                    type: attribute.type
                 });
             }
         }

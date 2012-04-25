@@ -50,6 +50,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     logicOperator:null,
     container:null,
     attribute:null,
+    attributeType:null,
     config :{
         first:null,
         id:null,
@@ -124,7 +125,14 @@ Ext.define ("viewer.components.AttributeFilter",{
         }
         cql += "\"" +  this.attribute + "\"";
         cql += this.operator.getValue();
-        cql += "\'" + this.value.getValue() + "\'";
+            
+        if(this.attributeType && this.attributeType.toLowerCase() == "string"){
+            cql += "\'";
+        }  
+        cql += this.value.getValue();
+        if(this.attributeType && this.attributeType.toLowerCase() == "string"){
+            cql += "\'";
+        }      
         return cql;
     },
     getExtComponents: function() {
