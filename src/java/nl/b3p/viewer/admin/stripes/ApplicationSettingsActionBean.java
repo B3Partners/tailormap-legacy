@@ -341,9 +341,10 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application.setVersion(null);
         Stripersist.getEntityManager().persist(application);
         Stripersist.getEntityManager().getTransaction().commit();
+        
         setApplication(null);
         
-        return new ForwardResolution(ChooseApplicationActionBean.class);
+        return new RedirectResolution(ChooseApplicationActionBean.class);
     }
     
       /**
