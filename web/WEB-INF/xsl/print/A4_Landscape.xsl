@@ -109,7 +109,17 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
             <fo:block margin-left="0.2cm" margin-top="0.1cm" font-size="10pt">
                 U bekijkt een demo ontwerp.
             </fo:block>
-
+            
+            <xsl:for-each select="legendUrls/legendUrl">
+                <fo:block margin-left="0.2cm" margin-top="0.1cm" font-size="10pt">
+                    <fo:external-graphic>
+                        <xsl:attribute name="src">
+                            <xsl:value-of select="."/>
+                        </xsl:attribute>
+                    </fo:external-graphic>
+                </fo:block>
+            </xsl:for-each>
+            
             <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="8pt" font-style="italic">
                 <xsl:value-of select="remark"/>
             </fo:block>
