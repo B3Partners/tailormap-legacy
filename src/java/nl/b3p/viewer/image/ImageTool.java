@@ -377,7 +377,8 @@ public class ImageTool {
         
         /* Als er geen tiling layer aanstaat dan width en height van eerste plaatje
          * pakken. Deze is voor alle gewone wms'en hetzelfde */
-        if (tilingImages == null || tilingImages.size() < 1) {
+        if ((tilingImages == null || tilingImages.size() < 1) &&
+                images.length>0 && images[0]!=null){
             width = images[0].getWidth();
             height = images[0].getHeight();
         }

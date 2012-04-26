@@ -111,7 +111,7 @@ public class CombineImagesHandler {
             
             //transform to mid and then rotate with anchor point the mid of the image.
             AffineTransform xform = new AffineTransform();   
-            xform.setToTranslation((settings.getWidth()-w),(settings.getHeight()-h)/2);            
+            xform.setToTranslation((settings.getWidth()-w)/2,(settings.getHeight()-h)/2);            
             xform.rotate(Math.toRadians(360-settings.getAngle()),w/2,h/2);
             
             gr.drawImage(returnImage,xform,null);
