@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Attributen</h1><br />
+            <h1>Attributen<a href="#attributes" title="Help" class="helplink"></a></h1><br />
 
             <div style="margin-bottom: 10px;">
                 <p>Attributen beheren voor</p>

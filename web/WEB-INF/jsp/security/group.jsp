@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         </p>
         <div id="content">
-            <h1>Gebruikers groepen</h1><br />
+            <h1>Gebruikers groepen<a href="#groups" title="Help" class="helplink"></a></h1><br />
             <div id="grid-container" class="groups">
 
             </div>

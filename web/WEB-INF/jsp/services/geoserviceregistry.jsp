@@ -30,7 +30,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Gegegevensregister</h1>
+            <h1>
+                Gegegevensregister
+                <a href="#georegistry" title="Help" class="helplink"></a>
+            </h1>
 
             <div id="tree-container"></div>
             <div id="form-container" class="services">

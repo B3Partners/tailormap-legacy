@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         </p>
         <div id="content">
-            <h1>Applicaties</h1><br />
+            <h1>Applicaties<a href="#applications" title="Help" class="helplink"></a></h1><br />
             <div id="grid-container" class="applicaties">
 
             </div>

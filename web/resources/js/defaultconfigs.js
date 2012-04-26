@@ -47,6 +47,47 @@ function appendPanel(header, content, container) {
     }
 }
 
+Ext.onReady(function() {
+    var helpLinks = Ext.query('.helplink');
+    if(helpLinks.length > 0) {
+        var iframeId = Ext.id();
+        var popupWindow = Ext.create('Ext.window.Window', {
+            title: 'Help',
+            closeAction: 'hide',
+            hideMode: 'offsets',
+            width: 600,
+            height: 400,
+            layout: 'fit',
+            renderTo: Ext.getBody(),
+            bodyStyle: {
+                background: '#FFFFFF'
+            },
+            items : [{
+                id: iframeId,
+                xtype : "component",
+                autoEl : {
+                    tag : "iframe",
+                    style: "border: 0px none;",
+                    frameborder: 0
+                }
+            }]
+        });
+        for(var i in helpLinks) {
+            var helpLink = Ext.get(helpLinks[i]);
+            helpLink.on('click', function(evt, htmlel, extel) {
+                var iframe = Ext.get(iframeId);
+                if(iframe) {
+                    var iframeurl = helppath + helpLink.getAttribute('href');
+                    iframe.set({ src: iframeurl });
+                    popupWindow.show();
+                }
+            }, helpLink, {
+                stopEvent: true
+            });
+        }
+    }
+});
+
 // Default grid config
 var defaultGridConfig = {
     autoWidth: true,

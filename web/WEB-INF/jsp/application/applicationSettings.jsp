@@ -115,7 +115,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                     </table>
 
-                    <div style="float: right; width: 50%;">
+                    <div class="appSettingsRight">
+                        <a href="#applicationSettings" title="Help" class="helplink"></a>
                         Opmerkingen
                         <div id="details_opmerkingen_container" style="margin-top: 5px;">
                             <stripes:textarea id="details_opmerkingen" cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px; display: none;" />

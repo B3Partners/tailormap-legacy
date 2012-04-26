@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         </p>
         <div id="content">
-            <h1>Documenten</h1><br />
+            <h1>Documenten<a href="#documents" title="Help" class="helplink"></a></h1><br />
             <div id="grid-container" class="documenten"></div>
             <div id="form-container" class="documenten">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>

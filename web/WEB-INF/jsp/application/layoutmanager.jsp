@@ -38,7 +38,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:if test="${!empty actionBean.application.details.maxHeight}">
                 <c:set var="maxHeight" value="${actionBean.application.details.maxHeight}" />
             </c:if>
-            <div id="layoutManagerApplicationSettings"> Maximale breedte: <input id="app_max_width" type="text" name="app_max_width" value="${maxWidth}" /> px | Maximale hoogte: <input id="app_max_height" type="text" name="app_max_height" value="${maxHeight}" /> px</div>
+            <div id="layoutManagerApplicationSettings">
+                Maximale breedte: <input id="app_max_width" type="text" name="app_max_width" value="${maxWidth}" /> px | Maximale hoogte: <input id="app_max_height" type="text" name="app_max_height" value="${maxHeight}" /> px
+                <a href="#layoutManager" title="Help" class="helplink"></a>
+            </div>
             <div id="component-container">
 
             </div>
