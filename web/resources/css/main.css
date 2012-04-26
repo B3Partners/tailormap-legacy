@@ -1,0 +1,523 @@
+.gridcontainer {
+  height: 315px;
+}
+.status_ok {
+  color: #00990f;
+}
+.status_error {
+  color: #a00002;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+}
+body {
+  color: #1c6ca7;
+  background-color: #ffffff;
+}
+body.x-body {
+  color: #1c6ca7;
+  background-color: #ffffff;
+}
+input,
+textarea {
+  background: url("../../extjs/resources/themes/images/gray/form/text-bg.gif") repeat-x scroll 0 0 #ffffff;
+  border: 1px solid #B5B8C8;
+  padding: 1px 3px;
+  line-height: 18px;
+  vertical-align: middle;
+  height: 22px;
+}
+textarea {
+  height: auto !important;
+}
+input[type="radio"],
+input[type="checkbox"] {
+  background: none;
+  border: 0px none;
+  padding: 0px;
+  height: auto;
+  margin-top: 3px;
+  margin-bottom: 5px;
+}
+input[type="submit"],
+.extlikebutton {
+  background-color: #f8f8f8;
+  background-image: url("../../extjs/resources/themes/images/gray/btn/btn-default-small-bg.gif");
+  background-repeat: repeat-x;
+  background-image: linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -moz-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -ms-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -o-linear-gradient(top, #ffffff, #eeeeee);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eeeeee));
+  background-image: -webkit-linear-gradient(top, #ffffff, #eeeeee);
+  border-radius: 3px;
+  border-style: solid;
+  border-width: 1px;
+  khtml-border-radius: 3px;
+  moz-border-radius: 3px;
+  ms-border-radius: 3px;
+  o-border-radius: 3px;
+  padding: 2px 2px 2px 2px;
+  webkit-border-radius: 3px;
+  border-color: #bbbbbb;
+  padding: 2px 4px;
+  color: #333333;
+  cursor: pointer;
+  height: auto;
+}
+input[type="submit"]:hover,
+.extlikebutton:hover {
+  background-color: #f3f3f3;
+  background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
+  background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
+  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
+  background-image: none;
+  background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fbfbfb), color-stop(100%, #e9e9e9));
+  background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
+  border-color: #9d9d9d;
+}
+.submitbuttons {
+  margin-top: 10px;
+}
+.formtable > tr > td,
+.formtable > tbody > tr > td {
+  padding-top: 5px;
+  padding-right: 15px;
+}
+#formcontent.insidePanel {
+  margin: 10px;
+  margin-top: 5px;
+}
+#header {
+  background-color: #1c6ca7;
+  width: 100%;
+  position: absolute;
+  min-width: 960px;
+}
+#header #menu {
+  height: 40px;
+  color: #ffffff;
+}
+#header #menu ul {
+  position: absolute;
+  z-index: 90;
+  list-style-type: none;
+}
+#header #menu ul li {
+  float: left;
+  display: block;
+  background-color: #1c6ca7;
+}
+#header #menu ul li a {
+  display: block;
+  height: 40px;
+  padding: 10px;
+  color: #ffffff;
+  float: left;
+  text-decoration: none;
+}
+#header #menu ul li a:hover {
+  background-color: #207abd;
+}
+#header #menu ul li ul {
+  display: none;
+  float: left;
+  position: relative;
+  background-color: #1c6ca7;
+}
+#header #menu ul li ul li a {
+  background-color: #dddddd;
+  border: none;
+  color: #1c6ca7;
+}
+#header #menu ul li ul li a:hover {
+  background-color: #eaeaea;
+}
+#header #menu ul li ul li a.active {
+  background-color: #ffffff;
+}
+#header #menu ul li ul li ul {
+  float: none;
+  position: absolute;
+  right: 0px;
+  margin-top: 40px;
+  margin-right: -2px;
+  border: 2px solid #1c6ca7;
+  border-top: 0px none;
+  z-index: 99999;
+}
+#header #menu ul li ul li ul li {
+  width: 100%;
+  min-width: 300px;
+}
+#header #menu ul li ul li ul li a {
+  width: 100%;
+  float: right;
+  text-align: right;
+  border-top: 1px solid #ffffff;
+}
+#header #menu ul li.menuclicked ul {
+  display: block;
+}
+#header #menu ul li.menuclicked ul li ul {
+  display: none;
+}
+#header #menu ul li.menuclicked ul li:hover ul {
+  display: block;
+}
+#header #userinfo {
+  position: absolute;
+  height: 40px;
+  padding: 10px;
+  color: white;
+  right: 0px;
+  z-index: 80;
+}
+#header #userinfo a:hover {
+  text-decoration: none;
+}
+#content {
+  padding-top: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  height: 100%;
+  min-width: 960px;
+}
+#tree-container {
+  width: 250px;
+  float: left;
+  margin-top: 10px;
+}
+#form-container.services {
+  overflow: hidden;
+  height: 99%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+#form-container.documenten {
+  overflow: hidden;
+  height: 55%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+#form-container.attributesources {
+  overflow: hidden;
+  height: 55%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+#form-container.applicaties {
+  overflow: hidden;
+  height: 55%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+#form-container.attribute {
+  overflow: hidden;
+  height: 40%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+#form-container.groups {
+  overflow: hidden;
+  height: 55%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+#form-container.user {
+  overflow: hidden;
+  height: 55%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+#form-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0px none;
+}
+#grid-container {
+  min-height: 315px;
+}
+#grid-container.attributesources {
+  height: 315px;
+}
+#grid-container.documenten {
+  height: 315px;
+}
+#grid-container.applicaties {
+  height: 315px;
+}
+#grid-container.attribute {
+  height: 315px;
+}
+#grid-container.groups {
+  height: 315px;
+}
+#grid-container.user {
+  height: 315px;
+}
+#layoutManagerTitle {
+  width: 250px;
+  float: left;
+  margin-top: 10px;
+  margin-top: 0px;
+}
+#layoutManagerApplicationSettings {
+  overflow: hidden;
+  padding-left: 12px;
+}
+#layoutManagerApplicationSettings input {
+  width: 50px;
+}
+#component-container {
+  width: 250px;
+  float: left;
+  margin-top: 10px;
+  border: 2px solid #1c6ca7;
+  margin-right: 10px;
+  height: 90%;
+  overflow: auto;
+}
+#component-container .component-view .component-block {
+  margin: 10px;
+  padding: 3px;
+  border: 2px solid #1c6ca7;
+  text-align: center;
+}
+#component-container .component-view .component-block .wrangler,
+#component-container .component-view .component-block .remove {
+  display: none;
+}
+#component-container .component-view .component-block.component-added {
+  border: 2px solid #cccccc;
+  color: #cccccc;
+}
+.savebutton-icon {
+  background-image: url("../images/save.png");
+}
+.removebutton-icon {
+  background-image: url("../images/delete.png");
+}
+.addbutton-icon {
+  background-image: url("../images/add.png");
+}
+.edit-icon {
+  background-image: url("../images/wrench.png");
+}
+.edit-icon-bw {
+  margin-bottom: 0px;
+  margin-top: -3px;
+  background-image: url("../images/wrench_bw.png");
+}
+.headerCollapsed,
+.x-headerCollapsed {
+  cursor: pointer;
+}
+.headerCollapsed:hover span,
+.x-headerCollapsed:hover span {
+  color: #000;
+}
+.headerCollapsed:hover img,
+.x-headerCollapsed:hover img {
+  background-image: url("../images/wrench.png");
+}
+#layout-container {
+  overflow: hidden;
+  height: 90%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  border: 2px solid #1c6ca7;
+  margin-top: 10px;
+  padding-top: 0px;
+  overflow: auto;
+}
+#layout-container .content-container {
+  border: 2px dashed #cccccc;
+  padding: 10px;
+}
+#layout-container .content-container.dropallowed {
+  background-color: #EEEEEE;
+}
+#layout-container .content-container .regionconfig {
+  margin: 5px;
+  border: 1px solid #1c6ca7;
+  background-color: White;
+  padding: 5px;
+  float: left;
+}
+#layout-container .content-container .regionconfig .widthconfig,
+#layout-container .content-container .regionconfig .heightconfig,
+#layout-container .content-container .regionconfig .tabsconfig {
+  float: left;
+  margin-right: 10px;
+}
+#layout-container .content-container .regionconfig input {
+  width: 25px;
+}
+#layout-container .content-container .regionconfig input[type='checkbox'] {
+  width: auto;
+}
+#layout-container .content-container .regionconfig#regionconfig_left_menu {
+  /* Exception for left menu config, need to be absolute, otherwise
+                   it would render below components and other regions */
+
+  width: 130px;
+  position: absolute;
+  z-index: 50;
+}
+#layout-container .content-container .component-block {
+  margin-top: 10px;
+  padding: 3px;
+  border: 2px solid #1c6ca7;
+  background-color: White;
+  text-align: center;
+}
+#layout-container .content-container .component-block.float-component .wrangler,
+#layout-container .content-container .component-block.float-component .remove {
+  width: 16px;
+  height: 16px;
+  float: right;
+  margin-left: 5px;
+}
+#layout-container .content-container .component-block.float-component .remove {
+  margin-left: 0px;
+  margin-right: 5px;
+  float: left;
+}
+#layout-container .content-container .component-block.float-component:hover .remove {
+  margin-left: 0px;
+  float: left;
+}
+#layout-container .content-container .component-block:hover .wrangler,
+#layout-container .content-container .component-block:hover .remove {
+  background-image: url("../images/wrench.png");
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin-left: 5px;
+}
+#layout-container .content-container .component-block:hover .remove {
+  background-image: url("../images/delete.png");
+}
+#layout-container .content-container.content-container-hover {
+  border: 2px dashed #1c6ca7;
+}
+#layout-container #layout-north,
+#layout-container #layout-south {
+  margin: 10px;
+}
+#layout-container #layout-center {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+#layout-container #layout-center #center_left,
+#layout-container #layout-center #center_right {
+  width: 150px;
+  float: left;
+  margin-right: 10px;
+}
+#layout-container #layout-center #center_left .top,
+#layout-container #layout-center #center_right .top {
+  height: 40%;
+  margin-bottom: 10px;
+}
+#layout-container #layout-center #center_left .bottom,
+#layout-container #layout-center #center_right .bottom {
+  height: 60%;
+}
+#layout-container #layout-center #center_right {
+  float: right;
+  margin-right: 0px;
+  margin-left: 10px;
+}
+#layout-container #layout-center #center_center {
+  overflow: hidden;
+}
+#layout-container #layout-center #center_center #layout_left_menu {
+  float: left;
+  margin-right: 10px;
+  width: 100px;
+}
+#layout-container #layout-center #center_center #center_center_center {
+  overflow: hidden;
+}
+#layout-container #layout-center #center_center #center_center_center #layout_top_menu,
+#layout-container #layout-center #center_center #center_center_center #layout_content,
+#layout-container #layout-center #center_center #center_center_center #layout_content_bottom {
+  margin-bottom: 10px;
+}
+#layout-container #layout-center #center_center #center_center_center #layout_top_menu .floatwrapper {
+  padding-right: 15px;
+  overflow: auto;
+}
+.tabdiv {
+  visibility: hidden;
+}
+.tree-selection-tree {
+  float: left;
+}
+.tree-selection-buttons {
+  float: left;
+  padding-top: 150px;
+  padding-left: 6px;
+  width: 35px;
+}
+.tree-selection-buttons div {
+  display: block;
+  margin-top: 5px;
+}
+/* Slider config */
+.main-slider-container.row_odd {
+  background-color: #dddddd;
+}
+.main-slider-container .label {
+  float: left;
+  width: 200px;
+}
+.main-slider-container .slider-container {
+  float: left;
+}
+.main-slider-container .slider-container .sliderbox {
+  text-align: center;
+  float: left;
+  width: 60px;
+}
+#sliderheader-container .sliderheader {
+  text-align: center;
+  float: left;
+  width: 60px;
+}
+.appSettingsRight {
+  float: right;
+  width: 50%;
+}
+h1 .helplink,
+#layoutManagerApplicationSettings .helplink,
+.appSettingsRight .helplink {
+  background-image: url("../images/help.png");
+  width: 16px;
+  height: 16px;
+  display: block;
+  float: right;
+}
+.helpBlock {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #cccccc;
+}
+.helpBlock h1 {
+  padding: 5px;
+  background-color: #1c6ca7;
+  color: #FFFFFF;
+}
+.helpBlock p {
+  margin-top: 5px;
+}
