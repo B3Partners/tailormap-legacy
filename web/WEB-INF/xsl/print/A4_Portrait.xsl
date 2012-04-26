@@ -3,9 +3,7 @@
 <xsl:stylesheet version="1.1" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:fo="http://www.w3.org/1999/XSL/Format" 
-	xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
-	xmlns:svg="http://www.w3.org/2000/svg" exclude-result-prefixes="fo">
+	xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
     <xsl:output method="xml" version="1.0" omit-xml-declaration="no" indent="yes"/>
 
     <xsl:param name="versionParam" select="'1.0'"/>
@@ -74,21 +72,6 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
             <xsl:value-of select="title"/>
         </fo:block>
     </xsl:template>
-    
-    <!-- wind rose template -->
-    <xsl:template name="windrose">
-		<xsl:param name="angle" select="0"/>
-		<xsl:param name="width" select="'4cm'"/>
-		<xsl:param name="height" select="'4cm'"/>
-		<xsl:param name="top" select="'0cm'"/>
-		<xsl:param name="left" select="'0cm'"/>		
-		<xsl:param name="millipoints" select="58000"/>
-		<fo:block-container fox:transform="translate({$millipoints},{$millipoints}) rotate({$angle}) translate(-{$millipoints}, -{$millipoints})" absolute-position="absolute" top="{$top}" left="{$left}">
-			<fo:block>
-				<fo:external-graphic width="{$width}" height="{$height}" content-height="scale-to-fit" content-width="scale-to-fit" src="windrose.svg"/>
-			</fo:block>
-		</fo:block-container>
-	</xsl:template>
     
     <xsl:template name="info-block">
         <xsl:call-template name="windrose">
