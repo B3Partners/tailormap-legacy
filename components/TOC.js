@@ -136,7 +136,7 @@ Ext.define ("viewer.components.TOC",{
             }
         };
         if(this.groupCheck){
-            treeNodeLayer.checked=  false; // Todo: find children checkboxes
+            treeNodeLayer.checked=  false;
         }
         if(level.info != undefined){
             treeNodeLayer.qtip= "Informatie over de kaart";
@@ -195,8 +195,7 @@ Ext.define ("viewer.components.TOC",{
         var appLayerObj = this.appLayers[layerId];
         var service = this.services[appLayerObj.serviceId];
         var serviceLayer = service.layers[appLayerObj.layerName];
-        var layerTitle = this.viewerController.getLayerTitle(service.id, appLayerObj.layerName); // TODO: Search title
-        // TODO do the check for dataselection layers (when attributes for that are present) for visible layers in selectedcontent 
+        var layerTitle = this.viewerController.getLayerTitle(service.id, appLayerObj.layerName);
         var treeNodeLayer = {
             text: layerTitle,
             id: "layer-"+appLayerObj.id,
