@@ -17,6 +17,7 @@
             <file name="Component.js"/>
             <file name="LogMessage.js"/>
             <file name="Logger.js"/>
+            <file name="DataSelectionChecker.js"/>
           </sources>
 		  <!--					The common files-->
           <sources dir="${viewerhtml.path}/common">
