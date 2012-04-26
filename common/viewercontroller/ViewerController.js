@@ -32,6 +32,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     layers : null,
     /** A logger    */
     logger: null,
+    
+    dataSelectionChecker:null,
     /** Layers initialized?*/
     layersInitialized: false,
     /**
@@ -49,6 +51,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     constructor: function(viewerType, mapId, app) {
         this.logger = Ext.create("viewer.components.Logger");
+        this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker",{viewerController:this});
         this.app = app;
         
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));

@@ -40,10 +40,9 @@ Ext.define ("viewer.components.TOC",{
         this.initConfig(config);
         this.loadTree();
         this.loadInitLayers();
-        
-        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.syncLayers,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         return this;
     },
     // Build the tree
@@ -289,26 +288,6 @@ Ext.define ("viewer.components.TOC",{
         root.appendChild(config);
         root.expand()
     },
-    selectLayers : function (layers,checked){
-        for(var i = 0 ; i< layers.length;i++){
-            this.selectLayer(layers[i],checked);
-        }
-    },
-    selectLayer : function (layer,checked){
-        var node = this.panel.getStore().getNodeById(layer);
-        if(node != null){
-            if( node.data.checked != checked){
-                node.data.checked= checked;
-                if(node.raw != undefined){
-                    node.raw.checked = checked;
-                }
-                this.checkboxClicked (node,checked,this);
-                node.updateInfo();
-                this.setNodeChecked(node,checked);
-            }
-        }
-    },
-    
     getAppLayerId : function (name){
         // Not the correct way to get the applayerID TODO: Fix it
         for ( var i in this.appLayers){
@@ -428,6 +407,15 @@ Ext.define ("viewer.components.TOC",{
         return false;
     },
     
+    layerVisibilityChanged : function (map,object){
+        var layer = object.layer;
+        var vis = object.visible;
+        var nodeId = "layer-" + layer.appLayerId;
+        var node = this.panel.getRootNode().findChild("id",nodeId,true);
+        node.set('checked', vis);
+        this.setTriState(node);
+    },
+    
     updateMap: function(nodeObj, checked) {
         if(nodeObj.isLeaf()){
             var node = nodeObj.raw;
@@ -437,95 +425,14 @@ Ext.define ("viewer.components.TOC",{
             var layer = node.layerObj;
     
             if(checked){
-                this.checkDataselection(layer.service, layer.layerName, function(check,toc){
-                    if (!check){
-                        this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
-                    }else{
-                        nodeObj.set('checked', false);
-                        toc.setTriState(nodeObj);
-                    }
-                });
+                this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
             }else{
                 this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
             }
         }
     },
-    
-    checkDataselection : function (serviceId, layerName,callBack){
-        var appLayer = this.viewerController.getAppLayer(serviceId, layerName);
-        
-        var featureService = this.viewerController.getAppLayerFeatureService(appLayer);
-        if(appLayer != null){
-            var me = this;
-            // check if featuretype was loaded
-            if(appLayer.attributes == undefined) {
-                featureService.loadAttributes(appLayer, function(attributes) {
-                    callBack(me.checkAppLayerForDataselection(appLayer),me);
-                });
-            } else {
-                callBack(this.checkAppLayerForDataselection(appLayer),me);
-            }
-        }else{
-            return callBack(true,me);
-        }
-    },
-    checkAppLayerForDataselection : function ( appLayer){
-        var selectableAttributes = this.hasSelectableAttributes(appLayer);
-        if( selectableAttributes >= 0 && (appLayer.filter == undefined || appLayer.filter == null)){
-            var dsArray = this.viewerController.getComponentsByClassName("viewer.components.DataSelection");
-            if( dsArray.length == 0){
-                Ext.Msg.alert('Mislukt', 'Dataselectiemodule niet beschikbaar, kaartlaag kan niet weergegeven worden.');
-                return false;
-            }else{
-                for( var j = 0 ; j < dsArray.length ; j++){
-                    var ds = dsArray[j];
-                    ds.showAndForceLayer(appLayer.serviceId + "_" + appLayer.layerName);
-                    var me = appLayer;
-                    this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
-                        if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
-                            this.viewerController.setLayerVisible(layer.serviceId, layer.layerName, true);
-                            ds.removeForcedLayer(layer.serviceId +"_"+ layer.layerName);
-                            var nodeId = "layer-" + appLayer.id;
-                            var node = this.panel.getRootNode().findChild("id",nodeId,true);
-                            node.set('checked', true);
-                            this.setTriState(node);
-                            
-                        }
-                    },this);
-                    /* TODO add functionality to select a layer in the layerselector, so the filter can be applied to the layer when all attributes have defaults
-                     *if(selectableAttributes == 1){
-                        ds.applyFilter();
-                    }*/
-                }
-                return true;
-            }
-        }else{
-            return false;
-        }
-    },
-    hasSelectableAttributes : function (appLayer){
-        // -1: no selectable attributes, 0: has selectable attributes but not all have defaults, 1: has selectable attributes and all have defaults
-        var selectableAttributes = -1;
-        for ( var i = 0 ; i < appLayer.attributes.length; i++){
-            if(appLayer.attributes[i].selectable){
-                if(appLayer.attributes[i].defaultValue != undefined){
-                    selectableAttributes = 1;
-                }else{
-                    selectableAttributes = 0;
-                    break;
-                }
-            }
-        }
-        return selectableAttributes;
-    },
     /*************************  Event handlers ***********************************************************/
-    syncLayers : function (map,object){
-        var layer = object.layer;
-        var visible = object.visible;
-        var id = this.getAppLayerId(layer.id);
-        this.selectLayer (id,visible);
-    },
-    
+     
     checkboxClicked : function(nodeObj,checked,toc){
         this.updateMap(nodeObj, checked);
         this.checkClicked= true;
@@ -602,9 +509,6 @@ Ext.define ("viewer.components.TOC",{
                 this.popup.show();
             }
         }
-    },
-    setNodeChecked : function (item,visible){
-        var a = 0;
     },
     // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
     selectedContentChanged : function (){
