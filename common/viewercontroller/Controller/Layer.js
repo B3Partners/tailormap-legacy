@@ -22,6 +22,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     map:null,
     visible: false,
     //service id from where this layer is created
+    /**@field
+     *@deprecated can be found by getting the appLayer.serviceId
+     **/
     serviceId: null,
     appLayerId: null,
     config :{

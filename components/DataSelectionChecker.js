@@ -32,11 +32,12 @@ Ext.define ("viewer.components.DataSelectionChecker",{
     },
     layerVisibilityChanged : function (map,object){
         var layer = object.layer;
+        var appLayer= this.viewerController.getAppLayerById(layer.appLayerId);
         var vis = object.visible;
         if(vis){
             this.hasLayerDataSelectionAttributes(layer.serviceId, layer.options.name, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
-                    setTimeout(function(){this.viewerController.setLayerVisible(layer.serviceId, layer.options.name,false)}, 100);
+                    setTimeout(function(){this.viewerController.setLayerVisible(appLayer,false)}, 100);
                 }else{
                     var a = 0;
                 }
@@ -65,6 +66,11 @@ Ext.define ("viewer.components.DataSelectionChecker",{
             return callBack(true,me);
         }
     },
+    /**
+     * Check the appLayer for DataSelection
+     * @param appLayer the applayer that needs to be checked
+     * @return true/false    
+     */
     checkAppLayerForDataselection : function ( appLayer){
         var selectableAttributes = this.hasSelectableAttributes(appLayer);
         if( selectableAttributes >= 0 && (appLayer.filter == undefined || appLayer.filter == null)){
@@ -79,7 +85,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                     var me = appLayer;
                     this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
                         if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
-                            this.viewerController.setLayerVisible(layer.serviceId, layer.layerName, true);
+                            this.viewerController.setLayerVisible(me, true);
                             ds.removeForcedLayer(layer.serviceId +"_"+ layer.layerName);
                             var nodeId = "layer-" + appLayer.id;
                             var node = this.panel.getRootNode().findChild("id",nodeId,true);

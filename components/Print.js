@@ -82,12 +82,15 @@ Ext.define ("viewer.components.Print",{
         var layer = object.layer;
         this.removeLegend(layer);
     },
-    // Called when a layer is added
+    /* Called when a layer is added
+     * @param layer the map layer of type viewer.viewerController.controller.Layer
+     */
     addLegend : function (layer){
+        var appLayer = this.viewerController.getAppLayerById(layer.appLayerId);
         var serviceId = layer.serviceId;
         var layerName = layer.getAppLayerName();// TODO: not yet correct
         var layerTitle = this.viewerController.getLayerTitle(serviceId,layerName);
-        var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
+        var url = this.viewerController.getLayerLegendImage(appLayer);
         if (url!=null){
             var legend = {
                 url: url,

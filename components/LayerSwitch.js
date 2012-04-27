@@ -105,10 +105,7 @@ Ext.define ("viewer.components.LayerSwitch",{
     addLayers : function (layers, level){
         for( var i = 0 ; i < layers.length ;i++){
             var appLayerObj = this.appLayers[layers[i]];
-            this.layers[level.name].push( {
-                serviceId : appLayerObj.serviceId,
-                layerName : appLayerObj.layerName
-            });
+            this.layers[level.name].push(appLayerObj);
         }
     },
     layerChanged : function (button, active){
@@ -122,8 +119,8 @@ Ext.define ("viewer.components.LayerSwitch",{
     },
     setLayersActive : function (layerArray, visible){
          for( var i = 0 ; i < layerArray.length ;i++){
-            var layerObj = layerArray[i];
-            this.viewerController.setLayerVisible(layerObj.serviceId, layerObj.layerName, visible);
+            var appLayerObj = layerArray[i];
+            this.viewerController.setLayerVisible(appLayerObj, visible);
         }
     },
     getExtComponents: function() {

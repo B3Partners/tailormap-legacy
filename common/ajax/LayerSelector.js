@@ -108,7 +108,7 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     initLayers : function (){
         this.layerArray = new Array();
-        var visibleLayers = this.viewerController.getVisibleLayerIds();
+        var visibleLayers = this.viewerController.getVisibleLayers();
         for(var i = 0 ; i < this.forcedLayers.length; i++){
             visibleLayers.push(this.forcedLayers[i]);
         }

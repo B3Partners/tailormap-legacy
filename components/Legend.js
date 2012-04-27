@@ -58,24 +58,7 @@ Ext.define ("viewer.components.Legend",{
     },
     // Construct the list of images to be retrieved by the queue
     makeLegendList : function (){
-        var visibleLayers = this.viewerController.getVisibleLayerIds();
-        this.initLegends = new Array();
-        for(var i = 0 ; i<visibleLayers.length;i++){
-            var id = visibleLayers[i];
-            var service = id.substring(0,id.indexOf("_"));
-            var layerName = id.substring(id.indexOf("_")+1);
-            //will change if the layers are combined.
-            layerName=layerName.replace(""+service+"_","");
-            var url = this.viewerController.getLayerLegendImage(service,layerName);
-            if (url!=null){
-                var legend = {
-                    src: url,
-                    title: layerName,
-                    id: id
-                };
-                this.initLegends.push(legend);
-            }
-        }
+        this.initLegends = new Array();        
     },
     // Handler for changes to the visibility of layers
     layerVisibilityChanged : function (map,object ){
@@ -94,21 +77,22 @@ Ext.define ("viewer.components.Legend",{
     addLayer : function (layer){
         var serviceId = layer.serviceId;
         var layerName = layer.getAppLayerName();// TODO: not yet correct  
+        var appLayer=this.viewerController.getAppLayerById(layer.appLayerId);
         
-        //if already added return;
+        /*if already added return; Still use serviceId_layerName because only one of the layer
+        graphics must be added*/
         if(this.legends[serviceId  + "_"+ layerName]){
             return;
-        }
-        
+        }        
         //show backgrounds == false then don't show backgrounds.
         if (!this.getShowBackground()){
             //var appLayer=this.viewerController.getAppLayer(serviceId,layerName);
-            var appLayer=this.viewerController.app.appLayers[layer.appLayerId];                        
+                                    
             if (appLayer.background){
                 return;
             }
         }
-        var url = this.viewerController.getLayerLegendImage(serviceId,layerName);
+        var url = this.viewerController.getLayerLegendImage(appLayer);
         if (url!=null){
             var legend = {
                 src: url,

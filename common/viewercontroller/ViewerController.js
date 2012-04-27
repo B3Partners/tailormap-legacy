@@ -397,7 +397,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return;
         }
         //console.log(appLayer.layerName);
-        var layer = this.getOrCreateLayer(appLayer.serviceId,appLayer.layerName);
+        var layer = this.getOrCreateLayer(appLayer);
         this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
     },
       
@@ -426,12 +426,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Set the layer visible
-     * @param serviceId serviceId
-     * @param layerName layerName
+     * @param appLayer The app layer
      * @param visible true or false.
      */
-    setLayerVisible : function (serviceId, layerName, visible){
-        var layer = this.getLayer(serviceId, layerName);
+    /*dddddd*/
+    setLayerVisible : function (appLayer, visible){
+        var layer = this.getLayer(appLayer);
         //xxx is also done in setVisible of layer....
         if (layer){
             layer.visible = visible;
@@ -440,49 +440,73 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Get the layer or null if not found
-     * @param serviceId serviceId
-     * @param layerName layerName
+     * @param appLayer the app layer
      * @return viewer.viewercontroller.controller.Layer object or null if no layer found
      */
-    getLayer : function (serviceId, layerName){
-        var id = serviceId + "_" + layerName;
-        if(this.layers[id] == undefined){  
+    getLayer : function (appLayer, deprecatedParam){
+        //if deprecatedParam is given, the old (and wrong)way of calling this function is used.
+        if (deprecatedParam){
+            if(this.isDebug()){
+                this.logger.warning("GetLayer() old method call is used.");
+            }
+        }
+        if(this.layers[appLayer.id] == undefined){  
             if (!this.layersInitialized && this.isDebug()){
                 this.logger.warning("Layers not initialized! Wait for the layers to be added!");
-            }/*else{
-                this.logger.warning("Hmmm. Layer not available. Return null. ServiceId: "+serviceId+" Layer: "+layerName);
-            }*/
+            }else if (this.isDebug()){
+                this.logger.warning("The layer cant be found! Maybe the wrong param? "+appLayer);
+            }
             return null;
+        }
+        return this.layers[appLayer.id];
+    },
+    /**
+     * get or create (if not already created) the map layer with serviceId and layerName
+     * @param appLayer the applicationLayer
+     * @return viewer.viewercontroller.controller.Layer object.
+     */
+    getOrCreateLayer: function(appLayer){
+        var id = appLayer.id;
+        if(this.layers[id] == undefined){            
+            this.createLayer(appLayer);
         }
         return this.layers[id];
     },
     /**
-     * get or create (if not already created) the map layer with serviceId and layerName
-     * @param serviceId serviceId
-     * @param layerName layerName
-     * @return viewer.viewercontroller.controller.Layer object.
+     * Get the appLayer with the given id
+     * @param appLayerId the id of the appLayer
+     * @return the application layer.
      */
-    getOrCreateLayer: function(serviceId,layerName){
-        var id = serviceId + "_" + layerName;
-        if(this.layers[id] == undefined){            
-            this.createLayer(serviceId,layerName);
-        }
-        return this.layers[id];
+    getAppLayerById: function (appLayerId){
+        return this.app.appLayers[appLayerId];
     },
      /**
      *Get the application layer
      *@param serviceId the id of the service
      *@param layerName the name of the layer
      *@return the application layer JSON object.
+     *@deprecated the combination serviceId and layerName is not unique. 
+     *Use viewer.viewerController.ViewerController#getAppLayerById
      */
     getAppLayer : function (serviceId, layerName){
+        this.logger.warning("viewerController.getAppLayer() with serviceId and LayerName is not unique");
+        var count=0;
+        var foundAppLayer=null;
         for ( var i in this.app.appLayers){
             var appLayer = this.app.appLayers[i];
             if(appLayer.layerName== layerName && appLayer.serviceId == serviceId){
-                return appLayer;
+                count++;
+                if (foundAppLayer==null){
+                    foundAppLayer=appLayer;
+                }
             }
         }
-        return null;
+        if (count>0){
+            this.logger.warning("viewerController.getAppLayer() with serviceId and LayerName found "+count+
+                " application layers with serviceId: '"+serviceId+"' and layerName: '"+layerName+"' returning the first");
+        }
+            
+        return foundAppLayer;
     },
     /**
      * @deprecated Wrong casing in method name, use getAppLayer()
@@ -513,13 +537,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return appLayer.featureService;
     },
     
-    //TODO: Change function to combine appLayers in 1 layer.
-    createLayer : function (serviceId, layerName){        
-        //TODO: The id must be serviceId
-        var id = serviceId + "_" + layerName;
-        var service = this.app.services[serviceId];
-        var appLayer = this.getApplayer(serviceId, layerName);
-        var layer = service.layers[layerName];
+    /**
+     * Creates a layer with the given applicationLayer
+     * @param appLayer the application layer that is used to create a layer
+     * @return the created viewer.viewerController.controller.layer
+     */
+    createLayer : function (appLayer){        
+        var id = appLayer.id;
+        var service = this.app.services[appLayer.serviceId];
+        var layer = service.layers[appLayer.layerName];
         var options={
             timeout: 30,
             retryonerror: 1,
@@ -564,32 +590,34 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 servlet = url.substring(url.indexOf("/",7)+1);
             }
             // Make arcIms specific options
-            options.visibleids = layerName;
+            options.visibleids = appLayer.layerName;
             if (layer.queryable){
                 options.identifyids= layer.name;
             }
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
-                layerObj = this.mapComponent.createArcIMSLayer(layerName,server,servlet,service.serviceName, options,this);
+                layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,server,servlet,service.serviceName, options,this);
             }else{                
                 options.type= "ArcGIS";
-                layerObj = this.mapComponent.createArcServerLayer(layerName,server,servlet,null, options,this);
+                layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,server,servlet,null, options,this);
             }
             this.layers[id] = layerObj;
         }
-        layerObj.serviceId = serviceId;
+        layerObj.serviceId = appLayer.serviceId;
         layerObj.appLayerId = appLayer.id;
         this.mapComponent.getMap().addLayer(layerObj);  
+        return layerObj;
     },
     /**
-     *Get map layer with id.
-     *@param id the id of the layer
+     *Get map layer with id of the layer in the service object
+     *@param id the id of the layer in a service object
      *@return viewer.viewercontroller.controller.Layer object
      */
+    /*dddddd*/
     getLayerByLayerId : function (id){
+        this.logger.warning("viewerController.getLayerByLayerId() is not returning a unique layer!");
         for (var i in this.app.services){
             var service = this.app.services[i];
-            
             for(var j in service.layers){
                 var layer = service.layers[j];
                 if(id == layer.id){
@@ -601,7 +629,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      *Returns the layer of the service as configured.
-     *@param id the id of the layer
+     *@param id the id of the layer service layer
+     *@return a service layer. The layer that is stored in app.services.layers
      **/
     getServiceLayerById: function (id){
         for (var i in this.app.services){
@@ -617,9 +646,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return null;
     },
     /** 
-     * Receives an array with serviceId_layerId entries
+     * Receives an array with visible map layers
+     * @return a array of viewer.viewerController.controller.layer objects
      **/
-    getVisibleLayerIds : function (){
+    getVisibleLayers : function (){
         var layers = this.layers;
         var layerArray = new Array();
         for ( var i in layers){
@@ -630,13 +660,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return layerArray;
     },
-    setLayersVisible : function (layers,checked){
+    /**
+     *Set a list of layers visible
+     *@param layers a array of application layers
+     *@param vis true/false -- visible/invisible
+     */
+    /*dddddd*/
+    setLayersVisible : function (layers,vis){
         for ( var i = 0 ; i < layers.length ; i++){
-            var layer = layers[i];
-            var index = layer.indexOf("_");
-            var serviceId = layer.substring(0,index);
-            var layerId = layer.substring(index +1);
-            this.setLayerVisible(serviceId,layerId,checked);
+            var appLayer = layers[i];
+            this.setLayerVisible(appLayer,vis);
         }
     },
     getLayerTitle : function (serviceId, layerName){
@@ -647,12 +680,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return layer.title;
         }
     },
-    getLayerLegendImage :function (serviceId, layerName){
+    /**
+     * Get the Layer Legend image.
+     * @param appLayer the applayer
+     */
+    /*dddddd*/
+    getLayerLegendImage :function (appLayer){
+        var serviceId=appLayer.serviceId;
+        var layerName=appLayer.layerName;
         var layer = this.app.services[serviceId].layers[layerName];
         if(layer.legendImageUrl != undefined){
             return layer.legendImageUrl;
         }else{
-            var layerObj = this.getLayer(serviceId, layerName);
+            var layerObj = this.getLayer(appLayer);
             return layerObj.getLegendGraphic();
         }
     },
@@ -660,20 +700,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layer = this.app.services[serviceId].layers[layerName];
         return layer.details["metadata.stylesheet"];
     },
-    setFilter : function (filter, layer){
-         if(!layer.filter){
-            layer.filter = Ext.create("viewer.components.CQLFilterWrapper",{
+    /**
+     * add ore replace the filter for the given layer.
+     * @param filter the filter
+     * @param appLayer the application layer
+     */
+    /*dddddd*/
+    setFilter : function (filter, appLayer){
+         if(!appLayer.filter){
+            appLayer.filter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "",
                 cql: "",
                 operator : ""
             });
         }
-        layer.filter.addOrReplace(filter);
+        appLayer.filter.addOrReplace(filter);
         
-        var mapLayer = this.getLayer(layer.serviceId,layer.layerName);
-        mapLayer.setQuery(layer.filter);
+        var mapLayer = this.getLayer(appLayer);
+        mapLayer.setQuery(appLayer.filter);
         
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,layer.filter,layer);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
     },
     /**
      * Remove a filter from the given applayer
@@ -856,7 +902,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         
-        var visLayers = this.getVisibleLayerIds();
+        var visLayers = this.getVisibleLayers();
         if(visLayers.length != 0 ){
             var param2 = {
                 name: "layers", 

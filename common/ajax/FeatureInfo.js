@@ -27,7 +27,7 @@ Ext.define("viewer.FeatureInfo", {
         }        
     },
     getVisibleAppLayers: function() {
-        var visibleLayerIds = viewerController.getVisibleLayerIds();
+        var visibleLayerIds = this.viewerController.getVisibleLayers();
         
         var visibleAppLayers = {};
         

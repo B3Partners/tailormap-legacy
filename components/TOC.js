@@ -204,7 +204,8 @@ Ext.define ("viewer.components.TOC",{
             background: appLayerObj.background,
             layerObj: {
                 service: service.id,
-                layerName : appLayerObj.layerName
+                layerName : appLayerObj.layerName,
+                appLayer: appLayerObj
             }
         };
         if(serviceLayer.details != undefined){
@@ -424,9 +425,9 @@ Ext.define ("viewer.components.TOC",{
             var layer = node.layerObj;
     
             if(checked){
-                this.viewerController.setLayerVisible(layer.service, layer.layerName, true);
+                this.viewerController.setLayerVisible(layer.appLayer, true);
             }else{
-                this.viewerController.setLayerVisible(layer.service, layer.layerName, false);
+                this.viewerController.setLayerVisible(layer.appLayer, false);
             }
         }
     },
