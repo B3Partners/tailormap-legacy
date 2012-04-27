@@ -50,12 +50,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @constructor
      */
     constructor: function(viewerType, mapId, app) {
-        this.logger = Ext.create("viewer.components.Logger");
+        
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker",{viewerController:this});
         this.app = app;
         
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));
         
+        var logLevel=viewer.components.Logger.LEVEL_ERROR;
+        if (this.isDebug()){
+            logLevel=viewer.components.Logger.LEVEL_INFO;
+        }
+        this.logger = Ext.create("viewer.components.Logger",{logLevel:logLevel});
         /* If a layout tree structure is supplied, dynamically create DOM elements
          * using Ext objects. If not, the caller must have created these elements
          * before instantiating a ViewerController.
@@ -451,9 +456,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         if(this.layers[appLayer.id] == undefined){  
-            if (!this.layersInitialized && this.isDebug()){
+            if (!this.layersInitialized){
                 this.logger.warning("Layers not initialized! Wait for the layers to be added!");
-            }else if (this.isDebug()){
+            }else{
                 this.logger.warning("The layer cant be found! Maybe the wrong param? "+appLayer);
             }
             return null;
@@ -501,7 +506,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             }
         }
-        if (count>0){
+        if (count>1){
             this.logger.warning("viewerController.getAppLayer() with serviceId and LayerName found "+count+
                 " application layers with serviceId: '"+serviceId+"' and layerName: '"+layerName+"' returning the first");
         }

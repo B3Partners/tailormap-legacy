@@ -20,7 +20,13 @@
  */
 Ext.define ("viewer.components.Logger",{    
     config:{
-        title: "Logger"        
+        title: "Logger",
+        logLevel: 0
+    },
+    statics:{
+        LEVEL_ERROR: 2,
+        LEVEL_WARNING: 1,
+        LEVEL_INFO: 0
     },
     popup: null,
     messageDiv:null,
@@ -32,13 +38,19 @@ Ext.define ("viewer.components.Logger",{
         this.messages = new Array();        
     },
     error: function(message){
-        this.message(message, viewer.components.LogMessage.ERROR);
+        if (this.logLevel <= viewer.components.Logger.LEVEL_ERROR){
+            this.message(message, viewer.components.LogMessage.ERROR);
+        }
     },
     warning: function(message){
-        this.message(message, viewer.components.LogMessage.WARNING);
+        if (this.logLevel <= viewer.components.Logger.LEVEL_WARNING){
+            this.message(message, viewer.components.LogMessage.WARNING);
+        }
     },
     info: function(message){
-        this.message(message, viewer.components.LogMessage.INFO);
+        if (this.logLevel <= viewer.components.Logger.LEVEL_INFO){
+            this.message(message, viewer.components.LogMessage.INFO);
+        }
     },
     /**     
      * @param message the message
