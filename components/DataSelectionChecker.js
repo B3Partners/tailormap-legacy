@@ -35,7 +35,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
         var appLayer= this.viewerController.getAppLayerById(layer.appLayerId);
         var vis = object.visible;
         if(vis){
-            this.hasLayerDataSelectionAttributes(layer.serviceId, layer.options.name, function (hasSelectableAttributes){
+            this.hasLayerDataSelectionAttributes(appLayer, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
                     setTimeout(function(){this.viewerController.setLayerVisible(appLayer,false)}, 100);
                 }else{
@@ -44,9 +44,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
             });
         }
     },
-    hasLayerDataSelectionAttributes : function(serviceId, layerName,callBack){
-        var appLayer = this.viewerController.getAppLayer(serviceId, layerName);
-        
+    hasLayerDataSelectionAttributes : function(appLayer,callBack){       
         if(appLayer){
             var featureService = this.viewerController.getAppLayerFeatureService(appLayer);
             if(appLayer != null){
@@ -81,7 +79,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
             }else{
                 for( var j = 0 ; j < dsArray.length ; j++){
                     var ds = dsArray[j];
-                    ds.showAndForceLayer(appLayer.serviceId + "_" + appLayer.layerName);
+                    ds.showAndForceLayer(appLayer);
                     var me = appLayer;
                     this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
                         if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){

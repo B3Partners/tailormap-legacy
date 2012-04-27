@@ -110,7 +110,7 @@ Ext.define ("viewer.components.LayerSelector",{
         this.layerArray = new Array();
         var visibleLayers = this.viewerController.getVisibleLayers();
         for(var i = 0 ; i < this.forcedLayers.length; i++){
-            visibleLayers.push(this.forcedLayers[i]);
+            visibleLayers.push(this.forcedLayers[i].id);
         }
         var store = this.combobox.getStore();
         store.removeAll();

@@ -247,8 +247,7 @@ Ext.define ("viewer.components.DataSelection",{
         if(cql != ""){
             cql = "(" + cql + ")";
         }
-        var layerObj = this.layerSelector.getValue();
-        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
+        var layer = this.layerSelector.getValue();
         
         var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
             id: this.name + this.layerSelector.getValue(),
@@ -289,7 +288,7 @@ Ext.define ("viewer.components.DataSelection",{
      *  Reset all comboboxes when a different layer is selected
      */
     layerChanged : function (item,prev){
-        this.appLayer = this.viewerController.getApplayer (item.serviceId,item.name);
+        this.appLayer = item;
         
         if(this.appLayer != null){
             this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
