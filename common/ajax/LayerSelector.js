@@ -134,8 +134,8 @@ Ext.define ("viewer.components.LayerSelector",{
             }
         }
     },
-    changed :function (combobox,item,previousSelected){
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,item,previousSelected,this);
+    changed :function (combobox,appLayer,previousSelected){
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,appLayer,previousSelected,this);
     },
     getValue : function (){
         return this.combobox.getValue();

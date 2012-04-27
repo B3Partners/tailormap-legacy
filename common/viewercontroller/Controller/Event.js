@@ -137,6 +137,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
 
         ON_LAYER_VISIBILITY_CHANGED           : "ON_LAYER_VISIBILITY_CHANGED",
         
+        /**
+         * Thrown when a layerSelector has a new selection.
+         * param1: the selected appLayer
+         * param2: the previous selected appLayer
+         * param3: the layerselector itself
+         */
         ON_LAYERSELECTOR_CHANGE                 : "ON_LAYERSELECTOR_CHANGE",
         ON_COMPONENTS_FINISHED_LOADING           : "ON_COMPONENTS_FINISHED_LOADING",
         ON_SELECTEDCONTENT_CHANGE             : "ON_SELECTEDCONTENT_CHANGE",

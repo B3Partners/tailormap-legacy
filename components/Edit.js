@@ -197,7 +197,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
-    layerChanged : function (item){
+    layerChanged : function (appLayer){
         if(item != null){
             this.vectorLayer.removeAllFeatures();
             this.mode=null;
@@ -205,7 +205,6 @@ Ext.define ("viewer.components.Edit",{
 
             this.inputContainer.setLoading("Laad attributen...");
             this.inputContainer.removeAll();
-            var appLayer = this.viewerController.getApplayer(item.serviceId, item.name);
             this.loadAttributes(appLayer);
             this.inputContainer.setLoading(false);
         }
