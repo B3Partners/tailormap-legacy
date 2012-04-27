@@ -139,7 +139,7 @@ Ext.define ("viewer.components.Buffer",{
         var map = this.viewerController.mapComponent.getMap();
         var layer = this.layerSelector.getValue();
         if(layer != null){
-            var mapLayer = map.getLayer(this.name + layer.name+"ImageLayer");
+            var mapLayer = map.getLayer(this.name + layer.layerName+"ImageLayer");
             if(mapLayer!=null){
                 map.removeLayer(mapLayer);
             }
