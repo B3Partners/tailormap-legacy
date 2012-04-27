@@ -140,10 +140,8 @@ Ext.define ("viewer.components.AttributeList",{
             }    
         }
     },
-    layerChanged : function (item){
-        
-        var appLayer = this.viewerController.getApplayer(item.serviceId, item.name);
-        
+    // Called when the layerSelector was changed. 
+    layerChanged : function (appLayer){        
         this.loadAttributes(appLayer);
     },
     filterChanged : function (filter,appLayer){

@@ -119,12 +119,12 @@ Ext.define ("viewer.components.LayerSelector",{
                 var l = this.layerList[i];
                 for ( var j = 0 ; j < visibleLayers.length ;j++){
 
-                    var index = visibleLayers[j].indexOf("_");
-                    var service = visibleLayers[j].substring(0,index);
-                    var layername = visibleLayers[j].substring(index+1);
+                    var appLayer = this.viewerController.getAppLayerById(visibleLayers[j]);
+                    var service = appLayer.serviceId;
+                    var layername = appLayer.layerName;
                     if (service == l.serviceId && layername == l.name){
                         l.title = l.titleAlias || l.title ;
-                        l.layer = l;
+                        l.layer = appLayer;
                         store.add(l);
                     }
                 }
@@ -142,8 +142,7 @@ Ext.define ("viewer.components.LayerSelector",{
         if (layerObj==null){
             return null;
         }
-        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
-        return layer;
+        return layerObj;
     },
     getExtComponents: function() {
         return [ this.combobox.getId() ];
