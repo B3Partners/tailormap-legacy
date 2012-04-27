@@ -412,8 +412,10 @@ Ext.define ("viewer.components.TOC",{
         var vis = object.visible;
         var nodeId = "layer-" + layer.appLayerId;
         var node = this.panel.getRootNode().findChild("id",nodeId,true);
-        node.set('checked', vis);
-        this.setTriState(node);
+        if (node){
+            node.set('checked', vis);
+            this.setTriState(node);
+        }
     },
     
     updateMap: function(nodeObj, checked) {
