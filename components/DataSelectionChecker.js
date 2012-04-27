@@ -85,10 +85,6 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                         if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
                             this.viewerController.setLayerVisible(me, true);
                             ds.removeForcedLayer(layer.serviceId +"_"+ layer.layerName);
-                            var nodeId = "layer-" + appLayer.id;
-                            var node = this.panel.getRootNode().findChild("id",nodeId,true);
-                            node.set('checked', true);
-                            this.setTriState(node);
                             
                         }
                     },this);
