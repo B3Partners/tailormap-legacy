@@ -107,6 +107,16 @@ Ext.onReady(function() {
                     Ext.get('editFrame').dom.src = actionBeans["service"] + '?addForm=t&category=' + record.get('id').substr(1);
                 }
             }
+        },
+        {
+            text: 'CSW service doorzoeken',
+            icon: imagesPath + "serviceok.png",
+            listeners: {
+                click: function(item, e, eOpts) {
+                    var record = item.ownerCt.data.clickedItem;
+                    Ext.get('editFrame').dom.src = actionBeans["csw"] + '?addForm=t&category=' + record.get('id').substr(1);
+                }
+            }
         }
         ]
     });

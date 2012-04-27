@@ -223,8 +223,6 @@ Ext.onReady(function() {
         });
     }
 
-    
-
     var htmlEditorRendered = false;
     Ext.create('Ext.tab.Panel', {
         renderTo: 'tabs',
