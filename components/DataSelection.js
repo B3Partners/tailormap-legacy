@@ -305,7 +305,7 @@ Ext.define ("viewer.components.DataSelection",{
         }
         
         if(prev != undefined){
-            var prevLayer = this.viewerController.getLayer (prev.serviceId,prev.name);
+            var prevLayer = this.viewerController.getLayer(this.appLayer);
             prevLayer.setQuery(null);
         }
     },
