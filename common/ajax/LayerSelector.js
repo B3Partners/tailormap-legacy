@@ -87,6 +87,9 @@ Ext.define ("viewer.components.LayerSelector",{
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
         return this;
     },
+    /**
+     * @param forcedLayer the application layer that needs to be forced
+     */
     addForcedLayer : function (forcedLayer){
         var dupe = false;
         for ( var i = 0 ; i < this.forcedLayers.length; i++){

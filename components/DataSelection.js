@@ -60,6 +60,9 @@ Ext.define ("viewer.components.DataSelection",{
         this.layerSelector.initLayers();
         this.popup.show();
     },
+    /** ???
+     * @param layer the application Layer
+     */
     showAndForceLayer : function (layer){
         this.layerSelector.addForcedLayer(layer);
         this.showWindow();
