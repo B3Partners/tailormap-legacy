@@ -633,10 +633,10 @@
         restrictions: ["content"]
     },
     {
-        className: "viewer.components.tools.PopupButton",
+        className: "viewer.components.PopupButton",
         name: "Popup Button",
         shortName: "PB",
-        sources: ["tools/JSButton.js","tools/PopupButton.js"],
+        sources: ["PopupButton.js"],
         closureCompilerSafe: true,
         singleton: false,
         restrictions: ["top_menu"],
