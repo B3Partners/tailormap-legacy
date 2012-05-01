@@ -82,7 +82,8 @@ Ext.define ("viewer.components.Print",{
         var layer = object.layer;
         this.removeLegend(layer);
     },
-    /* Called when a layer is added
+    /** 
+     * Called when a layer is added
      * @param layer the map layer of type viewer.viewerController.controller.Layer
      */
     addLegend : function (layer){
