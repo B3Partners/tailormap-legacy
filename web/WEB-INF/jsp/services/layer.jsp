@@ -74,9 +74,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </td>
                     </tr>
                     <tr>
-                        <td>Kaartbeeld kan gefilterd worden (OGC):</td>
+                        <td style="width:300px">Kan de kaartlaag gefilterd worden met OGC SLD filtering (indien aangevinkt en het wordt niet ondersteund, wordt de kaart wit):</td>
                         <td>
-                            <stripes:checkbox name="details['filterable']"  />
+                            <stripes:checkbox name="details['filterable']"/>
                         </td>
                     </tr>
                     <tr>

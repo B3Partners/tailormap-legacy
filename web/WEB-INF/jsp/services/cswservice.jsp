@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:hidden id="url" name="url"/>
                 <stripes:hidden id="protocol" name="protocol"/>
             </stripes:form>
-            <div id="searchResults" style="height:400px; overflow: auto; "/>
+            <div id="searchResults" style="height:400px; overflow: auto; border: 1px solid #000;"/>
         </div>
         <script type="text/javascript">
             
