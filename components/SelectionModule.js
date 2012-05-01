@@ -140,6 +140,18 @@ Ext.define ("viewer.components.SelectionModule",{
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.renderButton();
+        var me = this;
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
+            if(this.viewerController.app.selectedContent.length == 0 ){
+                me.popup.show();
+                if(!me.rendered) {
+                    me.initComponent();
+                } else {
+                    me.initViewerControllerData();
+                    me.loadSelectedLayers();
+                }
+            }
+        },this);
         return this;
     },
     initComponent: function() {
