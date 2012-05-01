@@ -73,6 +73,24 @@ public class GeoServiceActionBean implements ActionBean{
     
     @Validate
     private String serviceName;
+    
+    @Validate
+    private Integer tileSize;
+    
+    @Validate
+    private String tilingProtocol;
+    
+    @Validate
+    private String resolutions;
+    
+    @Validate
+    private String serviceBbox;
+    
+    @Validate
+    private String imageExtension;
+    
+    @Validate
+    private String crs;
 
     private WaitPageStatus status;
     
@@ -182,6 +200,54 @@ public class GeoServiceActionBean implements ActionBean{
     public void setServiceDeleted(boolean serviceDeleted) {
         this.serviceDeleted = serviceDeleted;
     }
+    
+    public Integer getTileSize() {
+        return tileSize;
+    }
+
+    public void setTileSize(Integer tileSize) {
+        this.tileSize = tileSize;
+    }
+
+    public String getTilingProtocol() {
+        return tilingProtocol;
+    }
+
+    public void setTilingProtocol(String tilingProtocol) {
+        this.tilingProtocol = tilingProtocol;
+    }
+
+    public String getResolutions() {
+        return resolutions;
+    }
+
+    public void setResolutions(String resolutions) {
+        this.resolutions = resolutions;
+    }
+    
+    public String getServiceBbox() {
+        return serviceBbox;
+    }
+
+    public void setServiceBbox(String serviceBbox) {
+        this.serviceBbox = serviceBbox;
+    }
+
+    public String getImageExtension() {
+        return imageExtension;
+    }
+
+    public void setImageExtension(String imageExtension) {
+        this.imageExtension = imageExtension;
+    }
+
+    public String getCrs() {
+        return crs;
+    }
+
+    public void setCrs(String crs) {
+        this.crs = crs;
+    }
     //</editor-fold>
     
     public Resolution cancel() {
@@ -196,6 +262,36 @@ public class GeoServiceActionBean implements ActionBean{
            if(protocol.equals(ArcIMSService.PROTOCOL)) {
                ArcIMSService ser = (ArcIMSService)service;
                serviceName = ser.getServiceName();
+           }else if (protocol.equals(TileService.PROTOCOL)){
+               TileService ser = (TileService)service;
+               tilingProtocol = ser.getTilingProtocol();
+               //set the resolutions
+               TileSet tileSet= ser.getTopLayer().getTileset();
+               String res="";
+               for (Double resolution : tileSet.getResolutions()){
+                   if (res.length()>0){
+                       res+=",";
+                   }
+                   res+= resolution.toString();
+               }
+               resolutions=res;
+               //set the tilesize
+               tileSize = tileSet.getHeight();
+               //set the service Bbox               
+               if (ser.getTopLayer().getBoundingBoxes().size()==1){
+                   BoundingBox bb =ser.getTopLayer().getBoundingBoxes().values().iterator().next();
+                    serviceBbox=""+bb.getMinx()+","+
+                             bb.getMiny()+","+
+                             bb.getMaxx()+","+
+                             bb.getMaxy();
+                    crs=bb.getCrs().getName();                    
+               }
+               serviceName = ser.getTopLayer().getName();
+               
+               if (ser.getTopLayer().getDetails().containsKey("image_extension")){
+                   imageExtension=ser.getTopLayer().getDetails().get("image_extension");
+               }
+               
            }
            name = service.getName();
            username = service.getUsername();
@@ -238,8 +334,13 @@ public class GeoServiceActionBean implements ActionBean{
                     new SimpleMessage("De bij deze service automatisch aangemaakte attribuutbron \"{0}\" moet apart worden verwijderd", fs.getName()));
                               
         }
-        
-        Stripersist.getEntityManager().remove(service);
+        if (TileService.PROTOCOL.equals(service.getProtocol())){
+            if (service.getTopLayer()!=null && service.getTopLayer().getTileset()!=null){
+                TileSet ts=service.getTopLayer().getTileset();                
+                Stripersist.getEntityManager().remove(ts);     
+            }
+        }
+        Stripersist.getEntityManager().remove(service);        
         Stripersist.getEntityManager().getTransaction().commit();
         
         serviceDeleted = true;        
@@ -250,11 +351,27 @@ public class GeoServiceActionBean implements ActionBean{
     
     @ValidationMethod(on="add")
     public void validateParams(ValidationErrors errors) {
-        if(protocol.equals(ArcIMSService.PROTOCOL)) {
+        if(protocol.equals(ArcIMSService.PROTOCOL) || protocol.equals(TileService.PROTOCOL)) {
             if(serviceName == null) {
                 errors.add("serviceName", new LocalizableError("validation.required.valueNotPresent"));
             }
+            if (protocol.equals(TileService.PROTOCOL)){
+                if (resolutions==null){
+                    errors.add("resolutions", new LocalizableError("validation.required.valueNotPresent"));
+                }
+                if (serviceBbox==null){
+                    errors.add("serviceBbox", new LocalizableError("validation.required.valueNotPresent"));
+                }
+                if (crs==null){
+                    errors.add("crs", new LocalizableError("validation.required.valueNotPresent"));
+                }
+                if (tileSize==null){
+                    errors.add("tileSize", new LocalizableError("validation.required.valueNotPresent"));
+                }
+            }
         }
+        
+            
     }
     
     public Resolution addForm() {
@@ -283,7 +400,16 @@ public class GeoServiceActionBean implements ActionBean{
                 params.put(ArcIMSService.PARAM_USERNAME, username);
                 params.put(ArcIMSService.PARAM_PASSWORD, password);
                 service = new ArcIMSService().loadFromUrl(url, params, status);
-            } else {
+            } else if (protocol.equals(TileService.PROTOCOL)){
+                params.put(TileService.PARAM_SERVICENAME, serviceName);
+                params.put(TileService.PARAM_RESOLUTIONS, resolutions);
+                params.put(TileService.PARAM_SERVICEBBOX,serviceBbox);
+                params.put(TileService.PARAM_CRS,crs);
+                params.put(TileService.PARAM_IMAGEEXTENSION,imageExtension);
+                params.put(TileService.PARAM_TILESIZE, tileSize);
+                params.put(TileService.PARAM_TILINGPROTOCOL, tilingProtocol);
+                service = new TileService().loadFromUrl(url,params,status);
+            }else {
                 getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
             }
         } catch(Exception e) {

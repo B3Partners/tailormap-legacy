@@ -66,7 +66,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         function checkProtocol() {
             var protocol = Ext.query("select[name='protocol']")[0].value;
             Ext.fly('useUrlTr').setVisible(protocol == "wms");
-            Ext.fly('serviceNameTr').setVisible(protocol == "arcims");            
+            Ext.fly('serviceNameTr').setVisible(protocol == "arcims" || protocol == "tiled");            
+            Ext.fly('tileSizeTr').setVisible(protocol == "tiled");            
+            Ext.fly('resolutionsTr').setVisible(protocol == "tiled");
+            Ext.fly('tilingProtocolTr').setVisible(protocol == "tiled");
+            Ext.fly('serviceBboxTr').setVisible(protocol == "tiled");            
+            Ext.fly('extensionTr').setVisible(protocol == "tiled");          
+            Ext.fly('crsTr').setVisible(protocol == "tiled");
         }
         Ext.onReady(function() {
             appendPanel('headertext', 'formcontent');
@@ -84,6 +90,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:option value="wms">WMS</stripes:option>
                     <stripes:option value="arcgis">ArcGIS MapServer (REST)</stripes:option>
                     <stripes:option value="arcims">ArcIMS</stripes:option>
+                    <stripes:option value="tiled">Tiled</stripes:option>
                 </stripes:select>
             </td>
         </tr>
@@ -99,6 +106,59 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>
             <label>
                 <stripes:text name="serviceName" maxlength="255" size="30" disabled="${edit}"/>
+            </label>
+            </td>
+        </tr>
+        <tr id="tileSizeTr">
+            <td>Tile size:</td>
+            <td>
+            <label>
+                <stripes:text name="tileSize"/>
+            </label>
+            </td>
+        </tr>
+        <tr id="resolutionsTr">
+            <td>Resolutions:</td>
+            <td>
+            <label>
+                <stripes:text name="resolutions" size="80"/>
+            </label>
+            </td>
+        </tr>
+        <tr id="tilingProtocolTr">
+            <td>Tiling Protocol:</td>
+            <td>
+            <label>
+                <stripes:select name="tilingProtocol" disabled="${edit}">
+                    <stripes:option value="TMS">TMS</stripes:option>
+                    <stripes:option value="WMSc">WMSc</stripes:option>
+                    <stripes:option value="OSM">OSM</stripes:option>
+                    <stripes:option value="ArcGisRest">ArcGisRest Map Cache</stripes:option>
+                </stripes:select>
+            </label>
+            </td>
+        </tr>
+        <tr id="serviceBboxTr">
+            <td>Service Bounding Box</td>
+            <td>
+            <label>
+                <stripes:text name="serviceBbox" size="80"/>
+            </label>
+            </td>
+        </tr>
+        <tr id="crsTr">
+            <td>Coordinate Reference System</td>
+            <td>
+            <label>
+                <stripes:text name="crs"/>
+            </label>
+            </td>
+        </tr>
+        <tr id="extensionTr">
+            <td>Image extension</td>
+            <td>
+            <label>
+                <stripes:text name="imageExtension"/>
             </label>
             </td>
         </tr>        
