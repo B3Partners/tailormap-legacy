@@ -190,6 +190,10 @@ Ext.define ("viewer.components.DataSelection",{
         }
         
         this.dataTab.removeAll();
+        this.dataTab.add({
+            xtype : 'label',
+            text: 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie'
+        });
         this.dataTab.add(dataSelectieAttributes);
     },
     /**
