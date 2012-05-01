@@ -107,7 +107,7 @@
                 height: 'Samenvatting hoogte',
                 width: 'Samenvatting breedte'
             },
-            source: {      
+            source: {
                 title : "Details", 
                 titlebarIcon: "",
                 height : 300, 
@@ -639,7 +639,7 @@
         sources: ["PopupButton.js"],
         closureCompilerSafe: true,
         singleton: false,
-        restrictions: ["top_menu"],
+        restrictions: ["left_menu"],
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip",
                             iconUrl_up: "Icoon up",

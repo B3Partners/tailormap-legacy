@@ -38,8 +38,6 @@ Ext.define ("viewer.components.DataSelectionChecker",{
             this.hasLayerDataSelectionAttributes(appLayer, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
                     setTimeout(function(){this.viewerController.setLayerVisible(appLayer,false)}, 100);
-                }else{
-                    var a = 0;
                 }
             });
         }
