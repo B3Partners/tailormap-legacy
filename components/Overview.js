@@ -21,6 +21,7 @@
  */
 Ext.define ("viewer.components.Overview",{
     extend: "viewer.components.Component",
+    showButton : null,
     config: {
         position:null,
         width:null,
@@ -33,7 +34,13 @@ Ext.define ("viewer.components.Overview",{
         lox:null,
         loy:null,
         rbx:null,
-        rby:null
+        rby:null,
+        // configuration options for the button to open/close the popup
+        picSelected:null,
+        picOver:null,
+        picNormal:null,
+        picTop:null,
+        picLeft:null
     },
     constructor: function (conf){        
         viewer.components.Overview.superclass.constructor.call(this, conf);
@@ -43,43 +50,71 @@ Ext.define ("viewer.components.Overview",{
     },
     makeComponents : function (){
         var extent = this.lox +"," +this.loy +"," +this.rbx +"," +this.rby;
-        var xml ="<fmc:Map id='Map"+this.name+"'  width='"+this.width+"' height='"+this.height+"' clear='true'";
+        var xml ="<fmc:Map id='Map"+this.name+"'  width='"+this.width+"' height='"+this.height+"' clear='true' ";
         xml += "extent='"+ this.viewerController.mapComponent.getMap().getExtent().toString()+"' fullextent='"+ this.viewerController.mapComponent.getMap().getMaxExtent().toString()+ "'";
         xml += "listento='"+this.viewerController.mapComponent.getMap().getId() +"'>";
         xml +="<fmc:LayerOverview xmlns:fmc='fmc' id='LayerOverview"+ this.name + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "' color='#76B6D1'";
-        xml += "followfactor='200'/>";
+        xml += " followfactor='200'/>";
         xml += "<fmc:LayerImage id='layerimageoverview"+this.name+"' imageurl='"+this.url + "'";
         xml+=" extent='"+extent + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "'/>";
         xml +="</fmc:Map>";
         var container;
         var position = "";
-        if(this.left != null){
+        if(this.left != null && this.left != ''){
             position += " left ='" + this.left + "'";
         }
-        if(this.right != null){
+        if(this.right != null && this.right != ''){
             position += " right ='" + this.right + "'";
         }
-        if(this.top != null){
+        if(this.top != null && this.top != ''){
             position += " top ='" + this.top + "'";
         }
-        if(this.bottom != null){
+        if(this.bottom != null && this.bottom != ''){
             position += " bottom ='" + this.bottom + "'";
         }
         if(this.position == "popup"){
-            var window = "<cmc:Window xmlns:cmc='cmc' id='"+ this.name + "Window' "+ position +" width='"+this.width+"' height='"+this.height+"' canclose='false'>";
+            var window = "<cmc:Window xmlns:cmc='cmc' id='"+ this.name + "Window' "+ position +" width='"+this.width+"' height='"+this.height+"' canclose='true'>";
             window += "<fmc:Container id='"+ this.name + "windowcontainer' left='0' width='100%' height='100%' top='0' backgroundcolor='#FFFFFF'>";
             window += xml;
             window += "</fmc:Container>";
             window += "</cmc:Window>";
             container = window;
+            
+            // Make showbutton
+            var conf = {};
+            conf.toggle = true;
+            conf.enabled = true;
+            conf.visible = true;
+            conf.selected = true;
+            conf.iconUrl_up = this.picNormal;// "http://b3p-meine:8084/viewer/flamingo/buffer.png"
+            conf.iconUrl_over= this.picOver;// "http://b3p-meine:8084/viewer/flamingo/buffer_over.png"
+            conf.iconUrl_sel= this.picSelected;// "http://b3p-meine:8084/viewer/flamingo/buffer_down.png"
+            conf.iconUrl_dis= this.picNormal;//"http://b3p-meine:8084/viewer/flamingo/buffer.png"
+
+            conf.left = this.picLeft;//100;
+            conf.top = this.picTop;//100;
+            conf.viewerController = this.viewerController;
+            conf.tooltip = "Open/sluit de overzichtskaart";
+            this.showButton = Ext.create("viewer.components.tools.JSButton", conf);
+            var me = this;
+            this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,function () {
+                me.showOverview(true);
+            }, this);
+            this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,function () {
+                me.showOverview(false);
+            }, this);
         }else if(this.position =="inmap"){
             container = "<fmc:Container id='"+ this.name + "windowcontainer' "+ position +" width='"+this.width+"' height='"+this.height+"' backgroundcolor='#FFFFFF'>";
             container += xml;
             container += "</fmc:Container>";
         }
+        
         this.viewerController.mapComponent.viewerObject.callMethod(this.viewerController.mapComponent.mainContainerId,'addComponent',container);      
     },
     getExtComponents: function() {
         return [];
+    },
+    showOverview : function (open){
+        this.viewerController.mapComponent.viewerObject.callMethod( this.name + "Window",'setVisible',open);  
     }
 });

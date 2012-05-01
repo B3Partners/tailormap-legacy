@@ -611,7 +611,7 @@
         className: "viewer.components.Overview",
         name: "Overzichtskaart",
         shortName: "Oz",
-        sources: ["Overview.js"],
+        sources: ["tools/JSButton.js","Overview.js"],
         configSource: ["Overview-config.js"],
         restrictions: ["content"]
      },

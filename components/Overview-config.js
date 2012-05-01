@@ -33,6 +33,9 @@ Ext.define("viewer.components.CustomConfiguration",{
             frame: false,
             bodyPadding: me.formPadding,
             width: me.formWidth,
+            height: '100%',
+            autoScroll:true,
+            hideMode : 'offsets',
             items: [{
                 xtype: "label",
                 text: "Layout",
@@ -45,14 +48,72 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:350,
                 items: [{
                     boxLabel: 'Toon overzichtskaart in popup', 
-                    name: 'position', 
-                    inputValue: 'popup' , 
-                    checked: true
+                    name: 'position',
+                    inputValue: 'popup', 
+                    checked: config.position == 'popup',
+                    listeners:{
+                        change :{ 
+                            fn : function (obj, checked){
+                                var c = Ext.get("overviewPopupConfig");
+                                c.setVisible(checked);
+                            },
+                            scope : this
+                        }
+                    }
                 },
                 {
                     boxLabel: 'Toon overzichtskaart als vak in kaart', 
                     name: 'position', 
-                    inputValue: 'inmap'                  
+                    checked : config.position == 'inmap',
+                    inputValue: 'inmap'
+                }
+                ]
+            },
+            {
+                xtype: 'container',
+                hidden: config.position == 'inmap',
+                name : 'overviewPopupConfig',
+                id: 'overviewPopupConfig',
+                items: [
+                {
+                    xtype: "label",
+                    text: "Instellingen knop voor overviewkaart",
+                    style: "font-weight: bold;"
+                },
+                { 
+                    xtype: 'textfield',
+                    fieldLabel: 'Plaatje normaal',
+                    name: 'picNormal',
+                    value: config.picNormal,
+                    labelWidth:me.labelWidth
+                },
+                { 
+                    xtype: 'textfield',
+                    fieldLabel: 'Plaatje over',
+                    name: 'picOver',
+                    value: config.picOver,
+                    labelWidth:me.labelWidth
+                },
+                { 
+                    xtype: 'textfield',
+                    fieldLabel: 'Plaatje geselecteerd',
+                    name: 'picSelected',
+                    value: config.picSelected,
+                    labelWidth:me.labelWidth
+                },
+                { 
+                    xtype: 'textfield',
+                    fieldLabel: 'Positie links',
+                    name: 'picLeft',
+                    value: config.picLeft,
+                    labelWidth:me.labelWidth
+                },
+                { 
+                    xtype: 'textfield',
+                    fieldLabel: 'Positie boven',
+                    name: 'picTop',
+                    value: config.picTop,
+                    labelWidth:me.labelWidth
                 }
                 ]
             },
