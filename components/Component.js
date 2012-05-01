@@ -225,7 +225,7 @@ Ext.define("viewer.components.Component",{
                     'viewercomponentsTransparencySlider': 10,
                     'viewercomponentsInfluenceImage': 11,
                     'viewercomponentsRelatedDocuments': 12,
-                    //'viewercomponentsAttributeList': 13,
+                    'viewercomponentsAttributeList': 13,
                     'viewercomponentsPrint': 15
                 },
                 menuIconPosition: {
