@@ -43,6 +43,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -312,9 +313,9 @@ public class ImageTool {
         ios.close();
     }
     // </editor-fold>
-
-    public static BufferedImage combineImages(BufferedImage[] images, String mime) {
-        return combineImages(images, mime, null, null);
+    
+    public static BufferedImage combineImages(List<ReferencedImage> images, String mime) {
+        return combineImages(images, mime, null);
     }
 
     /** Method which handles the combining of the images. This method redirects to the right method
@@ -326,11 +327,11 @@ public class ImageTool {
      * @return BufferedImage
      */
     // <editor-fold defaultstate="" desc="combineImages(BufferedImage [] images, String mime) method.">
-    public static BufferedImage combineImages(BufferedImage[] images, String mime, Float alphas[], List<TileImage> tilingImages) {
+    public static BufferedImage combineImages(List<ReferencedImage> images, String mime, List<TileImage> tilingImages) {
         if (mime.equals(JPEG)) {
-            return combineJPGImages(images, alphas);
+            return combineJPGImages(images);
         } else {
-            return combineOtherImages(images, alphas, tilingImages);
+            return combineOtherImages(images, tilingImages);
         }
     }
     // </editor-fold>
@@ -343,21 +344,22 @@ public class ImageTool {
      * @return BufferedImage
      */
     // <editor-fold defaultstate="" desc="combineJPGImages(BufferedImage [] images) method.">
-    private static BufferedImage combineJPGImages(BufferedImage[] images, Float alphas[]) {
-        int width = images[0].getWidth();
-        int height = images[0].getHeight();
+    private static BufferedImage combineJPGImages(List<ReferencedImage> images) {
+        BufferedImage bi = images.get(0).getImage();
+        int width = bi.getWidth();
+        int height = bi.getHeight();
 
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D gbi = newBufIm.createGraphics();
-        gbi.drawImage(images[0], 0, 0, null);
+        gbi.drawImage(bi, 0, 0, null);
 
-        for (int i = 1; i < images.length; i++) {
-            if (alphas != null && alphas[i] != null) {
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphas[i]));
+        for (ReferencedImage image : images) {
+            if (image.getAlpha() != null) {
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, image.getAlpha() ));
             } else {
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             }
-            gbi.drawImage(images[i], 0, 0, null);
+            gbi.drawImage(image.getImage(), 0, 0, null);
         }
         return newBufIm;
     }
@@ -371,16 +373,16 @@ public class ImageTool {
      * @return BufferedImage
      */
     // <editor-fold defaultstate="" desc="combineOtherImages(BufferedImage [] images) method.">
-    private static BufferedImage combineOtherImages(BufferedImage[] images, Float[] alphas, List<TileImage> tilingImages) {
+    private static BufferedImage combineOtherImages(List<ReferencedImage> images, List<TileImage> tilingImages) {
         int width = 0;
         int height = 0;
-        
+        BufferedImage bi = images.get(0).getImage();
         /* Als er geen tiling layer aanstaat dan width en height van eerste plaatje
          * pakken. Deze is voor alle gewone wms'en hetzelfde */
         if ((tilingImages == null || tilingImages.size() < 1) &&
-                images.length>0 && images[0]!=null){
-            width = images[0].getWidth();
-            height = images[0].getHeight();
+                images.size()>0 && images.get(0)!=null){
+            width = bi.getWidth();
+            height = bi.getHeight();
         }
         
         /* Als er wel een tiling layer aanstaat dan width en height van eerste
@@ -406,14 +408,15 @@ public class ImageTool {
             numberOfTiles = tilingImages.size();
             
             TileImage tile = tilingImages.get(0);
-            gbi.drawImage(images[0], tile.getPosX(), tile.getPosY(), tile.getImageWidth(), tile.getImageHeight(), null);
+            gbi.drawImage(bi, tile.getPosX(), tile.getPosY(), tile.getImageWidth(), tile.getImageHeight(), null);
         } else {
-            gbi.drawImage(images[0], 0, 0, null);
+            gbi.drawImage(bi, 0, 0, null);
         }
 
-        for (int i = 1; i < images.length; i++) {
-            if (alphas != null && alphas[i] != null) {
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphas[i]));
+        for (int i = 1; i < images.size(); i++) {
+            ReferencedImage image =images.get(i);
+            if (image.getAlpha() != null) {
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, image.getAlpha() ));
             } else {
                 gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             }            
@@ -422,9 +425,9 @@ public class ImageTool {
              * x, y, width en height die in het TileImage object zit */
             if (tilingImages != null && tilingImages.size() > 0 && i < numberOfTiles) {
                 TileImage tile = tilingImages.get(i);
-                gbi.drawImage(images[i], tile.getPosX(), tile.getPosY(), tile.getImageWidth(), tile.getImageHeight(), null);
+                gbi.drawImage(images.get(i).getImage(), tile.getPosX(), tile.getPosY(), tile.getImageWidth(), tile.getImageHeight(), null);
             } else {
-                gbi.drawImage(images[i], 0, 0, null);
+                gbi.drawImage(images.get(i).getImage(), 0, 0, null);
             }            
         }
         

@@ -59,20 +59,20 @@ public class CombineImagesHandler {
             urls.addAll(normalUrls);
         }
         
-        BufferedImage[] bi = null;
+        List<ReferencedImage> refImages = null;
         
         if (urls.size() >0 ) {
             //Get the images by the urls
             ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);        
             try {
                 im.process();
-                bi = im.getCombinedImages();
+                refImages = im.getCombinedImages();
             } catch (Exception e) {
                 throw e;
             }
         }else{
-            bi = new BufferedImage[1];
-            bi[0]=new BufferedImage(settings.getWidth(),settings.getHeight(),BufferedImage.TYPE_INT_ARGB_PRE);
+            refImages = new ArrayList<ReferencedImage>();
+            refImages.add(new ReferencedImage(new BufferedImage(settings.getWidth(),settings.getHeight(),BufferedImage.TYPE_INT_ARGB_PRE)));
         }
         Float[] alphas = null;
 
@@ -88,7 +88,7 @@ public class CombineImagesHandler {
 
         BufferedImage returnImage = null;
         //Combine the images
-        BufferedImage combinedImages = ImageTool.combineImages(bi, returnMime, alphas, tilingImages);
+        BufferedImage combinedImages = ImageTool.combineImages(refImages, returnMime, tilingImages);
         //if there is a wkt then add it to the image
         try {
             if (settings.getWktGeoms() != null) {

@@ -84,10 +84,10 @@ public class ImageManager {
      * @return a combined image
      * @throws Exception 
      */
-    public BufferedImage[] getCombinedImages() throws Exception {
+    public List<ReferencedImage> getCombinedImages() throws Exception {
         ImageCollector ic = null;
         Iterator it = ics.iterator();
-        List allImages = new ArrayList();
+        List<ReferencedImage> allImages = new ArrayList<ReferencedImage>();
         while (it.hasNext()) {
             ic = (ImageCollector) it.next();
             int status = ic.getStatus();
@@ -96,16 +96,14 @@ public class ImageManager {
             } else if (status != ImageCollector.COMPLETED) {
                 // problem with one of sp's, but we continue with the rest!
                 log.error(ic.getMessage() + " (Status: " + status + ")");
-            } else {
-                allImages.add(ic.getBufferedImage());
+            } else {          
+                ReferencedImage image =new ReferencedImage(ic.getBufferedImage());
+                image.setAlpha(ic.getCombinedImageUrl().getAlpha());                
+                allImages.add(image);
             }
         }
         if (allImages.size() > 0) {
-            BufferedImage[] bis = new BufferedImage[allImages.size()];
-            for (int i = 0; i < allImages.size(); i++) {
-                bis[i] = (BufferedImage) allImages.get(i);
-            }
-            return bis;
+            return allImages;
         } else {
             return null;
         }

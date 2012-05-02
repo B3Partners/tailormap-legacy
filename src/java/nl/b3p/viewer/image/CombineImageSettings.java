@@ -125,43 +125,11 @@ public class CombineImageSettings {
         for (int i = 0; i < urls.size() && bb == null; i++) {
             CombineImageUrl ciu = urls.get(i);
             if (ciu instanceof CombineWmsUrl){
-                bb = getBboxFromUrl((CombineWmsUrl)ciu);
+                bb = ((CombineWmsUrl)ciu).getBboxFromUrl();
             }
         }
         return bb;
-    }
-    /**
-     * Gets the bbox from the url in the CombineImageUrl
-     */
-    public Bbox getBboxFromUrl(CombineWmsUrl ciu) {
-        if (ciu == null || ciu.getUrl()==null) {
-            return null;
-        }
-        double[] bb = null;
-        String url=ciu.getUrl();
-        String stringBbox = ciu.getParameter("bbox");
-        if (stringBbox != null) {
-            if (stringBbox.split(",").length != 4) {
-                stringBbox = null;
-            } else {
-                bb = new double[4];
-                try {
-                    bb[0] = Double.parseDouble(stringBbox.split(",")[0]);
-                    bb[1] = Double.parseDouble(stringBbox.split(",")[1]);
-                    bb[2] = Double.parseDouble(stringBbox.split(",")[2]);
-                    bb[3] = Double.parseDouble(stringBbox.split(",")[3]);
-                } catch (NumberFormatException nfe) {
-                    bb = null;
-                    log.debug("Geen geldige double waarden in de bbox: " + stringBbox);
-                }
-            }
-        }
-        if (bb != null) {
-            return new Bbox(bb);
-        } else {
-            return null;
-        }
-    }
+    }    
     /**
      * Try to resolve the width and height from the CombineImageUrl's
      * @return Array of int's width is the first in the array, height second
@@ -171,37 +139,12 @@ public class CombineImageSettings {
         for (int i = 0; i < urls.size() && hw == null; i++) {
             CombineImageUrl ciu = urls.get(i);
             if (ciu instanceof CombineWmsUrl){
-                hw = getWidthAndHeightFromUrl((CombineWmsUrl)ciu);
+                hw = ((CombineWmsUrl)ciu).getWidthAndHeightFromUrl();
             }
         }
         return hw;
     }
-    /**
-     * Try to resolve the width and height from the given CombineImageUrl
-     * @param ciu 
-     * @return Array of int's width is the first in the array, height second
-     */
-    public Integer[] getWidthAndHeightFromUrl(CombineWmsUrl ciu) {
-        if (ciu == null || ciu.getUrl()==null) {
-            return null;
-        }
-        String url=ciu.getUrl();
-
-        String heightString = ciu.getParameter("height");
-        String widthString = ciu.getParameter("width");
-        Integer[] result = null;
-        if (heightString != null && widthString != null) {
-            try {
-                result = new Integer[2];
-                result[0] = new Integer(widthString);
-                result[1] = new Integer(heightString);
-            } catch (NumberFormatException nfe) {
-                result = null;
-                log.debug("Height en/of Width zijn geen integers: Heigth: " + heightString + "Width: " + widthString);
-            }
-        }
-        return result;
-    }
+    
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public Color getDefaultWktGeomColor() {

@@ -55,18 +55,16 @@ public class ImageCollector extends Thread {
     protected static final int port = AuthScope.ANY_PORT;
     private String username = null;
     private String password = null;
-    private String url;
-    private URL realUrl;
+    private CombineImageUrl combinedImageUrl = null;
  
-    public ImageCollector(String url, int maxResponseTime) {
+    /*public ImageCollector(String url, int maxResponseTime) {
         this.url = url;
         this.maxResponseTime = maxResponseTime;
         this.setMessage("Still downloading...");
-    }
+    }*/
 
     public ImageCollector(CombineImageUrl ciu, int maxResponseTime) {
-        this.url = ciu.getUrl();
-        this.realUrl = ciu.getRealUrl();
+        this.combinedImageUrl=ciu;
         this.maxResponseTime = maxResponseTime;
         this.setMessage("Still downloading...");
     }
@@ -87,13 +85,13 @@ public class ImageCollector extends Thread {
     }
     
     public void run() {
-        if ((getUrl() == null || getUrl().length() == 0) && realUrl == null) {
+        if ((getUrl() == null || getUrl().length() == 0) && getRealUrl() == null) {
             return;
         }
 
         try {
-            if (realUrl != null) {
-                setBufferedImage(ImageIO.read(realUrl));
+            if (getRealUrl() != null) {
+                setBufferedImage(ImageIO.read(getRealUrl()));
             } else {
                 setBufferedImage(loadImage(getUrl(),getUsername(),getPassword()));                
             }
@@ -147,14 +145,15 @@ public class ImageCollector extends Thread {
      * @return the url
      */
     public String getUrl() {
-        return url;
+        if (combinedImageUrl==null)
+            return null;
+        return getCombinedImageUrl().getUrl();
     }
     
-    /**
-     * @param url the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
+    public URL getRealUrl(){ 
+        if (combinedImageUrl==null)
+            return null;
+        return getCombinedImageUrl().getRealUrl();
     }
     
     public BufferedImage getBufferedImage() {
@@ -203,6 +202,14 @@ public class ImageCollector extends Thread {
     
     public void setMaxResponseTime(int maxResponseTime) {
         this.maxResponseTime = maxResponseTime;
+    }
+
+    public CombineImageUrl getCombinedImageUrl() {
+        return combinedImageUrl;
+    }
+
+    public void setCombineImageUrl(CombineImageUrl ciu) {
+        this.combinedImageUrl = ciu;
     }
     //</editor-fold>
 }
