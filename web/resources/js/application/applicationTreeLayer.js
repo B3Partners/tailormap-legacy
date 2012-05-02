@@ -127,7 +127,7 @@ Ext.onReady(function() {
                             layout: 'hbox',
                             items: possibleValuesFormItems
                         },
-                        { fieldLabel: 'Hoogte', name: 'editheight', value: attribute.editheight, xtype: 'textfield' }
+                        { fieldLabel: 'Hoogte', name: 'editHeight', value: attribute.editHeight, xtype: 'textfield' }
                     ]
                 })));
             }
@@ -268,7 +268,9 @@ Ext.onReady(function() {
     
     Ext.get('apptreelayerform').on('submit', function(e) {
         Ext.get('attributesJSON').dom.value = getJson();
-        Ext.get('details_summary_description').dom.value = Ext.getCmp('extSettingsHtmlEditor').getValue();
+        if( Ext.getCmp('extSettingsHtmlEditor')){
+            Ext.get('details_summary_description').dom.value = Ext.getCmp('extSettingsHtmlEditor').getValue();
+        }
     });
     
 });
@@ -292,11 +294,7 @@ function getJson() {
         newAttribute.filterable = Ext.getCmp('filterable' + attribute.id).getValue();
         newAttribute.selectable = Ext.getCmp('selectable' + attribute.id).getValue();
         var defaultVal = Ext.getCmp('default' + attribute.id).getValue();
-        if(defaultVal != ""){
-            newAttribute.defaultValue = defaultVal;
-        }else{
-            delete newAttribute.defaultValue;
-        }
+        newAttribute.defaultValue = defaultVal;
         currentAttributes.push(newAttribute);
     });
     return Ext.JSON.encode(currentAttributes);

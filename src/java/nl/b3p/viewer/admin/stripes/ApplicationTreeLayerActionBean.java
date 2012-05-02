@@ -157,8 +157,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     if (attribute.has("editvalues")) {
                         appAttribute.setEditValues(attribute.get("editvalues").toString());
                     }
-                    if (attribute.has("editheight")) {
-                        appAttribute.setEditHeight(attribute.get("editheight").toString());
+                    if (attribute.has("editHeight")) {
+                        appAttribute.setEditHeight(attribute.get("editHeight").toString());
                     }
 
                     //save selectable
