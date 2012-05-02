@@ -200,7 +200,7 @@ public class AttributeSourceActionBean implements ActionBean {
     @ValidationMethod(on={"save","saveEdit"})
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
-            errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
+            errors.add("name", new SimpleError("Naam is verplicht"));
             return;
         }
         
@@ -211,7 +211,7 @@ public class AttributeSourceActionBean implements ActionBean {
                         .setParameter("name", name)
                         .getSingleResult();
 
-                errors.add("name", new SimpleError("Naam bestaat al. Kies een unieke naam."));
+                errors.add("name", new SimpleError("Naam moet uniek zijn."));
                 return;
 
             } catch(NoResultException nre) {
@@ -226,7 +226,7 @@ public class AttributeSourceActionBean implements ActionBean {
                         .setParameter("id", featureSource.getId())
                         .getSingleResult();
 
-                errors.add("name", new SimpleError("Naam bestaat al. Kies een unieke naam."));
+                errors.add("name", new SimpleError("Naam moet uniek zijn."));
                 return;
 
             } catch(NoResultException nre) {

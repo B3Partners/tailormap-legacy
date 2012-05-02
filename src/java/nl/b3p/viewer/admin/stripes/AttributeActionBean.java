@@ -62,7 +62,7 @@ public class AttributeActionBean implements ActionBean {
     
     @Validate
     @ValidateNestedProperties({
-                @Validate(field="alias", maxlength=255)
+                @Validate(field="alias", maxlength=255, label="Alias")
     })
     private AttributeDescriptor attribute;
 

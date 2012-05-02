@@ -36,7 +36,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <select name="featureSourceId" id="featureSourceId">
                     <option value="1">Kies..</option>
                     <c:forEach var="source" items="${actionBean.featureSources}">
-                        <option value="${source.id}"><c:out value="${source.name}"/></option>
+                        <c:set var="selected" value="" />
+                        <c:if test="${actionBean.featureSourceId == source.id}">
+                            <c:set var="selected" value=" selected=\"selected\"" />
+                        </c:if>
+                        <option value="${source.id}"${selected}><c:out value="${source.name}"/></option>
                     </c:forEach>
                 </select>
                 <select name="simpleFeatureTypeId" id="simpleFeatureTypeId">
@@ -121,7 +125,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             });
             
             function reloadGrid(){
-                Ext.getCmp('editGrid').getStore().load();
+                Ext.getCmp('editGrid').getStore().load(); 
             }
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>

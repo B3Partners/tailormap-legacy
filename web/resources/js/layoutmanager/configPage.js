@@ -263,6 +263,16 @@ Ext.onReady(function() {
         items: tabs,
         bbar: ["->", {
             xtype: 'button',
+            text: 'Annuleren',
+            id: 'cancalConfigButton',
+            iconCls: 'cancelbutton-icon',
+            listeners: {
+                click: function() {
+                    window.location.reload();
+                }
+            }
+        }, {
+            xtype: 'button',
             text: 'Opslaan',
             id: 'saveConfigButton',
             iconCls: 'savebutton-icon',

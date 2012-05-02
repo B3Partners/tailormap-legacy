@@ -189,14 +189,14 @@ public class GroupActionBean implements ActionBean {
     public void validate(ValidationErrors errors) throws Exception {
         if (group == null) {
             if(name == null) {
-                errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
+                errors.add("name", new SimpleError("Naam is verplicht"));
                 return;
             }
             
             try {
                 Object o = Stripersist.getEntityManager().createQuery("select 1 from Group where name = :name").setMaxResults(1).setParameter("name", name).getSingleResult();
 
-                errors.add("name", new SimpleError("Naam bestaat al"));
+                errors.add("name", new SimpleError("Naam moet uniek zijn"));
                 return;
 
             } catch (NoResultException nre) {

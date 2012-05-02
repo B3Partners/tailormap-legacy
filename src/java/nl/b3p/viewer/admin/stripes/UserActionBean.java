@@ -223,7 +223,7 @@ public class UserActionBean implements ActionBean {
         if(user == null) {
 
             if(username == null) {
-                errors.add("username", new LocalizableError("validation.required.valueNotPresent"));
+                errors.add("username", new SimpleError("Gebruikersnaam is verplicht"));
                 return;
             }
 
@@ -243,14 +243,14 @@ public class UserActionBean implements ActionBean {
 
         if(user == null) {
             if(password == null) {
-                errors.add("password", new LocalizableError("validation.required.valueNotPresent"));
+                errors.add("password", new SimpleError("Wachtwoord is verplicht"));
                 return;
             }
         }
 
         if(password != null) {
             if(password.length() < User.MIN_PASSWORD_LENGTH) {
-                errors.add("password", new LocalizableError("validation.minlength.valueTooShort", User.MIN_PASSWORD_LENGTH));
+                errors.add("password", new SimpleError("Wachtwoord is te kort, minimale lengte: " + User.MIN_PASSWORD_LENGTH));
                 return;
             }
         }

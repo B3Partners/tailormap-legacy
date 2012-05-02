@@ -249,11 +249,7 @@ public class GeoServiceActionBean implements ActionBean{
         this.crs = crs;
     }
     //</editor-fold>
-    
-    public Resolution cancel() {
-        return new ForwardResolution(JSP);
-    }
-    
+
     @DefaultHandler
     public Resolution edit() {
         if (service != null) {

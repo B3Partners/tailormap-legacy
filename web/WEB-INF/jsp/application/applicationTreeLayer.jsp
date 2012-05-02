@@ -73,7 +73,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td>Transparantie beginwaarde:</td>
                             <td>
                                 <stripes:text name="details['transparency']" maxlength="255" size="10" style="display: none;" id="details_transparency" />
-                                <div id="details_transparency_slider"></div>
+                                <div id="details_transparency_slider" style="width: 200px; float: left;"></div>
+                                <div style="float: left; margin-left: 15px;" id="transpSliderWarning">Wordt overschreven wanneer een slider wordt toegevoegd aan deze laag</div>
+                                <div style="clear: both;"></div>
                             </td>
                         </tr>
                         <tr>

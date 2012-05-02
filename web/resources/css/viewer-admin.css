@@ -1,5 +1,11 @@
 /* messages */
 
+.box {
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .messages .box {
     width: 400px;
     padding: 5px;
@@ -15,7 +21,7 @@
 }
 
 .box div {
-    padding-left: 18px;
+    padding-left: 20px;
     padding-bottom: 1px;
 }
 

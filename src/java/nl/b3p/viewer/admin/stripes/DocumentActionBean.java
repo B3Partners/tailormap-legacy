@@ -56,9 +56,9 @@ public class DocumentActionBean implements ActionBean {
 
     @Validate
     @ValidateNestedProperties({
-                @Validate(field="name", required=true, maxlength=255),
-                @Validate(field="category", maxlength=255),
-                @Validate(field="url", required=true, maxlength=255)
+                @Validate(field="name", required=true, maxlength=255, label="Naam"),
+                @Validate(field="category", maxlength=255, label="Category"),
+                @Validate(field="url", required=true, maxlength=255, label="URL")
     })
     private Document document;
 

@@ -142,6 +142,18 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
         }
+        // DEFAULT VALUES
+        if(!details.containsKey("iconSprite")) {
+            details.put("iconSprite", "/viewer/resources/images/default_sprite.png");
+        }
+        if(!details.containsKey("stylesheetMetadata")) {
+            // TODO: Default value stylesheet metadata
+            details.put("stylesheetMetadata", "");
+        }
+        if(!details.containsKey("stylesheetPrint")) {
+            // TODO: Default value stylesheet printen
+            details.put("stylesheetPrint", "");
+        }
         return new ForwardResolution(JSP);
     }
     
@@ -149,6 +161,12 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public Resolution newApplication(){
         application = null;
         applicationId = -1L;
+        // DEFAULT VALUES
+        details.put("iconSprite", "/viewer/resources/images/default_sprite.png");
+        // TODO: Default value stylesheet metadata
+        details.put("stylesheetMetadata", "");
+        // TODO: Default value stylesheet printen
+        details.put("stylesheetPrint", "");
         return new ForwardResolution(JSP);
     }
     
@@ -212,7 +230,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     @ValidationMethod(on="save")
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
-            errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
+            errors.add("name", new SimpleError("Naam is verplicht"));
             return;
         }
         

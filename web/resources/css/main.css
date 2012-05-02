@@ -302,6 +302,9 @@ input[type="submit"]:hover,
 .savebutton-icon {
   background-image: url("../images/save.png");
 }
+.cancelbutton-icon {
+  background-image: url("../images/cancel.png");
+}
 .removebutton-icon {
   background-image: url("../images/delete.png");
 }

@@ -181,7 +181,7 @@ public class LayarServiceActionBean implements ActionBean {
     @ValidationMethod(on="save")
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
-            errors.add("name", new LocalizableError("validation.required.valueNotPresent"));
+            errors.add("name", new SimpleError("Naam is verplicht"));
             return;
         }
         
@@ -193,10 +193,10 @@ public class LayarServiceActionBean implements ActionBean {
             
             if(layarservice != null && layarservice.getId() != null){
                 if(!foundId.equals(layarservice.getId())){
-                    errors.add("name", new SimpleError("Naam unieke zijn."));
+                    errors.add("name", new SimpleError("Naam moet uniek zijn"));
                 }
             }else{
-                errors.add("name", new SimpleError("Naam unieke zijn."));
+                errors.add("name", new SimpleError("Naam moet uniek zijn"));
             }
             
         } catch(NoResultException nre) {

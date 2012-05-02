@@ -36,7 +36,12 @@ Ext.onReady(function(){
             },
             simpleSortMode: true
         },
-        autoLoad: true
+        listeners: {
+            load: function() {
+                // Fix to apply filters
+                Ext.getCmp('editGrid').doLayout();
+            }
+        }
     });
 
     var grid = Ext.create('Ext.grid.Panel', Ext.merge(defaultGridConfig, {
@@ -83,8 +88,11 @@ Ext.onReady(function(){
                 header: '',
                 dataIndex: 'id',
                 flex: 1,
+                sortable: false,
+                hideable: false,
+                menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="_EDITATTRIBUTESURL_{0};">Attributen bewerken</a>', value) +
+                    return Ext.String.format('<a href="' + editattributesurl + '?featureSourceId={0}">Attributen bewerken</a>', value) +
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
@@ -104,7 +112,13 @@ Ext.onReady(function(){
                 enableTooltip: false
             })
         ],
-        renderTo: 'grid-container'
+        renderTo: 'grid-container',
+        listeners: {
+            afterrender: function(grid) {
+                // Default sort on second column
+                grid.columns[1].setSortState('ASC');
+            }
+        }
     }));
 
 });

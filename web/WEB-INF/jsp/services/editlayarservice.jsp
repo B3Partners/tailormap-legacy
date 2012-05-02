@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <stripes:submit name="cancel" value="Annuleren"/>
                     </div>
                 </c:when>
-                <c:when test="${actionBean.context.eventName == 'save'}">
+                <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                     <script type="text/javascript">
                         var frameParent = getParent();
                         if(frameParent && frameParent.reloadGrid) {

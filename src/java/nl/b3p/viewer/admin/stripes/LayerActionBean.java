@@ -41,8 +41,8 @@ public class LayerActionBean implements ActionBean {
     private ActionBeanContext context;
     @Validate
     @ValidateNestedProperties({
-        @Validate(field = "titleAlias"),
-        @Validate(field = "legendImageUrl")
+        @Validate(field = "titleAlias", label="Naam"),
+        @Validate(field = "legendImageUrl", label="Legenda")
     })
     private Layer layer;
     @Validate

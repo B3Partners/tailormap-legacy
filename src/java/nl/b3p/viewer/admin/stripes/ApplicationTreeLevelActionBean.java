@@ -48,8 +48,8 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     
     @Validate
     @ValidateNestedProperties({
-                @Validate(field="info"),
-                @Validate(field="name")
+                @Validate(field="info", label="Info"),
+                @Validate(field="name", label="Naam")
     })
     private Level level;
     
