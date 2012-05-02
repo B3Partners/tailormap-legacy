@@ -143,6 +143,18 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         });
     },
     /**
+     * @see viewer.viewercontroller.MapComponent@createTilingLayer
+     */
+    createTilingLayer: function (name, url, options,viewerController){
+        if (options==undefined || options==null){
+            options={};
+        }
+        options.id=name;
+        options.url=url;
+        options.type=options.protocol;
+        return Ext.create("viewer.viewercontroller.flamingo.FlamingoTilingLayer",options);
+    },
+    /**
      * Create a tool that is useable in Flamingo-mc
      * @See MapComponent.createTool
      * @param toolComponent the toolcomponent that must be created in flamingo as a useable tool 

@@ -15,7 +15,8 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         ARCSERVER_TYPE: "ARCSERVER",
         ARCIMS_TYPE: "ARCIMS",
         VECTOR_TYPE: "VECTOR",
-        IMAGE_TYPE: "IMAGE"
+        IMAGE_TYPE: "IMAGE",
+        TILING_TYPE: "TILING"
     },
     events: [],
     maptips: new Array(),
@@ -120,7 +121,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         Ext.Error.raise({msg: "Layer.setVisible() Not implemented! Must be implemented in sub-class"});
     },
     getLegendGraphic : function () {
-        Ext.Error.raise({msg: "Layer.getLegendImage() Not implemented! Must be implemented in sub-class"});
+        Ext.Error.raise({msg: "Layer.getLegendGraphic() Not implemented! Must be implemented in sub-class"});
     },
     setQuery : function (query){
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});

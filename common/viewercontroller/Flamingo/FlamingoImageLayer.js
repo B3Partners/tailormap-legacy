@@ -28,7 +28,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         extent:null
     },
     constructor: function(config){
-        viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.constructor.call(this, config);
+        viewer.viewercontroller.flamingo.FlamingoImageLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
         return this;

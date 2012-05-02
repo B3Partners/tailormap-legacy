@@ -583,7 +583,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
                 
-            this.layers[id] = layerObj;
         }else if(service.protocol == "arcims" || service.protocol == "arcgis"){
             // Process the url so the MapComponent can handle it
             var url = service.url;
@@ -606,10 +605,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 options.type= "ArcGIS";
                 layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,server,servlet,null, options,this);
             }
-            this.layers[id] = layerObj;
+        }else if (service.protocol == "tiled"){
+            options.tileHeight = layer.tileHeight;
+            options.tileWidth = layer.tileWidth;
+            options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
+            options.resolutions = layer.resolutions;
+            options.protocol = service.tilingProtocol;
+            options.viewerController=this;
+            layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
         }
         layerObj.serviceId = appLayer.serviceId;
         layerObj.appLayerId = appLayer.id;
+        this.layers[id] = layerObj;
         this.mapComponent.getMap().addLayer(layerObj);  
         return layerObj;
     },

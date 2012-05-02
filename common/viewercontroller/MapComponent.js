@@ -47,13 +47,17 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     },
     /**
     * @description Creates a OSGEO TMS layer.
-    * @param id the id of the layer
     * @param name the showable name of the layer
     * @param url the url to the tms service
-    * @param options extra options for this TMS layer
-    * @returns Returns the TMSLayer
+    * @param options extra options for this tiling layer
+    * @param options.tileHeight the tile height
+    * @param options.tileWidth the tile width
+    * @param options.serviceEnvelop the envelope of the service
+    * @param options.resolutions the resolutions of this service
+    * @param options.protocol tiling protocol
+    * @returns Returns the TilingLayer
     */
-    createTMSLayer : function (id,name,url, options){
+    createTilingLayer : function (id,name,url, options){
         Ext.Error.raise({msg: "MapComponent.createTMSLayer() Not implemented! Must be implemented in sub-class"});
     },    
     /**
