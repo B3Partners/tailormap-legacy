@@ -1,0 +1,94 @@
+/* 
+ * Copyright (C) 2012 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @class 
+ * @description Flamingo Tiling layer
+ **/
+
+Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
+    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
+    config:{
+        id:null,
+        url:null,
+        serviceEnvelope:null,
+        protocol:null,
+        tileHeight: null,
+        tileWidth: null,
+        resolutions: null
+    },
+    /**
+     *
+     * @constructor
+     * @param config.id the id
+     * @param config.url the url of the service
+     * @param config.serviceEnvelope the service envelope
+     * @param config.type the tiling type (OSM,TMS,WMSc,arcgisrest)
+     * @param config.tileHeight the height of the tiling images
+     * @param config.tileWidth the width of the tiling images
+     */
+    constructor: function(config){
+        viewer.viewercontroller.flamingo.FlamingoTilingLayer.superclass.constructor.call(this, config);
+        this.initConfig(config);
+        this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
+        return this;
+    },
+    getTagName : function(){
+        return "TilingLayer";
+    },    
+    /**
+     *makes a xml string so the object can be added to flamingo
+     *@return a xml string of this object
+     **/
+    toXML : function(){
+        var xml="<fmc:";
+        xml+=this.getTagName();
+        xml+=" xmlns:fmc=\"fmc\"";
+        xml+=" id=\""+this.getId()+"\"";     
+        xml+=" serviceurl=\""+this.getUrl()+"\"";
+        xml+=" resolutions=\""+this.getResolutions()+"\"";
+        xml+=" serviceenvelope=\""+this.getServiceEnvelope()+"\"";
+        if (this.getProtocol()!=null){
+            xml+=" type=\""+this.getProtocol()+"\"";
+        }
+        if (this.getTileHeight()!=null){
+            xml+=" tileheight=\""+this.getTileHeight()+"\"";
+        }
+        if (this.getTileWidth()!=null){
+            xml+=" tilewidth=\""+this.getTileWidth()+"\"";
+        }
+        xml+="></fmc:"+this.getTagName()+">";
+        return xml;
+    },
+
+    /**
+     *Get the id of this layer
+     */
+    getId :function (){
+        return this.id;
+    },
+    reload : function (){
+        this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
+    },
+    setVisible : function (visible){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
+        this.visible = visible;
+    },
+    getLegendGraphic : function(){
+        return null;
+    }
+});
+
