@@ -113,7 +113,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Tile size:</td>
             <td>
             <label>
-                <stripes:text name="tileSize"/>
+                <stripes:text name="tileSize" disabled="${edit}"/>
             </label>
             </td>
         </tr>
@@ -121,7 +121,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Resolutions:</td>
             <td>
             <label>
-                <stripes:text name="resolutions" size="80"/>
+                <stripes:text name="resolutions" size="80" disabled="${edit}"/>
             </label>
             </td>
         </tr>
@@ -142,7 +142,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Service Bounding Box</td>
             <td>
             <label>
-                <stripes:text name="serviceBbox" size="80"/>
+                <stripes:text name="serviceBbox" size="80" disabled="${edit}"/>
             </label>
             </td>
         </tr>
@@ -150,7 +150,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Coordinate Reference System</td>
             <td>
             <label>
-                <stripes:text name="crs"/>
+                <stripes:text name="crs" disabled="${edit}"/>
             </label>
             </td>
         </tr>
@@ -158,7 +158,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Image extension</td>
             <td>
             <label>
-                <stripes:text name="imageExtension"/>
+                <stripes:text name="imageExtension" disabled="${edit}"/>
             </label>
             </td>
         </tr>        

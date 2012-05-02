@@ -256,46 +256,55 @@ public class GeoServiceActionBean implements ActionBean{
     
     @DefaultHandler
     public Resolution edit() {
-        if(service != null){
-           protocol = service.getProtocol();
-           url = service.getUrl();
-           if(protocol.equals(ArcIMSService.PROTOCOL)) {
-               ArcIMSService ser = (ArcIMSService)service;
-               serviceName = ser.getServiceName();
-           }else if (protocol.equals(TileService.PROTOCOL)){
-               TileService ser = (TileService)service;
-               tilingProtocol = ser.getTilingProtocol();
-               //set the resolutions
-               TileSet tileSet= ser.getTopLayer().getTileset();
-               String res="";
-               for (Double resolution : tileSet.getResolutions()){
-                   if (res.length()>0){
-                       res+=",";
-                   }
-                   res+= resolution.toString();
-               }
-               resolutions=res;
-               //set the tilesize
-               tileSize = tileSet.getHeight();
-               //set the service Bbox               
-               if (ser.getTopLayer().getBoundingBoxes().size()==1){
-                   BoundingBox bb =ser.getTopLayer().getBoundingBoxes().values().iterator().next();
-                    serviceBbox=""+bb.getMinx()+","+
-                             bb.getMiny()+","+
-                             bb.getMaxx()+","+
-                             bb.getMaxy();
-                    crs=bb.getCrs().getName();                    
-               }
-               serviceName = ser.getTopLayer().getName();
+        if (service != null) {
+            protocol = service.getProtocol();
+            url = service.getUrl();
+            if (protocol.equals(ArcIMSService.PROTOCOL)) {
+                ArcIMSService ser = (ArcIMSService) service;
+                serviceName = ser.getServiceName();
+            } else if (protocol.equals(TileService.PROTOCOL)) {
+                TileService ser = (TileService) service;
+                tilingProtocol = ser.getTilingProtocol();
+                
+                //tiling service has 1 layer with that has the settings.                
+                Layer layer=ser.getTopLayer().getChildren().get(0);
+                //set the resolutions
+                
+                TileSet tileSet = layer.getTileset();   
+                
+                if (tileSet != null) {
+                    String res = "";
+                    for (Double resolution : tileSet.getResolutions()) {
+                        if (res.length() > 0) {
+                            res += ",";
+                        }
+                        res += resolution.toString();
+                    }
+                    resolutions = res;
+                    
+                    //set the tilesize
+                    tileSize = tileSet.getHeight();
+                }
                
-               if (ser.getTopLayer().getDetails().containsKey("image_extension")){
-                   imageExtension=ser.getTopLayer().getDetails().get("image_extension");
-               }
-               
-           }
-           name = service.getName();
-           username = service.getUsername();
-           password = service.getPassword();
+                //set the service Bbox               
+                if (layer.getBoundingBoxes().size() == 1) {
+                    BoundingBox bb = layer.getBoundingBoxes().values().iterator().next();
+                    serviceBbox = "" + bb.getMinx() + ","
+                            + bb.getMiny() + ","
+                            + bb.getMaxx() + ","
+                            + bb.getMaxy();
+                    crs = bb.getCrs().getName();
+                }
+                serviceName = layer.getName();
+
+                if (layer.getDetails().containsKey("image_extension")) {
+                    imageExtension = layer.getDetails().get("image_extension");
+                }
+
+            }
+            name = service.getName();
+            username = service.getUsername();
+            password = service.getPassword();
         }
         return new ForwardResolution(JSP);
     }
