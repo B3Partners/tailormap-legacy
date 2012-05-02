@@ -73,7 +73,7 @@ Ext.define ("viewer.components.Overview",{
             position += " bottom ='" + this.bottom + "'";
         }
         if(this.position == "popup"){
-            var window = "<cmc:Window xmlns:cmc='cmc' id='"+ this.name + "Window' "+ position +" width='"+this.width+"' height='"+this.height+"' canclose='true'>";
+            var window = "<cmc:Window xmlns:cmc='cmc' id='"+ this.name + "Window' "+ position +" width='"+this.width+"' height='"+this.height+"' canclose='false'>";
             window += "<fmc:Container id='"+ this.name + "windowcontainer' left='0' width='100%' height='100%' top='0' backgroundcolor='#FFFFFF'>";
             window += xml;
             window += "</fmc:Container>";
@@ -86,13 +86,13 @@ Ext.define ("viewer.components.Overview",{
             conf.enabled = true;
             conf.visible = true;
             conf.selected = true;
-            conf.iconUrl_up = this.picNormal;// "http://b3p-meine:8084/viewer/flamingo/buffer.png"
-            conf.iconUrl_over= this.picOver;// "http://b3p-meine:8084/viewer/flamingo/buffer_over.png"
-            conf.iconUrl_sel= this.picSelected;// "http://b3p-meine:8084/viewer/flamingo/buffer_down.png"
-            conf.iconUrl_dis= this.picNormal;//"http://b3p-meine:8084/viewer/flamingo/buffer.png"
+            conf.iconUrl_up = this.picNormal;
+            conf.iconUrl_over= this.picOver;
+            conf.iconUrl_sel= this.picSelected;
+            conf.iconUrl_dis= this.picNormal;
 
-            conf.left = this.picLeft;//100;
-            conf.top = this.picTop;//100;
+            conf.left = this.picLeft;
+            conf.top = this.picTop;
             conf.viewerController = this.viewerController;
             conf.tooltip = "Open/sluit de overzichtskaart";
             this.showButton = Ext.create("viewer.components.tools.JSButton", conf);
