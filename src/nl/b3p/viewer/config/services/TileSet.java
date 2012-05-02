@@ -60,6 +60,14 @@ public class TileSet {
     public void setResolutions(List<Double> resolutions) {
         this.resolutions = resolutions;
     }
+    
+    public void setResolutions(String res){
+        this.resolutions = new ArrayList<Double>();
+        String[] resTokens = res.split(",");
+        for (int i = 0; i < resTokens.length; i++){
+            this.resolutions.add(Double.parseDouble(resTokens[i].trim()));
+        }
+    }
 
     public int getWidth() {
         return width;

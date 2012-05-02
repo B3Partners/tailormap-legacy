@@ -82,7 +82,17 @@ public class BoundingBox implements Cloneable {
         this.miny = miny;
     }
     //</editor-fold>
-
+    /**
+     * Set the minx, miny,maxx, maxy with a comma seperated string
+     * @param bounds comma seperated coordinates.
+     */
+    public void setBounds(String bounds){
+        String[] bboxTokens = bounds.split(",");
+        setMinx(Double.parseDouble(bboxTokens[0].trim()));
+        setMiny(Double.parseDouble(bboxTokens[1].trim()));
+        setMaxx(Double.parseDouble(bboxTokens[2].trim()));
+        setMaxy(Double.parseDouble(bboxTokens[3].trim()));
+    }
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();
         if(crs != null) {

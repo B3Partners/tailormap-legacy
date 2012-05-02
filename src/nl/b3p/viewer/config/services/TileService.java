@@ -16,12 +16,11 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -59,6 +58,9 @@ public class TileService extends GeoService {
             
             String serviceName = (String) params.get(PARAM_SERVICENAME);
             s.setName(serviceName);
+            
+            String tp =(String) params.get(PARAM_TILINGPROTOCOL);
+            s.setTilingProtocol(tp);
 
             //make fake top layer for tiling.
             Layer topLayer = new Layer();
@@ -75,12 +77,7 @@ public class TileService extends GeoService {
             ts.setName(serviceName);
             if (params.containsKey(PARAM_RESOLUTIONS)){
                 String resString = (String) params.get(PARAM_RESOLUTIONS);
-                List<Double> resolutions = new ArrayList<Double>();
-                String[] resTokens = resString.split(",");
-                for (int i = 0; i < resTokens.length; i++){
-                    resolutions.add(Double.parseDouble(resTokens[i].trim()));
-                }
-                ts.setResolutions(resolutions);
+                ts.setResolutions(resString);
             }
             if (params.containsKey(PARAM_TILESIZE)){
                 Integer size = (Integer) params.get(PARAM_TILESIZE);
@@ -89,12 +86,9 @@ public class TileService extends GeoService {
             }            
             
             if (params.containsKey(PARAM_SERVICEBBOX) && params.containsKey(PARAM_CRS)){
-                String[] bboxTokens = ((String)params.get(PARAM_SERVICEBBOX)).split(",");
+                String bounds = (String)params.get(PARAM_SERVICEBBOX);
                 BoundingBox bb = new BoundingBox();
-                bb.setMinx(Double.parseDouble(bboxTokens[0].trim()));
-                bb.setMiny(Double.parseDouble(bboxTokens[1].trim()));
-                bb.setMaxx(Double.parseDouble(bboxTokens[2].trim()));
-                bb.setMaxy(Double.parseDouble(bboxTokens[3].trim()));
+                bb.setBounds(bounds);
                 bb.setCrs(new CoordinateReferenceSystem((String)params.get(PARAM_CRS)));
                 tilingLayer.getBoundingBoxes().put(bb.getCrs(), bb);
             }
@@ -116,5 +110,24 @@ public class TileService extends GeoService {
             status.setFinished(true);
         }
     }
+    /**
+     * Get the layer that contains the tiling settings etc.
+     * @return the layer with tiling settings
+     */
+    public Layer getTilingLayer(){
+        if (this.getTopLayer()!=null && this.getTopLayer().getChildren().size()>0){
+            return this.getTopLayer().getChildren().get(0);
+        }
+        return null;
+    }
+    
+    @Override
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude);
+        if(tilingProtocol != null) {
+            o.put("tilingProtocol", tilingProtocol);
+        }
+        return o;
+    }    
 
 }

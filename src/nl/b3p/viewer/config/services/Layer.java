@@ -193,6 +193,26 @@ public class Layer {
             }        
         }
         
+        if (tileset!=null){
+            o.put("tileHeight",tileset.getHeight());
+            o.put("tileWidth",tileset.getWidth());
+            if (tileset.getResolutions()!=null){
+                String resolutions="";
+                for (Double d : tileset.getResolutions()){
+                    if (resolutions.length()>0){
+                        resolutions+=",";
+                    }
+                    resolutions+=d.toString();
+                }
+                o.put("resolutions",resolutions);
+            }
+            if (boundingBoxes.size()==1){
+                BoundingBox bbox=boundingBoxes.values().iterator().next();
+                o.put("bbox",bbox.toJSONObject());
+            }
+            
+        }
+        
         
         return o;
     }
