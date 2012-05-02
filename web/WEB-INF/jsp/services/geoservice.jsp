@@ -113,7 +113,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Tile size:</td>
             <td>
             <label>
-                <stripes:text name="tileSize" disabled="${edit}"/>
+                <stripes:text name="tileSize"/>
             </label>
             </td>
         </tr>
@@ -121,7 +121,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Resolutions:</td>
             <td>
             <label>
-                <stripes:text name="resolutions" size="80" disabled="${edit}"/>
+                <stripes:text name="resolutions" size="80"/>
             </label>
             </td>
         </tr>
@@ -129,7 +129,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Tiling Protocol:</td>
             <td>
             <label>
-                <stripes:select name="tilingProtocol" disabled="${edit}">
+                <stripes:select name="tilingProtocol">
                     <stripes:option value="TMS">TMS</stripes:option>
                     <stripes:option value="WMSc">WMSc</stripes:option>
                     <stripes:option value="OSM">OSM</stripes:option>
@@ -142,7 +142,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Service Bounding Box</td>
             <td>
             <label>
-                <stripes:text name="serviceBbox" size="80" disabled="${edit}"/>
+                <stripes:text name="serviceBbox" size="80"/>
             </label>
             </td>
         </tr>
@@ -150,7 +150,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Coordinate Reference System</td>
             <td>
             <label>
-                <stripes:text name="crs" disabled="${edit}"/>
+                <stripes:text name="crs"/>
             </label>
             </td>
         </tr>
@@ -158,7 +158,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Image extension</td>
             <td>
             <label>
-                <stripes:text name="imageExtension" disabled="${edit}"/>
+                <stripes:text name="imageExtension"/>
             </label>
             </td>
         </tr>

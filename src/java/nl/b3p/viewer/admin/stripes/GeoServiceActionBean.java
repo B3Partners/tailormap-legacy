@@ -267,7 +267,7 @@ public class GeoServiceActionBean implements ActionBean{
                 tilingProtocol = ser.getTilingProtocol();
                 
                 //tiling service has 1 layer with that has the settings.                
-                Layer layer=ser.getTopLayer().getChildren().get(0);
+                Layer layer=ser.getTilingLayer();
                 //set the resolutions
                 
                 TileSet tileSet = layer.getTileset();   
@@ -312,6 +312,31 @@ public class GeoServiceActionBean implements ActionBean{
     public Resolution save() {
         if(name != null){
             service.setName(name);
+        }
+        if (service instanceof TileService){
+            TileService ser = (TileService)service;
+            if (tilingProtocol!=null){
+                ((TileService)service).setTilingProtocol(tilingProtocol);
+            }
+            Layer l = ser.getTilingLayer();
+            if (tileSize!=null){
+                l.getTileset().setWidth(tileSize);
+                l.getTileset().setHeight(tileSize);
+            }
+            if (resolutions!=null){
+                l.getTileset().setResolutions(resolutions);
+            }
+            if (crs!=null && serviceBbox!=null){
+                BoundingBox bb = new BoundingBox();
+                bb.setBounds(serviceBbox);
+                bb.setCrs(new CoordinateReferenceSystem(crs));
+                l.getBoundingBoxes().clear();
+                l.getBoundingBoxes().put(bb.getCrs(), bb);
+            }
+            if (imageExtension!=null){
+                l.getDetails().put("image_extension",imageExtension);
+            }
+                
         }
 
         service.setUsername(username);
