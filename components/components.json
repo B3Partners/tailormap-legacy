@@ -390,10 +390,11 @@
     },
     {
         className: "viewer.components.RelatedDocuments",
-        name: "Related Documents",
+        name: "Gerelateerde documenten",
         shortName: "Rd",
         sources: ["RelatedDocuments.js"],
         singleton: true,
+        type: "popup",
         restrictions: ["left_menu"],
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Hoover tekst",title: "Titel",titlebarIcon : "Titelbalk icoon"},
@@ -402,7 +403,7 @@
     },
     {
         className: "viewer.components.SelectionModule",
-        name: "Selection Module",
+        name: "Selectie Module",
         shortName: "Sm",
         sources: ["SelectionModule.js"],
         singleton: true,
@@ -433,6 +434,7 @@
         shortName: "Bm",
         sources: ["Bookmark.js"],
         singleton: true,
+        type: "popup",
         restrictions: ["left_menu"],
         extPropertyGridConfigs: {
             propertyNames: {
@@ -638,7 +640,7 @@
         shortName: "PB",
         sources: ["PopupButton.js"],
         closureCompilerSafe: true,
-        singleton: false,
+        singleton: true,
         restrictions: ["left_menu"],
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip",
