@@ -68,29 +68,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <td><stripes:text name="details['phone']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Gebruikersnaam:</td>
+                                        <td>Gebruikersnaam *:</td>
                                         <td><stripes:text name="username" disabled="${!empty actionBean.user.username}" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
-                                        <td>Wachtwoord:</td>
+                                        <td>Wachtwoord *:</td>
                                         <td><stripes:password name="password" maxlength="255" size="30"/></td>
                                     </tr>
                                 </table>
                             </td>
                             <td valign="top">
                                 <h1>Groepen:</h1>
-                                
+
                                     <c:forEach var="group" items="${actionBean.allGroups}">
                                         <stripes:checkbox name="groups" value="${group.name}"/> ${group.name}<br />
                                     </c:forEach>
-                                
+
                             </td>
                         </tr>
                     </table>
                     <div class="submitbuttons">
                         <stripes:submit name="save" value="Opslaan"/>
                         <stripes:submit name="cancel" value="Annuleren"/>
-                        
+
                         <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="authorizations">
                             <stripes:param name="user" value="${actionBean.user}"/>
                         </stripes:url>

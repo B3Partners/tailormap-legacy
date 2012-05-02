@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="group" value="${actionBean.group.name}"/>
                     <table class="formtable">
                         <tr>
-                            <td>Naam:</td>
+                            <td>Naam *:</td>
                             <td><stripes:text name="name" disabled="${!empty actionBean.group.name}" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>

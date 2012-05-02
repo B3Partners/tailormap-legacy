@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 
 Ext.define('Ext.ux.b3p.TreeSelection', {
-        
+
     treeUrl: treeurl || '',
     defaultRootIdTree: 'c0',
     nodeParamTree: 'nodeId',
@@ -91,8 +91,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             useArrows: true,
             frame: true,
             renderTo: me.treeContainer,
-            width: 225,
-            height: 400,
+            width: 325,
+            height: 600,
             viewConfig: {
                 height: '100%'
             },
@@ -163,8 +163,8 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             useArrows: true,
             frame: true,
             renderTo: me.selectedLayersContainer,
-            width: 225,
-            height: 400,
+            width: 325,
+            height: 600,
             viewConfig: {
                 height: '100%'
             },
@@ -180,7 +180,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                 }
             }
         });
-        
+
         if(me.useCheckboxes) {
             me.selectedlayers.on('checkchange', function(record, checked) {
                 var recordid = record.get('id').substring(1);
@@ -251,13 +251,13 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         });
     },
-    
+
     disableMoveButtons: function(disable) {
         var me = this;
         me.moveUpButton.setDisabled(disable);
         me.moveDownButton.setDisabled(disable);
     },
-    
+
     fixButtonLayout: function(button) {
         // Dirty hack to fix icon problem
         if(Ext.isIE9) {
@@ -266,7 +266,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             });
         }
     },
-    
+
     handleLayerCheckChange: function(record, recordid, checked) {
         var me = this;
         recordid = parseInt(recordid);
@@ -291,7 +291,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         }
     },
-    
+
     findRootNode: function(recordid) {
         var me = this;
         var node = me.selectedLayersStore.getNodeById(recordid);
@@ -301,7 +301,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             return me.findRootNode(node.parentNode.get('id'));
         }
     },
-    
+
     moveNode: function(direction) {
         var me = this;
         var rootNode = me.selectedlayers.getRootNode();
@@ -349,7 +349,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             me.addNode(record);
         });
     },
-    
+
     addNode: function(record) {
         var me = this;
         if(me.checkBackendOnMove && me.backendCheckUrl != '') {
@@ -358,18 +358,18 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             me.addToSelection(record);
         }
     },
-        
+
     addToSelectionWithBackendCheck: function(record) {
         var me = this;
-        Ext.Ajax.request({ 
-            url: me.backendCheckUrl, 
-            params: { 
+        Ext.Ajax.request({
+            url: me.backendCheckUrl,
+            params: {
                 selectedContent: me.getSelection(),
                 contentToBeSelected: Ext.JSON.encode({
                     id: record.get('id').substring(1),
                     type: record.get('type')
                 })
-            }, 
+            },
             success: function ( result, request ) {
                 result = Ext.JSON.decode(result.responseText);
                 if(result.result) {
@@ -406,13 +406,13 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         }
     },
-    
+
     onRootLevel: function(record, tree) {
         var foundNode = tree.getRootNode().findChild('id', record.get('id'), false);
         if(foundNode !== null) return true;
         return false;
     },
-    
+
     removeLayers: function() {
         var me = this;
         var rootNode = me.selectedlayers.getRootNode();
@@ -446,10 +446,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         }
         return addedLayers;
     },
-    
+
     getCheckedLayers: function() {
         var me = this;
         return Ext.JSON.encode(me.checkedLayers);
     }
-    
+
 });

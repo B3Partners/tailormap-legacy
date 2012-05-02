@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <h1 id="headertext">Layar service bewerken</h1>
                     <table class="formtable">
                         <tr>
-                            <td>Naam:</td>
+                            <td>Naam *:</td>
                             <td><stripes:text name="name" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
@@ -52,10 +52,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             frameParent.reloadGrid();
                         }
                     </script>
-                    <stripes:submit name="edit" value="Nieuw layar service"/>
+                    <stripes:submit name="edit" value="Nieuwe layar service"/>
                 </c:when>
                 <c:otherwise>
-                    <stripes:submit name="edit" value="Nieuw layar service"/>
+                    <stripes:submit name="edit" value="Nieuwe layar service"/>
                 </c:otherwise>
             </c:choose>
         </stripes:form>

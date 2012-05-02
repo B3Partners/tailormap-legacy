@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden name="document" value="${actionBean.document.id}"/>
                     <table class="formtable">
                         <tr>
-                            <td>Naam:</td>
+                            <td>Naam *:</td>
                             <td><stripes:text name="document.name" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td><stripes:text name="document.category" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
-                            <td>URL:</td>
+                            <td>URL *:</td>
                             <td><stripes:text name="document.url" maxlength="255" size="30"/></td>
                         </tr>
                     </table>

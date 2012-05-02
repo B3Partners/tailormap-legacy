@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
-<div id="formcontent">        
+<div id="formcontent">
 <p>
     <stripes:errors/>
     <stripes:messages/>
@@ -60,31 +60,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <c:if test="${!edit}"><h1 id="headertext">Nieuwe service toevoegen aan <c:out value="${actionBean.category.name}"/></h1></c:if>
     <c:if test="${edit}"><h1 id="headertext">Service <c:out value="${actionBean.service.name}"/> bewerken</h1></c:if>
-    
+
     <p>
     <script type="text/javascript">
         function checkProtocol() {
             var protocol = Ext.query("select[name='protocol']")[0].value;
             Ext.fly('useUrlTr').setVisible(protocol == "wms");
-            Ext.fly('serviceNameTr').setVisible(protocol == "arcims" || protocol == "tiled");            
-            Ext.fly('tileSizeTr').setVisible(protocol == "tiled");            
+            Ext.fly('serviceNameTr').setVisible(protocol == "arcims" || protocol == "tiled");
+            Ext.fly('tileSizeTr').setVisible(protocol == "tiled");
             Ext.fly('resolutionsTr').setVisible(protocol == "tiled");
             Ext.fly('tilingProtocolTr').setVisible(protocol == "tiled");
-            Ext.fly('serviceBboxTr').setVisible(protocol == "tiled");            
-            Ext.fly('extensionTr').setVisible(protocol == "tiled");          
+            Ext.fly('serviceBboxTr').setVisible(protocol == "tiled");
+            Ext.fly('extensionTr').setVisible(protocol == "tiled");
             Ext.fly('crsTr').setVisible(protocol == "tiled");
         }
         Ext.onReady(function() {
             appendPanel('headertext', 'formcontent');
         });
         Ext.onReady(checkProtocol);
-    </script>    
+    </script>
     <table class="formtable">
         <tr>
-            <td>URL van de service:</td>
+            <td>URL van de service *:</td>
             <td><stripes:text name="url" maxlength="255" size="80" disabled="${edit}"/></td>
         </tr>
-        <tr><td>Protocol:</td>
+        <tr><td>Protocol *:</td>
             <td>
                 <stripes:select name="protocol" disabled="${edit}" onchange="checkProtocol()" onkeyup="checkProtocol()">
                     <stripes:option value="wms">WMS</stripes:option>
@@ -102,7 +102,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
         </tr>
         <tr id="serviceNameTr">
-            <td>Service name:</td>
+            <td>Service name *:</td>
             <td>
             <label>
                 <stripes:text name="serviceName" maxlength="255" size="30" disabled="${edit}"/>
@@ -161,7 +161,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:text name="imageExtension" disabled="${edit}"/>
             </label>
             </td>
-        </tr>        
+        </tr>
         <tr>
             <td>Weergavenaam:</td>
             <td><stripes:text name="name" maxlength="255" size="30"/></td>
@@ -184,7 +184,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:if>
     </table>
     </p>
-    
+
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
@@ -204,10 +204,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:choose>
     </div>
 </c:if>
-            
+
 </stripes:form>
-    
+
 </div>
-            
+
     </stripes:layout-component>
 </stripes:layout-render>

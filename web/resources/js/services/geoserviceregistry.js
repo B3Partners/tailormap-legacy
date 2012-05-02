@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 
 Ext.onReady(function() {
-    
+
     // Definition of the TreeNode model. Get function is overridden, so custom
     // icons for the different types are possible
     Ext.define('GeoServiceTreeModel', {
@@ -52,7 +52,7 @@ Ext.onReady(function() {
             return this[this.persistenceProperty][fieldName];
         }
     });
-    
+
     // Definition of the store, which takes care of loading the necessary json
     var treeStore = Ext.create('Ext.data.TreeStore', {
         autoLoad: true,
@@ -120,7 +120,7 @@ Ext.onReady(function() {
         }
         ]
     });
-    
+
     var editMenu = new Ext.menu.Menu({
         data: {
             record: null
@@ -146,8 +146,8 @@ Ext.onReady(function() {
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',
-        width: 230,
-        height: 400,
+        width: 330,
+        height: 600,
         viewConfig: {
             height: '100%'
         },
@@ -172,7 +172,7 @@ Ext.onReady(function() {
             itemclick: function(view, record, item, index, event, eOpts) {
                 var recordType = record.get('type');
                 var id = record.get('id').substr(1);
-                                
+
                 if(recordType == "category") {
                     // click on category = new service
                     Ext.get('editFrame').dom.src = "about:blank";
@@ -185,14 +185,14 @@ Ext.onReady(function() {
                     // click on layer = edit layer
                     Ext.get('editFrame').dom.src = actionBeans["layer"] + '?layer=' + id + '&parentId=' + record.parentNode.get('id');
                 }
-                
+
                 // Expand tree on click
                 record.set("isLeaf", false);
                 record.expand(false);
             }
         },
         bbar: [
-            { 
+            {
                 xtype: "label",
                 text: "Gebruik het contextmenu (rechtermuisknop) om de categoriën te bewerken"
             }
@@ -214,20 +214,20 @@ function addNode(node, parentid) {
         if(record.isLeaf()) {
             // If the parent is currently a Leaf, then setting it to false
             // and expanding it will load the added childnode from backend
-            
+
             record.set('isLeaf', false);
             record.expand(false);
         } else {
             //console.log("addNode: record is expanded, appending child");
-            
+
             // If it has childnodes then just append the new node
             // First expand, then append child, otherwise childnodes are replaced?
-            
+
             record.expand(false, function() {
                 // Sometimes node is being expanded even is isLeaf() is true
                 // Do not add record twice
                 if(record.findChild("id", node.data.id) == null) {
-                    
+
                     // New service always added at bottom
                     if(node.data.id.charAt(0) == "s") {
                         record.appendChild(node);
@@ -274,7 +274,7 @@ function addSubcategory(record) {
                     method: 'POST',
                     success: function ( result, request ) {
                         var response = Ext.JSON.decode(result.responseText);
-                        
+
                         if(response.success) {
                             var node = response.node;
                             node.text = node.name; // For some reason text is not mapped to name when creating a new model
@@ -282,7 +282,7 @@ function addSubcategory(record) {
                             addNode(newNode, node.parentid);
                         } else {
                             Ext.MessageBox.alert("Fout", response.error);
-                        }                        
+                        }
                     },
                     failure: function ( result, request) {
                         Ext.MessageBox.alert("Fout", result.responseText);
@@ -294,7 +294,7 @@ function addSubcategory(record) {
 }
 
 function changeCategoryName(record) {
-  
+
     Ext.MessageBox.show({
         title:'Naam wijzigen',
         msg: 'Naam van categorie:',
@@ -303,7 +303,7 @@ function changeCategoryName(record) {
         value: record.data.text,
         fn: function(btn, text, cBoxes){
             if(btn=='ok' && text){
-                
+
                 Ext.Ajax.request({
                     url: actionBeans["category"],
                     params: {
@@ -314,7 +314,7 @@ function changeCategoryName(record) {
                     method: 'POST',
                     success: function(result) {
                         var response = Ext.JSON.decode(result.responseText);
-                        
+
                         if(response.success) {
                             record.set("text", response.name);
                         } else {
@@ -337,7 +337,7 @@ function removeCategory(record) {
         buttons: Ext.MessageBox.OKCANCEL,
         fn: function(btn){
             if(btn=='ok'){
-                
+
                 Ext.Ajax.request({
                     url: actionBeans["category"],
                     params: {
@@ -347,7 +347,7 @@ function removeCategory(record) {
                     method: 'POST',
                     success: function(result) {
                         var response = Ext.JSON.decode(result.responseText);
-                        
+
                         if(response.success) {
                             record.remove();
                             Ext.get('editFrame').dom.src = "about:blank";
@@ -361,7 +361,7 @@ function removeCategory(record) {
                 });
             }
         }
-    });    
+    });
 }
 
 // Function to add a service node. Parameter should hold the JSON for 1 servicenode
@@ -372,7 +372,7 @@ function addServiceNode(service) {
 }
 
 // Function to rename a node, based in its ID
-function renameNode(nodeid, newname) {    
+function renameNode(nodeid, newname) {
     var tree = Ext.getCmp('servicestree');
     var node = null;
     if(nodeid == tree.getRootNode().getId()) {

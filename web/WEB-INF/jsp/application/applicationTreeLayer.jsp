@@ -78,7 +78,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                         <tr>
                             <td>Straalinvloedsgebied:</td>
-                            <td><stripes:text name="details['influenceradius']" maxlength="255" size="10"/></td>
+                            <td>
+                                <stripes:text name="details['influenceradius']" maxlength="255" size="10"/>
+                                Werkt in combinatie met component Invloedsgebied, afstand in meters
+                            </td>
                         </tr>
                         <tr>
                             <td>Samenvatting - titel:</td>

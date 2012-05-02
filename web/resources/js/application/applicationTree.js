@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 
 Ext.onReady(function() {
-    
+
     // Definition of the TreeNode model. Get function is overridden, so custom
     // icons for the different types are possible
     Ext.define('AppLevelTreeModel', {
@@ -47,7 +47,7 @@ Ext.onReady(function() {
             return this[this.persistenceProperty][fieldName];
         }
     });
-    
+
     // Override van TreeStore to fix load function, used to refresh tree node
     Ext.define('Ext.ux.b3p.TreeStore', {
         extend: 'Ext.data.TreeStore',
@@ -75,13 +75,13 @@ Ext.onReady(function() {
             return me.callParent([options]);
         }
     });
-    
+
     // Definition of the store, which takes care of loading the necessary json
     var treeStore = Ext.create('Ext.ux.b3p.TreeStore', {
         autoLoad: true,
         proxy: {
             type: 'ajax',
-            url: actionBeans.appTree + "?tree=t"            
+            url: actionBeans.appTree + "?tree=t"
         },
         root: {text: rootName, id: rootId, type: "level", expanded: true},
         model: AppLevelTreeModel,
@@ -126,7 +126,7 @@ Ext.onReady(function() {
                 }
             }
         }
-        
+
         ]
     });
 
@@ -145,7 +145,7 @@ Ext.onReady(function() {
             }
         }]
     });
-    
+
     // Definition of the tree
     var tree = Ext.create('Ext.tree.Panel', {
         id: 'applicationtree',
@@ -154,8 +154,8 @@ Ext.onReady(function() {
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',
-        width: 225,
-        height: 400,
+        width: 325,
+        height: 600,
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
                 if(record.get('type') == "level") {
@@ -183,10 +183,10 @@ Ext.onReady(function() {
                 if(recordType == "layer") {
                     Ext.get('editFrame').dom.src = actionBeans.appTreeLayer + '?edit=t&applicationLayer=' + id; //+ '&parentId=' + record.parentNode.get('id');
                 }
-                
+
                 // Expand tree on click
                 record.set("isLeaf", false);
-                record.expand(false);                
+                record.expand(false);
             }
         },
         bbar: [{
@@ -215,12 +215,12 @@ function addNode(node, parentid) {
         } else {
             // If it has childnodes then just append the new node
             // First expand, then append child, otherwise childnodes are replaced?
-            
+
             record.expand(false, function() {
                 // Sometimes node is being expanded even is isLeaf() is true
                 // Do not add record twice
                 if(record.findChild("id", node.data.id) == null) {
-                    
+
                     // New layer always added at bottom
                     if(node.data.id.charAt(0) == "s") {
                         record.appendChild(node);
@@ -282,7 +282,7 @@ function addSublevel(record) {
 
 
 function changeLevelName(record) {
-  
+
     Ext.MessageBox.show({
         title:'Naam wijzigen',
         msg: 'Naam van niveau:',
@@ -291,7 +291,7 @@ function changeLevelName(record) {
         value: record.data.text,
         fn: function(btn, text, cBoxes){
             if(btn=='ok' && text){
-                
+
                 Ext.Ajax.request({
                     url: actionBeans.appTreeLevel,
                     params: {
@@ -302,7 +302,7 @@ function changeLevelName(record) {
                     method: 'POST',
                     success: function(result) {
                         var response = Ext.JSON.decode(result.responseText);
-                        
+
                         if(response.success) {
                             record.set("text", response.name);
                         } else {
@@ -325,7 +325,7 @@ function removeLevel(record) {
         buttons: Ext.MessageBox.OKCANCEL,
         fn: function(btn){
             if(btn=='ok'){
-                
+
                 Ext.Ajax.request({
                     url: actionBeans.appTreeLevel,
                     params: {
@@ -335,7 +335,7 @@ function removeLevel(record) {
                     method: 'POST',
                     success: function(result) {
                         var response = Ext.JSON.decode(result.responseText);
-                        
+
                         if(response.success) {
                             record.remove();
                             Ext.get('editFrame').dom.src = "about:blank";
@@ -349,9 +349,9 @@ function removeLevel(record) {
                 });
             }
         }
-    });    
+    });
 }
-    
+
 // Function to add a service node. Parameter should hold the JSON for 1 servicenode
 function addServiceNode(json) {
     var objData = Ext.JSON.decode(json);

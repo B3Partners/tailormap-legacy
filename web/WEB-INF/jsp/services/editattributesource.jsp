@@ -30,23 +30,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
-                    <c:when test="${actionBean.context.eventName == 'edit'}"> 
+                    <c:when test="${actionBean.context.eventName == 'edit'}">
                     <h1 id="headertext">Attribuutbron bewerken</h1>
 
                     <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
                     <table class="formtable">
                         <tr>
-                            <td>Naam:</td>
+                            <td>Naam *:</td>
                             <td><stripes:text name="name" maxlength="255" size="30"/></td>
                         </tr>
                         <tr>
-                            <td>Bron URL:</td>
+                            <td>Bron URL *:</td>
                             <td>
                                 <stripes:text name="url" maxlength="255" size="30" disabled="true"/>
                             </td>
                         </tr>
                         <tr>
-                            <td>Type:</td>
+                            <td>Type *:</td>
                             <td>
                                 <stripes:select name="protocol" disabled="true">
                                     <stripes:option value="wfs">WFS</stripes:option>
@@ -71,13 +71,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'newAttributeSource' || actionBean.context.eventName == 'save'}">
-                    
+
                             <h1 id="headertext">Nieuwe attribuutbron toevoegen</h1>
                             <p>
                             <script type="text/javascript">
                                 function checkProtocol() {
                                     var protocol = Ext.query("select[name='protocol']")[0].value;
-                                                                        
+
                                     Ext.query("*[class='dbTr']").forEach(function(e) {
                                         e.style.visibility = protocol == "jdbc" ? "visible" : "hidden";
                                     });
@@ -89,7 +89,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 }
 
                                 function checkDefaults() {
-                                    // XXX impossible to use a Oracle server on PostgreSQL port 
+                                    // XXX impossible to use a Oracle server on PostgreSQL port
                                     // and vice versa, but automatic filling in of port is useful
                                     var dbType = Ext.query("select[name='dbtype']")[0].value;
                                     var port = Ext.query("input[name='port']")[0];
@@ -104,7 +104,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     }
                                 }
                                 Ext.onReady(checkProtocol);
-                            </script>    
+                            </script>
                             <table class="formtable">
                                 <tr>
                                     <td>Type:</td>
@@ -114,7 +114,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                             <stripes:option value="wfs">WFS</stripes:option>
                                         </stripes:select>
                                     </td>
-                                </tr>                                
+                                </tr>
                                 <tr>
                                     <td>Naam:</td>
                                     <td><stripes:text name="name" maxlength="255" size="30"/></td>
@@ -122,7 +122,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <tr class="wfsTr">
                                     <td>URL:</td>
                                     <td><stripes:text name="url" maxlength="255" size="30"/></td>
-                                </tr>                                
+                                </tr>
                                 <tr class="dbTr">
                                     <td>Database type:</td>
                                     <td>

@@ -191,7 +191,7 @@ input[type="submit"]:hover,
   min-width: 960px;
 }
 #tree-container {
-  width: 250px;
+  width: 350px;
   float: left;
   margin-top: 10px;
 }

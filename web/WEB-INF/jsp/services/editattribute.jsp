@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td><stripes:text name="attribute.alias" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>
-                        <td>Attribuut:</td>
+                        <td>Attribuut *:</td>
                         <td><stripes:text name="attribute.name" maxlength="255" size="30" disabled="true"/></td>
                     </tr>
                 </table>
