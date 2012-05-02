@@ -62,10 +62,15 @@ public class TileService extends GeoService {
 
             //make fake top layer for tiling.
             Layer topLayer = new Layer();
-            topLayer.setName(serviceName);
             topLayer.setVirtual(true);
-
-            s.setTopLayer(topLayer);
+            topLayer.setService(s);
+            
+            Layer tilingLayer = new Layer();
+            tilingLayer.setName(serviceName);
+            tilingLayer.setTitle(serviceName);
+            tilingLayer.setParent(topLayer);
+            tilingLayer.setService(s);
+            
             TileSet ts = new TileSet();
             ts.setName(serviceName);
             if (params.containsKey(PARAM_RESOLUTIONS)){
@@ -91,15 +96,18 @@ public class TileService extends GeoService {
                 bb.setMaxx(Double.parseDouble(bboxTokens[2].trim()));
                 bb.setMaxy(Double.parseDouble(bboxTokens[3].trim()));
                 bb.setCrs(new CoordinateReferenceSystem((String)params.get(PARAM_CRS)));
-                topLayer.getBoundingBoxes().put(bb.getCrs(), bb);
+                tilingLayer.getBoundingBoxes().put(bb.getCrs(), bb);
             }
             
             if (params.containsKey(PARAM_IMAGEEXTENSION)){
-                topLayer.getDetails().put("image_extension",(String)params.get(PARAM_IMAGEEXTENSION));
+                tilingLayer.getDetails().put("image_extension",(String)params.get(PARAM_IMAGEEXTENSION));
             }
+            //set tiling layer as child of top layer
+            topLayer.getChildren().add(tilingLayer);
+            s.setTopLayer(topLayer);
             
             Stripersist.getEntityManager().persist(ts);           
-            topLayer.setTileset(ts);
+            tilingLayer.setTileset(ts);
             
             return s;
         }finally {
