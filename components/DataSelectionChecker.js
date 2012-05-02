@@ -37,7 +37,9 @@ Ext.define ("viewer.components.DataSelectionChecker",{
         if(vis){
             this.hasLayerDataSelectionAttributes(appLayer, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
-                    setTimeout(function(){this.viewerController.setLayerVisible(appLayer,false)}, 100);
+                    setTimeout(function(){
+                        this.viewerController.setLayerVisible(appLayer,false)
+                        }, 100);
                 }
             });
         }
@@ -77,7 +79,6 @@ Ext.define ("viewer.components.DataSelectionChecker",{
             }else{
                 for( var j = 0 ; j < dsArray.length ; j++){
                     var ds = dsArray[j];
-                    ds.showAndForceLayer(appLayer);
                     var me = appLayer;
                     this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
                         if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
@@ -86,10 +87,13 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                             
                         }
                     },this);
-                    /* TODO add functionality to select a layer in the layerselector, so the filter can be applied to the layer when all attributes have defaults
-                     *if(selectableAttributes == 1){
-                        ds.applyFilter();
-                    }*/
+                    ds.selectAppLayer(appLayer);
+                    if(selectableAttributes == 1){
+                        ds.applyFilter(appLayer);
+                        return true;
+                    }else{
+                        ds.showAndForceLayer(appLayer);
+                    }
                 }
                 return false;
             }
@@ -102,7 +106,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
         var selectableAttributes = -1;
         for ( var i = 0 ; i < appLayer.attributes.length; i++){
             if(appLayer.attributes[i].selectable){
-                if(appLayer.attributes[i].defaultValue != undefined){
+                if(appLayer.attributes[i].defaultValue){
                     selectableAttributes = 1;
                 }else{
                     selectableAttributes = 0;

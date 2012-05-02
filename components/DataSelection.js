@@ -237,6 +237,11 @@ Ext.define ("viewer.components.DataSelection",{
         // Insert before the checkbox
         this.filterTab.insert(this.filterTab.items.length - 1,filter.getUI());
     },
+    selectAppLayer : function (appLayer){
+        if(appLayer){
+            this.layerSelector.setValue(appLayer);
+        }
+    },
     applyFilter : function (){
         var cql = "";
      
@@ -269,7 +274,7 @@ Ext.define ("viewer.components.DataSelection",{
     getDataTabCQL : function (){
         var items = this.dataTab.items.items;
         var cql = "";
-        for ( var i = 0 ; i < items.length;i++){
+        for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection
             var item = items[i];
             if(item.getValue() != ""){
                 if(i != 0 ){

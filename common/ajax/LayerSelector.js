@@ -140,6 +140,9 @@ Ext.define ("viewer.components.LayerSelector",{
     getValue : function (){
         return this.combobox.getValue();
     },
+    setValue : function (appLayer){
+        this.combobox.setValue(appLayer);
+    },
     getSelectedAppLayer : function (){
         var layerObj = this.getValue();
         if (layerObj==null){
