@@ -48,6 +48,13 @@ public class CombineArcIMSUrl extends CombineXMLBodyUrl{
             log.error("Error while creating xpath expr",ex);
         }
     }
+
+    public CombineArcIMSUrl(){
+        super();
+    }
+    private CombineArcIMSUrl(CombineArcIMSUrl caiu) {
+        super(caiu);
+    }
     /**
      * Create a new CombineImageUrl with the given values
      * In this implementation the body is changed.
@@ -58,19 +65,21 @@ public class CombineArcIMSUrl extends CombineXMLBodyUrl{
      * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox) 
      */    
     @Override
-    public CombineImageUrl calculateNewUrl(Integer width, Integer height, Bbox bbox) {
-        CombineArcIMSUrl ciu = new CombineArcIMSUrl();
-        ciu=(CombineArcIMSUrl)this.clone(ciu);        
+    public CombineImageUrl calculateNewUrl(ImageBbox bbox) {
+        Integer width = bbox.getWidth();
+        Integer height = bbox.getHeight();
+        Bbox bb = bbox.getBbox();
+        CombineArcIMSUrl ciu = new CombineArcIMSUrl(this);
         try{
             Document doc=bodyAsDocument();
             Node root=doc.getFirstChild();
             //change the bbox
             Node envelope = (Node) xPathEnvelope.evaluate(root,XPathConstants.NODE);
             NamedNodeMap nnm=envelope.getAttributes();
-            nnm.getNamedItem("minx").setNodeValue(""+bbox.getMinx());
-            nnm.getNamedItem("maxx").setNodeValue(""+bbox.getMaxx());
-            nnm.getNamedItem("miny").setNodeValue(""+bbox.getMiny());
-            nnm.getNamedItem("maxy").setNodeValue(""+bbox.getMaxy());
+            nnm.getNamedItem("minx").setNodeValue(""+bb.getMinx());
+            nnm.getNamedItem("maxx").setNodeValue(""+bb.getMaxx());
+            nnm.getNamedItem("miny").setNodeValue(""+bb.getMiny());
+            nnm.getNamedItem("maxy").setNodeValue(""+bb.getMaxy());
             //
             Node imageSize = (Node) xPathImageSize.evaluate(root,XPathConstants.NODE);
             nnm=imageSize.getAttributes();

@@ -94,13 +94,6 @@ public class CombineImageSettings {
         return newBbox;
     }
     
-    public void setUrls(String[] urls){
-        this.urls=new ArrayList();
-        for (int i=0; i < urls.length; i++){    
-            CombineImageUrl ciu= new CombineImageUrl(urls[i]);
-            this.urls.add(ciu);
-        }
-    }
     /**
      * Add the CombineImageUrl
      * @param ciu 
@@ -130,14 +123,17 @@ public class CombineImageSettings {
     public Bbox getBboxFromUrls() {
         Bbox bb = null;
         for (int i = 0; i < urls.size() && bb == null; i++) {
-            bb = getBboxFromUrl((CombineImageUrl)urls.get(i));
+            CombineImageUrl ciu = urls.get(i);
+            if (ciu instanceof CombineWmsUrl){
+                bb = getBboxFromUrl((CombineWmsUrl)ciu);
+            }
         }
         return bb;
     }
     /**
      * Gets the bbox from the url in the CombineImageUrl
      */
-    public Bbox getBboxFromUrl(CombineImageUrl ciu) {
+    public Bbox getBboxFromUrl(CombineWmsUrl ciu) {
         if (ciu == null || ciu.getUrl()==null) {
             return null;
         }
@@ -173,7 +169,10 @@ public class CombineImageSettings {
     public Integer[] getWidthAndHeightFromUrls() {
         Integer[] hw = null;
         for (int i = 0; i < urls.size() && hw == null; i++) {
-            hw = getWidthAndHeightFromUrl((CombineImageUrl)urls.get(i));
+            CombineImageUrl ciu = urls.get(i);
+            if (ciu instanceof CombineWmsUrl){
+                hw = getWidthAndHeightFromUrl((CombineWmsUrl)ciu);
+            }
         }
         return hw;
     }
@@ -182,7 +181,7 @@ public class CombineImageSettings {
      * @param ciu 
      * @return Array of int's width is the first in the array, height second
      */
-    public Integer[] getWidthAndHeightFromUrl(CombineImageUrl ciu) {
+    public Integer[] getWidthAndHeightFromUrl(CombineWmsUrl ciu) {
         if (ciu == null || ciu.getUrl()==null) {
             return null;
         }

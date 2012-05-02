@@ -16,6 +16,11 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.viewer.image.CombineImageSettings;
+import nl.b3p.viewer.image.CombineImageWkt;
+import nl.b3p.viewer.image.CombineArcIMSUrl;
+import nl.b3p.viewer.image.CombineImageUrl;
+import nl.b3p.viewer.image.CombineArcServerUrl;
 import java.awt.Color;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -148,7 +153,7 @@ public class CombineImageActionBean implements ActionBean {
                         }else if (CombineImageUrl.ARCIMS.equals(protocol)){
                             ciu= new CombineArcIMSUrl();
                         }else{
-                            ciu = new CombineImageUrl();
+                            ciu = new CombineWmsUrl();
                         }
                         ciu.setProtocol(protocol);
                         ciu.setUrl(request.getString("url"));
@@ -156,7 +161,8 @@ public class CombineImageActionBean implements ActionBean {
                             Double alpha=request.getDouble("alpha");
                             ciu.setAlpha(alpha.floatValue());
                         }
-                        ciu.setBody(request.getString("body"));                    
+                        ciu.setBody(request.getString("body"));  
+                        
 
                         cis.addUrl(ciu);
                     }

@@ -42,26 +42,20 @@ public class ImageManager {
         this(urls, maxResponseTime, null, null);
     }
 
-    public ImageManager(List urls, int maxResponseTime, String uname, String pw) {
+    public ImageManager(List<CombineImageUrl> urls, int maxResponseTime, String uname, String pw) {
         this.maxResponseTime = maxResponseTime;
         if (urls == null || urls.size() <= 0) {
             return;
         }
-        for (int i = 0; i < urls.size(); i++) {
-            Object o = urls.get(i);
+        for (CombineImageUrl ciu : urls) {
             ImageCollector ic = null;
-            if (o instanceof String) {
-                ic = new ImageCollector((String) o, maxResponseTime);
-            } else if (o instanceof CombineImageUrl) {
-                CombineImageUrl ciu = (CombineImageUrl) o;
-                if (ciu.getProtocol().equals(CombineImageUrl.WMS)){
-                    ic = new ImageCollector(ciu, maxResponseTime, uname, pw);
-                }else if (CombineImageUrl.ARCIMS.equals(ciu.getProtocol())){
-                    ic = new ArcImsImageCollector(ciu, maxResponseTime);
-                }else if (CombineImageUrl.ARCSERVER.equals(ciu.getProtocol())){
-                    ic = new ArcServerImageCollector(ciu, maxResponseTime);
-                }
-            }
+            if (ciu.getProtocol().equals(CombineImageUrl.WMS)){
+                ic = new ImageCollector(ciu, maxResponseTime, uname, pw);
+            }else if (CombineImageUrl.ARCIMS.equals(ciu.getProtocol())){
+                ic = new ArcImsImageCollector(ciu, maxResponseTime);
+            }else if (CombineImageUrl.ARCSERVER.equals(ciu.getProtocol())){
+                ic = new ArcServerImageCollector(ciu, maxResponseTime);
+            }            
             ics.add(ic);
         }
     }

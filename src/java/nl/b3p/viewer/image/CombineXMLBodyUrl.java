@@ -36,8 +36,14 @@ import org.xml.sax.SAXException;
  * A abstract class for implementing the body string as a xml (document)
  * @author Roy Braam
  */
-public class CombineXMLBodyUrl extends CombineImageUrl{
+public abstract class CombineXMLBodyUrl extends CombineImageUrl{
     
+    public CombineXMLBodyUrl(){}
+    
+    public CombineXMLBodyUrl(CombineXMLBodyUrl cxu){
+        super(cxu);
+    }
+        
     /**
      * Returns the body as a xml document
      * @return the body as document

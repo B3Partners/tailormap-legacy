@@ -18,11 +18,7 @@ package nl.b3p.viewer.image;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.StringReader;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -33,7 +29,6 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
-import org.xml.sax.InputSource;
 
 /**
  * Class that gets the image in 2 steps. First sumbit the body and then recieve the url from the response.

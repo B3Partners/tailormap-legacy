@@ -48,7 +48,7 @@ public class CombineImagesHandler {
         /* NOTE: Opletten dat de tiling combined images urls pas na de normale urls
          * worden toegeveoegd aan de List zodat deze als eerste inde buffered images
          * komen */
-        List urls = new ArrayList();
+        List<CombineImageUrl> urls = new ArrayList<CombineImageUrl>();
         if (tilingImages != null && tilingImages.size() > 0) {
             for (TileImage tileImage : tilingImages) {
                 urls.add(tileImage.getCombineImageUrl());
@@ -240,7 +240,7 @@ public class CombineImagesHandler {
                 
                 String newUrl = serviceUrl + sizes + bboxString;
                 
-                CombineImageUrl url = new CombineImageUrl(); 
+                CombineImageUrl url = new CombineWmsUrl(); 
                 url.setUrl(newUrl);
                 url.setRealUrl(new URL(newUrl));
                 tile.setCombineImageUrl(url);

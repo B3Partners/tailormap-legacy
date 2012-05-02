@@ -47,6 +47,14 @@ public class CombineArcServerUrl extends CombineXMLBodyUrl{
             log.error("Error while creating xpath expr",ex);
         }
     }
+    
+    public CombineArcServerUrl(){
+        super();
+    }
+
+    private CombineArcServerUrl(CombineArcServerUrl casu) {
+        super(casu);
+    }
     /**
      * Create a new CombineImageUrl with the given values
      * In this implementation the body is changed.
@@ -57,9 +65,12 @@ public class CombineArcServerUrl extends CombineXMLBodyUrl{
      * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox) 
      */    
     @Override
-    public CombineImageUrl calculateNewUrl(Integer width, Integer height, Bbox bbox) {
-        CombineArcServerUrl ciu = new CombineArcServerUrl();
-        ciu = (CombineArcServerUrl)this.clone(ciu);        
+    public CombineImageUrl calculateNewUrl(ImageBbox imbbox) {
+        Integer width = imbbox.getWidth();
+        Integer height = imbbox.getHeight();
+        Bbox bbox = imbbox.getBbox();
+        
+        CombineArcServerUrl ciu = new CombineArcServerUrl(this);
         try{
             Document doc=bodyAsDocument();
             Node root=doc.getFirstChild();
