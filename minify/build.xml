@@ -60,6 +60,7 @@
             <file name="FlamingoTool.js"/>
             <file name="FlamingoComponent.js"/>
             <file name="FlamingoImageLayer.js"/>
+            <file name="FlamingoTilingLayer.js"/>
           </sources>   
 
 		<!--					The OpenLayers implementation		-->
