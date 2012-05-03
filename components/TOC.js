@@ -524,7 +524,9 @@ Ext.define ("viewer.components.TOC",{
     },
     checkScaleLayer : function (child,scale){
         if(child.isLeaf()){
-            var layerObj = child.raw.layerObj;
+            var layerObj = null;
+            if(child.raw && child.raw.layerObj) layerObj = child.raw.layerObj;
+            if(child.data && child.data.layerObj) layerObj = child.data.layerObj;
             var layer = this.viewerController.app.services[layerObj.service].layers[layerObj.layerName];
             var record = this.panel.getView().getNodeByRecord(child);
             // Check for not existing/visible layers (ie. layers in (background) levels 

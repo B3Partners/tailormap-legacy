@@ -143,13 +143,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
             if(this.viewerController.app.selectedContent.length == 0 ){
-                me.popup.show();
-                if(!me.rendered) {
-                    me.initComponent();
-                } else {
-                    me.initViewerControllerData();
-                    me.loadSelectedLayers();
-                }
+                me.openWindow();
             }
         },this);
         return this;
@@ -247,16 +241,31 @@ Ext.define ("viewer.components.SelectionModule",{
             icon: me.titlebarIcon,
             tooltip: me.tooltip,
             handler: function() {
-                me.popup.show();
-                if(!me.rendered) {
-                    me.initComponent();
-                } else {
-                    me.initViewerControllerData();
-                    me.loadSelectedLayers();
-                }
+                me.openWindow();
             }
         });
         
+    },
+    
+    openWindow: function() {
+        var me = this;
+        me.popup.show();
+        if(!me.rendered) {
+            me.initComponent();
+        } else {
+            if(me.treePanels.registryTree.treePanel) {
+                // Sometimes the tree is not loaded yet when the popup is closed,
+                // causing the tree to stay empty when the popup is opened again.
+                // To prevent this we reload the tree when no nodes are available
+                var rootNode = me.treePanels.registryTree.treePanel.getRootNode();
+                if(!rootNode || !rootNode.hasChildNodes()) {
+                    // No rootnode or rootnode has no children, so empty tree
+                    me.treePanels.registryTree.treeStore.load();
+                }
+            }
+            me.initViewerControllerData();
+            me.loadSelectedLayers();
+        }
     },
 
     loadCustomService: function() {
@@ -761,7 +770,7 @@ Ext.define ("viewer.components.SelectionModule",{
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
             if(contentItem.type ==  "level") {
-                var level = me.addLevel(contentItem.id, false, false, true);
+                var level = me.addLevel(contentItem.id, false, false, false);
                 if(level != null){
                     nodes.push(level);
                 }
