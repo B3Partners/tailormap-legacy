@@ -44,13 +44,47 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: 750,
             height: 460,
             value: value,
-            renderTo: Ext.get(parentid) /*,
+            renderTo: Ext.get(parentid) ,
             plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', {
                     dragResize: false,
                     dragWheel: false,
-                    submitUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php',
-                    managerUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php'
-            })] */
+                    disableServerSideEdit: true,
+                    submitUrl: actionBeans['imageupload'],
+                    managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t"),                    
+                    
+                    lang: {
+                        'Display': 'Weergave',
+                        'By Default': 'Standaard',
+                        'Inline': 'In regel',
+                        'Block': 'Op aparte regel',
+                        'Insert/Edit Image': 'Afbeelding invoegen/bewerken',
+                        'Upload Image...': 'Uploaden...',
+                        'Uploading your photo...': 'Afbeelding wordt geupload...',
+                        'Error': 'Fout',
+                        'Width': 'Breedte',
+                        'Height': 'Hoogte',
+                        'Real Size': 'Originele grootte',
+                        'Align': 'Uitlijning',
+                        'Title': 'Titel',
+//                        'Class': '',
+//                        'Padding': '',
+//                        'Margin': '',
+                        'Top': 'Boven',
+                        'Bottom': 'Onder',
+                        'Right': 'Rechts',
+                        'Left': 'Links',
+                        'None': 'Geen',
+                        'Size & Details': 'Grootte en details',
+                        'More Options': 'Meer opties',
+                        'Style' : 'Stijl',
+//                        'OK' : '',
+                        'Cancel': 'Annuleren',
+                        'Delete Image':'Afbeelding verwijderen',
+                        'Confirmation':'Bevestiging',
+                        'Are you sure you want to delete this image?': 'Weet u zeker dat u deze afbeelding wilt verwijderen?',
+                        'Your photo has been uploaded.':'Uw afbeelding is geupload.'
+                    }
+            })] 
         });  
         return this;
     },
