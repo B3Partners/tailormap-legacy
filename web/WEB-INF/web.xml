@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+    <!-- Context parameters:
+    
+        Note: for Tomcat, change these values in the Context in the Tomcat
+        conf directory so it does not require modification of the deployment 
+        descriptor (this file) to customize these values.             
+        http://tomcat.apache.org/tomcat-6.0-doc/config/context.html#Context_Parameters
+    -->
+    <context-param>
+        <description>
+            The (relative or absolute) URL to the viewer webapp. Needed for when 
+            the viewer-admin needs to link to it, for example for image uploads.
+        </description>
+        <param-name>viewerURL</param-name>
+        <param-value>/viewer</param-value>
+    </context-param>
+    
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistry</listener-class>
     </listener>

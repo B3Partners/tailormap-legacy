@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/viewer-admin" antiJARLocking="true" disableURLRewriting="true">
+
+    <!-- Customized context parameters -->
+    <!--Parameter name="viewerURL" value="your-url-here" override="false"/-->
+    
     <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>

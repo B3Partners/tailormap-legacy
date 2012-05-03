@@ -69,7 +69,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:if test="${!empty actionBean.component.config}">
                 configObject= Ext.JSON.decode(<js:quote>${actionBean.component.config}</js:quote>);
                 details = Ext.JSON.decode(<js:quote>${actionBean.details}</js:quote>);
-            </c:if>             
+            </c:if>   
+                
+            var actionBeans = { 
+                "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+            };        
         </script>          
         <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">
             <stripes:param name="className" value="${actionBean.className}"/> 
