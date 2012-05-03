@@ -847,8 +847,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 }, {
                     xtype: 'filefield',
                     buttonOnly: true,
-                    name: 'photo-path',
-                    name: 'photo-path',
+                    name: 'upload',
                     value: '',
                     columnWidth: 0.30,
                     buttonText: me.t('Upload Image...'),
@@ -1501,7 +1500,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 },
                 failure: function (form, action) {
                     if (action.result) Ext.Msg.alert(me.t('Error'), 'Error: ' + action.result.errors);
-                    me.down('[name=photo-path]').reset();
+                    me.down('[name=upload]').reset();
                 }
             });
         }
