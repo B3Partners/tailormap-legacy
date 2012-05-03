@@ -40,10 +40,7 @@ public class CombineImagesHandler {
         /**
          * Re calc the urls when needed.
          */        
-        List<CombineImageUrl> urls = settings.getCalculatedUrls();
-        if (urls == null) {
-            urls = settings.getUrls();
-        }
+        List<CombineImageUrl> urls = settings.getCalculatedUrls();        
         
         List<ReferencedImage> refImages = null;
         

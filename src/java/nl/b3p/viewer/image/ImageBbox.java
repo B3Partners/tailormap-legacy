@@ -64,5 +64,19 @@ public class ImageBbox {
     public void setHeight(Integer height) {
         this.height = height;
     }
+    /**
+     * Get the units per pixel x
+     * @return 
+     */
+    public double getUnitsPixelX() {
+        return bbox.getHeight()/height;
+    }
+    /**
+     * Get the units per pixel y
+     * @return 
+     */
+    public double getUnitsPixelY() {
+        return bbox.getWidth()/width;
+    }
     //</editor-fold>
 }

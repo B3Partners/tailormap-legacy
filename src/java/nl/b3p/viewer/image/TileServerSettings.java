@@ -174,11 +174,13 @@ public class TileServerSettings {
      * @param offsetY
      * @return 
      */
-    public static CombineStaticImageUrl calcTilePosition(Integer mapWidth, Integer mapHeight,
+    public CombineStaticImageUrl calcTilePosition(Integer mapWidth, Integer mapHeight,
             Bbox tileBbox, Bbox requestBbox, int offsetX, int offsetY) {
         
         CombineStaticImageUrl tile = new CombineStaticImageUrl();
         tile.setBbox(tileBbox);
+        tile.setUrl(this.url);
+        
         Double msx = (requestBbox.getMaxx() - requestBbox.getMinx()) / mapWidth;
         Double msy = (requestBbox.getMaxy() - requestBbox.getMiny()) / mapHeight;
         

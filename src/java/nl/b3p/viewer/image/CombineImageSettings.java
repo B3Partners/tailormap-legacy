@@ -43,7 +43,7 @@ public class CombineImageSettings {
      * @param oldList
      * @return 
      */
-    public List<CombineImageUrl> getCalculatedUrls(List<CombineImageUrl> oldList){
+    private List<CombineImageUrl> getCalculatedUrls(List<CombineImageUrl> oldList){
         List<CombineImageUrl> returnValue=new ArrayList();
         if (bbox == null || width == null || height == null) {
             //log.info("Not all settings set (width,height and bbox must be set to recalculate). Return original urls");
@@ -73,7 +73,7 @@ public class CombineImageSettings {
         if (returnValue.size()==oldList.size()){
             return returnValue;
         }else{
-            return null;
+            return oldList;
         }
     }
     /**
@@ -170,9 +170,9 @@ public class CombineImageSettings {
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
-    public List getUrls() {
+    /*public List getUrls() {
         return urls;
-    }
+    }*/
     public void setUrls(List<CombineImageUrl> urls) {
         this.urls = urls;
     }

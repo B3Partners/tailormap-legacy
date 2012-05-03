@@ -49,13 +49,15 @@ public class ImageManager {
         }
         for (CombineImageUrl ciu : urls) {
             ImageCollector ic = null;
-            if (ciu.getProtocol().equals(CombineImageUrl.WMS)){
+            if (ciu instanceof CombineWmsUrl){
                 ic = new ImageCollector(ciu, maxResponseTime, uname, pw);
-            }else if (CombineImageUrl.ARCIMS.equals(ciu.getProtocol())){
+            }else if (ciu instanceof CombineArcIMSUrl){
                 ic = new ArcImsImageCollector(ciu, maxResponseTime);
-            }else if (CombineImageUrl.ARCSERVER.equals(ciu.getProtocol())){
+            }else if (ciu instanceof CombineArcServerUrl){
                 ic = new ArcServerImageCollector(ciu, maxResponseTime);
-            }            
+            }else {
+                ic= new ImageCollector(ciu,maxResponseTime);
+            }
             ics.add(ic);
         }
     }

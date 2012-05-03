@@ -11,15 +11,11 @@ import org.apache.commons.logging.LogFactory;
  * Created on 20-okt-2009, 10:30:38
  */
 public abstract class CombineImageUrl {
-    private static final Log log = LogFactory.getLog(CombineImageSettings.class);
-    public static final String WMS = "WMS";
-    public static final String ARCIMS = "ARCIMS";
-    public static final String ARCSERVER = "ARCSERVER";
+    private static final Log log = LogFactory.getLog(CombineImageSettings.class);    
     protected String url=null;
     private String body=null;
     private URL realUrl;
     private Float alpha =null;
-    private String protocol=WMS;
 
     public CombineImageUrl() {
     }
@@ -29,7 +25,6 @@ public abstract class CombineImageUrl {
         alpha=ciu.getAlpha();
         body=ciu.getBody();
         realUrl=ciu.getRealUrl();
-        protocol=ciu.getProtocol();
     }
     
 
@@ -104,15 +99,7 @@ public abstract class CombineImageUrl {
             returnValue+="("+alpha+")";
         }
         return returnValue;
-    }
-    
-    public String getProtocol() {
-        return protocol;
-    }
-    
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
+    }    
     //</editor-fold>
 
     public abstract CombineImageUrl calculateNewUrl(ImageBbox imbbox);

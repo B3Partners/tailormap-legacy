@@ -27,11 +27,30 @@ public class CombineStaticImageUrl extends CombineImageUrl{
     private Integer y;
     private Integer width;
     private Integer height;
+
+    public CombineStaticImageUrl(){}
     
+    private CombineStaticImageUrl(CombineStaticImageUrl csiu) {        
+        super(csiu);
+        this.bbox= new Bbox(csiu.bbox);
+        this.x=csiu.getX();
+        this.y=csiu.getY();
+        this.width=csiu.getWidth();
+        this.height=csiu.getHeight();
+    }
     
     @Override
     public CombineImageUrl calculateNewUrl(ImageBbox imbbox) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        CombineStaticImageUrl csiu = new CombineStaticImageUrl(this);
+        double unitsX =imbbox.getUnitsPixelX();
+        double unitsY =imbbox.getUnitsPixelY();
+        
+        csiu.width= (int)Math.round(csiu.getBbox().getWidth()/unitsX);       
+        csiu.height= (int)Math.round(csiu.getBbox().getWidth()/unitsX);       
+        
+        csiu.x= (int)Math.round((csiu.getBbox().getMinx()-imbbox.getBbox().getMinx())/unitsX);
+        csiu.y= (int)Math.round((imbbox.getBbox().getMaxy()-csiu.getBbox().getMaxy())/unitsY);
+        return csiu;
     }
     
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">

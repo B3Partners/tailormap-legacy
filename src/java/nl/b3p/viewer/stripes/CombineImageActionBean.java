@@ -47,8 +47,12 @@ import org.json.JSONObject;
 @StrictBinding
 public class CombineImageActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
-    
     private static HashMap<String,CombineImageSettings> imageSettings = new HashMap<String,CombineImageSettings>();
+    
+    public static final String WMS = "WMS";
+    public static final String ARCIMS = "ARCIMS";
+    public static final String ARCSERVER = "ARCSERVER";
+    public static final String IMAGE="IMAGE";
     
     private ActionBeanContext context;
     private int maxResponseTime = 10000;
@@ -148,14 +152,19 @@ public class CombineImageActionBean implements ActionBean {
                         if (request.has("protocol")){
                             protocol=request.getString("protocol");
                         }
-                        if (CombineImageUrl.ARCSERVER.equals(protocol)){
+                        if (ARCSERVER.equals(protocol)){
                             ciu= new CombineArcServerUrl();
-                        }else if (CombineImageUrl.ARCIMS.equals(protocol)){
+                        }else if (ARCIMS.equals(protocol)){
                             ciu= new CombineArcIMSUrl();
-                        }else{
+                        }else if (WMS.equals(protocol)){
                             ciu = new CombineWmsUrl();
+                        }else if (IMAGE.equals(protocol)) {                            
+                            CombineStaticImageUrl csiu = new CombineStaticImageUrl();
+                            if (request.has("extent")){
+                                csiu.setBbox(new Bbox(request.getString("extent")));                                
+                            }
+                            ciu=csiu;
                         }
-                        ciu.setProtocol(protocol);
                         ciu.setUrl(request.getString("url"));
                         if (request.has("alpha")){
                             Double alpha=request.getDouble("alpha");
@@ -247,10 +256,10 @@ public class CombineImageActionBean implements ActionBean {
         }if (this.getBbox()!=null){
             settings.setBbox(getBbox());
         }
-        if (getKeepAlive()==null || getKeepAlive().length()==0) {
+        /*if (getKeepAlive()==null || getKeepAlive().length()==0) {
             //getContext().getRequest().getSession().removeAttribute(imageId);
             imageSettings.remove(imageId);
-        }
+        }*/
         //stream the result.
         StreamingResolution res = new StreamingResolution(settings.getMimeType()) {
             @Override

@@ -103,7 +103,7 @@ public class Bbox {
     
     public double getHeight(){
         return this.maxy-this.miny;
-    }
+    }    
     //</editor-fold>
 
     double[] toDoubleArray() {
