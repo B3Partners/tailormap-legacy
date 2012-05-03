@@ -67,7 +67,7 @@ Ext.define ("viewer.components.LayerSelector",{
             this.layerList = new Array();
             for ( var i = 0 ; i < this.layers.length ;i++){
                 //xxxxxxx werkt niet meer
-                var l = this.viewerController.getServiceLayerById(this.layers[i]);
+                var l = this.viewerController.getAppLayerById(this.layers[i]);
                 if(l != null){
                     this.layerList.push(l);
                 }
@@ -122,14 +122,13 @@ Ext.define ("viewer.components.LayerSelector",{
             for (var i = 0 ; i < this.layerList.length ;i++){
                 var l = this.layerList[i];
                 for ( var j = 0 ; j < visibleLayers.length ;j++){
-
-                    var appLayer = this.viewerController.getAppLayerById(visibleLayers[j]);
-                    var service = appLayer.serviceId;
-                    var layername = appLayer.layerName;
-                    if (service == l.serviceId && layername == l.name){
-                        l.title = l.titleAlias || l.title ;
-                        l.layer = appLayer;
-                        store.add(l);
+                    //var appLayer = this.viewerController.getAppLayerById(visibleLayers[j]);                    
+                    if (visibleLayers[j] == l.id){                
+                        store.add({
+                            id: l.id,
+                            title: l.alias || l.layerName,
+                            layer: l
+                        });
                     }
                 }
             }
