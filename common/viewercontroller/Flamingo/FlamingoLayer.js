@@ -60,8 +60,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     },
     /**
      * Get the last getMap request
+     * @see viewer.viewerController.controller.Layer#getLastMapRequest
      */
-    getMapRequest: function(){
+    getLastMapRequest: function(){
         return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getLastGetMapRequest");
     },
     /**

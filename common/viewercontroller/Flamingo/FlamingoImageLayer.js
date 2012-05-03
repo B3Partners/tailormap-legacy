@@ -86,7 +86,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         }
     },
     setVisible : function (visible){
-        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
+        this.map.getFrameworkMap().callMethod(this.getFrameworkId(), "setVisible", visible);
         this.visible = visible;
+    },
+    getLastMapRequest: function(){
+        var url= this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getServiceUrl");
+        return {url: url,body: null};
     }
 });

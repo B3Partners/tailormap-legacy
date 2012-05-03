@@ -604,14 +604,19 @@ Ext.define ("viewer.components.Print",{
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.visible){
-                var request=layer.getMapRequest();
+                var request=layer.getLastMapRequest();
                 if (request){
                     request.protocol=layer.getType();
                     var alpha=layer.getAlpha();
                     if (alpha!=null)
                         request.alpha = alpha;           
                     printLayers.push(request);
+                    
+                    if (layer.getType()==viewer.viewercontroller.controller.Layer.IMAGE_TYPE){
+                        request.extent=layer.getExtent();
+                    }
                 }
+                
             }
         }
         values.requests=printLayers;        

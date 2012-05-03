@@ -21,7 +21,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     events: [],
     maptips: new Array(),
     map:null,
-    visible: false,
+    visible: true,
     //service id from where this layer is created
     /**@field
      *@deprecated can be found by getting the appLayer.serviceId
@@ -125,6 +125,14 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     },
     setQuery : function (query){
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Needs to return a object with the last request
+     * @return object.url the url of the last request
+     *         object.body (optional) the body of the request
+     */
+    getLastMapRequest: function(){
+        Ext.Error.raise({msg: "Layer.getLastMapRequest() Not implemented! Must be implemented in sub-class"});
     },
     fire : function (event,options){
         this.fireEvent(event,this,options);
