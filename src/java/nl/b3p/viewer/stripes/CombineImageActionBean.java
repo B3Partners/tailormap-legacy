@@ -21,14 +21,9 @@ import nl.b3p.viewer.image.CombineImageWkt;
 import nl.b3p.viewer.image.CombineArcIMSUrl;
 import nl.b3p.viewer.image.CombineImageUrl;
 import nl.b3p.viewer.image.CombineArcServerUrl;
-import java.awt.Color;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -47,15 +42,19 @@ import org.json.JSONObject;
 @StrictBinding
 public class CombineImageActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
-    private static HashMap<String,CombineImageSettings> imageSettings = new HashMap<String,CombineImageSettings>();
+    private static LinkedHashMap<String,CombineImageSettings> imageSettings = new LinkedHashMap<String,CombineImageSettings>();
     
     public static final String WMS = "WMS";
     public static final String ARCIMS = "ARCIMS";
     public static final String ARCSERVER = "ARCSERVER";
     public static final String IMAGE="IMAGE";
     
+    private static int maxStoredSettings= 500;
+    private static int minStoredSettings=400;
+    
     private ActionBeanContext context;
     private int maxResponseTime = 10000;
+    
     
     @Validate
     private String params;
@@ -219,8 +218,14 @@ public class CombineImageActionBean implements ActionBean {
                 }
                 //this.getContext().getRequest().getSession().setAttribute(imageId, cis);
                 //TODO: better fix....
-                if (imageSettings.size()>100){                    
-                    imageSettings.clear();
+                if (imageSettings.size()>maxStoredSettings){ 
+                    Set<String> keyset=imageSettings.keySet();
+                    for (String key : keyset){
+                        imageSettings.remove(key);
+                        if (imageSettings.size()< minStoredSettings){
+                            break;
+                        }
+                    }
                 }
                 imageSettings.put(imageId, cis);
                 String url=this.context.getRequest().getRequestURL().toString();
@@ -256,10 +261,7 @@ public class CombineImageActionBean implements ActionBean {
         }if (this.getBbox()!=null){
             settings.setBbox(getBbox());
         }
-        /*if (getKeepAlive()==null || getKeepAlive().length()==0) {
-            //getContext().getRequest().getSession().removeAttribute(imageId);
-            imageSettings.remove(imageId);
-        }*/
+        
         //stream the result.
         StreamingResolution res = new StreamingResolution(settings.getMimeType()) {
             @Override
