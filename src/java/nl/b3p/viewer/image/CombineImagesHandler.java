@@ -74,18 +74,7 @@ public class CombineImagesHandler {
             refImages = new ArrayList<ReferencedImage>();
             refImages.add(new ReferencedImage(new BufferedImage(settings.getWidth(),settings.getHeight(),BufferedImage.TYPE_INT_ARGB_PRE)));
         }
-        Float[] alphas = null;
-
-        for (int i = 0; i < urls.size(); i++) {
-            CombineImageUrl ciu = (CombineImageUrl) urls.get(i);
-            if (ciu.getAlpha() != null) {
-                if (alphas == null) {
-                    alphas = new Float[urls.size()];
-                }
-                alphas[i] = ciu.getAlpha();
-            }
-        }
-
+        
         BufferedImage returnImage = null;
         //Combine the images
         BufferedImage combinedImages = ImageTool.combineImages(refImages, returnMime, tilingImages);

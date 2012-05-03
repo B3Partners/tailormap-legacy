@@ -159,7 +159,8 @@ public class CombineImageActionBean implements ActionBean {
                         ciu.setUrl(request.getString("url"));
                         if (request.has("alpha")){
                             Double alpha=request.getDouble("alpha");
-                            ciu.setAlpha(alpha.floatValue());
+                            //divide by 100 (number between 0 and 1)
+                            ciu.setAlpha(alpha.floatValue()/100);
                         }
                         ciu.setBody(request.getString("body"));  
                         

@@ -351,6 +351,9 @@ public class ImageTool {
 
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D gbi = newBufIm.createGraphics();
+        if (images.get(0).getAlpha()!=null){
+            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, images.get(0).getAlpha() ));
+        }
         gbi.drawImage(bi, 0, 0, null);
 
         for (ReferencedImage image : images) {
@@ -410,6 +413,9 @@ public class ImageTool {
             TileImage tile = tilingImages.get(0);
             gbi.drawImage(bi, tile.getPosX(), tile.getPosY(), tile.getImageWidth(), tile.getImageHeight(), null);
         } else {
+            if (images.get(0).getAlpha()!=null){
+                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, images.get(0).getAlpha() ));
+            }
             gbi.drawImage(bi, 0, 0, null);
         }
 
