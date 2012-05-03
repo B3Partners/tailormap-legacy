@@ -66,6 +66,7 @@ Ext.define ("viewer.components.LayerSelector",{
             requestParams["hasConfiguredLayers"]= true;
             this.layerList = new Array();
             for ( var i = 0 ; i < this.layers.length ;i++){
+                //xxxxxxx werkt niet meer
                 var l = this.viewerController.getServiceLayerById(this.layers[i]);
                 if(l != null){
                     this.layerList.push(l);

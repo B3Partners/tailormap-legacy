@@ -657,6 +657,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
+    /**
+     *@param serviceId the service id
+     *@param layerName the layername
+     *@return the service layer
+     */
+    getServiceLayer: function(serviceId,layerName){
+        return this.app.services[serviceId].layers[layerName];
+    },
     /** 
      * Receives an array with visible map layers
      * @return a array of viewer.viewerController.controller.layer objects
