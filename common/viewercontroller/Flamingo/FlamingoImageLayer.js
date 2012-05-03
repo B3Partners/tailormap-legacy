@@ -91,6 +91,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
     },
     getLastMapRequest: function(){
         var url= this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getServiceUrl");
-        return {url: url,body: null};
+        return [{url: url,body: null}];
     }
 });

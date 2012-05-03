@@ -604,16 +604,24 @@ Ext.define ("viewer.components.Print",{
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.visible){
-                var request=layer.getLastMapRequest();
-                if (request){
-                    request.protocol=layer.getType();
-                    var alpha=layer.getAlpha();
-                    if (alpha!=null)
-                        request.alpha = alpha;           
-                    printLayers.push(request);
-                    
-                    if (layer.getType()==viewer.viewercontroller.controller.Layer.IMAGE_TYPE){
-                        request.extent=layer.getExtent();
+                var requests=layer.getLastMapRequest();                
+                for (var r in requests){
+                    var request= requests[r];
+                    if (request){
+                        request.protocol=layer.getType();
+                        var alpha=layer.getAlpha();
+                        if (alpha!=null)
+                            request.alpha = alpha;           
+                        printLayers.push(request);
+
+                        if (layer.getType()==viewer.viewercontroller.controller.Layer.IMAGE_TYPE){
+                            request.extent=layer.getExtent();
+                        }  
+                        //TODO tiling is now added as images, needs te be added as a tiling server
+                        if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE){
+                            request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
+                            request.extent=request.extent.toString();                            
+                        }
                     }
                 }
                 

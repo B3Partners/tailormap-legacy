@@ -89,6 +89,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
     },
     getLegendGraphic : function(){
         return null;
+    },
+    getLastMapRequest: function(){
+        var requests=this.getFrameworkLayer().callMethod(this.getFrameworkId(),'getLastRequests');
+        for (var i in requests){
+            if(requests[i].extent){
+                requests[i].extent= new viewer.viewercontroller.controller.Extent(requests[i].extent.minx,requests[i].extent.miny,requests[i].extent.maxx,requests[i].extent.maxy);
+            }
+        }
+        return requests;
     }
+    
 });
 

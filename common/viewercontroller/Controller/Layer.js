@@ -128,8 +128,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     },
     /**
      * Needs to return a object with the last request
-     * @return object.url the url of the last request
-     *         object.body (optional) the body of the request
+     * @return array of objects with:
+     *  object.url the url of the last request
+     *  object.body (optional) the body of the request
      */
     getLastMapRequest: function(){
         Ext.Error.raise({msg: "Layer.getLastMapRequest() Not implemented! Must be implemented in sub-class"});

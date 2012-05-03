@@ -59,11 +59,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getAlpha");
     },
     /**
-     * Get the last getMap request
+     * Get the last getMap request array
      * @see viewer.viewerController.controller.Layer#getLastMapRequest
      */
     getLastMapRequest: function(){
-        return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getLastGetMapRequest");
+        var request=this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getLastGetMapRequest");
+        if (request==null){
+            return null;
+        }
+        return [request];
     },
     /**
      * Returns the type of the layer.
