@@ -56,7 +56,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setAlpha",alpha)
     },
     getAlpha : function (){
-        this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getAlpha");
+        return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getAlpha");
     },
     /**
      * Get the last getMap request

@@ -607,8 +607,9 @@ Ext.define ("viewer.components.Print",{
                 var request=layer.getMapRequest();
                 if (request){
                     request.protocol=layer.getType();
-                    if (layer.getAlpha()!=null)
-                        request.alpha = layer.getAlpha();           
+                    var alpha=layer.getAlpha();
+                    if (alpha!=null)
+                        request.alpha = alpha;           
                     printLayers.push(request);
                 }
             }
