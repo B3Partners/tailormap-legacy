@@ -16,58 +16,47 @@
  */
 package nl.b3p.viewer.image;
 
-import java.awt.image.BufferedImage;
-
 /**
  *
  * @author Roy Braam
  */
-public class ReferencedImage {
-    private BufferedImage image;
-    private Integer x=0;
-    private Integer y=0;
-    private Integer width=null;
-    private Integer height=null;
-
-    private Float alpha;
+public class CombineStaticImageUrl extends CombineImageUrl{
     
-    ReferencedImage(BufferedImage bufferedImage) {
-        this.image=bufferedImage;
-    }
-
-    ReferencedImage() {}
-
-    //<editor-fold defaultstate="collapsed" desc="comment">
-    public BufferedImage getImage() {
-        return image;
+    private Bbox bbox;
+    private Integer x;
+    private Integer y;
+    private Integer width;
+    private Integer height;
+    
+    
+    @Override
+    public CombineImageUrl calculateNewUrl(ImageBbox imbbox) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void setImage(BufferedImage image) {
-        this.image = image;
+    //<editor-fold defaultstate="collapsed" desc="Getters/setters">
+    public Bbox getBbox() {
+        return bbox;
     }
-        
+    
+    public void setBbox(Bbox bbox) {
+        this.bbox = bbox;
+    }  
+
     public Integer getX() {
         return x;
     }
 
-    public void setX(Integer offsetX) {
-        this.x = offsetX;
+    public void setX(Integer x) {
+        this.x = x;
     }
 
     public Integer getY() {
         return y;
     }
 
-    public void setY(Integer offsetY) {
-        this.y = offsetY;
-    }
-
-    public Float getAlpha() {
-        return alpha;
-    }
-
-    public void setAlpha(Float alpha) {
-        this.alpha = alpha;
+    public void setY(Integer y) {
+        this.y = y;
     }
 
     public Integer getWidth() {
@@ -85,6 +74,8 @@ public class ReferencedImage {
     public void setHeight(Integer height) {
         this.height = height;
     }
-
-    //</editor-fold>    
+    
+    //</editor-fold>
+    
+    
 }

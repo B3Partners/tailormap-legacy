@@ -26,12 +26,10 @@ public class CombineImageSettings {
     private Integer angle = null;
     private Color defaultWktGeomColor= Color.RED;
     private String mimeType="image/png";
+    private List<TileServerSettings> tileServices =null;
     
     // bbox + ";"+ resolutions + ";" + tileSize + ";" + serviceUrl;
-    private String tilingBbox = null;
-    private String tilingResolutions = null;
-    private Integer tilingTileWidth = null;
-    private Integer tilingTileHeight = null;
+    
     private String tilingServiceUrl = null;    
     
     /**
@@ -45,8 +43,8 @@ public class CombineImageSettings {
      * @param oldList
      * @return 
      */
-    public List getCalculatedUrls(List oldList){
-        List returnValue=new ArrayList();
+    public List<CombineImageUrl> getCalculatedUrls(List<CombineImageUrl> oldList){
+        List<CombineImageUrl> returnValue=new ArrayList();
         if (bbox == null || width == null || height == null) {
             //log.info("Not all settings set (width,height and bbox must be set to recalculate). Return original urls");
             return oldList;
@@ -59,6 +57,19 @@ public class CombineImageSettings {
             CombineImageUrl ciu = (CombineImageUrl) oldList.get(i);
             returnValue.add(ciu.calculateNewUrl(imBBox));
         }
+        if (tileServices!=null){
+            for (TileServerSettings tss : tileServices){
+                try{
+                    List<CombineImageUrl> images=tss.getTilingImages(this);
+                    if (images!=null){
+                        returnValue.addAll(images);
+                    }
+                }catch(Exception e){
+                    log.error("Error while creating tiling images",e);
+                }
+            }
+        }
+        
         if (returnValue.size()==oldList.size()){
             return returnValue;
         }else{
@@ -205,13 +216,6 @@ public class CombineImageSettings {
     public void setHeight(Integer height) {
         this.height = height;
     }
-    public String getTilingBbox() {
-        return tilingBbox;
-    }
-    
-    public void setTilingBbox(String tilingBbox) {
-        this.tilingBbox = tilingBbox;
-    }
     
     public String getTilingServiceUrl() {
         return tilingServiceUrl;
@@ -221,36 +225,27 @@ public class CombineImageSettings {
         this.tilingServiceUrl = tilingServiceUrl;
     }
     
-    public Integer getTilingTileHeight() {
-        return tilingTileHeight;
-    }
-    
-    public void setTilingTileHeight(Integer tilingTileHeight) {
-        this.tilingTileHeight = tilingTileHeight;
-    }
-    
-    public Integer getTilingTileWidth() {
-        return tilingTileWidth;
-    }
-    
-    public void setTilingTileWidth(Integer tilingTileWidth) {
-        this.tilingTileWidth = tilingTileWidth;
-    }
-    
-    public String getTilingResolutions() {
-        return tilingResolutions;
-    }
-    
-    public void setTilingResolutions(String tilingResolutions) {
-        this.tilingResolutions = tilingResolutions;
-    }
-    
     public Integer getAngle() {
         return angle;
     }
 
     public void setAngle(Integer angle) {
         this.angle = angle;
+    }
+    
+    public List<TileServerSettings> getTileServices() {
+        return tileServices;
+    }
+
+    public void setTileServices(List<TileServerSettings> tileServices) {
+        this.tileServices = tileServices;
+    }
+    
+    public void addTileService(TileServerSettings tss){
+        if (this.tileServices==null){
+            this.tileServices = new ArrayList<TileServerSettings>();
+        }
+        this.tileServices.add(tss);
     }
     //</editor-fold>   
     /**
@@ -333,4 +328,5 @@ public class CombineImageSettings {
         }
         return new ImageBbox(correctedBbox,reqWidth,reqHeight);
     }
+
 }

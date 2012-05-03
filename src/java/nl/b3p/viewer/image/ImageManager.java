@@ -98,7 +98,15 @@ public class ImageManager {
                 log.error(ic.getMessage() + " (Status: " + status + ")");
             } else {          
                 ReferencedImage image =new ReferencedImage(ic.getBufferedImage());
-                image.setAlpha(ic.getCombinedImageUrl().getAlpha());                
+                CombineImageUrl ciu = ic.getCombinedImageUrl();
+                image.setAlpha(ciu.getAlpha());
+                if (ciu instanceof CombineStaticImageUrl){
+                    CombineStaticImageUrl csiu = (CombineStaticImageUrl)ciu;
+                    image.setHeight(csiu.getHeight());
+                    image.setWidth(csiu.getWidth());
+                    image.setX(csiu.getX());
+                    image.setY(csiu.getY());
+                }
                 allImages.add(image);
             }
         }

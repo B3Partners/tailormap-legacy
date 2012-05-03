@@ -313,25 +313,20 @@ public class ImageTool {
         ios.close();
     }
     // </editor-fold>
-    
-    public static BufferedImage combineImages(List<ReferencedImage> images, String mime) {
-        return combineImages(images, mime, null);
-    }
-
     /** Method which handles the combining of the images. This method redirects to the right method
      * for the different images, since not every image can be combined in the same way.
      *
      * @param images BufferedImage array with the images tha have to be combined.
      * @param mime String representing the mime type of the image.
-     *
+     * @param width the width of the result image (or null if the width of the first image must be used)
+     * @param height the height of the result image (or null if the width of the first image must be used)
      * @return BufferedImage
      */
-    // <editor-fold defaultstate="" desc="combineImages(BufferedImage [] images, String mime) method.">
-    public static BufferedImage combineImages(List<ReferencedImage> images, String mime, List<TileImage> tilingImages) {
+    public static BufferedImage combineImages(List<ReferencedImage> images, String mime, Integer width, Integer height) {
         if (mime.equals(JPEG)) {
-            return combineJPGImages(images);
+            return combineJPGImages(images, width, height);
         } else {
-            return combineOtherImages(images, tilingImages);
+            return combineOtherImages(images, width, height);
         }
     }
     // </editor-fold>
@@ -339,15 +334,20 @@ public class ImageTool {
     /** Combines JPG images. Combining JPG images is different from the other image types since JPG
      * has to use an other imageType: BufferedImage.TYPE_INT_RGB.
      *
-     * @param images BufferedImage array with the images tha have to be combined.
+     * @param images the referenced Images
+     * @param width the width of the result image (or null if the width of the first image must be used)
+     * @param height the height of the result image (or null if the width of the first image must be used)
      *
      * @return BufferedImage
      */
-    // <editor-fold defaultstate="" desc="combineJPGImages(BufferedImage [] images) method.">
-    private static BufferedImage combineJPGImages(List<ReferencedImage> images) {
+    private static BufferedImage combineJPGImages(List<ReferencedImage> images,Integer width, Integer height) {
         BufferedImage bi = images.get(0).getImage();
-        int width = bi.getWidth();
-        int height = bi.getHeight();
+        if (width==null){
+            width = bi.getWidth();
+        }
+        if (height==null){
+            height = bi.getHeight();
+        }
 
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D gbi = newBufIm.createGraphics();
@@ -366,36 +366,25 @@ public class ImageTool {
         }
         return newBufIm;
     }
-    // </editor-fold>
 
     /** Combines GIF, TIFF or PNG images. Combining these images is different from the JPG image types since these
      * has to use an other imageType: BufferedImage.TYPE_INT_ARGB_PRE.
      *
-     * @param images BufferedImage array with the images tha have to be combined.
+     * @param images the referenced Images
+     * @param width the width of the result image (or null if the width of the first image must be used)
+     * @param height the height of the result image (or null if the width of the first image must be used)
      *
      * @return BufferedImage
      */
-    // <editor-fold defaultstate="" desc="combineOtherImages(BufferedImage [] images) method.">
-    private static BufferedImage combineOtherImages(List<ReferencedImage> images, List<TileImage> tilingImages) {
-        int width = 0;
-        int height = 0;
-        BufferedImage bi = images.get(0).getImage();
-        /* Als er geen tiling layer aanstaat dan width en height van eerste plaatje
-         * pakken. Deze is voor alle gewone wms'en hetzelfde */
-        if ((tilingImages == null || tilingImages.size() < 1) &&
-                images.size()>0 && images.get(0)!=null){
-            width = bi.getWidth();
-            height = bi.getHeight();
-        }
+    private static BufferedImage combineOtherImages(List<ReferencedImage> images,Integer width, Integer height) {
         
-        /* Als er wel een tiling layer aanstaat dan width en height van eerste
-         * TileImage object pakken. Dit is de breedte en hoogte van de map
-         * opgevraagd aan Flamingo */
-        if (tilingImages != null && tilingImages.size() > 0) {
-            TileImage tile = tilingImages.get(0);
-            
-            width = tile.getMapWidth();
-            height = tile.getMapHeight();
+        BufferedImage bi = images.get(0).getImage();
+        //if no height / width use the height/widht of the first image.
+        if (height==null){
+            height= bi.getHeight();
+        }
+        if (width==null){
+            width= bi.getWidth();
         }
         
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);        
@@ -403,41 +392,28 @@ public class ImageTool {
         Graphics2D gbi = newBufIm.createGraphics();
         gbi.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
-        Integer numberOfTiles = 0;
-        
-        /* Deze code gaat er dus van uit de alle tiling images als eerste in 
-         * images[] zitten */
-        if (tilingImages != null && tilingImages.size() > 0) {
-            numberOfTiles = tilingImages.size();
-            
-            TileImage tile = tilingImages.get(0);
-            gbi.drawImage(bi, tile.getPosX(), tile.getPosY(), tile.getImageWidth(), tile.getImageHeight(), null);
-        } else {
-            if (images.get(0).getAlpha()!=null){
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, images.get(0).getAlpha() ));
-            }
-            gbi.drawImage(bi, 0, 0, null);
-        }
-
-        for (int i = 1; i < images.size(); i++) {
+        for (int i = 0; i < images.size(); i++) {
             ReferencedImage image =images.get(i);
-            if (image.getAlpha() != null) {
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, image.getAlpha() ));
-            } else {
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-            }            
-            
-            /* Als we tiling images combinen gebruiken we hiervoor dus de
-             * x, y, width en height die in het TileImage object zit */
-            if (tilingImages != null && tilingImages.size() > 0 && i < numberOfTiles) {
-                TileImage tile = tilingImages.get(i);
-                gbi.drawImage(images.get(i).getImage(), tile.getPosX(), tile.getPosY(), tile.getImageWidth(), tile.getImageHeight(), null);
-            } else {
-                gbi.drawImage(images.get(i).getImage(), 0, 0, null);
-            }            
+            drawImage(gbi,image);
         }
-        
         return newBufIm;
+    }
+    /**
+     * Draws the image to the graphics object.
+     * @param gbi graphics object
+     * @param image the referenced image.
+     */
+    private static void drawImage(Graphics2D gbi, ReferencedImage image){
+        if (image.getAlpha()!=null){
+            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, image.getAlpha() ));
+        }else {
+            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        }
+        if (image.getHeight()!=null && image.getWidth()!=null){
+            gbi.drawImage(image.getImage(), image.getX(), image.getY(), image.getWidth(),image.getHeight(),null);        
+        }else{
+            gbi.drawImage(image.getImage(), image.getX(), image.getY(), null);        
+        }
     }
     // </editor-fold>
 
