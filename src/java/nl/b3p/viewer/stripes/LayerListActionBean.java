@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
@@ -165,9 +166,9 @@ public class LayerListActionBean implements ActionBean {
             // TODO filter layers according to readers
             // set writeable according to writers
 
-            List<Layer> filteredLayers = LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers);
+            List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers);
 
-            for (Layer layer : filteredLayers) {
+            for (ApplicationLayer layer : filteredLayers) {
                 try {
                     jsonArray.put(layer.toJSONObject());
                 } catch (JSONException je) {
