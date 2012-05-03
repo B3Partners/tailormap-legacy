@@ -54,8 +54,7 @@ public class CombineImageActionBean implements ActionBean {
     
     private ActionBeanContext context;
     private int maxResponseTime = 10000;
-    
-    
+        
     @Validate
     private String params;
     @Validate
@@ -170,9 +169,9 @@ public class CombineImageActionBean implements ActionBean {
                             //divide by 100 (number between 0 and 1)
                             ciu.setAlpha(alpha.floatValue()/100);
                         }
-                        ciu.setBody(request.getString("body"));  
-                        
-
+                        if (request.has("body")){
+                            ciu.setBody(request.getString("body"));  
+                        }
                         cis.addUrl(ciu);
                     }
                 }

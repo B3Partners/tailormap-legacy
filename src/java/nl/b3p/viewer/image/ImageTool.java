@@ -426,6 +426,10 @@ public class ImageTool {
      */
     // <editor-fold defaultstate="" desc="getMimeType(String mime) method.">
     public static String getMimeType(String mime) {
+        /*Crap ESRI, image/jpg is not a content type, needs to be image/jpeg*/
+        if ("image/jpg".equalsIgnoreCase(mime)){
+            mime="image/jpeg";
+        }        
         String[] mimeTypes = ImageIO.getReaderMIMETypes();
         for (int i = 0; i < mimeTypes.length; i++) {
             if (mimeTypes[i].equalsIgnoreCase(mime)) {
