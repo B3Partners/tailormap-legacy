@@ -60,7 +60,8 @@ public class CombineImagesHandler {
         
         BufferedImage returnImage = null;
         //Combine the images
-        BufferedImage combinedImages = ImageTool.combineImages(refImages, returnMime, settings.getWidth(),settings.getHeight());
+        ImageBbox bb=settings.getRequestBbox();
+        BufferedImage combinedImages = ImageTool.combineImages(refImages, returnMime, bb.getWidth(),bb.getHeight());
         //if there is a wkt then add it to the image
         try {
             if (settings.getWktGeoms() != null) {

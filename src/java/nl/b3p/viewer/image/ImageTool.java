@@ -341,28 +341,20 @@ public class ImageTool {
      * @return BufferedImage
      */
     private static BufferedImage combineJPGImages(List<ReferencedImage> images,Integer width, Integer height) {
+        if (images.get(0)!=null){
         BufferedImage bi = images.get(0).getImage();
-        if (width==null){
-            width = bi.getWidth();
-        }
-        if (height==null){
-            height = bi.getHeight();
+            if (width==null){
+                width = bi.getWidth();
+            }
+            if (height==null){
+                height = bi.getHeight();
+            }
         }
 
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D gbi = newBufIm.createGraphics();
-        if (images.get(0).getAlpha()!=null){
-            gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, images.get(0).getAlpha() ));
-        }
-        gbi.drawImage(bi, 0, 0, null);
-
         for (ReferencedImage image : images) {
-            if (image.getAlpha() != null) {
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, image.getAlpha() ));
-            } else {
-                gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-            }
-            gbi.drawImage(image.getImage(), 0, 0, null);
+            drawImage(gbi,image);
         }
         return newBufIm;
     }
@@ -377,14 +369,15 @@ public class ImageTool {
      * @return BufferedImage
      */
     private static BufferedImage combineOtherImages(List<ReferencedImage> images,Integer width, Integer height) {
-        
-        BufferedImage bi = images.get(0).getImage();
-        //if no height / width use the height/widht of the first image.
-        if (height==null){
-            height= bi.getHeight();
-        }
-        if (width==null){
-            width= bi.getWidth();
+        if (images.get(0)!=null){
+            BufferedImage bi = images.get(0).getImage();
+            //if no height / width use the height/widht of the first image.
+            if (height==null){
+                height= bi.getHeight();
+            }
+            if (width==null){
+                width= bi.getWidth();
+            }
         }
         
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);        
