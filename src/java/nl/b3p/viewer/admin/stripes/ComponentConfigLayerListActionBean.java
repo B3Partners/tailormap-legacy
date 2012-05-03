@@ -17,7 +17,6 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
@@ -25,7 +24,6 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
@@ -143,9 +141,9 @@ public class ComponentConfigLayerListActionBean implements ActionBean {
         if (appId != null) {
             Application app = em.find(Application.class, appId);
 
-            List<Layer> layers =LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute, false, null);
+            List<ApplicationLayer> layers =LayerListHelper.getLayers(app.getRoot(), filterable, bufferable, editable, influence, arc, wfs, attribute, false, null);
 
-            for (Layer layer : layers) {
+            for (ApplicationLayer layer : layers) {
                 try {
                     jsonArray.put(layer.toJSONObject());
                 } catch (JSONException je) {

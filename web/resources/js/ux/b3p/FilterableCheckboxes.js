@@ -115,8 +115,8 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             success: function ( result, request ) {
                 me.itemList = Ext.JSON.decode(result.responseText);
                 for(i in me.itemList) {
-                    var item = me.itemList[i];
-                    item.label = item.titleAlias || item.title || item.name;
+                    var applicationLayer = me.itemList[i];
+                    applicationLayer.label = applicationLayer.alias || applicationLayer.layerName;
                 }
                 me.render();
             },
