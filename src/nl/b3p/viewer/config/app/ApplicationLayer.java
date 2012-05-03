@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.config.services.Layer;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -151,6 +152,18 @@ public class ApplicationLayer {
         o.put("layerName", getLayerName());
         if(getService() != null) {
             o.put("serviceId", getService().getId());
+            //try to get the alias.
+            Layer layer=getService().getLayer(this.getLayerName());
+            if (layer!=null){
+                String alias=layer.getName();
+                if (layer.getTitleAlias()!=null){
+                    alias=layer.getTitleAlias();
+                }else if (layer.getTitle()!=null){
+                    alias=layer.getTitle();
+                }
+                o.put("alias",alias);
+            }
+            
         }
 
         /* TODO add attribute if writeable according to al.getWriters() */
