@@ -52,6 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                     <div id="rights-tab" class="tabdiv">
+                        <a href="#Rechten_Per_Niveau_Help" title="Help" class="helplink"></a>
                         <h1>Rechten:</h1>
                         <c:forEach var="group" items="${actionBean.allGroups}">
                             <stripes:checkbox name="groupsRead" value="${group.name}"/> ${group.name}<br>
@@ -59,6 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                     <div id="documents-tab" class="tabdiv">
+                        <a href="#Documenten_Per_Niveau_Help" title="Help" class="helplink"></a>
                         <div id="doctree" class="tree-selection-tree">
                             <div id="documenttree-container"></div>
                         </div>
@@ -72,6 +74,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                     <div id="context-tab" class="tabdiv">
+                        <a href="#Context_Info_Per_Niveau_Help" title="Help" class="helplink"></a>
                         <stripes:textarea cols="150" rows="5" name="level.info" id="context_textarea" style="display: none;" />
                         <div id="contextHtmlEditorContainer" style="width: 475px; height: 400px;"></div>
                     </div>

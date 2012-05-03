@@ -27,6 +27,7 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
         var me = this;
         me.buttonId = Ext.id();
         if(me.startColor) me.currentColor = me.startColor;
+        else if(me.defaultColor) me.currentColor = me.defaultColor;
         me.textField = Ext.get(config.textfield);
         
         me.renderColorpicker();

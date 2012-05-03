@@ -40,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:if>
             <div id="layoutManagerApplicationSettings">
                 Maximale breedte: <input id="app_max_width" type="text" name="app_max_width" value="${maxWidth}" /> px | Maximale hoogte: <input id="app_max_height" type="text" name="app_max_height" value="${maxHeight}" /> px
-                <a href="#layoutManager" title="Help" class="helplink"></a>
+                <a href="#Toevoegen_Componenten_Layout_Help" title="Help" class="helplink"></a>
             </div>
             <div id="component-container">
 

@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             <div id="tabs" style="width: 100%; height: 100%;">
                 <div id ="config" style="width: 100%; height: 100%;" class="tabdiv">
+                    <a href="" title="Help" class="helplink" id="compHelpLink"></a>
                 </div>
                 <div id="rights" class="tabdiv"> 
                     <h1>Groepen:</h1>
@@ -50,7 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:forEach>
                 </div>
                 <div id="layout" class="tabdiv">
-
+                    <a href="#Component_Layout_Tab_Help" title="Help" class="helplink"></a>
                 </div>
             </div>
         </stripes:form>
@@ -63,13 +64,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 metadata = ${actionBean.metadata};
                 var className = metadata.className;
             </c:if>
-                var contextPath = "${contextPath}";
-                var configObject = null;
-                var details = null;
+            Ext.get('compHelpLink').set({
+               href: '#' + className.replace(/\./g, '_') + '_Help'
+            });
+            var contextPath = "${contextPath}";
+            var configObject = null;
+            var details = null;
             <c:if test="${!empty actionBean.component.config}">
                 configObject= Ext.JSON.decode(<js:quote>${actionBean.component.config}</js:quote>);
                 details = Ext.JSON.decode(<js:quote>${actionBean.details}</js:quote>);
-            </c:if>   
+            </c:if>
                 
             var actionBeans = { 
                 "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>

@@ -26,8 +26,12 @@ Ext.require([
 Ext.onReady(function() {
    
     var collapsed = false;
-    var editPanelItems = [];
-    var filterPanelItems = [];
+    var editPanelItems = [
+        Ext.create('Ext.container.Container', { html: '<a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink" onclick="helpController.showHelp(this); return false;"></a>' })
+    ];
+    var filterPanelItems = [
+        Ext.create('Ext.container.Container', { html: '<a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="Help" class="helplink" onclick="helpController.showHelp(this); return false;"></a>' })
+    ];
     var defaults = {
         width: '100%',
         animCollapse: false,

@@ -116,7 +116,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </table>
 
                     <div class="appSettingsRight">
-                        <a href="#applicationSettings" title="Help" class="helplink"></a>
+                        <a href="#Instellingen_Per_Applicatie_Help" title="Help" class="helplink"></a>
                         Opmerkingen
                         <div id="details_opmerkingen_container" style="margin-top: 5px;">
                             <stripes:textarea id="details_opmerkingen" cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px; display: none;" />
@@ -186,11 +186,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 });
                 Ext.create('Ext.ux.b3p.ColorPickerButton', {
                     startColor: '${actionBean.application.details['steunkleur1']}',
+                    defaultColor: '#FFFFFF',
                     renderTo: 'steunkleur_colorpicker1',
                     textfield: 'steunkleur1'
                 });
                 Ext.create('Ext.ux.b3p.ColorPickerButton', {
                     startColor: '${actionBean.application.details['steunkleur2']}',
+                    defaultColor: '#000000',
                     renderTo: 'steunkleur_colorpicker2',
                     textfield: 'steunkleur2'
                 });

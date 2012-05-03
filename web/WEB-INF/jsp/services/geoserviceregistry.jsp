@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="content">
             <h1>
                 Gegegevensregister
-                <a href="#georegistry" title="Help" class="helplink"></a>
+                <a href="#Boomstructuur_Met_Services_En_Kaartlagen_Help" title="Help" class="helplink"></a>
             </h1>
 
             <div id="tree-container"></div>

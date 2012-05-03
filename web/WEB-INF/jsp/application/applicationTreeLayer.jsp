@@ -37,7 +37,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <br /><br />
             <div id="tabs">
                 <div id="rights-tab" class="x-hide-display">
-                    <h1>Rechten:</h1>
+                    <h1>
+                        Rechten:
+                        <a href="#Rechten_Op_Kaartlaag_Help" title="Help" class="helplink"></a>
+                    </h1>
                     L &nbsp; B <br/>
                     <c:forEach var="group" items="${actionBean.allGroups}">
                         <stripes:checkbox name="groupsRead" value="${group.name}"/>
@@ -46,6 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:forEach>
                 </div>
                 <div id="attributes-tab" class="x-hide-display"><div>
+                    <a href="#Attributen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
                         <c:when test="${not empty actionBean.attributesList}">
                             <c:forEach var="attribute" items="${actionBean.attributesList}">
@@ -68,6 +72,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>
                 <div id="settings-tab" class="x-hide-display">
+                    <a href="#Instellingen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <table class="formtable">
                         <tr>
                             <td>Transparantie beginwaarde:</td>
@@ -111,6 +116,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </table>
                 </div>
                 <div id="edit-tab" class="x-hide-display">
+                    <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
                         <c:when test="${actionBean.editable}">
                             Er zijn geen attributen voor deze kaartlaag geconfigureerd.
@@ -121,6 +127,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:choose>
                 </div>
                 <div id="filter-tab" class="x-hide-display">
+                    <a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     Er zijn geen attributen voor deze kaartlaag geconfigureerd.
                 </div>
             </div>

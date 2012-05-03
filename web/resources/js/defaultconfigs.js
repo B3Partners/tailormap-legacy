@@ -47,11 +47,29 @@ function appendPanel(header, content, container) {
     }
 }
 
+var helpController = null;
 Ext.onReady(function() {
-    var helpLinks = Ext.query('.helplink');
-    if(helpLinks.length > 0) {
-        var iframeId = Ext.id();
-        var popupWindow = Ext.create('Ext.window.Window', {
+    helpController = Ext.create('Ext.b3p.HelpController', {
+        helppath: helppath
+    });
+    var helpLinks = Ext.select('.helplink');
+    if(helpLinks.getCount() > 0) {
+        helpLinks.on('click', function(evt, htmlel, eOpts) {
+            helpController.showHelp(htmlel);
+        }, '', {
+            stopEvent: true
+        });
+    }
+});
+
+Ext.define('Ext.b3p.HelpController', {
+    iframe: null,
+    helppath: helppath,
+    constructor: function(conf) {
+        var me = this;
+        me.initConfig(conf);
+        me.iframeid = Ext.id();
+        me.popupWindow = Ext.create('Ext.window.Window', {
             title: 'Help',
             closeAction: 'hide',
             hideMode: 'offsets',
@@ -63,7 +81,7 @@ Ext.onReady(function() {
                 background: '#FFFFFF'
             },
             items : [{
-                id: iframeId,
+                id: me.iframeid,
                 xtype : "component",
                 autoEl : {
                     tag : "iframe",
@@ -72,18 +90,23 @@ Ext.onReady(function() {
                 }
             }]
         });
-        for(var i in helpLinks) {
-            var helpLink = Ext.get(helpLinks[i]);
-            helpLink.on('click', function(evt, htmlel, extel) {
-                var iframe = Ext.get(iframeId);
-                if(iframe) {
-                    var iframeurl = helppath + helpLink.getAttribute('href');
-                    iframe.set({ src: iframeurl });
-                    popupWindow.show();
-                }
-            }, helpLink, {
-                stopEvent: true
-            });
+    },
+    getIframe: function() {
+        var me = this;
+        if(me.iframe === null) me.iframe = Ext.get(me.iframeid);
+        return me.iframe;
+    },
+    showHelp: function(htmlel) {
+        var me = this;
+        var extel = Ext.fly(htmlel);
+        var iframe = me.getIframe();
+        if(iframe) {
+            var hash = extel.getAttribute('href');
+            // IE fix, href in IE8 and lower is the complete URL + hash, not just the hash
+            hash = hash.substring(hash.lastIndexOf('#'));
+            var iframeurl = me.helppath + hash;                
+            iframe.set({ src: iframeurl });
+            me.popupWindow.show();
         }
     }
 });

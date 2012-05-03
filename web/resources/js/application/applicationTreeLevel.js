@@ -171,6 +171,7 @@ Ext.onReady(function() {
     Ext.get('levelform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('selecteddocsinput').set({value:docsSelectie.getSelection()});
-        Ext.get('context_textarea').dom.value = Ext.getCmp('extContextHtmlEditor').getValue();
+        var htmlEditor = Ext.getCmp('extContextHtmlEditor');
+        if(htmlEditor) Ext.get('context_textarea').dom.value = htmlEditor.getValue();
     });
 });
