@@ -18,9 +18,11 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.services.Document;
 import org.hibernate.*;
@@ -148,10 +150,23 @@ public class DocumentActionBean implements ActionBean {
     @DontValidate
     public Resolution delete() {
         if(documentInUse()){
-            getContext().getValidationErrors().add("document", new SimpleError("Het document kan niet worden verwijderd omdat deze nog in gebruik is."));
-            return new ForwardResolution(EDITJSP);
-        }
+            String message="Het document kan niet worden verwijderd omdat deze nog in gebruik is.<br> "
+                    + "Dit document is nog geconfigureerd in:<ul> ";
+            
+            List<Level> levels = Stripersist.getEntityManager().createQuery(
+                "from Level l where :doc member of l.documents")
+                .setParameter("doc", document)
+                .getResultList();
         
+            for (Level level : levels){
+                Application app = getApplication(level);
+                String levelPath=getLevelPath(level);
+                message+="<li>Level: \""+levelPath+"\" in de Applicatie \""+app.getName()+"\".</li>";
+            }
+            message+="</ul>";
+            getContext().getValidationErrors().add("document", new SimpleError(message));
+            return new ForwardResolution(EDITJSP);
+        }        
         Stripersist.getEntityManager().remove(document);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -159,20 +174,14 @@ public class DocumentActionBean implements ActionBean {
         
         return new ForwardResolution(EDITJSP);
     }
-    
+    /**
+     * Checks if the document is in use
+     * @return true/false
+     */
     private boolean documentInUse(){
-        boolean inUse = false;
-        List<Level> levels = Stripersist.getEntityManager().createQuery("from Level").getResultList();
-        
-        for(Iterator it = levels.iterator(); it.hasNext();){
-            Level level = (Level)it.next();
-            if(level.getDocuments().contains(document)){
-                inUse = true;
-                break;
-            }
-        }
-
-        return inUse;
+        return !Stripersist.getEntityManager().createQuery("select 1 from Level l where :doc member of l.documents")
+                .setParameter("doc", document)
+                .getResultList().isEmpty();
     }
     
     public Resolution save() {   
@@ -275,6 +284,34 @@ public class DocumentActionBean implements ActionBean {
         j.put("url", url);
         j.put("category", category);
         return j;
+    }
+
+    private Application getApplication(Level level) {
+        Application app=null;
+        try{
+            app = (Application) Stripersist.getEntityManager().createQuery(
+                    "from Application where root = :level")
+                    .setParameter("level", level).getSingleResult();
+        }catch(NoResultException nre){
+            //nothing found
+        }
+        
+        if (app!=null){
+            return app;
+        }else if (level.getParent()!=null){
+            return getApplication(level.getParent());
+        }else{
+            return null;
+        }
+        
+    }
+
+    private String getLevelPath(Level level) {
+        String s=level.getName();
+        if (level.getParent()!=null){
+            s= getLevelPath(level.getParent())+"/"+s;
+        }
+        return s;            
     }
     
 }
