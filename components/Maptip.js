@@ -107,7 +107,19 @@ Ext.define ("viewer.components.Maptip",{
         }        
         var radius=4*map.getResolution();
         var me=this;
-        this.featureInfo.layersFeatureInfo(options.coord.x,options.coord.y,radius,this.serverRequestLayers,function(data){
+        
+        var currentScale = this.viewerController.mapComponent.getMap().getScale();
+        
+        var inScaleLayers = new Array();
+        if (this.serverRequestLayers){
+            for (var i=0; i < this.serverRequestLayers.length; i++){
+                if (this.viewerController.isWithinScale(this.serverRequestLayers[i],currentScale)){
+                    inScaleLayers.push(this.serverRequestLayers[i]);
+                }
+            }
+        }
+        
+        this.featureInfo.layersFeatureInfo(options.coord.x,options.coord.y,radius,inScaleLayers,function(data){
             options.data=data;
             me.onDataReturned(options);
         },this.onFailure);

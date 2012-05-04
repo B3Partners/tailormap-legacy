@@ -625,7 +625,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@param id the id of the layer in a service object
      *@return viewer.viewercontroller.controller.Layer object
      */
-    /*dddddd*/
     getLayerByLayerId : function (id){
         this.logger.warning("viewerController.getLayerByLayerId() is not returning a unique layer!");
         for (var i in this.app.services){
@@ -657,17 +656,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
-    /**
-     *@param serviceId the service id
-     *@param layerName the layername
+    /** Get the serviceLayer for the applayer.
+     *@param appLayer the applicationlayer
      *@return the service layer
      */
-    getServiceLayer: function(serviceId,layerName){
-        return this.app.services[serviceId].layers[layerName];
+    getServiceLayer: function(appLayer){
+        return this.app.services[appLayer.serviceId].layers[appLayer.layerName];
     },
     /** 
      * Receives an array with visible map layers
-     * @return a array of viewer.viewerController.controller.layer objects
+     * @return a array of Layer id's (same as appLayerIds) objects
      **/
     getVisibleLayers : function (){
         var layers = this.layers;
@@ -685,12 +683,29 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@param layers a array of application layers
      *@param vis true/false -- visible/invisible
      */
-    /*dddddd*/
     setLayersVisible : function (layers,vis){
         for ( var i = 0 ; i < layers.length ; i++){
             var appLayer = layers[i];
             this.setLayerVisible(appLayer,vis);
         }
+    },
+    /**
+     * Check's if this layer is within the current map scale
+     * @param appLayer the applayer
+     * @return true/false
+     */
+    isWithinScale: function (appLayer,scale){
+        if (scale==undefined || scale==null){
+            scale = this.mapComponent.getMap().getScale();
+        }
+        var serviceLayer=this.getServiceLayer(appLayer);
+        if (serviceLayer.minScale && scale < serviceLayer.minScale){
+            return false;            
+        }
+        if (serviceLayer.maxScale && scale > serviceLayer.minScale){
+            return false;
+        }            
+        return true;        
     },
     getLayerTitle : function (serviceId, layerName){
         var layer = this.app.services[serviceId].layers[layerName];
@@ -704,7 +719,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * Get the Layer Legend image.
      * @param appLayer the applayer
      */
-    /*dddddd*/
     getLayerLegendImage :function (appLayer){
         var serviceId=appLayer.serviceId;
         var layerName=appLayer.layerName;
@@ -725,7 +739,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @param filter the filter
      * @param appLayer the application layer
      */
-    /*dddddd*/
     setFilter : function (filter, appLayer){
          if(!appLayer.filter){
             appLayer.filter = Ext.create("viewer.components.CQLFilterWrapper",{
