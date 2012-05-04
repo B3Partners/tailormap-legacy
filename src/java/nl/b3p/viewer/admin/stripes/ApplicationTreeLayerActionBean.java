@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.StringReader;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
@@ -52,6 +53,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private boolean editable;
     @Validate
     private JSONArray attributesJSON = new JSONArray();
+    @Validate
+    private String attribute;
 
     @DefaultHandler
     public Resolution view() {
@@ -104,11 +107,34 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     }
                 }
                 //set editable
-                makeAttributeJSONArray(attributesJSON, attributesList);
+                makeAttributeJSONArray(attributesJSON, attributesList, sft);
             }
         }
 
         return new ForwardResolution(JSP);
+    }
+
+    public Resolution getUniqueValues() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+
+        try {
+            Layer layer = (Layer) Stripersist.getEntityManager().createQuery("from Layer "
+                    + "where service = :service "
+                    + "and name = :name").setParameter("service", applicationLayer.getService()).setParameter("name", applicationLayer.getLayerName()).getSingleResult();
+
+            if (layer.getFeatureType() != null) {
+                SimpleFeatureType sft = layer.getFeatureType();
+                List<String> beh = sft.calculateUniqueValues(attribute);
+                json.put("uniqueValues", new JSONArray(beh));
+                json.put("success", Boolean.TRUE);
+            }
+        } catch (Exception e) {
+            json.put("msg",e.toString());
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
     @Before(stages = LifecycleStage.BindingAndValidation)
@@ -185,7 +211,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return new ForwardResolution(JSP);
     }
 
-    private void makeAttributeJSONArray(JSONArray array, List<AttributeDescriptor> ftAttributes) throws JSONException {
+    private void makeAttributeJSONArray(JSONArray array, List<AttributeDescriptor> ftAttributes, SimpleFeatureType sft) throws JSONException {
         List<ConfiguredAttribute> appAttributes = applicationLayer.getAttributes();
         int i = 0;
         for (Iterator it = appAttributes.iterator(); it.hasNext();) {
@@ -280,6 +306,14 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setGroupsRead(List<String> groupsRead) {
         this.groupsRead = groupsRead;
+    }
+
+    public String getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
     }
     //</editor-fold>
 }
