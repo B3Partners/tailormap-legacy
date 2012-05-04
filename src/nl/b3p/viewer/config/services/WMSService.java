@@ -85,6 +85,10 @@ public class WMSService extends GeoService {
                     };
                 }
             };
+            
+            if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
+                return null;
+            }
 
             ServiceInfo si = gtwms.getInfo();
             wms.setName(si.getTitle());

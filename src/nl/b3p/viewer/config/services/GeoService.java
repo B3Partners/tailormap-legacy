@@ -31,6 +31,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @Entity
 @DiscriminatorColumn(name="protocol")
 public abstract class GeoService {
+    public static final String PARAM_ONLINE_CHECK_ONLY = "onlineCheckOnly";
     public static final String PARAM_PERSIST_FEATURESOURCE = "persistFeatureSource";
     
     @Id
@@ -49,6 +50,8 @@ public abstract class GeoService {
     private String password;
 
     private boolean monitoringEnabled;
+    
+    private boolean monitoringStatusOK = true;
 
     @OneToOne(orphanRemoval=true, cascade=CascadeType.ALL)
     private Layer topLayer;
@@ -147,6 +150,14 @@ public abstract class GeoService {
     public void setAuthorizationsModified(Date authorizationsModified) {
         this.authorizationsModified = authorizationsModified;
     }
+
+    public boolean isMonitoringStatusOK() {
+        return monitoringStatusOK;
+    }
+
+    public void setMonitoringStatusOK(boolean monitoringStatusOK) {
+        this.monitoringStatusOK = monitoringStatusOK;
+    }
     //</editor-fold>
       
     public GeoService loadFromUrl(String url, Map params) throws Exception {
@@ -154,6 +165,24 @@ public abstract class GeoService {
     }
 
     public abstract GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus) throws Exception;
+    
+    public void checkOnline() throws Exception {
+        Map params = new HashMap();
+        params.put(PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);
+        loadFromUrl(getUrl(), params, new WaitPageStatus() {
+            @Override
+            public void setCurrentAction(String currentAction) {
+                // no debug logging
+                super.currentAction.set(currentAction);
+            }          
+
+            @Override
+            public void addLog(String message) {
+                // no debug logging
+                logs.add(message);
+            }            
+        });
+    }
     
     public String getProtocol() {
         return getClass().getAnnotation(DiscriminatorValue.class).value();

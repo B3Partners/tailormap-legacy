@@ -62,6 +62,10 @@ public class ArcGISService extends GeoService {
             
             JSONObject info = issueRequest(url + "/layers?f=json", client);
 
+            if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
+                return null;
+            }
+            
             ArcGISService s = new ArcGISService();
             
             int i = url.lastIndexOf("/MapServer");

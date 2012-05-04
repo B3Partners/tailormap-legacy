@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.services;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.*;
@@ -40,7 +41,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @DiscriminatorValue(ArcIMSService.PROTOCOL)
 public class ArcIMSService extends GeoService {
     public static final String PROTOCOL = "arcims";
-    
+      
     public static final String PARAM_SERVICENAME = "ServiceName";
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";    
@@ -55,6 +56,29 @@ public class ArcIMSService extends GeoService {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
+    
+    @Override
+    public void checkOnline() throws Exception {
+        Map params = new HashMap();
+        params.put(PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);
+        if(getServiceName() != null) {
+            params.put(PARAM_SERVICENAME, getServiceName());
+        }
+        
+        loadFromUrl(getUrl(), params, new WaitPageStatus() {
+            @Override
+            public void setCurrentAction(String currentAction) {
+                // no debug logging
+                super.currentAction.set(currentAction);
+            }          
+
+            @Override
+            public void addLog(String message) {
+                // no debug logging
+                logs.add(message);
+            }            
+        });
+    }    
 
     @Override
     public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
@@ -73,6 +97,10 @@ public class ArcIMSService extends GeoService {
            
             ArcIMSServer gtims = new ArcIMSServer(new URL(url), serviceName, client);
 
+            if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
+                return null;
+            }
+            
             ServiceInfo si = gtims.getInfo();
             ims.setName(si.getTitle());
             ims.setServiceName(gtims.getServiceName());

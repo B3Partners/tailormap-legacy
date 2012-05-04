@@ -50,6 +50,10 @@ public class TileService extends GeoService {
     }
 
     @Override
+    public void checkOnline() throws Exception {
+    }
+    
+    @Override
     public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) {
         status.setCurrentAction("Bezig met aanmaken tile service");
         try{
