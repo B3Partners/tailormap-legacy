@@ -26,6 +26,7 @@ import java.util.Map;
 import nl.b3p.geotools.data.arcims.FilterToArcXMLSQL;
 import org.geotools.data.jdbc.FilterToSQL;
 import org.geotools.filter.FilterCapabilities;
+import org.geotools.filter.IsNullImpl;
 import org.opengis.filter.BinaryLogicOperator;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsBetween;
@@ -83,6 +84,8 @@ public class FilterToArcGISSQL extends FilterToSQL {
         caps.addAll(FilterCapabilities.LOGICAL_OPENGIS);
         caps.addAll(FilterCapabilities.SIMPLE_COMPARISONS_OPENGIS);
 
+        caps.addType(IsNullImpl.class);
+        
         caps.addType(PropertyIsBetween.class);
         caps.addType(PropertyIsLike.class);
         

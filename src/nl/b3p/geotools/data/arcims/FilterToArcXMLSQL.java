@@ -25,6 +25,7 @@ import nl.b3p.geotools.data.arcims.axl.AxlSpatialFilter;
 import nl.b3p.geotools.data.arcims.axl.AxlSpatialQuery;
 import org.geotools.data.jdbc.FilterToSQL;
 import org.geotools.filter.FilterCapabilities;
+import org.geotools.filter.IsNullImpl;
 import org.opengis.filter.*;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Literal;
@@ -58,6 +59,8 @@ public class FilterToArcXMLSQL extends FilterToSQL {
         caps.addAll(FilterCapabilities.LOGICAL_OPENGIS);
         caps.addAll(FilterCapabilities.SIMPLE_COMPARISONS_OPENGIS);
 
+        caps.addType(IsNullImpl.class);
+        
         caps.addType(PropertyIsBetween.class);
         caps.addType(PropertyIsLike.class);
         
