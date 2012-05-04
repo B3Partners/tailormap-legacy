@@ -27,7 +27,8 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Matthijs Laan
  */
-@Entity(name="resource_")
+@Entity
+@Table(name="resource_")
 public class Resource {
     
     @Id
