@@ -21,7 +21,6 @@ import javax.persistence.*;
 import org.geotools.data.ows.CRSEnvelope;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
