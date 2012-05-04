@@ -122,7 +122,7 @@ public class ArcIMSServer {
         }
         
         if (serviceName == null) {
-            throw new NullPointerException("serviceName");
+            throw new IllegalArgumentException("ServiceName staat niet in URL en is niet apart opgegeven");
         }        
         if (httpClient == null) {
             throw new NullPointerException("httpClient");
