@@ -26,6 +26,11 @@ import java.util.*;
 @Entity
 @Table(name="group_")
 public class Group {
+    public static final String ADMIN = "ServiceAdmin";
+    public static final String REGISTRY_ADMIN = "RegistryAdmin";
+    public static final String USER_ADMIN = "UserAdmin";
+    public static final String APPLICATION_ADMIN = "ApplicationAdmin";
+    public static final String SERVICE_ADMIN = "ServiceAdmin";
     
     @Id
     private String name;
