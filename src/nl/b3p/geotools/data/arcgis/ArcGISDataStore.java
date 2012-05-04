@@ -147,7 +147,8 @@ public class ArcGISDataStore extends ContentDataStore {
             JSONObject j = (JSONObject)JSONValue.parse(json);
 
             if(j == null) {
-                throw new IOException("ArcGIS server returned no JSON response: " + json);
+                int endIndex = Math.min(json.length(), 30);
+                throw new IOException("ArcGIS server returned invalid JSON response: " + json.substring(0, endIndex));
             } 
             if(j.containsKey("error")) {
                 throw new ArcGISException(requestUrl, j);
