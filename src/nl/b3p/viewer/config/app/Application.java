@@ -442,6 +442,16 @@ public class Application {
             }        
         }
     }
+    
+    public Boolean isMashup(){
+         if(this.getDetails().containsKey("isMashup")){
+             String mashupValue = this.getDetails().get("isMashup");
+             Boolean mashup = Boolean.valueOf(mashupValue);
+             return mashup;
+         }else{
+             return false;
+         }
+    }
 
     public Application deepCopy() throws Exception {
         
