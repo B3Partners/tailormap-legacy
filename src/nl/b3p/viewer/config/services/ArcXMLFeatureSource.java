@@ -18,17 +18,22 @@ package nl.b3p.viewer.config.services;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.*;
+import java.util.*;
+import javax.persistence.Basic;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import nl.b3p.geotools.data.arcims.ArcIMSDataStoreFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.referencing.CRS;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Function;
+
 /**
  *
  * @author jytte
@@ -36,10 +41,9 @@ import org.geotools.referencing.CRS;
 @Entity
 @DiscriminatorValue(ArcXMLFeatureSource.PROTOCOL)
 public class ArcXMLFeatureSource extends FeatureSource {
-    private static final Log log = LogFactory.getLog(ArcXMLFeatureSource.class);
 
+    private static final Log log = LogFactory.getLog(ArcXMLFeatureSource.class);
     public static final String PROTOCOL = "arcxml";
-    
     @Basic
     private String serviceName;
 
@@ -54,52 +58,47 @@ public class ArcXMLFeatureSource extends FeatureSource {
     public DataStore createDataStore() throws Exception {
         return createDataStore(null);
     }
-    
+
     public DataStore createDataStore(Map extraDataStoreParams) throws Exception {
         Map params = new HashMap();
-            
+
         // Params which can be overridden
-        if(extraDataStoreParams != null) {
+        if (extraDataStoreParams != null) {
             params.putAll(extraDataStoreParams);
         }
-        
+
         // Params which can not be overridden below        
-        
+
         params.put(ArcIMSDataStoreFactory.URL.key, new URL(getUrl()));
         params.put(ArcIMSDataStoreFactory.SERVICENAME.key, serviceName);
-        
+
         params.put(ArcIMSDataStoreFactory.USER.key, getUsername());
         params.put(ArcIMSDataStoreFactory.PASSWD.key, getPassword());
-        
+
         log.debug("Opening datastore using parameters: " + params);
-        
+
         params.put(ArcIMSDataStoreFactory.CRS.key, CRS.decode("EPSG:28992"));
 
         DataStore ds = null;
         try {
-            ds = new ArcIMSDataStoreFactory().createDataStore(params);      
-        } catch(Exception e) {
+            ds = new ArcIMSDataStoreFactory().createDataStore(params);
+        } catch (Exception e) {
             throw new Exception("Cannot open datastore using parameters " + params, e);
         }
-        if(ds == null) {
+        if (ds == null) {
             throw new Exception("Cannot open datastore using parameters " + params);
         } else {
-            return ds;        
+            return ds;
         }
     }
     
-    @Override
-    List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
         DataStore ds = createDataStore();
 
         return ds.getFeatureSource(sft.getTypeName());
     }
-    
+
     @Override
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception {
         Map extraParams = new HashMap();
@@ -107,5 +106,19 @@ public class ArcXMLFeatureSource extends FeatureSource {
         DataStore ds = createDataStore(extraParams);
 
         return ds.getFeatureSource(sft.getTypeName());
-    }     
+    }
+
+    @Override
+    FeatureCollection getFeatures(SimpleFeatureType sft, Filter f, int maxFeatures) throws Exception {
+        org.geotools.data.Query q = null;
+        if(f != null){
+            q = new org.geotools.data.Query(sft.getTypeName(), f);
+        }else{
+            q = new org.geotools.data.Query(sft.getTypeName());
+        }
+        
+        q.setMaxFeatures(maxFeatures);
+        FeatureCollection fc = sft.openGeoToolsFeatureSource().getFeatures(q);
+        return fc;
+    }
 }

@@ -30,7 +30,7 @@ import org.json.JSONObject;
 @Entity
 @Table(name="feature_type")
 public class SimpleFeatureType {
-    public static final int MAX_FEATURES_DEFAULT = 0;
+    public static final int MAX_FEATURES_DEFAULT = 250;
     public static final int MAX_FEATURES_UNBOUNDED = -1;
     
     @Id
@@ -109,6 +109,22 @@ public class SimpleFeatureType {
         this.description = description;
     }
     //</editor-fold>
+    
+    public Object getMaxValue ( String attributeName )throws Exception {
+        return featureSource.getMaxValue(this, attributeName, MAX_FEATURES_DEFAULT);
+    }
+    
+    public Object getMaxValue ( String attributeName, int maxFeatures )throws Exception {
+        return featureSource.getMaxValue(this, attributeName, maxFeatures);
+    }
+    
+    public Object getMinValue ( String attributeName )throws Exception {
+        return featureSource.getMinValue(this, attributeName, MAX_FEATURES_DEFAULT);
+    }
+    
+    public Object getMinValue ( String attributeName, int maxFeatures )throws Exception {
+        return featureSource.getMinValue(this, attributeName, maxFeatures);
+    }
     
     public List<String> calculateUniqueValues(String attributeName) throws Exception {
         return featureSource.calculateUniqueValues(this, attributeName, MAX_FEATURES_DEFAULT);

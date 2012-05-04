@@ -17,9 +17,8 @@
 package nl.b3p.viewer.config.services;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.Object;
+import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
@@ -27,10 +26,15 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.FeatureCollection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryType;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Function;
 
 /**
  *
@@ -199,10 +203,6 @@ public class JDBCFeatureSource extends FeatureSource {
         }
     }
     
-    @Override
-    List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception {
@@ -214,5 +214,16 @@ public class JDBCFeatureSource extends FeatureSource {
     @Override
     org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception {
         return openGeoToolsFeatureSource(sft);
-    }    
+    }
+
+    @Override
+    FeatureCollection getFeatures(SimpleFeatureType sft, Filter f, int maxFeatures) throws Exception {
+        FeatureCollection fc = null;
+        if(f != null){
+            fc = sft.openGeoToolsFeatureSource().getFeatures(f);
+        }else{
+            fc = sft.openGeoToolsFeatureSource().getFeatures();
+        }
+        return fc;
+    }
 }
