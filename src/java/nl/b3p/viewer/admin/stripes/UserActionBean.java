@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
+import org.hibernate.type.StringType;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -43,13 +44,12 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/user/{$event}")
-@RolesAllowed({"Admin","UserAdmin"})
+@RolesAllowed({"Admin", "UserAdmin"})
 public class UserActionBean implements ActionBean {
+
     private static final String JSP = "/WEB-INF/jsp/security/user.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/edituser.jsp";
-      
     private ActionBeanContext context;
-    
     @Validate
     private int page;
     @Validate
@@ -62,29 +62,23 @@ public class UserActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-        
     @Validate
     private User user;
-
     @Validate
     private String username;
-
     @Validate
     private String password;
-
     private List<Group> allGroups;
-
     @Validate
     private List<String> groups = new ArrayList<String>();
-
     @Validate
-    private Map<String,String> details = new HashMap<String,String>();
+    private Map<String, String> details = new HashMap<String, String>();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -124,47 +118,47 @@ public class UserActionBean implements ActionBean {
     public String getDir() {
         return dir;
     }
-    
+
     public void setDir(String dir) {
         this.dir = dir;
     }
-    
+
     public JSONArray getFilter() {
         return filter;
     }
-    
+
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
-    
+
     public int getLimit() {
         return limit;
     }
-    
+
     public void setLimit(int limit) {
         this.limit = limit;
     }
-    
+
     public int getPage() {
         return page;
     }
-    
+
     public void setPage(int page) {
         this.page = page;
     }
-    
+
     public String getSort() {
         return sort;
     }
-    
+
     public void setSort(String sort) {
         this.sort = sort;
     }
-    
+
     public int getStart() {
         return start;
     }
-    
+
     public void setStart(int start) {
         this.start = start;
     }
@@ -185,7 +179,7 @@ public class UserActionBean implements ActionBean {
         this.details = details;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
     @HandlesEvent("default")
     @DontValidate
@@ -193,64 +187,61 @@ public class UserActionBean implements ActionBean {
         return new ForwardResolution(JSP);
     }
 
-    @Before(stages=LifecycleStage.BindingAndValidation)
+    @Before(stages = LifecycleStage.BindingAndValidation)
     @SuppressWarnings("unchecked")
     public void load() {
-        allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
+        allGroups = Stripersist.getEntityManager().createQuery("from Group order by name").getResultList();
     }
 
     @DontValidate
     public Resolution edit() {
 
-        if(user != null) {
-            for(Group g: user.getGroups()) {
+        if (user != null) {
+            for (Group g : user.getGroups()) {
                 groups.add(g.getName());
             }
             details = user.getDetails();
             username = user.getUsername();
         }
-        
+
         return new ForwardResolution(EDITJSP);
     }
 
     @DontBind
-    public Resolution cancel() {        
+    public Resolution cancel() {
         return new ForwardResolution(EDITJSP);
     }
 
-    @ValidationMethod(on="save")
+    @ValidationMethod(on = "save")
     public void validate(ValidationErrors errors) throws Exception {
         // If user already persistent username cannot be changed
-        if(user == null) {
+        if (user == null) {
 
-            if(username == null) {
+            if (username == null) {
                 errors.add("username", new SimpleError("Gebruikersnaam is verplicht"));
                 return;
             }
 
             try {
-                Object o = Stripersist.getEntityManager().createQuery("select 1 from User where username = :username")
-                        .setMaxResults(1)
-                        .setParameter("username", username)
-                        .getSingleResult();
+                Object o = Stripersist.getEntityManager().createQuery("select 1 from User where username = :username").setMaxResults(1).setParameter("username", username).getSingleResult();
 
                 errors.add("username", new SimpleError("Gebruikersnaam bestaat al"));
                 return;
 
-            } catch(NoResultException nre) {
+            } catch (NoResultException nre) {
                 // username is unique
             }
         }
 
-        if(user == null) {
-            if(password == null) {
+        if (user == null) {
+            if (password == null) {
                 errors.add("password", new SimpleError("Wachtwoord is verplicht"));
                 return;
             }
         }
 
-        if(password != null) {
-            if(password.length() < User.MIN_PASSWORD_LENGTH) {
+        if (password != null) {
+            if (password.length() < User.MIN_PASSWORD_LENGTH) {
                 errors.add("password", new SimpleError("Wachtwoord is te kort, minimale lengte: " + User.MIN_PASSWORD_LENGTH));
                 return;
             }
@@ -259,12 +250,12 @@ public class UserActionBean implements ActionBean {
 
     public Resolution save() throws Exception {
 
-        if(user == null) {
+        if (user == null) {
             user = new User();
             user.setUsername(username);
             user.changePassword(password);
         } else {
-            if(password != null) {
+            if (password != null) {
                 user.changePassword(password);
             }
         }
@@ -273,118 +264,151 @@ public class UserActionBean implements ActionBean {
         user.getDetails().putAll(details);
 
         user.getGroups().clear();
-        for(String groupName: groups) {
+        for (String groupName : groups) {
             user.getGroups().add(Stripersist.getEntityManager().find(Group.class, groupName));
         }
 
         Stripersist.getEntityManager().persist(user);
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         getContext().getMessages().add(new SimpleMessage("Gebruiker is opgeslagen"));
         return new ForwardResolution(EDITJSP);
     }
-    
+
     @DontValidate
     public Resolution delete() {
         boolean inUse = false;
         String currentUser = context.getRequest().getUserPrincipal().getName();
-        if(currentUser.equals(user.getUsername())){
+        if (currentUser.equals(user.getUsername())) {
             inUse = true;
             getContext().getMessages().add(new SimpleError("Het is niet mogelijk om de gebruiker waar u mee bent ingelogt te verwijderen."));
         }
-        List applications = Stripersist.getEntityManager().createQuery("from Application where owner = :owner")
-                .setParameter("owner", user).getResultList();
-        if(applications != null && applications.size() > 0){
+        List applications = Stripersist.getEntityManager().createQuery("from Application where owner = :owner").setParameter("owner", user).getResultList();
+        if (applications != null && applications.size() > 0) {
             inUse = true;
             getContext().getMessages().add(new SimpleError("Het is niet mogelijk om de gebruiker te verwijderen, omdat deze eigenaar is van een of meerdere applicaties."));
         }
-                
-        if(!inUse){
+
+        if (!inUse) {
             Stripersist.getEntityManager().remove(user);
             Stripersist.getEntityManager().getTransaction().commit();
             getContext().getMessages().add(new SimpleMessage("Gebruiker is verwijderd"));
         }
-        
+
         return new ForwardResolution(EDITJSP);
     }
-    
+
     @DontValidate
-    public Resolution getGridData() throws JSONException { 
+    public Resolution getGridData() throws JSONException {
         JSONArray jsonData = new JSONArray();
-        
+
         String filterName = "";
+        String filterOrganization = "";
+        String filterPosition = "";
         //String filterDescription = "";
-        /* 
-         * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
-         * for demo purposes the value is now returned, ofcourse here should the DB
-         * query be built to filter the right records
+        /*
+         * FILTERING: filter is delivered by frontend as JSON array [{property,
+         * value}] for demo purposes the value is now returned, ofcourse here
+         * should the DB query be built to filter the right records
          */
-        if(this.getFilter() != null) {
-            for(int k = 0; k < this.getFilter().length(); k++) {
+        if (this.getFilter() != null) {
+            for (int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
                 String value = j.getString("value");
-                if(property.equals("username")) {
+                if (property.equals("username")) {
                     filterName = value;
                 }
-                /*if(property.equals("description")) {
-                    filterDescription = value;
-                }*/
+                if (property.equals("organization")) {
+                    filterOrganization = value;
+                }
+                if (property.equals("position")) {
+                    filterPosition = value;
+                }
             }
         }
-        
-        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
+
+        Session sess = (Session) Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(User.class);
-        
-        /* Sorting is delivered by the frontend
-         * as two variables: sort which holds the column name and dir which
-         * holds the direction (ASC, DESC).
+
+        /*
+         * Sorting is delivered by the frontend as two variables: sort which
+         * holds the column name and dir which holds the direction (ASC, DESC).
          */
-        if(sort != null && dir != null){
+        if (sort != null && dir != null) {
             Order order = null;
-            if(dir.equals("ASC")){
-               order = Order.asc(sort);
-            }else{
+            if (dir.equals("ASC")) {
+                order = Order.asc(sort);
+            } else {
                 order = Order.desc(sort);
             }
             order.ignoreCase();
             c.addOrder(order);
         }
-        
-        if(filterName != null && filterName.length() > 0){
+
+        if (filterName != null && filterName.length() > 0) {
             Criterion nameCrit = Restrictions.ilike("username", filterName, MatchMode.ANYWHERE);
             c.add(nameCrit);
         }
-        /*if(filterDescription != null && filterDescription.length() > 0){
-            Criterion urlCrit = Restrictions.ilike("description", filterDescription, MatchMode.ANYWHERE);
-            c.add(urlCrit);
-        }*/
+        List<String> usersToSelect = new ArrayList<String>();
+        if (filterOrganization != null && filterOrganization.length() > 0) {
+            Criteria detailsCrit = sess.createCriteria(User.class);
+            List<User> users = detailsCrit.list();
+            for (User us : users) {
+                Map<String,String> map = us.getDetails();
+                if(map.containsKey("organization") ){
+                    String org = map.get("organization").toLowerCase();
+                    if(org.indexOf(filterOrganization.toLowerCase())!=-1){
+                        usersToSelect.add(us.getUsername());
+                    }
+                    
+                }
+            }
+            c.add(Restrictions.in("username", usersToSelect));
+        }
         
+        if (filterPosition != null && filterPosition.length() > 0) {
+            Criteria posCrit = sess.createCriteria(User.class);
+            List<User> users = posCrit.list();
+            for (User us : users) {
+                Map<String,String> map = us.getDetails();
+                if(map.containsKey("position") ){
+                    String org = map.get("position").toLowerCase();
+                    if(org.indexOf(filterOrganization.toLowerCase())!=-1){
+                        usersToSelect.add(us.getUsername());
+                    }
+                    
+                }
+            }
+            c.add(Restrictions.in("username", usersToSelect));
+        }
+
         int rowCount = c.list().size();
-        
+
         c.setMaxResults(limit);
         c.setFirstResult(start);
-        
+
         List users = c.list();
-        for(Iterator it = users.iterator(); it.hasNext();){
-            User us = (User)it.next();
+        for (Iterator it = users.iterator(); it.hasNext();) {
+            User us = (User) it.next();
             JSONObject j = this.getGridRow(us.getUsername(), us.getDetails());
             jsonData.put(j);
         }
-        
+
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-    
+
         return new StreamingResolution("application/json") {
-           @Override
-           public void stream(HttpServletResponse response) throws Exception {
-               response.getWriter().print(grid.toString());
-           }
+
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(grid.toString());
+            }
         };
     }
-    
-    private JSONObject getGridRow(String username, Map details) throws JSONException {       
+
+    private JSONObject getGridRow(String username, Map details) throws JSONException {
         JSONObject j = new JSONObject();
         j.put("id", username);
         j.put("username", username);
@@ -392,17 +416,12 @@ public class UserActionBean implements ActionBean {
         j.put("position", details.get("position"));
         return j;
     }
-    
     @Validate
     Application application;
-    
     List<Application> applications;
-
     Set<Layer> authorizedLayers = Collections.EMPTY_SET;
-    Set<Layer> authorizedEditableLayers = Collections.EMPTY_SET;    
-    
+    Set<Layer> authorizedEditableLayers = Collections.EMPTY_SET;
     Authorizations.ApplicationCache applicationCache;
-
     Set<Level> authorizedLevels = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedAppLayers = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedEditableAppLayers = Collections.EMPTY_SET;
@@ -454,74 +473,74 @@ public class UserActionBean implements ActionBean {
         this.authorizedComponents = authorizedComponents;
     }
     //</editor-fold>
-    
+
     public Resolution authorizations() {
         EntityManager em = Stripersist.getEntityManager();
 
         List<GeoService> services = em.createQuery("from GeoService").getResultList();
-        for(GeoService service: services) {
+        for (GeoService service : services) {
             Authorizations.getLayerAuthorizations(service.getTopLayer());
         }
 
         Set<String> roles = new HashSet<String>();
-        if(user != null) {
-            for(Group g: user.getGroups()) {
-                if(g != null) {
+        if (user != null) {
+            for (Group g : user.getGroups()) {
+                if (g != null) {
                     roles.add(g.getName());
                 }
             }
-        }        
-        
-        if(!roles.isEmpty()) {
-            
+        }
+
+        if (!roles.isEmpty()) {
+
             authorizedLayers = new HashSet<Layer>();
             authorizedEditableLayers = new HashSet<Layer>();
-            
-            for(Map.Entry<Long,Authorizations.GeoServiceCache> e: Authorizations.serviceCache.entrySet()) {
-                
-                for(Map.Entry<Long,Authorizations.ReadWrite> e2: e.getValue().getProtectedLayers().entrySet()) {
+
+            for (Map.Entry<Long, Authorizations.GeoServiceCache> e : Authorizations.serviceCache.entrySet()) {
+
+                for (Map.Entry<Long, Authorizations.ReadWrite> e2 : e.getValue().getProtectedLayers().entrySet()) {
                     Layer l = Stripersist.getEntityManager().find(Layer.class, e2.getKey());
                     Set<String> readers = e2.getValue().getReaders();
                     Set<String> writers = e2.getValue().getWriters();
 
-                    if(readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
+                    if (readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
                         authorizedLayers.add(l);
                     }
-                    if(writers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(writers, roles)) {
+                    if (writers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(writers, roles)) {
                         authorizedEditableLayers.add(l);
                     }
                 }
             }
         }
-        
+
         applications = em.createQuery("from Application order by name, version").getResultList();
-        if(application != null) {
+        if (application != null) {
 
             applicationCache = Authorizations.getApplicationCache(application);
-                        
-            if(!roles.isEmpty()) {
+
+            if (!roles.isEmpty()) {
                 authorizedLevels = new HashSet<Level>();
-                
-                for(Map.Entry<Long,Authorizations.Read> e: applicationCache.getProtectedLevels().entrySet()) {
+
+                for (Map.Entry<Long, Authorizations.Read> e : applicationCache.getProtectedLevels().entrySet()) {
                     Level l = Stripersist.getEntityManager().find(Level.class, e.getKey());
                     Set<String> readers = e.getValue().getReaders();
-                    if(readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
+                    if (readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
                         authorizedLevels.add(l);
                     }
                 }
                 authorizedAppLayers = new HashSet<ApplicationLayer>();
                 authorizedEditableAppLayers = new HashSet<ApplicationLayer>();
-                
-                for(Map.Entry<Long,Authorizations.ReadWrite> e: applicationCache.getProtectedAppLayers().entrySet()) {
+
+                for (Map.Entry<Long, Authorizations.ReadWrite> e : applicationCache.getProtectedAppLayers().entrySet()) {
                     ApplicationLayer al = Stripersist.getEntityManager().find(ApplicationLayer.class, e.getKey());
 
                     Set<String> readers = e.getValue().getReaders();
                     Set<String> writers = e.getValue().getWriters();
 
-                    if(readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
+                    if (readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
                         authorizedAppLayers.add(al);
                     }
-                    if(writers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(writers, roles)) {
+                    if (writers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(writers, roles)) {
                         authorizedEditableAppLayers.add(al);
                     }
                 }
@@ -534,7 +553,7 @@ public class UserActionBean implements ActionBean {
                 }
             }            
         }
-        
+
         return new ForwardResolution("/WEB-INF/jsp/security/authorizations.jsp");
-    }    
+    }
 }

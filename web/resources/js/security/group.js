@@ -95,8 +95,7 @@ Ext.onReady(function(){
                                Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
                     }
                     return 'Deze groep mag niet worden bewerkt of verwijderd';
-                },
-                sortable: false
+                }
             }
         ],
         bbar: Ext.create('Ext.PagingToolbar', {

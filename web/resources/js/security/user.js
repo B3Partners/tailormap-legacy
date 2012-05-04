@@ -79,7 +79,8 @@ Ext.onReady(function(){
                 flex: 1,
                 filter: {
                     xtype: 'textfield'
-                }
+                },
+                sortable: false
             },{
                 id: 'position',
                 text: "Functie",
@@ -87,7 +88,8 @@ Ext.onReady(function(){
                 flex: 1,
                 filter: {
                     xtype: 'textfield'
-                }
+                },
+                sortable: false
             },{
                 id: 'edit',
                 header: '',
