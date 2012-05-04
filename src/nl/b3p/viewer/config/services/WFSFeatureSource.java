@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
@@ -26,14 +25,11 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.json.JSONException;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Function;
 
 /**
  *

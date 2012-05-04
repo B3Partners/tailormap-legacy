@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import javax.persistence.Basic;
@@ -26,13 +25,9 @@ import nl.b3p.geotools.data.arcims.ArcIMSDataStoreFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
-import org.geotools.data.Query;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.referencing.CRS;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Function;
 
 /**
  *
