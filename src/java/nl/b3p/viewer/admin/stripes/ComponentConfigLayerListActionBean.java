@@ -24,7 +24,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +38,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/componentConfigLayerList")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"})
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
 public class ComponentConfigLayerListActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(ComponentConfigLayerListActionBean.class);

@@ -35,14 +35,12 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/group/{$event}/{service}")
-@RolesAllowed({"Admin","UserAdmin"})
+@RolesAllowed({Group.ADMIN,Group.USER_ADMIN})
 public class GroupActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/security/group.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/security/editgroup.jsp";
-    
-    private static final List<String> DEFAULT_GROUPS = Arrays.asList("Admin", "RegistryAdmin", "UserAdmin", "ApplicationAdmin", "ExtendedUser", "ServiceAdmin");
-    
+        
     private ActionBeanContext context;
     
     @Validate
@@ -323,7 +321,7 @@ public class GroupActionBean implements ActionBean {
         JSONObject j = new JSONObject();
         j.put("name", name);
         j.put("description", description);
-        if (DEFAULT_GROUPS.contains(name)) {
+        if(Group.DEFAULT_GROUPS.contains(name)) {
             j.put("editable", false);
         } else {
             j.put("editable", true);

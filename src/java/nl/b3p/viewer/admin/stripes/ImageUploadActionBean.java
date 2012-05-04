@@ -29,6 +29,7 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Resource;
+import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -42,7 +43,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/imageupload")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ImageUploadActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ImageUploadActionBean.class);
     

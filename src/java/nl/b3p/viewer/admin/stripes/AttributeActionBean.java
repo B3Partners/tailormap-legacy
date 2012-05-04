@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -34,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/attribute/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin","RegistryAdmin"})
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class AttributeActionBean implements ActionBean {
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/attribute.jsp";

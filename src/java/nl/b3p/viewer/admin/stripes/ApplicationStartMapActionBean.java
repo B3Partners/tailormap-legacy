@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.*;
@@ -35,7 +36,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationstartmap/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationStartMapActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationStartMap.jsp";

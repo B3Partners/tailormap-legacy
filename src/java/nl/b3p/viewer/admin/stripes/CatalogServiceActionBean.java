@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.csw.client.CswClient;
@@ -28,6 +29,7 @@ import nl.b3p.csw.client.OutputBySearch;
 import nl.b3p.csw.server.CswServable;
 import nl.b3p.csw.server.GeoNetworkCswServer;
 import nl.b3p.csw.util.OnlineResource;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Category;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +44,7 @@ import org.json.JSONObject;
 
 @UrlBinding("/action/csw/search")
 @StrictBinding
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class CatalogServiceActionBean implements ActionBean{
     private static final Log log = LogFactory.getLog(CatalogServiceActionBean.class);
     

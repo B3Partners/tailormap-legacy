@@ -25,6 +25,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ViewerComponent;
+import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,7 @@ import org.json.JSONException;
  */
 @UrlBinding("/action/componentConfigSource")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ComponentConfigSourceActionBean implements ActionBean {
     
     private ActionBeanContext context;

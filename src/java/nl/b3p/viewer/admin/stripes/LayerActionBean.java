@@ -25,7 +25,6 @@ import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
-import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -34,7 +33,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/layer")
 @StrictBinding
-@RolesAllowed({"Admin","RegistryAdmin"})
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class LayerActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/layer.jsp";

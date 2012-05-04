@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.*;
@@ -35,7 +36,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/geoservice/{service}")
-@RolesAllowed({"Admin","RegistryAdmin"})
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class GeoServiceActionBean implements ActionBean{
     private static final Log log = LogFactory.getLog(GeoServiceActionBean.class);
     

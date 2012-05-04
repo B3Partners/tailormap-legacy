@@ -22,6 +22,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.LayarService;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -34,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/layarservice/{$event}/{service}")
-@RolesAllowed({"Admin","RegistryAdmin"})
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class LayarServiceActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/layarservice.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editlayarservice.jsp";

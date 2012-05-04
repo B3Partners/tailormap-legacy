@@ -24,6 +24,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Document;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -36,7 +37,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/document/{$event}/{service}")
-@RolesAllowed({"Admin","RegistryAdmin"})
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class DocumentActionBean implements ActionBean {
     private static final String JSP = "/WEB-INF/jsp/services/document.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editdocument.jsp";

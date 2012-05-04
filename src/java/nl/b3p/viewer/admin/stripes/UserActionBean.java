@@ -34,7 +34,6 @@ import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
-import org.hibernate.type.StringType;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -44,7 +43,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @StrictBinding
 @UrlBinding("/action/user/{$event}")
-@RolesAllowed({"Admin", "UserAdmin"})
+@RolesAllowed({Group.ADMIN, Group.USER_ADMIN})
 public class UserActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/security/user.jsp";

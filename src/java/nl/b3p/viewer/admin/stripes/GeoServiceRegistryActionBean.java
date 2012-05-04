@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
@@ -39,7 +40,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/geoserviceregistry")
 @StrictBinding
-@RolesAllowed({"Admin","RegistryAdmin"})
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class GeoServiceRegistryActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(GeoServiceRegistryActionBean.class);
     

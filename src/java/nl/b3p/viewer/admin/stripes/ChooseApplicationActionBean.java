@@ -24,6 +24,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.*;
@@ -37,7 +38,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/chooseapplication/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin", "ApplicationAdmin"})
+@RolesAllowed({Group.ADMIN, Group.APPLICATION_ADMIN})
 public class ChooseApplicationActionBean extends ApplicationActionBean {
 
     private static final Log log = LogFactory.getLog(ChooseApplicationActionBean.class);

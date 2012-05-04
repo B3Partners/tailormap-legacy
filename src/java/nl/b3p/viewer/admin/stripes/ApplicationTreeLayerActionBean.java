@@ -34,7 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationtreelayer")
 @StrictBinding
-@RolesAllowed({"Admin", "ApplicationAdmin"})
+@RolesAllowed({Group.ADMIN, Group.APPLICATION_ADMIN})
 public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/application/applicationTreeLayer.jsp";

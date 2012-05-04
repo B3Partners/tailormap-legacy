@@ -23,6 +23,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
@@ -40,7 +41,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/attributesource/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin", "RegistryAdmin"})
+@RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
 public class AttributeSourceActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);

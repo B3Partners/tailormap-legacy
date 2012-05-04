@@ -18,12 +18,12 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import org.apache.commons.logging.Log;
@@ -36,7 +36,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/applicationsettings/")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ApplicationSettingsActionBean.class);
     

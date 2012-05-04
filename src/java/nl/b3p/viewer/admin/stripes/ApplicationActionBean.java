@@ -22,10 +22,10 @@ import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.security.Group;
 import org.stripesstuff.plugin.session.Session;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -34,7 +34,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Meine Toonen
  */
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public abstract class ApplicationActionBean implements ActionBean {
 
     protected ActionBeanContext context;

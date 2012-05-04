@@ -48,7 +48,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/layoutmanager/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin", "ApplicationAdmin"})
+@RolesAllowed({Group.ADMIN, Group.APPLICATION_ADMIN})
 public class LayoutManagerActionBean extends ApplicationActionBean {
 
     private static final Log log = LogFactory.getLog(LayoutManagerActionBean.class);

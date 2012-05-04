@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
@@ -34,7 +35,7 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtree")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationTreeActionBean extends ApplicationActionBean {
     private static final String JSP = "/WEB-INF/jsp/application/applicationTree.jsp";
     

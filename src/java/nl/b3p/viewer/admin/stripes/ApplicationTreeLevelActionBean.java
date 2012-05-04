@@ -40,7 +40,7 @@ import org.stripesstuff.stripersist.Stripersist;
 
 @UrlBinding("/action/applicationtreelevel")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
 public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ApplicationTreeLevelActionBean.class);
     
