@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </p>
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm">
                     <stripes:hidden name="application" value="${actionBean.application}"/>
+                    <stripes:hidden name="mashupName"/>
                     <table class="formtable" style="float: left; width: 45%;">
                         <tr>
                             <td>Naam:</td>
@@ -127,7 +128,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div class="submitbuttons">
                         <div style="float: left; width:50%;">
                             <input type="button" class="extlikebutton" value="Maak kopie" onclick="return confirmCopy();"/>
-                            <input type="button" disabled="true" value="Maak mashup" onclick="javascript:alert('asdfasdf')"/>
+                            <input type="button" class="extlikebutton" value="Maak mashup" onclick="return confirmMashup();"/>
                         </div>
                         <div style="float: right; width:50%;">
                             <stripes:submit name="publish" value="Publiceren"/>
@@ -156,9 +157,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     
                             var frm = document.forms[0];
                     
-                            frm.name.value = text;
+                            frm.name.value = text;                    
                             frm.copy.disabled = false;
+                            frm.submit();
+                        }
+                    }
+                });  
+            }
+            
+            function confirmMashup() {
+                Ext.MessageBox.show({
+                    title: 'Maak een mashup',
+                    msg: 'Naam van mashup:',
+                    buttons: Ext.MessageBox.OKCANCEL,
+                    prompt:true,
+                    fn: function(btn, text){
+                        if(btn=='ok' && text){
                     
+                            var frm = document.forms[0];
+                    
+                            frm.mashupName.value = text;
+                            frm.action = "?mashup=t";
                             frm.submit();
                         }
                     }

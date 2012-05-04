@@ -37,13 +37,12 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/chooseapplication/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin","ApplicationAdmin"})       
+@RolesAllowed({"Admin", "ApplicationAdmin"})
 public class ChooseApplicationActionBean extends ApplicationActionBean {
+
     private static final Log log = LogFactory.getLog(ChooseApplicationActionBean.class);
-    
     private static final String JSP = "/WEB-INF/jsp/application/chooseApplication.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/application/chooseApplicationEdit.jsp";
-    
     @Validate
     private int page;
     @Validate
@@ -56,17 +55,14 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-    
-    @Validate 
+    @Validate
     private String name;
     @Validate
     private String version;
     @Validate
     private Application applicationWorkversion;
-    
     @Validate
     private Application applicationToDelete;
-    
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public String getDir() {
@@ -148,30 +144,35 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
     public void setApplicationWorkversion(Application applicationWorkversion) {
         this.applicationWorkversion = applicationWorkversion;
     }
-    
-    
+
     //</editor-fold>
-    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
     }
-    
+
     public Resolution viewEdit() {
         return new ForwardResolution(EDITJSP);
     }
-    
+
     public Resolution deleteApplication() {
         try {
-            Stripersist.getEntityManager().remove(applicationToDelete);
-            Stripersist.getEntityManager().getTransaction().commit();
+            if (applicationToDelete.isMashup()) {
+                applicationToDelete.setRoot(null);
+                Stripersist.getEntityManager().remove(applicationToDelete);
+                Stripersist.getEntityManager().getTransaction().commit();
 
-            getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
-            
-            if(applicationToDelete.equals(application)) {
+                getContext().getMessages().add(new SimpleMessage("Mashup is verwijderd"));
+            } else {
+                Stripersist.getEntityManager().remove(applicationToDelete);
+                Stripersist.getEntityManager().getTransaction().commit();
+
+                getContext().getMessages().add(new SimpleMessage("Applicatie is verwijderd"));
+            }
+            if (applicationToDelete.equals(application)) {
                 setApplication(null);
-            } 
-        } catch(Exception e) {
+            }
+        } catch (Exception e) {
             log.error(String.format("Error deleting application #%d named %s",
                     applicationToDelete.getId(),
                     applicationToDelete.getName(),
@@ -179,7 +180,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                     e);
             String ex = e.toString();
             Throwable cause = e.getCause();
-            while(cause != null) {
+            while (cause != null) {
                 ex += ";\n<br>" + cause.toString();
                 cause = cause.getCause();
             }
@@ -187,126 +188,123 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         }
         return new ForwardResolution(EDITJSP);
     }
-    
-    public Resolution getGridData() throws JSONException { 
+
+    public Resolution getGridData() throws JSONException {
         JSONArray jsonData = new JSONArray();
-        
+
         String filterName = "";
         String filterPublished = "";
         String filterOwner = "";
-        /* 
-         * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
-         * for demo purposes the value is now returned, ofcourse here should the DB
-         * query be built to filter the right records
+        /*
+         * FILTERING: filter is delivered by frontend as JSON array [{property,
+         * value}] for demo purposes the value is now returned, ofcourse here
+         * should the DB query be built to filter the right records
          */
-        if(this.getFilter() != null) {
-            for(int k = 0; k < this.getFilter().length(); k++) {
+        if (this.getFilter() != null) {
+            for (int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
                 String value = j.getString("value");
-                if(property.equals("name")) {
+                if (property.equals("name")) {
                     filterName = value;
                 }
-                if(property.equals("published")) {
+                if (property.equals("published")) {
                     filterPublished = value;
                 }
-                if(property.equals("owner")) {
+                if (property.equals("owner")) {
                     filterOwner = value;
                 }
             }
         }
-        
-        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
-        Criteria c = sess.createCriteria(Application.class);   
-        
-        /* Sorting is delivered by the frontend
-         * as two variables: sort which holds the column name and dir which
-         * holds the direction (ASC, DESC).
+
+        Session sess = (Session) Stripersist.getEntityManager().getDelegate();
+        Criteria c = sess.createCriteria(Application.class);
+
+        /*
+         * Sorting is delivered by the frontend as two variables: sort which
+         * holds the column name and dir which holds the direction (ASC, DESC).
          */
-        if(sort != null && dir != null){
+        if (sort != null && dir != null) {
             Order order = null;
-            if(sort.equals("published")){
+            if (sort.equals("published")) {
                 sort = "version";
             }
-            if(dir.equals("ASC")){
-               order = Order.asc(sort);
-            }else{
+            if (dir.equals("ASC")) {
+                order = Order.asc(sort);
+            } else {
                 order = Order.desc(sort);
             }
             order.ignoreCase();
-            c.addOrder(order); 
+            c.addOrder(order);
         }
-        
-        if(filterName != null && filterName.length() > 0){
+
+        if (filterName != null && filterName.length() > 0) {
             Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
             c.add(nameCrit);
         }
-        if(filterPublished != null && filterPublished.length() > 0){
-            if(filterPublished.equalsIgnoreCase("nee")){
+        if (filterPublished != null && filterPublished.length() > 0) {
+            if (filterPublished.equalsIgnoreCase("nee")) {
                 Criterion publishedCrit = Restrictions.isNotNull("version");
                 c.add(publishedCrit);
-            }else if(filterPublished.equalsIgnoreCase("ja")){
+            } else if (filterPublished.equalsIgnoreCase("ja")) {
                 Criterion publishedCrit = Restrictions.isNull("version");
                 c.add(publishedCrit);
             }
         }
-        if(filterOwner != null && filterOwner.length() > 0){
+        if (filterOwner != null && filterOwner.length() > 0) {
             Criterion ownerCrit = Restrictions.ilike("owner.username", filterOwner, MatchMode.ANYWHERE);
             c.add(ownerCrit);
         }
-        
+
         int rowCount = c.list().size();
-        
+
         c.setMaxResults(limit);
         c.setFirstResult(start);
-        
+
         List applications = c.list();
 
-        for(Iterator it = applications.iterator(); it.hasNext();){
-            Application app = (Application)it.next();
+        for (Iterator it = applications.iterator(); it.hasNext();) {
+            Application app = (Application) it.next();
             String appName = app.getName();
-            if(app.getVersion() != null){
-               appName += " v" + app.getVersion();
+            if (app.getVersion() != null) {
+                appName += " v" + app.getVersion();
             }
             String ownername = "";
-            if(app.getOwner() != null){
+            if (app.getOwner() != null) {
                 ownername = app.getOwner().getUsername();
             }
             String published = "Nee";
-            if(app.getVersion() == null){
+            if (app.getVersion() == null) {
                 published = "Ja";
             }
-            JSONObject j = this.getGridRow(app.getId().intValue(), appName, published ,ownername);
+            JSONObject j = this.getGridRow(app.getId().intValue(), appName, published, ownername);
             jsonData.put(j);
         }
-        
+
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-    
+
         return new StreamingResolution("application/json") {
-           @Override
-           public void stream(HttpServletResponse response) throws Exception {
-               response.getWriter().print(grid.toString());
-           }
+
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(grid.toString());
+            }
         };
     }
-    
-    public Resolution makeWorkVersion(){
+
+    public Resolution makeWorkVersion() {
         try {
-            Object o = Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name AND version = :version")
-                .setMaxResults(1)
-                .setParameter("name", name)
-                .setParameter("version", version)
-                .getSingleResult();
-            
-            getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" en versie \"{1}\" bestaat al", name,version));
+            Object o = Stripersist.getEntityManager().createQuery("select 1 from Application where name = :name AND version = :version").setMaxResults(1).setParameter("name", name).setParameter("version", version).getSingleResult();
+
+            getContext().getMessages().add(new SimpleMessage("Kan niet kopieren; applicatie met naam \"{0}\" en versie \"{1}\" bestaat al", name, version));
             return new RedirectResolution(this.getClass());
-        } catch(NoResultException nre) {
+        } catch (NoResultException nre) {
         }
 
         try {
-            
+
             Application copy = applicationWorkversion.deepCopy();
             copy.setVersion(version);
             // don't save changes to original app
@@ -316,10 +314,10 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
-            setApplication(copy);   
-            
+            setApplication(copy);
+
             return new ForwardResolution(ApplicationSettingsActionBean.class);
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.error(String.format("Error copying application #%d named %s %swith new name %s",
                     applicationWorkversion.getId(),
                     applicationWorkversion.getName(),
@@ -327,7 +325,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                     name), e);
             String ex = e.toString();
             Throwable cause = e.getCause();
-            while(cause != null) {
+            while (cause != null) {
                 ex += ";\n<br>" + cause.toString();
                 cause = cause.getCause();
             }
@@ -335,8 +333,8 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             return new ForwardResolution(JSP);
         }
     }
-    
-    private JSONObject getGridRow(int i, String name, String published, String owner) throws JSONException {       
+
+    private JSONObject getGridRow(int i, String name, String published, String owner) throws JSONException {
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("name", name);
@@ -344,5 +342,4 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
         j.put("owner", owner);
         return j;
     }
-    
 }

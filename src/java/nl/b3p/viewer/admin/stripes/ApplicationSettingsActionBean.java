@@ -18,6 +18,7 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
@@ -49,6 +50,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private String owner;
     @Validate
     private boolean authenticatedRequired;
+    
+    @Validate
+    private String mashupName;
     
     @Validate
     private Map<String,String> details = new HashMap<String,String>();
@@ -126,6 +130,15 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     public void setMaxExtent(BoundingBox maxExtent) {
         this.maxExtent = maxExtent;
     }
+
+    public String getMashupName() {
+        return mashupName;
+    }
+
+    public void setMashupName(String mashupName) {
+        this.mashupName = mashupName;
+    }
+    
     //</editor-fold>
     
     @DefaultHandler
@@ -329,6 +342,27 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij kopieren applicatie: " + ex));
             return new ForwardResolution(JSP);
         }
+    }
+    
+    public Resolution mashup(){
+        ValidationErrors errors = context.getValidationErrors();
+        try {
+            Level root = application.getRoot();
+            // Prevent copy-ing levels/layers
+            application.setRoot(null);
+            Application mashup = application.deepCopy();
+            Stripersist.getEntityManager().detach(application);
+            mashup.setRoot(root);
+            mashup.getDetails().put("isMashup", new Boolean(true).toString());
+            mashup.setName(mashup.getName() + "_" + mashupName);
+            Stripersist.getEntityManager().persist(mashup);
+            Stripersist.getEntityManager().getTransaction().commit();
+            setApplication(mashup);            
+            
+        } catch (Exception ex) {
+                errors.add("Fout", new SimpleError("De mashup kan niet worden gemaakt."));
+        }
+            return new ForwardResolution(JSP);
     }
     
     public Resolution publish (){
