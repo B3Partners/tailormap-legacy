@@ -599,32 +599,42 @@ Ext.define ("viewer.components.Print",{
     getMapValues: function(){
         var values = new Object();
         var printLayers = new Array();
+        var wktGeoms= new Array();
         //get last getmap request from all layers
         var layers=this.viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.visible){
-                var requests=layer.getLastMapRequest();                
-                for (var r in requests){
-                    var request= requests[r];
-                    if (request){
-                        request.protocol=layer.getType();
-                        var alpha=layer.getAlpha();
-                        if (alpha!=null)
-                            request.alpha = alpha;           
-                        printLayers.push(request);
+                if (layer.getType()== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
+                    var features=layer.getAllFeatures();
+                    for (var f =0; f < features.length; f++){
+                        var feature=features[f];
+                        if (feature.getWktgeom()!=null){
+                            wktGeoms.push(feature);
+                        }
+                    }
+                }else{
+                    var requests=layer.getLastMapRequest();                
+                    for (var r in requests){
+                        var request= requests[r];
+                        if (request){
+                            request.protocol=layer.getType();
+                            var alpha=layer.getAlpha();
+                            if (alpha!=null)
+                                request.alpha = alpha;           
+                            printLayers.push(request);
 
-                        if (layer.getType()==viewer.viewercontroller.controller.Layer.IMAGE_TYPE){
-                            request.extent=layer.getExtent();
-                        }  
-                        //TODO tiling is now added as images, needs te be added as a tiling server
-                        if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE){
-                            request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
-                            request.extent=request.extent.toString();                            
+                            if (layer.getType()==viewer.viewercontroller.controller.Layer.IMAGE_TYPE){
+                                request.extent=layer.getExtent();
+                            }  
+                            //TODO tiling is now added as images, needs te be added as a tiling server
+                            if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE){
+                                request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
+                                request.extent=request.extent.toString();                            
+                            }
                         }
                     }
                 }
-                
             }
         }
         values.requests=printLayers;        
@@ -634,6 +644,7 @@ Ext.define ("viewer.components.Print",{
         }
         values.width = this.viewerController.mapComponent.getMap().getWidth();
         values.height = this.viewerController.mapComponent.getMap().getHeight();
+        values.geometries = wktGeoms;
         return values;
     },
     /**
