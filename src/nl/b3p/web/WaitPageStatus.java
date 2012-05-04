@@ -36,9 +36,9 @@ public class WaitPageStatus {
     private static final Log log = LogFactory.getLog(WaitPageStatus.class);
     
     private AtomicInteger progress = new AtomicInteger(0);
-    private AtomicReference<String> currentAction = new AtomicReference<String>("Loading...");
+    protected AtomicReference<String> currentAction = new AtomicReference<String>("Loading...");
 
-    private Queue<String> logs = new ConcurrentLinkedQueue<String>();
+    protected Queue<String> logs = new ConcurrentLinkedQueue<String>();
     private int logDequeueCount = 0;
 
     private AtomicBoolean finished = new AtomicBoolean();
