@@ -258,6 +258,9 @@ public class AttributeActionBean implements ActionBean {
          */
         if(sort != null && dir != null){
             Order order = null;
+            if(sort.equals("attribute")){
+                sort = "name";
+            }
             if(dir.equals("ASC")){
                order = Order.asc(sort);
             }else{

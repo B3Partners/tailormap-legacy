@@ -40,14 +40,13 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/attributesource/{$event}")
 @StrictBinding
-@RolesAllowed({"Admin","RegistryAdmin"})
+@RolesAllowed({"Admin", "RegistryAdmin"})
 public class AttributeSourceActionBean implements ActionBean {
-    private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);
 
+    private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);
     private ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/attributesource.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editattributesource.jsp";
-    
     @Validate
     private int page;
     @Validate
@@ -60,40 +59,37 @@ public class AttributeSourceActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-    
-    @Validate(on={"save","saveEdit"}, required=true)
+    @Validate(on = {"save", "saveEdit"}, required = true)
     private String name;
     @Validate
     private String url;
-    @Validate(on="save", required=true)
+    @Validate(on = "save", required = true)
     private String protocol = "jdbc";
     @Validate
     private String username;
     @Validate
     private String password;
-    @Validate(on="save")
+    @Validate(on = "save")
     private String host;
-    @Validate(on="save")
+    @Validate(on = "save")
     private String port;
-    @Validate(on="save")
+    @Validate(on = "save")
     private String dbtype;
-    @Validate(on="save")
+    @Validate(on = "save")
     private String database;
-    @Validate(on="save")
+    @Validate(on = "save")
     private String schema;
-    
     private WaitPageStatus status = new WaitPageStatus();
-    
     @Validate
     private FeatureSource featureSource;
-    
+
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
     }
-    
+
     public Resolution edit() {
-        if(featureSource != null){
+        if (featureSource != null) {
             protocol = featureSource.getProtocol();
             name = featureSource.getName();
             url = featureSource.getUrl();
@@ -102,38 +98,36 @@ public class AttributeSourceActionBean implements ActionBean {
         }
         return new ForwardResolution(EDITJSP);
     }
-    
+
     public Resolution newAttributeSource() {
         return new ForwardResolution(EDITJSP);
     }
-    
+
     public Resolution cancel() {
         return new ForwardResolution(EDITJSP);
     }
-    
+
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
 
-        if(!featureSource.getFeatureTypes().isEmpty()) {
-            em.createQuery("update Layer set featureType = null where featureType in :fts")
-                .setParameter("fts", featureSource.getFeatureTypes())
-                .executeUpdate();
+        if (!featureSource.getFeatureTypes().isEmpty()) {
+            em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", featureSource.getFeatureTypes()).executeUpdate();
         }
 
         em.remove(featureSource);
 
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         getContext().getMessages().add(new SimpleMessage("Attribuutbron is verwijderd"));
         return new ForwardResolution(EDITJSP);
     }
-    
-    @WaitPage(path="/WEB-INF/jsp/waitpage.jsp", delay=2000, refresh=1000, ajax="/WEB-INF/jsp/waitpageajax.jsp")
+
+    @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution save() throws JSONException, Exception {
         Map params = new HashMap();
-        
+
         try {
-            if(protocol.equals("jdbc")) {            
+            if (protocol.equals("jdbc")) {
                 params.put("dbtype", dbtype);
                 params.put("host", host);
                 params.put("port", port);
@@ -152,8 +146,8 @@ public class AttributeSourceActionBean implements ActionBean {
                 featureSource = fs;
 
                 getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-                
-            } else if(protocol.equals("wfs")) {
+
+            } else if (protocol.equals("wfs")) {
                 params.put(WFSDataStoreFactory.URL.key, url);
                 params.put(WFSDataStoreFactory.USERNAME.key, username);
                 params.put(WFSDataStoreFactory.PASSWORD.key, password);
@@ -166,14 +160,14 @@ public class AttributeSourceActionBean implements ActionBean {
                 featureSource = fs;
 
                 getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-                
+
             } else {
                 getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.error("Error loading new feauture source", e);
             String s = e.toString();
-            if(e.getCause() != null) {
+            if (e.getCause() != null) {
                 s += "; cause: " + e.getCause().toString();
             }
             getContext().getValidationErrors().addGlobalError(new SimpleError("Fout bij het laden van de attribuutbron: {2}", s));
@@ -181,158 +175,165 @@ public class AttributeSourceActionBean implements ActionBean {
 
         return new ForwardResolution(EDITJSP);
     }
-    
+
     public Resolution saveEdit() {
         featureSource.setName(name);
         featureSource.setUsername(username);
-        if(password != null) {
+        if (password != null) {
             featureSource.setPassword(password);
         }
-        
+
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
-        
+
         return new ForwardResolution(EDITJSP);
     }
-    
-    @ValidationMethod(on={"save","saveEdit"})
+
+    @ValidationMethod(on = {"save", "saveEdit"})
     public void validate(ValidationErrors errors) throws Exception {
-        if(name == null) {
+        if (name == null) {
             errors.add("name", new SimpleError("Naam is verplicht"));
             return;
         }
-        
-        if(featureSource == null){
+
+        if (featureSource == null) {
             try {
-                Object o = Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name")
-                        .setMaxResults(1)
-                        .setParameter("name", name)
-                        .getSingleResult();
+                Object o = Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name").setMaxResults(1).setParameter("name", name).getSingleResult();
 
                 errors.add("name", new SimpleError("Naam moet uniek zijn."));
                 return;
 
-            } catch(NoResultException nre) {
+            } catch (NoResultException nre) {
                 // name is unique
             }
-        }else{
+        } else {
             try {
                 Object o = Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name "
-                        + "and id != :id")
-                        .setMaxResults(1)
-                        .setParameter("name", name)
-                        .setParameter("id", featureSource.getId())
-                        .getSingleResult();
+                        + "and id != :id").setMaxResults(1).setParameter("name", name).setParameter("id", featureSource.getId()).getSingleResult();
 
                 errors.add("name", new SimpleError("Naam moet uniek zijn."));
                 return;
 
-            } catch(NoResultException nre) {
+            } catch (NoResultException nre) {
                 // name is unique
             }
         }
     }
-    
-    public Resolution getGridData() throws JSONException { 
+
+    public Resolution getGridData() throws JSONException {
         JSONArray jsonData = new JSONArray();
-        
+
         String filterName = "";
         String filterUrl = "";
         String filterType = "";
-        /* 
-         * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
-         * for demo purposes the value is now returned, ofcourse here should the DB
-         * query be built to filter the right records
+        /*
+         * FILTERING: filter is delivered by frontend as JSON array [{property,
+         * value}] for demo purposes the value is now returned, ofcourse here
+         * should the DB query be built to filter the right records
          */
-        if(this.getFilter() != null) {
-            for(int k = 0; k < this.getFilter().length(); k++) {
+        if (this.getFilter() != null) {
+            for (int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
                 String value = j.getString("value");
-                if(property.equals("name")) {
+                if (property.equals("name")) {
                     filterName = value;
                 }
-                if(property.equals("url")) {
+                if (property.equals("url")) {
                     filterUrl = value;
                 }
-                if(property.equals("protocol")) {
+                if (property.equals("protocol")) {
                     filterType = value;
                 }
             }
         }
-        
-        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
+
+        Session sess = (Session) Stripersist.getEntityManager().getDelegate();
         Criteria c = sess.createCriteria(FeatureSource.class);
-        
-        /* Sorting is delivered by the frontend
-         * as two variables: sort which holds the column name and dir which
-         * holds the direction (ASC, DESC).
+
+        /*
+         * Sorting is delivered by the frontend as two variables: sort which
+         * holds the column name and dir which holds the direction (ASC, DESC).
          */
-        if(sort != null && dir != null){
-            /* Sorteren op protocol en status nog niet mogelijk */
-            if(!dir.equals("status") && dir.equals("protocol")){
+        if (sort != null && dir != null) {
+            /*
+             * Sorteren op status nog niet mogelijk
+             */
+            if (!sort.equals("status") && !sort.equals("protocol")) {
                 Order order = null;
-                if(dir.equals("ASC")){
-                   order = Order.asc(sort);
-                }else{
+                if (dir.equals("ASC")) {
+                    order = Order.asc(sort);
+                } else {
                     order = Order.desc(sort);
                 }
                 order.ignoreCase();
-                c.addOrder(order); 
+                c.addOrder(order);
+            } else {
+                if (sort.equals("protocol")) {
+                    Order order = null;
+                    if (dir.equals("ASC")) {
+                        order = Order.asc("class");
+                    } else {
+                        order = Order.desc("class");
+                    }
+                    order.ignoreCase();
+                    c.addOrder(order);
+                }
             }
         }
-        
-        if(filterName != null && filterName.length() > 0){
+
+        if (filterName != null && filterName.length() > 0) {
             Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
             c.add(nameCrit);
         }
-        if(filterUrl != null && filterUrl.length() > 0){
+        if (filterUrl != null && filterUrl.length() > 0) {
             Criterion urlCrit = Restrictions.ilike("url", filterUrl, MatchMode.ANYWHERE);
             c.add(urlCrit);
         }
-        if(filterType != null && filterType.length() > 0){
-            Criterion protocolCrit = Restrictions.sqlRestriction("protocol like '%"+filterType+"%'");
+        if (filterType != null && filterType.length() > 0) {
+            Criterion protocolCrit = Restrictions.ilike("class", filterType, MatchMode.ANYWHERE);
             c.add(protocolCrit);
         }
-        
+
         int rowCount = c.list().size();
-        
+
         c.setMaxResults(limit);
         c.setFirstResult(start);
-        
+
         List sources = c.list();
 
-        for(Iterator it = sources.iterator(); it.hasNext();){
-            FeatureSource source = (FeatureSource)it.next();
+        for (Iterator it = sources.iterator(); it.hasNext();) {
+            FeatureSource source = (FeatureSource) it.next();
             String protocolType = "";
-            if(source instanceof WFSFeatureSource){
+            if (source instanceof WFSFeatureSource) {
                 protocolType = "WFS";
-            } else if(source instanceof JDBCFeatureSource){
+            } else if (source instanceof JDBCFeatureSource) {
                 protocolType = "JDBC";
-            } else if(source instanceof ArcGISFeatureSource){
+            } else if (source instanceof ArcGISFeatureSource) {
                 protocolType = "ArcGIS";
-            } else if(source instanceof ArcXMLFeatureSource){
+            } else if (source instanceof ArcXMLFeatureSource) {
                 protocolType = "ArcXML";
             }
             JSONObject j = this.getGridRow(source.getId().intValue(), source.getName(), source.getUrl(), protocolType);
             jsonData.put(j);
         }
-        
+
         final JSONObject grid = new JSONObject();
         grid.put("totalCount", rowCount);
         grid.put("gridrows", jsonData);
-    
+
         return new StreamingResolution("application/json") {
-           @Override
-           public void stream(HttpServletResponse response) throws Exception {
-               response.getWriter().print(grid.toString());
-           }
+
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                response.getWriter().print(grid.toString());
+            }
         };
     }
-    
-    private JSONObject getGridRow(int i, String name, String url, String type) throws JSONException {       
+
+    private JSONObject getGridRow(int i, String name, String url, String type) throws JSONException {
         JSONObject j = new JSONObject();
         j.put("id", i);
         j.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
@@ -346,55 +347,55 @@ public class AttributeSourceActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
+
     public ActionBeanContext getContext() {
         return this.context;
     }
-    
+
     public int getLimit() {
         return limit;
     }
-    
+
     public void setLimit(int limit) {
         this.limit = limit;
     }
-    
+
     public int getPage() {
         return page;
     }
-    
+
     public void setPage(int page) {
         this.page = page;
     }
-    
+
     public int getStart() {
         return start;
     }
-    
+
     public void setStart(int start) {
         this.start = start;
     }
-    
+
     public String getDir() {
         return dir;
     }
-    
+
     public void setDir(String dir) {
         this.dir = dir;
     }
-    
+
     public String getSort() {
         return sort;
     }
-    
+
     public void setSort(String sort) {
         this.sort = sort;
     }
-    
+
     public JSONArray getFilter() {
         return filter;
     }
-    
+
     public void setFilter(JSONArray filter) {
         this.filter = filter;
     }
@@ -494,5 +495,5 @@ public class AttributeSourceActionBean implements ActionBean {
     public void setUsername(String username) {
         this.username = username;
     }
- //</editor-fold>
+    //</editor-fold>
 }
