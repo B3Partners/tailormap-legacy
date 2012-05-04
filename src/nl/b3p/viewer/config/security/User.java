@@ -29,6 +29,9 @@ import java.util.*;
 @Entity
 @Table(name="user_")
 public class User {
+    // See edituser.jsp
+    public static final String DETAIL_EMAIL = "email";
+    
     public static final int MIN_PASSWORD_LENGTH = 8;
 
     private static final String DIGEST_ALGORITM = "SHA-1";
