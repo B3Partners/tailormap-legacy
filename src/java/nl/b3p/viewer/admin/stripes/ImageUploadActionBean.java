@@ -48,7 +48,7 @@ public class ImageUploadActionBean extends ApplicationActionBean {
     
     private static final String IMAGE_ACTIONBEAN_URL = "/action/image/";
     
-    private static final String VIEWER_URL_PARAM = "viewerURL";
+    private static final String VIEWER_URL_PARAM = "viewer.url";
     
     @Validate
     private FileBean upload;

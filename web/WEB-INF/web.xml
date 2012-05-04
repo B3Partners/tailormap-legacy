@@ -13,7 +13,7 @@
             The (relative or absolute) URL to the viewer webapp. Needed for when 
             the viewer-admin needs to link to it, for example for image uploads.
         </description>
-        <param-name>viewerURL</param-name>
+        <param-name>viewer.url</param-name>
         <param-value>/viewer</param-value>
     </context-param>
     
