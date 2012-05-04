@@ -89,7 +89,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                     },this);
                     ds.selectAppLayer(appLayer);
                     if(selectableAttributes == 1){
-                        ds.applyFilter(appLayer);
+                        ds.applyFilterWithDefaults();
                         return true;
                     }else{
                         ds.showAndForceLayer(appLayer);

@@ -29,6 +29,9 @@ Ext.define ("viewer.components.DataSelection",{
     appLayer: null,
     filters:null,
     filterActive:null,
+    uniqueValuesAttributes : null,
+    // 0 when the datatab is fully initialized, otherwise false
+    itemsLoaded : null,
     config: {
         layers:null,
         title:null,
@@ -72,6 +75,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.layerSelector.initLayers();
     },
     loadWindow : function(){
+        this.itemsLoaded = 0;
         var config = {
             viewerController : this.viewerController,
             div: this.getContentDiv(),
@@ -170,32 +174,147 @@ Ext.define ("viewer.components.DataSelection",{
     createDataTab : function (appLayer){
         var attributes = appLayer.attributes;
         var dataSelectieAttributes = new Array();
+        this.uniqueValuesAttributes = new Array();
+        var minMaxAttrs = new Array();
+        
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
             if(attribute.selectable){
                 var defaultVal = "";
                 if(attribute.defaultValue != undefined){
                     defaultVal = attribute.defaultValue; 
+                    if(defaultVal == "#MAX#" || defaultVal == "#MIN#"){
+                        minMaxAttrs.push({
+                            attribute : attribute,
+                            operator: defaultVal
+                        });
+                        defaultVal = "";
+                    }
                 }
                 dataSelectieAttributes.push({
-                    xtype: "textfield",
+                    xtype: "combobox",
                     id: attribute.name,
+                    queryMode : 'local',
+                    disabled: true,
                     dataType: attribute.type,
+                    editable: false,
                     name: attribute.name,
                     fieldLabel: attribute.alias || attribute.name,
-                    labelWidth:200,
-                    value : defaultVal
+                    labelWidth:150,
+                    displayField: 'id',
+                    valueField: 'id',
+                    value : defaultVal,
+                    width: 400,
+                    store: {
+                        fields: [{name:'id',convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}],
+                        data : []
+                    }
                 });
+                
+                this.uniqueValuesAttributes.push(attribute.name);
             }
         }
-        
         this.dataTab.removeAll();
         this.dataTab.add({
             xtype : 'label',
             text: 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie'
         });
+        this.getUniques();
         this.dataTab.add(dataSelectieAttributes);
+        this.initMinMaxValues(minMaxAttrs,appLayer);
     },
+    initMinMaxValues : function (minMaxAttrs,appLayer){
+        for(var i = 0 ; i < minMaxAttrs.length ; i++){
+            var attr = minMaxAttrs[i];
+            this.itemsLoaded++;
+            this.getMinMax(attr.operator, attr.attribute, appLayer);
+        }
+    },
+    getMinMax : function (operator, attribute,appLayer){
+        var cb = Ext.getCmp(attribute.name);
+        cb.setDisabled(true);
+        Ext.Ajax.request({ 
+            url: actionBeans.unique, 
+            timeout: 240000,
+            scope:this,
+            params: { 
+                attribute: attribute.name,
+                applicationLayer: appLayer.id,
+                getMinMaxValue: 't',
+                operator: operator
+            }, 
+            success: function ( result, request ) { 
+                var res = Ext.JSON.decode(result.responseText);
+                if(res.success){
+                    var value = res.value;
+                    cb.setValue(value);
+                }else{
+                    Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + res.msg);
+                }
+                
+                this.itemsLoaded--;
+                cb.setDisabled(false);
+            }, 
+            failure: function ( result, request) {
+                Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + result.responseText);
+                cb.setDisabled(false);
+                this.itemsLoaded--;
+            } 
+        });
+    },
+    getUniques : function (){
+        var appLayer = this.layerSelector.getValue();
+        this.dataTab.getEl().mask("Laad unieke waardes...");
+        Ext.Ajax.request({ 
+            url: actionBeans.unique, 
+            timeout: 240000,
+            scope:this,
+            params: { 
+                attributes: this.uniqueValuesAttributes,
+                applicationLayer: appLayer.id
+            }, 
+            success: function ( result, request ) { 
+                var res = Ext.JSON.decode(result.responseText);
+                if(res.success){
+                    var values = res.uniqueValues;
+                    if(res.msg){
+                        Ext.MessageBox.alert('Info', res.msg);
+                    }
+                    this.receiveUniqueValues(values);
+                }else{
+                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
+                }
+            }, 
+            failure: function ( result, request) {
+                Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
+                this.itemsLoaded--;
+            } 
+        });
+    },
+    receiveUniqueValues : function (values){
+        for(var attribute in values){
+            var unique = values[attribute];
+            this.addValuesToCombobox(unique, attribute);
+        }
+        this.dataTab.getEl().unmask();
+        this.itemsLoaded--;        
+    },
+    addValuesToCombobox : function (values, attribute){
+        var combobox = Ext.getCmp (attribute);
+        combobox.setDisabled(false);
+        combobox.getEl().unmask();
+        var SingleArray = Ext.define('SingleArray', {
+            extend: 'Ext.data.Model',
+            fields: [{name: 'id'  , convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}]
+        });
+
+        var myReader = new Ext.data.reader.Array({
+            model: 'SingleArray'
+        }, SingleArray);
+        var rs =  myReader.read(values);
+        combobox.getStore().add(rs.records);
+    },
+    
     /**
      *  Add a filter to the current filterlist.
      */
@@ -242,6 +361,21 @@ Ext.define ("viewer.components.DataSelection",{
             this.layerSelector.setValue(appLayer);
         }
     },
+    isDatatabLoaded : function(){
+        if(this.itemsLoaded == 0){
+            return true;
+        }else{
+            return false;
+        }
+    },
+    applyFilterWithDefaults : function (){
+        if(this.isDatatabLoaded){
+            this.applyFilter();
+        }else{
+            setTimeout(function(){
+                        this.applyFilterWithDefaults();}, 100);
+        }
+    },
     applyFilter : function (){
         var cql = "";
      
@@ -274,7 +408,7 @@ Ext.define ("viewer.components.DataSelection",{
     getDataTabCQL : function (){
         var items = this.dataTab.items.items;
         var cql = "";
-        for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection
+        for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection.
             var item = items[i];
             if(item.getValue() != ""){
                 if(i != 0 ){
