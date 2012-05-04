@@ -26,11 +26,20 @@ import java.util.*;
 @Entity
 @Table(name="group_")
 public class Group {
-    public static final String ADMIN = "ServiceAdmin";
+    public static final String ADMIN = "Admin";
     public static final String REGISTRY_ADMIN = "RegistryAdmin";
     public static final String USER_ADMIN = "UserAdmin";
     public static final String APPLICATION_ADMIN = "ApplicationAdmin";
     public static final String SERVICE_ADMIN = "ServiceAdmin";
+    public static final String EXTENDED_USER = "ExtendedUser";
+    
+    public static final List<String> DEFAULT_GROUPS = Collections.unmodifiableList(Arrays.asList(
+            ADMIN, 
+            REGISTRY_ADMIN, 
+            USER_ADMIN, 
+            APPLICATION_ADMIN, 
+            EXTENDED_USER, 
+            SERVICE_ADMIN));
     
     @Id
     private String name;
