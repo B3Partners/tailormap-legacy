@@ -26,6 +26,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.*;
 import nl.b3p.viewer.config.security.Authorizations.ApplicationCache;
@@ -405,6 +406,8 @@ public class UserActionBean implements ActionBean {
     Set<Level> authorizedLevels = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedAppLayers = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedEditableAppLayers = Collections.EMPTY_SET;
+    
+    Set<ConfiguredComponent> authorizedComponents = Collections.EMPTY_SET;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters for authorization collections">
     public Application getApplication() {
@@ -441,6 +444,14 @@ public class UserActionBean implements ActionBean {
 
     public ApplicationCache getApplicationCache() {
         return applicationCache;
+    }
+
+    public Set<ConfiguredComponent> getAuthorizedComponents() {
+        return authorizedComponents;
+    }
+
+    public void setAuthorizedComponents(Set<ConfiguredComponent> authorizedComponents) {
+        this.authorizedComponents = authorizedComponents;
     }
     //</editor-fold>
     
@@ -513,6 +524,13 @@ public class UserActionBean implements ActionBean {
                     if(writers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(writers, roles)) {
                         authorizedEditableAppLayers.add(al);
                     }
+                }
+                
+                authorizedComponents = new HashSet();
+                for(ConfiguredComponent cc: application.getComponents()) {
+                    if(cc.getReaders().equals(Authorizations.EVERYBODY) || !Collections.disjoint(cc.getReaders(), roles)) {
+                        authorizedComponents.add(cc);
+                    }                    
                 }
             }            
         }

@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --%>
 
+<%@page import="nl.b3p.viewer.config.app.ConfiguredComponent"%>
 <%@page import="nl.b3p.viewer.util.Coalesce"%>
 <%@page import="nl.b3p.viewer.config.services.GeoService"%>
 <%@page import="org.stripesstuff.stripersist.Stripersist"%>
@@ -156,6 +157,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </tr>
                 </c:forEach>
             </table>            
+            <h3 style="padding-top: 5px">Componenten</h2>
+            <p style="font-style: italic; padding: 5px">Componenten die voor alle groepen geautoriseerd zijn worden niet getoond.</p>
+            <table class="formtable" border="1">
+                <tr><th>Class</th><th>Naam</th><th>Toegang voor <c:out value="${actionBean.user.username}"/></th><th>Groepen met toegang</th>
+                <c:forEach var="cc" items="<%= actionBean.getApplication().getComponents()%>">
+                    <c:if test="${!empty cc.readers}">
+                        <c:set var="ccName" value="${cc.name}"/>
+                        <c:set var="readers" value="${cc.readers}"/>
+                        <tr>
+                            <td><c:out value="${cc.className}"/></td>
+                            <td><c:out value="${cc.name}"/></td>
+                            <td>
+                                <%
+                                ConfiguredComponent cc = (ConfiguredComponent)pageContext.getAttribute("cc");
+                                if(actionBean.getAuthorizedComponents().contains(cc)) {
+                                    out.print("<span style=\"color: green !important\">Ja</span>");
+                                } else {
+                                    out.print("<span style=\"color: red !important\">Nee</span>");
+                                } 
+                                %>
+                            </td>
+                            <%
+                                readers = (Set)pageContext.getAttribute("readers");
+                            %>
+                            <td><%= readers.isEmpty() ? "<iedereen>" : (readers.iterator().next() == null ? "<i>niemand</i>" : readers.toString()) %></td>
+                        </tr>
+                    </c:if>
+                </c:forEach>
+            </table>
         </c:if>
             
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
