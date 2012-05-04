@@ -67,6 +67,9 @@ public class CombineImageWkt {
         this.color = color;
     }
     public void setColor(String hexrgb) {
+        if (hexrgb==null){
+            return;
+        }
         if (hexrgb.length()>0)
             this.color = new Color( Integer.parseInt(( hexrgb ), 16) );
     }
