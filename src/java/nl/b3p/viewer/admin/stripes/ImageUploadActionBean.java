@@ -192,10 +192,10 @@ public class ImageUploadActionBean extends ApplicationActionBean {
             JSONArray data = new JSONArray();
             j.put("data", data);
 
-            j.put("total", Stripersist.getEntityManager().createQuery("select count(*) from resource_").getSingleResult());
+            j.put("total", Stripersist.getEntityManager().createQuery("select count(*) from Resource").getSingleResult());
 
             List<Resource> resources = Stripersist.getEntityManager().createQuery(
-                    "from resource_ order by name")
+                    "from Resource order by name")
                     .setFirstResult(start)
                     .setMaxResults(limit)
                     .getResultList();
