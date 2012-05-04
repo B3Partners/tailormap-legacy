@@ -282,7 +282,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 j.put("name", service.getName());
                 j.put("type", "service");
                 j.put("isLeaf", service.getTopLayer() == null);
-                j.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
+                j.put("status", service.isMonitoringStatusOK() ? "ok" : "error");
                 j.put("parentid", nodeId);
                 children.put(j);
             }

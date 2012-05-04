@@ -22,7 +22,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.servlet.ServletContext;
 
 /**
  *
@@ -38,12 +37,9 @@ public class Mailer {
         return session;
     }
     
-    public static void sendMail(ServletContext context, String email, String subject, String mailContent) throws Exception {
+    public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent) throws Exception {
         
-        Address from = new InternetAddress(
-                context.getInitParameter("monitoring.from.email"), 
-                context.getInitParameter("monitoring.from.name"));
-
+        Address from = new InternetAddress(fromEmail, fromName);
         MimeMessage msg = new MimeMessage(getMailSession());
         msg.setFrom(from);
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));

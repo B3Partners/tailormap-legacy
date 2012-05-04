@@ -32,6 +32,14 @@
         <param-name>monitoring.mail.from.name</param-name>
         <param-value>Geo services monitoring</param-value>
     </context-param>
+    <context-param>
+        <description>
+            Configure at which interval in minutes the monitoring job should be run.
+            Comment out this parameter or set to -1 to disable.
+        </description>
+        <param-name>monitoring.schedule.minutes</param-name>
+        <param-value>30</param-value>
+    </context-param>
     
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistry</listener-class>

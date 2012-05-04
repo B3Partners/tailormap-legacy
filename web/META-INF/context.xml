@@ -6,6 +6,7 @@
     
     <!--Parameter name="monitoring.mail.from.email" value="no-reply@b3partners.nl" override="false"/-->
     <!--Parameter name="monitoring.mail.from.name" value="Geo services monitoring" override="false"/-->    
+    <!--Parameter name="monitoring.schedule.minutes" value="30" override="false"/-->    
     
     <!-- For Tomcat: define datasource in server.xml, for example:
 
