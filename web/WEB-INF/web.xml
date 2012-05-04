@@ -17,19 +17,38 @@
         <param-value>/viewer</param-value>
     </context-param>
     
+    <context-param>
+        <description>
+            The from e-mail address used when sending notification mails. Some
+            mail servers require a valid e-mail address when accepting mail.
+        </description>
+        <param-name>monitoring.mail.from.email</param-name>
+        <param-value>no-reply@b3partners.nl</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            The from name used when sending notification mails. 
+        </description>
+        <param-name>monitoring.mail.from.name</param-name>
+        <param-value>Geo services monitoring</param-value>
+    </context-param>
+    
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistry</listener-class>
     </listener>
     <listener>
+        <listener-class>nl.b3p.viewer.admin.monitoring.GeoServiceMonitoringListener</listener-class>
+    </listener>    
+    <listener>
         <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
     </listener>    
-
-    <!-- Localization context voor o.a. de <fmt:message> JSTL tag -->
+    
+    <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
         <param-value>ViewerResources</param-value>
     </context-param>
-    <!-- NL locale voor formatten van getallen: 1.234.567,89 -->
+    <!-- Hardcoded NL locale for formatting numbers: 1.234.567,89 -->
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
         <param-value>nl</param-value>
@@ -186,8 +205,8 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-    <!-- Stel mime type in voor .js zodat bij Tomcat in server.xml in het
-         compressableMimeType attribuut voor het Connector element kan worden opgenomen:
+    <!-- Set mime type for .js so it can be used in Tomcat server.xml in the
+         compressableMimeType attribute for the Connector element:
 
         <Connector ...
            compression="on"
