@@ -68,7 +68,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class AttributesActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(AttributesActionBean.class);
     
-    private static final int MAX_FEATURES = 50;
+    private static final int MAX_FEATURES = 1000;
     
     private ActionBeanContext context;
     
