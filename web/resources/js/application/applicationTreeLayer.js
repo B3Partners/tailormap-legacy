@@ -73,10 +73,10 @@ Ext.onReady(function() {
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
             if(editable) {
-                var possibleValues = Ext.JSON.decode(attribute.editvalues);
+                var possibleValues =attribute.editValues;
                 
                 var possibleValuesFormItems = [
-                                { fieldLabel: 'Mogelijke waarden', name: 'editvalues', id: 'editvalues' + attribute.id, xtype: 'textfield',flex:1},
+                                { fieldLabel: 'Mogelijke waarden', name: 'editvalues', id: 'editvalues' + attribute.id, xtype: 'textfield',flex:1,value:possibleValues},
                                 { xtype: 'button', text: 'DB', style: { marginLeft: '10px' }, listeners: {click: function() {getDBValues(attribute.name, attribute.id,"edit");}}}
                             ];
                 
@@ -122,7 +122,7 @@ Ext.onReady(function() {
                                 }
                             }
                         },
-                        { fieldLabel: 'Alias', name: 'editalias', value: attribute.editalias, xtype: 'textfield' },
+                        { fieldLabel: 'Alias', name: 'editalias', value: attribute.editAlias, xtype: 'textfield' },
                         {
                             xtype: 'container',
                             layout: 'hbox',
