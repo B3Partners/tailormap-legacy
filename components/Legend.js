@@ -67,7 +67,7 @@ Ext.define ("viewer.components.Legend",{
         if(vis){
             this.addLayer(layer);
         }else{
-           this.removeLayer(layer.id);
+           this.removeLayer(layer);
         }
     },
     /**
@@ -75,13 +75,11 @@ Ext.define ("viewer.components.Legend",{
      * @param layer a viewer.viewercontroller.controller.Layer
      */
     addLayer : function (layer){
-        var serviceId = layer.serviceId;
-        var layerName = layer.getAppLayerName();// TODO: not yet correct  
         var appLayer=this.viewerController.getAppLayerById(layer.appLayerId);
-        
+        var layerName = layer.getAppLayerName();
         /*if already added return; Still use serviceId_layerName because only one of the layer
         graphics must be added*/
-        if(this.legends[serviceId  + "_"+ layerName]){
+        if(this.legends[layer.appLayerId]){
             return;
         }        
         //show backgrounds == false then don't show backgrounds.
@@ -97,9 +95,9 @@ Ext.define ("viewer.components.Legend",{
             var legend = {
                 src: url,
                 title: layerName,
-                id: serviceId  + "_"+ layerName
+                id: layer.appLayerId
             };
-            this.legends[serviceId  + "_"+ layerName]=true;
+            this.legends[layer.appLayerId]=true;
             this.queue.addItem(legend);
         }
     },
@@ -109,14 +107,15 @@ Ext.define ("viewer.components.Legend",{
             this.removeLayer(layer.getId());
         }
     },
-    removeLayer: function (layerName){
-        var id = layerName+"-div";
+    removeLayer: function (layer){
+        var appLayerId = layer.appLayerId;
+        var id = appLayerId+"-div";
         var node =document.getElementById(id);
         if (node!=null){
             this.legendContainer.removeChild(node);
         }
-        if (this.legends[layerName]){
-            delete this.legends[layerName];
+        if (this.legends[appLayerId]){
+            delete this.legends[appLayerId];
         }
     },
     // Start the legend: make a list of images to be retrieved, make a queue and start it
