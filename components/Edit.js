@@ -198,7 +198,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
     layerChanged : function (appLayer){
-        if(item != null){
+        if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
             this.mode=null;
             this.viewerController.mapComponent.getMap().removeMarker("edit");
