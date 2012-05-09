@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="head">
         <title>Configureer component</title>
-        <link rel="stylesheet" href="${contextPath}/resources/css/styles.css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorImage.css" />
     </stripes:layout-component>
 
     <stripes:layout-component name="header">

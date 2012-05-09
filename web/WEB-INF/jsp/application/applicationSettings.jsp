@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
         <title>Applicatie instellingen</title>
+        <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorImage.css" />
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
@@ -141,9 +142,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
 
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/ColorPickerButton.js"></script>
         <script type="text/javascript">
             var activelink = 'menu_instellingen';
+            var actionBeans = { 
+                "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+            };
 
             function confirmCopy() {
                 Ext.MessageBox.show({
@@ -192,13 +197,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     width: 475,
                     height: 350,
                     value: Ext.get('details_opmerkingen').dom.value,
-                    renderTo: 'details_opmerkingen_container' /*,
-                    plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', {
-                            dragResize: false,
-                            dragWheel: false,
-                            submitUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php',
-                            managerUrl: 'http://localhost/imageuploader/htmlEditorImageUpload.php'
-                    })] */
+                    renderTo: 'details_opmerkingen_container',
+                    plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                        submitUrl: actionBeans['imageupload'],
+                        managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                    }))]
                 });
                 Ext.get('settingsForm').on('submit', function() {
                     Ext.get('details_opmerkingen').dom.value = htmlEditor.getValue();

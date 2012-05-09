@@ -81,14 +81,14 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
     submitUrl: 'htmlEditorImageUpload.php',
 	
 	/**
-     * @cfg {String} serverSideEdit
+     * @cfg {Boolean} disableServerSideEdit
      * Enables/disables server side image editing buttons.
      * Default false
      */
     disableServerSideEdit: false,
 	
 	/**
-     * @cfg {String} serverSideEdit
+     * @cfg {String} disableDelete
      * Enables/disables server side image deletion.
      * Default false
      */
@@ -134,11 +134,10 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
    */
     enableContextMenu: false,
 
-/**
+    /**
    * @cfg {Boolean} values are:
    * true : Default
    * Allows the user to resize an image clicking on it and using the mousewheel. (Only WebKit browsers & Opera)
-   * 
    * false 
    * The image wont be resized if the user uses mousewheel on it
    */
@@ -152,8 +151,9 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
      * Default 'css/iframe_styles.css'
      */
     iframeCss: 'css/iframe_styles.css',
-    t: function t(string) {
-        return this.lang[string] ? this.lang[string] : string;
+    
+    t: function (str) {
+        return this.lang[str] ? this.lang[str] : str;
     },
 	
     constructor: function (config) {
@@ -366,7 +366,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
             imageToEdit: image,
             pageSize: me.pageSize,
             imageButton: me.imageButton,
-			disableServerSideEdit: me.serverSideEdit,
+			disableServerSideEdit: me.disableServerSideEdit,
 			disableStyling:me.styling,
 			disableDelete : me.disableDelete
         });
@@ -666,7 +666,6 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
 Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
     extend: 'Ext.window.Window',
     lang: null,
-    lang: null,
     t: null,
     submitUrl: null,
     managerUrl: null,
@@ -680,7 +679,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
     layout: {
         type: 'fit'
     },
-    title: '',
+    title: '',   
     listeners: {
         show: function (panel) {
             // we force the focus on the dialog window to avoid control artifacts on IE
@@ -691,7 +690,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
             panel.center();
         }
     },
-	
+    
     initComponent: function () {
         var me = this;
         var imageStore = Ext.create('Ext.data.Store', {
@@ -787,6 +786,35 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
             ]
         });
 		
+        var imageEditButtons = [];
+        if(!me.disableServerSideEdit) {
+            imageEditButtons = [{
+                xtype:'button',
+                iconCls:'x-htmleditor-imageupload-cropbutton',
+                itemId:'cropButton',
+                disabled:true,
+                handler: me._openCropDialogClick,
+                scope:me,
+                tooltip:'Open crop window'
+            },{
+                xtype:'button',
+                itemId:'rotateButton',
+                disabled:true,
+                iconCls:'x-htmleditor-imageupload-rotatebutton',
+                handler: me._rotateImageClick,
+                scope:me,
+                tooltip:'Rotate image 90&deg;'
+            },{
+                xtype:'button',
+                itemId:'resizeButton',
+                disabled:true,
+                iconCls:'x-htmleditor-imageupload-resizebutton',
+                handler: me._resizeImageClick,
+                scope:me,
+                tooltip:'Resize Image'
+            }];
+        }
+        
         me.items = [{
             xtype: 'form',
             name: 'imageUploadForm',
@@ -871,7 +899,6 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                     xtype: 'fieldset',
                     title: me.t('Size & Details'),
                     collapsible: true,
-                    layout: 'anchor',
                     collapsed: false,
                     layout: {
                         type: 'table',
@@ -884,7 +911,6 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                     items: [{
                         xtype: 'container',
                         margin: 4,
-                        padding: 1,
                         layout: {
                             align: 'middle',
                             pack: 'center',
@@ -895,7 +921,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                         },
                         height: 130,
                         width: 130,
-						padding:2,
+						padding: 2,
                         items: [{
                             xtype: 'image',
                             itemId: 'vistaPrevia',
@@ -997,7 +1023,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                         }, {
                             colspan: 3,
                             xtype: 'displayfield',
-                            fieldLabel: 'Real Size',
+                            fieldLabel: me.t('Real Size'),
                             itemId: 'realSize'
                         }]
                     },
@@ -1006,38 +1032,13 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 						hidden: me.serverSideEdit,
 						layout: {
 							type: 'table',
-							columns:4
+							columns: 4
 						},
 						defaults:{
-							margin:'0 8 0 0'
-						
+							margin: '0 8 0 0'
 						},
-						padding:'0 0 0 12',
-						items:[{
-								xtype:'button',
-								iconCls:'x-htmleditor-imageupload-cropbutton',
-								itemId:'cropButton',
-								disabled:true,
-								handler: me._openCropDialogClick,
-								scope:me,
-								tooltip:'Open crop window'
-							},{
-								xtype:'button',
-								itemId:'rotateButton',
-								disabled:true,
-								iconCls:'x-htmleditor-imageupload-rotatebutton',
-								handler: me._rotateImageClick,
-								scope:me,
-								tooltip:'Rotate image 90�'
-							},{
-								xtype:'button',
-								itemId:'resizeButton',
-								disabled:true,
-								iconCls:'x-htmleditor-imageupload-resizebutton',
-								handler: me._resizeImageClick,
-								scope:me,
-								tooltip:'Resize Image'
-							},{
+						padding: (imageEditButtons.length == 0 ? '0 0 0 3' : '0 0 0 12'),
+						items: Ext.Array.merge(imageEditButtons, [{
 								xtype:'button',
 								itemId:'deleteButton',
 								disabled:true,
@@ -1045,7 +1046,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 								handler: me._deleteImageClick,
 								scope:me,
 								tooltip:'Delete Image from server'
-						}]
+						}])
 					},{
                         xtype: 'hiddenfield',
                         itemId: 'naturalWidth'
@@ -1636,7 +1637,8 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
         var comp = this;
         var myForm = comp.up('form');
         var image = el;
-        var maxWidth = maxHeight = 124;
+        var maxWidth = 124,
+            maxHeight = 124;
         var constrainComp = myForm.down('#constraintProp');
         var widthComp = myForm.down('[name=width]');
         var heightComp = myForm.down('[name=height]')
@@ -1651,16 +1653,16 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 		if (!comp.disableServerSideEdit){
 			if(image.src!='' && image.src!='blank' && image.src.search(document.domain) >= 0)
 			{
-				myForm.down('#cropButton').enable();
-				myForm.down('#rotateButton').enable();
-				myForm.down('#resizeButton').enable();
-				myForm.down('#deleteButton').enable();
+                if(myForm.down('#cropButton')) myForm.down('#cropButton').enable();
+				if(myForm.down('#rotateButton')) myForm.down('#rotateButton').enable();
+				if(myForm.down('#resizeButton')) myForm.down('#resizeButton').enable();
+				if(myForm.down('#deleteButton')) myForm.down('#deleteButton').enable();
 			}
 			else{
-				myForm.down('#cropButton').disable();
-				myForm.down('#rotateButton').disable();
-				myForm.down('#resizeButton').disable();
-				myForm.down('#deleteButton').disable();
+				if(myForm.down('#cropButton')) myForm.down('#cropButton').disable();
+				if(myForm.down('#rotateButton')) myForm.down('#rotateButton').disable();
+				if(myForm.down('#resizeButton')) myForm.down('#resizeButton').disable();
+				if(myForm.down('#deleteButton')) myForm.down('#deleteButton').disable();
 			}
 		}
 

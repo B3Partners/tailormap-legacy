@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
         <title>Boomstructuur met kaarten</title>
+        <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorImage.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
@@ -110,7 +111,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var movedownicon = '${contextPath}/resources/images/move-down.gif';
 
             var activelink = 'menu_boomstructuur';
+            
+            var actionBeans = { 
+                "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+            };
         </script>
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/TreeSelection.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLevel.js"></script>
     </stripes:layout-component>

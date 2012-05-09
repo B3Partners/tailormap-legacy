@@ -588,7 +588,7 @@ Ext.onReady(function() {
         closable: true,
         closeAction: 'hide',
         width: 800,
-        height: 600,
+        height: 620,
         layout: 'fit',
         modal: true,
         contentEl: 'configPage',

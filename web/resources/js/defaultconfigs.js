@@ -121,4 +121,43 @@ var defaultGridConfig = {
         trackOver: true,
         stripeRows: true
     }
-}
+};
+
+// Default config for HTML-editor image uploader
+var defaultImageUploadConfig = {
+    dragResize: false,
+    dragWheel: false,
+    disableServerSideEdit: true,
+    lang: {
+        'Display': 'Weergave',
+        'By Default': 'Standaard',
+        'Inline': 'In regel',
+        'Block': 'Op aparte regel',
+        'Insert/Edit Image': 'Afbeelding invoegen/bewerken',
+        'Upload Image...': 'Uploaden...',
+        'Uploading your photo...': 'Afbeelding wordt geupload...',
+        'Error': 'Fout',
+        'Width': 'Breedte',
+        'Height': 'Hoogte',
+        'Real Size': 'Originele grootte',
+        'Align': 'Uitlijning',
+        'Title': 'Titel',
+        'Class': '',
+        'Padding': '',
+        'Margin': '',
+        'Top': 'Boven',
+        'Bottom': 'Onder',
+        'Right': 'Rechts',
+        'Left': 'Links',
+        'None': 'Geen',
+        'Size & Details': 'Grootte en details',
+        'More Options': 'Meer opties',
+        'Style' : 'Stijl',
+        'OK' : '',
+        'Cancel': 'Annuleren',
+        'Delete Image':'Afbeelding verwijderen',
+        'Confirmation':'Bevestiging',
+        'Are you sure you want to delete this image?': 'Weet u zeker dat u deze afbeelding wilt verwijderen?',
+        'Your photo has been uploaded.':'Uw afbeelding is geupload.'
+    }
+};
