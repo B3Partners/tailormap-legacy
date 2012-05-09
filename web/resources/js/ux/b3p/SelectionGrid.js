@@ -46,7 +46,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
     createSliderUrl: '',
     renderTo: '',
     valueField: 'id',
-    titleField: 'title',
+    titleField: 'alias',
     sliders: [],
 
     constructor: function(config) {
