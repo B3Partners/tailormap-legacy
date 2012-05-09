@@ -62,8 +62,7 @@ Ext.define("viewer.components.Slider",{
         if (mapLayer.appLayerId){
             var appLayer = this.viewerController.app.appLayers[mapLayer.appLayerId];
             //check if this slider needs to change values for the layer
-            var serviceLayer=this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-            if (Ext.Array.contains(this.selectedLayers,serviceLayer.id)){            
+            if (Ext.Array.contains(this.selectedLayers,appLayer.id)){            
                 this.layers.push(mapLayer);
                 if(this.slider){
                     this.applySlider(mapLayer,this.slider.getValue());
