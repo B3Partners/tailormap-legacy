@@ -56,7 +56,7 @@ Ext.define ("viewer.components.InfluenceImage",{
         //image size
         properties.width = 800;
         properties.height = 800;
-        properties.geometries=[{wkt: geom}];
+        properties.geometries=[{wktgeom: geom}];
         //do image request
         var me = this;
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),function(url){
