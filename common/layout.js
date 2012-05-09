@@ -194,6 +194,15 @@ Ext.define('viewer.LayoutManager', {
                     title = regionlayout.title;
                 }
                 
+                var posx = 0,
+                    posy = 0,
+                    position = 'center';
+                if(regionlayout.posx && regionlayout.posy && regionlayout.posx != '' && regionlayout.posy != '') {
+                    posx = regionlayout.posx;
+                    posy = regionlayout.posy;
+                    position = 'fixed';
+                }
+                
                 var popupWindowConfig = {
                    title: title,
                    showOnStartup:true,
@@ -209,7 +218,10 @@ Ext.define('viewer.LayoutManager', {
                         modal: false,
                         renderTo: Ext.getBody(),
                         autoScroll: true,
-                        items: componentItems
+                        items: componentItems,
+                        x: posx,
+                        y: posy,
+                        position: position
                     }
                 };
                 me.popupWin = Ext.create('viewer.components.ScreenPopup', popupWindowConfig);
