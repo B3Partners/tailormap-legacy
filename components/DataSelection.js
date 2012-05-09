@@ -215,9 +215,13 @@ Ext.define ("viewer.components.DataSelection",{
             }
         }
         this.dataTab.removeAll();
+        var defaultText = 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie';
+        if(this.uniqueValuesAttributes.length == 0){
+            defaultText = '';
+        }
         this.dataTab.add({
             xtype : 'label',
-            text: 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie'
+            text: defaultText
         });
         this.getUniques();
         this.dataTab.add(dataSelectieAttributes);
@@ -264,32 +268,34 @@ Ext.define ("viewer.components.DataSelection",{
     },
     getUniques : function (){
         var appLayer = this.layerSelector.getValue();
-        this.dataTab.getEl().mask("Laad unieke waardes...");
-        Ext.Ajax.request({ 
-            url: actionBeans.unique, 
-            timeout: 240000,
-            scope:this,
-            params: { 
-                attributes: this.uniqueValuesAttributes,
-                applicationLayer: appLayer.id
-            }, 
-            success: function ( result, request ) { 
-                var res = Ext.JSON.decode(result.responseText);
-                if(res.success){
-                    var values = res.uniqueValues;
-                    if(res.msg){
-                        Ext.MessageBox.alert('Info', res.msg);
+        if(this.uniqueValuesAttributes.length > 0){
+            this.dataTab.getEl().mask("Laad unieke waardes...");
+            Ext.Ajax.request({ 
+                url: actionBeans.unique, 
+                timeout: 240000,
+                scope:this,
+                params: { 
+                    attributes: this.uniqueValuesAttributes,
+                    applicationLayer: appLayer.id
+                }, 
+                success: function ( result, request ) { 
+                    var res = Ext.JSON.decode(result.responseText);
+                    if(res.success){
+                        var values = res.uniqueValues;
+                        if(res.msg){
+                            Ext.MessageBox.alert('Info', res.msg);
+                        }
+                        this.receiveUniqueValues(values);
+                    }else{
+                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
                     }
-                    this.receiveUniqueValues(values);
-                }else{
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
-                }
-            }, 
-            failure: function ( result, request) {
-                Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
-                this.itemsLoaded--;
-            } 
-        });
+                }, 
+                failure: function ( result, request) {
+                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
+                    this.itemsLoaded--;
+                } 
+            });
+        }
     },
     receiveUniqueValues : function (values){
         for(var attribute in values){
