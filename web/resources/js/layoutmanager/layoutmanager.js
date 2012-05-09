@@ -38,7 +38,7 @@ Ext.onReady(function() {
         {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: true, configureWidth: false, addedComponents:[]},
         {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[]},
         {id:'content_bottom', htmlId:'layout_content_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, addedComponents:[]},
-        {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, configureTitle: true, addedComponents:[]},
+        {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, configureTitle: true, configurePosition: true, addedComponents:[]},
         {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[]},
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
         {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]}
@@ -199,6 +199,13 @@ Ext.onReady(function() {
                                                     '<input type="checkbox" id="' + layoutRegion.get('id') + '_useTabs" />' + 
                                                 '</div>';
                 }
+                if(layoutRegion.get('configurePosition')) {
+                    layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
+                                                'Startpositie (leeg = gecentreerd):<br />' + 
+                                                'x: <input type="text" id="' + layoutRegion.get('id') + '_posx" /> ' + 
+                                                'y: <input type="text" id="' + layoutRegion.get('id') + '_posy" />' + 
+                                            '</div>';
+                }
                 if(layoutRegion.get('configureTitle')) {
                     layoutRegionConfigHtml +=   '<div class="tabsconfig" style="clear: left;">' + 
                                                 'Popup titel: ' + 
@@ -343,6 +350,7 @@ Ext.onReady(function() {
             layoutRegionsStore.each(function(layoutRegion){
                 var regionId = layoutRegion.get('id');
                 if(Ext.isDefined(layoutJson[regionId])) {
+                    // Apply config
                     if(Ext.isDefined(layoutJson[regionId]['layout'])) {
                         if(layoutRegion.get('configureWidth')) {
                             Ext.fly(regionId + '_width').set({
@@ -354,12 +362,12 @@ Ext.onReady(function() {
                             });
                             Ext.fly(regionId + '_maxwidth').set({
                                 value:(layoutJson[regionId]['layout']['maxwidth'] || '')
-                                });
+                            });
                         }
                         if(layoutRegion.get('configureHeight')) {
                             Ext.fly(regionId + '_height').set({
                                 value:(layoutJson[regionId]['layout']['height'] || '')
-                                });
+                            });
                             var heightMeasureSelect = Ext.get(regionId + '_heightmeasure');
                             Ext.each(heightMeasureSelect.options, function(item, index){
                                 if(item.value == layoutJson[regionId]['layout']['heighthmeasure']) heightMeasureSelect.selectedIndex = index;
@@ -382,6 +390,14 @@ Ext.onReady(function() {
                             }
                             Ext.fly(regionId + '_title').set({
                                 value: title
+                            });
+                        }
+                        if(layoutRegion.get('configurePosition')) {
+                            Ext.fly(regionId + '_posx').set({
+                                value:(layoutJson[regionId]['layout']['posx'] || '')
+                            });
+                            Ext.fly(regionId + '_posy').set({
+                                value:(layoutJson[regionId]['layout']['posy'] || '')
                             });
                         }
                         var bgcolor = '';
@@ -623,6 +639,12 @@ Ext.onReady(function() {
             if(region.get('configureTitle')) {
                 Ext.apply(layoutConfig, {
                     'title': Ext.fly(regionId + '_title').getValue() || ''
+                });
+            }
+            if(region.get('configurePosition')) {
+                Ext.apply(layoutConfig, {
+                    'posx': Ext.fly(regionId + '_posx').getValue() || '',
+                    'posy': Ext.fly(regionId + '_posy').getValue() || ''
                 });
             }
             Ext.apply(layoutConfig, {
