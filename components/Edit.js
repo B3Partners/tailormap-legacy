@@ -351,8 +351,7 @@ Ext.define ("viewer.components.Edit",{
         var x = coords.x;
         var y = coords.y;
         
-        var layerObj = this.layerSelector.getValue();
-        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
+        var layer = this.layerSelector.getValue();
         this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
         var featureInfo = Ext.create("viewer.FeatureInfo", {
             viewerController: this.viewerController
@@ -417,8 +416,7 @@ Ext.define ("viewer.components.Edit",{
             feature.__fid = this.currentFID;
         }
         
-        var layerObj = this.layerSelector.getValue();
-        var layer = this.viewerController.getApplayer(layerObj.serviceId, layerObj.name);
+        var layer = this.layerSelector.getValue();
         Ext.create("viewer.EditFeature", {
             viewerController: this.viewerController
         })

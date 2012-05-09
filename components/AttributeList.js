@@ -145,11 +145,8 @@ Ext.define ("viewer.components.AttributeList",{
         this.loadAttributes(appLayer);
     },
     filterChanged : function (filter,appLayer){
-        var layer = this.layerSelector.getValue();
-        var selectedLayer = null;
-        if(layer != null){
-            selectedLayer = this.viewerController.getApplayer(layer.serviceId, layer.name);
-        }
+        var selectedLayer = this.layerSelector.getValue();
+ 
         if(selectedLayer == appLayer){
             this.loadAttributes(selectedLayer);
         }
