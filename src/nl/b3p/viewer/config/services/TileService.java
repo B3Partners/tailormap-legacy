@@ -78,7 +78,15 @@ public class TileService extends GeoService {
             tilingLayer.setService(s);
             
             TileSet ts = new TileSet();
-            ts.setName(serviceName);
+            Boolean unique = false;
+            String tsName=serviceName;
+            for (int i=0; i < 100 && !unique; i++){
+                if(Stripersist.getEntityManager().find(TileSet.class,tsName)==null){
+                    unique=true;
+                }
+                tsName = serviceName+"("+(i+1)+")";
+            }
+            ts.setName(tsName);
             if (params.containsKey(PARAM_RESOLUTIONS)){
                 String resString = (String) params.get(PARAM_RESOLUTIONS);
                 ts.setResolutions(resString);
