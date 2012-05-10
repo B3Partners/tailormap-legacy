@@ -174,6 +174,7 @@ Ext.define ("viewer.components.SelectionModule",{
         me.popup.popupWin.addListener('show', me.showTreeContainers);
         me.popup.popupWin.addListener("dragstart", me.hideTreeContainers);
         me.popup.popupWin.addListener("dragend", me.showTreeContainers);
+        me.popup.popupWin.addListener("resize", me.applyTreeScrollFix, me);
         
         me.rendered = true;
     },
@@ -203,24 +204,52 @@ Ext.define ("viewer.components.SelectionModule",{
         extComponents.push('selectionModuleTreesContainer');
         extComponents.push('selectionModuleFormFieldContainer');
         extComponents.push('selectionModuleCustomFormFieldContainer');
-        return Ext.Array.merge(extComponents, me.getActiveTreePanels());
+        return Ext.Array.merge(extComponents, me.getActiveTreePanelIds());
     },
     
     getActiveTreePanels: function() {
         var me = this;
         var panels = [];
-        if(me.treePanels.applicationTree.treePanel != null) panels.push(me.treePanels.applicationTree.treePanel.id);
-        if(me.treePanels.registryTree.treePanel != null) panels.push(me.treePanels.registryTree.treePanel.id);
-        if(me.treePanels.customServiceTree.treePanel != null) panels.push(me.treePanels.customServiceTree.treePanel.id);
-        if(me.treePanels.selectionTree.treePanel != null) panels.push(me.treePanels.selectionTree.treePanel.id);
+        if(me.treePanels.applicationTree.treePanel != null) {
+            panels.push(me.treePanels.applicationTree.treePanel);
+        }
+        if(me.treePanels.registryTree.treePanel != null) {
+            panels.push(me.treePanels.registryTree.treePanel);
+        }
+        if(me.treePanels.customServiceTree.treePanel != null) {
+            panels.push(me.treePanels.customServiceTree.treePanel);
+        }
+        if(me.treePanels.selectionTree.treePanel != null) {
+            panels.push(me.treePanels.selectionTree.treePanel);
+        }
         return panels;
     },
     
+    getActiveTreePanelIds: function() {
+        var me = this;
+        var panelIds = [];
+        var activePanels = me.getActiveTreePanels();
+        for(var i in activePanels) {
+            panelIds.push(activePanels[i].id);
+        }
+        return panelIds;
+    },
+    
+    /**
+     *  Apply fixes to the trees for ExtJS scrolling issues
+     */
     applyTreeScrollFix: function() {
         var me = this;
-        var treePanels = me.getActiveTreePanels();
-        for(var i = 0; i < treePanels.length; i++) {
-            Ext.getCmp(treePanels[i]).getView().setHeight('100%');
+        var activePanels = me.getActiveTreePanels();
+        for(var i in activePanels) {
+            activePanels[i].getView().getEl().setStyle({
+                overflow: 'auto',
+                overflowX: 'hidden'
+            });
+            // From ext-all-debug, r77661 & r77663
+            // Seems to recalculate body and applies correct heights so scrollbars can be shown
+            activePanels[i].getView().panel.doComponentLayout();
+            activePanels[i].getView().panel.getLayout().layout();
         }
     },
     
@@ -538,7 +567,7 @@ Ext.define ("viewer.components.SelectionModule",{
             rootVisible: false,
             useArrows: true,
             height: "100%",
-            autoScroll: true,
+            scroll: false,
             animate: false,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
@@ -903,6 +932,8 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswServiceUrlButton.setVisible(true);
             }
         }
+        
+        me.applyTreeScrollFix();
     },
     
     populateCustomServiceTree: function(userService, node, autoExpand) {

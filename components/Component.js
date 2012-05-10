@@ -269,7 +269,7 @@ Ext.define("viewer.components.Component",{
 
     isTool: function() {
         // How can we check if the component is a tool?
-        return (this.superclass && (this.superclass.$className == 'viewer.viewercontroller.controller.Tool' || this.superclass.$className == 'viewer.components.tools.JSButton'));
+        return (this.superclass && this.superclass.$className && (this.superclass.$className == 'viewer.viewercontroller.controller.Tool' || this.superclass.$className == 'viewer.components.tools.JSButton'));
     },
 
     resizeScreenComponent: function() {

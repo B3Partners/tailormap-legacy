@@ -40,10 +40,25 @@ Ext.define ("viewer.components.TOC",{
         this.initConfig(config);
         this.loadTree();
         this.loadInitLayers();
+        this.applyTreeScrollFix();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         return this;
+    },
+    /**
+     *  Apply fixes to the trees for ExtJS scrolling issues
+     */
+    applyTreeScrollFix: function() {
+        var view = this.panel.getView();
+        view.getEl().setStyle({
+            overflow: 'auto',
+            overflowX: 'hidden'
+        });
+        // From ext-all-debug, r77661 & r77663
+        // Seems to recalculate body and applies correct heights so scrollbars can be shown
+        view.panel.doComponentLayout();
+        view.panel.getLayout().layout();
     },
     // Build the tree
     loadTree : function(){        
@@ -71,10 +86,7 @@ Ext.define ("viewer.components.TOC",{
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            autoScroll: true,
-            viewConfig: {
-                height: '100%'
-            },
+            scroll: false,
             useArrows: true,
             rootVisible: false,
             floating: false,
@@ -550,6 +562,12 @@ Ext.define ("viewer.components.TOC",{
     },
     getExtComponents: function() {
         return [ this.panel.getId() ];
+    },
+    // Override function so tree-scroll-fix can be applied
+    doResize: function() {
+        var me = this;
+        me.panel.doLayout();
+        me.applyTreeScrollFix();
     },
     isInScale : function ( scale, min, max ){
         var inScale = true;
