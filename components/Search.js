@@ -59,6 +59,7 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
     },
     getFormItems: function(){
+        var me = this;
         var itemList = new Array();        
         if(this.searchconfigs.length == 1){
             itemList.push({
@@ -87,7 +88,14 @@ Ext.define ("viewer.components.Search",{
                 xtype: 'textfield',
                 name: 'searchfield',
                 anchor: '100%',
-                id: 'searchfield' + this.name
+                id: 'searchfield' + this.name,
+                listeners: {
+                    specialkey: function(field, e){
+                        if (e.getKey() == e.ENTER) {
+                            me.search();
+                        }
+                    }
+                }
             });
         
             itemList.push({ 
@@ -181,10 +189,13 @@ Ext.define ("viewer.components.Search",{
             });
         }
         
+        var height = Ext.get(this.getContentDiv()).getHeight() - this.form.getHeight();
         me.results = Ext.create('Ext.form.Panel', {
             title: 'Resultaten:',
             renderTo: this.getContentDiv(),
             html: html,
+            height: height,
+            autoScroll: true,
             items: buttonList
         });
         
@@ -208,6 +219,14 @@ Ext.define ("viewer.components.Search",{
     },
     getExtComponents: function() {
         return [ this.form.getId() ];
+    },
+    // Override doResize function to resize results field
+    doResize: function() {
+        this.form.doLayout();
+        if(this.results !== null) {
+            var contentEl = Ext.get(this.getContentDiv());
+            this.results.setHeight(contentEl.getHeight() - this.form.getHeight());
+        }
     }
 });
 
