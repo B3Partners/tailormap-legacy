@@ -102,7 +102,8 @@ Ext.onReady(function() {
                             id: 'editvalues' + attribute.id, 
                             queryMode: 'local',
                             displayField: 'label',
-                            valueField: 'type',                            
+                            valueField: 'type',
+                            emptyText:'Maak uw keuze',
                             value: type, 
                             size: 40 
                             }
@@ -228,6 +229,7 @@ Ext.onReady(function() {
                                         name: 'defaultVal' + attribute.id,
                                         id: 'defaultVal' + attribute.id,
                                         fieldLabel: 'Defaultwaarde',
+                                        emptyText:'Maak uw keuze',
                                         value: attribute.defaultValue
                                     },
                                     { xtype: 'button', text: 'DB', style: { marginLeft: '10px' },hideMode: 'visibility', listeners: {

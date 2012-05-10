@@ -69,7 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>Attribuutlijst:</td>
                         <td>
                             <select name="simpleFeatureType" id="simpleFeatureTypeId">
-                                <option value="1">Kies..</option>
+                                <option value="1">Maak uw keuze..</option>
                             </select>
                         </td>
                     </tr>

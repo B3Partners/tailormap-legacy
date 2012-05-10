@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div style="margin-bottom: 10px;">
                 <p>Attributen beheren voor</p>
                 <select name="featureSourceId" id="featureSourceId">
-                    <option value="1">Kies..</option>
+                    <option value="1">Maak uw keuze..</option>
                     <c:forEach var="source" items="${actionBean.featureSources}">
                         <c:set var="selected" value="" />
                         <c:if test="${actionBean.featureSourceId == source.id}">
@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:forEach>
                 </select>
                 <select name="simpleFeatureTypeId" id="simpleFeatureTypeId">
-                    <option value="1">Kies..</option>
+                    <option value="1">Maak uw keuze..</option>
                 </select>
             </div>
 
