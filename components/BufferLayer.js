@@ -64,6 +64,7 @@ Ext.define ("viewer.components.BufferLayer",{
 
         this.combobox = Ext.create('Ext.form.ComboBox', {
             fieldLabel: 'Kies kaartlaag',
+            emptyText:'Maak uw keuze',
             store: layerStore,
             queryMode: 'local',
             displayField: 'title',

@@ -60,8 +60,8 @@
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
-            propertyNames: {},
-            source: {}
+            propertyNames: { tooltip: 'Tooltip' },
+            source: { tooltip: 'Streetview' }
         }
     },
 
@@ -241,7 +241,7 @@
         sources: ["BorderNavigation.js"],
         closureCompilerSafe: true,        
         singleton: true,
-        restrictions: ["content"]        
+        restrictions: ["content"]
     },
     {
         className: "viewer.components.ScaleBar",

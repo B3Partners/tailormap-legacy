@@ -78,6 +78,7 @@ Ext.define ("viewer.components.Search",{
                 displayField: 'name',
                 valueField: 'id',
                 anchor: '100%',
+                emptyText:'Maak uw keuze',
                 id: 'searchName' + this.name
             });
         }

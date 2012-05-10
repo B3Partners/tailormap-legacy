@@ -300,6 +300,7 @@ Ext.define ("viewer.components.Print",{
                             },{
                                 xtype: 'combo',                                
                                 name: 'pageformat',
+                                emptyText:'Maak uw keuze',
                                 store: [['a4','A4'],['a3','A3']],
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"

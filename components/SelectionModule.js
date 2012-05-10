@@ -398,7 +398,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         defaultType: 'textfield',
                         items: [
                             {hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
-                            {xtype: 'combo', store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Selecteer'},
+                            {xtype: 'combo', store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Maak uw keuze'},
                             {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
                                     me.loadCustomService();
                             }},

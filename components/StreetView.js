@@ -67,7 +67,7 @@ Ext.define ("viewer.components.tools.StreetView",{
             toggle: true,
             enabled: false,
             selected:false,
-            tooltip:null,
+            tooltip: this.config.tooltip || null,
             viewerController: this.viewerController
         });
         

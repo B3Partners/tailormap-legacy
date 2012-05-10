@@ -56,6 +56,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fields: ['value','text'],
                 value: me.configObject.default_format ? me.configObject.default_format : "a4",
                 name: "default_format",
+                emptyText:'Maak uw keuze',
                 store: [
                     ["a4","A4"],
                     ["a3","A3"]

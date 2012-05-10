@@ -205,6 +205,7 @@ Ext.define ("viewer.components.DataSelection",{
                     valueField: 'id',
                     value : defaultVal,
                     width: 400,
+                    emptyText:'Maak uw keuze',
                     store: {
                         fields: [{name:'id',convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}],
                         data : []
