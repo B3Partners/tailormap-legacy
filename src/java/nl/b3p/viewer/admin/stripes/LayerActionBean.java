@@ -47,7 +47,7 @@ public class LayerActionBean implements ActionBean {
     @Validate
     private String parentId;
     private List<Group> allGroups;
-    private List<String> applicationsUsedIn = new ArrayList();
+    private SortedSet<String> applicationsUsedIn = new TreeSet();
     @Validate
     private List<String> groupsRead = new ArrayList<String>();
     @Validate
@@ -109,11 +109,11 @@ public class LayerActionBean implements ActionBean {
         this.groupsWrite = groupsWrite;
     }
 
-    public List<String> getApplicationsUsedIn() {
+    public SortedSet<String> getApplicationsUsedIn() {
         return applicationsUsedIn;
     }
 
-    public void setApplicationsUsedIn(List<String> applicationsUsedIn) {
+    public void setApplicationsUsedIn(SortedSet<String> applicationsUsedIn) {
         this.applicationsUsedIn = applicationsUsedIn;
     }
 
@@ -193,31 +193,19 @@ public class LayerActionBean implements ActionBean {
             for (Iterator iter = levels.iterator(); iter.hasNext();) {
                 Level level = (Level) iter.next();
                 if (level != null && level.getLayers().contains(appLayer)) {
-                    String name = getApplicationName(level);
-                    if (!applicationsUsedIn.contains(name)) {
-                        applicationsUsedIn.add(name);
-                    }
+                    applicationsUsedIn.addAll(getApplicationNames(level));
                 }
             }
         }
     }
 
-    private String getApplicationName(Level level) {
-        String applicationName = null;
-
-        if (level.getParent() == null) {
-            Application application = (Application) Stripersist.getEntityManager().createQuery("from Application where root = :level").setParameter("level", level).getSingleResult();
-            if (application.getVersion() != null) {
-                applicationName = application.getName() + " V" + application.getVersion();
-            } else {
-                applicationName = application.getName();
-            }
-
-        } else {
-            applicationName = getApplicationName(level.getParent());
+    private Set<String> getApplicationNames(Level level) {
+        
+        Set<String> names = new HashSet();
+        for(Application app:  level.findApplications()) {
+            names.add(app.getNameWithVersion());
         }
-
-        return applicationName;
+        return names;
     }
 
     public Resolution save() {
