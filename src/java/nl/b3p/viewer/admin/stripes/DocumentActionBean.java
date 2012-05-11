@@ -159,10 +159,10 @@ public class DocumentActionBean implements ActionBean {
                 .setParameter("doc", document)
                 .getResultList();
         
-            for (Level level : levels){
-                Application app = getApplication(level);
-                String levelPath=getLevelPath(level);
-                message+="<li>Level: \""+levelPath+"\" in de Applicatie \""+app.getName()+"\".</li>";
+            for (Level level: levels){
+                for(Application app: level.findApplications()) {
+                    message+="<li>Level: \""+ level.getPath() +"\" in de Applicatie \""+app.getNameWithVersion()+"\".</li>";
+                }
             }
             message+="</ul>";
             getContext().getValidationErrors().add("document", new SimpleError(message));
@@ -285,34 +285,5 @@ public class DocumentActionBean implements ActionBean {
         j.put("url", url);
         j.put("category", category);
         return j;
-    }
-
-    private Application getApplication(Level level) {
-        Application app=null;
-        try{
-            app = (Application) Stripersist.getEntityManager().createQuery(
-                    "from Application where root = :level")
-                    .setParameter("level", level).getSingleResult();
-        }catch(NoResultException nre){
-            //nothing found
-        }
-        
-        if (app!=null){
-            return app;
-        }else if (level.getParent()!=null){
-            return getApplication(level.getParent());
-        }else{
-            return null;
-        }
-        
-    }
-
-    private String getLevelPath(Level level) {
-        String s=level.getName();
-        if (level.getParent()!=null){
-            s= getLevelPath(level.getParent())+"/"+s;
-        }
-        return s;            
-    }
-    
+    }    
 }
