@@ -187,6 +187,14 @@ public class Application {
         this.authorizationsModified = authorizationsModified;
     }
     //</editor-fold>
+    
+    public String getNameWithVersion() {
+        String n = getName();
+        if(getVersion() != null) {
+            n += " v" + getVersion();
+        }
+        return n;
+    }  
 
     public static class TreeCache {
         List<Level> levels;
