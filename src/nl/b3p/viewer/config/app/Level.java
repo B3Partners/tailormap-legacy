@@ -25,6 +25,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -69,86 +70,88 @@ public class Level {
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
 
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     public Integer getSelectedIndex() {
         return selectedIndex;
     }
-
+    
     public void setSelectedIndex(Integer selectedIndex) {
         this.selectedIndex = selectedIndex;
     }
-
+    
     public List<Level> getChildren() {
         return children;
     }
-
+    
     public void setChildren(List<Level> children) {
         this.children = children;
     }
-
+    
     public String getInfo() {
         return info;
     }
-
+    
     public void setInfo(String info) {
         this.info = info;
     }
-
+    
     public List<ApplicationLayer> getLayers() {
         return layers;
     }
-
+    
     public void setLayers(List<ApplicationLayer> layers) {
         this.layers = layers;
     }
-
+    
     public Level getParent() {
         return parent;
     }
-
+    
     public void setParent(Level parent) {
         this.parent = parent;
     }
-
+    
     public Set<String> getReaders() {
         return readers;
     }
-
+    
     public void setReaders(Set<String> readers) {
         this.readers = readers;
     }
-
+    
     public boolean isBackground() {
         return background;
     }
-
+    
     public void setBackground(boolean background) {
         this.background = background;
     }
-
+    
     public List<Document> getDocuments() {
         return documents;
     }
-
+    
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
-
+    //</editor-fold>
+    
     public JSONObject toJSONObject() throws JSONException {
         return toJSONObject(true,null,null);
     }
@@ -196,7 +199,38 @@ public class Level {
         
         return o;
     }    
+    
+    /**
+     * Find the applications this level is used in. Because of mashups a level
+     * can be used in more than one application.
+     * @return 
+     */
+    public Set<Application> findApplications() {
+        Level l = this;
+        while(l.getParent() != null) {
+            l = l.getParent();
+        }
+        
+        Set<Application> apps = new HashSet();
+        apps.addAll(Stripersist.getEntityManager().createQuery(
+                    "from Application where root = :level")
+                    .setParameter("level", l)
+                    .getResultList());        
+        return apps;
+    }
 
+    public String getPath() {
+        Level l = this;
+        
+        String s = "";
+        do {
+            s = l.getName() + (s.length() == 0 ? "" : "/" + s);
+            l = l.getParent();
+        } while(l != null);
+        
+        return s;            
+    }
+    
     public boolean containsLayerInSubtree(ApplicationLayer appLayer) {
         
         for(ApplicationLayer al: layers) {
