@@ -147,8 +147,8 @@ Ext.define ("viewer.components.AttributeList",{
     filterChanged : function (filter,appLayer){
         var selectedLayer = this.layerSelector.getValue();
  
-        if(selectedLayer == appLayer){
-            this.loadAttributes(selectedLayer);
+        if(selectedLayer.id == appLayer.id){
+            this.loadAttributes(appLayer);
         }
     },
     initGrid: function(appLayer) {

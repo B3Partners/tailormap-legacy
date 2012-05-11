@@ -418,7 +418,7 @@ Ext.define ("viewer.components.DataSelection",{
         for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection.
             var item = items[i];
             if(item.getValue() != ""){
-                if(i != 0 ){
+                if(i > 1 ){
                     cql += " AND ";
                 }
                 cql += "\"" +item.id + "\"=";
