@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
-                    <c:when test="${actionBean.context.eventName == 'edit'}">
+                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save'}">
                     <h1 id="headertext">Attribuutbron bewerken</h1>
 
                     <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
@@ -69,8 +69,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <stripes:submit name="saveEdit" value="Opslaan"/>
                         <stripes:submit name="cancel" value="Annuleren"/>
                     </div>
+                        <c:if test="${actionBean.context.eventName == 'saveEdit'}">
+                            <script type="text/javascript">
+                                var frameParent = getParent();
+                                if(frameParent && frameParent.reloadGrid) {
+                                    frameParent.reloadGrid();
+                                }
+                            </script>
+                        </c:if>
                 </c:when>
-                <c:when test="${actionBean.context.eventName == 'newAttributeSource' || actionBean.context.eventName == 'save'}">
+                <c:when test="${actionBean.context.eventName == 'newAttributeSource'}">
 
                             <h1 id="headertext">Nieuwe attribuutbron toevoegen</h1>
                             <p>
@@ -169,24 +177,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <stripes:submit name="save" value="Opslaan"/>
                                 <stripes:submit name="cancel" value="Annuleren"/>
                             </div>
-                </c:when>
-                <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'saveEdit'}">
-                    <script type="text/javascript">
-                        var frameParent = getParent();
-                        if(frameParent && frameParent.reloadGrid) {
-                            frameParent.reloadGrid();
-                        }
-                    </script>
-                    <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
-                </c:when>
-                <c:when test="${actionBean.context.eventName == 'delete'}">
-                    <script type="text/javascript">
-                        var frameParent = getParent();
-                        if(frameParent && frameParent.reloadGrid) {
-                            frameParent.reloadGrid();
-                        }
-                    </script>
-                    <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                 </c:when>
                 <c:otherwise>
                     <script type="text/javascript">

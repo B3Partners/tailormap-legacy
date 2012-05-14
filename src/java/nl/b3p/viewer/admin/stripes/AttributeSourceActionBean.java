@@ -189,7 +189,7 @@ public class AttributeSourceActionBean implements ActionBean {
 
         getContext().getMessages().add(new SimpleMessage("Attribuutbron is ingeladen"));
 
-        return new ForwardResolution(EDITJSP);
+        return edit();
     }
 
     @ValidationMethod(on = {"save", "saveEdit"})
