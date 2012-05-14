@@ -169,8 +169,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${actionBean.context.eventName == 'save'}">
             <script type="text/javascript">
                 var frameParent = getParent();
-                if(frameParent && frameParent.renameNode && '${actionBean.layer.titleAlias}' != '') {
-                    frameParent.renameNode('l${actionBean.layer.id}','${actionBean.layer.titleAlias}');
+                if(frameParent && frameParent.renameNode ) {
+                    frameParent.renameNode('l${actionBean.layer.id}','${actionBean.layer.titleAlias}' != '' ? '${actionBean.layer.titleAlias}' : '${actionBean.layer.title}');
                 }
             </script>
         </c:if>
