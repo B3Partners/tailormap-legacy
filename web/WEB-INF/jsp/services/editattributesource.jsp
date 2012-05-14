@@ -115,7 +115,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </script>
                             <table class="formtable">
                                 <tr>
-                                    <td>Type:</td>
+                                    <td>Type *:</td>
                                     <td>
                                         <stripes:select name="protocol" onchange="checkProtocol()" onkeyup="checkProtocol()">
                                             <stripes:option value="jdbc">Database (JDBC)</stripes:option>
@@ -124,15 +124,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Naam:</td>
+                                    <td>Naam *:</td>
                                     <td><stripes:text name="name" maxlength="255" size="30"/></td>
                                 </tr>
                                 <tr class="wfsTr">
-                                    <td>URL:</td>
+                                    <td>URL *:</td>
                                     <td><stripes:text name="url" maxlength="255" size="30"/></td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Database type:</td>
+                                    <td>Database type *:</td>
                                     <td>
                                         <stripes:select name="dbtype" onchange="checkDefaults()" onkeyup="checkDefaults()">
                                             <stripes:option value="oracle">Oracle</stripes:option>
@@ -141,25 +141,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Adres database server:</td>
+                                    <td>Adres database server *:</td>
                                     <td>
                                         <stripes:text name="host" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Poort database server:</td>
+                                    <td>Poort database server *:</td>
                                     <td>
                                         <stripes:text name="port" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Database:</td>
+                                    <td>Database *:</td>
                                     <td>
                                         <stripes:text name="database" maxlength="255" size="30"/>
                                     </td>
                                 </tr>
                                 <tr class="dbTr">
-                                    <td>Schema:</td>
+                                    <td>Schema *:</td>
                                     <td>
                                         <stripes:text name="schema" maxlength="255" size="30"/>
                                     </td>
