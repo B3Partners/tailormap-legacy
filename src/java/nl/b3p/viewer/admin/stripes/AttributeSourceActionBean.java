@@ -42,7 +42,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @UrlBinding("/action/attributesource/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
-public class AttributeSourceActionBean implements ActionBean {
+public class AttributeSourceActionBean implements ActionBean, ValidationErrorHandler {
 
     private static final Log log = LogFactory.getLog(AttributeSourceActionBean.class);
     private ActionBeanContext context;
@@ -60,7 +60,7 @@ public class AttributeSourceActionBean implements ActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-    @Validate(on = {"save", "saveEdit"}, required = true)
+    @Validate(on = {"save", "saveEdit"}, required = true, label="Naam")
     private String name;
     @Validate
     private String url;
@@ -497,4 +497,8 @@ public class AttributeSourceActionBean implements ActionBean {
         this.username = username;
     }
     //</editor-fold>
+
+    public Resolution handleValidationErrors(ValidationErrors ve) throws Exception {
+        return edit();
+    }
 }
