@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </p>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
-                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save'}">
+                    <c:when test="${empty actionBean.context.validationErrors && (actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save')}">
                     <h1 id="headertext">Attribuutbron bewerken</h1>
 
                     <stripes:hidden name="featureSource" value="${actionBean.featureSource.id}"/>
