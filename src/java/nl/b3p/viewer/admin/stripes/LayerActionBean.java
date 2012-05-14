@@ -222,9 +222,7 @@ public class LayerActionBean implements ActionBean {
             layer.getWriters().add(groupName);
         }
 
-        if (simpleFeatureType != null) {
-            layer.setFeatureType(simpleFeatureType);
-        }
+        layer.setFeatureType(simpleFeatureType);
 
         Stripersist.getEntityManager().persist(layer);
         layer.getService().authorizationsModified();
