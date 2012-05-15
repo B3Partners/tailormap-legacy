@@ -296,7 +296,7 @@ Ext.define ("viewer.components.Edit",{
             for(var i= 0 ; i < attributes.length ;i++){
                 var attribute = attributes[i];
                 if(attribute.editable){
-                    var values = attribute.editValues;
+                    var values = Ext.clone(attribute.editValues);
                     var input = null;
                     if(i == appLayer.geometryAttributeIndex){
                         continue;
