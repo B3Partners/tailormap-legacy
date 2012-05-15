@@ -920,51 +920,51 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var type = parameter.substring(0,index2);
                 var value = parameter.substring(index2 +1);
                 if(type != "layers" && type != "extent" && type != "bookmark"){
-                    var param7 = {
+                    var otherParam = {
                         name: type, 
                         value: value
                     };
-                    paramJSON.params.push(param7);
+                    paramJSON.params.push(otherParam);
                 }
             }
         }
         
         var visLayers = this.getVisibleLayers();
         if(visLayers.length != 0 ){
-            var param2 = {
+            var layerParam = {
                 name: "layers", 
                 value: visLayers
             };
-            paramJSON.params.push(param2);
+            paramJSON.params.push(layerParam);
         }
         
         var extent = this.mapComponent.getMap().getExtent();
-        var param3 = {
+        var extentParam = {
             name: "extent", 
             value: extent
         };
-        paramJSON.params.push(param3);
+        paramJSON.params.push(extentParam);
         
         var selectedContent = this.app.selectedContent;
-        var param4 = {
+        var selectedContentParam = {
             name:"selectedContent", 
             value:selectedContent
         };
-        paramJSON.params.push(param4);
+        paramJSON.params.push(selectedContentParam);
         
         var services = this.app.services;
-        var param5 = {
+        var serviceParam = {
             name:"services", 
             value:services
         };
-        paramJSON.params.push(param5);
+        paramJSON.params.push(serviceParam);
         
         var appLayers = this.app.appLayers;
-        var param6 = {
+        var appLayersParam = {
             name:"appLayers", 
             value:appLayers
         };
-        paramJSON.params.push(param6);
+        paramJSON.params.push(appLayersParam);
         
         return paramJSON;
     },
