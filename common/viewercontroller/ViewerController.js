@@ -576,7 +576,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 styles: "",
                 format: "image/png",
                 transparent: true,
-                noCache: false
+                noCache: true
             };
             if (layer.queryable){
                 ogcOptions.query_layers= layer.name;
