@@ -141,7 +141,7 @@ Ext.define ("viewer.components.AttributeList",{
         }
     },
     // Called when the layerSelector was changed. 
-    layerChanged : function (appLayer){        
+    layerChanged : function (appLayer){
         this.loadAttributes(appLayer);
     },
     filterChanged : function (filter,appLayer){
