@@ -151,6 +151,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     json.put(FID, addNewFeature());
                 } else {
                     editFeature(fid);
+                    json.put(FID, fid);
                 }
                 
                 json.put("success", Boolean.TRUE);

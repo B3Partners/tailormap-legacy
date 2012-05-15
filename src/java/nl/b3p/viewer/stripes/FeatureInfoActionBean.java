@@ -317,6 +317,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
                     }                     
                 }
+                j.put(FID, f.getID());
                 features.put(j);
             }
             return features;
