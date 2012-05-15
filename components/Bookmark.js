@@ -100,7 +100,10 @@ Ext.define ("viewer.components.Bookmark",{
                 parameters += param.name +"=";
                 var layers = param.value;
                 for( var x = 0 ; x < layers.length ; x++){
-                     parameters += layers[x]+","
+                     parameters += layers[x];
+                     if(x != (layers.length - 1)){
+                         parameters += ",";
+                     }
                 } 
                 parameters +="&";
             }else if(param.name != 'selectedContent' && param.name != 'services' && param.name != 'appLayers'){

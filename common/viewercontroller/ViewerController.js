@@ -112,15 +112,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** @private Event handler for when the MapContainer is loaded */
     onMapContainerLoaded: function() {
         if(this.configCompleted) {
-            //console.log("onMapContainerLoaded; dupe");
             return;
         }
         this.configCompleted = true;
-        //console.log("onMapContainerLoaded()");
 
-        try {            
-            // XXX viewer.js: initializeButtons();
-            // XXX viewer.js; zooms to some extent: onFrameworkLoaded();
+        try {
             //if there is a height set for the top_menu start the map lower.
             var topMenuLayout=this.getLayout('top_menu');
             var mapTop= topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0;
@@ -851,10 +847,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var isBookmarked = false;
             
             for(var x = 0 ; x < values.length ; x++){
-                var index = values[x].indexOf("_");
-                var service = values[x].substring(0,index);
-                var layername = values[x].substring(index+1);
-                if(appLayer.layerName == layername && appLayer.serviceId == service){
+                var appLayerId = values[x];
+                if(appLayer.id == appLayerId){
                     isBookmarked = true;
                     break;
                 }
