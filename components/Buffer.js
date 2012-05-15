@@ -131,7 +131,7 @@ Ext.define ("viewer.components.Buffer",{
                     attrs += "&color="+this.color;
             }
             url += attrs;
-            this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.name+"ImageLayer", url, bbox);
+            this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.layerName+"ImageLayer", url, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
         }
     },
