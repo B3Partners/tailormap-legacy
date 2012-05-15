@@ -106,7 +106,7 @@ Ext.define ("viewer.components.Bookmark",{
                      }
                 } 
                 parameters +="&";
-            }else if(param.name != 'selectedContent' && param.name != 'services' && param.name != 'appLayers'){
+            }else if(param.name != 'selectedContent' && param.name != 'services' && param.name != 'appLayers' && param.name != "" && param.value != ""){
                 parameters += param.name +"="+ param.value +"&";
             }
         }
