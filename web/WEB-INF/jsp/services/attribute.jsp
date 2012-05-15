@@ -95,6 +95,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     if(selectedValue != 1) {
                         Ext.Ajax.request({ 
                             url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
+                            scope:this,
                             params: { 
                                 featureSourceId: selectedValue
                             }, 
@@ -102,7 +103,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 result = Ext.JSON.decode(result.responseText);
                                 Ext.Array.each(result, function(item) {
                                     simpleFeatureTypeId.appendChild(getOption(item.id, item.name, false));
-                                });                              
+                                });
                             },
                             failure: function() {
                                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
@@ -119,6 +120,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         page: 1,
                         limit: 10
                     }});
+                    gridStore.loadPage(1, {limit:10});
                 }
                 // Init with change, because a certain select value can be preselected
                 featureSourceChange(featureSourceId);
