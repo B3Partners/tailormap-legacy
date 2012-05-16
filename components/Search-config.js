@@ -90,6 +90,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             animCollapse: false,
             collapsible: true,
             collapsed: collapsed,
+            iconCls: "edit-icon-bw",
             titleCollapse: true,
             hideCollapseTool: true,
             items: [
