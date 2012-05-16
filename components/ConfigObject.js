@@ -20,7 +20,7 @@
 Ext.define("viewer.components.ConfigObject",{
     parentId: null,
     configObject: null,
-    formWidth: 760,
+    formWidth: 750,
     labelWidth: 300,
     formPadding: 5,
     //options for checkboxes
