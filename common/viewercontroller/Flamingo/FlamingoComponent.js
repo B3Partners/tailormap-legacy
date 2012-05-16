@@ -22,7 +22,7 @@
   **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
     extend: "viewer.viewercontroller.controller.Component",
-    strings: new Object(),
+    strings: null,
     config: {
         tagName: null,
         width: null,
@@ -55,7 +55,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         //replace the . for flamingo
         if (config.id){
             config.id=config.id.replace(/\./g,"_");
-        }            
+        }
+        this.strings = new Object();
         viewer.viewercontroller.flamingo.FlamingoComponent.superclass.constructor.call(this, config);
         this.initConfig(config);
         //translate type to tagName
@@ -65,7 +66,19 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
             var attrPosMap= config.viewerController.mapComponent.getMap().getPositionAttributes();
             for (var key in attrPosMap){
                 this[key]=attrPosMap[key];
-            }              
+            }
+            if (config.tooltip_pan_right!=undefined){
+                this.addString("tooltip_west",config.tooltip_pan_right);
+            }
+            if (config.tooltip_pan_left!=undefined){
+                this.addString("tooltip_east",config.tooltip_pan_left);
+            }
+            if (config.tooltip_pan_up!=undefined){
+                this.addString("tooltip_north",config.tooltip_pan_up);
+            }
+            if (config.tooltip_pan_down!=undefined){
+                this.addString("tooltip_south",config.tooltip_pan_down);
+            }
         }else if(config.type==viewer.viewercontroller.controller.Component.SCALEBAR){
             this.setTagName("Scalebar");
             this.setBottom("bottom +20");
