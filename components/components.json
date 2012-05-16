@@ -247,7 +247,7 @@
                 tooltip_pan_right: "Tooltip pan rechts",
                 tooltip_pan_left: "Tooltip pan links",
                 tooltip_pan_up: "Tooltip pan omhoog",
-                tooltip_pan_down: "Tooltip pan omlaag",
+                tooltip_pan_down: "Tooltip pan omlaag"
             },
             source:{
                 tooltip_pan_right: "Pan naar rechts",
