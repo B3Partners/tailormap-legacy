@@ -41,6 +41,7 @@ Ext.onReady(function(){
              */
             var extConfigSource = {};
             if(metadata.extPropertyGridConfigs && metadata.extPropertyGridConfigs.source) {
+                Ext.applyIf(source, metadata.extPropertyGridConfigs.source);
                 Ext.Object.each(source, function(key, value) {
                     if(metadata.extPropertyGridConfigs.source.hasOwnProperty(key)) {
                         extConfigSource[key] = value;
