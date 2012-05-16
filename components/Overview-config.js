@@ -29,6 +29,16 @@ Ext.define("viewer.components.CustomConfiguration",{
     createForm: function(config){
         //to make this accessible in object
         var me=this;
+        var positionStore = Ext.create('Ext.data.Store', {
+            fields: ['type', 'label'],
+            data :
+                [
+                {"type":"upperleft", "label":"Linksboven"},
+                {"type":"upperright", "label":"Rechtsboven"},
+                {"type":"lowerleft", "label":"Linksonder"},
+                {"type":"lowerright", "label":"Rechtsonder"}
+                ]
+        });
         this.form=new Ext.form.FormPanel({
             frame: false,
             bodyPadding: me.formPadding,
@@ -36,42 +46,9 @@ Ext.define("viewer.components.CustomConfiguration",{
             height: '100%',
             autoScroll:true,
             hideMode : 'offsets',
-            items: [{
-                xtype: "label",
-                text: "Layout",
-                style: "font-weight: bold;"
-            },
-            {
-                xtype: 'radiogroup',
-                columns: 1,
-                vertical: true,
-                labelWidth:350,
-                items: [{
-                    boxLabel: 'Toon overzichtskaart in popup', 
-                    name: 'position',
-                    inputValue: 'popup', 
-                    checked: config.position == 'popup',
-                    listeners:{
-                        change :{ 
-                            fn : function (obj, checked){
-                                var c = Ext.get("overviewPopupConfig");
-                                c.setVisible(checked);
-                            },
-                            scope : this
-                        }
-                    }
-                },
-                {
-                    boxLabel: 'Toon overzichtskaart als vak in kaart', 
-                    name: 'position', 
-                    checked : config.position == 'inmap',
-                    inputValue: 'inmap'
-                }
-                ]
-            },
+            items: [
             {
                 xtype: 'container',
-                hidden: config.position == 'inmap',
                 name : 'overviewPopupConfig',
                 id: 'overviewPopupConfig',
                 items: [
@@ -135,33 +112,21 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'height',
                 value: config.height,
                 labelWidth:me.labelWidth
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Links',
-                name: 'left',
-                value: config.left,
-                labelWidth:me.labelWidth
             },
-            { 
-                xtype: 'textfield',
-                fieldLabel: 'Boven',
-                name: 'top',
-                value: config.top,
+            {
+                fieldLabel: 'Positie', 
+                store: positionStore,
+                xtype: 'combobox',
+                name: 'position', 
+                id: 'editvalues', 
+                queryMode: 'local',
+                displayField: 'label',
+                valueField: 'type',
+                emptyText:'Maak uw keuze',
+                value: config.position,
                 labelWidth:me.labelWidth
-            },{ 
-                xtype: 'textfield',
-                fieldLabel: 'Onder',
-                name: 'bottom',
-                value: config.bottom,
-                labelWidth:me.labelWidth
-            },
-            { 
-                xtype: 'textfield',
-                fieldLabel: 'Rechts',
-                name: 'right',
-                value: config.right,
-                labelWidth:me.labelWidth
-            },{ 
+            }
+            ,{ 
                 xtype: 'textfield',
                 fieldLabel: 'URL naar achtergrondkaart (afbeelding, WMS-request of swf)',
                 name: 'url',
@@ -169,7 +134,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth:me.labelWidth
             },{ 
                 xtype:'container',
-                //columnWidth: 0.5,
                 margin: 5,
                 title: 'Extentie van de afbeelding',
                 collapsible: false,
@@ -213,7 +177,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     width:150
                 }]
             }],
-            renderTo: this.parentId//(2)
+            renderTo: this.parentId
         });     
     }    
 });

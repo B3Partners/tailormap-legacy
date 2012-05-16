@@ -26,10 +26,6 @@ Ext.define ("viewer.components.Overview",{
         position:null,
         width:null,
         height:null,
-        left:null,
-        right:null,
-        top:null,
-        bottom:null,
         url:null,
         lox:null,
         loy:null,
@@ -58,63 +54,51 @@ Ext.define ("viewer.components.Overview",{
         xml += "<fmc:LayerImage id='layerimageoverview"+this.name+"' imageurl='"+this.url + "'";
         xml+=" extent='"+extent + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "'/>";
         xml +="</fmc:Map>";
-        var container;
         var position = "";
-        if(this.left != null && this.left != ''){
-            position += " left ='" + this.left + "'";
+        if(this.position == 'upperleft'){
+            position =  "left = 'left 0' top = '0'";
+        }else if(this.position == 'upperright'){
+            position =  "right = 'right 0' top = '0'";
+        }else if(this.position == 'lowerleft'){
+            position =  "left = 'left 0' bottom = 'bottom 0'";
+        }else if(this.position == 'lowerright'){
+            position =  "right = 'right 0' bottom = 'bottom 0'";
         }
-        if(this.right != null && this.right != ''){
-            position += " right ='" + this.right + "'";
-        }
-        if(this.top != null && this.top != ''){
-            position += " top ='" + this.top + "'";
-        }
-        if(this.bottom != null && this.bottom != ''){
-            position += " bottom ='" + this.bottom + "'";
-        }
-        if(this.position == "popup"){
-            var window = "<cmc:Window xmlns:cmc='cmc' id='"+ this.name + "Window' "+ position +" width='"+this.width+"' height='"+this.height+"' canclose='false'>";
-            window += "<fmc:Container id='"+ this.name + "windowcontainer' left='0' width='100%' height='100%' top='0' backgroundcolor='#FFFFFF'>";
-            window += xml;
-            window += "</fmc:Container>";
-            window += "</cmc:Window>";
-            container = window;
-            
-            // Make showbutton
-            var conf = {};
-            conf.toggle = true;
-            conf.enabled = true;
-            conf.visible = true;
-            conf.selected = true;
-            conf.iconUrl_up = this.picNormal;
-            conf.iconUrl_over= this.picOver;
-            conf.iconUrl_sel= this.picSelected;
-            conf.iconUrl_dis= this.picNormal;
+        var container;
+    
+        // Make showbutton
+        var conf = {};
+        conf.toggle = true;
+        conf.enabled = true;
+        conf.visible = true;
+        conf.selected = true;
+        conf.iconUrl_up = this.picNormal;
+        conf.iconUrl_over= this.picOver;
+        conf.iconUrl_sel= this.picSelected;
+        conf.iconUrl_dis= this.picNormal;
 
-            conf.left = this.picLeft;
-            conf.top = this.picTop;
-            conf.viewerController = this.viewerController;
-            conf.tooltip = "Open/sluit de overzichtskaart";
-            this.showButton = Ext.create("viewer.components.tools.JSButton", conf);
-            var me = this;
-            this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,function () {
-                me.showOverview(true);
-            }, this);
-            this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,function () {
-                me.showOverview(false);
-            }, this);
-        }else if(this.position =="inmap"){
-            container = "<fmc:Container id='"+ this.name + "windowcontainer' "+ position +" width='"+this.width+"' height='"+this.height+"' backgroundcolor='#FFFFFF'>";
-            container += xml;
-            container += "</fmc:Container>";
-        }
-        
+        conf.left = this.picLeft;
+        conf.top = this.picTop;
+        conf.viewerController = this.viewerController;
+        conf.tooltip = "Open/sluit de overzichtskaart";
+        this.showButton = Ext.create("viewer.components.tools.JSButton", conf);
+        var me = this;
+        this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,function () {
+            me.showOverview(true);
+        }, this);
+        this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,function () {
+            me.showOverview(false);
+        }, this);
+        container = "<fmc:Container id='"+ this.name + "windowcontainer' "+ position +" width='"+this.width+"' height='"+this.height+"' borderwidth='0' bordercolor='#000000' backgroundcolor='#FFFFFF'>";
+        container += xml;
+        container += "</fmc:Container>";
+
         this.viewerController.mapComponent.viewerObject.callMethod(this.viewerController.mapComponent.mainContainerId,'addComponent',container);      
     },
     getExtComponents: function() {
         return [];
     },
     showOverview : function (open){
-        this.viewerController.mapComponent.viewerObject.callMethod( this.name + "Window",'setVisible',open);  
+        this.viewerController.mapComponent.viewerObject.callMethod( this.name + 'windowcontainer','setVisible',open);  
     }
 });
