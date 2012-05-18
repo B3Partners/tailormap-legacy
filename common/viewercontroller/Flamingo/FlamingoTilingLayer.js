@@ -24,7 +24,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
     config:{
         id:null,
         url:null,
-        serviceEnvelope:null,
+        serviceEnvelope:null,   
         protocol:null,
         tileHeight: null,
         tileWidth: null,
@@ -74,12 +74,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
         return xml;
     },
 
-    /**
-     *Get the id of this layer
-     */
-    getId :function (){
-        return this.id;
-    },
     reload : function (){
         this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
     },
