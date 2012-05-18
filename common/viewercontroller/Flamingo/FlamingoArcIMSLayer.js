@@ -52,6 +52,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
             };
             var util = Ext.create("viewer.ArcQueryUtil");
             util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
+        }else{
+            this.getFrameworkLayer().callMethod(me.getFrameworkId(),"setQuery","#ALL#",null);
+            this.update();
         }
     }
 });
