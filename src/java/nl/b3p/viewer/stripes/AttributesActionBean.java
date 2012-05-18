@@ -519,7 +519,7 @@ public class AttributesActionBean implements ActionBean {
                         }
                     }
                 } finally {
-                    it.close();                        
+                    it.close();
                     fs.getDataStore().dispose();
                 }
             }
