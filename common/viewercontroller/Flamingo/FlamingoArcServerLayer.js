@@ -33,5 +33,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
     
     getTagName: function(){
         return "LayerArcServer";
+    },
+    setQuery : function (filter){
+        
     }
 });
