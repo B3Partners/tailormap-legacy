@@ -144,6 +144,10 @@ Ext.define ("viewer.components.SelectionModule",{
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
             if(this.viewerController.app.selectedContent.length == 0 ){
                 me.openWindow();
+            }else{
+                if(this.selectedContentHasOnlyBackgroundLayers()){
+                    me.openWindow();
+                }
             }
         },this);
         return this;
@@ -177,6 +181,24 @@ Ext.define ("viewer.components.SelectionModule",{
         me.popup.popupWin.addListener("resize", me.applyTreeScrollFix, me);
         
         me.rendered = true;
+    },
+    selectedContentHasOnlyBackgroundLayers : function (){
+        var sc = this.viewerController.app.selectedContent;
+        for( var i = 0 ; i < sc.length ; i++){
+            var item = sc[i];
+            if(item.type == "level"){
+                var level = this.viewerController.app.levels[item.id];
+                if(!level.background){
+                    return false;
+                }
+            }else{
+                var layer = this.viewerController.app.appLayers[item.id];
+                if(!layer.background){
+                    return false;
+                }
+            }
+        }
+        return true;
     },
     
     hideTreeContainers: function() {
