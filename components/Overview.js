@@ -56,13 +56,17 @@ Ext.define ("viewer.components.Overview",{
         xml +="</fmc:Map>";
         var position = "";
         if(this.position == 'upperleft'){
-            position =  "left = 'left 0' top = '0'";
+        var topMenuLayout=this.viewerController.getLayout('top_menu');
+            position =  "left = 'left 0' top = '" + topMenuLayout.height + "'";
         }else if(this.position == 'upperright'){
-            position =  "right = 'right 0' top = '0'";
+            var topMenuLayout=this.viewerController.getLayout('top_menu');
+            position =  "right = 'right 0' top = '" + topMenuLayout.height + "'";
         }else if(this.position == 'lowerleft'){
-            position =  "left = 'left 0' bottom = 'bottom 0'";
+            var contentBottomLayout=this.viewerController.getLayout('content_bottom');
+            position =  "left = 'left 0' bottom = 'bottom -" + contentBottomLayout.height + "'";
         }else if(this.position == 'lowerright'){
-            position =  "right = 'right 0' bottom = 'bottom 0'";
+            var contentBottomLayout=this.viewerController.getLayout('content_bottom');
+            position =  "right = 'right 0' bottom = 'bottom -" + contentBottomLayout.height + "'";
         }
         var container;
     
@@ -89,7 +93,7 @@ Ext.define ("viewer.components.Overview",{
         this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,function () {
             me.showOverview(false);
         }, this);
-        container = "<fmc:Container id='"+ this.name + "windowcontainer' "+ position +" width='"+this.width+"' height='"+this.height+"' borderwidth='0' bordercolor='#000000' backgroundcolor='#FFFFFF'>";
+        container = "<fmc:Container id='"+ this.name + "windowcontainer' "+ position +" width='"+this.width+"' height='"+this.height+"' borderwidth='0' bordercolor='#D0D0D0' backgroundcolor='#FFFFFF'>";
         container += xml;
         container += "</fmc:Container>";
 
