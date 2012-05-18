@@ -170,6 +170,17 @@ Ext.define ("viewer.components.DataSelection",{
                 }
             }
         });
+        
+        this.button3 = Ext.create('Ext.Button', { 
+            text : 'Verwijder filter',
+            renderTo: this.getContentDiv(),
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.removeFilter
+                }
+            }
+        });
     },
     createDataTab : function (appLayer){
         var attributes = appLayer.attributes;
@@ -403,7 +414,7 @@ Ext.define ("viewer.components.DataSelection",{
         var layer = this.layerSelector.getValue();
         
         var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
-            id: this.name + this.layerSelector.getValue(),
+            id: this.name + this.layerSelector.getValue().layerName,
             cql: cql,
             operator : "AND"
         });
@@ -436,6 +447,13 @@ Ext.define ("viewer.components.DataSelection",{
     },
     cancel : function (){
         this.popup.hide();
+    },
+    removeFilter : function (){
+        var appLayer = this.layerSelector.getValue();
+        if(appLayer){
+            var filterId = this.name + appLayer.layerName;
+            this.viewerController.removeFilter(filterId,appLayer);
+        }
     },
     /**
      *  Reset all comboboxes when a different layer is selected
