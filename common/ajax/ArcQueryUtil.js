@@ -47,5 +47,27 @@ Ext.define("viewer.ArcQueryUtil", {
                 }
             }
         });
+    },
+    cqlToArcFIDS : function (cql, appLayer, successFunction, failureFunction){
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl,
+            params: { cql: cql, getObjectIds : true,appLayer: appLayer, application: appId },
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                
+                if(response.success) {
+                    successFunction(response.objectIds);
+                } else {
+                    if(failureFunction != undefined) {
+                        failureFunction(response.error);
+                    }
+                }
+            },
+            failure: function(result) {
+                if(failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });
     }
 });

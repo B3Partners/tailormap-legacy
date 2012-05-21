@@ -35,6 +35,25 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
         return "LayerArcServer";
     },
     setQuery : function (filter){
-        
+        if(filter){
+            var me = this;
+            var f = function(ids) { 
+                var query = "";
+                for(var i = 0 ; i < ids.length ;i++){
+                    if(i!=0){
+                        query += " OR ";
+                    }
+                    query += "OBJECTID = " + ids[i];
+                }
+                me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.options.name);
+                me.update();
+            };
+            var util = Ext.create("viewer.ArcQueryUtil");
+            var cql = filter.getCQL();
+            util.cqlToArcFIDS(cql,this.appLayerId,f,console.log);
+        }else{
+            this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.options.name);
+            this.update();
+        }
     }
 });
