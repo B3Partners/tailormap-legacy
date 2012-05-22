@@ -312,5 +312,9 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
     @Override
     public void close() throws IOException {
         
-    }    
+    }
+
+    public String getObjectIdFieldName() {
+        return objectIdFieldName;
+    }
 }
