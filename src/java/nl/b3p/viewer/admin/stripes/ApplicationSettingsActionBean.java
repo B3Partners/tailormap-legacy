@@ -357,12 +357,11 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             mashup.setName(mashup.getName() + "_" + mashupName);
             Stripersist.getEntityManager().persist(mashup);
             Stripersist.getEntityManager().getTransaction().commit();
-            setApplication(mashup);            
-            
+            setApplication(mashup);
         } catch (Exception ex) {
                 errors.add("Fout", new SimpleError("De mashup kan niet worden gemaakt."));
         }
-            return new ForwardResolution(JSP);
+        return new RedirectResolution(ApplicationSettingsActionBean.class);
     }
     
     public Resolution publish (){
