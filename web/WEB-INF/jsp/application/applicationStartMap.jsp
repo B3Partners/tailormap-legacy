@@ -58,6 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:hidden id="checkedlayersinput" name="checkedLayersString" />
 
                     <stripes:submit name="save" value="Opslaan"/>
+                    <stripes:submit name="default" value="Annuleren"/>
 
                 </stripes:form>
             </div>
