@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
@@ -164,6 +165,14 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
                 Stripersist.getEntityManager().getTransaction().commit();
 
                 getContext().getMessages().add(new SimpleMessage("Mashup is verwijderd"));
+            } else if (applicationToDelete.getVersion() == null) {
+                Date nowDate = new Date(System.currentTimeMillis());
+                SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+                sdf.applyPattern("HH-mm_dd-MM-yyyy");
+                String now = sdf.format(nowDate);
+                String uniqueVersion = ApplicationSettingsActionBean.findUniqueVersion(applicationToDelete.getName(), "B_" + now);
+                applicationToDelete.setVersion(uniqueVersion);
+                Stripersist.getEntityManager().getTransaction().commit();
             } else {
                 Stripersist.getEntityManager().remove(applicationToDelete);
                 Stripersist.getEntityManager().getTransaction().commit();

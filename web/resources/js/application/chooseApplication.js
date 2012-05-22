@@ -106,7 +106,9 @@ Ext.onReady(function(){
                                 Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);
                     }else{
                         if(data.published == "Ja"){
-                            return Ext.String.format('<a href="#" onclick="return makeWorkVersion({0});">Maak werkversie</a>', value);
+                            return Ext.String.format('<a href="#" onclick="return makeWorkVersion({0});">Maak werkversie</a>', value)+
+                                ' | ' +
+                                Ext.String.format('<a href="#" onclick="return removeObject({0});">Verwijderen</a>', value);;
                         }else{
                             return Ext.String.format('<a href="'+ editurl + '&application=' +'{0} ">Activeren</a>', value) +
                                 ' | ' +
