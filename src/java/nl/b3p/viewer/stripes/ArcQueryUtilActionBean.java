@@ -186,6 +186,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
                     List objIds = agfr.getObjectIds();
 
                     json.put("objectIds",objIds);
+                    json.put("objectIdFieldName",agfr.getObjectIdFieldName());
                     json.put("success",true);
                 }else{
                     json.put("success",false);
