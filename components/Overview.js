@@ -56,17 +56,25 @@ Ext.define ("viewer.components.Overview",{
         xml +="</fmc:Map>";
         var position = "";
         if(this.position == 'upperleft'){
-        var topMenuLayout=this.viewerController.getLayout('top_menu');
-            position =  "left = 'left 0' top = '" + topMenuLayout.height + "'";
+            var topMenuLayout=this.viewerController.getLayout('top_menu');
+            position = "left = 'left 0' top = '" + topMenuLayout.height;
+            position += topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
+            position += "'";
         }else if(this.position == 'upperright'){
             var topMenuLayout=this.viewerController.getLayout('top_menu');
-            position =  "right = 'right 0' top = '" + topMenuLayout.height + "'";
+            position = "right = 'right 0' top = '" + topMenuLayout.height;
+            position += topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
+            position += "'";
         }else if(this.position == 'lowerleft'){
             var contentBottomLayout=this.viewerController.getLayout('content_bottom');
-            position =  "left = 'left 0' bottom = 'bottom -" + contentBottomLayout.height + "'";
+            position = "left = 'left 0' bottom = 'bottom -" + contentBottomLayout.height;
+            position += contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
+            position += "'";
         }else if(this.position == 'lowerright'){
             var contentBottomLayout=this.viewerController.getLayout('content_bottom');
-            position =  "right = 'right 0' bottom = 'bottom -" + contentBottomLayout.height + "'";
+            position = "right = 'right 0' bottom = 'bottom -" + contentBottomLayout.height;
+            position += contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
+            position += "'";
         }
         var container;
     
