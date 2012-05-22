@@ -46,7 +46,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
                     query += colName + " = " + ids[i];
                 }
                 me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.options.name);
-                me.update();
+                setTimeout (function(){me.update();}, 500);
             };
             var util = Ext.create("viewer.ArcQueryUtil");
             var cql = filter.getCQL();
