@@ -55,5 +55,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
             this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.options.name);
             this.update();
         }
+    },
+    setVisible : function (vis){
+        this.visible = vis;
+        this.getFrameworkLayer().callMethod(this.map.id + "_" + this.id, "setLayerProperty", this.options.name,"visible",vis);
+        this.map.update();
     }
 });
