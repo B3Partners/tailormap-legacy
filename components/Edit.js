@@ -49,6 +49,7 @@ Ext.define ("viewer.components.Edit",{
         this.renderButton({
             handler: function(){
                 me.layerSelector.initLayers();
+                me.popup.popupWin.setTitle(me.title);
                 me.popup.show();
             },
             text: me.title,
@@ -202,11 +203,15 @@ Ext.define ("viewer.components.Edit",{
             this.vectorLayer.removeAllFeatures();
             this.mode=null;
             this.viewerController.mapComponent.getMap().removeMarker("edit");
-
+            if(appLayer.details["editfunction.title"]){
+                this.popup.popupWin.setTitle (appLayer.details["editfunction.title"]);
+            }
             this.inputContainer.setLoading("Laad attributen...");
             this.inputContainer.removeAll();
             this.loadAttributes(appLayer);
             this.inputContainer.setLoading(false);
+        }else{
+            this.cancel();
         }
     },
     loadAttributes: function(appLayer) {
