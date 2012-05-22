@@ -319,18 +319,20 @@ Ext.define ("viewer.components.DataSelection",{
     },
     addValuesToCombobox : function (values, attribute){
         var combobox = Ext.getCmp (attribute);
-        combobox.setDisabled(false);
-        combobox.getEl().unmask();
-        var SingleArray = Ext.define('SingleArray', {
-            extend: 'Ext.data.Model',
-            fields: [{name: 'id'  , convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}]
-        });
+        if(combobox){   // In case there are more than one layer with dataselection fields. This method can be called with an attribute of layer 1, when layer 2 is initialized
+            combobox.setDisabled(false);
+            combobox.getEl().unmask();
+            var SingleArray = Ext.define('SingleArray', {
+                extend: 'Ext.data.Model',
+                fields: [{name: 'id'  , convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}]
+            });
 
-        var myReader = new Ext.data.reader.Array({
-            model: 'SingleArray'
-        }, SingleArray);
-        var rs =  myReader.read(values);
-        combobox.getStore().add(rs.records);
+            var myReader = new Ext.data.reader.Array({
+                model: 'SingleArray'
+            }, SingleArray);
+            var rs =  myReader.read(values);
+            combobox.getStore().add(rs.records);
+        }
     },
     
     /**
