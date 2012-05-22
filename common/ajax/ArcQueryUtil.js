@@ -56,7 +56,7 @@ Ext.define("viewer.ArcQueryUtil", {
                 var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
-                    successFunction(response.objectIds);
+                    successFunction(response.objectIds,response.objectIdFieldName);
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);

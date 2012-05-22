@@ -37,13 +37,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
     setQuery : function (filter){
         if(filter){
             var me = this;
-            var f = function(ids) { 
+            var f = function(ids,colName) { 
                 var query = "";
                 for(var i = 0 ; i < ids.length ;i++){
                     if(i!=0){
                         query += " OR ";
                     }
-                    query += "OBJECTID = " + ids[i];
+                    query += colName + " = " + ids[i];
                 }
                 me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.options.name);
                 me.update();
