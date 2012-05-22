@@ -13,9 +13,8 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     frameworkMap: null,
   //  
     config :{
-        id: "id" ,
-        mapComponent: new Object()
-        //maxExtent : new Object()
+        id: null ,
+        mapComponent: null
     },
     /**
      * @constructor

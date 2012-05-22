@@ -17,8 +17,11 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     components: new Array(),
     panel : null,    
     viewerController: null,
-    
-    constructor :function (viewerController){       
+    config:{
+        resolutions : null
+    },
+    constructor :function (viewerController,domId,config){
+        this.initConfig(config);
         this.initEvents();
         this.viewerController=viewerController;
         this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);    

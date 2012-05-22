@@ -39,7 +39,11 @@
         restrictions: ["content"],
 
         singleton: true,
-        notInCombinationWith: ["viewer.mapcomponents.OpenLayersMap"]
+        notInCombinationWith: ["viewer.mapcomponents.OpenLayersMap"],
+        extPropertyGridConfigs: {
+            propertyNames: {resolutions: "Resoluties"},
+            source: {resolutions: ""}
+        }
     },
 
     {
@@ -49,7 +53,11 @@
 
         singleton: true,
         restrictions: ["content"],
-        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"]
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+        extPropertyGridConfigs: {
+            propertyNames: {resolutions: "Resoluties"},
+            source: {resolutions: ""}
+        }
     },
 
     {
@@ -474,6 +482,7 @@
     {
         className: "viewer.components.TransparencySlider",
         name: "Transparantie",
+        singleton: true,
         sources: ["Slider.js","TransparencySlider.js"],
         configSource: ["TransparencySlider-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"]
@@ -501,6 +510,7 @@
         className: "viewer.components.Buffer",
         name: "Buffer",
         shortName: "Bu",
+        singleton: true,
         sources: ["../common/ColorField.js","Buffer.js"],
         configSource: ["SelectionWindowConfig.js","Buffer-config.js"],
         restrictions: ["left_menu"],            
@@ -513,6 +523,7 @@
         sources: ["Maptip.js"],
         restrictions: ["content"],
         type : "popup",
+        singleton: true,
         extPropertyGridConfigs: {
             propertyNames: {
                 maptipdelay: "Maptip Delay",
@@ -534,6 +545,7 @@
         className: "viewer.components.LoadMonitor",
         name: "Load Monitor",
         shortName: "Mon",
+        singleton: true,
         sources: ["LoadMonitor.js"],
         restrictions: ["content"],
         extPropertyGridConfigs: {
@@ -582,6 +594,7 @@
         className: "viewer.components.DataSelection",
         name: "Data Selectie",
         shortName: "DS",
+        singleton: true,
         sources: ["AttributeFilter.js","Filter.js","DataSelection.js"],
         configSource: ["SelectionWindowConfig.js","DataSelection-config.js"],
         restrictions: ["left_menu"],        
@@ -590,6 +603,7 @@
      {
         className: "viewer.components.Search",
         name: "Search",
+        singleton: true,
         shortName: "Se",
         sources: ["Search.js"],
         configSource: ["SelectionWindowConfig.js","Search-config.js"],
@@ -616,6 +630,7 @@
     {
         className: "viewer.components.InfluenceImage",
         name: "Invloedsgebied plaatje",
+        singleton: true,
         shortName: "Igi",
         sources: ["tools/ToolMapClick.js","Search.js","Influence.js","InfluenceImage.js"],
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
@@ -634,6 +649,7 @@
         className: "viewer.components.Print",
         name: "Print",
         shortName: "Pr",
+        singleton: true,
         sources: ["Print.js"],
         configSource: ["SelectionWindowConfig.js","Print-config.js"],
         restrictions: ["left_menu"],        

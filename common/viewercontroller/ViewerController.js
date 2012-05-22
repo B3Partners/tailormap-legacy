@@ -77,13 +77,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if(mapId == null && this.layoutManager != null) {
             mapId = this.layoutManager.getMapId();
         }
+        
+      
         if(viewerType == "flamingo") {
-            //console.log("Creating FlamingoMapComponent, mapId = " + mapId);
-            this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId);
+            // Get config for map
+            var comps = this.app.components;
+            var config = null;
+            var cn = "viewer.mapcomponents.FlamingoMap";
+            for (var c in comps){
+                var component = comps[c];
+                if(component.className == cn){
+                    config = component.config;
+                    break;
+                }
+            }
+            this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         } else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId);
         }
-
+        
+       // this.mapComponent.setConfig(config);
         /* XXX move to constructor? */
         
      

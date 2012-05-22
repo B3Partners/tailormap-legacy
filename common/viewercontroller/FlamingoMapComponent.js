@@ -19,8 +19,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      * 
      * @constructur
      */
-    constructor :function (viewerController, domId){
-        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId);        
+    constructor :function (viewerController, domId, config){
+        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId,config);        
         var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);
@@ -61,12 +61,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      *@param options Options for the map
      *@returns a FlamingoMapComponent
      */
-    createMap : function(id,options){       
+    createMap : function(id,options){
         options.id=id;
         options.mapComponent=this;
+        options.options.resolutions = this.resolutions;
         var map = new viewer.viewercontroller.flamingo.FlamingoMap(options);
-        //var maxExtent = options["maxExtent"];
-        // map.setMaxExtent(maxExtent);
+        
         return map;
     },
     /**

@@ -9,19 +9,23 @@
 Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
     mapOptions:null,
-    constructor :function (viewerController, domId){
-        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController,domId);
+    constructor :function (viewerController, domId,config){
+        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController,domId,config);
         this.domId = domId;
         this.pointButton = null;
         this.lineButton = null;
         this.polygonButton = null;
         var maxBounds=new OpenLayers.Bounds(120000,304000,280000,620000);
+        var resolutions = [512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125];
+        if(config.resolutions){
+            resolutions = (config.resolutions).split(",");
+        }
         this.mapOptions =  {
             projection:new OpenLayers.Projection("EPSG:28992"),
             maxExtent: maxBounds,
             allOverlays: true,
             units :'m',
-            resolutions: [512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125],
+            resolutions: resolutions,
             resolution: 512,
             controls : [new OpenLayers.Control.Navigation({
                     zoomBoxEnabled: true
