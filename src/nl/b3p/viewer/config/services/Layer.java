@@ -140,6 +140,11 @@ public class Layer {
             details.put("metadata.stylesheet", mURL.getUrl().toString());
             break;
         }
+        
+        if( l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0){
+            String legendUrl = (String)l.getStyles().get(0).getLegendURLs().get(0);
+            legendImageUrl = legendUrl;
+        }
 
         for(org.geotools.data.ows.Layer child: l.getLayerChildren()) {
             Layer childLayer = new Layer(child, service);
