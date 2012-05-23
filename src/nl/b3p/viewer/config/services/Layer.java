@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.util.*;
 import javax.persistence.*;
 import org.geotools.data.ows.CRSEnvelope;
+import org.geotools.data.wms.xml.MetadataURL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -133,6 +134,11 @@ public class Layer {
         queryable = l.isQueryable();
         if(l.getKeywords() != null) {
             keywords.addAll(Arrays.asList(l.getKeywords()));
+        }
+        
+        for( MetadataURL mURL : l.getMetadataURL()){
+            details.put("metadata.stylesheet", mURL.getUrl().toString());
+            break;
         }
 
         for(org.geotools.data.ows.Layer child: l.getLayerChildren()) {
