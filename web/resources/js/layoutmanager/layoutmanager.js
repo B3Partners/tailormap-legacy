@@ -36,8 +36,8 @@ Ext.onReady(function() {
         {id:'leftmargin_bottom', htmlId:'layout_left_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
         {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, configureHeight: false, configureWidth: true, addedComponents:[]},
         {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: true, configureWidth: false, addedComponents:[]},
-        {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[]},
-        {id:'content_bottom', htmlId:'layout_content_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, addedComponents:[]},
+        {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[], titleOverride: 'Map' },
+        {id:'content_bottom', htmlId:'layout_content_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, addedComponents:[], titleOverride: 'Map bottom'},
         {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, configureTitle: true, configurePosition: true, addedComponents:[]},
         {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[]},
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
@@ -216,9 +216,11 @@ Ext.onReady(function() {
                                                 '<div style="float: left;">Achtergrondkleur:</div>' + 
                                                 '<div style="float: left; clear: left; width: 90px;"><input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 60px; float: left;" /><div id="colorpicker_' + layoutRegion.get('id') + '_bgcolor" style="float: left;"></div></div>' + 
                                             '</div>';
+                                        
+                var layoutRegionTitle = layoutRegion.get('titleOverride') || changeCaseFirstLetter(layoutRegion.get('id').replace('_', ' '), false);
                 layoutRegionElement.insertHtml('beforeEnd',
                     '<div class="layout_title">' +
-                        '<strong class="layoutregion_title">' + changeCaseFirstLetter(layoutRegion.get('id').replace('_', ' '), false) + '</strong><br />' + 
+                        '<strong class="layoutregion_title">' + layoutRegionTitle + '</strong><br />' + 
                         '<div class="regionconfig" id="regionconfig_' + layoutRegion.get('id') + '">' + 
                             '<u>Visuele configuratie</u><br />' + 
                             layoutRegionConfigHtml +
