@@ -44,12 +44,17 @@ Ext.define ("viewer.components.Maptip",{
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon",this.width,this.height);
         this.balloon.zIndex = this.balloon.zIndex+1;
-        //set the offset of the map
-        var mapTopOffset=this.viewerController.getLayoutHeight('top_menu');
-        if (mapTopOffset<0){
-            mapTopOffset=0;
-        }
-        this.balloon.offsetY+=Number(mapTopOffset);
+        //set the offset of the map        
+        var me = this;        
+        //if topmenu height is in % then recalc on every resize.        
+        var topMenuLayout=this.viewerController.getLayout('top_menu');
+        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
+            Ext.EventManager.onWindowResize(function(){
+                me.onResize();            
+            }, this);
+        }        
+        this.onResize();
+        
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //listen to the onmaptipcancel
@@ -81,6 +86,15 @@ Ext.define ("viewer.components.Maptip",{
                 mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);       
             }            
         }
+    },
+    onResize : function(){
+        var topMenuLayout=this.viewerController.getLayout('top_menu');
+        var top = Number(topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0);
+        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
+            var divHeight=Ext.get(this.div).getHeight();
+            top = Math.round(divHeight / 100 * top);
+        }
+        this.balloon.offsetY=Number(top);
     },
     /**
      * Enable doing server requests.
