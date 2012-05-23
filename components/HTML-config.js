@@ -45,11 +45,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             height: 460,
             value: value,
             renderTo: Ext.get(parentid) ,
-            plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                submitUrl: actionBeans['imageupload'],
-                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
-            }))]
-        });  
+            plugins: [
+                new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                    submitUrl: actionBeans['imageupload'],
+                    managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                })),
+                new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+            ]
+        });
+        this.htmlEditor.focus(false, true);
         return this;
     },
     getConfiguration: function(){
