@@ -175,3 +175,13 @@ var defaultImageUploadConfig = {
         'Your photo has been uploaded.':'Uw afbeelding is geupload.'
     }
 };
+
+var defaultHtmleditorTableConfig = {
+    langTitle: 'Tabel toevoegen',
+    langInsert: 'Invoegen',
+    langCancel: 'Annuleren',
+    langRows: 'Rijen',
+    langColumns: 'Kolommen',
+    langBorder: 'Rand',
+    langCellLabel: 'Label in cellen tonen'
+};

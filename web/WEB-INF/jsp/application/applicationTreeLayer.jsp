@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
         <title>Boomstructuur met kaarten</title>
-        <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorImage.css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <p>
@@ -143,6 +143,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 };
             </script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
         </stripes:form>
     </stripes:layout-component>

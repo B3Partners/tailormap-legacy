@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="head">
         <title>Configureer component</title>
-        <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorImage.css" />
+        <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -88,6 +88,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:if>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/FilterableCheckboxes.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
+        <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/SelectionGrid.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/ColorField.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/configPage.js"></script>

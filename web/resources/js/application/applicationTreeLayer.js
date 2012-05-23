@@ -316,10 +316,13 @@ Ext.onReady(function() {
                         height: 150,
                         maxHeight: 150,
                         value: Ext.get('details_summary_description').dom.value,
-                        plugins: [new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                            submitUrl: actionBeans['imageupload'],
-                            managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
-                        }))],
+                        plugins: [
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                                submitUrl: actionBeans['imageupload'],
+                                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                            })),
+                            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                        ],
                         renderTo: 'details_summary_description_container'
                     });
                     Ext.create('Ext.slider.Single', {

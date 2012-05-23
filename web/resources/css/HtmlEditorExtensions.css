@@ -1,3 +1,4 @@
+.x-edit-table { background: url(../images/table.png) 0 0 no-repeat !important; }
 .x-htmleditor-imageupload {background: url(../images/image_upload.png) 0 0 no-repeat !important}
 .x-htmleditor-imageupload-thumbcontainer{width:64px;height:64px;overflow:hidden;line-height:64px;text-align:center;margin:auto}
 .x-htmleditor-imageupload-thumbcontainer img{vertical-align:middle;width: expression(this.width > 64 ? 64: this.width);height: expression(this.height > 64 ? 64: this.height);max-width:64px;max-height:64px;}
