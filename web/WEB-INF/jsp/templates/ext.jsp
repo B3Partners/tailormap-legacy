@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var helppath = '${contextPath}/resources/html/help.html';
         </script>      
         <script type="text/javascript" src="${contextPath}/resources/js/defaultconfigs.js"></script>
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/menu.js"></script>
 
         <stripes:layout-component name="head"/>
