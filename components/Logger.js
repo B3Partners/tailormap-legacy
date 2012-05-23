@@ -35,7 +35,11 @@ Ext.define ("viewer.components.Logger",{
     iconSize: 16,
     constructor: function (conf){        
         this.initConfig(conf);
-        this.messages = new Array();        
+        this.messages = new Array();  
+        var me = this;
+        Ext.EventManager.onWindowResize(function(){
+            me.onResize();            
+        }, this);
     },
     error: function(message){
         if (this.logLevel <= viewer.components.Logger.LEVEL_ERROR){
@@ -129,6 +133,13 @@ Ext.define ("viewer.components.Logger",{
         }
         if(this.iconDiv!=null){
             this.iconDiv.setVisible(vis);
+        }
+    }, 
+    onResize: function(){
+        if (this.iconDiv!=null){
+            this.iconDiv.applyStyles({
+                top: (Ext.getBody().getHeight()-this.iconSize) +"px"
+            });
         }
     }
 });
