@@ -60,7 +60,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/LogMessage.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/Logger.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/DataSelectionChecker.js"></script>
-
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
+                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Map.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Layer.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/MapTip.js"></script>

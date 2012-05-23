@@ -21,6 +21,7 @@
           </sources>
 		  <!--					The common files-->
           <sources dir="${viewerhtml.path}/common">
+            <file name="overrides.js"/>
             <file name="ScreenPopup.js"/>
 			<file name="CQLFilterWrapper.js"/>
           </sources>
