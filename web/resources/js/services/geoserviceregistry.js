@@ -148,9 +148,7 @@ Ext.onReady(function() {
         renderTo: 'tree-container',
         width: 330,
         height: 600,
-        viewConfig: {
-            height: '100%'
-        },
+        scroll: false,
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
                 if(record.get('type') == "category") {
@@ -198,6 +196,8 @@ Ext.onReady(function() {
             }
         ]
     });
+    
+    applyTreeScrollFix(tree.getView());
 });
 
 // Function for adding a node, should not be called directly, but trough the

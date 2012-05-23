@@ -47,6 +47,20 @@ function appendPanel(header, content, container) {
     }
 }
 
+/**
+*  Apply fixes to the trees for ExtJS scrolling issues
+*/
+function applyTreeScrollFix(view) {
+    view.getEl().setStyle({
+        overflow: 'auto',
+        overflowX: 'hidden'
+    });
+    // From ext-all-debug, r77661 & r77663
+    // Seems to recalculate body and applies correct heights so scrollbars can be shown
+    view.panel.doComponentLayout();
+    view.panel.getLayout().layout();
+}
+
 var helpController = null;
 Ext.onReady(function() {
     helpController = Ext.create('Ext.b3p.HelpController', {

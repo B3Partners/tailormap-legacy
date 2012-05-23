@@ -194,6 +194,8 @@ Ext.onReady(function() {
             text: "Gebruik het contextmenu (rechtermuisknop) om de boomstructuur te bewerken"
         }]
     });
+    
+    applyTreeScrollFix(tree.getView());
 });
 
 // Function for adding a node, should not be called directly, but trough the

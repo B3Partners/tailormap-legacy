@@ -51,6 +51,20 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         if(this.autoShow) {
             this.show();
         }
+        this.applyTreeScrollFix();
+    },
+    
+    /**
+     *  Apply fixes to the trees for ExtJS scrolling issues
+     */
+    applyTreeScrollFix: function() {
+        var views = [];
+        views.push(this.tree.getView());
+        views.push(this.selectedlayers.getView());
+        
+        for(var i in views) {
+            applyTreeScrollFix(views[i]);
+        }
     },
 
     show: function() {
@@ -93,9 +107,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.treeContainer,
             width: 325,
             height: 600,
-            viewConfig: {
-                height: '100%'
-            },
+            scroll: false,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.addNode(record);
@@ -165,9 +177,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.selectedLayersContainer,
             width: 325,
             height: 600,
-            viewConfig: {
-                height: '100%'
-            },
+            scroll: false,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.removeLayers();
@@ -321,9 +331,19 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         });
     },
-
+    
     setAllNodesVisible: function(visible) {
         var me = this;
+        var treeview = me.tree.getView();
+        var showAllNodes = function(treeview, node) {
+            var el = Ext.fly(treeview.getNodeByRecord(node));
+            if(el !== null) el.setDisplayed(true);
+            if(node.hasChildNodes()) {
+                node.eachChild(function(childnode) {
+                    showAllNodes(treeview, childnode);
+                });
+            }
+        }
         if(!visible) {
             // !visible -> A filter is being applied
             // Save all nodes that are being filtered in hiddenNodes array
@@ -331,11 +351,13 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         } else {
             // visible -> No filter is applied
             // filteredNodes = hiddenNodes, so all hidden nodes will be made visible
-            me.filteredNodes = me.hiddenNodes;
+            me.filteredNodes = [];
             me.hiddenNodes = [];
+            showAllNodes(treeview, me.tree.getRootNode());
+            return;
         }
         Ext.each(me.filteredNodes, function(n) {
-            var el = Ext.fly(me.tree.getView().getNodeByRecord(n));
+            var el = Ext.fly(treeview.getNodeByRecord(n));
             if (el !== null) {
                 el.setDisplayed(visible);
             }
