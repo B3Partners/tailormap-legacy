@@ -105,7 +105,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <div class="submitbuttons">
                     <stripes:submit name="save" value="Kaartlaag opslaan"/>
-                    <stripes:reset name="cancel" onclick="setTimeout(changeFeatureSource,10)" value="Annuleren"/>
+                    <stripes:reset name="cancel" class="extlikebutton" onclick="setTimeout(changeFeatureSource,10)" value="Annuleren"/>
                 </div>
                 <script type="text/javascript">
                     

@@ -67,7 +67,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </table>
                     <div class="submitbuttons">
                         <stripes:submit name="saveEdit" value="Opslaan"/>
-                        <stripes:submit name="cancel" value="Annuleren"/>
+                        <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
+                        <stripes:reset class="extlikebutton" name="cancel" value="Annuleren"/>
                     </div>
                         <c:if test="${actionBean.context.eventName == 'saveEdit'}">
                             <script type="text/javascript">
@@ -175,7 +176,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </table>
                             <div class="submitbuttons">
                                 <stripes:submit name="save" value="Opslaan"/>
-                                <stripes:submit name="cancel" value="Annuleren"/>
+                                <stripes:reset class="extlikebutton" onclick="setTimeout(checkProtocol,10)" name="cancel" value="Annuleren"/>
                             </div>
                 </c:when>
                 <c:otherwise>
