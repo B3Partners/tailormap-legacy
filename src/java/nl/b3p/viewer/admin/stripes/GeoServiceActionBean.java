@@ -45,7 +45,7 @@ public class GeoServiceActionBean implements ActionBean {
     private ActionBeanContext context;
     @Validate(on = {"add"}, required = true)
     private Category category;
-    @Validate(on = "editGeoService", required = true)
+    @Validate(on = {"edit"}, required = true)
     private GeoService service;
     @Validate(on = "add", required = true)
     private String url;
@@ -234,7 +234,8 @@ public class GeoServiceActionBean implements ActionBean {
         this.crs = crs;
     }
     //</editor-fold>
-
+   
+    
     @DefaultHandler
     public Resolution edit() {
         if (service != null) {

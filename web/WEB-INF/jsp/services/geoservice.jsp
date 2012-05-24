@@ -52,7 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </c:if>
 </script>
 
-<c:if test="${!actionBean.serviceDeleted && actionBean.context.eventName != 'cancel'}">
+<c:if test="${!actionBean.serviceDeleted}">
     <c:set var="edit" value="${!empty actionBean.service.id}"/>
 
     <stripes:hidden name="category"/>
@@ -189,12 +189,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:choose>
             <c:when test="${!edit}">
                 <stripes:submit name="add" value="Service inladen"/>
-                <stripes:submit name="cancel" value="Annuleren"/>
+                <stripes:reset name="cancel" onclick="setTimeout(checkProtocol,10)"  class="extlikebutton" value="Annuleren"/>
             </c:when>
             <c:otherwise>
                 <stripes:submit name="save" value="Opslaan"/>
                 <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
-                <stripes:submit name="cancel" value="Annuleren"/>
+                <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
                 <script type="text/javascript">
                     function deleteServiceConfirm() {
                         return confirm('Weet u zeker dat u deze service wilt verwijderen?');
