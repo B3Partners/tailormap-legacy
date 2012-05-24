@@ -17,7 +17,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.polygonButton = null;
         var maxBounds=new OpenLayers.Bounds(120000,304000,280000,620000);
         var resolutions = [512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125];
-        if(config.resolutions){
+        if(config && config.resolutions){
             resolutions = (config.resolutions).split(",");
         }
         this.mapOptions =  {
