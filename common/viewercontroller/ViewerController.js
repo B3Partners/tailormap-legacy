@@ -776,7 +776,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layer.filter = null;
             }
             var mapLayer = this.getOrCreateLayer(layer);
-            mapLayer.setQuery(null);
+            mapLayer.setQuery(layer.filter);
         }
     },
     getComponentsByClassName : function(className) {
