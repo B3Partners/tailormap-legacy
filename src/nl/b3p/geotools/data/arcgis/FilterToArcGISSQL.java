@@ -163,7 +163,7 @@ public class FilterToArcGISSQL extends FilterToSQL {
         
             
         try {
-            out.write("1=1");
+            out.write("1 = 1");
         } catch (IOException ex) {
             throw new RuntimeException(IO_ERROR, ex);
         }

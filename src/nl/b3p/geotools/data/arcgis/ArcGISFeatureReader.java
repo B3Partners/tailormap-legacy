@@ -143,7 +143,7 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
             where = visitor.encodeToString(query.getFilter());
             params.putAll(visitor.getSpatialParams());
         } else {
-            where = "1=1"; // where parameter is required
+            where = "1 = 1"; // where parameter is required
         }
                 
         params.put("where", where);
