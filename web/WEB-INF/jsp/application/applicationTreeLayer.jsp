@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <h1>Bewerken kaartlaag</h1>
             <br>
             <stripes:submit name="save" value="Opslaan" />
-            <stripes:submit name="cancel" value="Annuleren"/>
+            <stripes:button onclick="cancelFunction()" name="cancel" class="extlikebutton" value="Annuleren"/>
             <br /><br />
             <div id="tabs">
                 <div id="rights-tab" class="x-hide-display">
@@ -139,7 +139,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var imagesPath = "${contextPath}/resources/images/";
                 var applicationLayer = "${actionBean.applicationLayer.id}";
                 var actionBeans = { 
-                    "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+                    "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
+                    "appTreeLayer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>
                 };
             </script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>

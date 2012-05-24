@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <h1>Bewerken: <c:out value="${actionBean.level.name}"/></h1>
                 <br>
                 <stripes:submit name="save" value="Opslaan" />
-                <stripes:submit name="cancel" value="Annuleren"/>
+                <stripes:button onclick="cancelFunction()" class="extlikebutton" name="cancel" value="Annuleren"/>
                 <stripes:submit name="delete" value="Verwijderen"/>
                 <br /><br />
                 <div id="tabs">
@@ -113,6 +113,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var activelink = 'menu_boomstructuur';
             
             var actionBeans = { 
+                "appTreeLevel": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean"/></js:quote>,
                 "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
             };
         </script>

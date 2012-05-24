@@ -457,3 +457,8 @@ function dbValuesToEdit(values,id){
     var textField = Ext.getCmp( 'editvalues' + id );
     textField.setValue(vals);
 }
+
+function cancelFunction(){
+    var url = actionBeans.appTreeLayer + '?edit=t&applicationLayer=' + applicationLayer;
+    document.location.href = url;
+}

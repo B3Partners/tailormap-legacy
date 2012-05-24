@@ -182,3 +182,9 @@ Ext.onReady(function() {
         if(htmlEditor) Ext.get('context_textarea').dom.value = htmlEditor.getValue();
     });
 });
+
+
+function cancelFunction(){
+    var url = actionBeans.appTreeLevel + '?edit=t&level=' + levelid;
+    document.location.href = url;
+}
