@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </table>
                 <div class="submitbuttons">
                     <stripes:submit name="save" value="Opslaan"/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
                 </div>
             </c:if>
             <c:if test="${actionBean.context.eventName == 'save'}">
