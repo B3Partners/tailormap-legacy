@@ -504,7 +504,7 @@ Ext.onReady(function() {
                 "Component uit layout verwijderen?",
                 "Weet u zeker dat dit component uit de layout wilt verwijderen?<br />" +
                 "Bij het opslaan van de layout gaat eventuele configuratie van<br />" +
-                "dit component verloren als u dit component verwijderd",
+                "dit component verloren als u dit component verwijdert",
                 function(btnClicked) {
                     if(btnClicked == 'yes') {
                         Ext.fly(data.sourceEl).removeCls("component-added");
