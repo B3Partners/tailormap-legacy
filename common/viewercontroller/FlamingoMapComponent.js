@@ -232,9 +232,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 msg: "The given tool is not of type 'FlamingoTool'"               
             });
         }
+        //calc the number of visible tools.
+        var visibleTools=this.getNumberOfVisibleTools();
         //Set the left if no left or right is set
         if (tool.getLeft()==null && tool.getRight()==null){
-            tool.setLeft(this.tools.length * this.toolMargin);
+            tool.setLeft(visibleTools * this.toolMargin);
         }        
         this.getToolGroup(tool);
         viewer.viewercontroller.FlamingoMapComponent.superclass.addTool.call(this,tool);
@@ -245,9 +247,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         toolXml+="</fmc:ToolGroup>";        
         this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
         var toolsVisible=0;
-        if (tool.getVisible()){
+        //if tool is not visible and not a JSbutton check if it's the first.
+        if (tool.getVisible() && !(tool instanceof viewer.components.tools.JSButton)){
             for (var i=0; i < this.tools.length; i++){
-                if (this.tools[i].getVisible()){
+                //only count the visible and not JSbuttons.
+                if (this.tools[i].getVisible() && !(this.tools[i] instanceof viewer.components.tools.JSButton)){
                     toolsVisible++;
                 }
             }
@@ -257,6 +261,22 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         
     },
+    /**
+     *Get the amount of visible tools.
+     *@return the amount of visible tools
+     */
+    getNumberOfVisibleTools: function(){
+        var count=0;
+        for (var i=0; i < this.tools.length; i++){
+            if (this.tools[i].getVisible()){
+                count++;
+            }
+        }
+        return count;
+    },
+    /**
+     * Get the toolgroup
+     */
     getToolGroup : function(tool){
         if (!this.toolGroupCreated){
             var lt = this.getMap().id;
