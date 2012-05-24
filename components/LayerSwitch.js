@@ -109,13 +109,15 @@ Ext.define ("viewer.components.LayerSwitch",{
         }
     },
     layerChanged : function (button, active){
-        var levelName = active.text;
-        var layers = this.layers[levelName];
-        this.setLayersActive(layers, true);
-        if(this.prev != null){
-            this.setLayersActive(this.prev,false);
+        if (this.viewerController.layersInitialized){
+            var levelName = active.text;
+            var layers = this.layers[levelName];
+            this.setLayersActive(layers, true);
+            if(this.prev != null){
+                this.setLayersActive(this.prev,false);
+            }
+            this.prev = layers;
         }
-        this.prev = layers;
     },
     setLayersActive : function (layerArray, visible){
          for( var i = 0 ; i < layerArray.length ;i++){
