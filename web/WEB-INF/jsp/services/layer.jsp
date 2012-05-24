@@ -105,9 +105,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <div class="submitbuttons">
                     <stripes:submit name="save" value="Kaartlaag opslaan"/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <stripes:reset name="cancel" onclick="setTimeout(changeFeatureSource,10)" value="Annuleren"/>
                 </div>
                 <script type="text/javascript">
+                    
                     Ext.onReady(function() {
                         appendPanel('headertext', 'formcontent');
                         var featureSourceId = Ext.get('featureSourceId');
@@ -115,7 +116,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         featureSourceId.on('change', function() {
                             featureSourceChange(featureSourceId);
                         });
-                        function getOption(value, text, selected) {
+                        
+                        // Init with change, because a certain select value can be preselected
+                        featureSourceChange(featureSourceId);
+                    });
+                    function getOption(value, text, selected) {
                             var option = document.createElement('option');
                             option.value = value;
                             option.innerHTML = text;
@@ -131,37 +136,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 } 
                             }
                         }
-                        function featureSourceChange(featureSourceId) {
-                            var selectedValue = parseInt(featureSourceId.getValue());
+                    function featureSourceChange(featureSourceId) {
+                        var selectedValue = parseInt(featureSourceId.getValue());
 
-                            var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
-                            // We are now emptying dom and adding options manully, don't know if this is optimal
-                            removeChilds(simpleFeatureTypeId);
-                            simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', false));
+                        var simpleFeatureTypeId = document.getElementById('simpleFeatureTypeId');
+                        // We are now emptying dom and adding options manully, don't know if this is optimal
+                        removeChilds(simpleFeatureTypeId);
+                        simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', false));
 
-                                if(selectedValue != 1) {
-                                Ext.Ajax.request({ 
-                                    url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
-                                    params: { 
-                                        featureSourceId: selectedValue
-                                    }, 
-                                    success: function ( result, request ) {
-                                        result = Ext.JSON.decode(result.responseText);
-                                        Ext.Array.each(result, function(item) {
-                                            var selected = false;
-                                            if(item.id == '${actionBean.simpleFeatureType.id}') selected = true;
-                                            simpleFeatureTypeId.appendChild(getOption(item.id, item.name, selected));
-                                        });                              
-                                    },
-                                    failure: function() {
-                                        Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
-                                    }
-                                });
-                            }
+                            if(selectedValue != 1) {
+                            Ext.Ajax.request({ 
+                                url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
+                                params: { 
+                                    featureSourceId: selectedValue
+                                }, 
+                                success: function ( result, request ) {
+                                    result = Ext.JSON.decode(result.responseText);
+                                    Ext.Array.each(result, function(item) {
+                                        var selected = false;
+                                        if(item.id == '${actionBean.simpleFeatureType.id}') selected = true;
+                                        simpleFeatureTypeId.appendChild(getOption(item.id, item.name, selected));
+                                    });                              
+                                },
+                                failure: function() {
+                                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                                }
+                            });
                         }
-                        // Init with change, because a certain select value can be preselected
+                        
+                    }
+                    function changeFeatureSource(){
+                        var featureSourceId = Ext.get('featureSourceId');
                         featureSourceChange(featureSourceId);
-                    });
+                    }
                 </script>
                 
         </stripes:form>
