@@ -94,8 +94,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" event="authorizations">
                             <stripes:param name="user" value="${actionBean.user}"/>
                         </stripes:url>
-                        <stripes:button name="authorizations" class="extlikebutton" onclick="window.open(${js:quote(url)})" value="Autorisatieoverzicht"/>
+                        <stripes:button name="authorizations" class="extlikebutton" id="autorizatieoverzichtbutton" value="Autorisatieoverzicht"/>
                     </div>
+                    <script type="text/javascript">
+                        Ext.onReady(function() {
+                            Ext.get('autorizatieoverzichtbutton').on('click', function(evt, htmlel, eOpts) {
+                                getParent().iFramePopupController.loadPage(${js:quote(url)}, 'Autorisatieoverzicht');
+                            }, '', {
+                                stopEvent: true
+                            });
+                        });
+                    </script>
                 </c:when>
                 <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                         <script type="text/javascript">

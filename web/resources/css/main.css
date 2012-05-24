@@ -190,6 +190,23 @@ input[type="submit"]:hover,
   height: 100%;
   min-width: 960px;
 }
+.textcontent {
+    padding: 10px;
+    padding-top: 0px;
+}
+.textcontent h1, .textcontent h2, .textcontent h3 {
+    margin-top: 10px;
+}
+.textcontent p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.textcontent td, .textcontent th {
+    padding: 3px;
+}
+.textcontent thead td, .textcontent thead th {
+    font-weight: bold;
+}
 #tree-container {
   width: 350px;
   float: left;

@@ -61,8 +61,10 @@ function applyTreeScrollFix(view) {
     view.panel.getLayout().layout();
 }
 
-var helpController = null;
+var helpController = null,
+    iFramePopupController = null;
 Ext.onReady(function() {
+    iFramePopupController = Ext.create('Ext.b3p.iFramePopupController');
     helpController = Ext.create('Ext.b3p.HelpController', {
         helppath: helppath
     });
@@ -76,15 +78,13 @@ Ext.onReady(function() {
     }
 });
 
-Ext.define('Ext.b3p.HelpController', {
+Ext.define('Ext.b3p.iFramePopupController', {
     iframe: null,
-    helppath: helppath,
     constructor: function(conf) {
         var me = this;
         me.initConfig(conf);
         me.iframeid = Ext.id();
         me.popupWindow = Ext.create('Ext.window.Window', {
-            title: 'Help',
             closeAction: 'hide',
             hideMode: 'offsets',
             width: 600,
@@ -110,18 +110,32 @@ Ext.define('Ext.b3p.HelpController', {
         if(me.iframe === null) me.iframe = Ext.get(me.iframeid);
         return me.iframe;
     },
+    loadPage: function(url, frametitle) {
+        var me = this;
+        var iframe = me.getIframe();
+        if(!frametitle) frametitle = '';
+        if(iframe) {              
+            iframe.set({ src: url });
+            me.popupWindow.setTitle(frametitle);
+            me.popupWindow.show();
+        }
+    }
+});
+
+Ext.define('Ext.b3p.HelpController', {
+    extend: "Ext.b3p.iFramePopupController",
+    helppath: helppath,
+    constructor: function(conf) {
+        Ext.b3p.HelpController.superclass.constructor.call(this, conf);
+    },
     showHelp: function(htmlel) {
         var me = this;
         var extel = Ext.fly(htmlel);
-        var iframe = me.getIframe();
-        if(iframe) {
-            var hash = extel.getAttribute('href');
-            // IE fix, href in IE8 and lower is the complete URL + hash, not just the hash
-            hash = hash.substring(hash.lastIndexOf('#'));
-            var iframeurl = me.helppath + hash;                
-            iframe.set({ src: iframeurl });
-            me.popupWindow.show();
-        }
+        var hash = extel.getAttribute('href');
+        // IE fix, href in IE8 and lower is the complete URL + hash, not just the hash
+        hash = hash.substring(hash.lastIndexOf('#'));
+        var iframeurl = me.helppath + hash;
+        me.loadPage(iframeurl, 'Help');
     }
 });
 
