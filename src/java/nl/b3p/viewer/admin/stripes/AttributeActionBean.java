@@ -223,6 +223,19 @@ public class AttributeActionBean implements ActionBean {
                 AttributeDescriptor ad = (AttributeDescriptor)it.next();
                 selectedAttributeIds.add(ad.getId());
             }
+        }else if(featureSourceId != null && featureSourceId != -1){
+            FeatureSource fc = (FeatureSource)Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
+            
+            List<SimpleFeatureType> sftList = fc.getFeatureTypes();
+            for(Iterator it = sftList.iterator(); it.hasNext();){
+                SimpleFeatureType sft = (SimpleFeatureType)it.next();
+                  List<AttributeDescriptor> selectedAttributes = sft.getAttributes();
+            
+                for(Iterator atIt = selectedAttributes.iterator(); atIt.hasNext();){
+                    AttributeDescriptor ad = (AttributeDescriptor)atIt.next();
+                    selectedAttributeIds.add(ad.getId());
+                }
+            }
         }
         
         String filterAlias = "";

@@ -109,6 +109,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
                             }
                         });
+                        var gridStore = Ext.getCmp('editGrid').getStore();
+                        gridStore.proxy.extraParams.featureSourceId = selectedValue;
+                        // Go back to page 1 and reload store
+                        gridStore.load({params: {
+                            start: 0,
+                            page: 1,
+                            limit: 10
+                        }});
+                        gridStore.loadPage(1, {limit:10});
                     }
                 }
                 function simpleFeatureTypeChange(simpleFeatureTypeId) {
