@@ -782,6 +782,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             var mapLayer = this.getOrCreateLayer(layer);
             mapLayer.setQuery(layer.filter);
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,layer.filter,layer);
         }
     },
     getComponentsByClassName : function(className) {
