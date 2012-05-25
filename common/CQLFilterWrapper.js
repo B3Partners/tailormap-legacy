@@ -70,6 +70,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
                 break;
             }
         }
+        return this;
     },
     addOrReplace : function (filter){
         this.removeFilter(filter);
