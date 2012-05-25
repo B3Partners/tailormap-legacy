@@ -55,7 +55,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private String mashupName;
     
     @Validate
-    private Map<String,String> details = new HashMap<String,String>();
+    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
     
     @ValidateNestedProperties({
                 @Validate(field="minx", maxlength=255),
@@ -75,11 +75,11 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
 
-    public Map<String, String> getDetails() {
+    public Map<String,ClobElement> getDetails() {
         return details;
     }
 
-    public void setDetails(Map<String, String> details) {
+    public void setDetails(Map<String, ClobElement> details) {
         this.details = details;
     }
 
@@ -157,15 +157,15 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         // DEFAULT VALUES
         if(!details.containsKey("iconSprite")) {
-            details.put("iconSprite", "/viewer/resources/images/default_sprite.png");
+            details.put("iconSprite", new ClobElement("/viewer/resources/images/default_sprite.png"));
         }
         if(!details.containsKey("stylesheetMetadata")) {
             // TODO: Default value stylesheet metadata
-            details.put("stylesheetMetadata", "");
+            details.put("stylesheetMetadata", new ClobElement(""));
         }
         if(!details.containsKey("stylesheetPrint")) {
             // TODO: Default value stylesheet printen
-            details.put("stylesheetPrint", "");
+            details.put("stylesheetPrint", new ClobElement(""));
         }
         return new ForwardResolution(JSP);
     }
@@ -175,11 +175,11 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application = null;
         applicationId = -1L;
         // DEFAULT VALUES
-        details.put("iconSprite", "/viewer/resources/images/default_sprite.png");
+        details.put("iconSprite", new ClobElement("/viewer/resources/images/default_sprite.png"));
         // TODO: Default value stylesheet metadata
-        details.put("stylesheetMetadata", "");
+        details.put("stylesheetMetadata", new ClobElement(""));
         // TODO: Default value stylesheet printen
-        details.put("stylesheetPrint", "");
+        details.put("stylesheetPrint", new ClobElement(""));
         return new ForwardResolution(JSP);
     }
     
@@ -353,7 +353,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             Application mashup = application.deepCopy();
             Stripersist.getEntityManager().detach(application);
             mashup.setRoot(root);
-            mashup.getDetails().put("isMashup", new Boolean(true).toString());
+            mashup.getDetails().put("isMashup", new ClobElement(Boolean.TRUE + ""));
             mashup.setName(mashup.getName() + "_" + mashupName);
             Stripersist.getEntityManager().persist(mashup);
             Stripersist.getEntityManager().getTransaction().commit();
