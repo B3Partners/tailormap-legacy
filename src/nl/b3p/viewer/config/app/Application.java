@@ -56,6 +56,7 @@ public class Application {
     @JoinTable(joinColumns=@JoinColumn(name="application"))
     @Lob
     // Required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
+    // XXX Oracle specific
     @MapKeyColumn(columnDefinition="varchar2(255)")           
     private Map<String,String> details = new HashMap<String,String>();
 
