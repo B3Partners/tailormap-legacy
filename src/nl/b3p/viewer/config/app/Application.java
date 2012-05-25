@@ -39,6 +39,11 @@ import org.stripesstuff.stripersist.Stripersist;
             @UniqueConstraint(columnNames={"name", "version"})
 )
 public class Application {
+    
+    private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[] { 
+        "opmerking" 
+    }));  
+    
     @Id
     private Long id;
 
@@ -54,11 +59,8 @@ public class Application {
     @ElementCollection
 
     @JoinTable(joinColumns=@JoinColumn(name="application"))
-    @Lob
-    // Required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
-    // XXX Oracle specific
-    @MapKeyColumn(columnDefinition="varchar2(255)")           
-    private Map<String,String> details = new HashMap<String,String>();
+    // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
+    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
     @ManyToOne
     private User owner;
@@ -128,11 +130,11 @@ public class Application {
         this.layout = layout;
     }
 
-    public Map<String, String> getDetails() {
+    public Map<String, ClobElement> getDetails() {
         return details;
     }
 
-    public void setDetails(Map<String, String> details) {
+    public void setDetails(Map<String, ClobElement> details) {
         this.details = details;
     }
 
@@ -286,8 +288,10 @@ public class Application {
 
         JSONObject d = new JSONObject();
         o.put("details", d);
-        for(Map.Entry<String,String> e: details.entrySet()) {
-            d.put(e.getKey(), e.getValue());
+        for(Map.Entry<String,ClobElement> e: details.entrySet()) {
+            if(!adminOnlyDetails.contains(e.getKey())) {
+                d.put(e.getKey(), e.getValue());
+            }
         }
 
         if(startExtent != null) {
@@ -458,7 +462,7 @@ public class Application {
     
     public Boolean isMashup(){
          if(this.getDetails().containsKey("isMashup")){
-             String mashupValue = this.getDetails().get("isMashup");
+             String mashupValue = this.getDetails().get("isMashup").getValue();
              Boolean mashup = Boolean.valueOf(mashupValue);
              return mashup;
          }else{
@@ -473,7 +477,7 @@ public class Application {
         
         // user reference is not deep copied, of course
         
-        copy.setDetails(new HashMap<String,String>(details));
+        copy.setDetails(new HashMap<String,ClobElement>(details));
         if(startExtent != null) {
             copy.setStartExtent(startExtent.clone());
         }
@@ -494,10 +498,10 @@ public class Application {
     }
 
     public void setMaxWidth(String maxWidth) {
-        this.details.put("maxWidth", maxWidth);
+        this.details.put("maxWidth", new ClobElement(maxWidth));
     }
     
     public void setMaxHeight(String maxHeight) {
-        this.details.put("maxHeight", maxHeight);
+        this.details.put("maxHeight", new ClobElement(maxHeight));
     }
 }
