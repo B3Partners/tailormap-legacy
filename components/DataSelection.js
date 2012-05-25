@@ -126,28 +126,7 @@ Ext.define ("viewer.components.DataSelection",{
             autoScroll: true,
             renderTo: 'filterTabDiv'
         });
-        
-        // Add the button to the dataselectiontab
-        var addFilter = Ext.create('Ext.Button', { 
-            text : 'Voeg filter toe',
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.addFilter
-                }
-            }
-        });        
-        this.filterTab.add(addFilter);
-        this.filterActive = Ext.create ("Ext.form.field.Checkbox",{
-            boxLabel  : 'Filter is actief',
-            name      : 'filterActive',
-            inputValue: true,
-            checked   : false
-                
-        });
-        this.filterTab.add(this.filterActive);
-        // Add the first filter
-        this.addFilter();
+        this.createFilterTab();
         // Make lower buttons
         this.button1 = Ext.create('Ext.Button', { 
             text : 'Toepassen',
@@ -172,7 +151,7 @@ Ext.define ("viewer.components.DataSelection",{
         });
         
         this.button3 = Ext.create('Ext.Button', { 
-            text : 'Verwijder filter',
+            text : 'Reset',
             renderTo: this.getContentDiv(),
             listeners: {
                 click:{
@@ -238,6 +217,32 @@ Ext.define ("viewer.components.DataSelection",{
         this.getUniques();
         this.dataTab.add(dataSelectieAttributes);
         this.initMinMaxValues(minMaxAttrs,appLayer);
+    },
+    
+    createFilterTab : function (){
+        this.filterTab.removeAll();
+        this.filters = new Array();
+        // Add the button to the filtertab
+        var addFilter = Ext.create('Ext.Button', { 
+            text : 'Voeg filter toe',
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.addFilter
+                }
+            }
+        });        
+        this.filterTab.add(addFilter);
+        this.filterActive = Ext.create ("Ext.form.field.Checkbox",{
+            boxLabel  : 'Filter is actief',
+            name      : 'filterActive',
+            inputValue: true,
+            checked   : false
+                
+        });
+        this.filterTab.add(this.filterActive);
+        // Add the first filter
+        this.addFilter();
     },
     initMinMaxValues : function (minMaxAttrs,appLayer){
         for(var i = 0 ; i < minMaxAttrs.length ; i++){
@@ -414,14 +419,15 @@ Ext.define ("viewer.components.DataSelection",{
             cql = "(" + cql + ")";
         }
         var layer = this.layerSelector.getValue();
-        
-        var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
-            id: this.name + this.layerSelector.getValue().layerName,
-            cql: cql,
-            operator : "AND"
-        });
-        
-        this.viewerController.setFilter(filterWrapper,layer);
+        if(layer){
+            var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
+                id: this.name + this.layerSelector.getValue().layerName,
+                cql: cql,
+                operator : "AND"
+            });
+
+            this.viewerController.setFilter(filterWrapper,layer);
+        }
         
     //console.log("CQL: " + layer.filter.getCQL());
     },
@@ -456,6 +462,8 @@ Ext.define ("viewer.components.DataSelection",{
             var filterId = this.name + appLayer.layerName;
             this.viewerController.removeFilter(filterId,appLayer);
         }
+        this.layerSelector.setValue();
+        this.resetForm();
     },
     /**
      *  Reset all comboboxes when a different layer is selected
@@ -477,8 +485,10 @@ Ext.define ("viewer.components.DataSelection",{
         }
         
         if(prev != undefined){
-            var prevLayer = this.viewerController.getLayer(this.appLayer);
-            prevLayer.setQuery(null);
+            if(this.appLayer){
+                var prevLayer = this.viewerController.getLayer(this.appLayer);
+                prevLayer.setQuery(null);
+            }
         }
     },
     // Change the comboboxes of the attributefilters. Happens when a new layer is chosen.
@@ -514,5 +524,9 @@ Ext.define ("viewer.components.DataSelection",{
             this.button2.getId()
             ]
             );
+    },
+    resetForm :function(){
+        this.dataTab.removeAll();
+        this.createFilterTab();
     }
 });

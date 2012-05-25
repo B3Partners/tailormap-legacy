@@ -738,7 +738,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         }
         if (x!=undefined && y != undefined){
             this.x=x;
-            this.x=y;
+            this.y=y;
         }else if (this.x ==undefined || this.y == undefined){
             throw "No coords found for this balloon";
         }else{
