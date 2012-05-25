@@ -613,7 +613,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }else{                
                 options.type= "ArcGIS";
                 options.hiddenids = "#ALL#";
-                layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,server,servlet,null, options,this);
+                layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,server,servlet,null, options,this);                
             }
         }else if (service.protocol == "tiled"){
             options.tileHeight = layer.tileHeight;
@@ -628,6 +628,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         layerObj.appLayerId = appLayer.id;
         this.layers[id] = layerObj;
         this.mapComponent.getMap().addLayer(layerObj);  
+        if(service.protocol == "arcgis"){
+            layerObj.addListener(viewer.viewercontroller.controller.Event.ON_GET_SERVICE_INFO,function(){
+                    layerObj.setVisible(appLayer.checked)
+                },this);
+        }
         return layerObj;
     },
     /**

@@ -167,6 +167,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @field
          * Occurs when a control/tool is activated
          */
-        ON_DEACTIVATE                           : "ON_DEACTIVATE"
+        ON_DEACTIVATE                           : "ON_DEACTIVATE",
+        ON_GET_SERVICE_INFO                     : "ON_GET_SERVICE_INFO"
     }
 });

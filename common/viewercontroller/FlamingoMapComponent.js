@@ -54,6 +54,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED]      = "onActiveFeatureChange";
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                    = "onActivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                  = "onDeactivate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_SERVICE_INFO]            = "onGetServiceInfo";
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
@@ -129,7 +130,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         //xxx for REST remove the next line.
         delete config.options.servlet;        
         config.options.esriArcServerVersion="9.3";
-        config.options.dataframe="layers";        
+        config.options.dataframe="layers";
         return new viewer.viewercontroller.flamingo.FlamingoArcServerLayer(config);
     },
     createImageLayer : function (name, url, extent,viewerController){
