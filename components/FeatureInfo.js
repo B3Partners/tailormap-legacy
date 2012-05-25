@@ -52,6 +52,14 @@ Ext.define ("viewer.components.FeatureInfo",{
                 }
             }
         }
+        //if topmenu height is in % then recalc on every resize.        
+        var topMenuLayout=this.viewerController.getLayout('top_menu');
+        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
+            Ext.EventManager.onWindowResize(function(){
+                me.onResize();            
+            }, this);
+        }
+        this.onResize();
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
          //Add event when started the identify (clicked on the map)
