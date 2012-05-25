@@ -52,7 +52,11 @@ public class Application {
     private String layout;
 
     @ElementCollection
+
     @JoinTable(joinColumns=@JoinColumn(name="application"))
+    @Lob
+    // Required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
+    @MapKeyColumn(columnDefinition="varchar2(255)")           
     private Map<String,String> details = new HashMap<String,String>();
 
     @ManyToOne
