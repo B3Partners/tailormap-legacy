@@ -128,9 +128,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 background-color: #FFFFFF;
             }
 
-            <c:if test="${!empty actionBean.application.details.steunkleur1 && !empty actionBean.application.details.steunkleur2}">
-                <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1}" />
-                <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2}" />
+            <c:if test="${!empty actionBean.application.details.steunkleur1.value && !empty actionBean.application.details.steunkleur2.value}">
+                <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1.value}" />
+                <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2.value}" />
                 /* Popup borders & background colors (popup borders) */
                 .x-window-default {
                     border-color: ${steunkleur1};
@@ -197,7 +197,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     color: ${steunkleur2};
                 }
             </c:if>
-            <c:if test="${!empty actionBean.application.details.font}">
+            <c:if test="${!empty actionBean.application.details.font.value}">
                 /* Textcolor */
                 .x-grid-row .x-grid-cell /* Tree */,
                 .x-grid-cell /* Tree */,
@@ -213,7 +213,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-form-field /* Form fields */,
                 .x-form-item /* Form items */,
                 .x-window-header-text-default /* Popup header */ {
-                    font-family: ${actionBean.application.details.font};
+                    font-family: ${actionBean.application.details.font.value};
                 }
             </c:if>
         </style>
@@ -303,11 +303,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <c:set var="maxWidth" value="none" />
         <c:set var="maxHeight" value="none" />
-        <c:if test="${!empty actionBean.application.details.maxWidth && actionBean.application.details.maxWidth != 0}">
-            <c:set var="maxWidth" value="${actionBean.application.details.maxWidth}px" />
+        <c:if test="${!empty actionBean.application.details.maxWidth.value && actionBean.application.details.maxWidth.value != 0}">
+            <c:set var="maxWidth" value="${actionBean.application.details.maxWidth.value}px" />
         </c:if>
-        <c:if test="${!empty actionBean.application.details.maxHeight && actionBean.application.details.maxHeight != 0}">
-            <c:set var="maxHeight" value="${actionBean.application.details.maxHeight}px" />
+        <c:if test="${!empty actionBean.application.details.maxHeight.value && actionBean.application.details.maxHeight.value != 0}">
+            <c:set var="maxHeight" value="${actionBean.application.details.maxHeight.value}px" />
         </c:if>
         <div id="wrapper" style="width: 100%; height: 100%; max-width: ${maxWidth}; max-height: ${maxHeight}; margin-left: auto; margin-right: auto;"></div>
         
