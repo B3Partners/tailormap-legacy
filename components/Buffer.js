@@ -30,7 +30,8 @@ Ext.define ("viewer.components.Buffer",{
         layers:null,
         title:null,
         maxFeatures:null,
-        iconUrl:null
+        iconUrl:null,
+        tooltip:null
     },
     constructor: function (conf){
         viewer.components.Buffer.superclass.constructor.call(this, conf);
