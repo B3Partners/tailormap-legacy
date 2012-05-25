@@ -65,7 +65,9 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     createMap : function(id,options){
         options.id=id;
         options.mapComponent=this;
-        options.options.resolutions = this.resolutions;
+        if (this.resolutions!=null){
+            options.options.resolutions = this.resolutions;
+        }
         var map = new viewer.viewercontroller.flamingo.FlamingoMap(options);
         
         return map;
