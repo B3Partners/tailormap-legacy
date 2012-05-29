@@ -17,6 +17,11 @@
 package nl.b3p.viewer.stripes;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.WKTReader;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -36,8 +41,9 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.filter.text.cql2.CQL;
 import org.opengis.filter.Filter;
-import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.geometry.jts.WKTReader2;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -70,12 +76,12 @@ public class BufferActionBean implements ActionBean {
     @Validate
     private String color;
     
+    @Validate
+    private String filter;
     private final Integer MAX_FEATURES = 250;
-    
     private static final String JSP = "/WEB-INF/jsp/error.jsp";
-    
-    //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
+    //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
         return context;
     }
@@ -148,6 +154,14 @@ public class BufferActionBean implements ActionBean {
         this.color = color;
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
     //</editor-fold>
     
     @DefaultHandler
@@ -159,14 +173,14 @@ public class BufferActionBean implements ActionBean {
             cis.setWidth(width);
             cis.setHeight(height);
             Color c = Color.RED;
-            if(color != null){
-                c = Color.decode("#"+color);
+            if (color != null) {
+                c = Color.decode("#" + color);
             }
             cis.setDefaultWktGeomColor(c);
 
             List<CombineImageWkt> wkts = getFeatures(cis.getBbox());
             cis.setWktGeoms(wkts);
-            
+
             final BufferedImage bi = ImageTool.drawGeometries(null, cis);
 
             StreamingResolution res = new StreamingResolution(cis.getMimeType()) {
@@ -184,7 +198,6 @@ public class BufferActionBean implements ActionBean {
         return new ForwardResolution(JSP);
     }
 
-
     private List<CombineImageWkt> getFeatures(Bbox bbox) throws Exception {
         List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
         GeoService gs = Stripersist.getEntityManager().find(GeoService.class, serviceId);
@@ -198,14 +211,24 @@ public class BufferActionBean implements ActionBean {
 
         String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
 
-
-        CoordinateReferenceSystem crs = fs.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
-
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-        Filter filter = ff.bbox(ff.property(geomAttribute), new ReferencedEnvelope(bbox.getMinx(),bbox.getMaxx(), bbox.getMiny(),bbox.getMaxy(), crs));
+        GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
+        WKTReader reader = new WKTReader2(gf);
+        Polygon p = (Polygon) reader.read(bbox.toWKT());
+        Filter featureFilter = ff.intersects(ff.property(geomAttribute),ff.literal(p));
 
+        if(filter != null){
+            Filter attributeFilter = CQL.toFilter(filter);
+            if(filter.indexOf("POINT") == -1){
+                Filter and = ff.and(featureFilter, attributeFilter);
+                featureFilter = and;
+            }else{
+                featureFilter = attributeFilter;
+            }
+        }
         Query q = new Query(fs.getName().toString());
-        q.setFilter(filter);
+        q.setFilter(featureFilter);
+        
         q.setMaxFeatures(Math.min(maxFeatures, MAX_FEATURES));
 
         FeatureIterator<SimpleFeature> it = fs.getFeatures(q).features();
@@ -214,7 +237,7 @@ public class BufferActionBean implements ActionBean {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
                 Geometry g = (Geometry) f.getDefaultGeometry();
-                g= g.buffer(buffer);
+                g = g.buffer(buffer);
                 wkts.add(new CombineImageWkt(g.toText()));
                 System.out.println(f);
             }
