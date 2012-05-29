@@ -49,6 +49,32 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         }
         return val;
     },
+    getCQLWithoutType : function (type){
+        var val = this.getInternalCQLWithoutType(type);
+        for (var i = 0 ; i < this.logicOperators.length;i++){
+            val = Ext.String.trim(val);
+            var op = this.logicOperators[i];
+            if(val.indexOf(op) == 0){
+                val = val.substr(op.length);
+            }
+        }
+        return val;
+    },
+    getInternalCQLWithoutType : function (type){
+        var returnValue = "";
+        if(this.type != type){
+            if(this.cql != ""){
+                returnValue = " " + this.operator + " " + this.cql;
+            }
+        }
+        for(var i = 0 ; i < this.filters.length;i++){
+            var f = this.filters[i];
+            if(f.type != type){
+                returnValue += f.getInternalCQLWithoutType(type);
+            }
+        }
+        return returnValue;
+    },
     getInternalCQL : function (){
         var returnValue = "";
             

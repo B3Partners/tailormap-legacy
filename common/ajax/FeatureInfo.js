@@ -96,7 +96,7 @@ Ext.define("viewer.FeatureInfo", {
             if(visibleAppLayers[appLayer.id] === true) {
                 var query = { appLayer: appLayer.id };
                 if(appLayer.filter) {
-                    query.filter = appLayer.filter.getCQL();
+                    query.filter = appLayer.filter.getCQLWithoutType("GEOMETRY");
                 }
                 queries.push(query);
             }
