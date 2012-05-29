@@ -33,12 +33,14 @@ public class Layer {
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
     public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
     public static final String EXTRA_KEY_FILTERABLE = "filterable";
+    public static final String EXTRA_IMAGE_EXTENSION ="image_extension";
     
     private static Set interestingDetails = new HashSet<String>(Arrays.asList(new String[] { 
         EXTRA_KEY_METADATA_URL, 
         EXTRA_KEY_METADATA_STYLESHEET_URL,
         EXTRA_KEY_DOWNLOAD_URL,
-        EXTRA_KEY_FILTERABLE
+        EXTRA_KEY_FILTERABLE,
+        EXTRA_IMAGE_EXTENSION        
     }));        
             
     @Id
