@@ -950,28 +950,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             value: extent
         };
         paramJSON.params.push(extentParam);
-        
-        var selectedContent = this.app.selectedContent;
-        var selectedContentParam = {
-            name:"selectedContent", 
-            value:selectedContent
-        };
-        paramJSON.params.push(selectedContentParam);
-        
-        var services = this.app.services;
-        var serviceParam = {
-            name:"services", 
-            value:services
-        };
-        paramJSON.params.push(serviceParam);
-        
-        var appLayers = this.app.appLayers;
-        var appLayersParam = {
-            name:"appLayers", 
-            value:appLayers
-        };
-        paramJSON.params.push(appLayersParam);
-        
+    
         return paramJSON;
     },
     getApplicationSprite: function() {
