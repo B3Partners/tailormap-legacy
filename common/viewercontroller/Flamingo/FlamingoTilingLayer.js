@@ -28,7 +28,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
         protocol:null,
         tileHeight: null,
         tileWidth: null,
-        resolutions: null
+        resolutions: null,
+        extension: null
     },
     /**
      *
@@ -69,6 +70,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
         }
         if (this.getTileWidth()!=null){
             xml+=" tilewidth=\""+this.getTileWidth()+"\"";
+        }
+        if (this.getExtension()!=null){
+            xml+=" extension=\""+this.getExtension()+"\"";
         }
         xml+="></fmc:"+this.getTagName()+">";
         return xml;

@@ -622,6 +622,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             options.resolutions = layer.resolutions;
             options.protocol = service.tilingProtocol;
             options.viewerController=this;
+            if (layer.details["image_extension"]){
+                options.extension = layer.details["image_extension"];
+            }
             layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
         }
         layerObj.serviceId = appLayer.serviceId;
