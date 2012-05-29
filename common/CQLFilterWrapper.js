@@ -26,12 +26,17 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     config:{
         id:null,
         cql:null,
-        operator:null
+        operator:null,
+        // Possible values: ATTRIBUTE/GEOMETRY
+        type: null
     },
     constructor : function (config){
         this.initConfig(config);
         this.filters = [];
         this.logicOperators = ["AND","OR"];
+        if(!this.type){
+            this.type = "ATTRIBUTE";
+        }
     },
     getCQL : function (){
         var val = this.getInternalCQL();

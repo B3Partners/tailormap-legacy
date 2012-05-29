@@ -123,6 +123,10 @@ Ext.define ("viewer.components.Buffer",{
         var radius = this.radius.getValue();
         if(layer != null && radius != ""){
             this.removeBuffer();
+            var filterParams = null;
+            if(layer.filter){
+                filterParams = "&filter=" + encodeURIComponent(layer.filter.getCQL());
+            }
             var bbox = this.viewerController.mapComponent.getMap().getExtent().toString();
             var width = this.viewerController.mapComponent.getMap().getWidth();
             var height = this.viewerController.mapComponent.getMap().getHeight();
@@ -132,6 +136,13 @@ Ext.define ("viewer.components.Buffer",{
                     attrs += "&color="+this.color;
             }
             url += attrs;
+            if(filterParams){
+                var filterUrl = url + filterParams;
+                url = filterUrl;
+                if(filterUrl.length > 1024){
+                    this.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
+                }
+            }
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.layerName+"ImageLayer", url, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
         }

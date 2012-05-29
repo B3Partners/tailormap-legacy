@@ -228,7 +228,8 @@ Ext.define ("viewer.components.Influence",{
                     Ext.create("viewer.components.CQLFilterWrapper",{
                         id: "filter_"+this.getName(),
                         cql: filter,
-                        operator : "AND"
+                        operator : "AND",
+                        type: "GEOMETRY"
                     }),appLayer);
             }
             if (extent){

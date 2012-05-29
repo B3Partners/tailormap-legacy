@@ -423,7 +423,8 @@ Ext.define ("viewer.components.DataSelection",{
             var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
                 id: this.name + this.layerSelector.getValue().layerName,
                 cql: cql,
-                operator : "AND"
+                operator : "AND",
+                type: "ATTRIBUTE"
             });
 
             this.viewerController.setFilter(filterWrapper,layer);
