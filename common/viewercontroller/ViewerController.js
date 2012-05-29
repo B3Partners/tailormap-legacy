@@ -170,7 +170,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.addMap(map);
             
             this.initializeConfiguredComponents();
-            var layersloaded = this.bookmarkValuesFromURL();
+            var layersloaded = this.bookmarkValuesFromURL(this.queryParams);
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();                
@@ -817,55 +817,49 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             maxy:maxy
         }, 0);
     },
-    bookmarkValuesFromURL : function(){
-        
-        // XXX use this.queryParams
-        
+    bookmarkValuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
-        var url = document.URL;
-        var index = url.indexOf("?");
-        if(index > 0){
-            var params = url.substring(index +1);
-            var appLayers = this.app.appLayers;
+        var appLayers = this.app.appLayers;
 
-            var parameters = params.split("&");
-            for ( var i = 0 ; i < parameters.length ; i++){
-                var parameter = parameters[i];
-                var index2 = parameter.indexOf("=");
-                var type = parameter.substring(0,index2);
-                var value = parameter.substring(index2 +1);
-                if(type == "bookmark"){
-                    var me = this;
-                    Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
-                    layersLoaded = true;
-                    bookmark = true;
-                }else if(type == "layers"){
-                    appLayers = this.loadBookmarkLayers(value);
-                    layersLoaded = true;
-                }else if(type == "extent"){
-                    var coords = value.split(",");
-                    var newExtent = new Object();
+        for( var key in params){
+            var value = params[key];
+            if(key == "bookmark"){
+                var me = this;
+                Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
+                layersLoaded = true;
+                bookmark = true;
+            }else if(key == "layers"){
+                if(!Ext.isArray(value)){
+                    value = value.split(",");
+                }
+                appLayers = this.loadBookmarkLayers(value);
+                layersLoaded = true;
+            }else if(key == "extent"){
+                var coords = value;
+                var newExtent = new Object();
+                if(!Ext.isObject(value)){
+                    coords = value.split(",");
                     newExtent.minx=coords[0];
                     newExtent.miny=coords[1];
                     newExtent.maxx=coords[2];
                     newExtent.maxy=coords[3];
-                    this.mapComponent.getMap().zoomToExtent(newExtent);
+                }else{
+                    newExtent = coords;
                 }
+                this.mapComponent.getMap().zoomToExtent(newExtent);
             }
+        }
 
-            if(layersLoaded && !bookmark){
-                this.app.appLayers = appLayers;
-                this.setSelectedContent(this.app.selectedContent);
-            }
+        if(layersLoaded && !bookmark){
+            this.app.appLayers = appLayers;
+            this.setSelectedContent(this.app.selectedContent);
         }
 
         return layersLoaded;
     },
-    loadBookmarkLayers : function(layers){
+    loadBookmarkLayers : function(values){
         var appLayers = this.app.appLayers;
-        
-        var values = layers.split(",");
         
         for ( var i in appLayers){
             var appLayer = appLayers[i];
@@ -889,30 +883,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     succesReadUrl : function(code){
         var paramJSON = Ext.JSON.decode(code);
+        //paramJSON.params[0].name
+        //paramJSON.params[0].value
         
-        var appLayers = this.app.appLayers;
-        var selectedContent = [];
+        var params = new Object();
         for ( var i = 0 ; i < paramJSON["params"].length ; i++){
             var parameter = paramJSON["params"][i];
-            if(parameter.name == "layers"){
-                var layers = "";
-                for( var x = 0 ; x < parameter.value.length ; x++){
-                     layers += parameter.value[x]+","
-                }
-                appLayers = this.loadBookmarkLayers(layers);
-            }else if(parameter.name == "extent"){
-                this.mapComponent.getMap().zoomToExtent(parameter.value);
-            }else if(parameter.name == "selectedContent"){
-                selectedContent = parameter.value;
-            }else if(parameter.name == "services"){
-                var services = parameter.value;
-                this.app.services = services;
-            }else if(parameter.name == "appLayers"){
-                appLayers = parameter.value;
-            }
+            var key = parameter.name;
+            var value = parameter.value;
+            params[key] = value;
         }
-        this.app.appLayers = appLayers;
-        this.setSelectedContent(selectedContent);
+        this.bookmarkValuesFromURL(params);
     },
     failureReadUrl : function(code){
         //

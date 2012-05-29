@@ -25,9 +25,9 @@ Ext.define ("viewer.components.Bookmark",{
     compUrl: "",
     baseUrl: "",
     config:{
-        title: "",
-        titlebarIcon: "",
-        tooltip: ""
+        title: null,
+        titlebarIcon: null,
+        tooltip: null
     },
     constructor: function (conf){        
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
