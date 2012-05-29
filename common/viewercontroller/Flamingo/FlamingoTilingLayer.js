@@ -88,6 +88,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
     getLegendGraphic : function(){
         return null;
     },
+    getLayers : function (){
+        return null;
+    },
     getLastMapRequest: function(){
         var requests=this.getFrameworkLayer().callMethod(this.getFrameworkId(),'getLastRequests');
         for (var i in requests){

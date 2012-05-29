@@ -80,10 +80,12 @@ Ext.define ("viewer.components.Maptip",{
             if (layer.hasFeatureType){
                 this.addLayerInServerRequest(appLayer);
             }else{
-                //let the mapComponent handle the getFeature
-                mapLayer.setMaptips(mapLayer.getLayers().split(","));
-                //listen to the onMaptipData
-                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);       
+                if(mapLayer.getLayers() != null){
+                    //let the mapComponent handle the getFeature
+                    mapLayer.setMaptips(mapLayer.getLayers().split(","));
+                    //listen to the onMaptipData
+                    mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);       
+                }
             }            
         }
     },
