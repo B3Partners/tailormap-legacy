@@ -46,7 +46,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
                     query += colName + " = " + ids[i];
                 }
                 me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.options.name);
-                setTimeout (function(){me.update();}, 500);
+                setTimeout (function(){
+                    me.update();
+                }, 500);
             };
             var util = Ext.create("viewer.ArcQueryUtil");
             var cql = filter.getCQL();
@@ -59,6 +61,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
     setVisible : function (vis){
         this.visible = vis;
         this.getFrameworkLayer().callMethod(this.map.id + "_" + this.id, "setLayerProperty", this.options.name,"visible",vis);
-        this.map.update();
+        this.map.forceUpdate();
     }
 });

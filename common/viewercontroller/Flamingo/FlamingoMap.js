@@ -217,6 +217,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     update : function (){
         this.getFrameworkMap().callMethod(this.getId(),'update', 100, true);
     },
+    
+    forceUpdate : function (){
+        var me = this;
+        if(!this.isUpdating()){
+            this.update();
+        }else{
+            setTimeout( function () {me.forceUpdate();},100);
+        }    
+    },
 
     /**
      *see @link Map.setMarker
@@ -271,6 +280,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      */
     getHeight : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "getMovieClipHeight");
+    },
+    isUpdating : function(){
+        return this.getFrameworkMap().callMethod(this.getId(), "isUpdating");
     },
     /**
      * returns all the position attributes configured for this element.
