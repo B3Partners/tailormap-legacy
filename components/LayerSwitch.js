@@ -35,6 +35,7 @@ Ext.define ("viewer.components.LayerSwitch",{
     constructor: function (conf){        
         viewer.components.LayerSwitch.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        this.prev = new Array();
         this.loadComponent();
         return this;
     },
@@ -105,6 +106,9 @@ Ext.define ("viewer.components.LayerSwitch",{
     addLayers : function (layers, level){
         for( var i = 0 ; i < layers.length ;i++){
             var appLayerObj = this.appLayers[layers[i]];
+            if(appLayerObj.checked){
+                this.prev.push( appLayerObj );
+            }
             this.layers[level.name].push(appLayerObj);
         }
     },
