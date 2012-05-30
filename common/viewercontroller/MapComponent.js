@@ -317,6 +317,19 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  */
     activateTool : function (id){
         Ext.Error.raise({msg: "MapComponent.activateTool() Not implemented! Must be implemented in sub-class"});
+    },
+    
+    /**
+     * Get the width of this component
+     */
+    getWidth : function (){
+        Ext.Error.raise({msg: "MapComponent.getWidth() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Get the height of this component
+     */    
+    getHeight: function (){
+        Ext.Error.raise({msg: "MapComponent.getHeight() Not implemented! Must be implemented in sub-class"});
     }
 
 });

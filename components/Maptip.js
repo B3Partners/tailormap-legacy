@@ -90,12 +90,7 @@ Ext.define ("viewer.components.Maptip",{
         }
     },
     onResize : function(){
-        var topMenuLayout=this.viewerController.getLayout('top_menu');
-        var top = Number(topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0);
-        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
-            var divHeight=Ext.get(this.div).getHeight();
-            top = Math.round(divHeight / 100 * top);
-        }
+        var top = this.viewerController.getTopMenuHeightInPixels();        
         this.balloon.offsetY=Number(top);
     },
     /**
@@ -152,7 +147,14 @@ Ext.define ("viewer.components.Maptip",{
      * Handle the data that is returned.
      * @param options options that is given by the event
      */
-    onDataReturned: function(options){        
+    onDataReturned: function(options){    
+        var browserZoomRatio = Ext.get(this.viewerController.layoutManager.mapId).getWidth() / this.viewerController.mapComponent.getWidth();
+        
+        if (browserZoomRatio!=1){            
+            options.y= Math.round(browserZoomRatio * (options.y));        
+            options.x= Math.round(browserZoomRatio * options.x);
+        }
+        
         //if not enabled: stop
         if (!this.enabled){
             return;
@@ -261,7 +263,7 @@ Ext.define ("viewer.components.Maptip",{
         if (!Ext.isEmpty(components)){
             var x= options.x;
             var y= options.y;               
-            this.balloon.setPosition(x,y,true);
+            this.balloon.setPosition(x,y,true,browserZoomRatio);
             this.balloon.addElements(components);
             this.balloon.show();
         } 
@@ -727,9 +729,10 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
      *@param x pixel x
      *@param y pixel y
      *@param resetPositionOfBalloon boolean if true the balloon arrow will be
+     *@param browserZoomRatio if the browser is zoomed.
      *redrawn (this.resetPositionOfBalloon is called)
      */
-    this.setPosition = function (x,y,resetPositionOfBalloon){       
+    this.setPosition = function (x,y,resetPositionOfBalloon,browserZoomRatio){       
         //new maptip position so update the maptipId
         this.maptipId++;
         
@@ -739,8 +742,13 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
             this._resetPositionOfBalloon(x,y);
         }
         if (x!=undefined && y != undefined){
+            
             this.x=x;
             this.y=y;
+            if (browserZoomRatio!=undefined && browserZoomRatio!=null && browserZoomRatio!=1){
+                this.x = this.x*browserZoomRatio;
+                this.y = this.y*browserZoomRatio;                
+            }
         }else if (this.x ==undefined || this.y == undefined){
             throw "No coords found for this balloon";
         }else{
@@ -754,8 +762,14 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         //var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);
 
         //determine the left and top.
-        var left=x+this.offsetX;
-        var top =y+this.offsetY;
+        var correctedOffsetX=this.offsetX;
+        var correctedOffsetY=this.offsetY;
+        //if (browserZoomRatio!=undefined && browserZoomRatio!=null && browserZoomRatio!=1){
+            //correctedOffsetX=Math.round(correctedOffsetX*browserZoomRatio);
+            //correctedOffsetY=Math.round(correctedOffsetY*browserZoomRatio);
+        //}
+        var left=x+correctedOffsetX;
+        var top =y+correctedOffsetY;
         if (this.leftOfPoint){
             left=left-this.balloonWidth;
         }

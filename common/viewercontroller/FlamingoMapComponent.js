@@ -251,10 +251,22 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.viewerObject.callMethod(this.flamingoId,'addComponent',toolXml);         
         var toolsVisible=0;
         //if tool is not visible and not a JSbutton check if it's the first.
-        if (tool.getVisible() && !(tool instanceof viewer.components.tools.JSButton)){
+        var isJsButton=false;
+        try{
+            isJsButton=tool instanceof viewer.components.tools.JSButton;
+        }catch(e){
+            isJsButton=false;
+        }
+        if (tool.getVisible() && !isJsButton){
             for (var i=0; i < this.tools.length; i++){
                 //only count the visible and not JSbuttons.
-                if (this.tools[i].getVisible() && !(this.tools[i] instanceof viewer.components.tools.JSButton)){
+                var jsButton= false;
+                try{
+                    jsButton=this.tools[i] instanceof viewer.components.tools.JSButton;
+                }catch(e){
+                    jsButton=false;
+                }
+                if (this.tools[i].getVisible() && !jsButton){
                     toolsVisible++;
                 }
             }
@@ -418,6 +430,14 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         return null;
         //Ext.Error.raise({msg: "FlamingoMapComponent.getMap(): Map with id: "+mapId+" not found! Available maps: "+availableMaps});
+    },
+    
+    getWidth: function(){
+        return this.viewerObject.callMethod(this.flamingoId,"getWidth");
+    },
+    
+    getHeight: function(){
+        return this.viewerObject.callMethod(this.flamingoId,"getHeight");
     },
     /****************************************************************Event handling***********************************************************/
 

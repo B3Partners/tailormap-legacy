@@ -985,6 +985,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
+    
+    getTopMenuHeightInPixels: function (){
+        var topMenuLayout=this.getLayout('top_menu');
+        var top = Number(topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0);
+        if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
+            var divHeight=Ext.get(this.layoutManager.mapId).getHeight();
+            top = Math.round(divHeight / 100 * top);
+        }
+        return top;
+    },
+        
     resizeComponents: function() {
         this.layoutManager.resizeLayout();
         // We are execturing the doResize function manually on all components, instead of
