@@ -204,7 +204,7 @@ Ext.define ("viewer.components.Edit",{
             this.mode=null;
             this.viewerController.mapComponent.getMap().removeMarker("edit");
             if(appLayer.details["editfunction.title"]){
-                this.popup.popupWin.setTitle (appLayer.details["editfunction.title"]);
+                this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
             this.inputContainer.setLoading("Laad attributen...");
             this.inputContainer.removeAll();

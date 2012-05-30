@@ -424,12 +424,20 @@ Ext.define('viewer.LayoutManager', {
 
     renderLayout: function(viewportItems) {
         var me = this;
+        var containerStyle = {};
+        if(Ext.isIE8 && me.maxHeight && me.maxHeight !== null) {
+            // maxHeight is needed for IE8 bug where maxHeight on wrapper only does not work
+            containerStyle = {
+                maxHeight: me.maxHeight
+            };
+        }
         me.mainLayoutContainer = Ext.create('Ext.container.Container', {
             layout: 'border',
             items: viewportItems,
             renderTo: me.wrapperId,
             height: '100%',
-            width: '100%'
+            width: '100%',
+            style: containerStyle
         });
     },
 

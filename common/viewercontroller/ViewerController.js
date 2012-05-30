@@ -67,9 +67,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
          */
         if(app.layout) {
             //console.log("Creating layout");
+            // maxHeight is needed for IE8 bug where maxHeight on wrapper only does not work
+            var maxHeight = null;
+            if(app.details && app.details.maxHeight && parseInt(app.details.maxHeight, 10) !== 0) maxHeight = parseInt(app.details.maxHeight, 10);
             this.layoutManager = Ext.create('viewer.LayoutManager', {
                 layout: app.layout,
-                configuredComponents: app.components
+                configuredComponents: app.components,
+                maxHeight: maxHeight
             });            
         }
         this.layers = {};
