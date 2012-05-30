@@ -594,7 +594,18 @@ Ext.onReady(function() {
         layout: 'fit',
         modal: true,
         contentEl: 'configPage',
-        resizable: false
+        resizable: false,
+        listeners: {
+            hide: function() {
+                if(Ext.isIE8) {
+                    // IE8 still showed HTML editor iframe after closing window so we manually hide the HTML editor
+                    var iframe = Ext.get('configPage');
+                    if(iframe && iframe.dom && iframe.dom.contentWindow && iframe.dom.contentWindow.customConfiguration && iframe.dom.contentWindow.customConfiguration.windowHide) {
+                        iframe.dom.contentWindow.customConfiguration.windowHide();
+                    }
+                }
+            }
+        }
     });
     
     function editComponent(componentData) {
