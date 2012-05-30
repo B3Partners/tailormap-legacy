@@ -24,7 +24,7 @@ body.x-body {
   background-color: #ffffff;
 }
 input,
-textarea {
+textarea.extliketextarea {
   background: url("../../extjs/resources/themes/images/gray/form/text-bg.gif") repeat-x scroll 0 0 #ffffff;
   border: 1px solid #B5B8C8;
   padding: 1px 3px;
@@ -32,7 +32,7 @@ textarea {
   vertical-align: middle;
   height: 22px;
 }
-textarea {
+textarea.extliketextarea {
   height: auto !important;
 }
 input[type="radio"],
@@ -516,8 +516,7 @@ input[type="submit"]:hover,
   width: 60px;
 }
 .appSettingsRight {
-  float: right;
-  width: 50%;
+  float: left;
 }
 .helplink {
   background-image: url("../images/help.png");

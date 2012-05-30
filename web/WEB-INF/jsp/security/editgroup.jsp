@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </tr>
                         <tr>
                             <td valign="top">Extra informatie:</td>
-                            <td><stripes:textarea name="description" cols="27" rows="4"/></td>
+                            <td><stripes:textarea name="description" cols="27" rows="4" class="extliketextarea" /></td>
                         </tr>
                     </table>
                     <div class="submitbuttons">

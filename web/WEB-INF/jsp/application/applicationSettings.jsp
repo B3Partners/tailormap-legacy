@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm">
                     <stripes:hidden name="application" value="${actionBean.application}"/>
                     <stripes:hidden name="mashupName"/>
-                    <table class="formtable" style="float: left; width: 45%;">
+                    <table class="formtable" style="float: left; width: 580px;">
                         <tr>
                             <td>Naam:</td>
                             <td><stripes:text name="name" maxlength="255" size="30"/></td>
@@ -120,23 +120,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <div class="appSettingsRight">
                         <a href="#Instellingen_Per_Applicatie_Help" title="Help" class="helplink"></a>
                         Opmerkingen
-                        <div id="details_opmerkingen_container" style="margin-top: 5px;">
+                        <div id="details_opmerkingen_container" style="margin-top: 5px; width: 525px; height: 350px;">
                             <stripes:textarea id="details_opmerkingen" cols="80" rows="5" name="details['opmerking']" style="margin-top: 5px; display: none;" />
                         </div>
+                        <div style="clear: both;"></div>
                     </div>
                     <div style="clear: both;"></div>
 
                     <div class="submitbuttons">
-                        <div style="float: left; width:50%;">
+                        <div style="float: left; width: 580px;">
                             <input type="button" class="extlikebutton" value="Maak kopie" onclick="return confirmCopy();"/>
                             <input type="button" class="extlikebutton" value="Maak mashup" onclick="return confirmMashup();"/>
                         </div>
-                        <div style="float: right; width:50%;">
+                        <div style="float: left;">
                             <stripes:submit name="publish" value="Publiceren"/>
                             <stripes:submit name="save" value="Opslaan"/>
                             <stripes:submit name="cancel" value="Annuleren"/>
                             <input type="hidden" name="copy" value="1" disabled="true"/>
                         </div>
+                        <div style="clear: both;"></div>
                     </div>
                 </stripes:form>
             </div>
@@ -195,7 +197,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent', 'content');
                 var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
-                    width: 475,
+                    width: 525,
                     height: 350,
                     value: Ext.get('details_opmerkingen').dom.value,
                     renderTo: 'details_opmerkingen_container',
