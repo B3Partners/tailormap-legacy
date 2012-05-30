@@ -54,7 +54,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <c:if test="${!actionBean.serviceDeleted}">
     <c:set var="edit" value="${!empty actionBean.service.id}"/>
-
+    <c:set var="isTiling" value="${actionBean.protocol=='tiled'}"/>
+    
     <stripes:hidden name="category"/>
     <stripes:hidden name="service"/>
 
@@ -82,7 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <table class="formtable">
         <tr>
             <td>URL van de service *:</td>
-            <td><stripes:text name="url" maxlength="255" size="80" disabled="${edit}"/></td>
+            <td><stripes:text name="url" maxlength="255" size="80" disabled="${edit && !isTiling}"/></td>
         </tr>
         <tr><td>Protocol *:</td>
             <td>

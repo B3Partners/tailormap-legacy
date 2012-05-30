@@ -300,6 +300,9 @@ public class GeoServiceActionBean implements ActionBean {
             if (tilingProtocol != null) {
                 ((TileService) service).setTilingProtocol(tilingProtocol);
             }
+            if (url!=null){
+                ((TileService) service).setUrl(url);
+            }
             Layer l = ser.getTilingLayer();
             if (tileSize != null) {
                 l.getTileset().setWidth(tileSize);
