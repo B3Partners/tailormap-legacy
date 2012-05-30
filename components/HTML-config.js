@@ -61,5 +61,9 @@ Ext.define("viewer.components.CustomConfiguration",{
         config.html= this.htmlEditor.getValue();
         config.title= this.titleField.getValue();
         return config;
+    },
+    windowHide: function() {
+        // IE8 still showed HTML editor iframe after closing window so we manually hide the HTML editor
+        this.htmlEditor.hide();
     }
 });
