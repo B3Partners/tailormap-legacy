@@ -286,6 +286,7 @@ Ext.define ("viewer.components.DataSelection",{
     getUniques : function (){
         var appLayer = this.layerSelector.getValue();
         if(this.uniqueValuesAttributes.length > 0){
+            this.itemsLoaded++;
             this.dataTab.getEl().mask("Laad unieke waardes...");
             Ext.Ajax.request({ 
                 url: actionBeans.unique, 
@@ -394,11 +395,12 @@ Ext.define ("viewer.components.DataSelection",{
         }
     },
     applyFilterWithDefaults : function (){
-        if(this.isDatatabLoaded){
+        if(this.isDatatabLoaded()){
             this.applyFilter();
         }else{
+            var me = this;
             setTimeout(function(){
-                        this.applyFilterWithDefaults();}, 100);
+                        me.applyFilterWithDefaults();}, 100);
         }
     },
     applyFilter : function (){
