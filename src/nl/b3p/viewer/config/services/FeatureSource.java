@@ -135,7 +135,9 @@ public abstract class FeatureSource {
         if(uniqueValues == null){
             uniqueValues = new HashSet<String>();
         }
-        return new ArrayList<String>(uniqueValues);
+        List<String> l = new ArrayList<String>(uniqueValues);
+        Collections.sort(l);
+        return l;
     }
     
     public Object getMaxValue(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception{
