@@ -49,7 +49,11 @@ Ext.define ("viewer.components.Buffer",{
             tooltip: me.tooltip
         });      
         this.loadWindow();
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
+    },
+    selectedContentChanged : function (){
+        this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
     },
     buttonClick : function (){
         this.layerSelector.initLayers();
