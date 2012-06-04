@@ -35,7 +35,12 @@ Ext.define ("viewer.components.InfluenceImage",{
             this.viewerController.mapComponent.getMap().removeLayer(this.vectorLayer);
         }
         this.combineImageService = Ext.create("viewer.CombineImage",{});
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
+    },
+    selectedContentChanged : function (){
+        this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
+        this.viewerController.mapComponent.getMap().reAddLayer(this.vectorLayer);
     },
     /**
      * Show the geometry on the map.

@@ -81,7 +81,11 @@ Ext.define ("viewer.components.Edit",{
         });
         this.loadWindow();
         this.popup.popupWin.addListener("beforehide",this.resetForm,this);  
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
+    },
+    selectedContentChanged : function (){
+        this.viewerController.mapComponent.getMap().reAddLayer(this.vectorLayer);
     },
     loadWindow : function (){
         var me =this;

@@ -127,6 +127,9 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         layer.map = this;
         //this.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,layer);
     },
+    reAddLayer : function (layer){
+        this.layers.push(layer);
+    },
     /**
      *Removes a specifice layer from the map.
      *Must be implemented by subclas! The subclass needs to do the remove from the framework!
