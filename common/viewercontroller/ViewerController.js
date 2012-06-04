@@ -266,10 +266,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
    
     setSelectedContent: function(selectedContent) {
+        var vectorLayers = this.mapComponent.getMap().getAllVectorLayers();
         this.clearLayers();
         this.app.selectedContent = selectedContent;
         this.uncheckUnselectedContent();
         this.initLayers();
+        for(var i = 0 ; i < vectorLayers.length; i++){
+            var l = vectorLayers[i];
+            this.mapComponent.getMap().layers.push(l);
+        }
+        
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
     },
 
@@ -376,7 +382,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     clearLayers: function() {
         this.mapComponent.getMap().removeAllLayers();
         this.layers = [];
-    },    
+    },
     /**
      *Initialize layers and levels
      *@param background true/false/undefined. 
