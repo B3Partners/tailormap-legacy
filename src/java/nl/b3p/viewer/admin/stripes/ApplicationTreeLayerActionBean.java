@@ -208,7 +208,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         Stripersist.getEntityManager().getTransaction().commit();
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
-        return new ForwardResolution(JSP);
+        return edit();
     }
 
     private void makeAttributeJSONArray(JSONArray array, List<AttributeDescriptor> ftAttributes, SimpleFeatureType sft) throws JSONException {
