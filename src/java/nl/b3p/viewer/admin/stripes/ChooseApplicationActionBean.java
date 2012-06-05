@@ -326,7 +326,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
             setApplication(copy);
 
-            return new ForwardResolution(ApplicationSettingsActionBean.class);
+            return new RedirectResolution(ApplicationSettingsActionBean.class);
         } catch (Exception e) {
             log.error(String.format("Error copying application #%d named %s %swith new name %s",
                     applicationWorkversion.getId(),
