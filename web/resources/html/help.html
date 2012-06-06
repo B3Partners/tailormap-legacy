@@ -49,7 +49,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Boomstructuur met services en kaartlagen
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De basis van het gegevensregister zijn de services en de kaartlagen. De
                 services en kaartlagen worden weergegeven in een boomstructuur. De beheerder
@@ -66,7 +66,8 @@ program. If not, see <http://www.gnu.org/licenses/>
             </p>
             <p>
                 Voor een service worden meteen de kaartlagen aangemaakt aan de hand van
-                de layers. Bij een CS-W wordt in een platte lijst de titel van alle documenten
+                de layers. Bij een CS-W is een zoekwoord nodig en wordt na het klikken op 
+                de zoekknop in een platte lijst de titel van alle documenten
                 uit de CSW getoond. Pas na klikken op een titel worden de onderliggende
                 service opgehaald en kunnen deze worden toegevoegd. Deze services kunnen
                 niet gewijzigd of verwijderd worden, omdat deze opgehaald worden uit de
@@ -83,8 +84,8 @@ program. If not, see <http://www.gnu.org/licenses/>
             <p>
                 In de boomstructuur wordt achter een service een extra icoontje weergegeven
                 waar mee de status wordt aangegeven. Deze status wordt regelmatig op de
-                achtergrond gecontroleerd. De inregeling hiervan wordt in het technisch
-                ontwerp beschreven.
+                achtergrond gecontroleerd. De inregeling hiervan wordt in  de installatie- 
+                en configuratiehandleiding beschreven.
             </p>
             <table width="100%" cellspacing="0" cellpadding="4">
                 <thead>
@@ -101,7 +102,7 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
-                                Naam(*= verplicht)
+                                Service naam(*= verplicht)
                             </p>
                         </td>
                         <td>
@@ -133,6 +134,18 @@ program. If not, see <http://www.gnu.org/licenses/>
                         <td>
                             <p>
                                 Het type van de service wordt opgegeven.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Weergavenaam
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                               Naam zoals service wordt weergegeven.
                             </p>
                         </td>
                     </tr>
@@ -286,7 +299,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Kaartlagen beheren
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Een service bevat &eacute;&eacute;n of meerdere layers waar automatisch
                 een kaartlaag voor aangemaakt wordt als de service wordt aangemaakt. Voor
@@ -429,6 +442,21 @@ program. If not, see <http://www.gnu.org/licenses/>
                             </p>
                         </td>
                     </tr>
+                   <tr>
+                        <td>
+                            <p>
+                                OGC SLD filtering
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De beheerder dient hier aan te geven of de betreffende kaartlaag SLD in 
+                                voldoende mate ondersteunt. Indien hier onterecht wordt aangegeven dat 
+                                de kaartlaag SLD filtering ondersteunt, dan zal de kaartlaag onzichtbaar 
+                                kunnen worden.
+                            </p>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <p>
@@ -568,7 +596,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Attribuutbronnen
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Om de gebruiker naast een kaart ook van aanvullende informatie te voorzien
                 worden attribuutbronnen, attribuutlijsten en attributen gebruikt.
@@ -743,7 +771,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Attribuutlijst en attributen
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Een attibuutbron heeft &eacute;&eacute;n of meerdere attribuutlijsten.
                 Deze worden automatisch opgehaald en hoeven niet geconfigureerd te worden
@@ -835,6 +863,18 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
+                                Type
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Type attribuut: ter informatie, is niet aanpasbaar.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
                                 Link &ndash; bewerken
                             </p>
                         </td>
@@ -876,7 +916,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Documenten beheren
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Bij het aanmaken van een document vult de beheerder het type, de url en
                 een naam voor het document in. Indien een document wordt verwijderd zal
@@ -1024,7 +1064,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Layarservices beheren
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Bij het aanmaken van een layarservice hoeft alleen een naam ingevoerd
                 te worden. Vanuit dit scherm kan er direct naar de layerbron van een layerservice
@@ -1152,7 +1192,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Layarbronnen beheren
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan per layarservice de layarbronnen bekijken en configureren.
             </p>
@@ -1341,7 +1381,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Rechten toekennen
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Gebruikersgroepen wordt in de gehele beheerapplicatie gebruikt om rechten
                 toe te kennen. In zijn algemeenheid geldt dat een onderdeel of informatie
@@ -1369,7 +1409,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Gebruikersgroep
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Bij het aanmaken van een gebruikersgroep vult de beheerder extra informatie
                 en een naam voor de gebruikersgroep in. Bij het verwijderen krijgt de beheerder
@@ -1497,6 +1537,11 @@ program. If not, see <http://www.gnu.org/licenses/>
                 medewerker meer informatie tonen. De volgende groepen zijn beschikbaar:
             </p>
             <ul>
+               <li>
+                    <p>
+                        Admin: superuser met alle rechten;
+                    </p>
+                </li>
                 <li>
                     <p>
                         RegisterAdmin: beheer van gegevensregister;
@@ -1532,7 +1577,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Gebruikers
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Bij het aanmaken van een gebruiker kan de beheerder aangeven tot welke
                 gebruikersgroepen deze behoort. Verder kunnen de velden naam, organisatie,
@@ -1758,14 +1803,189 @@ program. If not, see <http://www.gnu.org/licenses/>
                             </p>
                         </td>
                     </tr>
+                   <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; autorisatie-overzicht
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Als er op de autorisatieknop wordt geklikt dan opent een nieuw scherm 
+                                waar een overzicht van de rechten per applicatie voor deze gebruiker 
+                                verkregen kan worden.
+                            </p>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+            <h1>
+                Toevoegen inlogmogelijkheid aan applicatie
+            - (zoeken via CTRL-f)</h1>
+            <p>
+                Nadat op de verschillende plaatsen in de applicatie of het register rechten zijn toegekend, 
+                moet de beheerder de gebruiker in staat stellen om in te loggen. Om deze inlogmogelijkheid 
+                zo flexibel mogelijk te maken, wordt dit gerealiseerd door een stukje code op te nemen in 
+                een HTML-component. 
+            </p>
+            <p>
+                Deze HTML-component wordt bij de opbouw van de applicatie als component toegevoegd 
+                (zie later). 
+           </p>
+            <p>
+ 								Om binnen de HTML-component direct code toe te voegen dient de knop “bron aanpassen” 
+								gebruikt te worden. Hierna kan op de gewenste plaats het volgende stukje code worden 
+								ingevoegd:
+								<form>
+								<textarea cols="60" rows="3"><span id="loginInfo">Niet ingelogd</span><a href="#" id="loginLink" onclick="login()">Inloggen</a></textarea>
+								</form>
+            </p>
+            <p>
+            In deze code zijn de volgende onderdelen van belang:
+            <ul>
+								<li>loginInfo: de tekst die binnen de HTML span-tag staat wordt na inloggen vervangen door “Ingelogd als [gebruikersnaam]”;</li>
+								<li>loginLink: de tekst en werking van de de HTML a-tag (link) wordt na inloggen veranderd, de tekst verandert in “uitloggen” en de onclick (werking) verandert naar logout().</li>
+								<li>Login() en logout() zijn bekende functies binnen de applicatie.</li>
+						</ul>
+						De beheerder hoeft dus alleen de code als hiervoor genoemd in de HTML-component te plakken. De werking is verder automatisch.
+						</p>
+           <h1>
+                Autorisatieoverzicht
+            - (zoeken via CTRL-f)</h1>
+            <p>
+               Rechten kunnen op een aantal plaatsen worden ingesteld. Om de beheerder overzicht te bieden 
+               van de effecten van die instellingen is een apart scherm gecreeerd waar per gebruiker en 
+               applicatie opgevraagd kan worden welke rechten van toepassing is. Zoals overal zijn 
+               kaartlagen en componenten waarvoor helemaal geen rechten zijn ingesteld, toegankelijk voor 
+               iedereen; deze worden in het overzicht niet genoemd.
+						</p>
+						<p>
+							Het overzicht kent de volgende algemene onderdelen: Groepslidmaatschap en Gegevensregister 
+							kaartlagen. En daarnaast een aantal onderdelen die per applicatie bepaald worden. Hiertoe 
+							moet in de dropdown de applicatie gekozen worden en op de knop “Applicatie autorisaties” 
+							geklikt worden: Niveaus, Kaartlagen en Componenten. Kies opnieuw een applicatie en klik op 
+							de knop om de autorisaties voor een andere applicatie te zien.
+						</p>
+						<p>
+							Hier volgt een nadere uitleg per soort autorisatie. Het uiteindelijke effect voor gebruiker 
+							staat telkens in groen weergegeven.
+            </p>
+            <table width="100%" cellspacing="0" cellpadding="4">
+                <thead>
+                    <tr>
+                        <th>
+                            Autorisatie
+                        </th>
+                        <th>
+                            Afkomst
+                        </th>
+                        <th>
+                            Uitleg
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>
+                                Groeps-lidmaatschap
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Gebruiker
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Lijst met groepen waarvan gebruiker lid is.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+															Gegevens-register kaartlagen
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+															Gebruiker
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+															Lijst met kaartlagen uit register waarvoor een groep van toepassing is 
+															waarvan gebruiker lid. 
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+															Niveaus
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+															Applicatie
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+															Lijst met niveaus in de kaartboom van de applicatie waarvoor een groep van 
+															toepassing is waarvan gebruiker lid.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+																Kaartlagen
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+																Applicatie
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+																Lijst met kaartlagen in de applicatie waarvoor een groep van toepassing 
+																is waarvan gebruiker lid.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+																Componenten
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+															Applicatie
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+																Lijst met componenten in de applicatie waarvoor een groep van toepassing 
+																is waarvan gebruiker lid.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+            	LET OP: Door het uitgangspunt dat geen enkel recht leidt tot volledige toegang voor iedereen, 
+            	is het overzicht niet altijd meteen intuïtief begrijpelijk.
+            </p>
         </div>
         <a name="Soorten_Applicaties_Help"></a>
         <div class="helpBlock">
             <h1>
                 Soorten applicaties
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheeromgeving stelt de beheerder in staat meerdere soorten applicaties
                 te maken. Hier ligt een bepaalde werkwijze aan ten grondslag. Deze werkwijze
@@ -1811,7 +2031,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Overzicht applicaties met actieve applicatie
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder krijgt een overzicht te zien met alle beschikbare applicaties.
                 Hij kan een applicatie actief maken door op de bewerken link te klikken.
@@ -1838,6 +2058,43 @@ program. If not, see <http://www.gnu.org/licenses/>
                         <td>
                             <p>
                                 De tabel toont alle applicaties.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Naam
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Naam van de applicatie met toegevoegde versie
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Gepubliceerd
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Een gepubliceerde versie heeft geen versie-toevoeging en kan niet worden 
+                                bewerkt.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Eigenaar
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Eigenaar van de applicatie.
                             </p>
                         </td>
                     </tr>
@@ -1896,12 +2153,12 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Instellingen per applicatie
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Middels de gegevens uit het gegevensregister kan de beheerder een applicatie
                 samenstellen. Elke applicatie heeft een aantal basisinstellingen zoals
-                naam, opmerkingen, stylesheet voor metadata, stylesheet voor feature info,
-                stylesheet voor printen en eigenaar. De beheerder kan ook twee steunkleuren
+                naam, opmerkingen, stylesheet voor metadata, stylesheet voor printen en eigenaar. 
+                De beheerder kan ook twee steunkleuren
                 instellen waarmee de beheerder op een eenvoudige manier de uitstraling
                 van de applicatie kan wijzigen.
             </p>
@@ -1992,19 +2249,6 @@ program. If not, see <http://www.gnu.org/licenses/>
                             <p>
                                 De beheerder geeft de url naar de stylesheet op die gebruikt moet worden
                                 als de metadata getoond wordt.
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p>
-                                Stylesheet feature info
-                            </p>
-                        </td>
-                        <td>
-                            <p>
-                                De beheerder geeft de url naar de stylesheet op die gebruikt moet worden
-                                als de feature info getoond wordt.
                             </p>
                         </td>
                     </tr>
@@ -2147,11 +2391,11 @@ program. If not, see <http://www.gnu.org/licenses/>
                                 wordt gevraagd. De naam wordt aan oorspronkelijke naam toegevoegd.
                             </p>
                             <p>
-                                Er word een kopie van de originele applicatie gemaakt. Bij de layout worden
-                                de header en de footer niet mee gekopieerd. De boomstructuur wordt ook
-                                niet mee gekopieerd (deze blijft gelijk aan die van het origineel, de boomstructuur
-                                kan ook niet bewerkt worden van uit de mashup). Nadat de kopie in de database
-                                is opgeslagen is deze klaar om bewerkt te worden door de beheerder.
+                                Er word een kopie van de originele applicatie gemaakt. De boomstructuur 
+                                wordt  niet mee gekopieerd (deze blijft gelijk aan die van het origineel, 
+                                de boomstructuur kan ook niet bewerkt worden van uit de mashup). Nadat de 
+                                kopie in de database is opgeslagen is deze klaar om bewerkt te worden door 
+                                de beheerder.
                             </p>
                         </td>
                     </tr>
@@ -2545,7 +2789,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Boomstructuur met kaarten in de applicatie
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder maakt een boomstructuur aan waarin &eacute;&eacute;n of meerdere
                 kaarten worden geplaatst. Deze boomstructuur kan meerdere niveaus hebben.
@@ -2573,10 +2817,7 @@ program. If not, see <http://www.gnu.org/licenses/>
             <p>
                 Hiernaast definieert de beheerder &eacute;&eacute;n of meerdere achtergrond
                 kaarten die &eacute;&eacute;n of meerdere kaartlagen kunnen bevatten, die
-                specifiek voor de betreffende website/applicatie beschikbaar zijn. Er kan
-                maar &eacute;&eacute;n achtergrondkaart tegelijk zichtbaar zijn in de applicatie.
-                Indien de gebruiker een andere achtergrondkaart aan zet zal de andere automatisch
-                uit gaan. Er is maar &eacute;&eacute;n set van achtergrondkaarten. Het
+                specifiek voor de betreffende website/applicatie beschikbaar zijn. Het
                 is niet mogelijk rechten op achtergrondkaartenlagen te zetten.
             </p>
             <p>
@@ -2768,7 +3009,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Rechten per niveau
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan aanvinken welke gebruikersgroepen rechten hebben op het
                 niveau. Onderliggende niveaus erven deze rechten.
@@ -2861,7 +3102,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Documenten per niveau
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan &eacute;&eacute;n of meerdere documenten uit het gegevensregister
                 toevoegen. Als de beheerder een document wil verwijderen, dan krijgt hij
@@ -3003,7 +3244,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Contextuele informatie per niveau
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan contextuele informatie aan een niveau toevoegen. Deze
                 informatie wordt getoond indien de meta-informatie van dit niveau wordt
@@ -3108,7 +3349,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Kaartlagen instellen
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 In de boomstructuur zijn ook de kaartlagen zichtbaar. Als de beheerder
                 op een kaartlaag klikt dan krijg hij 5 tabbladen te zien.
@@ -3118,7 +3359,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Rechten op kaartlaag
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan aanvinken welke gebruikersgroepen lees- en schrijfrechten
                 hebben op de kaartlaag. Als er niets is aangevinkt gelden de rechten zoals
@@ -3254,7 +3495,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Attributen per kaartlaag
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan aanvinken welke attributen de gebruiker kan zien van
                 deze kaartlaag.
@@ -3361,7 +3602,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Instellingen per kaartlaag
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan de transparantie van de kaartlaag instellen. Indien de
                 kaartlaag ook aan een transparantie slider wordt gekoppeld wordt de transparantie
@@ -3549,7 +3790,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Editfunctionaliteit instellen per kaartlaag
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Bij een kaartlaag kan voor de geselecteerde attributen de edit opties
                 geconfigureerd worden. Een attribuut schuift uit als deze aan geklikt wordt.
@@ -3666,7 +3907,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Dataselectie / filterfunctie instellen per kaartlaag
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan per kaartlaag configureren welk attribuut in de dataselectie
                 of het filter moet worden opgenomen. Een attribuut schuift uit als deze
@@ -3735,6 +3976,18 @@ program. If not, see <http://www.gnu.org/licenses/>
                             </p>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; DB
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De lijst met unieke waarde wordt door druk op knop uit de database gehaald.
+                            </p>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -3742,7 +3995,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Achtergrondkaarten
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan meerdere achtergrondkaarten defini&euml;ren voor een
                 applicatie. Een van de achtergrondkaarten wordt de default achtergrond.
@@ -3769,7 +4022,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Startkaartbeeld per applicatie
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Na dat de beheerder een boomstructuur heeft samengesteld kan hij gaan
                 bepalen welke kaarten uit de boomstructuur bij aanvang in de ToC zichtbaar
@@ -3778,15 +4031,10 @@ program. If not, see <http://www.gnu.org/licenses/>
             </p>
             <p>
                 Indien de beheerder een Mash-up heeft gemaakt, dan kan hij de boomstructuur
-                van kaarten niet aanpassen, want die horen bij de originele applicatie.
-                Hij kan echter wel hier het startkaartbeeld vastleggen. Hier kan hij dus
-                aangeven als er een beperkte set van kaarten/kaartlagen aangezet moet worden.
+                van kaarten en het startkaartbeeld niet aanpassen, want die horen bij de 
+                originele applicatie. 
             </p>
-            <p>
-                Voor achtergrondkaarten werkt dit precies het zelfde als voor andere kaarten.
-                De beheerder kan selecteren welke achtergrondkaart bij het opstarten zichtbaar
-                moet zijn.
-            </p>
+
             <table width="100%" cellspacing="0" cellpadding="4" style="page-break-inside: avoid">
                 <thead>
                     <tr>
@@ -3893,7 +4141,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Toevoegen componenten aan layout
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Het beheren van de layout van een applicatie gaat in drie stappen. De
                 beheerder krijgt een basisindeling waar hij componenten in kan slepen.
@@ -4042,6 +4290,19 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
+                                Vlak &ndash; map bottom
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                In het map bottom vlak kunnen door de beheerder o.a. de schaalbalk en de 
+                                coordinaten geplaatst worden
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
                                 Vlak &ndash; top menu
                             </p>
                         </td>
@@ -4100,7 +4361,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Layout instellingen van de componenten
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Voor elk vlak kan ingesteld worden hoe breed en hoog een vlak is en wat
                 de maximum hoogte en breedte is . Dit kan zowel in pixels (absoluut) als
@@ -4189,7 +4450,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Algemene componentinstellingen
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Door te klikken op een component opent zich een venster met de uitgebreide
                 opties van het betreffende component en kan de beheerder het component
@@ -4274,7 +4535,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Component layout tab
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De beheerder kan voor het component een aantal instellingen doen met betrekking
                 tot de layout. Aangezien deze instellingen alleen relevant zijn voor popup
@@ -4433,7 +4694,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Google Maps Look&amp;Feel (MOTOR)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De google maps look &amp; feel besturing is default ingeschakeld. De beheerder
                 dient wel het component toe te voegen aan het top menu vlak, omdat indien
@@ -4479,6 +4740,42 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
+                                Tonen zoombuttons
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Geeft aan of zoom buttons ( + en –) getoond moeten worden.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Tooltips
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Tooltips voor de verschillende onderdelen van de tool.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Afmetingen
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De hoogte en breedte van de component kan ingesteld worden.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
                                 Knop &ndash; opslaan
                             </p>
                         </td>
@@ -4508,7 +4805,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Streetview koppeling (MOTOR)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De Streetview koppeling wordt gerealiseerd door een interactieve component
                 die na klikken de werking van de muis aanpast. Een klik in de kaart levert
@@ -4616,7 +4913,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Reeds beschikbare kaart componenten (MOTOR)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Hier onder vallen de volgende componenten: Identify, Full Extent, Previous
                 Extent, Next Extent, Pan, SuperPan, Zoom In, Zoom Out, Border Navigation
@@ -4689,7 +4986,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Maptip (KPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De maptip maakt onderdeel uit van de kaart. Het component wordt daarom
                 aan de kaart toegevoegd. Als de gebruiker met zijn muiscursor stil boven
@@ -4754,6 +5051,30 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
+                                Afmeting samenvatting
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De hoogte en breedte van de samevatting
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Map delay
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De wachttijd voordat een maptip wordt opgehaald
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
                                 Knop &ndash; opslaan
                             </p>
                         </td>
@@ -4783,7 +5104,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Feature info (KPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De feature info maakt onderdeel uit van de kaart. Het component wordt
                 daarom ook aan de kaart toegevoegd. Voor de feature info kan de beheerder
@@ -4883,7 +5204,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Table of Contents (SC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Een TOC kan door de beheerder geplaatst worden in een margin vlak en eventueel
                 in een tab component. Het component vult altijd het hele vlak. De beheerder
@@ -4997,7 +5318,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Transparantie (SC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De gebruiker kan met het transparantie component een aantal door de beheerder
                 ingestelde kaartlagen transparanter of juist minder transparant maken.
@@ -5135,7 +5456,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Legenda (SC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De legenda toont alle legenda plaatjes van kaartlagen die zichtbaar zijn.
                 Dit component kan door de beheerder geplaatst worden in een margin vlak
@@ -5175,6 +5496,18 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
+                                Toon achtergrond kaart
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Dienen de achtergrond kaart in de legenda opgenomen te worden?
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
                                 Knop &ndash; opslaan
                             </p>
                         </td>
@@ -5204,7 +5537,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 HTML (SC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 In een HTML component mag in het header, footer, een margin vlak worden
                 geplaatst of eventueel in een tab component. Het component vult altijd
@@ -5282,12 +5615,18 @@ program. If not, see <http://www.gnu.org/licenses/>
                     </tr>
                 </tbody>
             </table>
+            <p>
+							In het hoodfstuk “toevoegen inlogmogelijkheid aan applicatie” wordt beschreven hoe via 
+							de HTML-component een inlog-link kan worden toegevoegd aan de applicatie. Deze is nodig 
+							als er rechten aan onderdelen van de applicatie zijn toegevoegd, waardoor inloggen door 
+							de gebruiker noodzakelijk is.            
+            </p>
         </div>
         <a name="viewer_components_Buffer_Help"></a>
         <div class="helpBlock">
             <h1>
                 Buffering (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het buffering venster kan door de beheerder
                 in het left menu geplaatst worden.
@@ -5358,6 +5697,21 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
+                                Maximum aantal objecten
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Buffering is een intensieve taak die bij veel objecten de server kan 
+                                beinvloeden. Hier kan een maximum aantal objecten opgegeven worden. 
+                                Bij meer objecten is niet precies gedefinieerd welke objecten meegenomen 
+                                worden.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
                                 Filter
                             </p>
                         </td>
@@ -5412,7 +5766,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Gerelateerde documenten (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het Gerelateerde documenten venster kan door
                 de beheerder in het left menu geplaatst worden.
@@ -5507,7 +5861,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Attribuutlijsten (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van de attribuutlijsten venster kan door de beheerder
                 in het left menu geplaatst worden. In de beheeromgeving kan de beheerder
@@ -5629,7 +5983,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Edit functionaliteit (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het edit functionaliteit venster kan door
                 de beheerder in het left menu geplaatst worden.
@@ -5749,7 +6103,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Tekenen
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het tekenvenster kan door de beheerder in
                 het left menu geplaatst worden.
@@ -5856,7 +6210,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Selectiemodule (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het selectiemodule venster kan door de beheerder
                 in het left menu geplaatst worden.
@@ -5989,7 +6343,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Dataselectie en Filteren (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het dataselectie en filteren venster kan door
                 de beheerder in het left menu geplaatst worden. In de beheeromgeving kan
@@ -6115,7 +6469,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Invloedsgebied (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het invloedsgebied venster kan door de beheerder
                 in het left menu geplaatst worden. De beheerder kan verder instellen met
@@ -6214,33 +6568,6 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
-                                Filter
-                            </p>
-                        </td>
-                        <td>
-                            <p>
-                                Met het filter kan gemakkelijk een kaartlaag terug gevonden worden.
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p>
-                                Kaartlagen
-                            </p>
-                        </td>
-                        <td>
-                            <p>
-                                De beheerder moet configureren op welke kaartlagen een invloedsgebied
-                                getekend mag worden. De kaartlagen die hier getoond worden hebben invloedsgebied
-                                ingesteld gekregen. Kaartlagen zonder deze instelling kunnen dus niet geselecteerd
-                                worden.
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p>
                                 Knop &ndash; opslaan
                             </p>
                         </td>
@@ -6270,7 +6597,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Zoeken (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het zoeken venster kan door de beheerder in
                 het left menu geplaatst worden. De beheerder configureert tevens welke
@@ -6418,7 +6745,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Printen (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het printen venster kan door de beheerder
                 in het left menu geplaatst worden. In de beheeromgeving kan de beheerder
@@ -6525,6 +6852,20 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
+                                Maximale grootte plaatje
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De server kan plaatjes produceren met een maximum aantal pixels; 
+                                dit getal moet hier gevuld worden.
+
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
                                 Knop &ndash; opslaan
                             </p>
                         </td>
@@ -6554,7 +6895,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Bookmarks (SPC)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De knop voor het openen van het bookmark venster kan door de beheerder
                 in het left menu geplaatst worden. In de beheeromgeving kan de beheerder
@@ -6647,7 +6988,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Overzichtskaart (MOTOR)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 De overzichtskaart is een klein kaartje waar op de gebruiker kan zien
                 waar hij op dat moment ingezoomd is. De beheerder kan in het top menu een
@@ -6680,28 +7021,25 @@ program. If not, see <http://www.gnu.org/licenses/>
                     <tr>
                         <td>
                             <p>
-                                Hoover tekst
+                                Plaatjes voor statussen
                             </p>
                         </td>
                         <td>
                             <p>
-                                Tekst die getoond wordt indien met muis boven de knop wordt stilgestaan.
+                                De beheerder kan hier eigen plaatjes toevoegen waarmee de overzichtskaart 
+                                geopend en gesloten kan worden
                             </p>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <p>
-                                Layout
+                                Positie plaatje
                             </p>
                         </td>
                         <td>
                             <p>
-                                De beheerder kan kiezen hoe de overzichtskaart getoond moet worden als
-                                de gebruiker op de knop klikt. De overzichtskaart kan getoont worden als
-                                popup die de gebruiker kan verplaatsen over de kaart of de overzichtskaart
-                                word op een vaste positie geplaatst en kan wel weer verborgen worden door
-                                nog maals op de knop te drukken.
+                                De beheerder kan de positie van de knop instellen.
                             </p>
                         </td>
                     </tr>
@@ -6800,7 +7138,7 @@ program. If not, see <http://www.gnu.org/licenses/>
         <div class="helpBlock">
             <h1>
                 Map component (MOTOR)
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
             	De beheerder kiest hiermee de juiste motor voor de viewer.
             </p>
@@ -6949,11 +7287,223 @@ program. If not, see <http://www.gnu.org/licenses/>
             </table>
             -->
         </div>
+        <a name="viewer_components_Coordinates_Help"></a>
+        <div class="helpBlock">
+            <h1>
+                Coordinaten (MOTOR)
+            - (zoeken via CTRL-f)</h1>
+            <p>
+            	De coördinaten van de muispositie wordt hiermee weergegeven.
+            </p>
+             <table width="100%" cellspacing="0" cellpadding="4">
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>
+                                <strong>
+                                    Instelling
+                                </strong>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <strong>
+                                    werking
+                                </strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Decimalen
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Het aantal decimalen achter de komma dat weergegeven moet worden.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; opslaan
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Na het klikken op de opslaan knop wordt het component opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; Annuleren
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Het venster van het component wordt gesloten en het component wordt niet
+                                opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a name="viewer_components_ScaleBar_Help"></a>
+        <div class="helpBlock">
+            <h1>
+                Schaalbalk (MOTOR)
+            - (zoeken via CTRL-f)</h1>
+            <p>
+            	Hiermee wordt een dynamische schaalbalk weergegeven.
+            </p>
+             <table width="100%" cellspacing="0" cellpadding="4">
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>
+                                <strong>
+                                    Instelling
+                                </strong>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <strong>
+                                    werking
+                                </strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Units
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De eenheid die voor de schaalbalk gebruikt moet worden.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; opslaan
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Na het klikken op de opslaan knop wordt het component opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; Annuleren
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Het venster van het component wordt gesloten en het component wordt niet
+                                opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+        <a name="viewer_components_LoadMonitor_Help"></a>
+        <div class="helpBlock">
+            <h1>
+                Laadvoortgang (MOTOR)
+            - (zoeken via CTRL-f)</h1>
+            <p>
+            	Deze component plaatst een laadbalk of voortgangsindicator op de kaart, 
+            	welke actief is als kaartenlagen worden geladen.
+            </p>
+             <table width="100%" cellspacing="0" cellpadding="4">
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>
+                                <strong>
+                                    Instelling
+                                </strong>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <strong>
+                                    werking
+                                </strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Positie
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Via de hoogte en breedte vanaf linksboven kan de positie ingesteld worden.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Monitor tekst
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                De tekst die de gebruiker te zien krijgt als een kaart aan het laden is. 
+                                Met [percentage] in de tekst word getoond hoe ver het laden is.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; opslaan
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Na het klikken op de opslaan knop wordt het component opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                Knop &ndash; Annuleren
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Het venster van het component wordt gesloten en het component wordt niet
+                                opgeslagen.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <a name="Nieuwe_Component_Help"></a>
         <div class="helpBlock">
             <h1>
                 Nieuwe component
-            </h1>
+            - (zoeken via CTRL-f)</h1>
             <p>
                 Nieuwe componenten kunnen aan de viewer worden toegevoegd. De maker van
                 het 3
