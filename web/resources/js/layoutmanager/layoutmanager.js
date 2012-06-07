@@ -410,12 +410,15 @@ Ext.onReady(function() {
                             value: bgcolor
                         });
                         var openOnLeft = false;
+                        var openOnTop = false;
                         if(regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom') openOnLeft = true;
+                        if(regionId === 'footer') openOnTop = true;
                         Ext.create('Ext.ux.b3p.ColorPickerButton', {
                             startColor: bgcolor,
                             renderTo: 'colorpicker_' + regionId + '_bgcolor',
                             textfield: regionId + '_bgcolor',
-                            openOnLeft: openOnLeft
+                            openOnLeft: openOnLeft,
+                            openOnTop: openOnTop
                         });
                     }
                     if(Ext.isDefined(layoutJson[regionId]['components'])) {

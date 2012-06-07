@@ -42,6 +42,13 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
                 marginLeft: '-145px'
             });
         }
+        
+        if(Ext.isDefined(me.openOnTop) && me.openOnTop === true) {
+            me.colorPicker.el.setStyle({
+                marginTop: '-90px',
+                marginLeft: '0px'
+            });
+        }
     },
     renderColorpicker: function() {
         var me = this;
