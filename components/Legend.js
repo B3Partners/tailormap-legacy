@@ -104,7 +104,7 @@ Ext.define ("viewer.components.Legend",{
     layerRemoved : function(map, object){
         var layer = object.layer;
         if(layer != null){
-            this.removeLayer(layer.getId());
+            this.removeLayer(layer);
         }
     },
     removeLayer: function (layer){
