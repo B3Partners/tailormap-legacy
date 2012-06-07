@@ -69,30 +69,36 @@ Ext.define("viewer.AppLayerService", {
         this.initConfig(config);     
     },
     loadAttributes: function(theAppLayer, successFunction, failureFunction) {
-        
-        Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
-            params: {attributes: true, application: this.appId, appLayer: this.appLayer.id},
-            success: function(result) {
-                var response = Ext.JSON.decode(result.responseText);
-                
-                if(response.success) {
-                    theAppLayer.attributes = response.attributes;
-                    theAppLayer.geometryAttributeIndex = response.geometryAttributeIndex;
-                    theAppLayer.geometryAttribute = response.geometryAttribute;
-                    successFunction(response.attributes);
-                } else {
+        var appLayerId = theAppLayer.id;
+        if(!isNaN(appLayerId)){
+            Ext.Ajax.request({
+                url: this.config.actionbeanUrl,
+                params: {attributes: true, application: this.appId, appLayer: this.appLayer.id},
+                success: function(result) {
+                    var response = Ext.JSON.decode(result.responseText);
+
+                    if(response.success) {
+                        theAppLayer.attributes = response.attributes;
+                        theAppLayer.geometryAttributeIndex = response.geometryAttributeIndex;
+                        theAppLayer.geometryAttribute = response.geometryAttribute;
+                        successFunction(response.attributes);
+                    } else {
+                        if(failureFunction != undefined) {
+                            failureFunction(response.error);
+                        }
+                    }
+                },
+                failure: function(result) {
                     if(failureFunction != undefined) {
-                        failureFunction(response.error);
+                        failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
                     }
                 }
-            },
-            failure: function(result) {
-                if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                }
+            });
+        }else{
+            if(failureFunction != undefined) {
+                failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
             }
-        });
+        }
     },
     getStoreUrl: function() {
         var url = this.getActionbeanUrl();
