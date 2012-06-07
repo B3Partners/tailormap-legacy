@@ -155,6 +155,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     background-color: ${steunkleur1};
                     background-image: -moz-linear-gradient(center top , ${steunkleur1}, ${steunkleur1});
                     background-image: -webkit-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
+                    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, ${steunkleur1}), color-stop(100%, ${steunkleur1}));
                     background-image: -o-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
                     background-image: -ms-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
                     background-image: linear-gradient(top, ${steunkleur1}, ${steunkleur1});
