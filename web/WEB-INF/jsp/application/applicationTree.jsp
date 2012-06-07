@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </h1>
 
             <c:choose>
-                <c:when test="${!empty actionBean.application.details['isMashup'] && actionBean.application.details['isMashup'] }">
+                <c:when test="${!empty actionBean.application.details['isMashup'] && actionBean.application.details['isMashup'].value }">
                     <span class="status_error">Applicatie is een mashup. Kaartboom kan niet bewerkt worden!</span>
                 </div>
             </c:when>
