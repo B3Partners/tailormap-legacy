@@ -81,31 +81,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     createMap : function(id, options){
         options = this.mapOptions;
-        //set some default options:
-        //if (!options["theme"])
-            options["theme"]=OpenLayers._getScriptLocation()+'theme/default/style.css';
-        //create the map.
-       /* Ext.fly(id).replaceWith(
-        {
-            tag:'div',
-            id: id,
-            style: {
-                border: '1px solid black'
-            }
-        }
-        );*/
-        options.mapComponent=this;
-        var maxExtent = options["maxExtent"];
-        //var maxBounds = new OpenLayers.Bounds(maxExtent.minx,maxExtent.miny,maxExtent.maxx,maxExtent.maxy);
-        
-        var maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
-        this.mapOptions["center"] = maxBounds.getCenterLonLat();
-      //  Ext.apply(options,this.mapOptions);
-        options["maxExtent"] = maxBounds;
-        var map=new OpenLayers.Map(this.domId,this.mapOptions);
-        var olMap = Ext.create("viewer.viewercontroller.openlayers.OpenLayersMap",{
-            viewerController:this.viewerController
-        },map);
+        options["theme"]=OpenLayers._getScriptLocation()+'theme/default/style.css';
+        options.mapComponent=this;   
+        options.viewerController = this.viewerController;
+        options.domId=this.domId;
+        var olMap = Ext.create("viewer.viewercontroller.openlayers.OpenLayersMap",options);
         //map.events.register("click",this, this.onIdentifyHandler);
         return olMap;
     },

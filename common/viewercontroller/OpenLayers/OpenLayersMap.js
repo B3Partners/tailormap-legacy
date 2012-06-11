@@ -11,14 +11,24 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     config:{
         viewerController:null
     },
-    constructor: function(config,frameworkMap){
+    constructor: function(config){
+        viewer.viewercontroller.openlayers.OpenLayersMap.superclass.constructor.call(this, config);        
         this.initConfig(config);
-        this.frameworkMap = frameworkMap;
-        this.frameworkMap.centerLayerContainer();
-        viewer.viewercontroller.openlayers.OpenLayersMap.superclass.constructor.call(this, config);
-         if (!( this.frameworkMap instanceof OpenLayers.Map)){
-            throw("The given map is not of the type 'OpenLayers.Map'");
+        var maxBounds=null;
+        if (config.maxExtent){
+            //maxBounds = new OpenLayers.Bounds(config.maxExtent.minx,config.maxExtent.miny,config.maxExtent.maxx,config.maxExtent.maxy);
+            maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
+        }else{
+            //fallback for bounds.
+            maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
         }
+        config["center"] = maxBounds.getCenterLonLat();
+      //  Ext.apply(options,this.mapOptions);
+        config.maxExtent = maxBounds;
+        
+        this.frameworkMap=new OpenLayers.Map(config.domId,config);
+        this.frameworkMap.centerLayerContainer();
+      
         this.layersLoading = 0;
         this.markerLayer=null;
         this.defaultIcon=null;
@@ -178,9 +188,11 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         * As workaround add the maxExtent when initing the map
         */
     setMaxExtent : function(extent){
-        this.getFrameworkMap().setOptions({
-            maxExtent: Utils.createBounds(extent)
-        });
+        if (this.getFrameworkMap()!=null){
+            this.getFrameworkMap().setOptions({
+                maxExtent: Utils.createBounds(extent)
+            }); 
+        }
     },
     /**
         *See @link Map.getMaxExtent     

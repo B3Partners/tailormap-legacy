@@ -710,8 +710,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
 });
 
 /**
-    * Entrypoint for flamingoevents. This function propagates the events to the webMapController (handleEvents).
-    */
+* Entrypoint for flamingoevents. This function propagates the events to the webMapController (handleEvents).
+*/
 function dispatchEventJS(event, comp) {
     if(comp [0]== null){
             comp[0] = viewerController.mapComponent.getId();
