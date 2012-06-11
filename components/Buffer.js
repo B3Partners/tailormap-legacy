@@ -53,7 +53,9 @@ Ext.define ("viewer.components.Buffer",{
         return this;
     },
     selectedContentChanged : function (){
-        this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
+        if(this.imageLayer){
+            this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
+        }
     },
     buttonClick : function (){
         this.layerSelector.initLayers();

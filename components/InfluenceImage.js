@@ -39,8 +39,12 @@ Ext.define ("viewer.components.InfluenceImage",{
         return this;
     },
     selectedContentChanged : function (){
-        this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
-        this.viewerController.mapComponent.getMap().reAddLayer(this.vectorLayer);
+        if(this.imageLayer){
+            this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
+        }
+        if(this.vectorLayer){
+            this.viewerController.mapComponent.getMap().reAddLayer(this.vectorLayer);
+        }
     },
     /**
      * Show the geometry on the map.
