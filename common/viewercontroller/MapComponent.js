@@ -18,7 +18,8 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     panel : null,    
     viewerController: null,
     config:{
-        resolutions : null
+        resolutions : null,
+        id: null
     },
     constructor :function (viewerController,domId,config){
         this.initConfig(config);
@@ -27,11 +28,16 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);    
         return this;
     },
-    getId : function() {
-        return "flamingo";        
+       
+    /**
+    *Creates a Map object for this framework
+    *@param id the id of the map
+    *@param options extra options for the map
+    *Must be implemented by subclass
+    */
+    createMap : function(id, options){
+        Ext.Error.raise({msg: "MapComponent.createMap(...) not implemented! Must be implemented in sub-class"});
     },
-    
-
     /**
     *Create functions. SubClass needs to implement these so the user can
     *create Framework specific objects.
@@ -84,15 +90,28 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     */
     createArcServerLayer: function(){
         Ext.Error.raise({msg: "MapComponent.createArcServerLayer needs te be implemented in the sub-class"});
-    },
+    },   
     /**
-    *Creates a Map object for this framework
-    *@param id the id of the map
-    *@param options extra options for the map
+    *Creates a layer of an image
     *Must be implemented by subclass
+    * A vectorlayer is a layer on which features can be drawn by the user (a EditMap in Flamingo, a VectorLayer in OpenLayers)
+    * @param name The name of this layer
+    * @param url The url of the image
+    * @param bounds The boundary of the layer
+    * @param size The size of the image
+    * @param options Hashtable of extra options to tag onto the layer
     */
-    createMap : function(id, options){
-        Ext.Error.raise({msg: "MapComponent.createMap(...) not implemented! Must be implemented in sub-class"});
+    createImageLayer : function (name,url, bounds, size,options){
+        Ext.Error.raise({msg: "MapComponent.createImageLayer() Not implemented! Must be implemented in sub-class"});
+    }, 
+    /**
+    *Creates a drawable vectorlayer
+    *Must be implemented by subclass
+    * A vectorlayer is a layer on which features can be drawn by the user (a EditMap in Flamingo, a VectorLayer in OpenLayers)
+    * @param name The name of this laye
+    */
+    createVectorLayer : function (name){
+        Ext.Error.raise({msg: "MapComponent.createVectorLayer() Not implemented! Must be implemented in sub-class"});
     },
     /**
     *Must be implemented by the sub-class
@@ -224,28 +243,6 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         Ext.Error.raise({msg: "MapComponent.removeMap() Not implemented! Must be implemented in sub-class"});
     },
 
-    /**
- *Creates a drawable vectorlayer
- *Must be implemented by subclass
- * A vectorlayer is a layer on which features can be drawn by the user (a EditMap in Flamingo, a VectorLayer in OpenLayers)
- * @param name The name of this laye
- */
-    createVectorLayer : function (name){
-        Ext.Error.raise({msg: "MapComponent.createVectorLayer() Not implemented! Must be implemented in sub-class"});
-    },
-    /**
- *Creates a layer of an image
- *Must be implemented by subclass
- * A vectorlayer is a layer on which features can be drawn by the user (a EditMap in Flamingo, a VectorLayer in OpenLayers)
- * @param name The name of this layer
- * @param url The url of the image
- * @param bounds The boundary of the layer
- * @param size The size of the image
- * @param options Hashtable of extra options to tag onto the layer
- */
-    createImageLayer : function (name,url, bounds, size,options){
-        Ext.Error.raise({msg: "MapComponent.createImageLayer() Not implemented! Must be implemented in sub-class"});
-    },
  /**
  * Registers a function with a given event on the given object
  * Must be implemented by subclass

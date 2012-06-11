@@ -56,6 +56,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                  = "onDeactivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_SERVICE_INFO]            = "onGetServiceInfo";
     },
+    
+    /**
+     *Fixed for flamingo??
+     */
+    getId : function() {
+        return "flamingo";        
+    },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
      *@param id the id of the map that is configured in the configuration xml
@@ -100,6 +107,18 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             viewerController: viewerController
         };
         return new viewer.viewercontroller.flamingo.FlamingoWMSLayer(config);
+    },
+    /**
+     * @see viewer.viewercontroller.MapComponent@createTilingLayer
+     */
+    createTilingLayer: function (name, url, options,viewerController){
+        if (options==undefined || options==null){
+            options={};
+        }
+        options.id=name;
+        options.url=url;
+        options.type=options.protocol;
+        return Ext.create("viewer.viewercontroller.flamingo.FlamingoTilingLayer",options);
     },
     createArcConfig: function(name,server,servlet,mapservice,options,viewerController){
         /*var object=new Object();
@@ -146,16 +165,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         });
     },
     /**
-     * @see viewer.viewercontroller.MapComponent@createTilingLayer
+     * See @link MapComponent.createVectorLayer
      */
-    createTilingLayer: function (name, url, options,viewerController){
-        if (options==undefined || options==null){
-            options={};
-        }
-        options.id=name;
-        options.url=url;
-        options.type=options.protocol;
-        return Ext.create("viewer.viewercontroller.flamingo.FlamingoTilingLayer",options);
+    createVectorLayer : function (config){        
+        config.frameworkLayer = this.viewerObject
+        return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
     /**
      * Create a tool that is useable in Flamingo-mc
@@ -189,13 +203,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }        
         var component = new viewer.viewercontroller.flamingo.FlamingoComponent(conf);        
         return component;
-    },
-    /**
-     * See @link MapComponent.createVectorLayer
-     */
-    createVectorLayer : function (config){        
-        config.frameworkLayer = this.viewerObject
-        return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
     /**
      * Creates a ToolGroup that is needed to add tools.
@@ -311,41 +318,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         return this.toolGroupId;
     },
     /**
-     * Adds a container to flamingo.
-     * @param component the FlamingoComponent that must be added.
-     */
-    addComponent: function(component){
-        if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
-            Ext.Error.raise({
-                msg: "The given Component is not of type 'FlamingoComponent'"               
-            });
-        }
-        viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
-        
-        var container=this.mainContainerId;
-        var xml=component.toXML();
-        //these components can be added to the bottom if its configured in the layout.
-        if (component.config.regionName=="content_bottom"){
-            if (this.viewerController.getLayoutHeight("content_bottom")>=0 && this.bottomContainerId==null){                
-                this.bottomContainerId=this.createBottomContent();
-            }
-            if (this.bottomContainerId){
-                container=this.bottomContainerId;
-            }
-        }
-        if (container){
-            //add the component.
-            this.viewerObject.callMethod(container,'addComponent',xml);         
-        }
-        if (component.type==viewer.viewercontroller.controller.Component.MAPTIP){
-            //if it's a maptip check for the maptipdelay. If not set, set it.
-            var maptipdelay= this.viewerObject.callMethod(this.getMap().id,'getMaptipdelay');             
-            if (maptipdelay==undefined){
-                this.viewerObject.callMethod(this.getMap().id,'setMaptipdelay',component.getMaptipdelay()); 
-            }
-        }
-    },
-    /**
      * Create the bottomcontent container
      * @param component. The first component
      * @return the id of the new container of null if it's not created
@@ -390,6 +362,51 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         MapComponent.prototype.removeTool.call(this,tool);
     },
     /**
+     * See @link MapComponent.removeToolById
+     */
+    removeToolById : function (id){
+        var tool = this.getTool(id);
+        if(tool == null || !(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
+            Ext.Error.raise({msg: "The given tool is not of type 'FlamingoTool' or the given id does not exist"});
+        }
+        this.removeTool(tool);
+    },
+    /**
+     * Adds a container to flamingo.
+     * @param component the FlamingoComponent that must be added.
+     */
+    addComponent: function(component){
+        if (!(component instanceof viewer.viewercontroller.flamingo.FlamingoComponent)){
+            Ext.Error.raise({
+                msg: "The given Component is not of type 'FlamingoComponent'"               
+            });
+        }
+        viewer.viewercontroller.FlamingoMapComponent.superclass.addComponent.call(this,component);
+        
+        var container=this.mainContainerId;
+        var xml=component.toXML();
+        //these components can be added to the bottom if its configured in the layout.
+        if (component.config.regionName=="content_bottom"){
+            if (this.viewerController.getLayoutHeight("content_bottom")>=0 && this.bottomContainerId==null){                
+                this.bottomContainerId=this.createBottomContent();
+            }
+            if (this.bottomContainerId){
+                container=this.bottomContainerId;
+            }
+        }
+        if (container){
+            //add the component.
+            this.viewerObject.callMethod(container,'addComponent',xml);         
+        }
+        if (component.type==viewer.viewercontroller.controller.Component.MAPTIP){
+            //if it's a maptip check for the maptipdelay. If not set, set it.
+            var maptipdelay= this.viewerObject.callMethod(this.getMap().id,'getMaptipdelay');             
+            if (maptipdelay==undefined){
+                this.viewerObject.callMethod(this.getMap().id,'setMaptipdelay',component.getMaptipdelay()); 
+            }
+        }
+    },
+    /**
      *Add a map to the MapComponent.
      *For know only 1 map supported.
      */
@@ -399,16 +416,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         this.viewerObject.callMethod(this.mainContainerId,'addComponent',map.toXML()); 
         this.maps.push(map);
-    },
-    /**
-     * See @link MapComponent.removeToolById
-     */
-    removeToolById : function (id){
-        var tool = this.getTool(id);
-        if(tool == null || !(tool instanceof viewer.viewercontroller.flamingo.FlamingoTool)){
-            Ext.Error.raise({msg: "The given tool is not of type 'FlamingoTool' or the given id does not exist"});
-        }
-        this.removeTool(tool);
     },
     /**
      *Get the map by id. If no id is given and 1 map is available that map wil be returned
@@ -430,14 +437,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         return null;
         //Ext.Error.raise({msg: "FlamingoMapComponent.getMap(): Map with id: "+mapId+" not found! Available maps: "+availableMaps});
-    },
-    
-    getWidth: function(){
-        return this.viewerObject.callMethod(this.flamingoId,"getWidth");
-    },
-    
-    getHeight: function(){
-        return this.viewerObject.callMethod(this.flamingoId,"getHeight");
     },
     /****************************************************************Event handling***********************************************************/
 
@@ -700,6 +699,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 thisObj.addListener(event,handler,scope);
             },100);
         }
+    },    
+    getWidth: function(){
+        return this.viewerObject.callMethod(this.flamingoId,"getWidth");
+    },
+    
+    getHeight: function(){
+        return this.viewerObject.callMethod(this.flamingoId,"getHeight");
     }
 });
 
