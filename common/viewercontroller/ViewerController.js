@@ -50,7 +50,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @constructor
      */
     constructor: function(viewerType, mapId, app) {
-        
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker",{viewerController:this});
         this.app = app;
         
@@ -66,7 +65,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
          * before instantiating a ViewerController.
          */
         if(app.layout) {
-            //console.log("Creating layout");
             // maxHeight is needed for IE8 bug where maxHeight on wrapper only does not work
             var maxHeight = null;
             if(app.details && app.details.maxHeight && parseInt(app.details.maxHeight, 10) !== 0) maxHeight = parseInt(app.details.maxHeight, 10);
@@ -82,7 +80,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             mapId = this.layoutManager.getMapId();
         }
         
-      
         if(viewerType == "flamingo") {
             // Get config for map
             var comps = this.app.components;
@@ -99,21 +96,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         } else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId);
         }
-        
-       // this.mapComponent.setConfig(config);
-        /* XXX move to constructor? */
-        
-     
-        // XXX does API need to call other functions before the map is created?
-        // 
-        // XXX use app value
-        // this.mapOptions.maxExtent =  new viewer.viewercontroller.controller.Extent(10000, 304000,280000,620000);
-        
-        // XXX how to setup options before creating the map container - and keep
-        // them general...
-        
-        
-        
+              
         this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
         if(viewerType == "openlayers") {
             this.mapComponent.handleEvent(this.mapComponent.getSpecificEventName(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE));
@@ -167,7 +150,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     visible: "true",
                     fullextent : maxExtent.toString(),
                     extent: startExtent.toString(),
-                    /*resolutions: "156543.033928,78271.5169639999,39135.7584820001,19567.8792409999,9783.93962049996,4891.96981024998,2445.98490512499,1222.99245256249,611.49622628138,305.748113140558,152.874056570411,76.4370282850732,38.2185141425366,19.1092570712683,9.55462853563415,4.77731426794937,2.38865713397468,1.19432856685505",*/
                     extenthistory: "10"
                 }
             });
@@ -180,17 +162,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.initLayers();                
             }
             this.layersInitialized=true;
-            
-            
-        // XXX viewer.js: viewerController.loadLayout(layoutManager.getComponentList());
-            
-        // XXX viewer.js: viewerController.loadRootLevel(app.rootLevel);
-            
-        //testComponents();
         } catch(e) {
-            if (window.console && console.log){
-                console.log(e);
-            }
+            this.logger.error(e);
         }  
     },
     
@@ -199,10 +172,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * loaded. 
      */
     initializeConfiguredComponents: function(){
-        
-        // XXX must use order in layout so layoutManager is required
-        // app.components is not useful otherwise
-        
         var list =  this.layoutManager.getComponentList();
         for(var i = 0; i < list.length; i++) {
             var layoutComponent = list[i];
@@ -221,7 +190,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },    
     
     createComponent: function(name, className, config, details){
-        
         if(this.components[name] != undefined) {
             throw "Component with name " + name + " (class " + className + ") already added, cannot add component of class " + className + " with the same name";
         }
@@ -234,8 +202,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         config.viewerController = this;
         config.name=name;
         config.details=details;
-        //console.log("Creating component " + name + " class  " + className + " with config", config);
-        
+               
         try{
             var instance = Ext.create(className, config);
 
@@ -247,7 +214,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 instance: instance
             };
         } catch(e) {
-            console.log("Error creating component with className " + className + ": error ",e, " with config", config);
+            this.logger.error("Error creating component with className " + className + ": error ",e, " with config", config);
         }
 
         return instance;
@@ -414,7 +381,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if (appLayer.background!=background){
             return;
         }
-        //console.log(appLayer.layerName);
+        
         var layer = this.getOrCreateLayer(appLayer);
         this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
     },
@@ -447,10 +414,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @param appLayer The app layer
      * @param visible true or false.
      */
-    /*dddddd*/
     setLayerVisible : function (appLayer, visible){
         var layer = this.getLayer(appLayer);
-        //xxx is also done in setVisible of layer....
         if (layer){
             layer.visible = visible;
             this.mapComponent.getMap().setLayerVisible(layer, visible);
@@ -526,13 +491,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             
         return foundAppLayer;
     },
-    /**
-     * @deprecated Wrong casing in method name, use getAppLayer()
-     */
-    getApplayer: function(serviceId, layerName) {
-        return this.getAppLayer(serviceId, layerName);
-    },
-    
+
     getAppLayerFeatureService: function(appLayer) {
         
         if(appLayer.featureService == undefined) {
@@ -569,7 +528,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             retryonerror: 1,
             ratio: 1,
             id: id,
-            /*showerrors: true,*/
             initService: false
         };
 
@@ -584,8 +542,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 version: "1.1.1",
                 layers:layer.name,
                 visible: false,
-                /*xxx must be set by tool that uses it.
-                   *query_layers: layer.name,*/
                 styles: "",
                 format: "image/png",
                 transparent: true,
@@ -812,15 +768,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
     },        
     
-    /** @deprecated */
-    zoomToExtent : function(minx,miny,maxx,maxy){
-        this.mapComponent.getMap().zoomToExtent({
-            minx:minx,
-            miny:miny,
-            maxx:maxx,
-            maxy:maxy
-        }, 0);
-    },
     bookmarkValuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
@@ -887,8 +834,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     succesReadUrl : function(code){
         var paramJSON = Ext.JSON.decode(code);
-        //paramJSON.params[0].name
-        //paramJSON.params[0].value
         
         var params = new Object();
         for ( var i = 0 ; i < paramJSON["params"].length ; i++){
@@ -900,7 +845,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.bookmarkValuesFromURL(params);
     },
     failureReadUrl : function(code){
-        //
     },
     getBookmarkUrl : function(){
         var paramJSON = {

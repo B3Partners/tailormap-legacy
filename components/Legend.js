@@ -84,8 +84,6 @@ Ext.define ("viewer.components.Legend",{
         }        
         //show backgrounds == false then don't show backgrounds.
         if (!this.getShowBackground()){
-            //var appLayer=this.viewerController.getAppLayer(serviceId,layerName);
-                                    
             if (appLayer.background){
                 return;
             }
