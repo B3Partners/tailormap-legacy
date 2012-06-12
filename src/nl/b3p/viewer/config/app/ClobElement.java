@@ -26,6 +26,7 @@ import javax.persistence.Lob;
 @Embeddable
 public class ClobElement {
     @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String value;
 
     public ClobElement() {

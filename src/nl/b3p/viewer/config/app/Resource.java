@@ -45,6 +45,7 @@ public class Resource {
 
     @Column(nullable=false, name="data_")
     @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private java.sql.Blob data;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">

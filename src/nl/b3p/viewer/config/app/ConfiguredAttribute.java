@@ -48,6 +48,7 @@ public class ConfiguredAttribute {
      * JSON array
      */
     @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String editValues;
 
     private String defaultValue;

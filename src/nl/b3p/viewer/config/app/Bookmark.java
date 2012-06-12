@@ -34,6 +34,7 @@ public class Bookmark {
     
     @Lob
     @Basic(optional=false)
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String params;
     
     @Temporal(TemporalType.TIMESTAMP)

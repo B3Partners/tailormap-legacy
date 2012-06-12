@@ -54,6 +54,7 @@ public class Application {
     private String version;
 
     @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String layout;
 
     @ElementCollection

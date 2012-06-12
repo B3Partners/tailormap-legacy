@@ -63,6 +63,7 @@ public class Level {
     private List<Document> documents = new ArrayList<Document>();
 
     @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String info;
 
     @ElementCollection
