@@ -45,6 +45,7 @@ public class Group {
     private String name;
 
     @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String description;
 
     @ManyToMany(mappedBy="groups")
