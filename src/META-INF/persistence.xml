@@ -17,6 +17,12 @@
             Zet daarom de volgende optie: -->
       <!-- XXX Op deze plek werkt niet, wel in /WEB-INF/classes/hibernate.properties -->
       <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
+      
+      <!-- workaround for Hibernate bug expecting the generated id to be the first column
+           http://postgresql.1045698.n5.nabble.com/Problems-with-Hibernate-Discriminators-and-9-0-801-jdbc4-td4259788.html
+      -->
+      <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
+      
       <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
