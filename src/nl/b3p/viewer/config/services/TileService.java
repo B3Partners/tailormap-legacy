@@ -80,9 +80,10 @@ public class TileService extends GeoService {
             TileSet ts = new TileSet();
             Boolean unique = false;
             String tsName=serviceName;
-            for (int i=0; i < 100 && !unique; i++){
+            for (int i=0; i < 100; i++){
                 if(Stripersist.getEntityManager().find(TileSet.class,tsName)==null){
                     unique=true;
+                    break;
                 }
                 tsName = serviceName+"("+(i+1)+")";
             }
