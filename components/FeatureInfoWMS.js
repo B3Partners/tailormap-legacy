@@ -51,7 +51,7 @@ Ext.define ("viewer.components.FeatureInfoWMS",{
         var html="";
         html+="<div class='featureinfo_layer'>";
         for (var layerName in data){
-            var appLayer = this.viewerController.getApplayer(options.layer.serviceId,layerName);
+            var appLayer = this.viewerController.getAppLayer(options.layer.serviceId,layerName);
             html+="<div class='featureinfo_layertitle'>"
                 //TODO: Use the alias of the layer???
                 html+=appLayer.layerName;          
