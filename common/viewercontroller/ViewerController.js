@@ -98,6 +98,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
               
         this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
+        this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
+        
         if(viewerType == "openlayers") {
             this.mapComponent.handleEvent(this.mapComponent.getSpecificEventName(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE));
         }
@@ -239,7 +241,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.initLayers();
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
     },
-
+    /**
+     * Triggered when the selected content has changed. This method makes sure that all the previous filters are restored after deleting all the layers.
+     */
+    onSelectedContentChanged : function (){
+        var appLayers = this.app.appLayers;
+        for(var key in appLayers ){
+            var appLayer = appLayers[key];
+            if(appLayer.filter){
+                var mapLayer = this.getLayer(appLayer);
+                mapLayer.setQuery(appLayer.filter);
+                this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+            }
+        }
+    },
     uncheckUnselectedContent: function() {
         var selectedAppLayers = [];
         
