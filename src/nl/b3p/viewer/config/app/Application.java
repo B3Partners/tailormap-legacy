@@ -237,9 +237,7 @@ public class Application {
             
             treeCache = new TreeCache();
             
-            treeCache.levels = Stripersist.getEntityManager().createNativeQuery(
-                "select * from level_ start with id = :rootId connect by parent = prior id",
-                Level.class)
+            treeCache.levels = Stripersist.getEntityManager().createNamedQuery("getLevelTree")
                 .setParameter("rootId", root.getId())
                 .getResultList();
             

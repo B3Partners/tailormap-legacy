@@ -215,9 +215,7 @@ public abstract class GeoService {
         
         // XXX Oracle specific
         // Retrieve layer tree structure in single query
-        layers = Stripersist.getEntityManager().createNativeQuery(
-            "select * from layer start with id = :rootId connect by parent = prior id",
-            Layer.class)
+        layers = Stripersist.getEntityManager().createNamedQuery("getLayerTree")
             .setParameter("rootId", topLayer.getId())
             .getResultList();   
       
