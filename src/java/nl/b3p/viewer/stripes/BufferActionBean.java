@@ -239,7 +239,6 @@ public class BufferActionBean implements ActionBean {
                 Geometry g = (Geometry) f.getDefaultGeometry();
                 g = g.buffer(buffer);
                 wkts.add(new CombineImageWkt(g.toText()));
-                System.out.println(f);
             }
         } finally {
             it.close();
