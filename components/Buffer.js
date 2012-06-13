@@ -23,7 +23,7 @@ Ext.define ("viewer.components.Buffer",{
     extend: "viewer.components.Component",
     layerSelector: null,
     radius:null,
-    imageLayer:null,
+    imageLayers:null,
     colorPicker:null,
     color:null,
     config: {
@@ -49,12 +49,13 @@ Ext.define ("viewer.components.Buffer",{
             tooltip: me.tooltip
         });      
         this.loadWindow();
+        this.imageLayers = new Array();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
     selectedContentChanged : function (){
-        if(this.imageLayer){
-            this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
+        for(var i = 0 ;i < this.imageLayers.length ;i++){
+            this.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
         }
     },
     buttonClick : function (){
@@ -149,8 +150,9 @@ Ext.define ("viewer.components.Buffer",{
                     this.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
                 }
             }
-            this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.layerName+"ImageLayer", url, bbox);
-            this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
+            var imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.layerName+"ImageLayer", url, bbox);
+            this.imageLayers.push(imageLayer);
+            this.viewerController.mapComponent.getMap().addLayer(imageLayer);
         }
     },
     removeBuffer : function(){
@@ -160,6 +162,11 @@ Ext.define ("viewer.components.Buffer",{
             var mapLayer = map.getLayer(this.name + layer.layerName+"ImageLayer");
             if(mapLayer!=null){
                 map.removeLayer(mapLayer);
+            }
+        }
+        for(var i = 0 ; i < this.imageLayers.length ; i++ ){
+            if(this.imageLayers[i].id == this.name + layer.layerName+"ImageLayer"){
+                this.imageLayers.splice(i,1);
             }
         }
     },

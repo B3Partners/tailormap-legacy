@@ -41,24 +41,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
      *@return a xml string of this object
      **/
     toXML : function(){
-        //<fmc:LayerImage imageurl="../images/limburg2010.swf" extent="168000,307000,214000,421000" listento="map"/>
         var xml="<fmc:";
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.id+"\"";
      
         xml+=" url=\""+this.url+"\"";
-        xml+=" extent=\""+this.extent;
-       
-        xml+="\"";
-       /* for (var optKey in this.options){
-            //skip these options.
-            if (optKey.toLowerCase()== "url" ||
-                optKey.toLowerCase()== "sld"){}
-            else{
-                xml+=" "+optKey+"=\""+this.options[optKey]+"\"";
-            }
-        }*/
+        xml+=" extent=\""+this.extent +"\"";
+        xml+=" visible=\""+this.visible+"\"";
+        
         xml+="></fmc:"+this.getTagName()+">";
 
         return xml;
