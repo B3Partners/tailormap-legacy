@@ -12,8 +12,8 @@
         </persistence-unit-defaults>
     </persistence-unit-metadata>   
  
-	<named-native-query name="getLayerTree" result-class="nl.b3p.viewer.config.services.Layer">
-		<query><![CDATA[
+    <named-native-query name="getLayerTree" result-class="nl.b3p.viewer.config.services.Layer">
+        <query><![CDATA[
             select * from layer where id in (
                 with recursive layer_tree(id) as (
                     select id from layer where id = :rootId
@@ -23,8 +23,8 @@
                 select * from layer_tree)
         ]]></query>    
     </named-native-query>
-	<named-native-query name="getLevelTree" result-class="nl.b3p.viewer.config.app.Level">
-		<query><![CDATA[
+    <named-native-query name="getLevelTree" result-class="nl.b3p.viewer.config.app.Level">
+        <query><![CDATA[
             select * from level_ where id in (
                 with recursive level_tree(id) as (
                     select id from level_ where id = :rootId
