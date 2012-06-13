@@ -61,6 +61,8 @@ public class Layer {
      */
     private String titleAlias;
 
+    @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String legendImageUrl;
 
     private Double minScale;
