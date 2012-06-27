@@ -46,6 +46,10 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
+                    <file>${libs.Twitter4J.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
                     <file>${reference.viewer-commons.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
