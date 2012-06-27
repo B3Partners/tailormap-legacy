@@ -683,5 +683,18 @@
                      iconUrl_sel: "http://localhost:8084/viewer/resources/images/buffer_down.png",
                      iconUrl_dis: "http://localhost:8084/viewer/resources/images/buffer.png"}
         }
+    },
+    {
+        className: "viewer.components.Twitter",
+        name: "Twitter",
+        shortName: "Tw",
+        sources: ["Twitter.js"],
+        closureCompilerSafe: true,
+        singleton: true,
+        restrictions: ["header","leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom","footer"],
+        extPropertyGridConfigs: {
+            propertyNames: {search: "Zoekterm"},
+            source: {search: "B3Partners"}
+        }
     }
 ]
