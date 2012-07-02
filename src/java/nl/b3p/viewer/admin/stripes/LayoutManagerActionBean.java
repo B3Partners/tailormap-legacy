@@ -207,8 +207,10 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
 
         try {
-            component = (ConfiguredComponent) em.createQuery(
-                    "from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", name).getSingleResult();
+            if(component == null){
+                component = (ConfiguredComponent) em.createQuery(
+                        "from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", name).getSingleResult();
+            }
             groups = new ArrayList<String>(component.getReaders());
             try {
                 JSONObject d = new JSONObject();

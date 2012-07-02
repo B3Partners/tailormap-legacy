@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="configForm" style="width: 100%; height: 100%;">
-            <stripes:hidden name="component" value="${actionBean.component.id}"/>
+            <input type="hidden" name="component" value="${actionBean.component.id}"/>
             <stripes:hidden name="className" value="${actionBean.className}"/>
             <stripes:hidden name="name" value="${actionBean.name}"/>
             <stripes:hidden id="componentLayout" name="componentLayout"/>
