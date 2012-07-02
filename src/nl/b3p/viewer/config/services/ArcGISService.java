@@ -197,12 +197,14 @@ public class ArcGISService extends GeoService {
             fs.getFeatureTypes().add(sft);
             l.setFeatureType(sft);
         }        
-        
+/* XXX subLayers references top level layer, not a full JSON layer object
+ * two passes needed to properly parse tree structure to set Layer.parent and
+ * Layer.children
         JSONArray children = agsl.getJSONArray("subLayers");
         for(int i = 0; i < children.length(); i++) {
             l.getChildren().add(parseArcGISLayer(children.getJSONObject(i), service, fs, l));
         }
-                        
+*/                        
         return l;
     }
     
