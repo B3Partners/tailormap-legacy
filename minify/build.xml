@@ -36,12 +36,17 @@
 			<file name="CombineImage.js"/>
 			<file name="FeatureInfo.js"/>
 			<file name="EditFeature.js"/>
-			<file name="ArcQueryUtil.js"/>            
+			<file name="ArcQueryUtil.js"/>     
+			<file name="Twitter.js"/>       
           </sources>          
 		  <!--					The abstract MapComponent				-->         
           <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
             <file name="Map.js"/>
             <file name="Layer.js"/>
+            <file name="TilingLayer.js"/>
+            <file name="WMSLayer.js"/>
+            <file name="ImageLayer.js"/>
+            <file name="VectorLayer.js"/>
             <file name="Feature.js"/>
             <file name="MapTip.js"/>
             <file name="Extent.js"/>
@@ -70,7 +75,7 @@
             <file name="OpenLayersWMSLayer.js"/>
             <file name="OpenLayersVectorLayer.js"/>
             <file name="OpenLayersImageLayer.js"/>
-            <file name="OpenLayersTMSLayer.js"/>
+            <file name="OpenLayersTilingLayer.js"/>
             <file name="OpenLayersTool.js"/>
             <file name="OpenLayersIdentifyTool.js"/>
             <file name="OpenLayersMap.js"/>

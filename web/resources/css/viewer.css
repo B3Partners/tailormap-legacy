@@ -100,3 +100,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .toc-inscale {
     color: black;
 }
+/*OpenLayers */
+.olImageLoadError{
+    background-color: transparent !important;
+}

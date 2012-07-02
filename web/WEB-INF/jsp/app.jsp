@@ -64,6 +64,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Map.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Layer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/TilingLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/WMSLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/ImageLayer.js"></script>                
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/VectorLayer.js"></script>                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/MapTip.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Extent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Feature.js"></script>
@@ -77,7 +81,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersWMSLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersVectorLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersImageLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTMSLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTilingLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTool.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersIdentifyTool.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersMap.js"></script>
@@ -155,11 +159,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-panel-header-default {
                     background-color: ${steunkleur1};
                     background-image: -moz-linear-gradient(center top , ${steunkleur1}, ${steunkleur1});
-                    background-image: -webkit-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
-                    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, ${steunkleur1}), color-stop(100%, ${steunkleur1}));
-                    background-image: -o-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
-                    background-image: -ms-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
-                    background-image: linear-gradient(top, ${steunkleur1}, ${steunkleur1});
                     border-color: ${steunkleur1};
                 }
 
@@ -255,7 +254,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "editfeature":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditFeatureActionBean"/></js:quote>,
                 "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
                 "unique":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.UniqueValuesActionBean"/></js:quote>,
-                "twitter":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>,
+                "twitter":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>, 
                 "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>
             };
         

@@ -46,7 +46,7 @@ public class TwitterActionBean implements ActionBean {
     private String rpp;
     
     @Validate
-    private Long latestId;
+    private String latestId;
     
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -73,14 +73,13 @@ public class TwitterActionBean implements ActionBean {
         this.term = term;
     }
 
-    public Long getLatestId() {
+    public String getLatestId() {
         return latestId;
     }
 
-    public void setLatestId(Long latestId) {
+    public void setLatestId(String latestId) {
         this.latestId = latestId;
     }
-
 
     //</editor-fold>
     
@@ -91,13 +90,13 @@ public class TwitterActionBean implements ActionBean {
         String error = null;
 
         try {
-        
 
             // The factory instance is re-useable and thread safe.
             Twitter twitter = new TwitterFactory().getInstance();
             Query query = new Query(term);
             if(latestId != null){
-                query.setSinceId(latestId);
+                Long longVal = Long.valueOf(latestId);
+                query.setSinceId(longVal);
             }
             
             QueryResult result = twitter.search(query);
@@ -105,9 +104,10 @@ public class TwitterActionBean implements ActionBean {
             for (Tweet tweet : result.getTweets()) {
                 System.out.println(tweet.getFromUser() + ":" + tweet.getText());
                 JSONObject t = new JSONObject();
-                t.put("id_str",tweet.getId());
+                t.put("id_str",String.valueOf( tweet.getId()));
                 t.put("text",tweet.getText());
                 t.put("user_from",tweet.getFromUser());
+                t.put("img_url",tweet.getProfileImageUrl());
                 
                 JSONObject geo = new JSONObject();
                 if(tweet.getGeoLocation() != null){
@@ -119,9 +119,9 @@ public class TwitterActionBean implements ActionBean {
             }
             json.put("tweets",tweets);
             if(tweets.length() > 0){
-                json.put("maxId",result.getMaxId());
+                json.put("maxId",String.valueOf(result.getMaxId()));
             }else{
-                json.put("maxId",latestId);
+                json.put("maxId",String.valueOf(latestId));
             }
             json.put("success", Boolean.TRUE);
         } catch(Exception e) {

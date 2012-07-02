@@ -182,15 +182,18 @@ public class BufferActionBean implements ActionBean {
             cis.setWktGeoms(wkts);
 
             final BufferedImage bi = ImageTool.drawGeometries(null, cis);
+            if (bi!=null){
+                StreamingResolution res = new StreamingResolution(cis.getMimeType()) {
 
-            StreamingResolution res = new StreamingResolution(cis.getMimeType()) {
-
-                @Override
-                public void stream(HttpServletResponse response) throws Exception {
-                    ImageTool.writeImage(bi, cis.getMimeType(), response.getOutputStream());
-                }
-            };
-            return res;
+                    @Override
+                    public void stream(HttpServletResponse response) throws Exception {
+                        ImageTool.writeImage(bi, cis.getMimeType(), response.getOutputStream());
+                    }
+                };
+                return res;
+            }else{                
+                return new ForwardResolution(JSP);
+            }
         } catch (Exception e) {
             log.error("Fout genereren layerimage", e);
             BufferedImage leeg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
@@ -239,6 +242,7 @@ public class BufferActionBean implements ActionBean {
                 Geometry g = (Geometry) f.getDefaultGeometry();
                 g = g.buffer(buffer);
                 wkts.add(new CombineImageWkt(g.toText()));
+                System.out.println(f);
             }
         } finally {
             it.close();
