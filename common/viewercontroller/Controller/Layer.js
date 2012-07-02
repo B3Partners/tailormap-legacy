@@ -27,15 +27,17 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      *@deprecated can be found by getting the appLayer.serviceId
      **/
     serviceId: null,
-    appLayerId: null,
     config :{
-        id: "id",
-        frameworkLayer: null,
+        id: null,
         options: null,
-        viewerController: null
+        viewerController: null,
+        url:null,
+        appLayerId: null,
+        frameworkLayer: null
     },
+    
     constructor: function (config){
-        this.initConfig(config);
+        this.initConfig(config);        
     },
         
     /**
@@ -58,13 +60,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
      */
     getAppLayerName: function(){
         return this.viewerController.app.appLayers[this.appLayerId].layerName;
-    },
-    /**
-     *Get the id of this layer
-     */
-    getId :function (){
-        return this.id;
-    },
+    },   
     /**
      *Add a maptip to the layer
      */
@@ -114,14 +110,15 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     getLayers: function (){
         Ext.Error.raise({msg: "Get layers must be implemented by implementation"});
     },
+    /**
+     * Changes the opacity of a layer.
+     * @param alpha percentage: a value between 0 and 100
+     */
     setAlpha : function (alpha){
         Ext.Error.raise({msg: "Layer.setAlpha() Not implemented! Must be implemented in sub-class"});
     },
     setVisible : function (visible){
         Ext.Error.raise({msg: "Layer.setVisible() Not implemented! Must be implemented in sub-class"});
-    },
-    getLegendGraphic : function () {
-        Ext.Error.raise({msg: "Layer.getLegendGraphic() Not implemented! Must be implemented in sub-class"});
     },
     setQuery : function (query){
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
@@ -135,12 +132,15 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     getLastMapRequest: function(){
         Ext.Error.raise({msg: "Layer.getLastMapRequest() Not implemented! Must be implemented in sub-class"});
     },
+    reload: function(){
+        Ext.Error.raise({msg: "Layer.reload() Not implemented! Must be implemented in sub-class"});
+    },
     fire : function (event,options){
         this.fireEvent(event,this,options);
     },
 
     registerEvent : function (event,handler,scope){
-        this.addListener(event,handler,scope);
+        this.superclass.addListener(event,handler,scope);
     }
 
 });

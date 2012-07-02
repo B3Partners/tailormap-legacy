@@ -41,8 +41,8 @@
         singleton: true,
         notInCombinationWith: ["viewer.mapcomponents.OpenLayersMap"],
         extPropertyGridConfigs: {
-            propertyNames: {resolutions: "Resoluties"},
-            source: {resolutions: ""}
+            propertyNames: {resolutions: "Resoluties", movetime: "Move time", movesteps: "Move Steps" },
+            source: {resolutions: "", movetime: "", movesteps: ""}
         }
     },
 
@@ -696,5 +696,15 @@
             propertyNames: {search: "Zoekterm"},
             source: {search: "B3Partners"}
         }
+    },
+    {
+        className: "viewer.components.Presentation",
+        name: "Presentation",
+        shortName: "Pres",
+        singleton: true,
+        sources: ["Presentation.js"],
+        /*configSource: ["Presentation_config.js"],*/
+        restrictions: ["footer"],            
+        type: "popup"
     }
 ]

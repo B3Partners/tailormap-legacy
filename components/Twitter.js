@@ -5,6 +5,7 @@ Ext.define ("viewer.components.Twitter",{
     panel: null,
     latestId:null,
     first:null,
+    interval:null,
     config:{
         search: null
     },
@@ -15,11 +16,11 @@ Ext.define ("viewer.components.Twitter",{
         this.loadWindow();
         this.twitter = Ext.create("viewer.Twitter");
         this.first = true;
+        this.interval = 5000;
         return this;
-    //?rpp=15&include_entities=true&result_type=recent";	
     },
     loadWindow : function(){
-        Ext.create("Ext.button.Button",{
+        /*Ext.create("Ext.button.Button",{
             renderTo: this.div,
             text: "Haal Tweets op!",
             listeners: {
@@ -28,24 +29,22 @@ Ext.define ("viewer.components.Twitter",{
                 }, 
                 scope: this
             }
-        });
+        });*/
             
         this.panel =  Ext.create("Ext.panel.Panel",{
-            title: 'Tweets',
-           width: "100%",
-          //  border: 1,
-            id:"sdf",
+            /*title: 'Tweets',*/
+            width: "100%",
             autoScroll:true,
-            
-           // defaults: {anchor: '-20'},
             height: "95%",
-            layout: 'anchor',/*{
-                type: 'hbox',       // Arrange child items vertically
-                align: 'stretch',    // Each takes up full width
-                
-            },*/
+            layout: 'anchor',
             renderTo: this.div
         });
+        
+        
+        var me = this;
+        setTimeout(function(){
+            me.doSearch(me.search);
+        }, me.interval);
     },
     doSearch : function (term){
         var me =this;
@@ -56,23 +55,66 @@ Ext.define ("viewer.components.Twitter",{
     },
     processResults : function (response){
         var results = response.tweets;
-        this.latestId = response.maxId;
-        for(var i = 0 ; i < results.length ; i++){
-            var tweet = results[i];
-            this.processTweet(tweet);
+        var maxId = response.maxId;
+        if( maxId != this.latestId){
+            this.latestId = maxId;
+            for(var i = 0 ; i < results.length ; i++){
+                var tweet = results[i];
+                this.processTweet(tweet);
 
+            }
+            this.panel.doLayout();
+            this.first = false;
         }
-        this.panel.doLayout();
-        this.first = false;
+        var me = this;
+        setTimeout(function(){
+            me.doSearch(me.search);
+        }, me.interval);
     },
     processTweet : function (tweet){
-        var tweetPanel = Ext.create("Ext.panel.Panel",{
-            html: tweet.text,
-            id:tweet.id_str,
-            title: tweet.user_from,
-            border: 2,
-            autoScroll:true
+        var tweetPanel = Ext.create("Ext.container.Container",{      
+            style: { "margin": "5px"},
+            layout: {
+                type: "fit"
+            },
+            items:[ 
+                {
+                    xtype: 'container',
+                    layout: {type: "hbox"},
+                    items: [
+                    {
+                        xtype: 'container',
+                        style: {height: "48px", width: "48px"},
+                        items: [{
+                            xtype: 'image',
+                            style: {"float": "left"},
+                            src: tweet.img_url,
+                            id: tweet.id
+                        }]
+                    },
+                    {
+                        xtype: 'label',
+                        text: tweet.user_from,
+                        style: {
+                            "font-weight": "bold",
+                            "margin-top": "15px",
+                            "margin-left": "5px"
+                        }
+                    }]
+                },{
+                    xtype: 'container',
+                    items:
+                    [
+                    {
+                        xtype: 'label',                           
+                        text: tweet.text
+                    }]
+                }
+            ],
+            border: 0
         });
+        
+        tweetPanel.doLayout();
         if(this.first){
             this.panel.add(tweetPanel);
         }else{

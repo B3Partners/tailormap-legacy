@@ -44,6 +44,7 @@ Ext.define ("viewer.components.Logger",{
     error: function(message){
         if (this.logLevel <= viewer.components.Logger.LEVEL_ERROR){
             this.message(message, viewer.components.LogMessage.ERROR);
+            console.log(message);
         }
     },
     warning: function(message){

@@ -11,7 +11,6 @@
  */
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
-    extend: "viewer.viewercontroller.controller.Layer",
     enabledEvents: null,
     type: null,
     constructor :function (config){
@@ -93,6 +92,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
                this.enabledEvents[flamEvent]=true;
             }
         }     
+    },
+    setVisible : function (visible){
+        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
+        this.visible = visible;
+        if (this.options!=null)
+            this.options["visible"] = visible;
     }
     
 });

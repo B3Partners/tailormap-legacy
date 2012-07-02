@@ -79,8 +79,8 @@ Ext.define ("viewer.components.InfluenceImage",{
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + "ImageLayer", imageUrl, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
         }else{            
-            this.imageLayer.applyUrl(imageUrl);
-            this.imageLayer.applyExtent(bbox);
+            this.imageLayer.setUrl(imageUrl);
+            this.imageLayer.setExtent(bbox);
             this.imageLayer.setVisible(true);
             this.imageLayer.reload();
         }

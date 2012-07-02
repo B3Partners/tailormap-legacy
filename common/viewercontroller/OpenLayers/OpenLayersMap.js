@@ -8,12 +8,14 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     extend: "viewer.viewercontroller.controller.Map",
     frameworkMap:null,
     layersLoading : null,
+    utils:null,
     config:{
         viewerController:null
     },
     constructor: function(config){
         viewer.viewercontroller.openlayers.OpenLayersMap.superclass.constructor.call(this, config);        
         this.initConfig(config);
+        this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
         var maxBounds=null;
         if (config.maxExtent){
             //maxBounds = new OpenLayers.Bounds(config.maxExtent.minx,config.maxExtent.miny,config.maxExtent.maxx,config.maxExtent.maxy);
@@ -23,7 +25,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
         }
         config["center"] = maxBounds.getCenterLonLat();
-      //  Ext.apply(options,this.mapOptions);
+        
         config.maxExtent = maxBounds;
         
         this.frameworkMap=new OpenLayers.Map(config.domId,config);
@@ -73,10 +75,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         *Add a layer. Also see @link Map.addLayer
         **/
     addLayer : function(layer){
-        if (!(layer instanceof viewer.viewercontroller.openlayers.OpenLayersLayer)){
-            throw("The given layer is not of the type 'viewer.viewercontroller.openlayers.OpenLayersLayer'. But: "+layer);
-        }
-        this.layers.push(layer);
+        this.superclass.addLayer.call(this,layer);
         if (layer instanceof viewer.viewercontroller.openlayers.OpenLayersWMSLayer){
            /* if (layer.getGetFeatureInfoControl()!=null){
                 var info=layer.getGetFeatureInfoControl();
@@ -106,21 +105,17 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                 layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_START,this.layerBeginLoading);
             }*/
         }
-        this.getFrameworkMap().addLayer(layer.getFrameworkLayer());
-        this.fire(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,{
-            layer: layer
-        });
+        
+        this.getFrameworkMap().addLayer(layer.getFrameworkLayer());       
     },
     /**
         *remove the specific layer. See @link Map.removeLayer
         **/
     removeLayer : function(layer){
-        if (!(layer instanceof OpenLayersLayer))
-            throw("OpenLayersMap.removeLayer(): Given layer not of type OpenLayersLayer");
         //call super function
-        Map.prototype.removeLayer.call(this,layer);
+        this.superclass.removeLayer.call(this,layer);
         //this.getFrameworkMap().remove(layer.getFrameworkLayer());
-        if (layer instanceof OpenLayersWMSLayer){
+        if (layer instanceof viewer.viewercontroller.openlayers.OpenLayersWMSLayer){
             if(layer.getGetFeatureInfoControl()!=null){
                 layer.getGetFeatureInfoControl().destroy();
             }
@@ -204,9 +199,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         *See @link Map.getExtent
         */
     getExtent : function(){
-        var extent = Utils.createExtent(this.getFrameworkMap().getExtent());
-        var genericExtent = new Extent(extent.minx,extent.miny,extent.maxx,extent.maxy);
-        return genericExtent;
+        var extent = this.utils.createExtent(this.getFrameworkMap().getExtent());
+        return extent;
     },
     /*TODO:
         doIdentify : function(x,y){}
@@ -238,36 +232,43 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             this.markerLayer.removeMarker(this.markers[markerName]);
         }
     },
-
-    register : function (event,handler,thisObj){
-        if (thisObj==undefined){
-            thisObj=this;
-        }
-        var specificName = webMapController.getSpecificEventName(event);
-        if(this.getFrameworkMap().eventListeners == null){
-            this.getFrameworkMap().eventListeners = new Object();
-        }
-
-        if(event == viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE){
-            var wmsLayers = this.getAllWMSLayers();
-            for(var i = 0 ; i < wmsLayers.length ; i++){
-                var layer = wmsLayers[i];
-                layer.register(event,this.layerFinishedLoading);
-                layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_START,this.layerBeginLoading);
+    registerEvent : function(event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
             }
-            webMapController.register(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, handler);
+            /*
+             *Don't know what this does, so commented out. Seems to be working fine without it, but maybe it's usefull
+             *if(this.getFrameworkMap().eventListeners == null){
+                this.getFrameworkMap().eventListeners = new Object();
+            }*/
+            this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
+            this.addListener(event, handler, scope);
         }else{
-            //this.getFrameworkMap().eventListeners [specificName]= handler;        
-            this.getFrameworkMap().events.register(specificName,thisObj,handler);
+            this.viewerController.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
     },
 
-    unRegister : function (event,handler,thisObj){
-        var specificName = webMapController.getSpecificEventName(event);
-        if (event == viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE){
-            webMapController.unRegister(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE, handler);
+    handleEvent : function(args){
+        var event = args.type;
+        var options={};
+        var genericEvent = this.viewerController.mapComponent.getGenericEventName(event);
+        if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
+            options.layer=this.getLayerByOpenLayersId(args.layer.id);
+        }else if (genericEvent== viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED){
+            options.layer=this.getLayerByOpenLayersId(args.layer.id);
+            options.visible=args.layer.visible;
+        }else{
+            this.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
         }
-        this.getFrameworkMap().events.unregister(specificName,thisObj,handler);
+        this.fireEvent(genericEvent,this,options);
+    },
+
+    unRegisterEvent : function (event,handler,thisObj){
+        var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
+        this.getFrameworkMap().events.unregister(specificName,handler,thisObj);
+        this.removeListener(event,handler,thisObj);
     },
     /**
     *See @link Map.getScale
@@ -301,6 +302,16 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         return lonlat;
     },
 
+    getWidth : function(){
+        var size = this.frameworkMap.getSize();
+        return size.w;
+    },
+    
+    getHeight : function (){
+        var size = this.frameworkMap.getSize();
+        return size.h;
+    },
+    
     layerFinishedLoading : function (id,data,c,d){
         this.layersLoading--;    
         if (this.layersLoading==0){
@@ -312,5 +323,21 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
 
     layerBeginLoading : function (id,data,c,d){
         this.layersLoading++;
+    },
+    /**
+     * The OpenLayers ID can't be changed. With this function you can get the 
+     * viewer.viewercontroller.openlayers.OpenLayersLayer with the openlayersid
+     * @param olId the openlayers id of the layer
+     * @return a viewer.viewercontroller.openlayers.OpenLayersLayer that 
+     * contains the openlayers layer with the given id.
+     */
+    getLayerByOpenLayersId: function(olId){
+        for (var i=0; i < this.layers.length; i++){
+            if (this.layers[i].frameworkLayer){
+                if (this.layers[i].frameworkLayer.id == olId){
+                    return this.layers[i];
+                }
+            }
+        }
     }
 });

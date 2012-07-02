@@ -15,6 +15,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     bottomContainerId: null,
     toolMargin: 30,
     enabledEvents: new Object(),
+    config: {
+        movetime: null,
+        movesteps: null
+    },
     /**
      * 
      * @constructur
@@ -74,7 +78,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         options.mapComponent=this;
         if (this.resolutions!=null && this.resolutions != ""){
             options.options.resolutions = this.resolutions;
-        }
+        }if (this.movetime!=null && this.movetime!=""){
+            options.options.movetime=this.movetime;
+        }if (this.movesteps!=null && this.movesteps!=""){
+            options.options.movesteps=this.movesteps;
+        }        
         var map = new viewer.viewercontroller.flamingo.FlamingoMap(options);
         
         return map;
@@ -161,7 +169,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             url: url,
             extent : extent,
             frameworkLayer : this.viewerObject,
-            viewerController: viewerController
+            viewerController: this.viewerController
         });
     },
     /**

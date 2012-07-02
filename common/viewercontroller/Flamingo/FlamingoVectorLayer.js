@@ -5,28 +5,13 @@
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
-    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
+    extend: "viewer.viewercontroller.controller.VectorLayer",
+    mixins: {
+        flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
+    },
     isLoaded: false,
-    config: {
-        //@field Array of allowed geometry types on this layer. Possible values: "Point,LineString,Polygon,MultiPolygon,Circle"
-        geometrytypes: null,
-        //@field true/false show measures of the drawing object
-        showmeasures: null,
-        //@field true/false if true the point's in this layer can be dragged.
-        editable: true,
-        //@field name of the label
-        labelPropertyName: null,
-        //@field the style
-        style: {
-            //@field (0x000000 – 0xFFFFFF, default: 0xFF0000 ) Fill color. Not applicable to point or line string geometries.
-            fillcolor: "0xFF0000",
-            //@field (0 – 100, default: 100) Fill opacity. A value of 0 means completely transparent. Not applicable to point or line string geometries. If a feature's geometry is not completely transparent, a click on its fill will make the feature the active feature. If the geometry is completely transparent the user's mouse will click right through it.
-            fillopacity: 50,
-            //@field (0x000000 – 0xFFFFFF, default: 0xFF0000) Stroke color.
-            strokecolor: "0xFF0000",
-            //@field (0 – 100, default: 100) Stroke opacity. A value of 0 means completely transparent.
-            strokeopacity: 100
-        }
+    config:{
+        
     },
     gisId: null,
     /**
@@ -43,6 +28,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         viewer.viewercontroller.flamingo.FlamingoVectorLayer.superclass.constructor.call(this, config);
         this.initConfig(config);   
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
+        this.enabledEvents=new Object();
         return this;
     },
     
@@ -226,7 +212,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
      * so flamingo is allowed to broadcast the event.
      */
     addListener : function(event,handler,scope){
-        viewer.viewercontroller.flamingo.FlamingoLayer.superclass.addListener.call(this,event,handler,scope);
+        this.registerEvent.call(this,event,handler,scope);
         //enable flamingo event broadcasting
         var flamEvent=this.map.mapComponent.eventList[event];
         if (flamEvent!=undefined){
@@ -235,6 +221,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
                this.map.getFrameworkMap().callMethod(this.map.mapComponent.getId(),"addAllowExternalInterface",this.map.editMapId+"."+flamEvent);
                this.enabledEvents[flamEvent]=true;
             }
-        }     
+        }
+    },
+    fire : function (event,options){
+        this.fireEvent(event,this,options);
     }
 });

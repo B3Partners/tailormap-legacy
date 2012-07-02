@@ -20,16 +20,9 @@
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
-    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
-    config:{
-        id:null,
-        url:null,
-        serviceEnvelope:null,   
-        protocol:null,
-        tileHeight: null,
-        tileWidth: null,
-        resolutions: null,
-        extension: null
+    extend: "viewer.viewercontroller.controller.TilingLayer",
+    mixins: {
+        flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
     },
     /**
      *
@@ -43,8 +36,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      */
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoTilingLayer.superclass.constructor.call(this, config);
-        this.initConfig(config);
-        this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
+        
         return this;
     },
     getTagName : function(){
@@ -60,7 +52,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.getId()+"\"";     
         xml+=" serviceurl=\""+this.getUrl()+"\"";
-        xml+=" resolutions=\""+this.getResolutions()+"\"";
+        xml+=" resolutions=\""+this.getResolutions().join(",")+"\"";
         xml+=" serviceenvelope=\""+this.getServiceEnvelope()+"\"";
         if (this.getProtocol()!=null){
             xml+=" type=\""+this.getProtocol()+"\"";
@@ -81,10 +73,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
     reload : function (){
         this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
     },
-    setVisible : function (visible){
+    /*setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
         this.visible = visible;
-    },
+    },*/
     getLegendGraphic : function(){
         return null;
     },
@@ -99,6 +91,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
             }
         }
         return requests;
+    },
+    setUrl: function (url){
+        this.url = url;
+        /*TODO: need to implement and give it at the framework layer*/
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
+     */
+    setVisible: function(vis){
+        this.mixins.flamingoLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha
+     */
+    setAlpha: function (alpha){
+        this.mixins.flamingoLayer.setAlpha.call(this,alpha);
     }
     
 });

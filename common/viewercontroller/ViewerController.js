@@ -101,7 +101,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
         
         if(viewerType == "openlayers") {
-            this.mapComponent.handleEvent(this.mapComponent.getSpecificEventName(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE));
+            this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
     },
     
@@ -216,7 +216,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 instance: instance
             };
         } catch(e) {
-            this.logger.error("Error creating component with className " + className + ": error ",e, " with config", config);
+            console.log(e);
+            this.logger.error("Error creating component with className " + className + ": error "+e+ " with config"+ config);
         }
 
         return instance;
@@ -591,10 +592,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,server,servlet,null, options,this);                
             }
         }else if (service.protocol == "tiled"){
+            var res=layer.resolutions.split(",");
+            for (var i=0; res.length > i; i++){
+                res[i] = Number(res[i]);
+            }
             options.tileHeight = layer.tileHeight;
             options.tileWidth = layer.tileWidth;
             options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
-            options.resolutions = layer.resolutions;
+            options.resolutions = res,
             options.protocol = service.tilingProtocol;
             options.viewerController=this;
             if (layer.details && layer.details["image_extension"]){

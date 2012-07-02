@@ -67,10 +67,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *see @link Map.addLayer
      **/
     addLayer : function(layer){
-        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
-            Ext.Error.raise({msg: "FlamingoMap.addLayer(): Given layer not of type FlamingoLayer"});
         //call super function
-        this.superclass.addLayer.call(this,layer);                
+        this.superclass.addLayer.call(this,layer);
         if (layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer){
             if (this.editMapId==null){
                 this.addEditMap();             
@@ -96,8 +94,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *remove the specific layer. See @link Map.removeLayer
      **/
     removeLayer:function(layer){
-        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer))
-            Ext.Error.raise({msg: "FlamingoMap.removeLayer(): Given layer not of type FlamingoLayer"});        
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
         } 
@@ -141,10 +137,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     /**
      *see @link Map.setLayerIndex
      */
-    setLayerIndex : function (layer, newIndex){
-        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoLayer)){
-            Ext.Error.raise({msg: "FlamingoMap.setLayerIndex(): Given layer not of type FlamingoLayer."});
-        }
+    setLayerIndex : function (layer, newIndex){        
         if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
             this.getFrameworkMap().callMethod(this.getId(),"swapLayer",this.getId()+'_'+layer.getId(),newIndex);
         }

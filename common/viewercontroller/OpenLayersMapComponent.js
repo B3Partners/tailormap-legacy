@@ -10,7 +10,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
     mapOptions:null,
     constructor :function (viewerController, domId,config){
-        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController,domId,config);
+        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController,domId,config);        
         this.domId = domId;
         this.pointButton = null;
         this.lineButton = null;
@@ -31,6 +31,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     zoomBoxEnabled: true
                 }),new OpenLayers.Control.ArgParser()]
         };
+        
         return this;
     },
 
@@ -52,6 +53,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_MEASURE]                                = "measure";
         this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]                 = "zoomend";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]                          = "move";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]                          = "removelayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                            = "addlayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]                       = "getfeatureinfo";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "changelayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_MOVEEND]                          = "moveend";
     },
     /**
      * @description Gets the panel of this controller and OpenLayers.Map. If the panel is still null, the panel is created and added to the map.
@@ -100,8 +106,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options["transitionEffect"] = "resize";
         options["events"] = new Object();
         options["visibility"] = ogcParams["visible"];
-        var olLayer= new OpenLayers.Layer.WMS(name,wmsurl,ogcParams,options);
-        var wmsLayer = new viewer.viewercontroller.openlayers.OpenLayersWMSLayer(olLayer);
+        options["name"]=name;
+        options["url"]=wmsurl;
+        for (var key in ogcParams){
+            options[key]=ogcParams[key];
+        }
+        options.ogcParams=ogcParams;
+        options.viewerController = this.viewerController;
+        
+        var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",options);
+        
         if(ogcParams["query_layers"] != null && ogcParams["query_layers"] != ""){
 
             var info = new OpenLayers.Control.WMSGetFeatureInfo({
@@ -133,15 +147,24 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     /**
      *see {@link MapComponent.createTMSLayer} sdf
      */
-    createTMSLayer : function (name,url, options){
-        var tmsLayer= new OpenLayersTMSLayer(new OpenLayers.Layer.TMS(name,url,options),name);
+    createTilingLayer : function (name,url, options){
+        options.name=name;
+        options.url=url;
+        options.viewerController=this.viewerController;
+        var tmsLayer= new viewer.viewercontroller.openlayers.OpenLayersTilingLayer(options);
         return tmsLayer;
     },
     /**
      *See @link MapComponent.createTMSLayer
      */
-    createImageLayer : function (name,url, bounds, size,options){
-        var imageLayer = new OpenLayersImageLayer (new OpenLayers.Layer.Image( name,url,bounds,size,options ));
+    createImageLayer : function (name,url, bounds){
+        var imageLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
+            id: name,
+            url: url,
+            extent : bounds,
+            frameworkLayer : this.viewerObject,
+            viewerController: this.viewerController
+        });
 
         return imageLayer;
     },
@@ -154,7 +177,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 options["isBaseLayer"]= false;
             }
         }
-        return new viewer.viewercontroller.openlayers.OpenLayersVectorLayer(new OpenLayers.Layer.Vector(id, options),id);
+        return Ext.create("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",options);
     },
     /**
      *Create a tool: the initializing of a piece of functionality to link to a button
@@ -453,58 +476,36 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     },
     /****************************************************************Event handling***********************************************************/
 
+
     /**
-     * Registers an event to a handler, on a object. Flamingo doesn't implement per component eventhandling,
-     * so this controller stores the event in one big array (Object..).
+     * Registers an event to a handler.
+     * @param event The generic eventname to register
+     * @param handler The handlerfunction to execute
+     * @param scope The scope to fire the events in
      */
-    registerEvent : function (event,object,handler,thisObj){
-        object.register(event,handler,thisObj);
-    },
-    unRegisterEvent : function (event,object,handler,thisObj){
-        object.unRegister(event,handler,thisObj);
-    },
-    /**
-     * Register an event to the MapComponent. But only if the handler is not registerd for the
-     * event yet.
-     */
-    register : function (event,handler,scope){
-        var specificName = this.getSpecificEventName(event);
-        if(this.events[specificName] == null){
-            this.events[specificName] = new Array();
-        }
-        for (var i=0; i < this.events[specificName].length; i++){
-            if(this.events[specificName][i]==handler){
-                //alert("Handler >"+ handler + "< for event: "+specificName+" already registered");
-                return;
+     registerEvent : function(event,object,handler,scope){
+         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+         
+        if(olSpecificEvent){
+            if(object == this){
+                this.addListener(event,handler,scope);
+            }else{
+                object.registerEvent(event,handler,scope);
             }
+        }else{
+            this.viewerController.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
-        this.events[specificName].push({fn:handler,scope:scope});
     },
     /**
      *All registerd handlers for event 'event' that equals 'handler' are removed as listener.
      *This is because you don't want duplication of the same handler and event. This will
-     *result in multiple call of a handler on the same event.
+     *result in multiple calls of a handler on the same event.
      *@param event the event
      *@param handler the handler you want to remove
      */
-    unRegister : function (event,handler){
-        var specificName = this.getSpecificEventName(event);
-        var newEventHandlers=new Array();
-        for (var i=0; i < this.events[specificName].length; i++){
-            if(this.events[specificName][i]!=handler){
-                newEventHandlers.push(this.events[specificName][i]);
-            }
-        }
-        this.events[specificName]=newEventHandlers;
-    },
-    handleEvent : function(event){
-        var handlers = this.events[event];
-        for(var i = 0 ; i < handlers.length ; i++){
-            var handlerObj = handlers[i];
-            var fn = handlerObj.fn;
-            var scope = handlerObj.scope;
-            fn.call(scope);
-        }
+    unRegisterEvent : function (event,handler,thisObj){
+        var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
+        this.removeListener(specificName,handler,thisObj);
     },
     onMapTipHandler : function(data){
         //this is the Layer not the MapComponent

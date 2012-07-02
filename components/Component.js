@@ -30,7 +30,7 @@ Ext.define("viewer.components.Component",{
     config: {
         name: "naam",
         div: new Object(),
-        viewerController: new Object(),
+        viewerController: null,
         isPopup : false,
         hasSharedPopup:false,
         regionName: ""

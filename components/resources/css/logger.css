@@ -24,5 +24,6 @@
 }
 .logger_icon{
     position: absolute;
-    background: url(../images/logger/warning.gif) no-repeat;    
+    background: url(../images/logger/warning.gif) no-repeat;   
+    z-index: 10000;
 }

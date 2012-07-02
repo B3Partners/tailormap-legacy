@@ -4,11 +4,13 @@
  * @description A drawable vector layer
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
-    extend: "viewer.viewercontroller.openlayers.OpenLayersLayer",
-    constructor : function (frameworkLayer,id){
+    extend: "viewer.viewercontroller.controller.VectorLayer",
+    mixins: {
+        flamingoLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
+    },
+    constructor : function (config){
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, {});
-        this.frameworkLayer = frameworkLayer;
-        this.id = id;
+        this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
         //this.initConfig(config);
         if (!this.frameworkLayer instanceof OpenLayers.Layer.Vector){
             Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.Vector'. But: "+this.frameworkLayer});

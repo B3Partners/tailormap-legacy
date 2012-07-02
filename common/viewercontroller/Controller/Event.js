@@ -134,7 +134,11 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         // Shared evens:                            150 - ...
         /** @field */
         ON_ONIT                               : "ON_ONIT",  // Shared by
-
+        /** @field
+         * Thrown when the visibiliy of the layer is changed
+         * @param map the map
+         * @param object.layer the layer that is changed
+         * @param object.visible the new value*/
         ON_LAYER_VISIBILITY_CHANGED           : "ON_LAYER_VISIBILITY_CHANGED",
         
         /**
@@ -168,6 +172,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * Occurs when a control/tool is activated
          */
         ON_DEACTIVATE                           : "ON_DEACTIVATE",
-        ON_GET_SERVICE_INFO                     : "ON_GET_SERVICE_INFO"
+        ON_GET_SERVICE_INFO                     : "ON_GET_SERVICE_INFO",
+        ON_LAYER_MOVEEND                        : "ON_LAYER_MOVEEND"
     }
 });

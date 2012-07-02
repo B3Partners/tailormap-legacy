@@ -5,7 +5,10 @@
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
-    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
+    extend: "viewer.viewercontroller.controller.WMSLayer", 
+    mixins: {
+        flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
+    },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
@@ -58,31 +61,17 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         return xml;
     },
 
-    /**
-     *Get the id of this layer
-     */
-    getId :function (){
-        return this.id;
-    },
     reload : function (){
         this.getFrameworkLayer().callMethod(this.map.getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
-    setVisible : function (visible){
-        this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
-        this.visible = visible;
-        this.options["visible"] = visible;
-    },
     getLegendGraphic : function () {
-        var url = this.options.url;
+        var url = this.url;
         var character = url.indexOf("?") == -1 ? "?" : "&";
         if(url.substring(url.length) != character){
             url += character;
         }
         var request = url + "request=GetLegendGraphic&layer="+this.getAppLayerName()+"&version=1.1.1&format=image/png";
         return request;
-    },
-    getLayers: function(){
-        return this.getOption("layers");
     },
     setMaptips: function(maptips){
         viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.setMaptips.call(this,maptips);        
@@ -114,5 +103,29 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
             this.options["SLD_BODY"] = null;
             this.reload();
         }
-    }
+    },
+
+    getLayers : function(){
+        return this.getFrameworkLayer().options.layers;   
+    },
+    /**
+     *Implement for: 
+     * @see viewer.viewercontroller.controller.Layer#setUrl
+     */
+    setUrl: function (url){
+        this.url = url;
+        /*TODO: need to implement and give it at the framework layer*/
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
+     */
+    setVisible: function(vis){
+        this.mixins.flamingoLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha
+     */
+    setAlpha: function (alpha){
+        this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    }    
 });

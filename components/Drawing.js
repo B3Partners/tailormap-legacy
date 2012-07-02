@@ -57,7 +57,7 @@ Ext.define ("viewer.components.Drawing",{
             tooltip: me.tooltip
         });
         
-        this.vectorLayer=viewerController.mapComponent.createVectorLayer({
+        this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
             id: 'drawingVectorLayer',
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
@@ -69,7 +69,7 @@ Ext.define ("viewer.components.Drawing",{
                 strokeopacity: 50
             }
         });
-        viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );

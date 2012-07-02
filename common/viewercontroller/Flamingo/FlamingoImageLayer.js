@@ -21,11 +21,9 @@
  **/
 
 Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
-    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
-    config:{
-        id:null,
-        url:null,
-        extent:null
+    extend: "viewer.viewercontroller.controller.ImageLayer", 
+    mixins: {
+        flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
     },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoImageLayer.superclass.constructor.call(this, config);
@@ -55,33 +53,36 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         return xml;
     },
 
-    /**
-     *Get the id of this layer
-     */
-    getId :function (){
-        return this.id;
-    },
     reload : function (){
         this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
     },
-    applyUrl: function(url){
+    setUrl: function(url){
         this.url=url;
         if (this.getFrameworkLayer()!=null){
             this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","url",url);
         }
     },
-    applyExtent: function(extent){
+    setExtent: function(extent){
         this.extent=extent;
-        if (this.getFrameworkLayer()!=null){
+        if (this.getFrameworkLayer()!=null && this.map!=null){
             this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","extent",extent);
         }
-    },
-    setVisible : function (visible){
-        this.map.getFrameworkMap().callMethod(this.getFrameworkId(), "setVisible", visible);
-        this.visible = visible;
-    },
+    },    
     getLastMapRequest: function(){
         var url= this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getServiceUrl");
         return [{url: url,body: null}];
-    }
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
+     */
+    setVisible: function(vis){
+        this.mixins.flamingoLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha
+     */
+    setAlpha: function (alpha){
+        this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    }    
+    
 });

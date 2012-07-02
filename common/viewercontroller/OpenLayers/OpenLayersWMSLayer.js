@@ -4,17 +4,22 @@
  * @description
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
-    extend: "viewer.viewercontroller.openlayers.OpenLayersLayer",
-    constructor : function (frameworkLayer){
-        viewer.viewercontroller.openlayers.OpenLayersWMSLayer.superclass.constructor.call(this,{});
-        // TODO: see if this can be prettier: when giving an OpenLayers object to initConfig, it will be cloned, which results in a stackoverflow
-        this.frameworkLayer = frameworkLayer;
-//    / /   this.initConfig(config);        
+    extend: "viewer.viewercontroller.controller.WMSLayer",    
+    mixins: {
+        openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
+    },
+    config:{
+        ogcParams:null
+    },
+    constructor : function (config){        
+        viewer.viewercontroller.openlayers.OpenLayersWMSLayer.superclass.constructor.call(this,config);
+        this.frameworkLayer = new OpenLayers.Layer.WMS(this.name,this.url,this.ogcParams,config);
+          
          if (!this.frameworkLayer instanceof OpenLayers.Layer.WMS){
-                Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+this.frameworkLayer});
-            }
-            this.getFeatureInfoControl=null;
-            this.mapTipControl=null;
+            Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+this.frameworkLayer});
+        }
+        this.getFeatureInfoControl=null;
+        this.mapTipControl=null;
     },
 
     /**
@@ -24,6 +29,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     getURL : function(){
         return this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent());
     },
+    /**
+     * Implementation of setUrl in Layer
+     * @see viewer.viewercontroller.controller.Layer#setUrl
+     */
+    setUrl: function(url){
+        this.url=url;
+        /*Todo: needs to implement. CHange the url in the framework*/
+    },   
     /**
     *Set a OGC-WMS param and refresh the layer
     */
@@ -49,5 +62,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     
     getMapTipControl : function(){
         return this.mapTipControl;
+    },
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    setVisible: function(vis){
+        this.mixins.openLayersLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setAlpha
+     */
+    setAlpha: function (alpha){
+        this.mixins.openLayersLayer.setAlpha.call(this,alpha);
     }
 });

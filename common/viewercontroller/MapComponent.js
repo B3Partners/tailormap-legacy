@@ -286,7 +286,10 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * @return The generic name.
  */
     getGenericEventName : function (specific){
-        //  console.log(specific);
+        if (specific==undefined || specific==null){
+            return null;
+        }
+        //console.log(specific);
         if (this.eventList.length==0){
             this.initEvents();
         }
