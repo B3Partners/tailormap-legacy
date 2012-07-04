@@ -1,6 +1,8 @@
-Voor elke join table met order column, verwijder unique constraint (staat in create table)
 
-Lijst van tabellen waarvoor dit geldt:
+The Hibernate schema export tool creates unique constraints on ordered 
+collections which conflict with Hibernate changing these collections, so these
+should be removed. Remove the following unique constraints from the create table
+statements.
 
 category_children (child)
 category_services (service)
