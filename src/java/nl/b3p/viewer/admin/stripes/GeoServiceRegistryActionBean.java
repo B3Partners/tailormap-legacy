@@ -185,11 +185,13 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         String error = checkCategoryAndNameError();
         
         if(error == null) {
-            for(Category sibling: category.getParent().getChildren()) {
-                if(sibling != category && name.equals(sibling.getName())) {
-                    error = "Categorie met dezelfde naam bestaat al";
-                }
-            }            
+            if(category.getParent() != null) {	
+                for(Category sibling: category.getParent().getChildren()) {
+                     if(sibling != category && name.equals(sibling.getName())) {
+                         error = "Categorie met dezelfde naam bestaat al";
+                     }
+                 }            
+            }
         }
         
         if(error == null) {
