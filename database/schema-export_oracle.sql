@@ -229,7 +229,7 @@
     create table layer (
         id number(19,0) not null,
         filterable number(1,0) not null,
-        legend_image_url varchar2(255 char),
+        legend_image_url clob,
         max_scale double precision,
         min_scale double precision,
         name varchar2(255 char),
