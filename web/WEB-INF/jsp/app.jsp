@@ -23,6 +23,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <head>
         <title><c:out value="${actionBean.application.name}"/></title>
         
+        <c:set var="mobile" value="false" />
+        <c:if test="${param.mobile == true}">
+            <c:set var="mobile" value="true" />
+        </c:if>
+        
         <c:choose>
             <c:when test="${actionBean.viewerType == 'OpenLayersMap'}">
                 <c:set var="viewerType" value="openlayers"/>
@@ -235,7 +240,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     //alert(logmsg);
                 }
             }
-                
+            
+            var isMobile = ${mobile};
             var contextPath = "${contextPath}";
             var absoluteURIPrefix = "${absoluteURIPrefix}";
 
