@@ -53,10 +53,18 @@ Ext.define ("viewer.components.ScreenPopup",{
             renderTo: Ext.getBody(),
             autoScroll: true
         };
-        if(this.details.position == 'fixed') {
+        if(this.details.position == 'fixed' && !isMobile) {
             var wrapper = Ext.get('wrapper');
             config.x = parseInt(this.details.x) + wrapper.getX();
             config.y = parseInt(this.details.y) + wrapper.getY();
+        }
+        
+        if(isMobile) {
+            config.modal = true;
+            config.width = '90%';
+            config.height = '90%';
+            config.draggable = false;
+            config.resizable = false;
         }
 
         if(this.details.items){
