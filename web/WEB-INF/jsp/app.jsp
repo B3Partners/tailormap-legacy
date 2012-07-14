@@ -37,6 +37,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:otherwise>
         </c:choose>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<c:if test="${param.mobile == true}">
+			<meta name="HandheldFriendly" content="True">
+			<meta name="MobileOptimized" content="width=device-width; height=device-height; user-scalable=yes; initial-scale=1.0">
+			<meta name="viewport" content="width=device-width, initial-scale=1">        
+			<meta http-equiv="cleartype" content="on">
+		</c:if>
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
