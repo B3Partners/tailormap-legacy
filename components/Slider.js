@@ -33,24 +33,53 @@ Ext.define("viewer.components.Slider",{
     },
     constructor : function (conf){
         viewer.components.Slider.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        var me = this;
+		this.initConfig(conf);
         this.layers=new Array();
-        this.slider = Ext.create('Ext.slider.Single', {
-            width: 200,
-            value: this.initialTransparency,
-            increment: 1,
-            fieldLabel: this.name,
-            labelAlign: "top",
-            minValue: 0,
-            maxValue: 100,
-            renderTo: conf.sliderContainer,
-            listeners:{
-                change: {                    
-                    fn: this.sliderChanged,
-                    scope: this
-                }
-            }
-        });
+		this.currentSliderValue = this.initialTransparency;
+		if(isMobile) {
+			var sliderid = Ext.id();
+			// CSS is needed for Android to activate range sliders
+			var sliderCSS = "input[type='range'] { \n\
+								background: #929292;\n\
+								height: 4px;\n\
+								width: 100%;\n\
+								margin-top: 10px;\n\
+							}\n\
+							input[type='range']::-webkit-slider-thumb {\n\
+								background: -webkit-linear-gradient(top, #F0F0F0, #929292);\n\
+								background: -moz-linear-gradient(top, #F0F0F0, #929292);\n\
+								background: -o-linear-gradient(top, #F0F0F0, #929292);\n\
+								background: -ms-linear-gradient(top, #F0F0F0, #929292);\n\
+								background: linear-gradient(top, #F0F0F0, #929292);\n\
+								height: 25px;\n\
+								width: 25px;\n\
+								border-radius: 25px;\n\
+							}";
+			Ext.util.CSS.createStyleSheet(sliderCSS, 'sliderCSS');
+			var sliderHTML = '<label>' + this.name + '</label><br /><input id="' + sliderid + '" type="range" min="0" max="100" value="' + this.initialTransparency + '" />';
+			Ext.get(conf.sliderContainer).insertHtml('beforeEnd', sliderHTML);
+			Ext.get(sliderid).addListener('change', function( evt, obj ) {
+				me.sliderChanged( obj, obj.value );
+			});
+		} else {
+			this.slider = Ext.create('Ext.slider.Single', {
+				width: 200,
+				value: this.initialTransparency,
+				increment: 1,
+				fieldLabel: this.name,
+				labelAlign: "top",
+				minValue: 0,
+				maxValue: 100,
+				renderTo: conf.sliderContainer,
+				listeners:{
+					change: {                    
+						fn: this.sliderChanged,
+						scope: this
+					}
+				}
+			});
+		}
         
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         
@@ -64,9 +93,9 @@ Ext.define("viewer.components.Slider",{
             //check if this slider needs to change values for the layer
             if (Ext.Array.contains(this.selectedLayers,appLayer.id)){            
                 this.layers.push(mapLayer);
-                if(this.slider){
-                    this.applySlider(mapLayer,this.slider.getValue());
-                }
+				if(this.currentSliderValue) {
+					this.applySlider(mapLayer,this.currentSliderValue);
+				}
             }
         }
     },
@@ -81,7 +110,8 @@ Ext.define("viewer.components.Slider",{
      * Slider changed.
      */
     sliderChanged: function (slider,value){       
-        for(var i = 0 ; i< this.layers.length ;i++){
+        this.currentSliderValue = value;
+		for(var i = 0 ; i< this.layers.length ;i++){
             var layer = this.layers[i];
             this.applySlider(layer,value);
         }
