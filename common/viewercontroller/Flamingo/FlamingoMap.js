@@ -244,9 +244,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *see @link Map.getResolution
      */
     getResolution : function (extent){
+        if(!extent){
+            extent = this.getExtent();
+        }
         return this.getFrameworkMap().callMethod(this.getId(), "getScale",extent);
     },
-
+    
     /**
      * see @link Map.coordinateToPixel
      */
