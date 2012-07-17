@@ -128,5 +128,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
-    }    
+    },
+    getLastMapRequest : function () {
+        return this.mixins.flamingoLayer.getLastMapRequest.call(this);
+    },
+    getType : function (){
+        return this.mixins.flamingoLayer.getType.call(this);
+    }
 });

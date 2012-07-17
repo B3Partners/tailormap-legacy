@@ -123,5 +123,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     },
     removeBuffer: function(layer){        
         console.log("FlamingoArcLayer.removeBuffer: .removeBuffer() must be made!");
+    },
+    getLastMapRequest : function () {
+        return this.mixins.flamingoLayer.getLastMapRequest.call(this);
+    },
+    getType : function (){
+        return this.mixins.flamingoLayer.getType.call(this);
     }
 });
