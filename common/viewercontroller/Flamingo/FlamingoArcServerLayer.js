@@ -45,7 +45,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
                     }
                     query += colName + " = " + ids[i];
                 }
-                me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.config.options.name);
+                me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.config.options.name);
                 setTimeout (function(){
                     me.update();
                 }, 500);
@@ -54,7 +54,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
             var cql = filter.getCQL();
             util.cqlToArcFIDS(cql,this.appLayerId,f,console.log);
         }else{
-            this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.config.options.name);
+            this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.config.options.name);
             this.update();
         }
     },
