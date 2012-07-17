@@ -49,7 +49,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
             var me = this;
             var f = function(query) { 
                 me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
-                me.update();
+                me.forceUpdate();
             };
             var util = Ext.create("viewer.ArcQueryUtil");
             util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        

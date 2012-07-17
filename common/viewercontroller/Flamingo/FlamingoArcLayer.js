@@ -50,7 +50,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
         }        
         xml+=">";
         //add the maptips
-     /*   for (var i=0; i < this.getMaptips().length; i++){
+        for (var i=0; i < this.getMaptips().length; i++){
             var maptip=this.getMaptips()[i];
             xml+="<layer";
             xml+=" id=\""+maptip.layer+"\"";
@@ -60,7 +60,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
                 xml+=" aka=\""+maptip.aka+"\"";
             }
             xml+="/>"    
-        }*/
+        }
         xml+="</fmc:"+this.getTagName()+">";
         //console.log(xml);
         return xml;
