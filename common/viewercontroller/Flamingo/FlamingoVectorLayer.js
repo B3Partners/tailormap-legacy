@@ -10,9 +10,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
     },
     isLoaded: false,
-    config:{
-        
-    },
     gisId: null,
     /**
      * Creates a vector layer
@@ -225,5 +222,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     },
     fire : function (event,options){
         this.fireEvent(event,this,options);
+    },
+    getType : function (){
+        return this.mixins.flamingoLayer.getType.call(this);
     }
 });
