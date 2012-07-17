@@ -40,6 +40,9 @@ Ext.define("viewer.viewercontroller.controller.TilingLayer",{
      */
     setQuery : function (query){
         return;
+    },
+    getType : function (){
+        return this.mixins.flamingoLayer.getType.call(this);
     }
     
 });
