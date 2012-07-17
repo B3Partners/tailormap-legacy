@@ -22,7 +22,10 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  **/
 Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
-    extend: "viewer.viewercontroller.flamingo.FlamingoLayer",
+    extend: "viewer.viewercontroller.controller.ArcLayer",
+    mixins: {
+        flamingoLayer: "viewer.viewercontroller.flamingo.FlamingoLayer"
+    },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoArcLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
@@ -47,7 +50,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
         }        
         xml+=">";
         //add the maptips
-        for (var i=0; i < this.getMaptips().length; i++){
+     /*   for (var i=0; i < this.getMaptips().length; i++){
             var maptip=this.getMaptips()[i];
             xml+="<layer";
             xml+=" id=\""+maptip.layer+"\"";
@@ -57,7 +60,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
                 xml+=" aka=\""+maptip.aka+"\"";
             }
             xml+="/>"    
-        }
+        }*/
         xml+="</fmc:"+this.getTagName()+">";
         //console.log(xml);
         return xml;
@@ -71,7 +74,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     },
 
     reload : function (){
-        this.getFrameworkLayer().callMethod(this.mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
+        this.map.getFrameworkMap().callMethod(this.mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
 
     getName : function (){

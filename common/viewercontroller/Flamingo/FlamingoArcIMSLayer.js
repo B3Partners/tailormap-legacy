@@ -23,10 +23,11 @@
 Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
     extend: "viewer.viewercontroller.flamingo.FlamingoArcLayer",
     constructor: function(config){
+        config.options["layerorder"]=true;
+        this.id = config.id;
         viewer.viewercontroller.flamingo.FlamingoArcIMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
         this.type=viewer.viewercontroller.controller.Layer.ARCIMS_TYPE;
-        this.options["layerorder"]=true;
         return this;
     },
     
@@ -47,13 +48,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcIMSLayer",{
         if(filter){
             var me = this;
             var f = function(query) { 
-                me.getFrameworkLayer().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
+                me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
                 me.update();
             };
             var util = Ext.create("viewer.ArcQueryUtil");
             util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
         }else{
-            this.getFrameworkLayer().callMethod(me.getFrameworkId(),"setQuery","#ALL#",null);
+            this.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",null);
             this.update();
         }
     }

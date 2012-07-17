@@ -62,7 +62,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
 
     reload : function (){
-        this.getFrameworkLayer().callMethod(this.map.getId() + "_" + this.getId(),"setConfig",this.toXML() );
+        var fl = this.getFrameworkLayer();
+        fl.callMethod(this.map.getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
     getLegendGraphic : function () {
         var url = this.url;

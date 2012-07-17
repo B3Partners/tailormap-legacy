@@ -75,14 +75,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         return this.type;
     },
     update: function(){
-        return this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
+        return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"update");
     },
     /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
      * so flamingo is allowed to broadcast the event.
      */
     addListener : function(event,handler,scope){
-        viewer.viewercontroller.flamingo.FlamingoLayer.superclass.addListener.call(this,event,handler,scope);
+      //  viewer.viewercontroller.flamingo.FlamingoLayer.superclass.addListener.call(this,event,handler,scope);
         //enable flamingo event broadcasting
         var flamEvent=this.map.mapComponent.eventList[event];
         if (flamEvent!=undefined){
