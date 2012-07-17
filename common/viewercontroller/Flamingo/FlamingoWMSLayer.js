@@ -12,7 +12,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
-        this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
         return this;
     },
     getTagName : function(){

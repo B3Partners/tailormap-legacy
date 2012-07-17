@@ -20,6 +20,11 @@
  */
 Ext.define("viewer.viewercontroller.controller.WMSLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
+    constructor : function (config){
+        viewer.viewercontroller.controller.WMSLayer.superclass.constructor.call(this, config);
+        this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
+        this.url = config.options.url;  
+    },
     getLegendGraphic : function () {
         Ext.Error.raise({msg: "WMSLayer.getLegendGraphic() Not implemented! Must be implemented in sub-class"});
     }
