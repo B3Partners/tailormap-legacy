@@ -129,5 +129,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     },
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha
+     */
+    setAlpha: function (alpha){
+        this.mixins.flamingoLayer.setAlpha.call(this,alpha);
     }
 });
