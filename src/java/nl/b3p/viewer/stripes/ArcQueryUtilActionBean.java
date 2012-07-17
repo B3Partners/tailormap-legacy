@@ -103,7 +103,7 @@ public class ArcQueryUtilActionBean implements ActionBean {
     }
     // </editor-fold>
    
-    @After(stages = LifecycleStage.BindingAndValidation)
+    @After(stages = LifecycleStage.BindingAndValidation, on="!arcXML")
     public void loadLayer() {
 
         try {

@@ -78,6 +78,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Layer.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/TilingLayer.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/WMSLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/ArcLayer.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/ImageLayer.js"></script>                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/VectorLayer.js"></script>                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/MapTip.js"></script>

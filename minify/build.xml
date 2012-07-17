@@ -47,6 +47,7 @@
             <file name="WMSLayer.js"/>
             <file name="ImageLayer.js"/>
             <file name="VectorLayer.js"/>
+            <file name="ArcLayer.js"/>
             <file name="Feature.js"/>
             <file name="MapTip.js"/>
             <file name="Extent.js"/>
