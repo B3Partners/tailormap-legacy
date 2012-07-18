@@ -113,7 +113,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }
         options.ogcParams=ogcParams;
         options.viewerController = this.viewerController;
-        
+        options.options = new Object();
+        options.options.url = wmsurl;
         var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",options);
         
         if(ogcParams["query_layers"] != null && ogcParams["query_layers"] != ""){

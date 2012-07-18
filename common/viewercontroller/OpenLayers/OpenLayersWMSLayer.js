@@ -8,12 +8,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     mixins: {
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
-    config:{
-        ogcParams:null
-    },
     constructor : function (config){        
         viewer.viewercontroller.openlayers.OpenLayersWMSLayer.superclass.constructor.call(this,config);
-        this.frameworkLayer = new OpenLayers.Layer.WMS(this.name,this.url,this.ogcParams,config);
+        this.frameworkLayer = new OpenLayers.Layer.WMS(this.name,this.url,this.config.ogcParams,config);
           
          if (!this.frameworkLayer instanceof OpenLayers.Layer.WMS){
             Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.WMS'. But: "+this.frameworkLayer});

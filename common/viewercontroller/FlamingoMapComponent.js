@@ -112,7 +112,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             id: ide,
             options: object,
             frameworkLayer : this.viewerObject,
-            viewerController: viewerController
+            viewerController: this.viewerController
         };
         return new viewer.viewercontroller.flamingo.FlamingoWMSLayer(config);
     },
