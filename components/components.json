@@ -610,7 +610,7 @@
         restrictions: ["left_menu"],        
         type: "popup"         
      },
-     {
+   /*  {
         className: "viewer.components.fmc.Window",
         name: "FMC-Window 3rd Party",
         shortName: "Wi",
@@ -618,7 +618,7 @@
         configXML: "<fmc:Window id=\"[id]\" left=\"[left]\" top=\"[top]\" width=\"[width]\" height=\"[height]\"/>",
         restrictions: ["content"]
     },
-    /*{
+    {
         className: "viewer.components.Influence",
         name: "Invloedsgebied met geometry",
         shortName: "Igg",
