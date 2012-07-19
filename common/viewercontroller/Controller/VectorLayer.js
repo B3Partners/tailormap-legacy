@@ -43,7 +43,7 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         }
     },
     constructor : function (config){
-        var a = 0;
+        viewer.viewercontroller.controller.VectorLayer.superclass.constructor.call(this, config);
     },
     removeAllFeatures : function(){
         Ext.Error.raise({msg: "VectorLayer.removeAllFeatures() Not implemented! Must be implemented in sub-class"});

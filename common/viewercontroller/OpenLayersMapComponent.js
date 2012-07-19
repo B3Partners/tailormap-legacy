@@ -156,6 +156,20 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return tmsLayer;
     },
     /**
+     *see {@link MapComponent.createTMSLayer} sdf
+     */
+    //appLayer.layerName,server,servlet,service.serviceName, options,this);
+    createArcIMSLayer : function (name,url, servlet, serviceName,options){
+        options.name=name;
+        options.url=url;
+        options.servlet = servlet;
+        options.serviceName = serviceName;
+        options.viewerController=this.viewerController;
+        
+        var arcIMS= Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",options);
+        return arcIMS;
+    },
+    /**
      *See @link MapComponent.createTMSLayer
      */
     createImageLayer : function (name,url, bounds){
@@ -178,6 +192,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 options["isBaseLayer"]= false;
             }
         }
+        
         return Ext.create("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",options);
     },
     /**
