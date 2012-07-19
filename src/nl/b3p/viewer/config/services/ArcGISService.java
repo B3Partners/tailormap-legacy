@@ -44,6 +44,11 @@ public class ArcGISService extends GeoService {
         return new JSONObject(IOUtils.toString(client.get(new URL(url)).getResponseStream(), "UTF-8"));
     }
     
+    @Transient
+    private String currentVersion;
+    @Transient
+    private int currentVersionMajor;
+    
     @Override
     public ArcGISService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
@@ -52,7 +57,7 @@ public class ArcGISService extends GeoService {
             if(!url.endsWith("/MapServer")) {
                 throw new IllegalArgumentException("URL moet eindigen in \"/MapServer\"");
             }
-            if(url.indexOf("/rest/") == -1) {
+            if(url.indexOf("/rest/services") == -1) {
                 throw new IllegalArgumentException("URL moet \"/rest/\" bevatten");
             }   
             
@@ -60,7 +65,23 @@ public class ArcGISService extends GeoService {
             client.setUser((String)params.get(PARAM_USERNAME));
             client.setPassword((String)params.get(PARAM_PASSWORD));
             
-            JSONObject info = issueRequest(url + "/layers?f=json", client);
+            // currentVersion not included in MapServer/ JSON in 9.3.1, get it
+            // from the root services JSON
+            int i = url.indexOf("/rest/services");
+            String servicesUrl = url.substring(0, i) + "/rest/services";
+            JSONObject servicesInfo = issueRequest(servicesUrl + "?f=json", client);
+            currentVersion = servicesInfo.getString("currentVersion");
+            currentVersionMajor = Integer.parseInt(currentVersion.split("\\.")[0]);
+            
+            JSONObject info;
+            if(currentVersionMajor >= 10) {
+                // In version 10, get full layers info immediately
+                // The MapServer/ JSON is not very interesing by itself
+                info = issueRequest(url + "/layers?f=json", client);
+            } else {
+                // In 9.x, MapServer/layers is not supported
+                info = issueRequest(url + "?f=json", client);
+            }
 
             if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
                 return null;
@@ -68,7 +89,8 @@ public class ArcGISService extends GeoService {
             
             ArcGISService s = new ArcGISService();
             
-            int i = url.lastIndexOf("/MapServer");
+            // Get name from URL instead of MapServer/:documentInfo.Title 
+            i = url.lastIndexOf("/MapServer");
             String temp = url.substring(0,i);
             i = temp.lastIndexOf("/");
             String name = temp.substring(i+1);
@@ -76,7 +98,13 @@ public class ArcGISService extends GeoService {
             s.setUrl(url);
             s.setName(name);
 
-            status.setProgress(50);
+            int layerCount = 1;
+            try {
+                layerCount = info.getJSONArray("layers").length();
+            } catch(JSONException e) {
+            }
+            status.setProgress((int)Math.round(100.0/(layerCount+1)));
+
             status.setCurrentAction("Inladen layers...");
 
             /* Automatically create featuresource */
@@ -92,11 +120,27 @@ public class ArcGISService extends GeoService {
             top.setTitle("Layers");
             top.setService(s);
 
-            JSONArray layers = info.getJSONArray("layers");
-            for(i = 0; i < layers.length(); i++) {
-                JSONObject layer = layers.getJSONObject(i);
-                top.getChildren().add(parseArcGISLayer(layer, s, fs, top));
+            if(currentVersionMajor >= 10) {
+                // info is the MapServer/layers response, all layers JSON info
+                // immediately available
+                JSONArray layers = info.getJSONArray("layers");
+                for(i = 0; i < layers.length(); i++) {
+                    JSONObject layer = layers.getJSONObject(i);
+                    top.getChildren().add(parseArcGISLayer(layer, s, fs, top));
+                }
+            } else {
+                // In 9.x, request needed for each layer
+                JSONArray layers = info.getJSONArray("layers");
+                for(i = 0; i < layers.length(); i++) {
+                    JSONObject layer = layers.getJSONObject(i);
+                    String id = layer.getString("id");
+                    status.setCurrentAction("Inladen laag \"" + layer.optString("name", id) + "\"");
+                    layer = issueRequest(url + "/" + id + "?f=json", client);
+                    top.getChildren().add(parseArcGISLayer(layer, s, fs, top));
+                    status.setProgress((int)Math.round( 100.0/(layerCount+1) * i+2 ));                    
+                }                
             }
+                
             s.setTopLayer(top);
             
             if(!Boolean.FALSE.equals(params.get(PARAM_PERSIST_FEATURESOURCE)) && !fs.getFeatureTypes().isEmpty()) {
@@ -122,10 +166,10 @@ public class ArcGISService extends GeoService {
         l.setTitle(agsl.getString("name"));
 
         l.getDetails().put("arcgis_type", agsl.getString("type"));
-        l.getDetails().put("arcgis_currentVersion", agsl.optString("currentVersion", null));        
+        l.getDetails().put("arcgis_currentVersion", agsl.optString("currentVersion", currentVersion));        
         l.getDetails().put("arcgis_description", agsl.getString("description"));        
         l.getDetails().put("arcgis_geometryType", agsl.getString("geometryType"));  
-        l.getDetails().put("arcgis_capabilities", agsl.getString("capabilities"));        
+        l.getDetails().put("arcgis_capabilities", agsl.optString("capabilities"));        
         
         try {
             l.setMinScale(agsl.getDouble("minScale"));
