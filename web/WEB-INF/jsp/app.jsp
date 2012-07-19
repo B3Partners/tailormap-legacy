@@ -44,8 +44,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			<meta name="viewport" content="width=device-width, initial-scale=1">        
 			<meta http-equiv="cleartype" content="on">
 		</c:if>
-
+        
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">
+        
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
 
         <!--XXX must only be loaded if component is added -->
@@ -120,6 +121,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayersMapComponent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/MobileSlider.js"></script>
                 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/LayerSelector.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/ServiceInfo.js"></script>
@@ -175,7 +177,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 /* Panel header colors */
                 .x-panel-header-default {
                     background-color: ${steunkleur1};
-                    background-image: -moz-linear-gradient(center top , ${steunkleur1}, ${steunkleur1});
+                    background-image: -moz-linear-gradient(center top, ${steunkleur1}, ${steunkleur1});
+                    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, ${steunkleur1}), color-stop(100%, ${steunkleur1}));
+                    background-image: -webkit-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
+                    background-image: -o-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
+                    background-image: -ms-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
+                    background-image: linear-gradient(top, ${steunkleur1}, ${steunkleur1});
                     border-color: ${steunkleur1};
                 }
 
