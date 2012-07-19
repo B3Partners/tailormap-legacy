@@ -37,6 +37,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     },
     
     constructor: function (config){
+        viewer.viewercontroller.controller.Layer.superclass.constructor.call(this, config);
         this.initConfig(config);        
     },
         

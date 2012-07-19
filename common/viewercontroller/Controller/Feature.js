@@ -37,7 +37,7 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
      * @return The generic feature
      */
     fromOpenLayersFeature : function(openLayersFeature){
-        var feature = new viewer.viewercontroller.controller.Feature(openLayersFeature.id,openLayersFeature.geometry.toString());
+        var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
         return feature;
     },
     

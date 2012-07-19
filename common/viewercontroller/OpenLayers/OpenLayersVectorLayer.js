@@ -5,16 +5,43 @@
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     extend: "viewer.viewercontroller.controller.VectorLayer",
+    point:null,
+    line:null,
+    polygon:null,
+    circle:null,
     mixins: {
-        flamingoLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
+        openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
     constructor : function (config){
-        viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, {});
+        viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
-        //this.initConfig(config);
-        if (!this.frameworkLayer instanceof OpenLayers.Layer.Vector){
-            Ext.Error.raise({msg: "The given layer object is not of type 'OpenLayers.Layer.Vector'. But: "+this.frameworkLayer});
-        }
+        var me = this;
+        this.frameworkLayer.onFeatureInsert = function(){
+            me.onFeatureInsert();
+        };
+        this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
+            displayClass: 'olControlDrawFeaturePoint',
+            handlerOptions: {
+                citeCompliant: false
+                }
+        });
+        this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, {
+            displayClass: 'olControlDrawFeaturePath',
+            handlerOptions: {
+                citeCompliant: false
+                }
+        });
+        this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
+            displayClass: 'olControlDrawFeaturePolygon',
+            handlerOptions: {
+                citeCompliant: false
+                }
+        });
+        
+        var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
+        map.addControl(this.point);
+        map.addControl(this.line);
+        map.addControl(this.polygon);
     },
 
     removeAllFeatures : function(){
@@ -37,7 +64,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     getAllFeatures : function(){
         var olFeatures = this.getFrameworkLayer().features;
         var features = new Array();
-        var featureObj = new Feature();
+        var featureObj = new viewer.viewercontroller.controller.Feature();
         for(var i = 0 ; i < olFeatures.length;i++){
             var olFeature = olFeatures[i];
             var feature = featureObj.fromOpenLayersFeature(olFeature);
@@ -66,13 +93,18 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
 
     drawFeature : function(type){
         if(type == "Point"){
-            webMapController.pointButton.getFrameworkTool().activate();
+            this.point.activate();
         }else if(type == "LineString"){
-            webMapController.lineButton.getFrameworkTool().activate();
+            this.line.activate();
         }else if(type == "Polygon"){
-            webMapController.polygonButton.getFrameworkTool().activate();
+            this.polygon.activate();
         }else{
             throw ("Feature type >" + type + "< not implemented!");
         }
+    },
+    onFeatureInsert : function (){
+        this.point.deactivate();
+        this.line.deactivate();
+        this.polygon.deactivate();
     }
 });

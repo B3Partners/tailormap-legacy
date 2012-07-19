@@ -62,14 +62,19 @@ Ext.define ("viewer.components.Drawing",{
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
             showmeasures:false,
+            viewerController: this.viewerController/*,
             style: {
                 fillcolor: "0x"+this.color,
                 fillopacity: 50,
                 strokecolor: "0xFF0000",
                 strokeopacity: 50
-            }
+            }*/
         });
+       // this.vectorLayer=this.viewerController.mapComponent.createVectorLayer('drawingVectorLayer',"sdf");
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        
+       /* this.edittingToolBar = new OpenLayers.Control.EditingToolbar(this.vectorLayer.frameworkLayer);
+        this.viewerController.mapComponent.getMap().getFrameworkMap().addControl(this.edittingToolBar);*/
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
