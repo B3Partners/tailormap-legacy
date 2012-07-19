@@ -137,6 +137,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
             </c:otherwise>
         </c:choose>
+        <c:if test="${param.mobile == true}">
+            <script type="text/javascript" src="${contextPath}/resources/js/hammer.js"></script>
+            <link href="${contextPath}/resources/css/mobile.css" rel="stylesheet">
+        </c:if>
 
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
