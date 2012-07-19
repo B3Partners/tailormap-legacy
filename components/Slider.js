@@ -38,32 +38,20 @@ Ext.define("viewer.components.Slider",{
         this.layers=new Array();
 		this.currentSliderValue = this.initialTransparency;
 		if(isMobile) {
-            // Get new id
-			var sliderid = Ext.id();
-            // Create the label
-            var label = document.createElement('label');
-            label.innerHTML = this.name;
-            // Create the container
-            var sliderContainer = document.createElement('div');
-            sliderContainer.className = 'slidercomponent';
-            // Create + and - controls
-            var sliderMinControl = document.createElement('div');
-            sliderMinControl.className = 'rangecontrol minrangecontrol';
-            var sliderPlusControl = document.createElement('div');
-            sliderPlusControl.className = 'rangecontrol plusrangecontrol';
-            // Create range input
-            var sliderObj = document.createElement('input');
-            sliderObj.id = sliderid; sliderObj.type = 'range'; sliderObj.min = 0; sliderObj.max = 100; sliderObj.value = this.initialTransparency;
-            // Append inputs to container
-			sliderContainer.appendChild(sliderMinControl); sliderContainer.appendChild(sliderObj); sliderContainer.appendChild(sliderPlusControl);
-            document.getElementById(conf.sliderContainer).appendChild(label);
-            document.getElementById(conf.sliderContainer).appendChild(sliderContainer);
-            // Add click-hold functionality to + and - controls
-            me.holdButton(sliderMinControl, 'subtract', sliderObj, 100, 2);
-            me.holdButton(sliderPlusControl, 'add', sliderObj, 100, 2);
-            // Add change listener to slider
-            Ext.get(sliderid).addListener('change', function( evt, obj ) {
-				me.sliderChanged( obj, obj.value );
+            this.slider = Ext.create('viewer.components.MobileSlider', {
+				width: '100%',
+				value: this.initialTransparency,
+				increment: 1,
+				fieldLabel: this.name,
+				minValue: 0,
+				maxValue: 100,
+				renderTo: conf.sliderContainer,
+				listeners:{
+					change: {                    
+						fn: this.sliderChanged,
+						scope: this
+					}
+				}
 			});
 		} else {
 			this.slider = Ext.create('Ext.slider.Single', {
@@ -112,7 +100,7 @@ Ext.define("viewer.components.Slider",{
     /**
      * Slider changed.
      */
-    sliderChanged: function (slider,value){       
+    sliderChanged: function (slider,value) {       
         this.currentSliderValue = value;
 		for(var i = 0 ; i< this.layers.length ;i++){
             var layer = this.layers[i];
@@ -120,26 +108,6 @@ Ext.define("viewer.components.Slider",{
         }
     },
     getExtComponents: function() {
-        if(this.slider !== null) return this.slider.getId();
-        return '';
-    },
-    holdButton: function(btn, action, target, start, speedup) {
-        var t, me = this;
-        var changeSliderValue = function () {
-            if(action == "add" && target.value < 100) target.value++;
-            else if(action == "subtract" && target.value > 0) target.value--;
-            else {
-                clearTimeout(t);
-                return;
-            }
-            t = setTimeout(changeSliderValue, start);
-            start = start / speedup;
-            me.sliderChanged(target, target.value);
-        }
-        var hammer = new Hammer(btn);
-        hammer.onhold = changeSliderValue;
-        hammer.onrelease = function(ev) {
-            clearTimeout(t);
-        };
+        return this.slider.getId();
     }
 });
