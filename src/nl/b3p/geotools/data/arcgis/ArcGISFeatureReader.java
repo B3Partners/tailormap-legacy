@@ -16,14 +16,10 @@
  */
 package nl.b3p.geotools.data.arcgis;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
@@ -80,13 +76,24 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
     }  
     
     public int getCount() throws IOException {
-        return getObjectIds().size();
+        
+        if(fs.getArcGISDataStore().getCurrentMajorVersion() > 9) {
+            return getObjectIds().size();
+        } else {
+            getJSONFeaturesDirect();
+            return batch.size();
+        }
     } 
     
     public List getObjectIds() throws IOException {
         if(objectIds != null) {
             return objectIds;
         }
+        
+        if(fs.getArcGISDataStore().getCurrentMajorVersion() < 10) {
+            throw new UnsupportedOperationException("Object id queries not supported in ArcGIS REST version 9.x");
+        }
+        
         Map<String,String> params = null;
         try {
             params = createQueryParams();
@@ -157,11 +164,17 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         
         Set<String> s = new HashSet<String>();
         // We always need the id
-        s.add(objectIdFieldName);
+        if(objectIdFieldName != null) {
+            // No objectID in 9.x
+            s.add(objectIdFieldName);
+        }
         if(query.getPropertyNames() == Query.ALL_NAMES) {
-            for(AttributeDescriptor ad: getFeatureType().getAttributeDescriptors()) {
-                s.add(ad.getLocalName());
-            }
+            // Undocumented shortcut!
+            s.clear();
+            s.add("*");
+            //for(AttributeDescriptor ad: getFeatureType().getAttributeDescriptors()) {
+            //    s.add(ad.getLocalName());
+            //}
         } else if(query.getPropertyNames().length > 0) {
             s.addAll(Arrays.asList(query.getPropertyNames()));
         }
@@ -244,6 +257,55 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         return features;
     }
     
+    private JSONArray getJSONFeaturesDirect() throws IOException {
+        initBeforeRequest();
+        
+        Map<String,String> params = new HashMap<String,String>();
+        params.put("f","json");
+        params.put("outFields", getOutFields());
+        params.put("returnGeometry", returnGeometry + "");        
+        
+        try {
+            params.put("where", createQueryParams().get("where"));
+        } catch (FilterToSQLException ex) {
+            throw new IOException(ex);
+        }        
+
+        try {
+            JSONObject response = fs.getArcGISDataStore().getServerJSONResponse(typeName + "/query", params);
+            
+            batch = (JSONArray)response.get("features");
+            
+            int originalSize = batch.size();
+            
+            // XXX do not copy when startIndex = 0
+            // XXX do only one subList() call for startIndex and maxFeatures
+            
+            if(query.getStartIndex() != null) {
+                JSONArray subBatch = new JSONArray();
+                subBatch.addAll(batch.subList(Math.min(query.getStartIndex(), batch.size()), batch.size()));
+                batch = subBatch;
+            }
+            if(batch.size() > query.getMaxFeatures()) {
+                JSONArray subBatch = new JSONArray();
+                subBatch.addAll(batch.subList(0, query.getMaxFeatures()));
+                batch = subBatch;
+            }
+            
+            if(log.isDebugEnabled()) {
+                log.debug(String.format("Features received for layer %s: %d; when adjusted for startIndex %s and maxFeatures %s the count is %d",
+                    typeName,
+                    originalSize,
+                    query.getStartIndex() + "",
+                    query.isMaxFeaturesUnlimited() ? "unlimited" : query.getMaxFeatures() + "",
+                    batch.size()));
+            }
+            return batch;
+        } catch(Exception e) {
+            throw new IOException("Error retrieving features from ArcGIS: " + e.toString(), e);
+        } 
+    }
+    
     public SimpleFeatureCollection getFeaturesByObjectIds(List ids) throws IOException {
         JSONArray jfeatures = getJSONFeaturesByObjectIds(ids);
         List<SimpleFeature> features = new ArrayList<SimpleFeature>();
@@ -284,7 +346,14 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         JSONObject jg = (JSONObject)jf.get("geometry");
         if(jg != null) {
             AttributeDescriptor ad = featureType.getGeometryDescriptor();
-            Geometry g = ArcGISUtils.convertToJTSGeometry(jg, ad.getType().getBinding(), geometryFactory);
+            
+            Class binding = ad.getType().getBinding();
+            if(binding.isAssignableFrom(Geometry.class)) {
+                // Geometry type in layer JSON was invalid, try the geometryType
+                // in the json feature
+                binding = ArcGISUtils.getGeometryBinding((String)jf.get("geometryType"));
+            }
+            Geometry g = ArcGISUtils.convertToJTSGeometry(jg, binding, geometryFactory);
             builder.set(ad.getName(), g);
         }
         
@@ -294,9 +363,18 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
     @Override
     public SimpleFeature next() throws IOException, IllegalArgumentException, NoSuchElementException {
         
-        if(batch == null || index >= batchIndex + batch.size()) {
-            getNextBatch();
+        if(fs.getArcGISDataStore().getCurrentMajorVersion() > 9) {
+            if(batch == null || index >= batchIndex + batch.size()) {
+                getNextBatch();
+            }
+        } else {
+            // 9.x does not support paging and has a max number of features (500)
+            // no method to retrieve all features
+            if(batch == null) {
+                getJSONFeaturesDirect();
+            }
         }
+        
         try {
             return buildFeature( (JSONObject) batch.get(index++ - batchIndex));
         } catch(IndexOutOfBoundsException e) {
@@ -306,7 +384,16 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
 
     @Override
     public boolean hasNext() throws IOException {
-        return index < getObjectIds().size();
+        
+        if(fs.getArcGISDataStore().getCurrentMajorVersion() > 9) {
+            return index < getObjectIds().size();
+        } else {            
+            if(batch == null) {
+                getJSONFeaturesDirect();
+            }
+            
+            return index < batch.size();
+        }
     }
     
     @Override

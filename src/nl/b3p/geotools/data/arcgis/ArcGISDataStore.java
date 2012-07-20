@@ -18,6 +18,7 @@ package nl.b3p.geotools.data.arcgis;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
@@ -99,13 +100,31 @@ public class ArcGISDataStore extends ContentDataStore {
 
     private HTTPClient client;
     
+    private String currentVersion;
+    private Integer currentMajorVersion;
+    
     public ArcGISDataStore(URL url) {
         this(url, null, null, null, null, null, null);
     }
-    
+
     public ArcGISDataStore(URL url, String user, String passwd, Integer timeout, Boolean gzip, CoordinateReferenceSystem crs, Object httpCache) {
+        this(url, user, passwd, timeout, gzip, crs, httpCache, null);
+    }
+    
+    public ArcGISDataStore(URL url, String user, String passwd, Integer timeout, Boolean gzip, CoordinateReferenceSystem crs, Object httpCache, String currentVersion) {
         this.url = url;
-        this.crs = crs;        
+        this.crs = crs;    
+        this.currentVersion = currentVersion;
+        if(currentVersion != null) {
+            try {
+                currentMajorVersion = Integer.parseInt(currentVersion.split("\\.")[0]);            
+            } catch(Exception e) {
+                log.warn(String.format(
+                        "Invalid currentVersion specified to ArcGISDataStore: \"%s\", will ask server instead",
+                        currentVersion));
+                this.currentVersion = null;
+            }
+        }
         
         String urlString = url.toString();
         
@@ -119,7 +138,7 @@ public class ArcGISDataStore extends ContentDataStore {
         if(urlString.indexOf("/rest/") == -1) {
             throw new IllegalArgumentException("URL must contain \"/rest/\"");
         }         
-
+        
         // Uncomment to enable HttpCache4j
         //if(httpCache != null) {
         //    client = new CachingHTTPClient((HTTPCache)httpCache);
@@ -136,6 +155,38 @@ public class ArcGISDataStore extends ContentDataStore {
             client.setConnectTimeout(timeout);
             client.setReadTimeout(timeout);
         }
+    }
+    
+    public String getCurrentVersion() throws IOException {
+        if(currentVersion == null) {
+            log.debug("Determining currentVersion of ArcGIS service to check for 9.x (to prevent this request, provide CURRENT_VERSION parameter to DataStore)");
+            
+            // currentVersion not included in MapServer/ JSON in 9.3.1, get it
+            // from the root services JSON
+
+            URL originalUrl = this.url;
+            
+            try {
+                int i = originalUrl.toString().indexOf("/rest/services");
+                String servicesUrl = originalUrl.toString().substring(0, i) + "/rest/services";
+                this.url = new URL(servicesUrl);
+                JSONObject servicesInfo = getServerJSONResponse("?f=json");
+                currentVersion = (String)servicesInfo.get("currentVersion");
+                currentMajorVersion = Integer.parseInt(currentVersion.split("\\.")[0]);            
+            } catch(Exception e) {
+                throw new IOException("Error finding out the currentVersion of ArcGIS REST service at " + url.toString(), e);
+            } finally {
+                this.url = originalUrl;
+            }
+        }            
+        return currentVersion;
+    }
+    
+    public int getCurrentMajorVersion() throws IOException {
+        if(currentVersion == null) {
+            getCurrentVersion();
+        }
+        return currentMajorVersion;
     }
     
     public JSONObject getServerJSONResponse(String extraUrl) throws IOException {
@@ -192,19 +243,48 @@ public class ArcGISDataStore extends ContentDataStore {
     
     private JSONObject requestLayerJSON(String id) throws IOException {
         JSONObject layer = getServerJSONResponse(id + "?f=json");
-        return checkLayerJSON(id, layer);
+        return layer;
     }
     
+    public JSONObject getLayerJSON(String id) throws IOException {
+        if(layersById.containsKey(id)) {
+            
+            if(getCurrentMajorVersion() > 9) {
+                // Full layer JSON always available
+                return layersById.get(id);
+            } else {
+                // Layer JSON must be fetched per layer in 9.x, but do this on
+                // demand
+                
+                // If the current JSON object has a "type", the full layer JSON
+                // was already fetched
+                
+                JSONObject layer = layersById.get(id);
+                if(!layer.containsKey("type")) {
+                    layer = requestLayerJSON(id);                    
+                    layersById.put(id, layer);
+                }
+                return layer;
+            }
+        } else {
+            return requestLayerJSON(id);
+        }
+    }    
+      
     private JSONObject checkLayerJSON(String id, JSONObject layer) throws IOException {
 
-        String capabilities = (String)layer.get("capabilities");
+        /* No use checking layer JSON for query capabilities in 9.x */
+        if(getCurrentMajorVersion() > 9) {
+        
+            String capabilities = (String)layer.get("capabilities");
 
-        if(capabilities != null && Arrays.asList(capabilities.split(",")).indexOf("Query") != -1) {
-            layersById.put(id, layer);
-            return layer;
-        } else {
-            throw new IOException("ArcGIS layer " + id + " has no Query capabilities");
+            if(capabilities == null || Arrays.asList(capabilities.split(",")).indexOf("Query") == -1) {
+                throw new IOException("ArcGIS layer " + id + " has no Query capabilities");
+            }
         }
+        
+        layersById.put(id, layer);
+        return layer;
     }    
     
     @Override
@@ -213,7 +293,15 @@ public class ArcGISDataStore extends ContentDataStore {
             if(typeNames == null) {
                 typeNames = new ArrayList<Name>();
                 
-                JSONObject info = getServerJSONResponse((serverType == ServerType.MapServer ? "/layers" : "") + "?f=json");
+                JSONObject info;
+                if(getCurrentMajorVersion() >= 10) {
+                    // In version 10, get full layers info immediately
+                    // The MapServer/ JSON is not very interesing by itself
+                    info = getServerJSONResponse("/layers?f=json");
+                } else {
+                    // In 9.x, MapServer/layers is not supported
+                    info = getServerJSONResponse("?f=json");
+                }
                 
                 JSONArray layers = (JSONArray)info.get("layers");
                 for(Object o: layers) {
@@ -227,11 +315,12 @@ public class ArcGISDataStore extends ContentDataStore {
                     
                     String id = layer.get("id").toString();
                     
-                    if(serverType == ServerType.FeatureServer) {
-                        layer = getServerJSONResponse(id + "?f=json");
-                    }
+                    //if(serverType == ServerType.FeatureServer || currentMajorVersion < 10) {
+                    //    layer = getServerJSONResponse(id + "?f=json");
+                    //}
                     
                     if(checkLayerJSON(id, layer) != null) {
+                        layersById.put(id, layer);
                         typeNames.add(new NameImpl(id));
                     }
                 }
@@ -252,14 +341,6 @@ public class ArcGISDataStore extends ContentDataStore {
 
     public CoordinateReferenceSystem getCRS() {
         return crs;
-    }
-    
-    public JSONObject getLayerJSON(String id) throws IOException {
-        if(layersById.containsKey(id)) {
-            return layersById.get(id);
-        } else {
-            return requestLayerJSON(id);
-        }
     }
     
     @Override

@@ -18,6 +18,8 @@ package nl.b3p.geotools.data.arcgis;
 
 import com.vividsolutions.jts.geom.*;
 import java.util.Date;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.opengis.geometry.BoundingBox;
@@ -27,6 +29,7 @@ import org.opengis.geometry.BoundingBox;
  * @author Matthijs Laan
  */
 public class ArcGISUtils {
+    private static final Log log = LogFactory.getLog(ArcGISUtils.class);
     
     public static Class getBinding(String esriType) {
         if(esriType.equals("esriFieldTypeGeometry")) {
@@ -66,7 +69,9 @@ public class ArcGISUtils {
         } else if("esriGeometryPolygon".equals(esriGeometryType)) {
             return MultiPolygon.class;
         } else {
-            throw new IllegalArgumentException("geometryType not supported: " + esriGeometryType);
+            log.warn("ArcGIS layer geometryType not supported: \"" + esriGeometryType + "\", using generic Geometry");
+
+            return Geometry.class;
         }        
     }
     
@@ -117,7 +122,7 @@ public class ArcGISUtils {
             }
             return gf.createMultiPolygon(polygons);
         } else { 
-            return null;
+            throw new IllegalArgumentException("Don't know how to convert ArcGIS JSON geometry to JTS class " + binding.getName());
         }
     }
     

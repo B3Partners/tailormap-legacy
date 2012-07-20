@@ -40,6 +40,8 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
     public static final DataStoreFactorySpi.Param CRS = new Param("crs", CoordinateReferenceSystem.class, "Coordinate reference system", false);
     //public static final DataStoreFactorySpi.Param HTTP_CACHE = new Param("http_cache", HTTPCache.class, "HTTPCache instance to enable HTTP caching", false);
     
+    // TODO: add CURRENT_VERSION param
+    
     @Override
     public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
         return createNewDataStore(params);
