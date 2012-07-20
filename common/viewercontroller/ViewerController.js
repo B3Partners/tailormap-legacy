@@ -588,7 +588,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,server,servlet,service.serviceName, options,this);
             }else{                
                 options.type= "ArcGIS";
-                options.hiddenids = "#ALL#";
+                //options.hiddenids = "#ALL#";
                 layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,server,servlet,null, options,this);                
             }
         }else if (service.protocol == "tiled"){
