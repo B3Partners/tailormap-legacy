@@ -24,7 +24,7 @@
             <file name="overrides.js"/>
             <file name="ScreenPopup.js"/>
 			<file name="CQLFilterWrapper.js"/>
-            <!--file name="MobilePopup.js"/-->
+            <file name="MobileSlider.js"/>
           </sources>
 		  <!--					The server-side Ajax wrappers -->
           <sources dir="${viewerhtml.path}/common/ajax">
