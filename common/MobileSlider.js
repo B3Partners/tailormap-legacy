@@ -18,6 +18,7 @@
 Ext.define ("viewer.components.MobileSlider", {
     extend: "Ext.util.Observable",
     sliderid: '',
+	eventTimer: null,
     config: {
         width: '100%',
         value: 0,
@@ -102,7 +103,11 @@ Ext.define ("viewer.components.MobileSlider", {
     },
     sliderChanged:function (obj, value) {
         var me = this;
-        me.fireEvent('change', obj, value);
+		// We use a small timer	 to make Android more responsive
+		if(me.eventTimer !== null) clearTimeout(me.eventTimer);
+        me.eventTimer = setTimeout(function() {
+			me.fireEvent('change', obj, value);
+		}, 50);
     },
     getId: function() {
         return this.sliderid;

@@ -276,6 +276,10 @@ Ext.define("viewer.components.Component",{
         if(!this.isTool() && !this.isPopup) {
             this.doResize();
         }
+		if(isMobile && this.isPopup) {
+			this.popup.resizePopup();
+			this.doResize();
+		}
     },
 
     doResize: function() {

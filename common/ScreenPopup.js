@@ -66,7 +66,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.draggable = false;
             config.resizable = false;
         }
-
+		
         if(this.details.items){
             config.items = this.details.items;
             config.bodyStyle= { background: '#fff'};
@@ -126,5 +126,15 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     isVisible: function() {
         return this.popupWin.isVisible();
-    }
+    },
+	resizePopup: function() {
+        if(isMobile) {
+    		// First set window size to 1px so it wont take any space
+    		this.popupWin.setSize('1px', '1px');
+    		// Then set size back to 90%/90% so the percentages are calculated correctly
+    		this.popupWin.setSize('90%', '90%');
+    		// doLayout on the window
+    		this.popupWin.doLayout();
+        }
+	}
 });
