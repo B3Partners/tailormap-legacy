@@ -39,8 +39,8 @@ public abstract class PrePostImageCollector extends ImageCollector{
     private static final Log log = LogFactory.getLog(PrePostImageCollector.class);
     private String body;
     
-    public PrePostImageCollector(CombineImageUrl ciu, int maxResponseTime){
-        super(ciu,maxResponseTime);
+    public PrePostImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client){
+        super(ciu,maxResponseTime,client);
         this.body=ciu.getBody();
     }
     
@@ -48,17 +48,8 @@ public abstract class PrePostImageCollector extends ImageCollector{
     protected BufferedImage loadImage(String url,String user, String pass) throws IOException, Exception{
         String theUrl=url;
         if (this.getBody()!=null){
-            PostMethod method = null;
-            HttpClient client = new HttpClient();
-            client.getHttpConnectionManager().
-                    getParams().setConnectionTimeout(getMaxResponseTime());
-            try{
-                if (user != null && pass != null) {
-                    client.getParams().setAuthenticationPreemptive(true);
-                    Credentials defaultcreds = new UsernamePasswordCredentials(user, pass);
-                    AuthScope authScope = new AuthScope(host, port);
-                    client.getState().setCredentials(authScope, defaultcreds);
-                }
+            PostMethod method = null;            
+            try{                
                 method=new PostMethod(url);
                 method.setRequestEntity(new StringRequestEntity(this.getBody()));
                 int statusCode = client.executeMethod(method);
@@ -72,7 +63,8 @@ public abstract class PrePostImageCollector extends ImageCollector{
                 }
             }finally{
                 if (method!=null){
-                    method.releaseConnection();
+                    try{method.releaseConnection();
+                    }catch (Exception e){}
                 }
             }
             

@@ -51,26 +51,25 @@ public class ImageCollector extends Thread {
     private int status = NEW;
     private String message = null;
     private BufferedImage bufferedImage;
-    protected static final String host = AuthScope.ANY_HOST;
-    protected static final int port = AuthScope.ANY_PORT;
     private String username = null;
     private String password = null;
     private CombineImageUrl combinedImageUrl = null;
- 
+    protected HttpClient client=null;
     /*public ImageCollector(String url, int maxResponseTime) {
         this.url = url;
         this.maxResponseTime = maxResponseTime;
         this.setMessage("Still downloading...");
     }*/
 
-    public ImageCollector(CombineImageUrl ciu, int maxResponseTime) {
+    public ImageCollector(CombineImageUrl ciu, int maxResponseTime,HttpClient client) {
         this.combinedImageUrl=ciu;
         this.maxResponseTime = maxResponseTime;
+        this.client=client;
         this.setMessage("Still downloading...");
     }
 
-    public ImageCollector(CombineImageUrl ciu, int maxResponseTime, String uname, String pw) {
-        this(ciu, maxResponseTime);
+    public ImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client, String uname, String pw) {
+        this(ciu, maxResponseTime,client);
         this.username = uname;
         this.password = pw;
     }
@@ -113,17 +112,7 @@ public class ImageCollector extends Thread {
      */
     protected BufferedImage loadImage(String url, String user, String pass) throws IOException, Exception {
         HttpMethod method = null;
-        try {
-            HttpClient client = new HttpClient();
-            client.getHttpConnectionManager().
-                    getParams().setConnectionTimeout(getMaxResponseTime());
-
-            if (user != null && pass != null) {
-                client.getParams().setAuthenticationPreemptive(true);
-                Credentials defaultcreds = new UsernamePasswordCredentials(user, pass);
-                AuthScope authScope = new AuthScope(host, port);
-                client.getState().setCredentials(authScope, defaultcreds);
-            }
+        try {            
             method = new GetMethod(url);
 
             int statusCode = client.executeMethod(method);
