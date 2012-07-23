@@ -58,17 +58,16 @@ Ext.define ("viewer.components.Drawing",{
         });
         
         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
-            id: 'drawingVectorLayer',
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
             showmeasures:false,
-            viewerController: this.viewerController/*,
+            viewerController: this.viewerController,
             style: {
                 fillcolor: "0x"+this.color,
                 fillopacity: 50,
                 strokecolor: "0xFF0000",
                 strokeopacity: 50
-            }*/
+            }
         });
        // this.vectorLayer=this.viewerController.mapComponent.createVectorLayer('drawingVectorLayer',"sdf");
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);

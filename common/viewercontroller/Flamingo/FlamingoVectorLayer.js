@@ -24,6 +24,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         }
         viewer.viewercontroller.flamingo.FlamingoVectorLayer.superclass.constructor.call(this, config);
         this.initConfig(config);   
+        this.id = config.name;
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
         this.enabledEvents=new Object();
         return this;

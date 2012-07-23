@@ -21,25 +21,7 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
        // this.wktParser = new OpenLayers.Format.WKT();
     },
 
-    /**
-     * Converts this feature to a OpenLayersFeature
-     * @return The OpenLayerstype feature
-     */
-    toOpenLayersFeature : function(){
-        throw ("Not yet implemented");
-       // var olFeature = this.wktParser.read(this.getWkt());
-       // return olFeature;
-    },
-
-    /**
-     * Helper function: Converts the given OpenLayers Feature to the generic feature.
-     * @param openLayersFeature The OpenLayersFeature to be converted
-     * @return The generic feature
-     */
-    fromOpenLayersFeature : function(openLayersFeature){
-        var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
-        return feature;
-    },
+    
     
     /**
      * Function to get the JSON representation for this feature object.

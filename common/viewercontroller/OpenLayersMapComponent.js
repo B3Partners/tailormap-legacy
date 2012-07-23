@@ -183,7 +183,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
 
         return imageLayer;
     },
-    createVectorLayer : function(id,options){
+    createVectorLayer : function(options){
         if (options==undefined){
             options = new Object();
             options["isBaseLayer"]= false;

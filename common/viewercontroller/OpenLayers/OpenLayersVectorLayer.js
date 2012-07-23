@@ -9,41 +9,53 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     line:null,
     polygon:null,
     circle:null,
+    modifyFeature:null,
     mixins: {
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
     constructor : function (config){
+        delete config.style;
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
+        
+        this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
+        this.frameworkLayer.events.register("sketchstarted", this, this.featureModified);
+        
         var me = this;
-        this.frameworkLayer.onFeatureInsert = function(){
-            me.onFeatureInsert();
+        this.frameworkLayer.onFeatureInsert = function(feature){
+            me.onFeatureInsert(feature);
         };
         this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint',
             handlerOptions: {
                 citeCompliant: false
-                }
+            }
         });
         this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath',
             handlerOptions: {
                 citeCompliant: false
-                }
+            }
         });
         this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon',
             handlerOptions: {
                 citeCompliant: false
-                }
+            }
         });
         
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
         map.addControl(this.point);
         map.addControl(this.line);
         map.addControl(this.polygon);
+        
+        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer);
+        map.addControl(this.modifyFeature);
+        this.modifyFeature.activate();
     },
-
+    adjustStyle : function(){
+        this.viewerController.logger.error("OpenLayersVectorLayer.adjustStyle() not yet implemented!");
+    },
     removeAllFeatures : function(){
         this.getFrameworkLayer().removeAllFeatures();
     },
@@ -85,7 +97,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var olFeatures = new Array();
         for(var i = 0 ; i < features.length ; i++){
             var feature = features[i];
-            var olFeature = feature.toOpenLayersFeature();
+            var olFeature = this.toOpenLayersFeature(feature);
             olFeatures.push(olFeature);
         }
         return this.getFrameworkLayer().addFeatures(olFeatures);
@@ -102,9 +114,38 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             throw ("Feature type >" + type + "< not implemented!");
         }
     },
-    onFeatureInsert : function (){
+    activeFeatureChanged : function (feature){
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
+    },
+    featureModified : function (evt){
+        var featureObject = this.fromOpenLayersFeature(evt.feature);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
+    },
+    onFeatureInsert : function (feature){
         this.point.deactivate();
         this.line.deactivate();
         this.polygon.deactivate();
+        var featureObject = this.fromOpenLayersFeature(feature);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,featureObject);
+    },
+    /**
+     * Converts this feature to a OpenLayersFeature
+     * @return The OpenLayerstype feature
+     */
+    toOpenLayersFeature : function(feature){
+       // throw ("Not yet implemented");
+        var geom = OpenLayers.Geometry.fromWKT(feature.wktgeom);
+        var olFeature = new OpenLayers.Feature.Vector(geom);
+        return olFeature;
+    },
+
+    /**
+     * Helper function: Converts the given OpenLayers Feature to the generic feature.
+     * @param openLayersFeature The OpenLayersFeature to be converted
+     * @return The generic feature
+     */
+    fromOpenLayersFeature : function(openLayersFeature){
+        var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
+        return feature;
     }
 });
