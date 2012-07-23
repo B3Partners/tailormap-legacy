@@ -69,11 +69,8 @@ Ext.define ("viewer.components.Drawing",{
                 strokeopacity: 50
             }
         });
-       // this.vectorLayer=this.viewerController.mapComponent.createVectorLayer('drawingVectorLayer',"sdf");
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         
-       /* this.edittingToolBar = new OpenLayers.Control.EditingToolbar(this.vectorLayer.frameworkLayer);
-        this.viewerController.mapComponent.getMap().getFrameworkMap().addControl(this.edittingToolBar);*/
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
