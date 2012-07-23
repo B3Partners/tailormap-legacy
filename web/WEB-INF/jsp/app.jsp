@@ -80,6 +80,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${viewerType == 'openlayers'}">
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersArcLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersArcIMSLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersWMSLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersVectorLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersImageLayer.js"></script>
