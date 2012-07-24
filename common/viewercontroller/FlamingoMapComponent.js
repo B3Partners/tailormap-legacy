@@ -201,13 +201,26 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         if (Ext.isEmpty(conf.listenTo)){
             conf.listenTo=this.getMap().getId();
         }
-        var tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
+        conf.viewerController = this.viewerController;
+        var tool = null;// new viewer.viewercontroller.flamingo.FlamingoTool(conf);
         /*if(conf.type == Tool.GET_FEATURE_INFO){
             this.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, this.getMap(), options["handlerBeforeGetFeatureHandler"]);
             this.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, this.getMap(), options["handlerGetFeatureHandler"]);
-        }*/
+        }else */
+        if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){
+           /* @See MapComponent.createTool
+            * @param conf the configuration, containing:
+            * @param conf.id the id of the toolmapclick
+            * @param conf.handler.fn The function to be called
+            * @param conf.handler.scope The scope in which the function has to be called
+            * @param conf.viewerController The viewercontrollerreference */
+            tool = Ext.create ("viewer.viewercontroller.flamingo.ToolMapClick",conf);
+        }else{
+             tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
+        }
         return tool;
     },
+    
     /**
      *Create a flamingo component.
      *@param Configuration object

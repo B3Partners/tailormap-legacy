@@ -365,6 +365,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 type: type,
                 viewerController: this.viewerController
             },new OpenLayers.Control.ZoomOut(options))
+        }else if(type == viewer.viewercontroller.controller.Tool.MAP_CLICK){
+            return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
         }else{
             throw ("Type >" + type + "< not recognized. Please use existing type.");
         }

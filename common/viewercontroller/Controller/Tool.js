@@ -32,7 +32,8 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         DRAW_FEATURE_POLYGON       : 18,
         PREVIOUS_EXTENT            : 19,
         NEXT_EXTENT                : 20,
-        FULL_EXTENT                : 21
+        FULL_EXTENT                : 21,
+        MAP_CLICK                  : 22
     },
     tool: null,    
     mapComponent: null,

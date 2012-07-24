@@ -64,7 +64,7 @@
         className: "viewer.components.tools.StreetView",
         name: "Streetview",
         shortName: "Sv",
-        sources: ["../common/proj4js-compressed.js","tools/JSButton.js","tools/ToolMapClick.js","StreetView.js"],
+        sources: ["../common/proj4js-compressed.js","tools/JSButton.js","StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
@@ -501,7 +501,7 @@
         className: "viewer.components.BufferObject",
         name: "BufferObject",
         shortName: "BO",
-        sources: ["tools/ToolMapClick.js","BufferObject.js"],
+        sources: ["BufferObject.js"],
         configSource: ["SelectionWindowConfig.js","BufferObject-config.js"],
         restrictions: ["left_menu"],            
         type: "popup"
@@ -574,7 +574,7 @@
         className: "viewer.components.Edit",
         name: "Edit",
         shortName: "Ed",
-        sources: ["tools/ToolMapClick.js","Edit.js"],
+        sources: ["Edit.js"],
         configSource: ["SelectionWindowConfig.js","Edit-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
@@ -622,7 +622,7 @@
         className: "viewer.components.Influence",
         name: "Invloedsgebied met geometry",
         shortName: "Igg",
-        sources: ["tools/ToolMapClick.js","Search.js","Influence.js"],
+        sources: ["Search.js","Influence.js"],
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
@@ -632,7 +632,7 @@
         name: "Invloedsgebied plaatje",
         singleton: true,
         shortName: "Igi",
-        sources: ["tools/ToolMapClick.js","Search.js","Influence.js","InfluenceImage.js"],
+        sources: ["Search.js","Influence.js","InfluenceImage.js"],
         configSource: ["SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         

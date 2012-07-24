@@ -33,14 +33,7 @@ Ext.define ("viewer.components.BufferObject",{
     constructor: function (conf){        
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        var config = {
-            id: this.name,
-            handler:{
-                fn: this.mapClicked,
-                scope:this
-            },
-            viewerController: this.viewerController
-        };
+        
         this.vectorLayer=viewerController.mapComponent.createVectorLayer({
             id: 'boVectorLayer',
             name:'boVectorLayer',
@@ -54,7 +47,15 @@ Ext.define ("viewer.components.BufferObject",{
             }
         });
         viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        this.tmc = Ext.create ("viewer.components.tools.ToolMapClick",config);
+        this.tmc =this.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
+            id: this.name,
+            handler:{
+                fn: this.mapClicked,
+                scope:this
+            },
+            viewerController: this.viewerController
+        });
         var me = this;
         this.renderButton({
             handler: function(){

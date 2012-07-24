@@ -71,7 +71,8 @@ Ext.define ("viewer.components.Edit",{
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         
-        this.toolMapClick = Ext.create ("viewer.components.tools.ToolMapClick",{
+        this.toolMapClick =  this.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
@@ -368,7 +369,8 @@ Ext.define ("viewer.components.Edit",{
         var me =this;
         featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution() * 4,layer, function (features){
             me.featuresReceived(features);
-        },this.failed);
+        },function(msg){
+            me.failed(msg);});
     },
     featuresReceived : function (features){
         if(features.length == 1){

@@ -46,7 +46,8 @@ Ext.define ("viewer.components.tools.StreetView",{
         this.iconUrl_sel= contextPath+"/viewer-html/components/resources/images/streetview/streetview_down.png";
         this.iconUrl_dis= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
         
-        this.toolMapClick = Ext.create ("viewer.components.tools.ToolMapClick",{
+        this.toolMapClick = this.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name,
             handler:{
                 fn: this.mapClicked,

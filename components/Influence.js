@@ -49,7 +49,8 @@ Ext.define ("viewer.components.Influence",{
         this.removeButton=this.form.getChildByElement(this.name+"_remove")
         this.removeButton.setVisible(false);
         //this.initConfig(conf);        
-        this.toolMapClick = Ext.create ("viewer.components.tools.ToolMapClick",{
+        this.toolMapClick = this.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name,
             handler:{
                 fn: this.mapClicked,

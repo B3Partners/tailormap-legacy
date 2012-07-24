@@ -19,22 +19,20 @@
 /**
  * Creates a JSButton with the given configuration
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
- */
-Ext.define ("viewer.components.tools.ToolMapClick",{
-    extend: "viewer.viewercontroller.flamingo.FlamingoTool",
-    id: null,
-    config:{
-        name: "ToolMapClick"
-    },
+ */ 
+Ext.define ("viewer.viewercontroller.flamingo.ToolMapClick",{
+    extend: "viewer.viewercontroller.controller.ToolMapClick",
+    enabledEvents : null,
     constructor: function (conf){              
-        viewer.components.tools.ToolMapClick.superclass.constructor.call(this, conf);
+        viewer.viewercontroller.flamingo.ToolMapClick.superclass.constructor.call(this, conf);
         this.visible=false;
         this.id = conf.id + "_toolMapClick";
+        this.enabledEvents = new Object();
         this.initConfig(conf);
         this.mapComponent = this.viewerController.mapComponent;
         this.frameworkObject = this.viewerController.mapComponent.viewerObject;
         this.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.handler.scope);
-        
+        //this.mixins.flamingoTool.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.handler.scope);
         this.addTool();
         //this.viewerController.mapComponent.addTool(this);
         return this;
@@ -57,5 +55,22 @@ Ext.define ("viewer.components.tools.ToolMapClick",{
     deactivateTool : function(){
         this.frameworkObject.callMethod(this.id,"deactivate");
         // TODO make sure the toolmapclick is deactivated. Even if there is no other tool selected.
+    },
+    
+    /**
+     * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
+     * so flamingo is allowed to broadcast the event.
+     */
+    addListener : function(event,handler,scope){
+        viewer.viewercontroller.flamingo.ToolMapClick.superclass.addListener.call(this,event,handler,scope);
+        //enable flamingo event broadcasting
+        var flamEvent=this.viewerController.mapComponent.eventList[event];
+        if (flamEvent!=undefined){
+            //if not enabled yet, enable
+            if (this.enabledEvents[flamEvent]==undefined){
+                this.frameworkObject.callMethod(this.viewerController.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                this.enabledEvents[flamEvent]=true;
+            }
+        }     
     }
 });

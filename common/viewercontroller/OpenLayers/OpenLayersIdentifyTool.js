@@ -7,9 +7,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersIdentifyTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
     olMap: null,
     constructor : function (conf,frameworkTool){
-        if (conf.type!=viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO){
-            Ext.Error.raise({msg: "OpenLayersIdentifyTool.constructor(): A OpenLayersIdentifyTool needs to be of type: Tool.GET_FEATURE_INFO"});
-        }
         viewer.viewercontroller.openlayers.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
