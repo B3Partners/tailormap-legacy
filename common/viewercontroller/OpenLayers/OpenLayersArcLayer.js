@@ -62,15 +62,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
         return this.options["mapservice"];
     },
     getLayers : function(){
-        return this.options["visibleids"];
-    },
-    setMaptips: function(maptips){
-       // viewer.viewercontroller.flamingo.FlamingoArcLayer.superclass.setMaptips.call(this,maptips);        
-        this.passMaptips();
-    },
-    passMaptips: function(){
-        //this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
-    },    
+        return this.options["layers"];
+    }, 
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */

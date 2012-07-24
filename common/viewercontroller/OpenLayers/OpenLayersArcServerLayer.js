@@ -25,7 +25,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersArcLayer",
     constructor: function(config){
         viewer.viewercontroller.openlayers.OpenLayersArcServerLayer.superclass.constructor.call(this, config);        
-        this.frameworkLayer = new OpenLayers.Layer.ArcGIS93Rest(this.name,this.url+"/export",{});
+        this.frameworkLayer = new OpenLayers.Layer.ArcGIS93Rest(this.name,this.url+"/export",{
+            layers: "show: "+config.layers,
+            transparent: 'true'
+        });
     }   
-        
 });
