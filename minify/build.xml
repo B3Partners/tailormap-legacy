@@ -78,6 +78,7 @@
             <file name="OpenLayersLayer.js"/>
 			<file name="OpenLayersArcLayer.js"/>
 			<file name="OpenLayersArcIMSLayer.js"/>
+			<file name="OpenLayersArcServerLayer.js"/>            
             <file name="OpenLayersWMSLayer.js"/>
             <file name="OpenLayersVectorLayer.js"/>
             <file name="OpenLayersImageLayer.js"/>
