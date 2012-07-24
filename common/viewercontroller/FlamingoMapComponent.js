@@ -93,7 +93,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     createWMSLayer : function(name, url,ogcParams,options,viewerController){
         var object=new Object();
         object["name"]=name;
-        object["url"]=url;
+        object["url"]=url;    
+        object.timeout= 30;
+        object.retryonerror= 1;
+        object.initService=false;
+        
         var ide=null;
         for (var key in ogcParams){
             object[key]=ogcParams[key];
@@ -129,12 +133,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         return Ext.create("viewer.viewercontroller.flamingo.FlamingoTilingLayer",options);
     },
     createArcConfig: function(name,url,options,viewerController){
-        /*var object=new Object();
-        object["name"]=name;
-        object["server"]=server;
-        object["servlet"]=servlet;
-        object["mapservice"]=mapservice;*/
-       
         var server = url.substring(0,url.indexOf("/",7));
         var servlet;
         if(url.indexOf("?") != -1){
@@ -152,6 +150,9 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         options.name=name;
         options.server=server;
         options.servlet=servlet;
+        options.timeout= 30;
+        options.retryonerror= 1;
+        options.initService=false;
         var config ={
             id: ide,
             options: options,
@@ -192,11 +193,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         config.frameworkLayer = this.viewerObject
         return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
-    /**
-     * Create a tool that is useable in Flamingo-mc
-     * @See MapComponent.createTool
-     * @param toolComponent the toolcomponent that must be created in flamingo as a useable tool 
-     */
+    /** @See MapComponent.createTool
+    * @param conf the configuration, containing:
+    * @param conf.id the id of the toolmapclick
+    * @param conf.handler.fn The function to be called
+    * @param conf.handler.scope The scope in which the function has to be called
+    * @param conf.viewerController The viewercontrollerreference */
     createTool: function (conf){   
         if (Ext.isEmpty(conf.listenTo)){
             conf.listenTo=this.getMap().getId();
@@ -207,13 +209,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             this.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, this.getMap(), options["handlerBeforeGetFeatureHandler"]);
             this.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, this.getMap(), options["handlerGetFeatureHandler"]);
         }else */
-        if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){
-           /* @See MapComponent.createTool
-            * @param conf the configuration, containing:
-            * @param conf.id the id of the toolmapclick
-            * @param conf.handler.fn The function to be called
-            * @param conf.handler.scope The scope in which the function has to be called
-            * @param conf.viewerController The viewercontrollerreference */
+        if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){           
             tool = Ext.create ("viewer.viewercontroller.flamingo.ToolMapClick",conf);
         }else{
              tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);

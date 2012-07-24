@@ -71,13 +71,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     passMaptips: function(){
         //this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
     },    
-    setVisible : function (visible){
-       /* this.visible = visible;
-        if(visible){
-            this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "show");
-        }else{
-            this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "hide");
-        }*/
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    setVisible: function(vis){
+        this.mixins.openLayersLayer.setVisible.call(this,vis);
     },
     getLegendGraphic: function (){
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");

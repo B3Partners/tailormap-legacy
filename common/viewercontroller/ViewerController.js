@@ -540,11 +540,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var service = this.app.services[appLayer.serviceId];
         var layer = service.layers[appLayer.layerName];
         var options={
-            timeout: 30,
-            retryonerror: 1,
-            ratio: 1,
             id: id,
-            initService: false
+            ratio: 1
         };
 
         var layerObj = null;
@@ -576,7 +573,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,service.url, options,this);
             }else{                
                 options.type= "ArcGIS";
-                options.hiddenids = "#ALL#";
+                //options.hiddenids = "#ALL#";
                 layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);                
             }
         }else if (service.protocol == "tiled"){

@@ -29,15 +29,19 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     getName : function (){
         Ext.Error.raise({msg: "ArcLayer.getName() Not implemented! Must be implemented in sub-class"});
     },
+    //TODO: remove Not for all arclayers!
     getServer :function (){
         Ext.Error.raise({msg: "ArcLayer.getServer() Not implemented! Must be implemented in sub-class"});
     },
+    //TODO: remove Not for all arclayers!
     getService : function (){
         Ext.Error.raise({msg: "ArcLayer.getService() Not implemented! Must be implemented in sub-class"});
     },
+    //TODO: remove Not for all arclayers!
     getServlet : function (){
         Ext.Error.raise({msg: "ArcLayer.getServlet() Not implemented! Must be implemented in sub-class"});
     },
+    //TODO: remove Not for all arclayers!
     getMapservice : function (){
         Ext.Error.raise({msg: "ArcLayer.getMapservice() Not implemented! Must be implemented in sub-class"});
     },

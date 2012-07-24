@@ -170,6 +170,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return arcIMS;
     },
     /**
+     *see @link MapComponent.createArcServerLayer
+     */
+    createArcServerLayer : function(name,url,options,viewerController){
+        options.name=name;
+        options.url=url;
+        options.viewerController=viewerController;
+        var arcServer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",options);
+        return arcServer;
+    },
+    /**
      *See @link MapComponent.createTMSLayer
      */
     createImageLayer : function (name,url, bounds){
