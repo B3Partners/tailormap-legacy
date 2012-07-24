@@ -85,10 +85,10 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     * @param id the id of the layer
     * @param name the showable name of the layer
     * @param url the url to the tms service
-    * @param options extra options for this TMS layer
-    * @returns Returns the ArcIMSLayer
+    * @param options extra options for this layer
+    * @returns Returns the ArcServerLayer
     */
-    createArcServerLayer: function(){
+    createArcServerLayer : function(name,url,options){
         Ext.Error.raise({msg: "MapComponent.createArcServerLayer needs te be implemented in the sub-class"});
     },   
     /**

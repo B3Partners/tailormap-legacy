@@ -568,28 +568,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
                 
-        }else if(service.protocol == "arcims" || service.protocol == "arcgis"){
-            // Process the url so the MapComponent can handle it
-            var url = service.url;
-            var server = url.substring(0,url.indexOf("/",7));
-            var servlet;
-            if(url.indexOf("?") != -1){
-                servlet = url.substring(url.indexOf("/",7)+1, url.indexOf("?"));
-            }else{
-                servlet = url.substring(url.indexOf("/",7)+1);
-            }
-            // Make arcIms specific options
-            options.visibleids = appLayer.layerName;
-            if (layer.queryable){
-                options.identifyids= layer.name;
-            }
+        }else if(service.protocol == "arcims" || service.protocol == "arcgis"){            
+            options.layers= layer.name;
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
-                layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,server,servlet,service.serviceName, options,this);
+                options.mapservice=service.serviceName;
+                layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,service.url, options,this);
             }else{                
                 options.type= "ArcGIS";
-                //options.hiddenids = "#ALL#";
-                layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,server,servlet,null, options,this);                
+                options.hiddenids = "#ALL#";
+                layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);                
             }
         }else if (service.protocol == "tiled"){
             var res=layer.resolutions.split(",");

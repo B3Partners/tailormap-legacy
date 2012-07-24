@@ -128,18 +128,30 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         options.type=options.protocol;
         return Ext.create("viewer.viewercontroller.flamingo.FlamingoTilingLayer",options);
     },
-    createArcConfig: function(name,server,servlet,mapservice,options,viewerController){
+    createArcConfig: function(name,url,options,viewerController){
         /*var object=new Object();
         object["name"]=name;
         object["server"]=server;
         object["servlet"]=servlet;
         object["mapservice"]=mapservice;*/
+       
+        var server = url.substring(0,url.indexOf("/",7));
+        var servlet;
+        if(url.indexOf("?") != -1){
+            servlet = url.substring(url.indexOf("/",7)+1, url.indexOf("?"));
+        }else{
+            servlet = url.substring(url.indexOf("/",7)+1);
+        }
+        // Make flamingo ArcServer specific options
+        options.visibleids = options.layers;
+        /*if (layer.queryable){
+            options.identifyids= layer.name;
+        }        */
         var ide=options.id;
         delete options.id;
         options.name=name;
         options.server=server;
         options.servlet=servlet;
-        options.mapservice=mapservice;
         var config ={
             id: ide,
             options: options,
@@ -148,14 +160,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         };
         return config;
     },
-    createArcIMSLayer : function(name,server,servlet,mapservice,options,viewerController){
-        var config=this.createArcConfig(name,server,servlet,mapservice,options,viewerController);
+    //createArcIMSLayer : function(name,server,servlet,mapservice,options,viewerController){
+    createArcIMSLayer: function(name,url,options,viewerController){
+        var config=this.createArcConfig(name,url,options,viewerController);
         return new viewer.viewercontroller.flamingo.FlamingoArcIMSLayer(config);
     },
-    createArcServerLayer : function(name,server,servlet,mapservice,options,viewerController){    
-        var newMapservice= servlet.substring(21,servlet.toLowerCase().indexOf("/mapserver"));
-        mapservice=newMapservice;
-        var config=this.createArcConfig(name,server,servlet,mapservice,options,viewerController);
+    createArcServerLayer : function(name,url,options,viewerController){            
+        var config=this.createArcConfig(name,url,options,viewerController);
+        options.mapservice=options.servlet.substring(21,options.servlet.toLowerCase().indexOf("/mapserver"));        
+        
         //xxx for REST remove the next line.
         delete config.options.servlet;        
         config.options.esriArcServerVersion="9.3";

@@ -106,13 +106,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     passMaptips: function(){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
     },    
-    setVisible : function (visible){
-        this.visible = visible;
-        if(visible){
-            this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "show");
-        }else{
-            this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "hide");
-        }
+    setVisible : function (vis){
+        this.mixins.flamingoLayer.setVisible.call(this,vis);
     },
     getLegendGraphic: function (){
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
