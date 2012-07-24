@@ -59,10 +59,10 @@ Ext.define ("viewer.components.Influence",{
         });
         
         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
-            id: this.name + 'VectorLayer',
             name: this.name + 'VectorLayer',
             geometrytypes:["Polygon"],
             showmeasures:false,
+            viewerController: this.viewerController,
             editable: true,
             style: {
                 fillcolor: "0xFF0000",

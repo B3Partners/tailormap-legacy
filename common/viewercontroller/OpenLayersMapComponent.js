@@ -667,3 +667,4 @@ function doGetFeatureRequest(clickPosition, options) {
         }
     }
 }
+
