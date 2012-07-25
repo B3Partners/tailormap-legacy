@@ -554,7 +554,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 srs: "EPSG:28992",
                 version: "1.1.1",
                 layers:layer.name,
-                visible: false,
+                visible: appLayer.checked,
                 styles: "",
                 format: "image/png",
                 transparent: true,
