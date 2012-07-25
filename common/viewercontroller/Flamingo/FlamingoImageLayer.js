@@ -27,6 +27,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
     },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoImageLayer.superclass.constructor.call(this, config);
+        this.mixins.flamingoLayer.constructor.call(this,config);
         this.initConfig(config);
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
         return this;
@@ -83,5 +84,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
-    }    
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
+     */
+    addListener : function(event,handler,scope){
+        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
+    } 
 });

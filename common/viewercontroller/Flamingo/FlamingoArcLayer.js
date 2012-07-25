@@ -28,6 +28,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoArcLayer.superclass.constructor.call(this, config);
+        this.mixins.flamingoLayer.constructor.call(this,config);
         this.initConfig(config);
         return this;
     },
@@ -130,5 +131,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    },
+    addListener : function(event,handler,scope){
+        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
     }
 });

@@ -23,10 +23,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
             config.labelPropertyName = "label";
         }
         viewer.viewercontroller.flamingo.FlamingoVectorLayer.superclass.constructor.call(this, config);
+        this.mixins.flamingoLayer.constructor.call(this,config);
         this.initConfig(config);   
         this.id = config.name;
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
-        this.enabledEvents=new Object();
         return this;
     },
     
@@ -210,5 +210,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     },
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
+     */
+    addListener : function(event,handler,scope){
+        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
     }
 });

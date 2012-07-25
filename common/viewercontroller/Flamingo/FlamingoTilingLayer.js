@@ -36,6 +36,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      */
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoTilingLayer.superclass.constructor.call(this, config);
+        this.mixins.flamingoLayer.constructor.call(this,config);
         
         return this;
     },
@@ -107,6 +108,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
+     */
+    addListener : function(event,handler,scope){
+        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
     }
 });
 

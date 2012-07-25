@@ -11,6 +11,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
     constructor: function(config){
         viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.constructor.call(this, config);
+        this.mixins.flamingoLayer.constructor.call(this,config);
         this.initConfig(config);
         return this;
     },
@@ -124,5 +125,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
+     */
+    addListener : function(event,handler,scope){
+        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
     }
 });

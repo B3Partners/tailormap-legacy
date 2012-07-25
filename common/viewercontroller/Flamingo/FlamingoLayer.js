@@ -20,8 +20,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         if((config.id).indexOf(":") != -1){
             config.id = (config.id).replace(/:/g,'_');
         }
-        viewer.viewercontroller.flamingo.FlamingoLayer.superclass.constructor.call(this, config);
-        this.initConfig(config);
         this.enabledEvents=new Object();
         return this;
     },
