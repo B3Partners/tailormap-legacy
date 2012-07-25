@@ -16,9 +16,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     constructor :function (config){
         if (config.id){
             config.id=""+config.id;
-        }
-        if((config.id).indexOf(":") != -1){
-            config.id = (config.id).replace(/:/g,'_');
+            if((config.id).indexOf(":") != -1){
+                config.id = (config.id).replace(/:/g,'_');
+            }
         }
         this.enabledEvents=new Object();
         return this;
