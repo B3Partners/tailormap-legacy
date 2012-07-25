@@ -122,24 +122,30 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 }
 
 .olControlPanel .olControlDragPanItemActive {
-    background-image: url("/viewer/viewer-html/common/openlayers/theme/default/img/pan_on.png");
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/pan_on.png");
 }
 .olControlPanel .olControlDragPanItemInactive {
-    background-image: url("/viewer/viewer-html/common/openlayers/theme/default/img/pan_off.png");
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/pan_off.png");
 }
 
 
 .olControlPanel .olControlZoomBoxItemInactive {    
-    background-image: url("/viewer/viewer-html/common/openlayers/theme/default/img/zoom_box_off.png");
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/zoom_box_off.png");
 }
 .olControlPanel .olControlZoomBoxItemActive {    
-    background-image: url("/viewer/viewer-html/common/openlayers/theme/default/img/zoom_box_on.png");
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/zoom_box_on.png");
 }
 .olControlPanel .olControlZoomOutItemActive {    
-    background-image: url("/viewer/viewer-html/common/openlayers/theme/default/img/zoom_out_on.png");
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/zoom_out_on.png");
 }
 .olControlPanel .olControlZoomOutItemInactive {    
-    background-image: url("/viewer/viewer-html/common/openlayers/theme/default/img/zoom_out_off.png");
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/zoom_out_off.png");
+}
+.olControlPanel .olControlidentifyItemActive{
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/identify_on.png");
+}
+.olControlPanel .olControlidentifyItemInactive{
+    background-image: url("../../viewer-html/common/openlayers/theme/default/img/identify_off.png");
 }
 /*
 .olControlMeasureItemInactive{
