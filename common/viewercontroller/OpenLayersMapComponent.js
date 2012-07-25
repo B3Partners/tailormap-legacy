@@ -335,7 +335,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,
             this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
-            this.viewerController.logger.error("Tool MAP_CLICK not implemented (yet)");
+            return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
         }
