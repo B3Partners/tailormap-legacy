@@ -206,20 +206,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         return flFeature;
     },
     /**
-     * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
-     * so flamingo is allowed to broadcast the event.
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
      */
-    addListener : function(event,handler,scope){
-        this.registerEvent.call(this,event,handler,scope);
-        //enable flamingo event broadcasting
-        var flamEvent=this.map.mapComponent.eventList[event];
-        if (flamEvent!=undefined){
-            //if not enabled yet, add it
-            if (this.enabledEvents[flamEvent]==undefined){
-               this.map.getFrameworkMap().callMethod(this.map.mapComponent.getId(),"addAllowExternalInterface",this.map.editMapId+"."+flamEvent);
-               this.enabledEvents[flamEvent]=true;
-            }
-        }
+    addListener: function(event,handler,scope){
+        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
     },
     fire : function (event,options){
         this.fireEvent(event,this,options);

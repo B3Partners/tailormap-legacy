@@ -105,10 +105,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     },
     passMaptips: function(){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
-    },    
-    setVisible : function (vis){
-        this.mixins.flamingoLayer.setVisible.call(this,vis);
-    },
+    },   
     getLegendGraphic: function (){
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
         return null;
@@ -124,11 +121,20 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     },
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
+    }, 
+    setVisible : function (vis){
+        this.mixins.flamingoLayer.setVisible.call(this,vis);
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
+     */
+    addListener: function(event,handler,scope){
+        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
     }
 });
