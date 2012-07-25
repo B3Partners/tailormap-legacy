@@ -316,12 +316,22 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.addListener.call(this,event,handler,scope);
         //enable flamingo event broadcasting
         var flamEvent=this.mapComponent.eventList[event];
+        if(Ext.isArray(flamEvent)){
+            for ( var i = 0 ; i < flamEvent.length ; i++){
+                this.addExternalInterface(flamEvent[i]);
+            }
+        }else{
+            this.addExternalInterface(flamEvent);
+        }
+    },
+    
+    addExternalInterface : function (flamEvent){
         if (flamEvent!=undefined){
             //if not enabled yet, enable
             if (this.enabledEvents[flamEvent]==undefined){
                 this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
                 this.enabledEvents[flamEvent]=true;
             }
-        }     
+        }
     }
 });

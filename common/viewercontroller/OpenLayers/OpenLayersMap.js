@@ -6,7 +6,6 @@
  */
 Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     extend: "viewer.viewercontroller.controller.Map",
-    frameworkMap:null,
     layersLoading : null,
     utils:null,
     config:{
@@ -232,24 +231,27 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             this.markerLayer.removeMarker(this.markers[markerName]);
         }
     },
-    registerEvent : function(event,handler,scope){
+    addListener : function(event,handler,scope){
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
             }
-            /*
-             *Don't know what this does, so commented out. Seems to be working fine without it, but maybe it's usefull
-             *if(this.getFrameworkMap().eventListeners == null){
-                this.getFrameworkMap().eventListeners = new Object();
-            }*/
-            this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
-            this.addListener(event, handler, scope);
+            this.registerToMap(olSpecificEvent);
+            viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
         }else{
             this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
     },
 
+    registerToMap : function (specificEvent){
+        if(this.enabledEvents[specificEvent] == null ||this.enabledEvents[specificEvent] == undefined){
+            this.enabledEvents[specificEvent] = true;
+            
+            this.frameworkMap.events.register(specificEvent, this, this.handleEvent);
+        }
+    },
+    
     handleEvent : function(args){
         var event = args.type;
         var options={};
@@ -258,7 +260,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
         }else if (genericEvent== viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED){
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
-            options.visible=args.layer.visible;
+            options.visible=args.layer.visibility;
         }else{
             this.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
         }

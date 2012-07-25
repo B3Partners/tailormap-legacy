@@ -59,6 +59,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                    = "onActivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                  = "onDeactivate";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_SERVICE_INFO]            = "onGetServiceInfo";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]    = ["onShowLayer","onHideLayer"];
     },
     
     /**
@@ -557,6 +558,14 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                     }
                 }
             }
+        }else if(event == "onHideLayer" || event == "onShowLayer"){
+            var layer = this.getObject(component[1]);
+            var map = this.getMap();
+            var visible = event == "onShowLayer";
+            event = viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED;
+            component = new Object();
+            component.layer = layer;
+            component.visible = visible;
         }else{
             // Translate the specific name to the generic name. 
             event = this.getGenericEventName(event);
