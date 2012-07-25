@@ -220,7 +220,126 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var type = conf.type;
         var id = conf.id;
         var options = {};
-        if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE){
+
+        if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE      ){//0
+            this.viewerController.logger.error("Tool DRAW_FEATURE not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
+            this.viewerController.logger.error("Tool NAVIGATION_HISTORY not implemented (yet)");
+        }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
+            return new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.ZoomBox(options))
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
+            this.viewerController.logger.error("Tool ZOOMOUT_BOX not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.PAN){
+            return new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.DragPan(options))
+        }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
+            this.viewerController.logger.error("Tool SUPERPAN not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.BUTTON){//6,
+            this.viewerController.logger.error("Tool BUTTON not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.TOGGLE){//7,
+            this.viewerController.logger.error("Tool TOGGLE not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.CLICK){//8,
+            this.viewerController.logger.error("Tool CLICK not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.LOADING_BAR){//9,
+            this.viewerController.logger.error("Tool LOADING_BAR not implemented (yet)");
+        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
+            if (!options){
+                options=new Object();
+            }//olControlidentify
+            options["displayClass"]="olControlidentify";
+            options["type"]=OpenLayers.Control.TYPE_TOOL;
+            var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control(options));
+            
+            //this.getMap().setGetFeatureInfoControl(identifyTool);
+            return identifyTool;
+        }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
+            if (!options){
+                options=new Object();
+            }
+            options["persist"]=true;
+            options["callbacks"]={
+                modify: function (evt){
+                    //make a tooltip with the measured length
+                    if (evt.parent){
+                        var measureValueDiv=document.getElementById("olControlMeasureValue");
+                        if (measureValueDiv==undefined){
+                            measureValueDiv=document.createElement('div');
+                            measureValueDiv.id="olControlMeasureValue";
+                            measureValueDiv.style.position='absolute';
+                            this.map.div.appendChild(measureValueDiv);
+                            measureValueDiv.style.zIndex="10000";
+                            measureValueDiv.className="olControlMaptip";
+                            var measureValueText=document.createElement('div');
+                            measureValueText.id='olControlMeasureValueText';
+                            measureValueDiv.appendChild(measureValueText);
+                        }
+                        var px= this.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
+                        measureValueDiv.style.top=px.y+"px";
+                        measureValueDiv.style.left=px.x+10+'px'
+                        measureValueDiv.style.display="block";
+                        var measureValueText=document.getElementById('olControlMeasureValueText');
+                        var bestLengthTokens=this.getBestLength(evt.parent);
+                        measureValueText.innerHTML= bestLengthTokens[0].toFixed(3)+" "+bestLengthTokens[1];
+                    }
+                }
+            }
+
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool({
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+            },new OpenLayers.Control.Measure( OpenLayers.Handler.Path, options));
+            measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
+                var measureValueDiv=document.getElementById("olControlMeasureValue");
+                if (measureValueDiv){                
+                    measureValueDiv.style.display="none";
+                }
+                this.cancel();
+            });
+            measureTool.getFrameworkTool().events.register('deactivate',measureTool.getFrameworkTool(),function(){
+                var measureValueDiv=document.getElementById("olControlMeasureValue");
+                if (measureValueDiv){
+                    measureValueDiv.style.display="none";
+                }
+            });
+            return measureTool;
+        }else if (type==viewer.viewercontroller.controller.Tool.SCALEBAR){//12,
+            this.viewerController.logger.error("Tool SCALEBAR not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
+            this.viewerController.logger.error("Tool ZOOM_BAR not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.LAYER_SWITCH){//14,
+            this.viewerController.logger.error("Tool LAYER_SWITCH not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
+            this.viewerController.logger.error("Tool DEFAULT not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_POINT){//16,
+            this.viewerController.logger.error("Tool DRAW_FEATURE_POINT not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_LINE){//17,
+            this.viewerController.logger.error("Tool DRAW_FEATURE_LINE not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_POLYGON){//18,
+            this.viewerController.logger.error("Tool DRAW_FEATURE_POLYGON not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT){//19,
+            this.viewerController.logger.error("Tool PREVIOUS_EXTENT not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//20,
+            this.viewerController.logger.error("Tool NEXT_EXTENT not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,
+            this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
+            this.viewerController.logger.error("Tool MAP_CLICK not implemented (yet)");
+        }else{
+            this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
+        }
+        /*if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE){
             //TODO: Deze crap weg! Afzonderlijke buttons aanmaken en niet in de controller plaatsen! Maar in lijst van tools
             //  var container = params["container"];
             var layer=options["layer"];
@@ -378,8 +497,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if(type == viewer.viewercontroller.controller.Tool.MAP_CLICK){
             return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
         }else{
-            throw ("Type >" + type + "< not recognized. Please use existing type.");
-        }
+            this.viewerController.logger.warning("Type >" + type + "< not recognized. Please use existing type.");
+        }*/
     },
     activateGetFeatureControls : function(){
         var layers=this.getMap().getAllWMSLayers();
@@ -521,7 +640,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 object.registerEvent(event,handler,scope);
             }
         }else{
-            this.viewerController.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
+            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
     },
     /**
