@@ -171,7 +171,15 @@ public class ArcGISDataStore extends ContentDataStore {
                 String servicesUrl = originalUrl.toString().substring(0, i) + "/rest/services";
                 this.url = new URL(servicesUrl);
                 JSONObject servicesInfo = getServerJSONResponse("?f=json");
-                currentVersion = (String)servicesInfo.get("currentVersion");
+                Object vObject = servicesInfo.get("currentVersion");
+                if (vObject instanceof String){
+                    currentVersion=(String)vObject;
+                //if 10.01 the version number is a long with value: 1001
+                }else if (vObject instanceof Long && (Long)vObject == 1001){
+                    currentVersion="10.01";
+                }else{
+                    currentVersion=vObject.toString();
+                }
                 currentMajorVersion = Integer.parseInt(currentVersion.split("\\.")[0]);            
             } catch(Exception e) {
                 throw new IOException("Error finding out the currentVersion of ArcGIS REST service at " + url.toString(), e);
