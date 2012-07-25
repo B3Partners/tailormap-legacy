@@ -25,8 +25,15 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
         this.url = config.options.url;  
     },
+    
     getLegendGraphic : function () {
-        Ext.Error.raise({msg: "WMSLayer.getLegendGraphic() Not implemented! Must be implemented in sub-class"});
+        var url = this.url;
+        var character = url.indexOf("?") == -1 ? "?" : "&";
+        if(url.substring(url.length) != character){
+            url += character;
+        }
+        var request = url + "request=GetLegendGraphic&layer="+this.getAppLayerName()+"&version=1.1.1&format=image/png";
+        return request;
     }
 });
 

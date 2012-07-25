@@ -64,15 +64,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         var fl = this.getFrameworkLayer();
         fl.callMethod(this.map.getId() + "_" + this.getId(),"setConfig",this.toXML() );
     },
-    getLegendGraphic : function () {
-        var url = this.url;
-        var character = url.indexOf("?") == -1 ? "?" : "&";
-        if(url.substring(url.length) != character){
-            url += character;
-        }
-        var request = url + "request=GetLegendGraphic&layer="+this.getAppLayerName()+"&version=1.1.1&format=image/png";
-        return request;
-    },
     setMaptips: function(maptips){
         viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.setMaptips.call(this,maptips);        
         this.passMaptips();
