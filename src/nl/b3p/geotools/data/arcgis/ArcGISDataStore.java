@@ -170,17 +170,27 @@ public class ArcGISDataStore extends ContentDataStore {
                 int i = originalUrl.toString().indexOf("/rest/services");
                 String servicesUrl = originalUrl.toString().substring(0, i) + "/rest/services";
                 this.url = new URL(servicesUrl);
+                
+                // XXX Send "Accept-Language: en" when server has Dutch regional settings
+                // otherwise server sends currentVersion: 1001 instead of 10.01
+
+                // $ wget -q  -O - "http://<server>.nl/ArcGIS/rest/services?f=pjson" | head -n 1
+                // {"currentVersion" : 1001, 
+                // $ wget -q --header="Accept-Language: en" -O - "http://<server>.nl/ArcGIS/rest/services?f=pjson" | head -n 1
+                // {"currentVersion" : 10.01, 
+
+                // XXX Not possible to send headers with GeoTools interface...
+                
                 JSONObject servicesInfo = getServerJSONResponse("?f=json");
+                
+                // ugly workaround
                 Object vObject = servicesInfo.get("currentVersion");
-                if (vObject instanceof String){
-                    currentVersion=(String)vObject;
-                //if 10.01 the version number is a long with value: 1001
-                }else if (vObject instanceof Long && (Long)vObject == 1001){
-                    currentVersion="10.01";
-                }else{
-                    currentVersion=vObject.toString();
+                currentVersion = vObject.toString();
+                if(vObject instanceof Long && (Long)vObject >= 1000) {
+                    currentMajorVersion = 10;
+                } else {
+                    currentMajorVersion = Integer.parseInt(currentVersion.split("\\.")[0]);            
                 }
-                currentMajorVersion = Integer.parseInt(currentVersion.split("\\.")[0]);            
             } catch(Exception e) {
                 throw new IOException("Error finding out the currentVersion of ArcGIS REST service at " + url.toString(), e);
             } finally {
