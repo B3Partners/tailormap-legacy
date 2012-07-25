@@ -321,12 +321,14 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     
     /**
      * Get the width of this component
+     * @return width in pixels.
      */
     getWidth : function (){
         Ext.Error.raise({msg: "MapComponent.getWidth() Not implemented! Must be implemented in sub-class"});
     },
     /**
      * Get the height of this component
+     * @return height in pixels.
      */    
     getHeight: function (){
         Ext.Error.raise({msg: "MapComponent.getHeight() Not implemented! Must be implemented in sub-class"});

@@ -739,10 +739,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             },100);
         }
     },    
+    /**
+     * @see viewer.viewercontroller.MapComponent#getWidth
+     */
     getWidth: function(){
         return this.viewerObject.callMethod(this.flamingoId,"getWidth");
-    },
-    
+    },    
+    /**
+     * @see viewer.viewercontroller.MapComponent#getHeight
+     */
     getHeight: function(){
         return this.viewerObject.callMethod(this.flamingoId,"getHeight");
     }

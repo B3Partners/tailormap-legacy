@@ -147,126 +147,130 @@ Ext.define ("viewer.components.Maptip",{
      * Handle the data that is returned.
      * @param options options that is given by the event
      */
-    onDataReturned: function(options){    
-        var browserZoomRatio = Ext.get(this.viewerController.layoutManager.mapId).getWidth() / this.viewerController.mapComponent.getWidth();
-        
-        if (browserZoomRatio!=1){            
-            options.y= Math.round(browserZoomRatio * (options.y));        
-            options.x= Math.round(browserZoomRatio * options.x);
-        }
-        
-        //if not enabled: stop
-        if (!this.enabled){
-            return;
-        }
-        //if the mouse is in the balloon, stop. Dont show new data.
-        if (this.balloon.isMouseOver()){
-            return;
-        }
-        //if position is not the last position remove content
-        if (this.lastPosition){
-            if (this.lastPosition.x != options.x ||
-                this.lastPosition.y != options.y){
-                this.balloon.setContent("");
+    onDataReturned: function(options){
+        try{
+            var browserZoomRatio = Ext.get(this.viewerController.layoutManager.mapId).getWidth() / this.viewerController.mapComponent.getWidth();
+
+            if (browserZoomRatio!=1){            
+                options.y= Math.round(browserZoomRatio * (options.y));        
+                options.x= Math.round(browserZoomRatio * options.x);
             }
-        }else{
-            this.lastPosition = new Object();
-        }
-        this.lastPosition.x = options.x;
-        this.lastPosition.y = options.y;
-        //alert(layer);
-        var me = this;
-        var data=options.data;        
-        var components=[];    
-        //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
-        if (data==null || data =="null" || data==undefined){
-            return;
-        }
-        for (var layerIndex in data){            
-            var layer=data[layerIndex];
-            if (layer.error){
-                this.viewerController.logger.error(layer.error);
+
+            //if not enabled: stop
+            if (!this.enabled){
+                return;
+            }
+            //if the mouse is in the balloon, stop. Dont show new data.
+            if (this.balloon.isMouseOver()){
+                return;
+            }
+            //if position is not the last position remove content
+            if (this.lastPosition){
+                if (this.lastPosition.x != options.x ||
+                    this.lastPosition.y != options.y){
+                    this.balloon.setContent("");
+                }
             }else{
-                var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
-                var layerName= appLayer.layerName;
-                for (var index in layer.features){
-                    var feature = layer.features[index];
-                    var featureDiv = new Ext.Element(document.createElement("div"));
-                    featureDiv.addCls("feature_summary_feature");
-                    featureDiv.id="f"+appLayer.serviceId+"_"+layerName+"_"+index;
-                    //left column
-                    var leftColumnDiv = new Ext.Element(document.createElement("div"));
-                    leftColumnDiv.addCls("feature_summary_leftcolumn");
-                        //title
-                        if (appLayer.details && appLayer.details["summary.title"] ){
-                            var titleDiv = new Ext.Element(document.createElement("div"));
-                            titleDiv.addCls("feature_summary_title");
-                            titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature));
-                            leftColumnDiv.appendChild(titleDiv);
-                        }
-                        //description
-                        if (appLayer.details && appLayer.details["summary.description"]){
-                            var descriptionDiv = new Ext.Element(document.createElement("div"));
-                            descriptionDiv.addCls("feature_summary_description");
-                            var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature);
-                            //remove html layout
-                            var desc = desc.replace(/(<([^>]+)>)/ig,"");
-                            if (desc && desc.length > this.maxDescLength){
-                                desc=desc.substr(0, this.maxDescLength)+"...";
+                this.lastPosition = new Object();
+            }
+            this.lastPosition.x = options.x;
+            this.lastPosition.y = options.y;
+            //alert(layer);
+            var me = this;
+            var data=options.data;        
+            var components=[];    
+            //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
+            if (data==null || data =="null" || data==undefined){
+                return;
+            }
+            for (var layerIndex in data){            
+                var layer=data[layerIndex];
+                if (layer.error){
+                    this.viewerController.logger.error(layer.error);
+                }else{
+                    var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
+                    var layerName= appLayer.layerName;
+                    for (var index in layer.features){
+                        var feature = layer.features[index];
+                        var featureDiv = new Ext.Element(document.createElement("div"));
+                        featureDiv.addCls("feature_summary_feature");
+                        featureDiv.id="f"+appLayer.serviceId+"_"+layerName+"_"+index;
+                        //left column
+                        var leftColumnDiv = new Ext.Element(document.createElement("div"));
+                        leftColumnDiv.addCls("feature_summary_leftcolumn");
+                            //title
+                            if (appLayer.details && appLayer.details["summary.title"] ){
+                                var titleDiv = new Ext.Element(document.createElement("div"));
+                                titleDiv.addCls("feature_summary_title");
+                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature));
+                                leftColumnDiv.appendChild(titleDiv);
                             }
-                            descriptionDiv.insertHtml("beforeEnd",desc);
-                            leftColumnDiv.appendChild(descriptionDiv);
-                        }
-                        //link
-                        if (appLayer.details && appLayer.details["summary.link"]){
-                            var linkDiv = new Ext.Element(document.createElement("div"));
-                            linkDiv.addCls("feature_summary_link");
-                            linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>");
-                            leftColumnDiv.appendChild(linkDiv);
-                        }
-                        //detail
-                        var detailDiv = new Ext.Element(document.createElement("div"));
-                        detailDiv.addCls("feature_summary_detail");
-                        //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                        var detailElem=document.createElement("a");
-                        detailElem.href='javascript: void(0)';
-                        detailElem.feature=feature;
-                        detailElem.appLayer=appLayer;
-                        var detailLink = new Ext.Element(detailElem);
-                        detailLink.addListener("click",
-                            function (evt,el,o){ 
-                                me.showDetails(el.appLayer,el.feature);
-                            },
-                            this);
-                        detailLink.insertHtml("beforeEnd","Detail");
-                        detailDiv.appendChild(detailLink);
-                        leftColumnDiv.appendChild(detailDiv);
+                            //description
+                            if (appLayer.details && appLayer.details["summary.description"]){
+                                var descriptionDiv = new Ext.Element(document.createElement("div"));
+                                descriptionDiv.addCls("feature_summary_description");
+                                var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature);
+                                //remove html layout
+                                var desc = desc.replace(/(<([^>]+)>)/ig,"");
+                                if (desc && desc.length > this.maxDescLength){
+                                    desc=desc.substr(0, this.maxDescLength)+"...";
+                                }
+                                descriptionDiv.insertHtml("beforeEnd",desc);
+                                leftColumnDiv.appendChild(descriptionDiv);
+                            }
+                            //link
+                            if (appLayer.details && appLayer.details["summary.link"]){
+                                var linkDiv = new Ext.Element(document.createElement("div"));
+                                linkDiv.addCls("feature_summary_link");
+                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>");
+                                leftColumnDiv.appendChild(linkDiv);
+                            }
+                            //detail
+                            var detailDiv = new Ext.Element(document.createElement("div"));
+                            detailDiv.addCls("feature_summary_detail");
+                            //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
+                            var detailElem=document.createElement("a");
+                            detailElem.href='javascript: void(0)';
+                            detailElem.feature=feature;
+                            detailElem.appLayer=appLayer;
+                            var detailLink = new Ext.Element(detailElem);
+                            detailLink.addListener("click",
+                                function (evt,el,o){ 
+                                    me.showDetails(el.appLayer,el.feature);
+                                },
+                                this);
+                            detailLink.insertHtml("beforeEnd","Detail");
+                            detailDiv.appendChild(detailLink);
+                            leftColumnDiv.appendChild(detailDiv);
 
-                    featureDiv.appendChild(leftColumnDiv);
+                        featureDiv.appendChild(leftColumnDiv);
 
-                    var rightColumnDiv = new Ext.Element(document.createElement("div"));
-                    rightColumnDiv.addCls("feature_summary_rightcolumn");
-                        if (appLayer.details && appLayer.details["summary.image"]){
-                            var imageDiv = new Ext.Element(document.createElement("div"));
-                            imageDiv.addCls("feature_summary_image");
-                            imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>");
-                            rightColumnDiv.appendChild(imageDiv);
-                        }
+                        var rightColumnDiv = new Ext.Element(document.createElement("div"));
+                        rightColumnDiv.addCls("feature_summary_rightcolumn");
+                            if (appLayer.details && appLayer.details["summary.image"]){
+                                var imageDiv = new Ext.Element(document.createElement("div"));
+                                imageDiv.addCls("feature_summary_image");
+                                imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>");
+                                rightColumnDiv.appendChild(imageDiv);
+                            }
 
-                    featureDiv.appendChild(rightColumnDiv);
+                        featureDiv.appendChild(rightColumnDiv);
 
-                    components.push(featureDiv);
-                    
+                        components.push(featureDiv);
+
+                    }
                 }
             }
+            if (!Ext.isEmpty(components)){
+                var x= options.x;
+                var y= options.y;               
+                this.balloon.setPosition(x,y,true,browserZoomRatio);
+                this.balloon.addElements(components);
+                this.balloon.show();
+            } 
+        }catch(e){
+            this.viewerController.logger.error(e);
         }
-        if (!Ext.isEmpty(components)){
-            var x= options.x;
-            var y= options.y;               
-            this.balloon.setPosition(x,y,true,browserZoomRatio);
-            this.balloon.addElements(components);
-            this.balloon.show();
-        } 
     },
     /**
      * Handles the show details click.

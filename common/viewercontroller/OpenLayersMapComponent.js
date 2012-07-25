@@ -621,6 +621,26 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var tool = this.getTool(id);
         tool.getFrameworkTool().activate();
     },
+    /**
+     * @see viewer.viewercontroller.MapComponent#getWidth
+     */
+    getWidth: function(){
+        var m=this.getMap();
+        if(m){
+            return m.getWidth();
+        }
+        return null;
+    },
+    /**
+     * @see viewer.viewercontroller.MapComponent#getHeight
+     */
+    getHeight: function (){        
+        var m=this.getMap();
+        if(m){
+            return m.getWidth();
+        }
+        return null;
+    },
     /****************************************************************Event handling***********************************************************/
 
 
