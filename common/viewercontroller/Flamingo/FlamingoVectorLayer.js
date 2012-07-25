@@ -205,12 +205,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         }
         return flFeature;
     },
-    /**
-     * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
-     */
-    addListener: function(event,handler,scope){
-        this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
-    },
     fire : function (event,options){
         this.fireEvent(event,this,options);
     },

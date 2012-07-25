@@ -82,7 +82,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
      * so flamingo is allowed to broadcast the event.
      */
     addListener : function(event,handler,scope){
-      //  viewer.viewercontroller.flamingo.FlamingoLayer.superclass.addListener.call(this,event,handler,scope);
+       // viewer.viewercontroller.flamingo.FlamingoLayer.superclass.addListener.call(this,event,handler,scope);
         //enable flamingo event broadcasting
         var flamEvent=this.map.mapComponent.eventList[event];
         if (flamEvent!=undefined){
