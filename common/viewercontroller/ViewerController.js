@@ -572,8 +572,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 options.mapservice=service.serviceName;
                 layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,service.url, options,this);
             }else{                
-                options.type= "ArcGIS";
-                //options.hiddenids = "#ALL#";
+                options.type= "ArcGIS";                
                 layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);                
             }
         }else if (service.protocol == "tiled"){
