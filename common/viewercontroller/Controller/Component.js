@@ -25,6 +25,12 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         frameworkObject: null,
         type: -1
     },
+    /**
+     * @param config
+     * @param config.id the id of this component
+     * @param config.frameworkObject a reference to the implementing object
+     * @param config.type the type of the object (see statics)
+     */
     constructor: function (config){
         this.initConfig(config);
         return this;
