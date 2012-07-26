@@ -83,8 +83,6 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         /** @field */
         ON_GET_CAPABILITIES                   : "ON_REQUEST",
         /** @field */
-        ON_FEATURE_ADDED                      : "ON_FEATURE_ADDED",
-        /** @field */
         ON_REQUEST                            : "ON_REQUEST",
         /** @field */
         ON_LOADING_START                      : "ON_LOADING_START",
@@ -155,6 +153,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          *  Occurs when the active feature is changed. Note: Alse fired when the first point of a polygon is set, so the WKT may be incorrect
          */
         ON_ACTIVE_FEATURE_CHANGED             :  "ON_ACTIVE_FEATURE_CHANGED",
+        /** @field 
+         * Fired when a feature is completed or added to the vector layer. 
+         * @param object.layer The vectorlayer on which the event occured
+         * @param object.feature The feature which was added/completed
+         **/
+        ON_FEATURE_ADDED                      : "ON_FEATURE_ADDED",
         
         /**
          * @field

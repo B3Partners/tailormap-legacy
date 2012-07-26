@@ -10,6 +10,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     polygon:null,
     circle:null,
     modifyFeature:null,
+    enabledEvents: new Object(),
     mixins: {
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
@@ -17,11 +18,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         delete config.style;
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
-        
+        var me = this;
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("sketchstarted", this, this.featureModified);
+        this.frameworkLayer.events.register("featureadded", this, function (args){
+            me.onFeatureInsert(args.feature);
+            return true;
+        });
         
-        var me = this;
         this.frameworkLayer.onFeatureInsert = function(feature){
             me.onFeatureInsert(feature);
         };
@@ -92,7 +96,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.addFeatures(features);
     },
 
-
     addFeatures : function(features){
         var olFeatures = new Array();
         for(var i = 0 ; i < features.length ; i++){
@@ -114,20 +117,30 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             throw ("Feature type >" + type + "< not implemented!");
         }
     },
+    
     activeFeatureChanged : function (feature){
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
+    
     featureModified : function (evt){
         var featureObject = this.fromOpenLayersFeature(evt.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
+    
     onFeatureInsert : function (feature){
         this.point.deactivate();
         this.line.deactivate();
         this.polygon.deactivate();
+        this.editFeature(feature);
         var featureObject = this.fromOpenLayersFeature(feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,featureObject);
     },
+    
+    editFeature : function (feature){
+        this.modifyFeature.selectControl.unselectAll();
+        this.modifyFeature.selectControl.select(feature);
+    },
+    
     /**
      * Converts this feature to a OpenLayersFeature
      * @return The OpenLayerstype feature
@@ -147,5 +160,34 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     fromOpenLayersFeature : function(openLayersFeature){
         var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
         return feature;
+    },
+    
+    addListener : function (event, handler, scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+         if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            this.registerToLayer(olSpecificEvent);
+            viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.addListener.call(this,event,handler,scope);
+         }else{
+            this.viewerController.logger.warning("Event not listed in OpenLayersVectorLayer >"+ event + "<. The application  might not work correctly.");
+        }
+    },
+    
+    registerToLayer : function (specificEvent){
+          if(this.enabledEvents[specificEvent] == null ||this.enabledEvents[specificEvent] == undefined){
+            this.enabledEvents[specificEvent] = true;
+            
+            this.frameworkLayer.events.register(specificEvent, this, this.handleEvent);
+        }
+    },
+    
+    handleEvent : function (event){
+        var options = new Object();
+        options.layer = this.map.getLayerByOpenLayersId(event.element.id);
+        options.feature = this.fromOpenLayersFeature(event.feature);
+        var eventName = this.viewerController.mapComponent.getGenericEventName(event.type);
+        this.fireEvent(eventName,options);
     }
 });
