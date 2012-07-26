@@ -53,13 +53,13 @@ Ext.define ("viewer.components.ScreenPopup",{
             renderTo: Ext.getBody(),
             autoScroll: true
         };
-        if(this.details.position == 'fixed' && !isMobile) {
+        if(this.details.position == 'fixed' && !MobileDetect.isMobile()) {
             var wrapper = Ext.get('wrapper');
             config.x = parseInt(this.details.x) + wrapper.getX();
             config.y = parseInt(this.details.y) + wrapper.getY();
         }
         
-        if(isMobile) {
+        if(MobileDetect.isMobile()) {
             config.modal = true;
             config.width = '90%';
             config.height = '90%';
@@ -100,6 +100,12 @@ Ext.define ("viewer.components.ScreenPopup",{
             if(me.component) {
                 me.component.setButtonState('click', true);
             }
+            if(MobileDetect.isMobile()) {
+                // Resize the popup every time it is shown, because orientation might
+                // have changes since the previous show, which would result in incorrect
+                // rendering of the popups. Settimeout to make sure the window is loaded & ready
+                setTimeout(function() { me.component.resizeScreenComponent() }, 0);
+            }
         });
         return this;
     },
@@ -128,13 +134,13 @@ Ext.define ("viewer.components.ScreenPopup",{
         return this.popupWin.isVisible();
     },
 	resizePopup: function() {
-        if(isMobile) {
+        if(MobileDetect.isMobile()) {
     		// First set window size to 1px so it wont take any space
-    		this.popupWin.setSize('1px', '1px');
+            this.popupWin.setSize('1px', '1px');
     		// Then set size back to 90%/90% so the percentages are calculated correctly
     		this.popupWin.setSize('90%', '90%');
     		// doLayout on the window
-    		this.popupWin.doLayout();
+            this.popupWin.doLayout();
         }
 	}
 });
