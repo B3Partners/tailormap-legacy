@@ -333,7 +333,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     
                     var viewerType = "${viewerType}";
                     viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config);
-                    if(!MobileDetect.isMobile() || MobileDetect.isAndroid() || !window.onorientationchange) {
+                    if(!MobileDetect.isMobile() || MobileDetect.isAndroid() || window.onorientationchange === undefined) {
                         // Android devices seem to react better to window.resize than window.orientationchange, probably timing issue
                         Ext.EventManager.onWindowResize(function () {
                             viewerController.resizeComponents();
