@@ -64,9 +64,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     getActiveFeature : function(){
         var index = this.getFrameworkLayer().features.length - 1;
         var olFeature = this.getFrameworkLayer().features[index];
-        var featureObj = new Feature();
-        var feature = featureObj.fromOpenLayersFeature(olFeature);
-
+        var feature = this.fromOpenLayersFeature(olFeature);
         return feature;
     },
 
@@ -77,11 +75,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     getAllFeatures : function(){
         var olFeatures = this.getFrameworkLayer().features;
         var features = new Array();
-        var featureObj = new viewer.viewercontroller.controller.Feature();
         for(var i = 0 ; i < olFeatures.length;i++){
             var olFeature = olFeatures[i];
-            var feature = featureObj.fromOpenLayersFeature(olFeature);
-
+            var feature = this.fromOpenLayersFeature(olFeature);
             features.push(feature);
         }
         return features;
