@@ -80,6 +80,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     getType : function (){
         return this.mixins.openLayersLayer.getType.call(this);
     },
+    
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible

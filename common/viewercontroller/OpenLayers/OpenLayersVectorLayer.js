@@ -173,5 +173,31 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     fromOpenLayersFeature : function(openLayersFeature){
         var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
         return feature;
-    }    
+    },
+    
+    /******** overwrite functions to make use of the mixin functions **********/    
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    setVisible: function(vis){
+        this.mixins.openLayersLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
+     */
+    setAlpha: function (alpha){
+        this.mixins.openLayersLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
+     */
+    addListener: function (event,handler,scope){
+        this.mixins.openLayersLayer.addListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
+     */
+    removeListener: function (event,handler,scope){
+        this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
+    }
 });
