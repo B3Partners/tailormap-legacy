@@ -8,7 +8,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     point:null,
     line:null,
     polygon:null,
-    circle:null,
+    drawFeatureControls:null,
     modifyFeature:null,
     enabledEvents: new Object(),
     mixins: {
@@ -18,48 +18,43 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         delete config.style;
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
-        var me = this;
-        this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
-        this.frameworkLayer.events.register("sketchstarted", this, this.featureModified);
-        this.frameworkLayer.events.register("featureadded", this, function (args){
-            me.onFeatureInsert(args.feature);
-            return true;
-        });
         
-        this.frameworkLayer.onFeatureInsert = function(feature){
-            me.onFeatureInsert(feature);
-        };
+        // Make all drawFeature controls: the controls to draw features on the vectorlayer
         this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
-            displayClass: 'olControlDrawFeaturePoint',
-            handlerOptions: {
-                citeCompliant: false
-            }
+            displayClass: 'olControlDrawFeaturePoint'
         });
         this.line = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, {
-            displayClass: 'olControlDrawFeaturePath',
-            handlerOptions: {
-                citeCompliant: false
-            }
+            displayClass: 'olControlDrawFeaturePath'
         });
         this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
-            displayClass: 'olControlDrawFeaturePolygon',
-            handlerOptions: {
-                citeCompliant: false
-            }
+            displayClass: 'olControlDrawFeaturePolygon'
         });
+        this.drawFeatureControls = new Array();
+        this.drawFeatureControls.push(this.polygon);
+        this.drawFeatureControls.push(this.line);
+        this.drawFeatureControls.push(this.point);
+        
+        // The modifyfeature control allows us to edit and select features.
+        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer);
         
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
         map.addControl(this.point);
         map.addControl(this.line);
         map.addControl(this.polygon);
-        
-        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer);
         map.addControl(this.modifyFeature);
+        
+        this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
+        this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
+        this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
+        this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
+        
         this.modifyFeature.activate();
     },
+    
     adjustStyle : function(){
         this.viewerController.logger.error("OpenLayersVectorLayer.adjustStyle() not yet implemented!");
     },
+    
     removeAllFeatures : function(){
         this.getFrameworkLayer().removeAllFeatures();
     },
@@ -118,27 +113,43 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }
     },
     
-    activeFeatureChanged : function (feature){
+    /**
+     * Called when a feature is selected
+     */
+    activeFeatureChanged : function (object){
+        var feature = this.fromOpenLayersFeature (object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
     
+    /**
+     * Called when a feature is modified.
+     */
     featureModified : function (evt){
         var featureObject = this.fromOpenLayersFeature(evt.feature);
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
-    },
-    
-    onFeatureInsert : function (feature){
-        this.point.deactivate();
-        this.line.deactivate();
-        this.polygon.deactivate();
-        this.editFeature(feature);
-        var featureObject = this.fromOpenLayersFeature(feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,featureObject);
     },
     
+    /**
+     * Called when a feature is added to the vectorlayer. It deactivates all drawFeature controls, makes the added feature editable and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
+     */
+    featureAdded : function (object){
+        var feature = this.fromOpenLayersFeature (object.feature);
+        for ( var i = 0 ; i < this.drawFeatureControls.length ; i++ ){
+            var control = this.drawFeatureControls[i];
+            control.deactivate();
+        }
+        this.editFeature(object.feature);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
+    },
+    
+    /**
+     * Puts an openlayersfeature in editmode and fires an event: viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED
+     */
     editFeature : function (feature){
         this.modifyFeature.selectControl.unselectAll();
         this.modifyFeature.selectControl.select(feature);
+        var featureObject = this.fromOpenLayersFeature (feature);
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
     
     /**
@@ -146,7 +157,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * @return The OpenLayerstype feature
      */
     toOpenLayersFeature : function(feature){
-       // throw ("Not yet implemented");
         var geom = OpenLayers.Geometry.fromWKT(feature.wktgeom);
         var olFeature = new OpenLayers.Feature.Vector(geom);
         return olFeature;
@@ -168,13 +178,19 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             if(!scope){
                 scope = this;
             }
-            this.registerToLayer(olSpecificEvent);
-            viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.addListener.call(this,event,handler,scope);
+            if(!olSpecificEvent == "featureadded"){
+                this.registerToLayer(olSpecificEvent);
+            }
          }else{
             this.viewerController.logger.warning("Event not listed in OpenLayersVectorLayer >"+ event + "<. The application  might not work correctly.");
         }
+        viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.addListener.call(this,event,handler,scope);
     },
     
+    /**
+     * Add event to OpenLayersVectorLayer only once, to prevent multiple fired events.
+     * @param specificEvent The openLayers specific event.
+     */
     registerToLayer : function (specificEvent){
           if(this.enabledEvents[specificEvent] == null ||this.enabledEvents[specificEvent] == undefined){
             this.enabledEvents[specificEvent] = true;
@@ -183,11 +199,18 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }
     },
     
+    /**
+     * Handles the events fired by OpenLayers.VectorLayer and propagates them to the registered objects.
+     *
+     */
     handleEvent : function (event){
         var options = new Object();
         options.layer = this.map.getLayerByOpenLayersId(event.element.id);
         options.feature = this.fromOpenLayersFeature(event.feature);
         var eventName = this.viewerController.mapComponent.getGenericEventName(event.type);
+        if(!eventName){
+            eventName = event;
+        }
         this.fireEvent(eventName,options);
     }
 });
