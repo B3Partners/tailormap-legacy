@@ -125,7 +125,7 @@ Ext.define ("viewer.components.TOC",{
         this.insertLayer(nodes);
         
         var map = this.viewerController.mapComponent.getMap();
-        var scale = map.getScale(map.getExtent());
+        var scale = map.getResolution();
         this.checkScaleLayer(this.panel.getRootNode(),scale);
     },
     // Add a level to the tree, and load all it's levels and applayers
