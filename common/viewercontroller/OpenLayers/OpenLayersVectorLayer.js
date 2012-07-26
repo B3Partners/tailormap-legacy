@@ -5,15 +5,14 @@
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     extend: "viewer.viewercontroller.controller.VectorLayer",
+    mixins: {
+        openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
+    },
     point:null,
     line:null,
     polygon:null,
     drawFeatureControls:null,
     modifyFeature:null,
-    enabledEvents: new Object(),
-    mixins: {
-        openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
-    },
     constructor : function (config){
         // TODO make styles work in openlayersvectorlayers
         delete config.style;

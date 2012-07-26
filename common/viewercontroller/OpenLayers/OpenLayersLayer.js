@@ -8,8 +8,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
     config:{
         name: null
     },
+    enabledEvents: null,
+    events : null,
     constructor :function (config){        
         this.initConfig(config);
+        this.enabledEvents = new Object();
+        this.events = new Object();
         return this;
     },
     /**
@@ -85,11 +89,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                     this.enabledEvents[olSpecificEvent]++;                
                 }else{
                     this.enabledEvents[olSpecificEvent] = 1;
-                    this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
+                    this.frameworkLayer.events.register(olSpecificEvent, this, this.handleEvent);
                 }
             }
         }
-        viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
+        this.superclass.addListener.call(this,event,handler,scope);
     },
     /**
      * @see Ext.util.Observable#removeListener
@@ -112,11 +116,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                 this.enabledEvents[olSpecificEvent]--;
                 if (this.enabledEvents[olSpecificEvent] <= 0){
                     this.enabledEvents[olSpecificEvent]=0;
-                    this.frameworkMap.events.unregister(olSpecificEvent, this, this.handleEvent);
+                    this.frameworkLayer.events.unregister(olSpecificEvent, this, this.handleEvent);
                 }
             }            
         }
-        viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeListener.call(this,event,handler,scope);
+        this.superclass.removeListener.call(this,event,handler,scope);
     },
     
     /**
@@ -133,9 +137,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         this.fireEvent(eventName,options);
     },    
 
+    // @deprecated use removeListener() instead
     unRegisterEvent : function (event,handler,thisObj){
         var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
-        this.getFrameworkMap().events.unregister(specificName,handler,thisObj);
+        this.getFrameworkLayer().events.unregister(specificName,handler,thisObj);
         this.removeListener(event,handler,thisObj);
     },
     setVisible : function (visible){
