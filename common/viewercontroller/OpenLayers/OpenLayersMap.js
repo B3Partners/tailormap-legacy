@@ -26,10 +26,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         config["center"] = maxBounds.getCenterLonLat();
         
         config.maxExtent = maxBounds;
-        
-        this.frameworkMap=new OpenLayers.Map(config.domId,config);
+              
+        this.frameworkMap=new OpenLayers.Map(config.domId,config);        
         this.frameworkMap.centerLayerContainer();
-      
+       
         this.layersLoading = 0;
         this.markerLayer=null;
         this.defaultIcon=null;
@@ -73,38 +73,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     /**
         *Add a layer. Also see @link Map.addLayer
         **/
-    addLayer : function(layer){
-        this.superclass.addLayer.call(this,layer);
-        if (layer instanceof viewer.viewercontroller.openlayers.OpenLayersWMSLayer){
-           /* if (layer.getGetFeatureInfoControl()!=null){
-                var info=layer.getGetFeatureInfoControl();
-                this.getFrameworkMap().addControl(info);
-                info.events.register("getfeatureinfo",this.viewerController.mapComponent, this.viewerController.mapComponent.onIdentifyDataHandler,this.viewerController.mapComponent);
-                //map.getFrameworkMap().events.register('click', this, this.beforeidentifyafasdfasdf);
-                //  info.events.register("beforegetfeatureinfo",webMapController, webMapController.onIdentifyHandler);
-
-                //this.getGetFeatureInfoControl().addControl(info);
-                //check if a getFeature tool is active.
-                var getFeatureTools=this.viewerController.mapComponent.getToolsByType(Tool.GET_FEATURE_INFO);
-                for (var i=0; i < getFeatureTools.length; i++){
-                    if (getFeatureTools[i].isActive()){
-                        info.activate();
-                    }
-                }
-            }
-            if (layer.getMapTipControl()!=null){
-                var maptipControl=layer.getMapTipControl();
-                this.getFrameworkMap().addControl(maptipControl);
-                maptipControl.events.register("getfeatureinfo",layer, this.viewerController.mapComponent.onMapTipHandler);
-                maptipControl.activate();
-            }
-
-            if(this.viewerController.mapComponent.events[this.viewerController.mapComponent.getSpecificEventName(viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE)] != null){
-                layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_END,this.layerFinishedLoading);
-                layer.register(viewer.viewercontroller.controller.Event.ON_LOADING_START,this.layerBeginLoading);
-            }*/
-        }
-        
+    addLayer : function(layer){        
+        this.superclass.addLayer.call(this,layer);        
         this.getFrameworkMap().addLayer(layer.getFrameworkLayer());       
     },
     /**
@@ -231,29 +201,61 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             this.markerLayer.removeMarker(this.markers[markerName]);
         }
     },
+    /**
+     * @see Ext.util.Observable#addListener
+     * @param event the event
+     * @param handler the handler
+     * @param scope the scope 
+     * Overwrite the addListener. Register event on the OpenLayers Map (only once)
+     * If the event is thrown by the OpenLayers event the given handlers are called.
+     */
     addListener : function(event,handler,scope){
         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
             }
-            this.registerToMap(olSpecificEvent);
+            /* Add event to OpenLayersMap only once, to prevent multiple fired events.    
+             * count the events for removing the listener again.
+             */
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]++;                
+            }else{
+                this.enabledEvents[olSpecificEvent] = 1;
+                this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
+            }
             viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
         }else{
             this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
     },
-
     /**
-     * Add event to OpenLayersMap only once, to prevent multiple fired events.
-     * @param specificEvent The openLayers specific event.
-     *
+     * @see Ext.util.Observable#removeListener
+     * @param event the event
+     * @param handler the handler
+     * @param scope the scope 
+     * Overwrite the removeListener. Unregister the event on the OpenLayers Map if there
+     * are no listeners anymore.     
      */
-    registerToMap : function (specificEvent){
-        if(this.enabledEvents[specificEvent] == null ||this.enabledEvents[specificEvent] == undefined){
-            this.enabledEvents[specificEvent] = true;
-            
-            this.frameworkMap.events.register(specificEvent, this, this.handleEvent);
+    removeListener : function (event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            /* Remove event from OpenLayersMap if the number of events == 0
+             * If there are no listeners for the OpenLayers event, remove the listener.             
+             */
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]--;
+                if (this.enabledEvents[olSpecificEvent] <= 0){
+                    this.enabledEvents[olSpecificEvent]=0;
+                    this.frameworkMap.events.unregister(olSpecificEvent, this, this.handleEvent);
+                }
+            }            
+            viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeListener.call(this,event,handler,scope);
+        }else{
+            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
     },
     
@@ -275,7 +277,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         this.fireEvent(genericEvent,this,options);
     },
-
+    //xxx remove
     unRegisterEvent : function (event,handler,thisObj){
         var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
         this.getFrameworkMap().events.unregister(specificName,handler,thisObj);
