@@ -216,8 +216,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 instance: instance
             };
         } catch(e) {
-            console.log(e);
+            
             this.logger.error("Error creating component with className " + className + ": error "+e+ " with config"+ config);
+            if (this.isDebug()){
+                throw e;
+            }
         }
 
         return instance;
@@ -684,7 +687,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if (serviceLayer.minScale && scale < serviceLayer.minScale){
             return false;            
         }
-        if (serviceLayer.maxScale && scale > serviceLayer.minScale){
+        if (serviceLayer.maxScale && scale > serviceLayer.maxScale){
             return false;
         }            
         return true;        
