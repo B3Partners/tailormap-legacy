@@ -230,7 +230,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
             this.viewerController.logger.error("Tool NAVIGATION_HISTORY not implemented (yet)");
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.ZoomBox())
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomBox())
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
             this.viewerController.logger.error("Tool ZOOMOUT_BOX not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
@@ -288,9 +288,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     }
                 }
             }
-
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(options,
-                new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
                 if (measureValueDiv){                
@@ -305,9 +303,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 }
             });
             return measureTool;
-        }/*else if (type==viewer.viewercontroller.controller.Tool.SCALEBAR){//12,
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.ScaleLine ());
-        }*/else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
             this.viewerController.logger.error("Tool ZOOM_BAR not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.LAYER_SWITCH){//14,
             this.viewerController.logger.error("Tool LAYER_SWITCH not implemented (yet)");

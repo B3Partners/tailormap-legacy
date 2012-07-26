@@ -197,9 +197,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /** @See MapComponent.createTool
     * @param conf the configuration, containing:
     * @param conf.id the id of the toolmapclick
+    * @param conf.type the type of the tool
     * @param conf.handler.fn The function to be called
     * @param conf.handler.scope The scope in which the function has to be called
-    * @param conf.viewerController The viewercontrollerreference */
+    * @param conf.viewerController The viewercontrollerreference 
+    **/
     createTool: function (conf){   
         if (Ext.isEmpty(conf.listenTo)){
             conf.listenTo=this.getMap().getId();

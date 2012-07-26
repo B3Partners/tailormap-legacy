@@ -8,13 +8,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     onActiveHandler:null,
     controls:null,
     constructor : function (conf,frameworkObject){
-        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);               
-        this.frameworkObject = frameworkObject;        
+        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);                       
+        this.frameworkObject=frameworkObject;
         this.controls = new Array();
         this.onActiveHandler = new Object();
         return this;
     },
-    
+    //XXX ?? addListener >> have to ask Meine to handle it correct
     register : function (event,handler){
         var specificName = webMapController.getSpecificEventName(event);
         if(this.type == Tool.BUTTON){

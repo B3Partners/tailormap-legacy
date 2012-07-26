@@ -116,8 +116,11 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     /**
     *Must be implemented by the sub-class
     *This creates a tool.
+    * @param conf the configuration, containing:
+    * @param conf.id the id of the toolmapclick
+    * @param conf.type the type of the tool
     */
-    createTool: function (){
+    createTool: function (conf){
         Ext.Error.raise({msg: "MapComponent.createTool(...) not implemented! Must be implemented in sub-class"});
     },
     /**
