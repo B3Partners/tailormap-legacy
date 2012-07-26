@@ -20,6 +20,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
         
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
+        //TODO: Make a circlecontrol
         this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
         });
@@ -144,6 +145,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     
     /**
      * Puts an openlayersfeature in editmode and fires an event: viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED
+     * TODO: fix the selecting of a newly added point (after adding another geometry first)
      */
     editFeature : function (feature){
         this.modifyFeature.selectControl.unselectAll();
