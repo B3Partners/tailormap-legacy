@@ -111,7 +111,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }else if(type == "Polygon"){
             this.polygon.activate();
         }else{
-            throw ("Feature type >" + type + "< not implemented!");
+           this.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
     },
     
