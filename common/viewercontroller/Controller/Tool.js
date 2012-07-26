@@ -22,7 +22,6 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         LOADING_BAR                : 9,
         GET_FEATURE_INFO           : 10,
         MEASURE                    : 11,
-        SCALEBAR                   : 12,
         ZOOM_BAR                   : 13,
         LAYER_SWITCH               : 14,
         DEFAULT                    : 15,

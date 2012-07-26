@@ -219,26 +219,22 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     createTool : function (conf){
         var type = conf.type;
         var id = conf.id;
-        var options = {};
+        var options = {
+                id: id,
+                type: type,
+                viewerController: this.viewerController
+        };
 
         if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE      ){//0
             this.viewerController.logger.error("Tool DRAW_FEATURE not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
             this.viewerController.logger.error("Tool NAVIGATION_HISTORY not implemented (yet)");
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.ZoomBox(options))
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.ZoomBox())
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
             this.viewerController.logger.error("Tool ZOOMOUT_BOX not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.DragPan(options))
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan())
         }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
             this.viewerController.logger.error("Tool SUPERPAN not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.BUTTON){//6,
@@ -249,26 +245,24 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             this.viewerController.logger.error("Tool CLICK not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.LOADING_BAR){//9,
             this.viewerController.logger.error("Tool LOADING_BAR not implemented (yet)");
-        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
-            if (!options){
-                options=new Object();
-            }//olControlidentify
-            options["displayClass"]="olControlidentify";
-            options["type"]=OpenLayers.Control.TYPE_TOOL;
+        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {            
+            var frameworkOptions=new Object();
+            //olControlidentify
+            frameworkOptions["displayClass"]="olControlidentify";
+            frameworkOptions["type"]=OpenLayers.Control.TYPE_TOOL;
             var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool({
                 id: id,
                 type: type,
                 viewerController: this.viewerController
-            },new OpenLayers.Control(options));
+            },new OpenLayers.Control(frameworkOptions));
             
             //this.getMap().setGetFeatureInfoControl(identifyTool);
             return identifyTool;
         }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
-            if (!options){
-                options=new Object();
-            }
-            options["persist"]=true;
-            options["callbacks"]={
+            var frameworkOptions=new Object();
+            
+            frameworkOptions["persist"]=true;
+            frameworkOptions["callbacks"]={
                 modify: function (evt){
                     //make a tooltip with the measured length
                     if (evt.parent){
@@ -295,11 +289,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 }
             }
 
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.Measure( OpenLayers.Handler.Path, options));
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(options,
+                new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
                 if (measureValueDiv){                
@@ -314,9 +305,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 }
             });
             return measureTool;
-        }else if (type==viewer.viewercontroller.controller.Tool.SCALEBAR){//12,
-            this.viewerController.logger.error("Tool SCALEBAR not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
+        }/*else if (type==viewer.viewercontroller.controller.Tool.SCALEBAR){//12,
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.ScaleLine ());
+        }*/else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
             this.viewerController.logger.error("Tool ZOOM_BAR not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.LAYER_SWITCH){//14,
             this.viewerController.logger.error("Tool LAYER_SWITCH not implemented (yet)");
@@ -544,8 +535,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         }else if( tool.getType() == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO ){
             this.getPanel().addControls([tool.getFrameworkTool()]);
-            this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-        }else if (tool.getType() == viewer.viewercontroller.controller.Tool.SCALEBAR){
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         }else if(tool.getType() == viewer.viewercontroller.controller.Tool.ZOOM_BAR){
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());

@@ -8,11 +8,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     onActiveHandler:null,
     controls:null,
     constructor : function (conf,frameworkObject){
-        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);        
-        /*this.id = id;
-        this.type = type;*/
-        this.frameworkObject = frameworkObject;
-        //this.initConfig({});
+        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);               
+        this.frameworkObject = frameworkObject;        
         this.controls = new Array();
         this.onActiveHandler = new Object();
         return this;
