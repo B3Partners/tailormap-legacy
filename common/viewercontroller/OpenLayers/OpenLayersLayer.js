@@ -62,31 +62,80 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         Ext.Error.raise({msg: "Layer.getLastMapRequest() Not implemented! Must be implemented in sub-class"});
     },
 
-    /* Eventhandling for layers */
-    register : function (event,handler,scope){
-         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+    
+    /**
+     * @see Ext.util.Observable#addListener
+     * @param event the event
+     * @param handler the handler
+     * @param scope the scope 
+     * Overwrite the addListener. Register event on the OpenLayers Layer (only once)
+     * If the event is thrown by the OpenLayers Layer, the given handlers are called.
+     */
+    addListener : function(event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
             }
-            this.getFrameworkLayer().events.register(olSpecificEvent, this, this.handleEvent);
-            this.addListener(event, handler, scope);
+            /* Add event to OpenLayers Layer only once, to prevent multiple fired events.    
+             * count the events for removing the listener again.
+             */
+            if(!olSpecificEvent == "featureadded"){
+                if(this.enabledEvents[olSpecificEvent]){
+                    this.enabledEvents[olSpecificEvent]++;                
+                }else{
+                    this.enabledEvents[olSpecificEvent] = 1;
+                    this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
+                }
+            }
+            viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
         }else{
-            this.viewerController.logger.warning("Event not listed in OpenLayerLayers >"+ event + "<. The application  might not work correctly.");
+            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
-      
     },
-    handleEvent : function(args){
-        var event = args.type;
-        var options={};
-        var genericEvent = this.viewerController.mapComponent.getGenericEventName(event);
-        if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_MOVEEND){
-            options.layer=this.map.getLayerByOpenLayersId(args.element.id);
-        }else {
-            this.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
+    /**
+     * @see Ext.util.Observable#removeListener
+     * @param event the event
+     * @param handler the handler
+     * @param scope the scope 
+     * Overwrite the removeListener. Unregister the event on the OpenLayers Layer if there
+     * are no listeners anymore.     
+     */
+    removeListener : function (event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            /* Remove event from OpenLayers Layer if the number of events == 0
+             * If there are no listeners for the OpenLayers event, remove the listener.             
+             */
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]--;
+                if (this.enabledEvents[olSpecificEvent] <= 0){
+                    this.enabledEvents[olSpecificEvent]=0;
+                    this.frameworkMap.events.unregister(olSpecificEvent, this, this.handleEvent);
+                }
+            }            
+            viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeListener.call(this,event,handler,scope);
+        }else{
+            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
-        this.fireEvent(genericEvent,this,options);
     },
+    
+    /**
+     * Handles the OpenLayers generated events for this Layer
+     */
+    handleEvent : function (event){
+        var options = new Object();
+        options.layer = this.map.getLayerByOpenLayersId(event.element.id);
+        options.feature = this.fromOpenLayersFeature(event.feature);
+        var eventName = this.viewerController.mapComponent.getGenericEventName(event.type);
+        if(!eventName){
+            eventName = event;
+        }
+        this.fireEvent(eventName,options);
+    },    
 
     unRegisterEvent : function (event,handler,thisObj){
         var specificName = this.viewerController.mapComponent.getSpecificEventName(event);

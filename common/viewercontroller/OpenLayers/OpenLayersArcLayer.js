@@ -64,12 +64,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     getLayers : function(){
         return this.options["layers"];
     }, 
-    /**
-     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
-     */
-    setVisible: function(vis){
-        this.mixins.openLayersLayer.setVisible.call(this,vis);
-    },
     getLegendGraphic: function (){
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
         return null;
@@ -86,11 +80,30 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     getType : function (){
         return this.mixins.openLayersLayer.getType.call(this);
     },
+    /******** overwrite functions to make use of the mixin functions **********/    
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    setVisible: function(vis){
+        this.mixins.openLayersLayer.setVisible.call(this,vis);
+    },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
      */
     setAlpha: function (alpha){
         this.mixins.openLayersLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
+     */
+    addListener: function (event,handler,scope){
+        this.mixins.openLayersLayer.addListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
+     */
+    removeListener: function (event,handler,scope){
+        this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
     }
 });
 

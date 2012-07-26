@@ -57,6 +57,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     getMapTipControl : function(){
         return this.mapTipControl;
     },
+    
+    /******** overwrite functions to make use of the mixin functions **********/    
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
@@ -64,9 +66,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         this.mixins.openLayersLayer.setVisible.call(this,vis);
     },
     /**
-     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setAlpha
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
      */
     setAlpha: function (alpha){
         this.mixins.openLayersLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
+     */
+    addListener: function (event,handler,scope){
+        this.mixins.openLayersLayer.addListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
+     */
+    removeListener: function (event,handler,scope){
+        this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
     }
 });

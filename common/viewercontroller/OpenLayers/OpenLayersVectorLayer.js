@@ -173,47 +173,5 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     fromOpenLayersFeature : function(openLayersFeature){
         var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
         return feature;
-    },
-    
-    addListener : function (event, handler, scope){
-        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
-         if(olSpecificEvent){
-            if(!scope){
-                scope = this;
-            }
-            if(!olSpecificEvent == "featureadded"){
-                this.registerToLayer(olSpecificEvent);
-            }
-         }else{
-            this.viewerController.logger.warning("Event not listed in OpenLayersVectorLayer >"+ event + "<. The application  might not work correctly.");
-        }
-        viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.addListener.call(this,event,handler,scope);
-    },
-    
-    /**
-     * Add event to OpenLayersVectorLayer only once, to prevent multiple fired events.
-     * @param specificEvent The openLayers specific event.
-     */
-    registerToLayer : function (specificEvent){
-          if(this.enabledEvents[specificEvent] == null ||this.enabledEvents[specificEvent] == undefined){
-            this.enabledEvents[specificEvent] = true;
-            
-            this.frameworkLayer.events.register(specificEvent, this, this.handleEvent);
-        }
-    },
-    
-    /**
-     * Handles the events fired by OpenLayers.VectorLayer and propagates them to the registered objects.
-     *
-     */
-    handleEvent : function (event){
-        var options = new Object();
-        options.layer = this.map.getLayerByOpenLayersId(event.element.id);
-        options.feature = this.fromOpenLayersFeature(event.feature);
-        var eventName = this.viewerController.mapComponent.getGenericEventName(event.type);
-        if(!eventName){
-            eventName = event;
-        }
-        this.fireEvent(eventName,options);
-    }
+    }    
 });
