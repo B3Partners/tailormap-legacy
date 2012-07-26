@@ -17,6 +17,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         // TODO make styles work in openlayersvectorlayers
         delete config.style;
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
+        this.mixins.openLayersLayer.constructor.call(this,config);
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
         
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
