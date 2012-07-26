@@ -15,6 +15,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
     constructor : function (config){
+        // TODO make styles work in openlayersvectorlayers
         delete config.style;
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
