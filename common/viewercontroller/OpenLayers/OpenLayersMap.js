@@ -244,6 +244,11 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
     },
 
+    /**
+     * Add event to OpenLayersMap only once, to prevent multiple fired events.
+     * @param specificEvent The openLayers specific event.
+     *
+     */
     registerToMap : function (specificEvent){
         if(this.enabledEvents[specificEvent] == null ||this.enabledEvents[specificEvent] == undefined){
             this.enabledEvents[specificEvent] = true;
@@ -252,6 +257,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
     },
     
+    /**
+     * Handles the events fired by OpenLayers.Map and propagates them to the registered objects.
+     *
+     */
     handleEvent : function(args){
         var event = args.type;
         var options={};
