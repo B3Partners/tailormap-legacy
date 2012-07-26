@@ -229,7 +229,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE      ){//0
             this.viewerController.logger.error("Tool DRAW_FEATURE not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
-            this.viewerController.logger.error("Tool NAVIGATION_HISTORY not implemented (yet)");
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory(options));
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomBox())
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
@@ -316,10 +316,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             this.viewerController.logger.error("Tool DRAW_FEATURE_LINE not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_POLYGON){//18,
             this.viewerController.logger.error("Tool DRAW_FEATURE_POLYGON not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT){//19,
-            this.viewerController.logger.error("Tool PREVIOUS_EXTENT not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//20,
-            this.viewerController.logger.error("Tool NEXT_EXTENT not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT ||
+            type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19 - 20,            
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory());
         }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,
             this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
@@ -523,8 +522,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 MapComponent.prototype.addTool.call(this,tool[i]);
             }
         }else if (tool.getType()==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){
-            this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-            this.getPanel().addControls([tool.getFrameworkTool().previous,tool.getFrameworkTool().next]);
+            var me = this;
+            var handler = function(){
+                me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
+                me.getPanel().addControls([tool.getFrameworkTool().previous,tool.getFrameworkTool().next]);
+                me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+            };
+            this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
         }else if (tool.getType() == viewer.viewercontroller.controller.Tool.CLICK){
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
             this.getPanel().addControls([tool.getFrameworkTool().button]);
@@ -535,7 +539,25 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         }else if(tool.getType() == viewer.viewercontroller.controller.Tool.ZOOM_BAR){
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-        } else {
+        }else if (tool.getType()==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT){
+            //add after the a layer is added.
+            var me = this;
+            var handler = function(){
+                me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
+                me.getPanel().addControls([tool.getFrameworkTool().previous]);
+                me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+            };
+            this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+        }else if (tool.getType()==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19, 
+            //add after the a layer is added. 
+            var me = this;
+            var handler = function(){
+                me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
+                me.getPanel().addControls([tool.getFrameworkTool().next]);
+                me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+            };
+            this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);            
+        }else {
             var ft = tool.getFrameworkTool();
             this.getPanel().addControls([tool.getFrameworkTool()]);
         }
