@@ -88,10 +88,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                     this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
                 }
             }
-            viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
-        }else{
-            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
+        viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
     },
     /**
      * @see Ext.util.Observable#removeListener
@@ -117,10 +115,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                     this.frameworkMap.events.unregister(olSpecificEvent, this, this.handleEvent);
                 }
             }            
-            viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeListener.call(this,event,handler,scope);
-        }else{
-            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
+        viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeListener.call(this,event,handler,scope);
     },
     
     /**

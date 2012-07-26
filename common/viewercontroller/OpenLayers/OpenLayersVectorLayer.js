@@ -173,7 +173,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     fromOpenLayersFeature : function(openLayersFeature){
         var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
         return feature;
-    },
+    }, 
     
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
