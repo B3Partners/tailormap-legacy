@@ -175,6 +175,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         return feature;
     }, 
     
+    // TODO: implement this
+    setLabel : function (id, label){
+        this.viewerController.logger.warning("OpenLayersVectorLayer.setLabel() not yet implemented!");
+    },
+    
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
