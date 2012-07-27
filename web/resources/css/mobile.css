@@ -1,35 +1,3 @@
-/* General styling. Some ExtJS overrides, mainly to make items bigger
-.x-body, .x-form-item-label, .x-panel-body {
-    font-size: 14px;
-}
-.x-btn-default-small .x-btn-inner, .x-btn-default-medium .x-btn-inner, .x-btn-default-large .x-btn-inner, .x-btn-default-toolbar-small .x-btn-inner, .x-btn-default-toolbar-medium .x-btn-inner, .x-btn-default-toolbar-large .x-btn-inner, .x-menu-item-text, .x-panel-header-default, .x-panel-header-text-default, .x-panel-header-default-framed, .x-panel-header-text-default-framed, .x-tip-header-text, .x-tip-header,.x-tip-body,.x-form-invalid-tip-body, .x-progress-text, .x-toolbar, .x-toolbar .x-form-item-label, .x-tab button, .x-tab-bar, .x-html-editor-tb .x-font-select, .x-toolbar .x-toolbar-text, .x-window-header-text-default, .x-grid-row .x-grid-cell {
-    font-size: 13px;
-}
-.x-form-checkbox, .x-form-radio, .x-tree-checkbox {
-    width: 40px;
-    height: 40px;
-    background-image: url('../images/gray-large/form/checkbox.gif');
-}
-.x-form-radio {
-    background-image: url('../images/gray-large/form/radio.gif');
-}
-.x-tree-panel .x-grid-row .x-grid-cell-inner {
-    height: 50px;
-    line-height: 50px;
-}
-x-form-cb-checked .x-form-checkbox,.x-form-cb-checked .x-form-radio, .x-tree-checkbox-checked {
-    background-position: 0 -40px
-}
-.x-form-cb-focus {
-    background-position: -40px 0
-}
-.x-form-cb-checked .x-form-cb-focus {
-    background-position: -40px -40px
-}
-.x-gecko .x-tree-panel .x-grid-row .x-grid-cell-inner {
-    line-height: 48px
-}
-*/
 /* Slider styling. Styling is necessary for Android to work */
 .slidercomponent {
     margin-top: 10px;
@@ -64,4 +32,7 @@ input[type='range']::-webkit-slider-thumb {
     height: 25px;
     width: 25px;
     border: 0px none;
+}
+.tristatenode .x-tree-checkbox {
+    background-position: 0 -57px !important;
 }
