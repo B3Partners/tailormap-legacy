@@ -1,8 +1,24 @@
+/* 
+ * Copyright (C) 2012 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 /**
  * @class 
  * @constructor
  * @description
- *The openlayers map object wrapper
+ * The openlayers map object wrapper
  */
 Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     extend: "viewer.viewercontroller.controller.Map",
@@ -19,7 +35,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         if (config.maxExtent){
             //maxBounds = new OpenLayers.Bounds(config.maxExtent.minx,config.maxExtent.miny,config.maxExtent.maxx,config.maxExtent.maxy);
             maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
-        }else{
+        }
+        else{
             //fallback for bounds.
             maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
         }
@@ -50,6 +67,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         return lagen;
     },
+    
     /**
     *See @link Map.getAllVectorLayers
     */
@@ -64,22 +82,23 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     },
 
     /**
-        *See @link Map.remove
-        */
+    *See @link Map.remove
+    */
     remove : function(){
         this.getFrameworkMap().destroy();
     },
 
     /**
-        *Add a layer. Also see @link Map.addLayer
-        **/
+    *Add a layer. Also see @link Map.addLayer
+    **/
     addLayer : function(layer){        
         this.superclass.addLayer.call(this,layer);        
         this.getFrameworkMap().addLayer(layer.getFrameworkLayer());       
     },
+    
     /**
-        *remove the specific layer. See @link Map.removeLayer
-        **/
+    *remove the specific layer. See @link Map.removeLayer
+    **/
     removeLayer : function(layer){
         //call super function
         this.superclass.removeLayer.call(this,layer);
@@ -94,13 +113,15 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         layer.getFrameworkLayer().destroy(false);
     },
+    
     setLayerVisible : function (layer, visible){
         this.superclass.setLayerVisible.call(this,layer,visible);
         layer.setVisible(visible);
     },
+    
     /**
-        *see @link Map.setLayerIndex
-        */
+    * see @link Map.setLayerIndex
+    */
     setLayerIndex : function (layer, newIndex){
         if (!(layer instanceof OpenLayersLayer)){
             throw("OpenLayersMap.setLayerIndex(): Given layer not of type OpenLayersLayer.");
@@ -110,7 +131,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     },
 
     /**
-    *Sets the getfeatureinfo control of this map
+    * Sets the getfeatureinfo control of this map
     */
     setGetFeatureInfoControl : function (control){
         if( control.type != Tool.GET_FEATURE_INFO){
@@ -120,18 +141,19 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     },
 
     /**
-        *Move the viewport to the maxExtent. See @link Map.zoomToMaxExtent
-        **/
+    * Move the viewport to the maxExtent. See @link Map.zoomToMaxExtent
+    **/
     zoomToMaxExtent : function (){
         this.getFrameworkMap().zoomToExtent(this.getFrameworkMap().getMaxExtent());
     },
     /**
-        *See @link Map.zoomToExtent
-        **/
+    * See @link Map.zoomToExtent
+    **/
     zoomToExtent : function(extent){
         var bounds=Utils.createBounds(extent)
         this.getFrameworkMap().zoomToExtent(bounds);
     },
+    
     /**
     * See @link Map.zoomToScale
     * @deprecated, use zoomToResolution because it zooms to a resolution and not a scale
@@ -139,6 +161,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     zoomToScale : function(scale){
         this.getFrameworkMap().zoomToResolution(scale);
     },
+    
     /**
     * See @link Map.zoomToResolution
     */
@@ -147,10 +170,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     },
 
     /**
-        * See @link Map.setMaxExtent
-        * WARNING: Bug in openlayers: doesn't change the maxextent
-        * As workaround add the maxExtent when initing the map
-        */
+    * See @link Map.setMaxExtent
+    * WARNING: Bug in openlayers: doesn't change the maxextent
+    * As workaround add the maxExtent when initing the map
+    */
     setMaxExtent : function(extent){
         if (this.getFrameworkMap()!=null){
             this.getFrameworkMap().setOptions({
@@ -158,28 +181,31 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             }); 
         }
     },
+    
     /**
-        *See @link Map.getMaxExtent     
-        */
+    * See @link Map.getMaxExtent     
+    */
     getMaxExtent : function(){
         return Utils.createExtent(this.getFrameworkMap().getMaxExtent());
     },
+    
     /**
-        *See @link Map.getExtent
-        */
+    * See @link Map.getExtent
+    */
     getExtent : function(){
         var extent = this.utils.createExtent(this.getFrameworkMap().getExtent());
         return extent;
     },
+    
     /*TODO:
         doIdentify : function(x,y){}
         update : function(){}    
         removeMarker : function(markerName){}
         */
     /**
-        *see @link Map.setMarker
-        *TODO: marker icon path...
-        */
+    *see @link Map.setMarker
+    *TODO: marker icon path...
+    */
     setMarker : function(markerName,x,y,type){
         if (this.markerLayer==null){
             this.markerLayer = new OpenLayers.Layer.Markers("Markers");
@@ -193,14 +219,16 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.markers[markerName]= new OpenLayers.Marker(new OpenLayers.LonLat(x,y),icon);
         this.markerLayer.addMarker(this.markers[markerName]);
     },
+    
     /**
-        *see @link Map.removeMarker
-        */
+    * see @link Map.removeMarker
+    */
     removeMarker : function(markerName){
         if (this.markers[markerName] && this.markerLayer!=null){
             this.markerLayer.removeMarker(this.markers[markerName]);
         }
     },
+    
     /**
      * @see Ext.util.Observable#addListener
      * @param event the event
@@ -229,6 +257,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
     },
+    
     /**
      * @see Ext.util.Observable#removeListener
      * @param event the event
@@ -277,12 +306,14 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         this.fireEvent(genericEvent,this,options);
     },
+    
     //xxx remove
     unRegisterEvent : function (event,handler,thisObj){
         var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
         this.getFrameworkMap().events.unregister(specificName,handler,thisObj);
         this.removeListener(event,handler,thisObj);
     },
+    
     /**
     *See @link Map.getScale
     *@deprecated, use getResolution because it returns the resolution and not the scale
@@ -290,12 +321,14 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     getScale : function(){
         return this.getResolution();
     },
+    
     /**
     *See @link Map.getResolution
     */
     getResolution : function(){
         return this.getFrameworkMap().getResolution();
     },
+    
     /**
     *See @link Map.coordinateToPixel
     *@returns a OpenLayers.pixel object (has a .x and a .y)
@@ -337,6 +370,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     layerBeginLoading : function (id,data,c,d){
         this.layersLoading++;
     },
+    
     /**
      * The OpenLayers ID can't be changed. With this function you can get the 
      * viewer.viewercontroller.openlayers.OpenLayersLayer with the openlayersid
