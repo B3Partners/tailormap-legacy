@@ -32,35 +32,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
         this.onActiveHandler = new Object();
         return this;
     },
-    //XXX ?? addListener >> have to ask Meine to handle it correct
-    register : function (event,handler){
-        var specificName = webMapController.getSpecificEventName(event);
-        if(this.type == Tool.BUTTON){
-            this.getFrameworkTool().trigger= handler;
-        }else if (this.type== Tool.CLICK){
-            this.getFrameworkTool().handler.callbacks[specificName]= function (evt){
-                var lonlat= this.map.getLonLatFromViewPortPx(evt.xy);
-                handler.call(this,new Extent(lonlat.lat,lonlat.lon,lonlat.lat,lonlat.lon))
-            };
-        }else if(viewer.viewercontroller.controller.Event.ON_SET_TOOL == event){
-            this.onActiveHandler = handler;
-            this.getFrameworkTool().events.register(specificName,this,this.onSetActive);
-        } else{
-            this.getFrameworkTool().events.register(specificName,this.getFrameworkTool(),handler);
-        }
-    },
-
-    addControl : function(control){
-        if (!(this.type == Tool.GET_FEATURE_INFO)){
-            this.viewerController.logger.info({msg: "The given Control object is not of type get feature info. But: "+this.type});
-        }
-        this.controls.push(control);
-    },
-
+    
+    /**
+     * @see viewer.viewercontroller.controller.Tool#getId
+     */
     getId : function(){
         return this.id;
     },
-
+    
+    /**
+     * @see viewer.viewercontroller.controller.Tool#setToolVisible
+     */
     setToolVisible : function(visibility){
         this.setVisible(visibility);
         if (visibility){
@@ -69,11 +51,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             this.getFrameworkTool().panel_div.style.display="none";
         }
     },
-
+    
+    /**
+     * @see viewer.viewercontroller.controller.Tool#isActive
+     */
     isActive : function (){
         return this.getFrameworkTool().active;
     },
-
+    
+    /**
+     * @see viewer.viewercontroller.controller.Tool#onSetActive
+     */
     onSetActive : function(data){
         this.onActiveHandler(this.getId(),data);
     }
