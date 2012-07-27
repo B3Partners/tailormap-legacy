@@ -242,9 +242,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             frameworkOptions["displayClass"]="olControlidentify";
             frameworkOptions["type"]=OpenLayers.Control.TYPE_TOOL;
             
-            options.olMap= this.viewerController
+            //options.olMap= this.getMap().getFrameworkMap();
             var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool(
-                options ,new OpenLayers.Control(frameworkOptions));
+                options ,new OpenLayers.Control(frameworkOptions),this.getMap().getFrameworkMap());
             
             //this.getMap().setGetFeatureInfoControl(identifyTool);
             return identifyTool;
@@ -296,7 +296,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,            
             return new OpenLayersTool(options,new OpenLayers.Control.PanZoomBar()); 
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
-            this.viewerController.logger.error("Tool DEFAULT not implemented (yet)");
+            // The default tool is always available in openlayers.
+            //this.viewerController.logger.info("Tool DEFAULT is default available in OpenLayers, no configuration needed");
         }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT ||
             type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19 - 20,            
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory());

@@ -21,12 +21,10 @@
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersIdentifyTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
-    config: {
-        olMap: null
-    },
-    //olMap: null,
-    constructor : function (conf,frameworkTool){
+    olMap: null,
+    constructor : function (conf,frameworkTool,olMap){
         viewer.viewercontroller.openlayers.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
+        this.olMap=olMap;
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
