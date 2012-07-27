@@ -209,7 +209,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     /**
      *Create a tool: the initializing of a piece of functionality to link to a button
      *@param id
-     *@param type: the type of the tool. Possible values: DRAW_FEATURE, ...     *
+     *@param type: the type of the tool. Possible values: @see viewer.viewercontroller.controller.Tool#statics   *
      *@param options: the options used for initializing the Tool
      *  Posible options:
      *  handlerGetFeatureHandler: the handler for getFeatures
@@ -226,19 +226,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 viewerController: this.viewerController
         };
 
-        if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE      ){//0
-            this.viewerController.logger.error("Tool DRAW_FEATURE not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
+        if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory(options));
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomBox())
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
-            this.viewerController.logger.error("Tool ZOOMOUT_BOX not implemented (yet)");
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomOut());
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan())
         }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan({enableKinetic: true}))
-            //this.viewerController.logger.error("Tool SUPERPAN not implemented (yet)");
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan({enableKinetic: true}));            
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {            
             var frameworkOptions=new Object();
             //olControlidentify
@@ -297,17 +294,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             });
             return measureTool;
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,            
-            return new OpenLayersTool(options,new OpenLayers.Control.PanZoomBar());            
-        }else if (type==viewer.viewercontroller.controller.Tool.LAYER_SWITCH){//14,
-            this.viewerController.logger.error("Tool LAYER_SWITCH not implemented (yet)");
+            return new OpenLayersTool(options,new OpenLayers.Control.PanZoomBar()); 
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
             this.viewerController.logger.error("Tool DEFAULT not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_POINT){//16,
-            this.viewerController.logger.error("Tool DRAW_FEATURE_POINT not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_LINE){//17,
-            this.viewerController.logger.error("Tool DRAW_FEATURE_LINE not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_POLYGON){//18,
-            this.viewerController.logger.error("Tool DRAW_FEATURE_POLYGON not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT ||
             type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19 - 20,            
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory());

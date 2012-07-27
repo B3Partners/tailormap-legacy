@@ -9,7 +9,6 @@
 Ext.define("viewer.viewercontroller.controller.Tool",{
     statics:{
         // The different types of tools
-        DRAW_FEATURE               : 0,
         NAVIGATION_HISTORY         : 1,
         ZOOMIN_BOX                 : 2,
         ZOOMOUT_BOX                : 3,
@@ -18,12 +17,8 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         GET_FEATURE_INFO           : 10,
         MEASURE                    : 11,
         ZOOM_BAR                   : 13,
-        LAYER_SWITCH               : 14,
         DEFAULT                    : 15,
 
-        DRAW_FEATURE_POINT         : 16,
-        DRAW_FEATURE_LINE          : 17,
-        DRAW_FEATURE_POLYGON       : 18,
         PREVIOUS_EXTENT            : 19,
         NEXT_EXTENT                : 20,
         FULL_EXTENT                : 21,
