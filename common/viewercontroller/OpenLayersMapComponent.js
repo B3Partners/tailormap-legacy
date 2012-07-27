@@ -308,166 +308,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
         }
-        /*if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE){
-            //TODO: Deze crap weg! Afzonderlijke buttons aanmaken en niet in de controller plaatsen! Maar in lijst van tools
-            //  var container = params["container"];
-            var layer=options["layer"];
-            var toolbar= new OpenLayers.Control.EditingToolbar( layer.getFrameworkLayer() );
-        
-            // Voeg de individuele knoppen toe
-            this.pointButton =new viewer.viewercontroller.openlayers.OpenLayersTool(id+"_point",toolbar.controls[1],type);
-            this.lineButton =new viewer.viewercontroller.openlayers.OpenLayersTool(id+"_line",toolbar.controls[2],type);
-            this.polygonButton =new viewer.viewercontroller.openlayers.OpenLayersTool(id+"_polygon",toolbar.controls[3],type);
-        
-            var openLayersTools = new Array();
-            openLayersTools.push(this.pointButton);
-            openLayersTools.push(this.lineButton);
-            openLayersTools.push(this.polygonButton);
-       
-            return openLayersTools;
-        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_POINT){
-            //  var container = params["container"];
-            var layer=options["layer"];
-            var toolbar= new OpenLayers.Control.EditingToolbar( layer.getFrameworkLayer() );
-
-            // Voeg de individuele knoppen toe
-            this.pointButton =new viewer.viewercontroller.openlayers.OpenLayersTool(id,toolbar.controls[1],type);
-
-            return this.pointButton;
-        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_LINE){
-            var layer=options["layer"];
-            var toolbar= new OpenLayers.Control.EditingToolbar( layer.getFrameworkLayer() );
-            this.lineButton =new viewer.viewercontroller.openlayers.OpenLayersTool(id,toolbar.controls[2],type);
-            return this.lineButton;
-        }else if (type==viewer.viewercontroller.controller.Tool.DRAW_FEATURE_POLYGON){
-            var layer=options["layer"];
-            var toolbar= new OpenLayers.Control.EditingToolbar( layer.getFrameworkLayer() );
-            this.polygonButton =new viewer.viewercontroller.openlayers.OpenLayersTool(id,toolbar.controls[3],type);
-            return this.polygonButton;
-        }else if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.NavigationHistory(options),type);
-        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.ZoomBox(options));
-        }else if (type==viewer.viewercontroller.controller.Tool.PAN){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.DragPan(options))
-        }else if (type==viewer.viewercontroller.controller.Tool.BUTTON){
-            if (!options){
-                options=new Object();
-            }
-            options["displayClass"]="olControl"+id;
-            options["type"]=OpenLayers.Control.TYPE_BUTTON;
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control(options),type);
-        }else if (type==viewer.viewercontroller.controller.Tool.TOGGLE){
-            if (!options){
-                options=new Object();
-            }
-            options["displayClass"]="olControl"+id;
-            options["type"]=OpenLayers.Control.TYPE_TOGGLE;
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control(options),type);
-        }else if (type==viewer.viewercontroller.controller.Tool.CLICK){
-            if (!options){
-                options=new Object();
-            }
-            options["displayClass"]="olControl"+id;
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.Click(options),type);
-        }else if (type==viewer.viewercontroller.controller.Tool.LOADING_BAR){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.LoadingPanel(options),type);
-        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
-            if (!options){
-                options=new Object();
-            }//olControlidentify
-            options["displayClass"]="olControlidentify";
-            options["type"]=OpenLayers.Control.TYPE_TOOL;
-            var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control(options));
-            
-            //this.getMap().setGetFeatureInfoControl(identifyTool);
-            return identifyTool;
-        }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
-            if (!options){
-                options=new Object();
-            }
-            options["persist"]=true;
-            options["callbacks"]={
-                modify: function (evt){
-                    //make a tooltip with the measured length
-                    if (evt.parent){
-                        var measureValueDiv=document.getElementById("olControlMeasureValue");
-                        if (measureValueDiv==undefined){
-                            measureValueDiv=document.createElement('div');
-                            measureValueDiv.id="olControlMeasureValue";
-                            measureValueDiv.style.position='absolute';
-                            this.map.div.appendChild(measureValueDiv);
-                            measureValueDiv.style.zIndex="10000";
-                            measureValueDiv.className="olControlMaptip";
-                            var measureValueText=document.createElement('div');
-                            measureValueText.id='olControlMeasureValueText';
-                            measureValueDiv.appendChild(measureValueText);
-                        }
-                        var px= this.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
-                        measureValueDiv.style.top=px.y+"px";
-                        measureValueDiv.style.left=px.x+10+'px'
-                        measureValueDiv.style.display="block";
-                        var measureValueText=document.getElementById('olControlMeasureValueText');
-                        var bestLengthTokens=this.getBestLength(evt.parent);
-                        measureValueText.innerHTML= bestLengthTokens[0].toFixed(3)+" "+bestLengthTokens[1];
-                    }
-                }
-            }
-
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.Measure( OpenLayers.Handler.Path, options));
-            measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
-                var measureValueDiv=document.getElementById("olControlMeasureValue");
-                if (measureValueDiv){                
-                    measureValueDiv.style.display="none";
-                }
-                this.cancel();
-            });
-            measureTool.getFrameworkTool().events.register('deactivate',measureTool.getFrameworkTool(),function(){
-                var measureValueDiv=document.getElementById("olControlMeasureValue");
-                if (measureValueDiv){
-                    measureValueDiv.style.display="none";
-                }
-            });
-            return measureTool;
-        }else if(type == viewer.viewercontroller.controller.Tool.SCALEBAR){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id, new OpenLayers.Control.ScaleLine (options),type);
-        }else if (type == viewer.viewercontroller.controller.Tool.ZOOM_BAR) {
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.PanZoomBar(options),type)
-        }else if (type == viewer.viewercontroller.controller.Tool.LAYER_SWITCH){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(id,new OpenLayers.Control.LayerSwitcher(options),type);
-        }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.ZoomBox(options))
-        }else if(type == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control.ZoomOut(options))
-        }else if(type == viewer.viewercontroller.controller.Tool.MAP_CLICK){
-            return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
-        }else{
-            this.viewerController.logger.warning("Type >" + type + "< not recognized. Please use existing type.");
-        }*/
     },
     activateGetFeatureControls : function(){
         var layers=this.getMap().getAllWMSLayers();
@@ -523,8 +363,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             //add after the a layer is added.
             var me = this;
             var handler = function(){
-                me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-                me.getPanel().addControls([tool.getFrameworkTool().previous]);
+                var navControl=tool.getFrameworkTool();
+                var addedControls= me.maps[0].getFrameworkMap().getControlsByClass("OpenLayers.Control.NavigationHistory");
+                if (addedControls.length > 0){
+                    navControl=addedControls[0];
+                }else{
+                    me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
+                }
+                me.getPanel().addControls([navControl.previous]);
                 me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             };
             this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
@@ -532,8 +378,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             //add after the a layer is added. 
             var me = this;
             var handler = function(){
-                me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-                me.getPanel().addControls([tool.getFrameworkTool().next]);
+                var navControl=tool.getFrameworkTool();
+                var addedControls= me.maps[0].getFrameworkMap().getControlsByClass("OpenLayers.Control.NavigationHistory");
+                if (addedControls.length > 0){
+                    navControl=addedControls[0];
+                }else{
+                    me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
+                }
+                me.getPanel().addControls([navControl.next]);
                 me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             };
             this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);            
