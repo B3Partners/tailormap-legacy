@@ -77,7 +77,7 @@
         className: "viewer.components.tools.ZoomIn",
         name: "ZoomIn",
         shortName: "ZI",
-        sources: ["tools/ZoomIn.js"],
+        sources: ["tools/Tool.js","tools/ZoomIn.js"],
         closureCompilerSafe: true,
         singleton: true, 
         restrictions: ["top_menu"],
@@ -90,7 +90,7 @@
         className: "viewer.components.tools.ZoomOut",
         name: "ZoomOut",
         shortName: "ZO",
-        sources: ["tools/ZoomOut.js"],
+        sources: ["tools/Tool.js","tools/ZoomOut.js"],
         closureCompilerSafe: true,
         singleton: true,
         restrictions: ["top_menu"],
@@ -127,7 +127,7 @@
         className: "viewer.components.tools.Identify",
         name: "Identify",
         shortName: "Id",
-        sources: ["tools/Identify.js"],
+        sources: ["tools/Tool.js","tools/Identify.js"],
         closureCompilerSafe: true,
 
         singleton: true,
@@ -142,7 +142,7 @@
         className: "viewer.components.tools.Pan",
         name: "Pan",
         shortName: "pa",
-        sources: ["tools/Pan.js"],
+        sources: ["tools/Tool.js","tools/Pan.js"],
         closureCompilerSafe: true,
 
         singleton: true,
@@ -157,7 +157,7 @@
         className: "viewer.components.tools.SuperPan",
         name: "SuperPan",
         shortName: "Sp",
-        sources: ["tools/SuperPan.js"],
+        sources: ["tools/Tool.js","tools/SuperPan.js"],
         closureCompilerSafe: true,
 
         singleton: true,
@@ -172,7 +172,7 @@
         className: "viewer.components.tools.Measure",
         name: "Measure",
         shortName: "Ms",
-        sources: ["tools/Measure.js"],
+        sources: ["tools/Tool.js","tools/Measure.js"],
         closureCompilerSafe: true,
 
         singleton: true,
@@ -197,7 +197,7 @@
         className: "viewer.components.tools.FullExtent",
         name: "Full Extent",
         shortName: "fext",
-        sources: ["tools/FullExtent.js"],
+        sources: ["tools/Tool.js","tools/FullExtent.js"],
         closureCompilerSafe: true,
 
         singleton: true,
@@ -213,7 +213,7 @@
         className: "viewer.components.tools.PreviousExtent",
         name: "Previous Extent",
         shortName: "pExt",
-        sources: ["tools/PreviousExtent.js"],
+        sources: ["tools/Tool.js","tools/PreviousExtent.js"],
         closureCompilerSafe: true,
 
         singleton: true,
@@ -229,7 +229,7 @@
         className: "viewer.components.tools.NextExtent",
         name: "Next Extent",
         shortName: "nExt",
-        sources: ["tools/NextExtent.js"],
+        sources: ["tools/Tool.js","tools/NextExtent.js"],
         closureCompilerSafe: true,
 
         singleton: true,

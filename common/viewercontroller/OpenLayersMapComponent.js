@@ -251,11 +251,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             //olControlidentify
             frameworkOptions["displayClass"]="olControlidentify";
             frameworkOptions["type"]=OpenLayers.Control.TYPE_TOOL;
-            var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool({
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-            },new OpenLayers.Control(frameworkOptions));
+            
+            options.olMap= this.viewerController
+            var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool(
+                options ,new OpenLayers.Control(frameworkOptions));
             
             //this.getMap().setGetFeatureInfoControl(identifyTool);
             return identifyTool;
@@ -304,8 +303,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 }
             });
             return measureTool;
-        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,
-            this.viewerController.logger.error("Tool ZOOM_BAR not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,            
+            return new OpenLayersTool(options,new OpenLayers.Control.PanZoomBar());            
         }else if (type==viewer.viewercontroller.controller.Tool.LAYER_SWITCH){//14,
             this.viewerController.logger.error("Tool LAYER_SWITCH not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,

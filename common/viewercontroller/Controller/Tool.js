@@ -7,7 +7,6 @@
  * @param type The type of tool to be created
  */
 Ext.define("viewer.viewercontroller.controller.Tool",{
-    extend: "viewer.components.Component",
     statics:{
         // The different types of tools
         DRAW_FEATURE               : 0,
@@ -40,35 +39,12 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     config :{
         id: null,
         frameworkObject: null,
-        type: null,
-        visible: true
+        visible: true,
+        type: null
     },
     constructor: function (config){
         this.initConfig(config);
-        this.events = [];
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_CLICK,viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,viewer.viewercontroller.controller.Event.ON_EVENT_UP);
         return this;
-    },
-    /**
-     * Init the tool and add it to the mapcomponent
-     */
-    initTool: function(conf){ 
-        //MapComponent is working with ids instead of names
-        conf.id=this.name;
-        //Let the Mapcomponent create the specific tool
-        this.tool = this.viewerController.mapComponent.createTool(conf);   
-        if (this.tool==null){
-            throw new Error("Tool not initialized! Initialize the tool before the addTool");            
-        }
-        //Add the tool
-        this.viewerController.mapComponent.addTool(this.tool);
-    },
-    fire : function (event,options){
-        this.fireEvent(event,this,options);
-    },
-
-    registerEvent : function (event,handler){
-        this.addListener(event,handler);
     },
     /**
      * Returns the framework object
@@ -77,11 +53,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     getFrameworkTool : function(){
         return this.frameworkObject;
     },
-
-    getType : function(){
-        return this.type;
-    },
-
+    
     getId : function(){
         return this.id;
     },

@@ -21,7 +21,7 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.tools.Identify",{
-    extend: "viewer.viewercontroller.controller.Tool",
+    extend: "viewer.components.tools.Tool",
     config:{
         name: "identify"
     },
