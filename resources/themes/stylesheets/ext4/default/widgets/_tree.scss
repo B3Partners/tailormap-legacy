@@ -43,22 +43,22 @@
     //elbows
     .#{$prefix}tree-arrows .#{$prefix}tree-expander-over .#{$prefix}tree-elbow-plus,
     .#{$prefix}tree-arrows .#{$prefix}tree-expander-over .#{$prefix}tree-elbow-end-plus {
-        background-position: -32px 0;
+        background-position: (0 - $tree-elbow-width) 0;
     }
 
     .#{$prefix}tree-arrows .#{$prefix}tree-expander-over .#{$prefix}tree-elbow-minus,
     .#{$prefix}tree-arrows .#{$prefix}tree-expander-over .#{$prefix}tree-elbow-end-minus {
-        background-position: -48px 0;
+        background-position: (0 - $tree-elbow-width) 0;
     }
     
     .#{$prefix}tree-arrows .x-grid-tree-node-expanded .#{$prefix}tree-elbow-plus,
     .#{$prefix}tree-arrows .x-grid-tree-node-expanded .#{$prefix}tree-elbow-end-plus {
-        background-position: -16px 0;
+        background-position: (0 - $tree-elbow-width) 0;
     }
     
     .#{$prefix}tree-arrows .x-grid-tree-node-expanded .#{$prefix}tree-expander-over .#{$prefix}tree-elbow-plus,
     .#{$prefix}tree-arrows .x-grid-tree-node-expanded .#{$prefix}tree-expander-over .#{$prefix}tree-elbow-end-plus {
-        background-position: -48px 0;
+        background-position: (0 - $tree-elbow-width) 0;
     }
 
     .#{$prefix}tree-elbow-plus,
