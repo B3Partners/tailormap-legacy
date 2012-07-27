@@ -147,6 +147,15 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .olControlPanel .olControlidentifyItemInactive{
     background-image: url("../../viewer-html/common/openlayers/theme/default/img/identify_off.png");
 }
+.olControlLoadingPanel {
+            background-image:url(../../viewer-html/common/openlayers/img/loading.gif);
+            position: relative;
+            width: 195px;
+            height: 11px;
+            background-position:center;
+            background-repeat:no-repeat;
+            display: none;
+        }
 /*
 .olControlMeasureItemInactive{
     background-image: url("img/measure_off.png");

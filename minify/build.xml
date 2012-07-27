@@ -89,6 +89,11 @@
             <file name="Utils.js"/>
             <file name="ToolMapClick.js"/>
           </sources> 
+		  <!--					The OpenLayers components implementation		-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers/components">
+            <file name="LoadingPanel.js"/>
+            <file name="LoadMonitor.js"/>
+          </sources> 
 		  
           <!--					The Flamingo-mc component 				-->
           <sources dir="${viewerhtml.path}/common/viewercontroller">          

@@ -89,10 +89,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersImageLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTilingLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTool.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersIdentifyTool.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersMap.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/Utils.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/ToolMapClick.js"></script>
+                        
+                        <!-- The components -->
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersComponent.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/OpenLayersIdentifyTool.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/LoadingPanel.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/LoadMonitor.js"></script>
                     </c:when>
                     <c:otherwise>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoLayer.js"></script>
@@ -107,6 +112,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoTool.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoComponent.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/ToolMapClick.js"></script>
+                        
                     </c:otherwise>
                 </c:choose>
                     
