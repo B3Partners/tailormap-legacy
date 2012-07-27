@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * LayerSwitch component
- * Creates a LayerSwitch component
+ * LoadMonitor component
+ * Creates a LoadMonitor component for OpenLayers
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.viewercontroller.openlayers.LoadMonitor",{
@@ -25,8 +25,10 @@ Ext.define ("viewer.viewercontroller.openlayers.LoadMonitor",{
         top:null,
         left:null
     },
+    
     constructor: function (conf){        
         viewer.viewercontroller.openlayers.LoadMonitor.superclass.constructor.call(this, conf);
+        // Make the control and add it to the openlayersmap
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
         this.frameworkComponent = new OpenLayers.Control.LoadingPanel();
         map.addControl(this.frameworkComponent);
@@ -38,6 +40,7 @@ Ext.define ("viewer.viewercontroller.openlayers.LoadMonitor",{
         return this;
     },
     
+    // Set the position of the loadingpanel
     setPosition : function (top, left){
         var div = this.frameworkComponent.div;
         div.style.top = top + "px";
