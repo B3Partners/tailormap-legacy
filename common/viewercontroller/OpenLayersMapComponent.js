@@ -237,7 +237,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan())
         }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
-            this.viewerController.logger.error("Tool SUPERPAN not implemented (yet)");
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan({enableKinetic: true}))
+            //this.viewerController.logger.error("Tool SUPERPAN not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.BUTTON){//6,
             this.viewerController.logger.error("Tool BUTTON not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.TOGGLE){//7,
