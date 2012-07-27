@@ -21,9 +21,10 @@
 Ext.define("viewer.viewercontroller.controller.Component",{
     extend: "Ext.util.Observable",
     config :{
-        id: "id",
+        id: null,
         frameworkObject: null,
-        type: -1
+        type: -1,
+        viewerController:null
     },
     /**
      * @param config

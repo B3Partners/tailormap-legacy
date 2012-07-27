@@ -20,16 +20,17 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.LoadMonitor",{
-    extend: "viewer.components.Component",    
-    constructor: function (conf){        
+    extend: "viewer.components.Component",
+    loadMonitor:null,
+    constructor: function (conf){
         viewer.components.LoadMonitor.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.LOADMONITOR;
         
-        var comp = viewerController.mapComponent.createComponent(conf);
-        viewerController.mapComponent.addComponent(comp);
+        this.loadMonitor = this.viewerController.mapComponent.createComponent(conf);
+        this.viewerController.mapComponent.addComponent(this.loadMonitor);
         
         return this;
     },

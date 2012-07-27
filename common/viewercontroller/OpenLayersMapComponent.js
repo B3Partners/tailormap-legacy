@@ -207,6 +207,21 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return Ext.create("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",options);
     },
     /**
+     * createComponent(config)
+     * Creates a new, OpenLayers specific component. Used for components that implement openlayerspecific stuff 
+     *
+     */
+    createComponent : function (config){
+        var type = config.type;
+        var comp = null;
+        if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
+            comp = Ext.create("viewer.viewercontroller.openlayers.LoadMonitor",config);
+        }else{
+            this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
+        }
+        return comp;
+    },
+    /**
      *Create a tool: the initializing of a piece of functionality to link to a button
      *@param id
      *@param type: the type of the tool. Possible values: @see viewer.viewercontroller.controller.Tool#statics   *

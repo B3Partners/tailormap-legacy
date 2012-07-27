@@ -22,6 +22,7 @@
   **/
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersComponent",{
     extend: "viewer.viewercontroller.controller.Component",
+    frameworkComponent:null,
     /**
      * @see viewer.viewercontroller.controller.Component#constructor
      */
