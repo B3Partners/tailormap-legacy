@@ -26,6 +26,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
     },
     constructor : function (config){
         viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.constructor.call(this, config);
+        this.mixins.openLayersLayer.constructor.call(this,config);
+        
         var ex = Ext.create("viewer.viewercontroller.controller.Extent",this.extent);
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();

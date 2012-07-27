@@ -36,7 +36,7 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         return this;
     },
     statics:{
-        // The different types of tools
+        // The different types of components
         LOADING_BAR                : 1,
         SCALEBAR                   : 2,
         BORDER_NAVIGATION          : 3,

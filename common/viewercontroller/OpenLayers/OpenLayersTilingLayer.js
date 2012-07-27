@@ -29,6 +29,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
      */
     constructor : function (config){        
         viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);        
+        this.mixins.openLayersLayer.constructor.call(this,config);
+        
         this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
         
         var serviceEnvelopeTokens=this.serviceEnvelope.split(",");

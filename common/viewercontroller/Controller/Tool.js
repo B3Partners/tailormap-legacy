@@ -18,7 +18,6 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         BUTTON                     : 6,
         TOGGLE                     : 7,
         CLICK                      : 8,
-        LOADING_BAR                : 9,
         GET_FEATURE_INFO           : 10,
         MEASURE                    : 11,
         ZOOM_BAR                   : 13,

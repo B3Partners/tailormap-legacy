@@ -26,7 +26,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
     constructor: function(config){
-        viewer.viewercontroller.openlayers.OpenLayersArcLayer.superclass.constructor.call(this, config);    
+        viewer.viewercontroller.openlayers.OpenLayersArcLayer.superclass.constructor.call(this, config);
+        this.mixins.openLayersLayer.constructor.call(this,config);
+        
         this.initConfig(config);
         return this;
     },

@@ -108,8 +108,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                     this.frameworkLayer.events.register(olSpecificEvent, this, this.handleEvent);
                 }
             }
-        }
-        this.superclass.addListener.call(this,event,handler,scope);
+        }        
+        viewer.viewercontroller.controller.Layer.superclass.addListener.call(this,event,handler,scope);
     },
     /**
      * @see Ext.util.Observable#removeListener
@@ -136,7 +136,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
                 }
             }            
         }
-        this.superclass.removeListener.call(this,event,handler,scope);
+        viewer.viewercontroller.controller.Layer.superclass.removeListener.call(this,event,handler,scope);
     },
     
     /**

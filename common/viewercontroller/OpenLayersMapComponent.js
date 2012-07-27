@@ -244,8 +244,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             this.viewerController.logger.error("Tool TOGGLE not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.CLICK){//8,
             this.viewerController.logger.error("Tool CLICK not implemented (yet)");
-        }else if (type==viewer.viewercontroller.controller.Tool.LOADING_BAR){//9,
-            this.viewerController.logger.error("Tool LOADING_BAR not implemented (yet)");
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {            
             var frameworkOptions=new Object();
             //olControlidentify
@@ -531,8 +529,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (tool.getType() == viewer.viewercontroller.controller.Tool.CLICK){
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
             this.getPanel().addControls([tool.getFrameworkTool().button]);
-        }else if (tool.getType() == viewer.viewercontroller.controller.Tool.LOADING_BAR){
-            this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
         }else if( tool.getType() == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO ){
             this.getPanel().addControls([tool.getFrameworkTool()]);
             this.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());

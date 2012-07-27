@@ -20,6 +20,9 @@
  */
 Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
+    constructor: function(config){
+        viewer.viewercontroller.controller.ArcLayer.superclass.constructor.call(this,config);
+    },
     getId :function (){
         Ext.Error.raise({msg: "ArcLayer.getId() Not implemented! Must be implemented in sub-class"});
     },
