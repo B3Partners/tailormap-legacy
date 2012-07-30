@@ -132,6 +132,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoComponent.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/ToolMapClick.js"></script>
                         
+                        <!-- The components -->
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/components/Overview.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/tools/JSButton.js"></script>
+                        
                     </c:otherwise>
                 </c:choose>
                     

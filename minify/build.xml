@@ -72,6 +72,17 @@
             <file name="FlamingoTilingLayer.js"/>
             <file name="ToolMapClick.js"/>
           </sources>   
+		  
+          <!--					The Flamingo-MC components implementation		-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo/components">
+            <file name="Overview.js"/>
+		  </sources> 
+		  
+		  <!--					The Flamingo-MC tools implementation		-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo/tools">
+            <file name="JSButton.js"/>
+		  </sources>
+		  
 
 		<!--					The OpenLayers implementation		-->
           <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers">
@@ -88,6 +99,7 @@
             <file name="OpenLayersMap.js"/>
             <file name="Utils.js"/>
             <file name="ToolMapClick.js"/>
+            <file name="OpenLayersComponent.js"/>
           </sources> 
 		  <!--					The OpenLayers components implementation		-->
           <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers/components">
