@@ -259,7 +259,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             
             //options.olMap= this.getMap().getFrameworkMap();
             var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool(
-                options ,new OpenLayers.Control(frameworkOptions),this.getMap().getFrameworkMap());
+                options ,new OpenLayers.Control(frameworkOptions),this.getMap());
             
             //this.getMap().setGetFeatureInfoControl(identifyTool);
             return identifyTool;

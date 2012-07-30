@@ -21,23 +21,23 @@
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersIdentifyTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
-    olMap: null,
-    constructor : function (conf,frameworkTool,olMap){
+    map: null,
+    constructor : function (conf,frameworkTool,map){
         viewer.viewercontroller.openlayers.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
-        this.olMap=olMap;
+        this.map=map;
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
         return this;
     },
     activate: function(){
-        this.olMap.events.register("click", this, this.handleClick);
+        this.map.getFrameworkMap().events.register("click", this, this.handleClick);
     },
     deactivate: function(){
-        this.olMap.events.unregister("click", this, this.handleClick);
+        this.map.getFrameworkMap().events.unregister("click", this, this.handleClick);
     },
     handleClick: function(event){
-        var opx = this.olMap.getLonLatFromPixel(event.xy)
+        var opx = this.map.getFrameworkMap().getLonLatFromPixel(event.xy)
         var options = {
             x: event.xy.x,
             y: event.xy.y,
@@ -46,6 +46,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersIdentifyTool",{
                 y: opx.lat
             }
         };
-        this.viewerController.mapComponent.getMap().fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
+        this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     }  
 });
