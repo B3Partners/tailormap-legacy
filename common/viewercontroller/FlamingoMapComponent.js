@@ -233,8 +233,15 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         //set the name as id.
         if (Ext.isEmpty(conf.id)){
             conf.id=conf.name;
-        }        
-        var component = new viewer.viewercontroller.flamingo.FlamingoComponent(conf);        
+        }
+        
+        conf.viewerController = this.viewerController;
+        var component;
+        if(conf.type == viewer.viewercontroller.controller.Component.OVERVIEW){
+            component = Ext.create ("viewer.viewercontroller.flamingo.Overview",conf);
+        }else{
+            component = new viewer.viewercontroller.flamingo.FlamingoComponent(conf);
+        }
         return component;
     },
     /**

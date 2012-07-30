@@ -131,8 +131,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
                 this.addString("loading",config.loadingText);
                 this.addString("waiting",config.loadingText);
             }           
-        }
-        else{
+        }else if(config.type == viewer.viewercontroller.controller.Component.OVERVIEW){
+        } else{
             Ext.Error.raise({msg: "Can't find type of component or component not supported"});
         }    
         return this;

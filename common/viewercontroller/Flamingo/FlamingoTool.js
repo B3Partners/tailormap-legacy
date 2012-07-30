@@ -18,7 +18,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         //for measure
         decimals: null,
         magicnumber: null,
-        units: null
+        units: null,
+        viewerController:null
     },       
     /** Create a new FlamingoTool
      *@construct

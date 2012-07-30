@@ -15,102 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Overview component
- * Creates a overview map
- * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * LoadMonitor object.
+ * Monitor's the loading with a loadingbar
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.Overview",{
     extend: "viewer.components.Component",
-    showButton : null,
-    config: {
-        position:null,
-        width:null,
-        height:null,
-        url:null,
-        lox:null,
-        loy:null,
-        rbx:null,
-        rby:null,
-        // configuration options for the button to open/close the popup
-        picSelected:null,
-        picOver:null,
-        picNormal:null,
-        picTop:null,
-        picLeft:null
-    },
-    constructor: function (conf){        
+    constructor: function (conf){
         viewer.components.Overview.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
-        this.makeComponents();
+        
+        conf.id=conf.name;
+        conf.type = viewer.viewercontroller.controller.Component.OVERVIEW;
+        
+        var overview = this.viewerController.mapComponent.createComponent(conf);
+        this.viewerController.mapComponent.addComponent(overview);
+        
         return this;
-    },
-    makeComponents : function (){
-        var extent = this.lox +"," +this.loy +"," +this.rbx +"," +this.rby;
-        var xml ="<fmc:Map id='Map"+this.name+"'  width='"+this.width+"' height='"+this.height+"' clear='true' ";
-        xml += "extent='"+ this.viewerController.mapComponent.getMap().getExtent().toString()+"' fullextent='"+ this.viewerController.mapComponent.getMap().getMaxExtent().toString()+ "'";
-        xml += "listento='"+this.viewerController.mapComponent.getMap().getId() +"'>";
-        xml +="<fmc:LayerOverview xmlns:fmc='fmc' id='LayerOverview"+ this.name + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "' color='#76B6D1'";
-        xml += " followfactor='200'/>";
-        xml += "<fmc:LayerImage id='layerimageoverview"+this.name+"' imageurl='"+this.url + "'";
-        xml+=" extent='"+extent + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "'/>";
-        xml +="</fmc:Map>";
-        var position = "";
-        if(this.position == 'upperleft'){
-            var topMenuLayout=this.viewerController.getLayout('top_menu');
-            position = "left = 'left 0' top = '" + topMenuLayout.height;
-            position += topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
-            position += "'";
-        }else if(this.position == 'upperright'){
-            var topMenuLayout=this.viewerController.getLayout('top_menu');
-            position = "right = 'right 0' top = '" + topMenuLayout.height;
-            position += topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
-            position += "'";
-        }else if(this.position == 'lowerleft'){
-            var contentBottomLayout=this.viewerController.getLayout('content_bottom');
-            position = "left = 'left 0' bottom = 'bottom -" + contentBottomLayout.height;
-            position += contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
-            position += "'";
-        }else if(this.position == 'lowerright'){
-            var contentBottomLayout=this.viewerController.getLayout('content_bottom');
-            position = "right = 'right 0' bottom = 'bottom -" + contentBottomLayout.height;
-            position += contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
-            position += "'";
-        }
-        var container;
-    
-        // Make showbutton
-        var conf = {};
-        conf.toggle = true;
-        conf.enabled = true;
-        conf.visible = true;
-        conf.selected = true;
-        conf.iconUrl_up = this.picNormal;
-        conf.iconUrl_over= this.picOver;
-        conf.iconUrl_sel= this.picSelected;
-        conf.iconUrl_dis= this.picNormal;
-
-        conf.left = this.picLeft;
-        conf.top = this.picTop;
-        conf.viewerController = this.viewerController;
-        conf.tooltip = "Open/sluit de overzichtskaart";
-        this.showButton = Ext.create("viewer.components.tools.JSButton", conf);
-        var me = this;
-        this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,function () {
-            me.showOverview(true);
-        }, this);
-        this.showButton.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,function () {
-            me.showOverview(false);
-        }, this);
-        container = "<fmc:Container id='"+ this.name + "windowcontainer' "+ position +" width='"+this.width+"' height='"+this.height+"' borderwidth='0' bordercolor='#D0D0D0' backgroundcolor='#FFFFFF'>";
-        container += xml;
-        container += "</fmc:Container>";
-
-        this.viewerController.mapComponent.viewerObject.callMethod(this.viewerController.mapComponent.mainContainerId,'addComponent',container);      
     },
     getExtComponents: function() {
         return [];
-    },
-    showOverview : function (open){
-        this.viewerController.mapComponent.viewerObject.callMethod( this.name + 'windowcontainer','setVisible',open);  
     }
 });
+
