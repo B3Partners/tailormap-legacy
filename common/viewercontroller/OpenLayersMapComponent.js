@@ -216,6 +216,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var comp = null;
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
             comp = Ext.create("viewer.viewercontroller.openlayers.LoadMonitor",config);
+        }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
+            
         }else{
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
