@@ -82,20 +82,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/DataSelectionChecker.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
                 
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Map.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Layer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/TilingLayer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/WMSLayer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/ArcLayer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/ImageLayer.js"></script>                
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/VectorLayer.js"></script>                
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/MapTip.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Extent.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Feature.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Event.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Tool.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Component.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/ToolMapClick.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Map.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Layer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/TilingLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/WMSLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/ArcLayer.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/ImageLayer.js"></script>                
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/VectorLayer.js"></script>                
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/MapTip.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Extent.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Feature.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Event.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Tool.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Component.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/ToolMapClick.js"></script>
 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
                 
@@ -127,22 +127,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayersMapComponent.js"></script>
                     </c:when>
                     <c:otherwise>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoWMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoArcLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoArcIMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoVectorLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoImageLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoTilingLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoMap.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoTool.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoComponent.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/ToolMapClick.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoWMSLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoArcLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoArcServerLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoArcIMSLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoVectorLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoImageLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoTilingLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoMap.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoTool.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoComponent.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/ToolMapClick.js"></script>
                         
                         <!-- The components -->
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/components/Overview.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/tools/JSButton.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/components/Overview.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/tools/JSButton.js"></script>
                         
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script> 
                         
