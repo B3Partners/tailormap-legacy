@@ -97,8 +97,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/Component.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Controller/ToolMapClick.js"></script>
 
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
+                
                 <c:choose>
                     <c:when test="${viewerType == 'openlayers'}">
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayersMapComponent.js"></script>
+                
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcIMSLayer.js"></script>
@@ -117,11 +121,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/LoadingPanel.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersLoadMonitor.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersOverview.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openLayers/components/OpenLayersMaptip.js"></script>
                         
                         <!-- The tools -->                        
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js"></script>
                     </c:when>
                     <c:otherwise>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>  
+                
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoWMSLayer.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoArcLayer.js"></script>
@@ -142,9 +149,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:otherwise>
                 </c:choose>
                     
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>  
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayersMapComponent.js"></script>
+                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/MobileSlider.js"></script>
