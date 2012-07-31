@@ -119,7 +119,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/LoadingPanel.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersLoadMonitor.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersOverview.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openLayers/components/OpenLayersMaptip.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersMaptip.js"></script>
                         
                         <!-- The tools -->                        
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js"></script>
