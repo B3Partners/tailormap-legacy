@@ -40,7 +40,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     *@returns the WMS getMap Reqeust.
     */
     getLastMapRequest : function(){
-        return this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent());
+        var request=[{
+            url: this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent())
+        }];
+        return request;
+        
     },
     /**
      * Implementation of setUrl in Layer

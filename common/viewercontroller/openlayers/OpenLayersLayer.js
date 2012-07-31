@@ -78,16 +78,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
     },
     */
-    /**
-     * Needs to return a object with the last request
-     * @return array of objects with:
-     *  object.url the url of the last request
-     *  object.body (optional) the body of the request
-     */
-    getLastMapRequest: function(){
-        Ext.Error.raise({msg: "Layer.getLastMapRequest() Not implemented! Must be implemented in sub-class"});
-    },
-
     
     /**
      * @see Ext.util.Observable#addListener

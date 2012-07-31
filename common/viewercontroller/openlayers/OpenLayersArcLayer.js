@@ -75,9 +75,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     removeBuffer: function(layer){        
         console.log("OpenLayersArcLayer.removeBuffer: .removeBuffer() must be made!");
     },
-    getLastMapRequest : function () {
-        return this.mixins.openLayersLayer.getLastMapRequest.call(this);
-    },
     getType : function (){
         return this.mixins.openLayersLayer.getType.call(this);
     },

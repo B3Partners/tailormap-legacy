@@ -32,6 +32,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE;
     },
     getLastMapRequest: function(){
-        return this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent());
+        var request=[{
+            url: this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent())
+        }];
+        return request;
     }    
 });
