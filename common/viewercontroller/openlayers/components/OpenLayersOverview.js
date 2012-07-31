@@ -32,38 +32,22 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
     
     constructor: function (conf){        
         viewer.viewercontroller.openlayers.components.OpenLayersOverview.superclass.constructor.call(this, conf);
-        // Make the control and add it to the openlayersmap
-        var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
         var layer =  new OpenLayers.Layer.WMS(
             "OverviewLaag", 
             this.url,
-            {layers: this.layers}
-        ); 
+            {layers: this.layers}); 
         var maxExtent =this.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
         this.frameworkObject = new OpenLayers.Control.OverviewMap({
-             maximized: true,
+            maximized: true,
             mapOptions: {
                 maxExtent: maxExtent,
                 projection: "EPSG:28992"
             },
             layers: [layer]
         });
-      //  map.addControl(this.frameworkComponent);
-
-        
-        if(this.left && this.top){
-            this.setPosition(this.top, this.left);
-        }
         
         return this;
     },
-    
-    /* Set the position of the loadingpanel
-    setPosition : function (top, left){
-        var div = this.frameworkComponent.div;
-        div.style.top = top + "px";
-        div.style.left = left+ "px";
-    },*/
     
     getExtComponents: function() {
         return [];
