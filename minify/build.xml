@@ -95,7 +95,6 @@
             <file name="OpenLayersImageLayer.js"/>
             <file name="OpenLayersTilingLayer.js"/>
             <file name="OpenLayersTool.js"/>
-            <file name="OpenLayersIdentifyTool.js"/>
             <file name="OpenLayersMap.js"/>
             <file name="Utils.js"/>
             <file name="ToolMapClick.js"/>
@@ -106,7 +105,13 @@
             <file name="LoadingPanel.js"/>
             <file name="LoadMonitor.js"/>
           </sources> 
-		  
+          
+          	  <!--					The OpenLayers components implementation		-->
+          <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers/tools">
+            <file name="OpenLayersIdentifyTool.js"/>
+          </sources> 
+		
+		
           <!--					The Flamingo-mc component 				-->
           <sources dir="${viewerhtml.path}/common/viewercontroller">          
             <file name="MapComponent.js"/>

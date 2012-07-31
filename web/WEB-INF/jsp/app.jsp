@@ -114,9 +114,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         
                         <!-- The components -->
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersComponent.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/OpenLayersIdentifyTool.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/LoadingPanel.js"></script>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/LoadMonitor.js"></script>
+                        
+                        <!-- The tools -->
+                        
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/tools/OpenLayersIdentifyTool.js"></script>
                     </c:when>
                     <c:otherwise>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoLayer.js"></script>
