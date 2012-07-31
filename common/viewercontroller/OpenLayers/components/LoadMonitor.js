@@ -30,8 +30,8 @@ Ext.define ("viewer.viewercontroller.openlayers.LoadMonitor",{
         viewer.viewercontroller.openlayers.LoadMonitor.superclass.constructor.call(this, conf);
         // Make the control and add it to the openlayersmap
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
-        this.frameworkComponent = new OpenLayers.Control.LoadingPanel();
-        map.addControl(this.frameworkComponent);
+        this.frameworkObject = new OpenLayers.Control.LoadingPanel();
+        map.addControl(this.frameworkObject);
 
         if(this.left && this.top){
             this.setPosition(this.top, this.left);
@@ -42,7 +42,7 @@ Ext.define ("viewer.viewercontroller.openlayers.LoadMonitor",{
     
     // Set the position of the loadingpanel
     setPosition : function (top, left){
-        var div = this.frameworkComponent.div;
+        var div = this.frameworkObject.div;
         div.style.top = top + "px";
         div.style.left = left+ "px";
     },
