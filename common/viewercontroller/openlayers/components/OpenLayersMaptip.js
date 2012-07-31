@@ -19,11 +19,11 @@
  * Creates a Maptip component for OpenLayers
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayerMaptip",{
+Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
     map: null,
     constructor: function(conf,map){
-        viewer.viewercontroller.openlayers.components.OpenLayerMaptip.superclass.constructor.call(this,conf);
+        viewer.viewercontroller.openlayers.components.OpenLayersMaptip.superclass.constructor.call(this,conf);
         this.map=map;
         this.frameworkObject= new OpenLayers.Control();
         var me =this;
