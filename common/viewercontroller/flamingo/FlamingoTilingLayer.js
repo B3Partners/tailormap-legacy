@@ -107,7 +107,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
      */
     getVisible: function(){
-        this.mixins.flamingoLayer.getVisible.call(this);
+        return this.mixins.flamingoLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha

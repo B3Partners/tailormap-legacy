@@ -93,7 +93,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
     getVisible: function(){
-        this.mixins.openLayersLayer.getVisible.call(this);
+        return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha

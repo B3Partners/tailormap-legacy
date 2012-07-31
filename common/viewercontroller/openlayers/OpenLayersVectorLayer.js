@@ -203,8 +203,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    getVisible: function(){
-        this.mixins.openLayersLayer.getVisible.call(this);
+    getVisible: function(){        
+       return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
