@@ -87,7 +87,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      *@returns a OpenLayersMap
      */
     createMap : function(id, options){
-        options = this.mapOptions;
+        options = Ext.merge(this.mapOptions,options);
         options["theme"]=OpenLayers._getScriptLocation()+'theme/default/style.css';
         options.mapComponent=this;   
         options.viewerController = this.viewerController;
@@ -217,7 +217,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
             comp = Ext.create("viewer.viewercontroller.openlayers.LoadMonitor",config);
         }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
-            
+            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersOverview",config);
         }else{
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }

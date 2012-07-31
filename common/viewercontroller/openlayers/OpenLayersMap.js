@@ -32,9 +32,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.initConfig(config);
         this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
         var maxBounds=null;
-        if (config.maxExtent){
-            //maxBounds = new OpenLayers.Bounds(config.maxExtent.minx,config.maxExtent.miny,config.maxExtent.maxx,config.maxExtent.maxy);
-            maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
+        if (config.options.fullextent){
+            var fullExtent = Ext.create("viewer.viewercontroller.controller.Extent",config.options.fullextent);
+            maxBounds = new OpenLayers.Bounds(fullExtent.minx, fullExtent.miny, fullExtent.maxx, fullExtent.maxy);
+           // maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
         }
         else{
             //fallback for bounds.

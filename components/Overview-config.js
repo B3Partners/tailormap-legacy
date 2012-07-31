@@ -133,6 +133,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: config.url,
                 labelWidth:me.labelWidth
             },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Layers (optioneel)',
+                name: 'layers',
+                value: config.layers,
+                labelWidth:me.labelWidth
+            },{ 
                 xtype:'container',
                 margin: 5,
                 title: 'Extentie van de afbeelding',

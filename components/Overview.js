@@ -21,6 +21,7 @@
  */
 Ext.define ("viewer.components.Overview",{
     extend: "viewer.components.Component",
+    overview:null,
     constructor: function (conf){
         viewer.components.Overview.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
@@ -28,8 +29,8 @@ Ext.define ("viewer.components.Overview",{
         conf.id=conf.name;
         conf.type = viewer.viewercontroller.controller.Component.OVERVIEW;
         
-        var overview = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(overview);
+        this.overview = this.viewerController.mapComponent.createComponent(conf);
+        this.viewerController.mapComponent.addComponent(this.overview);
         
         return this;
     },
