@@ -103,7 +103,8 @@
 		  <!--					The OpenLayers components implementation		-->
           <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers/components">
             <file name="LoadingPanel.js"/>
-            <file name="LoadMonitor.js"/>
+            <file name="OpenLayersLoadMonitor.js"/>
+            <file name="OpenLayersOverview.js"/>
           </sources> 
           
           	  <!--					The OpenLayers components implementation		-->
@@ -112,7 +113,7 @@
           </sources> 
 		
 		
-          <!--					The Flamingo-mc component 				-->
+          <!--					The Flamingo-mc component                                       -->
           <sources dir="${viewerhtml.path}/common/viewercontroller">          
             <file name="MapComponent.js"/>
             <file name="FlamingoMapComponent.js"/>     
