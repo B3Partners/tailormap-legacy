@@ -1,0 +1,76 @@
+/* 
+ * Copyright (C) 2012 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * LoadMonitor component
+ * Creates a Maptip component for OpenLayers
+ * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ */
+Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayerMaptip",{
+    extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
+    map: null,
+    constructor: function(conf,map){
+        viewer.viewercontroller.openlayers.components.OpenLayerMaptip.superclass.constructor.call(this,conf);
+        this.map=map;
+        this.frameworkObject= new OpenLayers.Control();
+        var me =this;
+        this.frameworkObject.handler= new OpenLayers.Handler.Hover(
+            this.frameworkObject,{
+                //the handlers:
+                pause: function (object){
+                    me.onPause(object);
+                },
+                move: this.onMove
+            },{
+                //the options:
+                delay: 500,
+                pixelTolerance: null,
+                stopMove: false
+            }
+        );
+    },
+    onPause: function(object){         
+        /**
+         * @field
+         * Occures when the map wants a maptip.
+         * @param map the map where this event occured
+         * @param options.x x in pixels on the screen
+         * @param options.y y in pixels on the screen
+         * @param options.coord.x the x coord in world coords
+         * @param options.coord.y the y coord in world coords
+         */
+        var lonLat= this.map.getFrameworkMap().getLonLatFromViewPortPx(object.xy);
+        var options={
+            x: object.xy.x,
+            y: object.xy.y,
+            coord: {
+                x: lonLat.lon,
+                y: lonLat.lat
+            }
+        }
+        this.map.fire(viewer.viewercontroller.controller.Event.ON_MAPTIP,options);
+    },
+    /**
+     * @see viewercontroller.controller.Component#setVisible
+     */
+    setVisible: function(vis){
+        if (vis){
+            this.frameworkObject.activate();
+        }else{
+            this.frameworkObject.deactivate();
+        }
+    }
+});

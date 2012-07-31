@@ -19,11 +19,17 @@
  * @constructor
  * @description An identify tool
  */
-Ext.define("viewer.viewercontroller.openlayers.OpenLayersIdentifyTool",{
+Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
     map: null,
+    /**
+     * Constructor
+     * @param conf the configuration object
+     * @param frameworkTool the openlayers control
+     * @param map the viewer.viewercontroller.openlayers.OpenLayersMap
+     */
     constructor : function (conf,frameworkTool,map){
-        viewer.viewercontroller.openlayers.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
+        viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
         this.map=map;
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
