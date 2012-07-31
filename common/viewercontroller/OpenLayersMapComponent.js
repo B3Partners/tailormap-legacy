@@ -58,6 +58,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]                       = "getfeatureinfo";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "changelayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_MOVEEND]                          = "moveend";
+        
+        
     },
     /**
      * @description Gets the panel of this controller and OpenLayers.Map. If the panel is still null, the panel is created and added to the map.

@@ -253,10 +253,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                 this.enabledEvents[olSpecificEvent] = 1;
                 this.frameworkMap.events.register(olSpecificEvent, this, this.handleEvent);
             }
-            viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
-        }else{
-            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
+        viewer.viewercontroller.openlayers.OpenLayersMap.superclass.addListener.call(this,event,handler,scope);
     },
     
     /**
