@@ -85,7 +85,7 @@
 		  
 
 		<!--					The OpenLayers implementation		-->
-          <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers">
+          <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers">
             <file name="OpenLayersLayer.js"/>
 			<file name="OpenLayersArcLayer.js"/>
 			<file name="OpenLayersArcIMSLayer.js"/>
@@ -101,14 +101,14 @@
             <file name="OpenLayersComponent.js"/>
           </sources> 
 		  <!--					The OpenLayers components implementation		-->
-          <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers/components">
+          <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers/components">
             <file name="LoadingPanel.js"/>
             <file name="OpenLayersLoadMonitor.js"/>
             <file name="OpenLayersOverview.js"/>
           </sources> 
           
           	  <!--					The OpenLayers components implementation		-->
-          <sources dir="${viewerhtml.path}/common/viewercontroller/OpenLayers/tools">
+          <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers/tools">
             <file name="OpenLayersIdentifyTool.js"/>
           </sources> 
 		

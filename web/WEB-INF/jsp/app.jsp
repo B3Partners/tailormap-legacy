@@ -99,27 +99,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <c:choose>
                     <c:when test="${viewerType == 'openlayers'}">
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersArcLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersArcIMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersWMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersVectorLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersImageLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTilingLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersTool.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersMap.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/Utils.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/ToolMapClick.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcIMSLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcServerLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersWMSLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersVectorLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersImageLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersTilingLayer.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersTool.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersMap.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/Utils.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/ToolMapClick.js"></script>
                         
                         <!-- The components -->
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/OpenLayersComponent.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/LoadingPanel.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/OpenLayersLoadMonitor.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/components/OpenLayersOverview.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersComponent.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/LoadingPanel.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersLoadMonitor.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersOverview.js"></script>
                         
                         <!-- The tools -->                        
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayers/tools/OpenLayersIdentifyTool.js"></script>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js"></script>
                     </c:when>
                     <c:otherwise>
                         <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/Flamingo/FlamingoLayer.js"></script>
@@ -144,7 +144,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script>  
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayersMapComponent.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayersMapComponent.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/MobileSlider.js"></script>
