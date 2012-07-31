@@ -520,7 +520,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      * @param scope The scope to fire the events in
      */
      registerEvent : function(event,object,handler,scope){
-         var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
          
         if(olSpecificEvent){
             if(object == this){

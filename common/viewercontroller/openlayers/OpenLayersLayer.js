@@ -19,8 +19,8 @@
  * @constructor
  * @description
  */
-
-Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{    
+//TODO: Add getFeatureInfo through the framework (is used when no featuretype for layer)
+Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{        
     config:{
         name: null
     },
