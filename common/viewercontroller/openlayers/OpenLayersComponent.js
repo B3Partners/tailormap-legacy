@@ -24,6 +24,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersComponent",{
     extend: "viewer.viewercontroller.controller.Component",
     /**
      * @see viewer.viewercontroller.controller.Component#constructor
+     * @param conf the configuration for the component
+     * @param frameworkObject the implementing openlayers object
      */
     constructor : function (conf,frameworkObject){
         viewer.viewercontroller.openlayers.OpenLayersComponent.superclass.constructor.call(this,conf);
