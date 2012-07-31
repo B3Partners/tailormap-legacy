@@ -26,11 +26,12 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         top:null,
         left:null,
         url:null,
-        layers:null
+        layers:null,
+        position:null
     },
     
     constructor: function (conf){        
-        viewer.viewercontroller.openlayers.OpenLayersOverview.superclass.constructor.call(this, conf);
+        viewer.viewercontroller.openlayers.components.OpenLayersOverview.superclass.constructor.call(this, conf);
         // Make the control and add it to the openlayersmap
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
         var layer =  new OpenLayers.Layer.WMS(
@@ -39,7 +40,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
             {layers: this.layers}
         ); 
         var maxExtent =this.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
-        this.frameworkComponent = new OpenLayers.Control.OverviewMap({
+        this.frameworkObject = new OpenLayers.Control.OverviewMap({
              maximized: true,
             mapOptions: {
                 maxExtent: maxExtent,
@@ -47,8 +48,9 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
             },
             layers: [layer]
         });
-        map.addControl(this.frameworkComponent);
+      //  map.addControl(this.frameworkComponent);
 
+        
         if(this.left && this.top){
             this.setPosition(this.top, this.left);
         }
