@@ -105,6 +105,7 @@
             <file name="LoadingPanel.js"/>
             <file name="OpenLayersLoadMonitor.js"/>
             <file name="OpenLayersOverview.js"/>
+            <file name="OpenLayersMaptip.js"/>             
           </sources> 
           
           	  <!--					The OpenLayers components implementation		-->
