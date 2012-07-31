@@ -81,6 +81,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             if (layer.hasFeatureType){
                 this.addLayerInServerRequest(appLayer);
             }else{
+                //TODO: add query layers to the map
                 //listen to the onMaptipData
                 mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
             }            

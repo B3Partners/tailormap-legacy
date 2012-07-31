@@ -222,6 +222,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersOverview",config);
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",config,this.getMap());
+        }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
+            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
+                new OpenLayers.Control.PanZoomBar({zoomWorldIcon: true}));
         }else{
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
