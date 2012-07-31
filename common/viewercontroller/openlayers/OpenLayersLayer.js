@@ -26,6 +26,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
     },
     enabledEvents: null,
     events : null,
+    type:null,
+    alpha:100,
     constructor :function (config){        
         this.initConfig(config);
         this.enabledEvents = new Object();
@@ -59,7 +61,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
     },
        
     setAlpha : function (alpha){
+        this.alpha=alpha;
         this.frameworkLayer.setOpacity(alpha/100);
+    },
+    getAlpha : function (){
+        return this.alpha;
     },
     /*
      *Implement in subclass:
@@ -138,7 +144,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         }
         viewer.viewercontroller.controller.Layer.superclass.removeListener.call(this,event,handler,scope);
     },
-    
+    /**
+     * Return the layer type.
+     */
+    getType: function(){
+        return this.type;
+    },
     /**
      * Handles the OpenLayers generated events for this Layer
      */
@@ -159,10 +170,23 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         this.getFrameworkLayer().events.unregister(specificName,handler,thisObj);
         this.removeListener(event,handler,thisObj);
     },
+    /**
+     * Sets the visibility of the layer
+     * @visible true or false
+     */
     setVisible : function (visible){
         if (this.frameworkLayer!=null){
             this.frameworkLayer.setVisibility(visible);
         }
+    },
+    /**
+     * Get the visibility
+     */
+    getVisible : function (){
+        if (this.frameworkLayer!=null){
+            return this.frameworkLayer.getVisibility();
+        }
+        return null;
     },
     layerFeatureHandler : function (obj){
         // TODO: FIX THIS. this handles the registered event directly. Ugh

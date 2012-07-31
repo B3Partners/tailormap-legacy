@@ -28,6 +28,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
         this.frameworkLayer = new OpenLayers.Layer.ArcGIS93Rest(this.name,this.url+"/export",{
             layers: "show: "+config.layers,
             transparent: 'true'
-        });
-    }   
+        });        
+        this.type=viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE;
+    },
+    getLastMapRequest: function(){
+        return this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent());
+    }    
 });

@@ -87,12 +87,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         return this.frameworkLayer.options.layername;
     },
     
+    getLastMapRequest: function(){
+        return [];
+    },
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
     setVisible: function(vis){
         this.mixins.openLayersLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    getVisible: function(){
+        this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
@@ -111,5 +120,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
      */
     removeListener: function (event,handler,scope){
         this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#getType
+     */
+    getType : function (){
+        return this.mixins.openLayersLayer.getType.call(this);
     }
 });

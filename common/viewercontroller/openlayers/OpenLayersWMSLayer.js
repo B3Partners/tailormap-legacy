@@ -29,6 +29,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         this.mixins.openLayersLayer.constructor.call(this,config);
         this.frameworkLayer = new OpenLayers.Layer.WMS(this.name,this.url,this.config.ogcParams,config);
                 
+        this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
+        
         this.getFeatureInfoControl=null;
         this.mapTipControl=null;
     },
@@ -37,7 +39,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     *Gets the last wms request-url of this layer
     *@returns the WMS getMap Reqeust.
     */
-    getURL : function(){
+    getLastMapRequest : function(){
         return this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent());
     },
     /**
@@ -83,6 +85,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         this.mixins.openLayersLayer.setVisible.call(this,vis);
     },
     /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    getVisible: function(){
+        this.mixins.openLayersLayer.getVisible.call(this);
+    },
+    /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
      */
     setAlpha: function (alpha){
@@ -99,5 +107,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
      */
     removeListener: function (event,handler,scope){
         this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#getType
+     */
+    getType : function (){
+        return this.mixins.openLayersLayer.getType.call(this);
     }
 });

@@ -120,11 +120,20 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     getLastMapRequest : function () {
         return this.mixins.flamingoLayer.getLastMapRequest.call(this);
     },
+    /**
+     *@see viewer.viewercontroller.flamingo.FlamingoLayer#getVisible
+     */
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
     }, 
     setVisible : function (vis){
         this.mixins.flamingoLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
+     */
+    getVisible: function(){
+        this.mixins.flamingoLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha

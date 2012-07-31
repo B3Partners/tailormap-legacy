@@ -121,6 +121,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     setVisible : function (visible){
         Ext.Error.raise({msg: "Layer.setVisible() Not implemented! Must be implemented in sub-class"});
     },
+    getVisible : function (){
+        Ext.Error.raise({msg: "Layer.getVisible() Not implemented! Must be implemented in sub-class"});
+    },
     setQuery : function (query){
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
     },

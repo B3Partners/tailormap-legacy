@@ -28,6 +28,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
         
+        this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
+        
         var ex = Ext.create("viewer.viewercontroller.controller.Extent",this.extent);
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
@@ -54,6 +56,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
      */
     setVisible: function(vis){
         this.mixins.openLayersLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    getVisible: function(){
+        this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha

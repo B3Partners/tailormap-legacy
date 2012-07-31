@@ -35,6 +35,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
+        this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
         
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
         //TODO: Make a circlecontrol
@@ -198,6 +199,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     setVisible: function(vis){
         this.mixins.openLayersLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    getVisible: function(){
+        this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha

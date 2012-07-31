@@ -28,7 +28,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
     constructor: function(config){
         viewer.viewercontroller.openlayers.OpenLayersArcLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
-        
         this.initConfig(config);
         return this;
     },
@@ -89,6 +88,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
      */
     setVisible: function(vis){
         this.mixins.openLayersLayer.setVisible.call(this,vis);
+    },
+    /**
+     * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
+     */
+    getVisible: function(){
+        this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha

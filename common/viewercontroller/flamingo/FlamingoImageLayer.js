@@ -80,6 +80,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
         this.mixins.flamingoLayer.setVisible.call(this,vis);
     },
     /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
+     */
+    getVisible: function(){
+        this.mixins.flamingoLayer.getVisible.call(this);
+    },
+    /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha
      */
     setAlpha: function (alpha){

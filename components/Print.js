@@ -605,7 +605,7 @@ Ext.define ("viewer.components.Print",{
         var layers=this.viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
-            if (layer.visible){
+            if (layer.getVisible()){
                 if (layer.getType()== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
                     var features=layer.getAllFeatures();
                     for (var f =0; f < features.length; f++){
