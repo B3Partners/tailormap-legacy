@@ -47,6 +47,10 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         LOADMONITOR                : 7,
         OVERVIEW                   : 8
     },
+    /**
+     *Set the component visible/invisible or enabled/disabled
+     *@param vis true or false
+     */
     setVisible: function (vis){
         Ext.Error.raise({msg: "setVisible() function must be implemented in implementation"});
     }

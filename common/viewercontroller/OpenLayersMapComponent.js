@@ -217,7 +217,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
             comp = Ext.create("viewer.viewercontroller.openlayers.LoadMonitor",config);
         }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
-            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersOverview",config);
+            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersOverview",config);
+        }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
+            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayerMaptip",config,this.getMap());
         }else{
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
@@ -260,7 +262,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             frameworkOptions["type"]=OpenLayers.Control.TYPE_TOOL;
             
             //options.olMap= this.getMap().getFrameworkMap();
-            var identifyTool = new viewer.viewercontroller.openlayers.OpenLayersIdentifyTool(
+            var identifyTool = new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(
                 options ,new OpenLayers.Control(frameworkOptions),this.getMap());
             
             //this.getMap().setGetFeatureInfoControl(identifyTool);
@@ -442,6 +444,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }
         MapComponent.prototype.removeTool.call(this,tool);
     },
+    addComponent: function(component){
+        /*if(false){
+        }else{*/
+            //add the component to the map
+            this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());
+            component.getFrameworkObject().activate();
+        //}
+    },
     /**Add a map to the controller.
      *For know only 1 map supported.
      */
@@ -530,99 +540,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     unRegisterEvent : function (event,handler,thisObj){
         var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
         this.removeListener(specificName,handler,thisObj);
-    },
-    onMapTipHandler : function(data){
-        //this is the Layer not the MapComponent
-        var allMaptips="";
-        for( var i = 0 ; i < data.features.length ; i++){
-            var featureType=null;
-            if (data.features[i].gml){
-                featureType = data.features[i].gml.featureType;
-            }else if (data.features[i].type){
-                featureType = data.features[i].type;
-            }
-            var maptip=this.getMapTipByFeatureType(featureType);
-            /*temp*/
-            if (maptip==null){
-                maptip=this.getMaptips()[0];
-            }
-            if (maptip!=null){
-                var maptipField=maptip.mapTipField;
-                for (var f in data.features[i].attributes){
-                    if (data.features[i].attributes[f]!=null)
-                        maptipField=maptipField.replace("["+f+"]",data.features[i].attributes[f]);
-                }
-                if (!(maptipField.indexOf("[")>=0)){
-                    if (allMaptips.length!=0){
-                        allMaptips+="<br/>";
-                    }
-                    allMaptips+=maptipField;
-                }
-            }
-        }
-        var maptipDiv=document.getElementById("olControlMapTip");
-        if (allMaptips.length>0){
-            if (maptipDiv==undefined){
-                maptipDiv=document.createElement('div');
-                maptipDiv.id="olControlMapTip";
-                maptipDiv.style.position='absolute';
-                data.object.map.div.appendChild(maptipDiv);
-                maptipDiv.style.zIndex="10000";
-                maptipDiv.className="olControlMaptip";
-                var maptipText=document.createElement('div');
-                maptipText.id='olControlMaptipText';
-                maptipDiv.appendChild(maptipText);
-            }
-            maptipDiv.style.top=data.xy.y+"px";
-            maptipDiv.style.left=data.xy.x+10+'px'
-            maptipDiv.style.display="block";
-            var maptipText=document.getElementById('olControlMaptipText');
-            if (maptipText.innerHTML.length==0)
-                maptipText.innerHTML=allMaptips;
-            else{
-                maptipText.innerHTML=maptipText.innerHTML+"<br/>"+allMaptips;
-            }
-        }
-    },
-    removeMaptip : function(object){
-        var maptipDiv=document.getElementById("olControlMapTip");
-        if (maptipDiv!=undefined){
-            maptipDiv.style.display="none";
-            var maptipText=document.getElementById('olControlMaptipText');
-            maptipText.innerHTML="";
-        }
-    },
-    onIdentifyDataHandler : function(data){
-        var obj = new Object();
-        for( var i = 0 ; i < data.features.length ; i++){
-            var featureType = data.features[i].gml.featureType;
-            if(obj[featureType] == undefined){
-                obj [featureType] = new Array();
-            }
-            obj [featureType].push( data.features[i].attributes);
-        }
-        //get The identifyTool that is active to call the onIdentifyData handler
-        var getFeatureTools=this.getToolsByType(Tool.GET_FEATURE_INFO);
-        for (var i=0; i < getFeatureTools.length; i++){
-            if (getFeatureTools[i].isActive()){
-                getFeatureTools[i].getFeatureInfoHandler("onIdentifyData",obj);
-                return;
-            }
-        }
-    },
-    // onIdentify event handling
-    onIdentifyHandler : function(extent){
-        //get The identifyTool that is active to call the onIdentify handler
-        var getFeatureTools=this.getToolsByType(Tool.GET_FEATURE_INFO);
-        for (var i=0; i < getFeatureTools.length; i++){
-            if (getFeatureTools[i].isActive()){
-                var pix = extent.xy;
-                var lonlat = webMapController.getMap().getFrameworkMap().getLonLatFromPixel(pix);
-                var genericExtent = new Extent(lonlat.lon,lonlat.lat,lonlat.lon,lonlat.lat);
-                getFeatureTools[i].beforeGetFeatureInfoHandler("onIdentify",genericExtent);
-                return;
-            }
-        }
     }
 });
 
