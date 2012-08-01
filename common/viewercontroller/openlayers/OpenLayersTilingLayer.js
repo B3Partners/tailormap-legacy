@@ -24,6 +24,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     mixins: {
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
+    utils: null,
     /**
      *Constructor
      */
@@ -32,6 +33,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         this.mixins.openLayersLayer.constructor.call(this,config);
         
         this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
+        this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
         
         var serviceEnvelopeTokens=this.serviceEnvelope.split(",");
         var x=Number(serviceEnvelopeTokens[0]);
@@ -88,7 +90,30 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     },
     
     getLastMapRequest: function(){
-        return [];
+        var requests=[];
+        var mapWidth = this.getMap().getWidth();
+        var mapHeight = this.getMap().getHeight();
+        var tileSize = this.getMap().getFrameworkMap().getTileSize();
+        for (var x=0; x < mapWidth+tileSize.w; x+=tileSize.w){
+            //correct x to a max of the map width.
+            if (x > mapWidth){
+                x=mapWidth;
+            }
+            for (var y=0; y < mapHeight+tileSize.h; y+=tileSize.h){
+                //correct y to a max of the map height.
+                if (y > mapHeight){
+                    y=mapHeight;
+                }
+                var bounds= this.getFrameworkLayer().getTileBounds(new OpenLayers.Pixel(x,y));
+                var url = this.getFrameworkLayer().getURL(bounds);
+                requests.push({
+                    extent: this.utils.createExtent(bounds),
+                    url: url
+                    });
+            }
+        }
+        return requests;
+        //getTileBounds
     },
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
