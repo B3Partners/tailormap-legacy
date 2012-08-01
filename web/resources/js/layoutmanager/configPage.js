@@ -220,7 +220,9 @@ function continueSave(config){
                     if(Ext.isObject(item.getValue())){
                         layout[item.name] = item.getValue().position;  
                     }else{
-                        layout[item.name] = item.getValue();
+                        if (item.getValue()!=""){
+                            layout[item.name] = item.getValue();
+                        }
                     }
                 }
             }
