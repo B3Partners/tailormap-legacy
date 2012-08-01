@@ -45,5 +45,34 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
         return [{
             url: url
         }];;
-    }    
+    },
+    
+    setQuery : function (filter){
+        if(filter){
+            var me = this;
+            var f = function(ids,colName) { 
+                // Hack: An empty query returns all the features
+                var query = "-1";
+                for(var i = 0 ; i < ids.length ;i++){
+                    if(i!=0){
+                        query += " OR ";
+                    }else{
+                        query = "";
+                    }
+                    query += colName + " = " + ids[i];
+                }
+                me.getFrameworkLayer().setLayerFilter(me.layers, query);
+                //me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.config.options.name);
+                setTimeout (function(){
+                    me.update();
+                }, 500);
+            };
+            var util = Ext.create("viewer.ArcQueryUtil");
+            var cql = filter.getCQL();
+            util.cqlToArcFIDS(cql,this.appLayerId,f,console.log);
+        }else{
+            this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.config.options.name);
+            this.update();
+        }
+    }
 });

@@ -64,8 +64,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         this.alpha=alpha;
         this.frameworkLayer.setOpacity(alpha/100);
     },
+    
     getAlpha : function (){
         return this.alpha;
+    },
+    
+    update : function (){
+        this.getFrameworkLayer().redraw();
     },
     /*
      *Implement in subclass:

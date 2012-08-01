@@ -99,6 +99,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
         this.mixins.openLayersLayer.setAlpha.call(this,alpha);
     },
     /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#update
+     */
+    update: function (){
+        this.mixins.openLayersLayer.update.call(this);
+    },
+    /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
      */
     addListener: function (event,handler,scope){
