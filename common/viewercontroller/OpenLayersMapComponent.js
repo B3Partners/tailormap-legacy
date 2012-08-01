@@ -112,6 +112,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         config.options["visibility"] = ogcParams["visible"];
         config.options["name"]=name;
         config.options["url"]=wmsurl;
+        // TODO: still needed?
         for (var key in ogcParams){
            config.options[key]=ogcParams[key];
         }
