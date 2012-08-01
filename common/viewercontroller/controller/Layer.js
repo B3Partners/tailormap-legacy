@@ -94,6 +94,13 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         return null;
     },
     /**
+     * Gets the map where the layer is added.
+     * @return the map
+     */
+    getMap: function(){
+        return this.map;
+    },
+    /**
      * Gets the layer type (WMS, ArcServer, ArcIms, Vector etc.)
      */
     getType: function (){

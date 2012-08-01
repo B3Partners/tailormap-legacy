@@ -31,10 +31,19 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
         });        
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE;
     },
+    /**
+     *@see viewer.viewercontroller.controller.Layer#getLastMapRequest
+     * fix the size in the url to the size of the Map. Otherwise the returned 
+     * image is to small.
+     */
     getLastMapRequest: function(){
-        var request=[{
-            url: this.getFrameworkLayer().getURL(this.getFrameworkLayer().map.getExtent())
-        }];
-        return request;
+        var extent=this.getFrameworkLayer().map.getExtent();        
+        var url= this.getFrameworkLayer().getURL(extent);
+        //size is wrong so make the size correct.
+        var newSize="SIZE="+this.getMap().getWidth()+"%2C"+this.getMap().getHeight();
+        url = url.replace("SIZE=256%2C256",newSize);
+        return [{
+            url: url
+        }];;
     }    
 });
