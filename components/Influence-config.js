@@ -31,23 +31,23 @@ Ext.define("viewer.components.CustomConfiguration",{
             xtype: 'textfield',
             fieldLabel: 'Naam',
             name: 'searchName',
-            value: (configObject != null && configObject.searchName != undefined) ? configObject.searchName : '',
+            value: (this.configObject != null && this.configObject.searchName != undefined) ? this.configObject.searchName : '',
             labelWidth:this.labelWidth
         },
         { 
             xtype: 'textfield',
             fieldLabel: 'URL',
             name: 'searchUrl',
-            value: (configObject != null && configObject.searchUrl != undefined) ? configObject.searchUrl : '',
+            value: (this.configObject != null && this.configObject.searchUrl != undefined) ? this.configObject.searchUrl : '',
             columnWidth : 0.5,
             labelWidth:this.labelWidth
         }]
         );
-        if(configObject != null) {
-            this.createCheckBoxes(configObject.layers,{
-                "influence" :true
-            });
-        }
+        
+        this.createCheckBoxes(this.configObject.layers,{
+            "influence" :true
+        });
+        
     }
 });
 
