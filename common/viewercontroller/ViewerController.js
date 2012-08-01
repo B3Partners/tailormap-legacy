@@ -238,12 +238,25 @@ Ext.define("viewer.viewercontroller.ViewerController", {
        }
     },
    
+    counter: 0,
+    max: 0,
     setSelectedContent: function(selectedContent) {
+        
+        this.counter = 0;
+        this.max = this.mapComponent.getMap().layers.length;
+        var me = this;
+        var f = function  (){
+            this.counter++;
+            if(this.counter == this.max){
+                this.app.selectedContent = selectedContent;
+                this.uncheckUnselectedContent();
+                this.initLayers();
+                this.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,f, this);
+                this.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
+            }
+        }
+        this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,f, this);
         this.clearLayers();
-        this.app.selectedContent = selectedContent;
-        this.uncheckUnselectedContent();
-        this.initLayers();
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
     },
     /**
      * Triggered when the selected content has changed. This method makes sure that all the previous filters are restored after deleting all the layers.
@@ -360,8 +373,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** Remove all layers
      */
     clearLayers: function() {
-        this.mapComponent.getMap().removeAllLayers();
         this.layers = [];
+        this.mapComponent.getMap().removeAllLayers();
     },
     /**
      *Initialize layers and levels

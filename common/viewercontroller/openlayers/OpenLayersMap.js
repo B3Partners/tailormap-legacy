@@ -35,24 +35,24 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         if (config.options.fullextent){
             var fullExtent = Ext.create("viewer.viewercontroller.controller.Extent",config.options.fullextent);
             maxBounds = new OpenLayers.Bounds(fullExtent.minx, fullExtent.miny, fullExtent.maxx, fullExtent.maxy);
-           // maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
         }
         else{
-            //fallback for bounds.
-            maxBounds= new OpenLayers.Bounds(120000,304000,280000,620000);
+            //fallback for bounds: the extent of the Netherlands
+            maxBounds= new OpenLayers.Bounds(12000,304000,280000,620000);
         }
         config["center"] = maxBounds.getCenterLonLat();
         
         config.maxExtent = maxBounds;
               
-        this.frameworkMap=new OpenLayers.Map(config.domId,config);        
+        this.frameworkMap=new OpenLayers.Map(config.domId,config);
         this.frameworkMap.centerLayerContainer();
        
         this.layersLoading = 0;
         this.markerLayer=null;
         this.defaultIcon=null;
         this.markers=new Object();
-        this.getFeatureInfoControl = null;     
+        this.getFeatureInfoControl = null;
+        this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved, this);
         return this;
     },
 
@@ -101,9 +101,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     *remove the specific layer. See @link Map.removeLayer
     **/
     removeLayer : function(layer){
-        //call super function
-        this.superclass.removeLayer.call(this,layer);
-        //this.getFrameworkMap().remove(layer.getFrameworkLayer());
+        // don't call super function, but manually manage the removal of layers from this.layers
+
         if (layer instanceof viewer.viewercontroller.openlayers.OpenLayersWMSLayer){
             if(layer.getGetFeatureInfoControl()!=null){
                 layer.getGetFeatureInfoControl().destroy();
@@ -113,6 +112,17 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             }
         }
         layer.getFrameworkLayer().destroy(false);
+    },
+    
+    layerRemoved : function (map, options){
+        var l = options.layer.getFrameworkLayer();
+        for ( var i = 0 ; i < this.layers.length ;i++){
+            var frameworkLayer = this.layers[i].getFrameworkLayer();
+            if(frameworkLayer.id == l.id){
+                this.layers.splice(i,1);
+                break;
+            }
+        }
     },
     
     setLayerVisible : function (layer, visible){
@@ -300,6 +310,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }else if (genericEvent== viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED){
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
             options.visible=args.layer.visibility;
+        }else if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED){
+            options.layer=this.getLayerByOpenLayersId(args.layer.id);
         }else{
             this.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
         }

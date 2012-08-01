@@ -34,45 +34,46 @@ Ext.define("viewer.components.Slider",{
     constructor : function (conf){
         viewer.components.Slider.superclass.constructor.call(this, conf);
         var me = this;
-		this.initConfig(conf);
+        this.initConfig(conf);
         this.layers=new Array();
-		this.currentSliderValue = this.initialTransparency;
-		if(MobileDetect.isMobile()) {
+        this.currentSliderValue = this.initialTransparency;
+        if(MobileDetect.isMobile()) {
             this.slider = Ext.create('viewer.components.MobileSlider', {
-				width: '100%',
-				value: this.initialTransparency,
-				increment: 1,
-				fieldLabel: this.name,
-				minValue: 0,
-				maxValue: 100,
-				renderTo: conf.sliderContainer,
-				listeners:{
-					change: {                    
-						fn: this.sliderChanged,
-						scope: this
-					}
-				}
-			});
-		} else {
-			this.slider = Ext.create('Ext.slider.Single', {
-				width: 200,
-				value: this.initialTransparency,
-				increment: 1,
-				fieldLabel: this.name,
-				labelAlign: "top",
-				minValue: 0,
-				maxValue: 100,
-				renderTo: conf.sliderContainer,
-				listeners:{
-					change: {                    
-						fn: this.sliderChanged,
-						scope: this
-					}
-				}
-			});
-		}
+                width: '100%',
+                value: this.initialTransparency,
+                increment: 1,
+                fieldLabel: this.name,
+                minValue: 0,
+                maxValue: 100,
+                renderTo: conf.sliderContainer,
+                listeners:{
+                    change: {                    
+                        fn: this.sliderChanged,
+                        scope: this
+                    }
+                }
+            });
+        } else {
+            this.slider = Ext.create('Ext.slider.Single', {
+                width: 200,
+                value: this.initialTransparency,
+                increment: 1,
+                fieldLabel: this.name,
+                labelAlign: "top",
+                minValue: 0,
+                maxValue: 100,
+                renderTo: conf.sliderContainer,
+                listeners:{
+                    change: {                    
+                        fn: this.sliderChanged,
+                        scope: this
+                    }
+                }
+            });
+        }
         
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
         
         return this;
     },
@@ -84,9 +85,19 @@ Ext.define("viewer.components.Slider",{
             //check if this slider needs to change values for the layer
             if (Ext.Array.contains(this.selectedLayers,appLayer.id)){            
                 this.layers.push(mapLayer);
-				if(this.currentSliderValue) {
-					this.applySlider(mapLayer,this.currentSliderValue);
-				}
+                if(this.currentSliderValue) {
+                    this.applySlider(mapLayer,this.currentSliderValue);
+                }
+            }
+        }
+    },
+    
+    onRemoveLayer : function (map, options){
+        var mapLayer = options.layer;
+        for( var i = 0 ; i < this.layers.length ;i++){
+            if(mapLayer.id == this.layers[i].id){
+                this.layers.splice(i,1);
+                break;
             }
         }
     },
@@ -102,7 +113,7 @@ Ext.define("viewer.components.Slider",{
      */
     sliderChanged: function (slider,value) {       
         this.currentSliderValue = value;
-		for(var i = 0 ; i< this.layers.length ;i++){
+        for(var i = 0 ; i< this.layers.length ;i++){
             var layer = this.layers[i];
             this.applySlider(layer,value);
         }
