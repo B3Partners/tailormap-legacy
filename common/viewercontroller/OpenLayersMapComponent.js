@@ -102,23 +102,23 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      *See @link MapComponent.createWMSLayer
      */
     
-    createWMSLayer : function(name, wmsurl,ogcParams,options){
-        options["id"]=null;
-        options["isBaseLayer"]=true;
-        options["singleTile"]=true;
-        options["transitionEffect"] = "resize";
-        options["events"] = new Object();
-        options["visibility"] = ogcParams["visible"];
-        options["name"]=name;
-        options["url"]=wmsurl;
+    createWMSLayer : function(name, wmsurl,ogcParams,config){
+        config.options = new Object();
+        config.options["id"]=null;
+        config.options["isBaseLayer"]=true;
+        config.options["singleTile"]=true;
+        config.options["transitionEffect"] = "resize";
+        config.options["events"] = new Object();
+        config.options["visibility"] = ogcParams["visible"];
+        config.options["name"]=name;
+        config.options["url"]=wmsurl;
         for (var key in ogcParams){
-            options[key]=ogcParams[key];
+           config.options[key]=ogcParams[key];
         }
-        options.ogcParams=ogcParams;
-        options.viewerController = this.viewerController;
-        options.options = new Object();
-        options.options.url = wmsurl;
-        var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",options);
+        config.ogcParams=ogcParams;
+        config.viewerController = this.viewerController;
+        config.options.url = wmsurl;
+        var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",config);
         
         if(ogcParams["query_layers"] != null && ogcParams["query_layers"] != ""){
 
@@ -133,13 +133,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             info.request = doGetFeatureRequest;
             wmsLayer.setGetFeatureInfoControl(info);
         }
-        if (options["maptip_layers"]!=null && options["maptip_layers"]!=""){
+        if (config["maptip_layers"]!=null && config["maptip_layers"]!=""){
             var maptip = new OpenLayers.Control.WMSGetFeatureInfo({
                 url: wmsurl,
                 title: 'Identify features by clicking',
                 queryVisible: true,
                 layers: [wmsLayer.getFrameworkLayer()],
-                queryLayers : options["maptip_layers"],
+                queryLayers : config["maptip_layers"],
                 infoFormat : "application/vnd.ogc.gml",
                 hover: true
             });

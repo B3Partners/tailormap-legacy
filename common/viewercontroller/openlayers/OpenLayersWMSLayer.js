@@ -27,7 +27,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     constructor : function (config){        
         viewer.viewercontroller.openlayers.OpenLayersWMSLayer.superclass.constructor.call(this,config);
         this.mixins.openLayersLayer.constructor.call(this,config);
-        this.frameworkLayer = new OpenLayers.Layer.WMS(this.name,this.url,this.config.ogcParams,config);
+        this.frameworkLayer = new OpenLayers.Layer.WMS(this.options.name,this.url,this.ogcParams,this.options);
                 
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
         
@@ -52,7 +52,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
      */
     setUrl: function(url){
         this.url=url;
-        /*Todo: needs to implement. CHange the url in the framework*/
+    /*Todo: needs to implement. CHange the url in the framework*/
     },   
     /**
     *Set a OGC-WMS param and refresh the layer
@@ -79,6 +79,33 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     
     getMapTipControl : function(){
         return this.mapTipControl;
+    },
+    setQuery : function (filter){
+        if(filter){
+            var service = this.viewerController.app.services[this.serviceId];
+            var layer = service.layers[this.options.name];
+            if(layer.details != undefined){
+                var filterable =layer.details["filterable"];
+                if(filterable != undefined && filterable != null ){
+                    filterable = Ext.JSON.decode(filterable);
+                    if(filterable){
+                        var me = this;
+                        var f = function(sld) { 
+                            me.setOGCParams({
+                                "SLD_BODY" : encodeURIComponent(sld)
+                            });
+                            me.reload();
+                        };
+                        var sld = Ext.create("viewer.SLD",{});
+                        sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,console.log);
+                    }
+                }
+            }
+        }else{
+            this.setOGCParams({
+                "SLD_BODY" : null
+            });
+        }
     },
     
     /******** overwrite functions to make use of the mixin functions **********/    
