@@ -37,6 +37,39 @@ public abstract class CombineImageUrl {
         setRealUrl(realUrl);
         setAlpha(alpha);
     }
+    /**
+     * Returned a url with changed param     
+     * @param key the param name
+     * @param newValue the new value
+     * @return the changed url
+     *
+     */
+    protected void changeParameter(String key,String newValue) {
+        String lowerUrl = url.toLowerCase();
+        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
+            int beginIndex = 0;
+            int endIndex = lowerUrl.length();
+            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
+                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
+            } else {
+                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
+            }
+            if (lowerUrl.indexOf("&", beginIndex) > 0) {
+                endIndex = lowerUrl.indexOf("&", beginIndex);
+            }
+            if (beginIndex < endIndex) {
+                String newUrl="";
+                if (beginIndex>0){
+                    newUrl+=url.substring(0,beginIndex);
+                }
+                newUrl+=newValue;
+                if (endIndex < url.length()){
+                    newUrl+=url.substring(endIndex,url.length());
+                }
+                url=newUrl;
+            }
+        }
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
     /**

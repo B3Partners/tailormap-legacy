@@ -48,6 +48,7 @@ public class CombineImageActionBean implements ActionBean {
     public static final String ARCIMS = "ARCIMS";
     public static final String ARCSERVER = "ARCSERVER";
     public static final String IMAGE="IMAGE";
+    public static final String ARCSERVERREST = "ARCSERVERREST";
     
     private static int maxStoredSettings= 500;
     private static int minStoredSettings=400;
@@ -152,6 +153,8 @@ public class CombineImageActionBean implements ActionBean {
                         }
                         if (ARCSERVER.equals(protocol)){
                             ciu= new CombineArcServerUrl();
+                        }else if (ARCSERVERREST.equals(protocol)){
+                            ciu = new CombineArcServerRestUrl();
                         }else if (ARCIMS.equals(protocol)){
                             ciu= new CombineArcIMSUrl();
                         }else if (WMS.equals(protocol)){
