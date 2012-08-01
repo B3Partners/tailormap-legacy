@@ -13,6 +13,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     statics:{
         WMS_TYPE: "WMS",
         ARCSERVER_TYPE: "ARCSERVER",
+        ARCSERVERREST_TYPE: "ARCSERVERREST",
         ARCIMS_TYPE: "ARCIMS",
         VECTOR_TYPE: "VECTOR",
         IMAGE_TYPE: "IMAGE",

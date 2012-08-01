@@ -29,7 +29,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
             layers: "show: "+config.layers,
             transparent: 'true'
         });        
-        this.type=viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE;
+        this.type=viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE;
     },
     /**
      *@see viewer.viewercontroller.controller.Layer#getLastMapRequest
