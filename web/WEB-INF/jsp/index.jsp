@@ -26,6 +26,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>    
     <stripes:layout-component name="body">
-        <img class="flamingoLogo" src="${contextPath}/resources/images/FlamingoLogo.png"/>
+        <c:choose>
+            <c:when test="${param.debug}">
+                <img class="flamingoLogo" src="${contextPath}/resources/images/FL2.png"/>
+            </c:when>
+            <c:otherwise>
+                <img class="flamingoLogo" src="${contextPath}/resources/images/FlamingoLogo.png"/>
+            </c:otherwise>
+
+        </c:choose>
     </stripes:layout-component>
 </stripes:layout-render>
