@@ -161,7 +161,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     * See @link Map.zoomToExtent
     **/
     zoomToExtent : function(extent){
-        var bounds=Utils.createBounds(extent)
+        var bounds=this.utils.createBounds(extent)
         this.getFrameworkMap().zoomToExtent(bounds);
     },
     
@@ -223,7 +223,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             this.frameworkMap.addLayer(this.markerLayer);
             var size = new OpenLayers.Size(17,17);
             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-            this.defaultIcon= new OpenLayers.Icon('scripts/openlayers/img/marker.png',size,offset);
+            this.defaultIcon= new OpenLayers.Icon(contextPath+'/viewer-html/common/openlayers/img/marker.png',size,offset);
         }
         /*According the 'type' load a icon: no types yet only default*/
         var icon= this.defaultIcon.clone();
