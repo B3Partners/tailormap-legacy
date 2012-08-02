@@ -47,7 +47,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
                 }
                 me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.config.options.name);
                 setTimeout (function(){
-                    me.update();
+                    me.reload();
                 }, 500);
             };
             var util = Ext.create("viewer.ArcQueryUtil");
@@ -55,7 +55,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
             util.cqlToArcFIDS(cql,this.appLayerId,f,console.log);
         }else{
             this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.config.options.name);
-            this.update();
+            this.reload();
         }
     }    
 });

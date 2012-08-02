@@ -39,10 +39,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
         return this.id;
     },
 
-    reload : function (){
-        //this.map.getFrameworkMap().callMethod(this.mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
-    },
-
     getName : function (){
         return this.options["name"];
     },
@@ -99,10 +95,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
         this.mixins.openLayersLayer.setAlpha.call(this,alpha);
     },
     /**
-     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#update
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#reload
      */
-    update: function (){
-        this.mixins.openLayersLayer.update.call(this);
+    reload: function (){
+        this.mixins.openLayersLayer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener

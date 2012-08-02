@@ -72,7 +72,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
     getType: function(){
         return this.type;
     },
-    update: function(){
+    /**
+     * reloads the framework map
+     */
+    reload: function(){
         return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"update");
     },
     /**

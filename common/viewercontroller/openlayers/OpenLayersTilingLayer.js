@@ -113,7 +113,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             }
         }
         return requests;
-        //getTileBounds
     },
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
@@ -133,6 +132,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.openLayersLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#reload
+     */
+    reload: function (){
+        this.mixins.openLayersLayer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener

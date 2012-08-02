@@ -70,14 +70,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
         if(filter){
             var me = this;
             var f = function(query) { 
-                // me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",query);
-                me.forceUpdate();
+                me.reload();
             };
             var util = Ext.create("viewer.ArcQueryUtil");
             util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
         }else{
             //  this.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",null);
-            this.update();
+            this.reload();
         }
     }
 });

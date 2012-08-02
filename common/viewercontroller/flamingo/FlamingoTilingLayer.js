@@ -70,10 +70,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
         xml+="></fmc:"+this.getTagName()+">";
         return xml;
     },
-
-    reload : function (){
-        this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
-    },
     /*setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
         this.visible = visible;
@@ -114,6 +110,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    },
+    
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#reload
+     */
+    reload: function(){
+        this.mixins.flamingoLayer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener

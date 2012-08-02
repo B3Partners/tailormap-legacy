@@ -60,11 +60,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         //console.log(xml);
         return xml;
     },
-
-    reload : function (){
-        var fl = this.getFrameworkLayer();
-        fl.callMethod(this.map.getId() + "_" + this.getId(),"setConfig",this.toXML() );
-    },
+    
     setMaptips: function(maptips){
         viewer.viewercontroller.flamingo.FlamingoWMSLayer.superclass.setMaptips.call(this,maptips);        
         this.passMaptips();
@@ -131,6 +127,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
+    },
+    
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#reload
+     */
+    reload: function(){
+        this.mixins.flamingoLayer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener

@@ -72,11 +72,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
      */
     getId :function (){
         return this.id;
-    },
-
-    reload : function (){
-        this.map.getFrameworkMap().callMethod(this.mapComponent.getMap().getId() + "_" + this.getId(),"setConfig",this.toXML() );
-    },
+    },   
 
     getName : function (){
         return this.options["name"];
@@ -129,6 +125,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
     setVisible : function (vis){
         this.mixins.flamingoLayer.setVisible.call(this,vis);
     },
+    
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
      */
@@ -140,6 +137,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#reload
+     */
+    reload: function(){
+        this.mixins.flamingoLayer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener

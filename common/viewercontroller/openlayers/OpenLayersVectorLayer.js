@@ -213,6 +213,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.mixins.openLayersLayer.setAlpha.call(this,alpha);
     },
     /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#reload
+     */
+    reload: function (){
+        this.mixins.openLayersLayer.reload.call(this);
+    },
+    /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
      */
     addListener: function (event,handler,scope){

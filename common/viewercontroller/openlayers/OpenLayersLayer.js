@@ -68,8 +68,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
     getAlpha : function (){
         return this.alpha;
     },
-    
-    update : function (){
+    /**
+     * Reloads the layer.
+     */
+    reload : function (){
         this.getFrameworkLayer().redraw();
     },
     /*

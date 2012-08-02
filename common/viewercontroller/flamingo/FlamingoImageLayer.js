@@ -53,10 +53,6 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
 
         return xml;
     },
-
-    reload : function (){
-        this.getFrameworkLayer().callMethod(this.getFrameworkId(),"update");
-    },
     setUrl: function(url){
         this.url=url;
         if (this.getFrameworkLayer()!=null){
@@ -90,6 +86,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
      */
     setAlpha: function (alpha){
         this.mixins.flamingoLayer.setAlpha.call(this,alpha);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#reload
+     */
+    reload: function(){
+        this.mixins.flamingoLayer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#addListener
