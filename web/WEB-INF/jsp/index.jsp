@@ -26,6 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>    
     <stripes:layout-component name="body">
-        
+        <img class="flamingoLogo" src="${contextPath}/resources/images/FlamingoLogo.png"/>
     </stripes:layout-component>
 </stripes:layout-render>
