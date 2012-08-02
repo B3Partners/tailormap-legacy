@@ -307,11 +307,23 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         var genericEvent = this.viewerController.mapComponent.getGenericEventName(event);
         if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_ADDED){
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
+            if (options.layer ==undefined){
+                //if no layer found return, dont fire
+                return;
+            }
         }else if (genericEvent== viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED){
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
+            if (options.layer ==undefined){
+                //if no layer found return, dont fire
+                return;
+            }
             options.visible=args.layer.visibility;
         }else if (genericEvent==viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED){
             options.layer=this.getLayerByOpenLayersId(args.layer.id);
+            if (options.layer ==undefined){
+                //if no layer found return, dont fire
+                return;
+            }
         }else{
             this.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
         }
