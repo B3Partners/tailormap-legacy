@@ -41,7 +41,7 @@
 			<file name="Twitter.js"/>       
           </sources>          
 		  <!--					The abstract MapComponent				-->         
-          <sources dir="${viewerhtml.path}/common/viewercontroller/Controller">
+          <sources dir="${viewerhtml.path}/common/viewercontroller/controller">
             <file name="Map.js"/>
             <file name="Layer.js"/>
             <file name="TilingLayer.js"/>
@@ -58,7 +58,7 @@
             <file name="ToolMapClick.js"/>
           </sources>
           <!--					The Flamingo-MC implementation		-->
-          <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo">
+          <sources dir="${viewerhtml.path}/common/viewercontroller/flamingo">
             <file name="FlamingoLayer.js"/>
             <file name="FlamingoArcLayer.js"/>
             <file name="FlamingoArcServerLayer.js"/>
@@ -74,12 +74,12 @@
           </sources>   
 		  
           <!--					The Flamingo-MC components implementation		-->
-          <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo/components">
+          <sources dir="${viewerhtml.path}/common/viewercontroller/flamingo/components">
             <file name="Overview.js"/>
 		  </sources> 
 		  
 		  <!--					The Flamingo-MC tools implementation		-->
-          <sources dir="${viewerhtml.path}/common/viewercontroller/Flamingo/tools">
+          <sources dir="${viewerhtml.path}/common/viewercontroller/flamingo/tools">
             <file name="JSButton.js"/>
 		  </sources>
 		  
