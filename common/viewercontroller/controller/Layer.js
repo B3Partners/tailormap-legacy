@@ -102,6 +102,14 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         return this.map;
     },
     /**
+     * Set the map where this layer is added.
+     * @param map a viewer.viewercontroller.controller.Map object.
+     */
+    setMap: function(map){
+        this.map= map;
+    },
+    
+    /**
      * Gets the layer type (WMS, ArcServer, ArcIms, Vector etc.)
      */
     getType: function (){
