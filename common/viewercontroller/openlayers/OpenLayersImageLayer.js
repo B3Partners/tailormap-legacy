@@ -28,6 +28,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
         
+        this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
+        
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
         
         var width = this.viewerController.mapComponent.getMap().getWidth();
@@ -48,7 +50,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         this.frameworkLayer = new OpenLayers.Layer.Image(
              this.name,
              this.url,
-             new OpenLayers.Bounds(this.extent.minx, this.extent.miny, this.extent.maxx, this.extent.maxy),
+             this.utils.createBounds(this.extent),
              new OpenLayers.Size(width,height),
              me.options
          );
@@ -60,7 +62,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
     setExtent: function (extent){
         this.extent=extent;
         if(this.frameworkLayer){
-            this.frameworkLayer.extent=new OpenLayers.Bounds(extent.minx, extent.miny,extent.maxx, extent.maxy)
+            this.frameworkLayer.extent=this.utils.createBounds(extent)
         }
     },
     
