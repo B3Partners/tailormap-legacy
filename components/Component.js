@@ -38,6 +38,7 @@ Ext.define("viewer.components.Component",{
     defaultButtonWidth: 46,
     defaultButtonHeight: 46,
     forceState: false,
+    haveSprite: false,
     /**
     * @constructs
     * @param config.name {String} the unique name of the object
@@ -83,20 +84,17 @@ Ext.define("viewer.components.Component",{
      */
     renderButton: function(options) {
         var me = this,
-            appSprite = me.viewerController.getApplicationSprite(),
             buttonIcon = null,
             buttonText = "",
             buttonCls = '',
             buttonWidth = me.defaultButtonWidth,
-            baseClass = this.getBaseClass(),
-            useSprite = false;
+            baseClass = this.getBaseClass();
 
         me.options = options;
         if(options.icon) {
             buttonIcon = options.icon;
-        } else if(appSprite != null) {
+        } else if(me.haveSprite) {
             buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
-            useSprite = true;
         } else {
             buttonText = (options.text || (me.name || ""));
             buttonWidth = 'autoWidth';
@@ -138,14 +136,13 @@ Ext.define("viewer.components.Component",{
     
     setButtonState: function(state, forceState) {
         var me = this,
-            appSprite = me.viewerController.getApplicationSprite(),
             button = me.button,
             baseClass = this.getBaseClass();
         
         if (!me.options || !me.button){
             return;
         }
-        if(!me.options.icon && appSprite != null && (!me.forceState || forceState)) {
+        if(!me.options.icon && me.haveSprite && (!me.forceState || forceState)) {
             if(state == 'hover') {
                 button.removeCls(baseClass + '_normal');
                 button.removeCls(baseClass + '_click');
@@ -198,62 +195,96 @@ Ext.define("viewer.components.Component",{
         return 'applicationSpriteClassPopup ' + baseClassName + '_popup';
     },
 
+    /**
+     * Dynamically create a stylesheet for icons on component buttons using a 
+     * sprite, if the stylesheet not already exists.
+     * 
+     * The classes created for standard component icons and the position in the
+     * sprite are hardcoded here.
+     * 
+     * Updates this.haveSprite.
+     */
     createIconStylesheet: function() {
-        // Creation of the icons stylesheet with all info regarding the sprite
-        var me = this,
-            appSprite = me.viewerController.getApplicationSprite();
-
-        if(appSprite !== null && !document.getElementById('appSpriteStyle')) {
-            var spriteConfig = {
-                gridSize: 55,
-                imageSize: 44,
-                popupImageSize: 16, // Popups render 16x16 icons
-                columnConfig: {
-                    normal: 3,
-                    hover: 2,
-                    click: 1
-                },
-                rowConfig: {
-                    'viewercomponentsSelectionModule': 2,
-                    'viewercomponentsLegend': 3,
-                    'viewercomponentsBuffer': 4,
-                    'viewercomponentsDataSelection': 5,
-                    'viewercomponentsSearch': 6,
-                    'viewercomponentsEdit': 7,
-                    'viewercomponentsDrawing': 8,
-                    'viewercomponentsBookmark': 9,
-                    'viewercomponentsTransparencySlider': 10,
-                    'viewercomponentsInfluenceImage': 11,
-                    'viewercomponentsRelatedDocuments': 12,
-                    'viewercomponentsAttributeList': 13,
-                    'viewercomponentsPrint': 15
-                },
-                menuIconPosition: {
-                    x: 561
-                },
-                paddingCorrection: 3
-            };
-            var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
-                styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';
-                styleContent += ' .buttonDefaultClass_normal button { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
-                styleContent += ' .buttonDefaultClass_hover button { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
-                styleContent += ' .buttonDefaultClass_click button { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
-
-            var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.popupImageSize / 2);
-            Ext.Object.each(spriteConfig.rowConfig, function(compClassName, row) {
-                Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
-                // Button style
-                styleContent += ' .' + compClassName + '_' + state + ' button { ' +
-                                'background-position: -' + (((col - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px -' + (((row - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px !important; ' +
-                                '}';
-                });
-                // Popupwindow style
-                styleContent += ' .' + compClassName + '_popup { ' +
-                                'background-position: -' + (spriteConfig.menuIconPosition.x + innerImageOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px !important; ' +
-                                '}';
-            });
-            Ext.util.CSS.createStyleSheet(styleContent, 'appSpriteStyle');
+        var me = this;
+            
+        var SPRITE_STYLE = "appSpriteStyle";
+        
+        if(document.getElementById(SPRITE_STYLE) != null) {
+            // style was already created by a previous component and is available
+            me.haveSprite = true;
+            return;
         }
+        
+        var appSprite = me.viewerController.getApplicationSprite();
+        
+        if(Ext.isEmpty(appSprite)) {
+            me.haveSprite = false;
+            return;
+        }
+        
+        // Prepend context path for relative URLs
+        if(appSprite.indexOf("://") == -1) {
+            // By accident a fixed context path was put in the default value for
+            // the sprite url in many apps which does not work for other 
+            // context paths
+            if(appSprite.indexOf("/viewer/") == 0) {
+                appSprite = appSprite.substring(7);
+            }
+            if(!appSprite.charAt(0) == "/") {
+                appSprite = "/" + appSprite;
+            }
+            appSprite = contextPath + appSprite;
+        }
+        
+        var spriteConfig = {
+            gridSize: 55,
+            imageSize: 44,
+            popupImageSize: 16, // Popups render 16x16 icons
+            columnConfig: {
+                normal: 3,
+                hover: 2,
+                click: 1
+            },
+            rowConfig: {
+                'viewercomponentsSelectionModule': 2,
+                'viewercomponentsLegend': 3,
+                'viewercomponentsBuffer': 4,
+                'viewercomponentsDataSelection': 5,
+                'viewercomponentsSearch': 6,
+                'viewercomponentsEdit': 7,
+                'viewercomponentsDrawing': 8,
+                'viewercomponentsBookmark': 9,
+                'viewercomponentsTransparencySlider': 10,
+                'viewercomponentsInfluenceImage': 11,
+                'viewercomponentsRelatedDocuments': 12,
+                'viewercomponentsAttributeList': 13,
+                'viewercomponentsPrint': 15
+            },
+            menuIconPosition: {
+                x: 561
+            },
+            paddingCorrection: 3
+        };
+        var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
+            styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';
+            styleContent += ' .buttonDefaultClass_normal button { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+            styleContent += ' .buttonDefaultClass_hover button { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+            styleContent += ' .buttonDefaultClass_click button { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+
+        var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.popupImageSize / 2);
+        Ext.Object.each(spriteConfig.rowConfig, function(compClassName, row) {
+            Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
+            // Button style
+            styleContent += ' .' + compClassName + '_' + state + ' button { ' +
+                            'background-position: -' + (((col - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px -' + (((row - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px !important; ' +
+                            '}';
+            });
+            // Popupwindow style
+            styleContent += ' .' + compClassName + '_popup { ' +
+                            'background-position: -' + (spriteConfig.menuIconPosition.x + innerImageOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px !important; ' +
+                            '}';
+        });
+        Ext.util.CSS.createStyleSheet(styleContent, SPRITE_STYLE);
     },
     /**
      * Bind an event to this component
