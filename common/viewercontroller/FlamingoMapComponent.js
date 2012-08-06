@@ -169,7 +169,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     createArcServerLayer : function(name,url,options,viewerController){            
         var config=this.createArcConfig(name,url,options,viewerController);
         options.mapservice=options.servlet.substring(21,options.servlet.toLowerCase().indexOf("/mapserver"));        
-        options.hiddenids = "#ALL#";
         //xxx for REST remove the next line.
         delete config.options.servlet;        
         config.options.esriArcServerVersion="9.3";
