@@ -88,6 +88,9 @@ Ext.define ("viewer.components.Print",{
      */
     addLegend : function (layer){
         var appLayer = this.viewerController.getAppLayerById(layer.appLayerId);
+        if (appLayer==undefined || appLayer==null){
+            return;
+        }
         var serviceId = layer.serviceId;
         var layerName = layer.getAppLayerName();// TODO: not yet correct
         var layerTitle = this.viewerController.getLayerTitle(serviceId,layerName);
