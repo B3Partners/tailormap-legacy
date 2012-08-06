@@ -39,6 +39,17 @@ public class ArcGISService extends GeoService {
 
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";    
+
+    /** Layer.details map key for ArcGIS type property */
+    public static final String DETAIL_TYPE = "arcgis_type";    
+    /** Layer.details map key for ArcGIS currentVersion property */
+    public static final String DETAIL_CURRENT_VERSION = "arcgis_currentVersion";    
+    /** Layer.details map key for ArcGIS description property */
+    public static final String DETAIL_DESCRIPTION = "arcgis_description";
+    /** Layer.details map key for ArcGIS geometryType property */
+    public static final String DETAIL_GEOMETRY_TYPE = "arcgis_geometryType";
+    /** Layer.details map key for ArcGIS capabilities property */
+    public static final String DETAIL_CAPABILITIES = "arcgis_capabilities";
     
     private static JSONObject issueRequest(String url, HTTPClient client) throws Exception {
         return new JSONObject(IOUtils.toString(client.get(new URL(url)).getResponseStream(), "UTF-8"));
@@ -119,6 +130,7 @@ public class ArcGISService extends GeoService {
             top.setVirtual(true);
             top.setTitle("Layers");
             top.setService(s);
+            top.getDetails().put(DETAIL_CURRENT_VERSION, currentVersion);
 
             if(currentVersionMajor >= 10) {
                 // info is the MapServer/layers response, all layers JSON info
@@ -156,6 +168,50 @@ public class ArcGISService extends GeoService {
         }
     } 
     
+    @Override
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude);
+
+        // Add currentVersion info to service info 
+        
+        // Assume 9.x by default
+        
+        JSONObject json = new JSONObject();
+        o.put("arcGISVersion", json);
+        json.put("s", "9.x");    // complete currentVersion string
+        json.put("major", 9L);   // major version, integer
+        json.put("number", 9.0); // version as as Number
+
+        // currentVersion is persisted as layer details property
+        
+        if(getTopLayer() != null) {
+            // get it from the topLayer (only saved in topLayer since version 4.1)
+            String cv = getTopLayer().getDetails().get(DETAIL_CURRENT_VERSION);
+            
+            // try the first actual layer where may have been saved in version < 4.1 
+            if(cv == null && !getTopLayer().getChildren().isEmpty()) {
+                cv = getTopLayer().getChildren().get(0).getDetails().get(DETAIL_CURRENT_VERSION);
+            }
+            if(cv != null) {
+                json.put("s", cv);
+                try {
+                    String[] parts = cv.split("\\.");
+                    json.put("major", Integer.parseInt(parts[0]));
+                    json.put("number", Double.parseDouble(cv));
+                } catch(Exception e) {
+                    // keep defaults
+                }
+            }
+        }
+
+        return o;
+    }    
+    
+    @Override
+    public JSONObject toJSONObject(boolean flatten) throws JSONException {
+        return toJSONObject(flatten, null);
+    }
+    
     private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Layer parent) throws JSONException {
         Layer l = new Layer();
         l.setParent(parent);
@@ -165,11 +221,11 @@ public class ArcGISService extends GeoService {
         l.setName(agsl.getString("id"));
         l.setTitle(agsl.getString("name"));
 
-        l.getDetails().put("arcgis_type", agsl.getString("type"));
-        l.getDetails().put("arcgis_currentVersion", agsl.optString("currentVersion", currentVersion));        
-        l.getDetails().put("arcgis_description", agsl.getString("description"));        
-        l.getDetails().put("arcgis_geometryType", agsl.getString("geometryType"));  
-        l.getDetails().put("arcgis_capabilities", agsl.optString("capabilities"));        
+        l.getDetails().put(DETAIL_TYPE, agsl.getString("type"));
+        l.getDetails().put(DETAIL_CURRENT_VERSION, agsl.optString("currentVersion", currentVersion));        
+        l.getDetails().put(DETAIL_DESCRIPTION, agsl.getString("description"));        
+        l.getDetails().put(DETAIL_GEOMETRY_TYPE, agsl.getString("geometryType"));  
+        l.getDetails().put(DETAIL_CAPABILITIES, agsl.optString("capabilities"));        
         
         try {
             l.setMinScale(agsl.getDouble("minScale"));
