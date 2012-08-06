@@ -134,11 +134,11 @@ Ext.define ("viewer.components.Buffer",{
             if(layer.filter){
                 filterParams = "&filter=" + encodeURIComponent(layer.filter.getCQL());
             }
-            var bbox = this.viewerController.mapComponent.getMap().getExtent().toString();
+            var bbox = this.viewerController.mapComponent.getMap().getExtent();
             var width = this.viewerController.mapComponent.getMap().getWidth();
             var height = this.viewerController.mapComponent.getMap().getHeight();
             var url = absoluteURIPrefix + contextPath + "/action/Buffer";
-            var attrs ="?bbox="+ bbox + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.maxFeatures;
+            var attrs ="?bbox="+ bbox.toString() + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.maxFeatures;
             if(this.color != null){
                     attrs += "&color="+this.color;
             }

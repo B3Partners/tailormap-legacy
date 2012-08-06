@@ -59,10 +59,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
             this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","url",url);
         }
     },
+    /**
+     * @see viewer.viewercontroller.controller.ImageLayer#setExtent
+     */
     setExtent: function(extent){
         this.extent=extent;
         if (this.getFrameworkLayer()!=null && this.map!=null){
-            this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","extent",extent);
+            this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","extent",extent.toString());
         }
     },    
     getLastMapRequest: function(){

@@ -69,12 +69,15 @@ Ext.define ("viewer.components.InfluenceImage",{
         //do image request
         var me = this;
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),function(url){
-            me.addImage(url,properties.bbox);
+            me.addImage(url,new viewer.viewercontroller.controller.Extent(properties.bbox));
             },this.imageFailure);        
     },
     /**
+     * Add the image as influence area.
+     * @param imageUrl the image url
+     * @param bbox the bbox for this image (as new viewer.viewercontroller.controller.Extent)
      */
-    addImage: function(imageUrl,bbox){        
+    addImage: function(imageUrl,bbox){                
         if (this.imageLayer==null){
             this.imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + "ImageLayer", imageUrl, bbox);
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);

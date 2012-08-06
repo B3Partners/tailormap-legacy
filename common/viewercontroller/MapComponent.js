@@ -97,7 +97,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     * A vectorlayer is a layer on which features can be drawn by the user (a EditMap in Flamingo, a VectorLayer in OpenLayers)
     * @param name The name of this layer
     * @param url The url of the image
-    * @param bounds The boundary of the layer
+    * @param bounds The boundary of the layer as a viewer.viewercontroller.controller.Extent object
     * @param size The size of the image
     * @param options Hashtable of extra options to tag onto the layer
     */

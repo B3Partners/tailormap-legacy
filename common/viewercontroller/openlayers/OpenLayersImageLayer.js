@@ -30,7 +30,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
         
-        var ex = Ext.create("viewer.viewercontroller.controller.Extent",this.extent);
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
         
@@ -49,14 +48,28 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         this.frameworkLayer = new OpenLayers.Layer.Image(
              this.name,
              this.url,
-             new OpenLayers.Bounds(ex.minx, ex.miny,ex.maxx, ex.maxy),
+             new OpenLayers.Bounds(this.extent.minx, this.extent.miny, this.extent.maxx, this.extent.maxy),
              new OpenLayers.Size(width,height),
              me.options
          );
             
     },
+    /**
+     * @see viewer.viewercontroller.controller.ImageLayer#setExtent
+     */
     setExtent: function (extent){
         this.extent=extent;
+        if(this.frameworkLayer){
+            this.frameworkLayer.extent=new OpenLayers.Bounds(extent.minx, extent.miny,extent.maxx, extent.maxy)
+        }
+    },
+    
+    setUrl: function(newUrl){
+        viewer.viewercontroller.openlayers.OpenLayersImageLayer.superclass.setUrl.call(this,newUrl);
+        if (this.frameworkLayer){
+            this.frameworkLayer.setUrl(newUrl);
+        }
+        
     },
     
     /******** overwrite functions to make use of the mixin functions **********/    

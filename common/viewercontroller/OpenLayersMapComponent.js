@@ -174,7 +174,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return arcIMS;
     },
     /**
-     *see @link MapComponent.createArcServerLayer
+     *see @link MapComponent#createArcServerLayer
      */
     createArcServerLayer : function(name,url,options,viewerController){
         options.name=name;
@@ -184,7 +184,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return arcServer;
     },
     /**
-     *See @link MapComponent.createTMSLayer
+     *See @link MapComponent#createImageLayer
      */
     createImageLayer : function (name,url, bounds){
         var imageLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
@@ -197,6 +197,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
 
         return imageLayer;
     },
+    /**
+     *See @link MapComponent#createVectorLayer
+     */
     createVectorLayer : function(options){
         if (options==undefined){
             options = new Object();
