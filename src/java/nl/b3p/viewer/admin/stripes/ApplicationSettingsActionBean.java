@@ -41,7 +41,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
     private static final Log log = LogFactory.getLog(ApplicationSettingsActionBean.class);
     
     private static final String JSP = "/WEB-INF/jsp/application/applicationSettings.jsp";
-   
+    
+    private static final String DEFAULT_SPRITE = "/resources/images/default_sprite.png";
+    
     @Validate
     private String name;
     @Validate
@@ -157,7 +159,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         // DEFAULT VALUES
         if(!details.containsKey("iconSprite")) {
-            details.put("iconSprite", new ClobElement("/viewer/resources/images/default_sprite.png"));
+            details.put("iconSprite", new ClobElement(DEFAULT_SPRITE));
         }
         if(!details.containsKey("stylesheetMetadata")) {
             // TODO: Default value stylesheet metadata
@@ -175,7 +177,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application = null;
         applicationId = -1L;
         // DEFAULT VALUES
-        details.put("iconSprite", new ClobElement("/viewer/resources/images/default_sprite.png"));
+        details.put("iconSprite", new ClobElement(DEFAULT_SPRITE));
         // TODO: Default value stylesheet metadata
         details.put("stylesheetMetadata", new ClobElement(""));
         // TODO: Default value stylesheet printen
