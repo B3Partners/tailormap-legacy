@@ -227,8 +227,13 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         /*According the 'type' load a icon: no types yet only default*/
         var icon= this.defaultIcon.clone();
-        this.markers[markerName]= new OpenLayers.Marker(new OpenLayers.LonLat(x,y),icon);
-        this.markerLayer.addMarker(this.markers[markerName]);
+        if (this.markers[markerName]==undefined){
+            this.markers[markerName]= new OpenLayers.Marker(new OpenLayers.LonLat(x,y),icon);
+            this.markerLayer.addMarker(this.markers[markerName]);
+        }else{
+            this.markers[markerName].moveTo(this.frameworkMap.getLayerPxFromLonLat(new OpenLayers.LonLat(x,y)));
+        }
+        
     },
     
     /**
@@ -237,6 +242,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     removeMarker : function(markerName){
         if (this.markers[markerName] && this.markerLayer!=null){
             this.markerLayer.removeMarker(this.markers[markerName]);
+            this.markers[markerName].destroy(); 
+            delete this.markers[markerName];            
         }
     },
     
