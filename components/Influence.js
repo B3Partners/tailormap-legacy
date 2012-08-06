@@ -48,10 +48,10 @@ Ext.define ("viewer.components.Influence",{
         viewer.components.Influence.superclass.constructor.call(this, conf);
         this.removeButton=this.form.getChildByElement(this.name+"_remove")
         this.removeButton.setVisible(false);
-        //this.initConfig(conf);        
+        
         this.toolMapClick = this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
-            id: this.name,
+            id: this.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
                 scope:this
@@ -59,7 +59,7 @@ Ext.define ("viewer.components.Influence",{
             viewerController: this.viewerController
         });
         
-        this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+        /*this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes:["Polygon"],
             showmeasures:false,
@@ -72,7 +72,7 @@ Ext.define ("viewer.components.Influence",{
                 strokeopacity: 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);        
+        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);  */      
         
         
         var config = {
@@ -212,9 +212,9 @@ Ext.define ("viewer.components.Influence",{
      * 
      */
     setFilter: function(extent){
-        var appLayer=this.getSelectedAppLayer();           
+        var appLayer=this.getSelectedAppLayer(); 
+        var me = this;          
         if(appLayer.attributes == undefined) {   
-            var me = this;
             this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
                 me.setFilter();                
             },function(e){
@@ -232,13 +232,12 @@ Ext.define ("viewer.components.Influence",{
                         operator : "AND",
                         type: "GEOMETRY"
                     }),appLayer);
-            }
-            if (extent){
-                var me = this;
-                setTimeout(function (){
-                    me.viewerController.mapComponent.getMap().zoomToExtent(extent);
-                },1000);
-            }
+            }            
+        }
+        if (extent){
+            setTimeout(function (){
+                me.viewerController.mapComponent.getMap().zoomToExtent(extent);
+            },1000);
         }
     },
     /**

@@ -33,18 +33,27 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         var ex = Ext.create("viewer.viewercontroller.controller.Extent",this.extent);
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
-        this.initConfig(config);
-           this.frameworkLayer = new OpenLayers.Layer.Image(
-                this.name,
-                this.url,
-                new OpenLayers.Bounds(ex.minx, ex.miny,ex.maxx, ex.maxy),
-                new OpenLayers.Size(width,height),
-                this.options
-            );
+        
+        if (this.options==null){
+            this.options={};
+        }
+        /* set the displayOutsideMaxExtent and alwaysInRange because the extent is the maxextent
+         * and the image is not visible.
+        * @see: http://dev.openlayers.org/docs/files/OpenLayers/Layer/Image-js.html#OpenLayers.Layer.Image.extent
+        */
+        if (this.options.maxExtent==undefined){
+            this.options.displayOutsideMaxExtent=true;
+            this.options.alwaysInRange=true;
+        }
+        var me=this;
+        this.frameworkLayer = new OpenLayers.Layer.Image(
+             this.name,
+             this.url,
+             new OpenLayers.Bounds(ex.minx, ex.miny,ex.maxx, ex.maxy),
+             new OpenLayers.Size(width,height),
+             me.options
+         );
             
-    },
-    setUrl: function(url){
-        this.url=url;
     },
     setExtent: function (extent){
         this.extent=extent;
