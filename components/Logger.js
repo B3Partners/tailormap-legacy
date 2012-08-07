@@ -26,7 +26,8 @@ Ext.define ("viewer.components.Logger",{
     statics:{
         LEVEL_ERROR: 2,
         LEVEL_WARNING: 1,
-        LEVEL_INFO: 0
+        LEVEL_INFO: 0,
+        LEVEL_DEBUG: -1
     },
     popup: null,
     messageDiv:null,
@@ -57,6 +58,15 @@ Ext.define ("viewer.components.Logger",{
             this.message(message, viewer.components.LogMessage.INFO);
         }
     },
+    /**
+     * For a debug message, the icon is not shown. Execute the following in a JS
+     * console to show it: viewerController.logger.show();
+     */
+    debug:function(message){
+        if(this.logLevel <= viewer.components.Logger.LEVEL_DEBUG){
+            this.message(message, viewer.components.LogMessage.DEBUG);
+        }
+    }, 
     /**     
      * @param message the message
      * @param type a message type (error,warning,info)
@@ -67,8 +77,10 @@ Ext.define ("viewer.components.Logger",{
         //if popup is created, add the html element for this message.
         if (this.popup!=null){            
             this.messageDiv.appendChild(newMessage.toHtmlElement());           
+        }       
+        if(type > viewer.components.Logger.LEVEL_DEBUG) {
+            this.setIconVisible(true);
         }
-        this.setIconVisible(true);
     },
     show: function(){
         //if popup is null, create new one.

@@ -57,7 +57,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         var logLevel=viewer.components.Logger.LEVEL_ERROR;
         if (this.isDebug()){
-            logLevel=viewer.components.Logger.LEVEL_INFO;
+            logLevel=viewer.components.Logger.LEVEL_DEBUG;
         }
         this.logger = Ext.create("viewer.components.Logger",{logLevel:logLevel});
         /* If a layout tree structure is supplied, dynamically create DOM elements

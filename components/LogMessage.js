@@ -23,7 +23,8 @@ Ext.define ("viewer.components.LogMessage",{
     statics:{
         ERROR: "error",
         WARNING: "warning",
-        INFO: "info"
+        INFO: "info",
+        DEBUG: "debug"
     },
     config:{
         type: "",
