@@ -51,14 +51,12 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_START]                          = "loadstart";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_END]                            = "loadend";
         this.eventList[viewer.viewercontroller.controller.Event.ON_MEASURE]                                = "measure";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]                 = "zoomend";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]                 = "moveend";
         this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]                          = "move";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]                          = "removelayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                            = "addlayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]                       = "getfeatureinfo";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "changelayer";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_MOVEEND]                          = "moveend";
-        
         
     },
     /**

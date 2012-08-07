@@ -717,7 +717,16 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             }
         }else if (event == viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT){            
             var comp={}
-            comp.extent= new viewer.viewercontroller.controller.Extent(component[1].minx,component[1].miny,component[1].maxx,component[1].maxy);
+            if (component[1]){
+                comp.extent= new viewer.viewercontroller.controller.Extent(component[1].minx,component[1].miny,component[1].maxx,component[1].maxy);
+            }else{
+                return;
+            }
+            component=comp;
+        }else if (event == viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT){
+            var comp={
+                extent : object.getExtent()
+            }
             component=comp;
         }
         if(object != undefined){

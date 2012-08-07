@@ -60,13 +60,7 @@ Ext.define ("viewer.components.Maptip",{
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //listen to the onmaptipcancel
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
-        //listen to a extent change
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
-        function(map,options){
-            me.onChangeExtent(map,options);
-        },this);
-   
-        
+                
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
@@ -102,11 +96,6 @@ Ext.define ("viewer.components.Maptip",{
         this.balloon.offsetY=Number(top);
     },
     
-    onChangeExtent : function(map,options){
-        if (this.worldPosition){
-            this.balloon.setPositionWorldCoords(this.worldPosition.x,this.worldPosition.y,true,this.getBrowserZoomRatio());
-        }
-    },
     /**
      * Enable doing server requests.
      * @param appLayer the applayer

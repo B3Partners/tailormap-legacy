@@ -32,6 +32,26 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         }
         return this;
     },
+    /**
+     * Checks if the given x,y is in the extent.
+     * @param x x coord
+     * @param y y coord.
+     * @return true if in extent, false if outsite.
+     */
+    isIn: function (x,y){
+        if (this.minx ==null || this.maxx ==null || this.miny ==null || this.maxy ==null){
+            return false;
+        }
+        if (x >= this.minx && x <= this.maxx &&
+            y >= this.miny && y <= this.maxy){
+            return true;
+        }
+        return false;
+    },
+    /**
+     * The extent to wkt.
+     * @return the wkt as string
+     */
     toWKT: function (){
         var wkt="POLYGON((";
         wkt+=this.minx+" "+this.miny+", ";
@@ -41,6 +61,10 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         wkt+=this.minx+" "+this.miny+"))";
         return wkt;
     },
+    /**
+     * The extent as comma seperated String
+     * @return comma seperated String
+     */
     toString : function (){
         var val="";
         val+=this.minx+","+this.miny+","+this.maxx+","+this.maxy;

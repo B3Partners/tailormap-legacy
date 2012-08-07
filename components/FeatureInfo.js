@@ -65,7 +65,7 @@ Ext.define ("viewer.components.FeatureInfo",{
          //Add event when started the identify (clicked on the map)
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,
         function(map,options){
             me.onChangeExtent(map,options);
         },this);
@@ -118,6 +118,18 @@ Ext.define ("viewer.components.FeatureInfo",{
         for (var i =0; i < maptips.length;i++){
             if (typeof maptips[i].setEnabled == 'function'){
                 maptips[i].setEnabled(false);
+            }
+        }
+    },
+    /**
+     *Called when extent is changed, recalculate the position
+     */
+    onChangeExtent : function(map,options){        
+        if (this.worldPosition && options.extent){
+            if (options.extent.isIn(this.worldPosition.x,this.worldPosition.y)){
+                this.balloon.setPositionWorldCoords(this.worldPosition.x,this.worldPosition.y,false,this.getBrowserZoomRatio());
+            }else{
+                this.balloon.hide();
             }
         }
     }

@@ -55,9 +55,19 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_GET_FEATURE_INFO_DATA              : "ON_GET_FEATURE_INFO_DATA",
         /** @field */
         ON_ALL_LAYERS_LOADING_COMPLETE        : "ON_ALL_LAYERS_LOADING_COMPLETE",
-        /** @field */
+        /** @field 
+         * Occures when the extent is changed
+         * @param map the map on which this occures
+         * @param options a options object
+         * @param options.extent the new extent
+         */
         ON_CHANGE_EXTENT                      : "ON_CHANGE_EXTENT",
-        /** @field */
+        /** @field 
+         * Occures when the extent is finished changing
+         * @param map the map on which this occures
+         * @param options a options object
+         * @param options.extent the new extent
+         */
         ON_FINISHED_CHANGE_EXTENT             : "ON_FINISHED_CHANGE_EXTENT",
         /** @field 
          * Occures when a layer is added to this map
@@ -176,7 +186,6 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * Occurs when a control/tool is activated
          */
         ON_DEACTIVATE                           : "ON_DEACTIVATE",
-        ON_GET_SERVICE_INFO                     : "ON_GET_SERVICE_INFO",
-        ON_LAYER_MOVEEND                        : "ON_LAYER_MOVEEND"
+        ON_GET_SERVICE_INFO                     : "ON_GET_SERVICE_INFO"
     }
 });
