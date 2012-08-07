@@ -73,7 +73,15 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         }
         
     },
-    
+    /**
+     *@see viewer.viewercontroller.controller.Layer#getLastMapRequest
+     */
+    getLastMapRequest: function(){
+        return [{
+            url: this.url,
+            extent: this.extent
+        }];
+    },
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
      *Get the type of the layer
