@@ -76,6 +76,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
     
     /******** overwrite functions to make use of the mixin functions **********/    
     /**
+     *Get the type of the layer
+     */
+    getType : function (){
+        return this.mixins.openLayersLayer.getType.call(this);
+    },
+    /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
     setVisible: function(vis){

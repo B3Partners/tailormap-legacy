@@ -229,5 +229,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     removeListener: function (event,handler,scope){
         this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
+    },
+    /**
+     *Get the type of the layer
+     */
+    getType : function (){
+        return this.mixins.openLayersLayer.getType.call(this);
     }
 });
