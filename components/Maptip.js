@@ -34,6 +34,7 @@ Ext.define ("viewer.components.Maptip",{
     featureInfo: null,
     enabled: true,
     lastPosition: null,
+    worldPosition: null,
     /**
      * @constructor
      */
@@ -59,6 +60,13 @@ Ext.define ("viewer.components.Maptip",{
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //listen to the onmaptipcancel
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
+        //listen to a extent change
+        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
+        function(map,options){
+            me.onChangeExtent(map,options);
+        },this);
+   
+        
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
@@ -92,6 +100,12 @@ Ext.define ("viewer.components.Maptip",{
     onResize : function(){
         var top = this.viewerController.getTopMenuHeightInPixels();        
         this.balloon.offsetY=Number(top);
+    },
+    
+    onChangeExtent : function(map,options){
+        if (this.worldPosition){
+            this.balloon.setPositionWorldCoords(this.worldPosition.x,this.worldPosition.y,true,this.getBrowserZoomRatio());
+        }
     },
     /**
      * Enable doing server requests.
@@ -149,7 +163,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     onDataReturned: function(options){
         try{
-            var browserZoomRatio = Ext.get(this.viewerController.layoutManager.mapId).getWidth() / this.viewerController.mapComponent.getWidth();
+            var browserZoomRatio = this.getBrowserZoomRatio();
 
             if (browserZoomRatio!=1){            
                 options.y= Math.round(browserZoomRatio * (options.y));        
@@ -175,6 +189,7 @@ Ext.define ("viewer.components.Maptip",{
             }
             this.lastPosition.x = options.x;
             this.lastPosition.y = options.y;
+            this.worldPosition = options.coord;
             //alert(layer);
             var me = this;
             var data=options.data;        
@@ -271,6 +286,14 @@ Ext.define ("viewer.components.Maptip",{
         }catch(e){
             this.viewerController.logger.error(e);
         }
+    },
+    
+    /**
+     * Return the browser zoom ratio.
+     * @return ratio of zoom (in or out)
+     */
+    getBrowserZoomRatio: function(){
+        return Ext.get(this.viewerController.layoutManager.mapId).getWidth() / this.viewerController.mapComponent.getWidth();
     },
     /**
      * Handles the show details click.
@@ -651,9 +674,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
 
-        this.viewerController.getMap().registerEvent(Event.ON_FINISHED_CHANGE_EXTENT,this.setPosition,this);
-    }
-
+    }        
     /**
      *Private function. Use setPosition(x,y,true) to reset the position
      *Reset the position to the point. And displays the right Arrow to the point
@@ -790,10 +811,11 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      *@param ycoord the world y coord
      *@param resetPositionOfBalloon boolean if true the balloon arrow will be
      *redrawn (this.resetPositionOfBalloon is called)
+     *@param browserZoomRatio the ratio the browser is zoomed (in or out)
      */
-    this.setPositionWorldCoords = function (xcoord,ycoord,resetPositionOfBalloon){
+    this.setPositionWorldCoords = function (xcoord,ycoord,resetPositionOfBalloon, browserZoomRatio){
         var pixel= this.viewerController.getMap().coordinateToPixel(xcoord,ycoord);   
-        setPosition(pixel.x, pixel.y, resetPositionOfBalloon);
+        this.setPosition(pixel.x, pixel.y, resetPositionOfBalloon,browserZoomRatio);
     }
     /**
      * xxx not working! Make it work!
@@ -801,7 +823,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      **/
     this.remove = function(){
         this.balloon.remove();
-        this.viewerController.getMap().unRegisterEvent(Event.ON_FINISHED_CHANGE_EXTENT,viewerController.getMap(), this.setPosition,this);
+        this.viewerController.getMap().unRegisterEvent(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,viewerController.getMap(), this.setPosition,this);
         delete this.balloon;
     }
     /*Get the DOM element where the content can be placed.*/
