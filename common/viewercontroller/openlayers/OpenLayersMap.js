@@ -331,6 +331,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                 //if no layer found return, dont fire
                 return;
             }
+        }else if (genericEvent==viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT){
+            options.extent=this.getExtent();
         }else{
             this.viewerController.logger.error("The event "+genericEvent+" is not implemented in the OpenLayersMap.handleEvent()");
         }

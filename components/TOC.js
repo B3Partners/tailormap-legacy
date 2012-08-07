@@ -531,7 +531,7 @@ Ext.define ("viewer.components.TOC",{
         this.loadInitLayers();
     },
     extentChanged : function (map,obj){
-        var scale = map.getScale(obj[1]);
+        var scale = map.getScale(obj.extent);
         this.checkScaleLayer(this.panel.getRootNode(),scale);
     },
     checkScaleLayer : function (child,scale){
