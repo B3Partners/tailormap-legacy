@@ -450,7 +450,7 @@ Ext.define ("viewer.components.Maptip",{
 /** Creates a balloon.
  *TODO: Place in own file so it can be used by other components and make it a ext class
  * @param mapDiv The div element where the map is in.
- * @param webMapController the webMapController that controlles the map
+ * @param viewerController the viewerController that controlles the map
  * @param balloonId the id of the DOM element that represents the balloon.
  * @param balloonWidth the width of the balloon (optional, default: 300);
  * @param balloonHeight the height of the balloon (optional, default: 300);
@@ -459,9 +459,9 @@ Ext.define ("viewer.components.Maptip",{
  * @param balloonCornerSize the size of the rounded balloon corners of the round.png image(optional, default: 20);
  * @param balloonArrowHeight the hight of the arrowImage (optional, default: 40);
  */
-function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight, offsetX,offsetY, balloonCornerSize, balloonArrowHeight){
+function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight, offsetX,offsetY, balloonCornerSize, balloonArrowHeight){
     this.mapDiv=Ext.get(mapDiv);    
-    this.webMapController=webMapController;
+    this.viewerController=viewerController;
     this.balloonId=balloonId;
     this.balloonWidth=300;
     this.balloonHeight=300;
@@ -651,7 +651,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
 
-        this.webMapController.getMap().registerEvent(Event.ON_FINISHED_CHANGE_EXTENT,this.setPosition,this);
+        this.viewerController.getMap().registerEvent(Event.ON_FINISHED_CHANGE_EXTENT,this.setPosition,this);
     }
 
     /**
@@ -663,9 +663,9 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
      */
     this._resetPositionOfBalloon = function(x,y){
         //calculate position
-        var centerCoord= this.webMapController.getMap().getCenter();
-        //var centerPixel= this.webMapController.getMap().coordinateToPixel(centerCoord.x,centerCoord.y);
-        //var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);        
+        var centerCoord= this.viewerController.getMap().getCenter();
+        //var centerPixel= this.viewerController.getMap().coordinateToPixel(centerCoord.x,centerCoord.y);
+        //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);        
         var centerX = this.mapDiv.getWidth()/2; 
         var centerY = this.mapDiv.getHeight()/2;
         //determine the left and top.
@@ -763,7 +763,7 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
        
 
         //calculate position
-        //var infoPixel= this.webMapController.getMap().coordinateToPixel(x,y);
+        //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);
 
         //determine the left and top.
         var correctedOffsetX=this.offsetX;
@@ -792,13 +792,16 @@ function Balloon(mapDiv,webMapController,balloonId, balloonWidth, balloonHeight,
      *redrawn (this.resetPositionOfBalloon is called)
      */
     this.setPositionWorldCoords = function (xcoord,ycoord,resetPositionOfBalloon){
-        var pixel= this.webMapController.getMap().coordinateToPixel(xcoord,ycoord);   
+        var pixel= this.viewerController.getMap().coordinateToPixel(xcoord,ycoord);   
         setPosition(pixel.x, pixel.y, resetPositionOfBalloon);
     }
-    /*Remove the balloon*/
+    /**
+     * xxx not working! Make it work!
+     * Remove the balloon
+     **/
     this.remove = function(){
         this.balloon.remove();
-        this.webMapController.getMap().unRegisterEvent(Event.ON_FINISHED_CHANGE_EXTENT,webMapController.getMap(), this.setPosition,this);
+        this.viewerController.getMap().unRegisterEvent(Event.ON_FINISHED_CHANGE_EXTENT,viewerController.getMap(), this.setPosition,this);
         delete this.balloon;
     }
     /*Get the DOM element where the content can be placed.*/
