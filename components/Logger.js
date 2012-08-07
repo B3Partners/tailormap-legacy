@@ -53,6 +53,9 @@ Ext.define ("viewer.components.Logger",{
             this.message(message, viewer.components.LogMessage.WARNING);
         }
     },
+    warn: function(message) {
+        this.warning.call(this, message);
+    },
     info: function(message){
         if (this.logLevel <= viewer.components.Logger.LEVEL_INFO){
             this.message(message, viewer.components.LogMessage.INFO);
@@ -77,8 +80,8 @@ Ext.define ("viewer.components.Logger",{
         //if popup is created, add the html element for this message.
         if (this.popup!=null){            
             this.messageDiv.appendChild(newMessage.toHtmlElement());           
-        }       
-        if(type > viewer.components.Logger.LEVEL_DEBUG) {
+        }    
+        if(type != viewer.components.LogMessage.DEBUG) {
             this.setIconVisible(true);
         }
     },
