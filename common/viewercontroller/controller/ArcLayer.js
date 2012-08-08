@@ -156,6 +156,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                 params: {
                     f: "json"
                 },
+                disableCaching: false,
                 success: function(json) {
 
                     // Do the following loop only once by building the serviceCache
