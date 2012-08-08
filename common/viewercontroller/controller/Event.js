@@ -69,6 +69,15 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param options.extent the new extent
          */
         ON_FINISHED_CHANGE_EXTENT             : "ON_FINISHED_CHANGE_EXTENT",
+        /**
+         * @field
+         * Fired when all layer objects are instantiated and their constructors
+         * have run. The layer may not have been loaded or shown on the map yet,
+         * but ViewerController.getLayer() will not log the "Layers not 
+         * initialized! Wait for the layers to be added!" error when this event 
+         * is fired.
+         */
+        ON_LAYERS_INITIALIZED                 : "ON_LAYERS_INITIALIZED",
         /** @field 
          * Occures when a layer is added to this map
          * @param map the map object

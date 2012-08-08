@@ -164,6 +164,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.initLayers();                
             }
             this.layersInitialized=true;
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
         } catch(e) {
             this.logger.error(e);
         }  
@@ -432,7 +433,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         
         }
-        
     },
       
     /**
