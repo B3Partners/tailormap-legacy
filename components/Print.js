@@ -627,14 +627,13 @@ Ext.define ("viewer.components.Print",{
                             if (alpha!=null)
                                 request.alpha = alpha;           
                             printLayers.push(request);
-
-                            if (layer.getType()==viewer.viewercontroller.controller.Layer.IMAGE_TYPE){
-                                request.extent=layer.getExtent();
-                            }  
+                            //do a to string for the extent.
+                            if (request.extent){
+                                request.extent=request.extent.toString();
+                            }
                             //TODO tiling is now added as images, needs te be added as a tiling server
                             if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE){
-                                request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
-                                request.extent=request.extent.toString();                            
+                                request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;                                
                             }
                         }
                     }

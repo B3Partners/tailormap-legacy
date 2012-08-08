@@ -107,6 +107,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         this.visible = this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "getVisible");
         if (this.options!=null)
             this.options["visible"] = this.visible;
+        return this.visible;
     }
     
 });

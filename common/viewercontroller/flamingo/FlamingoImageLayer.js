@@ -55,7 +55,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
     },
     setUrl: function(url){
         this.url=url;
-        if (this.getFrameworkLayer()!=null){
+        if (this.getFrameworkLayer()!=null && this.getMap()!=null){
             this.getFrameworkLayer().callMethod(this.getFrameworkId(),"setAttribute","url",url);
         }
     },
@@ -70,7 +70,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
     },    
     getLastMapRequest: function(){
         var url= this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getServiceUrl");
-        return [{url: url,body: null}];
+        return [{
+            url: url,
+            body: null,
+            extent: this.getExtent()
+        }];
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
@@ -101,5 +105,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoImageLayer",{
      */
     addListener : function(event,handler,scope){
         this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
-    } 
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#getType
+     */
+    getType : function(){
+        return this.mixins.flamingoLayer.getType.call(this);
+    }
 });

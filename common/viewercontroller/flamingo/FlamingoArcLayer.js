@@ -130,7 +130,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcLayer",{
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setVisible
      */
     getVisible: function(){
-        return this.mixins.flamingoLayer.getVisible.call(this);
+        var vis = this.mixins.flamingoLayer.getVisible.call(this);
+        return vis >=0 ? true: false;
     },
     /**
      * @see viewer.viewercontroller.flamingo.FlamingoLayer#setAlpha

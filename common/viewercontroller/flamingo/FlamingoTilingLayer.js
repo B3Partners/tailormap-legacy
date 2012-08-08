@@ -123,6 +123,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      */
     addListener : function(event,handler,scope){
         this.mixins.flamingoLayer.addListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#getType
+     */
+    getType : function(){
+        return this.mixins.flamingoLayer.getType.call(this);
     }
 });
 
