@@ -20,9 +20,146 @@
  */
 Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     extend: "viewer.viewercontroller.controller.Layer",
+    
+    /** Cache of http://<arcgis-server>/.../MapServer/legend JSON data keyed by
+     * the server URL and then by layer name
+     */
+    legendInfoCache: {},
+    
     constructor: function(config){
         viewer.viewercontroller.controller.ArcLayer.superclass.constructor.call(this,config);
     },
+    
+    /** 
+     * Get info as specified by ViewerController.getLayerLegendInfo() 
+     * Exceptions to be catched by the caller.
+     */
+    getLayerLegendInfo: function(success, failure) {
+    
+        if(this.getType() == viewer.viewercontroller.controller.Layer.ARCSERVER_TYPE
+        || this.getType() == viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE) {
+            
+            this.getLayerLegendInfoArcGIS(
+                function(agsLegend) {
+                    
+                    // convert from ArcGIS JSON format 
+                    // to format specified by ViewerController.getLayerLegendInfo() 
+                    
+                    var legend = { 
+                        name: agsLegend.layerName,
+                        parts: []
+                    };
+                    for(var i in agsLegend.legend) {
+                        var agsPart = agsLegend.legend[i];
+                        var part = {
+                            label: agsPart.label,
+                            url: "data:" + agsPart.contentType + ",base64," + agsPart.imageData
+                        };
+                        legend.parts.push(part);
+                    }
+                    
+                    success(legend);
+                },
+                failure
+            );
+            
+        } else {
+            /* ArcXML legends not yet supported, needs server side support for a
+             * cross-domain POST
+             * Please provide a patch :)
+             */
+            this.getViewerController().logger.warn("appLayer " + this.getAppLayerId() + ": legend for ArcXML layers not supported");
+
+            if(failure) { failure(); }
+        }
+    },
+    
+    /* Gets the JSON accessible at http://<server-url>/MapServer/legend for this
+     * layer.
+     * 
+     * Uses a cache and transforms the server JSON to avoid looping all layers 
+     * to find the JSON so it can be looked up by a simple index by layer name.
+     */
+    getLayerLegendInfoArcGIS: function(success, failure) {
+        var me = this;
+        
+        var errorMsg = "appLayer " + this.getAppLayerId() + ": legend for ArcGIS not available: ";
+        
+        var appLayerId = this.getAppLayerId();
+        var appLayer = this.getViewerController().getAppLayerById(appLayerId);
+        var service = this.getViewerController().app.services[appLayer.serviceId];
+        
+        /* Check the ArcGIS server version: only since version 10 are legends
+         * supported
+         */
+        if(!service.arcGISVersion) {
+            // Only available since version 4.2
+            this.getViewerController().logger.warn(errorMsg + "no server version info, please update service registry");
+            if(failure) { failure(); }
+            return;
+        }
+        if(service.arcGISVersion.major < 10) {
+            this.getViewerController().logger.warn(errorMsg + "needs at least ArcGIS Server version 10 but version is " + service.arcGISVersion.s);
+            if(failure) { failure(); }
+            return;            
+        }
+        
+        var serviceCache = this.legendInfoCache[service.url];
+        
+        if(serviceCache && serviceCache.failedPreviously) {
+            // Don't try fetching from service everytime, a previous attempt 
+            // failed and logged an error
+            if(failure) { failure(); }
+            return;            
+        }
+        
+        var onServiceCached = function(theServiceCache) {
+            var layerLegend = theServiceCache[appLayer.layerName];
+            
+            if(!layerLegend) {
+                me.getViewerController().logger.warn(errorMsg + "server did not return legend info for layer with id " + appLayer.layerName);
+                if(failure) { failure(); }
+            }
+         
+            if(success) { success(layerLegend); }           
+        };
+            
+        if(serviceCache) {
+            onServiceCached(serviceCache);
+        } else {
+            // First time requesting legend data from server, requires a Ajax
+            // JSONP call
+            serviceCache = {};
+            this.legendInfoCache[service.url] = serviceCache;
+            
+            Ext.data.JsonP.request({
+                url: service.url + "/legend",
+                params: {
+                    f: "json"
+                },
+                success: function(json) {
+
+                    // Do the following loop only once by building the serviceCache
+                    // as indexed by layer id
+                    for(var i in json.layers) {
+                        var layer = json.layers[i];
+                        
+                        serviceCache[layer.layerId] = layer;
+                    }
+                    
+                    onServiceCached(serviceCache);
+                },
+                failure: function() {
+                    serviceCache.failedPreviously = true;
+                  
+                    me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS");
+                    if(failure) { fialure(); }                   
+                }
+            });
+        } 
+    },
+
+    /* Abstract functions below: */
     getId :function (){
         Ext.Error.raise({msg: "ArcLayer.getId() Not implemented! Must be implemented in sub-class"});
     },

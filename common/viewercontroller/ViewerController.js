@@ -714,7 +714,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
     },
     /**
-     * Get the Layer Legend image.
+     * Get the Layer Legend image. Superseded by getLayerLegendInfo()
      * @param appLayer the applayer
      */
     getLayerLegendImage :function (appLayer){
@@ -728,6 +728,55 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return layerObj.getLegendGraphic();
         }
     },
+    
+    /**
+     * Retrieve info about the layer legend and call the success function with
+     * that info. Implemented by Layer subclasses. NOTE: the success function
+     * can be called immediately <i>during execution</i> of this function OR at 
+     * a later time.
+     * 
+     * If the layer has no legend, if the protocol is unsupported or if an error 
+     * occurs (this will have been logged) the failure function is called with
+     * the appLayer argument.
+     * 
+     * The success function is called with the given appLayer argument and a 
+     * Object argument with the following properties:
+     * 
+     * for WMS services:
+     * url: String, legend image URL which may include a label in the image, 
+     *      unknown size - may include many parts in a tall image. 
+     * 
+     * for ArcGIS services, a legend of multiple parts:
+     * name: String, server provided label for the legend of this layer
+     * parts: Array of:
+     *   label: String, label for legend part
+     *   url: String, URL for image, usually provided as data: protocol base64
+     *        encoded image 27x27 PNG (no label) by ArcGIS
+     */
+    getLayerLegendInfo: function(appLayer, success, failure) {
+        
+        try {
+            var l = this.getLayer(appLayer);
+            if(l.getLayerLegendInfo) {
+                l.getLayerLegendInfo(
+                    function(legendInfo) {
+                        success(appLayer, legendInfo);
+                    },
+                    function() {
+                        failure(appLayer);
+                    }
+                    );
+            } else {
+                this.logger.error("Layer class " + l.$className + " does not support getLayerLegendInfo");
+                if(failure) { failure(appLayer); }
+            }
+        
+        } catch(e) {
+            this.logger.error("Error creating legend info for appLayerId " + appLayer.id + ": " + e);
+            if(failure) { failure(appLayer); }
+        }        
+    },
+    
     getLayerMetadata : function (serviceId, layerName){  
         var layer = this.app.services[serviceId].layers[layerName];
         return layer.details["metadata.stylesheet"];
