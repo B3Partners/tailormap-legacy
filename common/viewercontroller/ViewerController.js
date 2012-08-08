@@ -295,6 +295,39 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
     },
     
+    /**
+     * Depth-first traversal of selected content
+     */
+    traverseSelectedContent: function(onLevel, onAppLayer) {
+        var app = this.app;
+        
+        var traverseLevel = function(level) {
+            onLevel(level);
+            if(level.children) {
+                for(var i in level.children) {
+                    var child = app.levels[level.children[i]];
+                    traverseLevel(child);
+                }
+            }
+            if(level.layers) {
+                for(var i in level.layers) {
+                    var layer = app.appLayers[level.layers[i]];
+                    onAppLayer(layer);
+                }
+            }
+        };
+        
+        for(var i in app.selectedContent) {
+            var c = app.selectedContent[i];
+            
+            if(c.type == "level") {
+                traverseLevel(app.levels[c.id]);
+            } else if(c.type == "appLayer") {
+                onAppLayer(app.appLayers[c.id]);
+            }
+        }
+    },
+    
     getLevelAppLayerIds: function(level) {
         var appLayers = [];
         
