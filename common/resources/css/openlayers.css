@@ -1,0 +1,146 @@
+/*OpenLayers */
+.olImageLoadError{
+    background-color: transparent !important;
+}
+.olControlPanel{
+    float: left;
+    margin-left: 75px;
+    margin-top: 5px;
+    border: 1px solid grey;
+    padding: 2px;
+    background-color: #EEE;
+}
+.olControlPanel div {
+    float: left;
+    display:block;
+    width:  24px;
+    height: 22px;
+    margin: 5px;
+    background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlDragPanItemActive {
+    background-image: url("../../openlayers/theme/default/img/pan_on.png");
+}
+.olControlPanel .olControlDragPanItemInactive {
+    background-image: url("../../openlayers/theme/default/img/pan_off.png");
+}
+
+
+.olControlPanel .olControlZoomBoxItemInactive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_box_off.png");
+}
+.olControlPanel .olControlZoomBoxItemActive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_box_on.png");
+}
+.olControlPanel .olControlZoomOutItemActive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_out_on.png");
+}
+.olControlPanel .olControlZoomOutItemInactive {    
+    background-image: url("../../openlayers/theme/default/img/zoom_out_off.png");
+}
+.olControlPanel .olControlidentifyItemActive{
+    background-image: url("../../openlayers/theme/default/img/identify_on.png");
+}
+.olControlPanel .olControlidentifyItemInactive{
+    background-image: url("../../openlayers/theme/default/img/identify_off.png");
+}
+.olControlLoadingPanel {
+            background-image:url(../../openlayers/img/loading.gif);
+            position: relative;
+            width: 195px;
+            height: 11px;
+            background-position:center;
+            background-repeat:no-repeat;
+            display: none;
+        }
+.olControlPanel .olControlZoomToMaxExtentItemInactive {
+    width:  20px;
+    height: 20px;
+    background-image: url("../../openlayers/img/zoom-world-mini.png");
+}
+
+.olControlPanel .olControlMeasureItemInactive{
+    background-image: url("../../openlayers/theme/default/img/measure_off.png");
+}
+.olControlPanel .olControlMeasureItemActive{
+    background-image: url("../../openlayers/theme/default/img/measure_on.png");
+}
+/*.olControlPanel .olControlb_bufferItemInactive{
+    background-image: url("img/buffer_tool.png");
+}
+.olControlPanel .olControlb_bufferItemActive{
+    background-image: url("img/buffer_tool.png");
+}*/
+/*.olControlPanel .olControlidentifyItemActive{
+    background-image: url("img/identify_on.png");
+}
+.olControlPanel .olControlidentifyItemInactive{
+    background-image: url("img/identify_off.png");
+}*/
+/*
+.olControlPanel .olControlb_highlightItemInactive{
+    background-image: url("img/polygon_select.png");
+}
+.olControlPanel .olControlb_highlightItemActive{
+    background-image: url("img/polygon_select.png");
+}
+
+.olControlPanel .olControlb_printMapItemInactive{
+    background-image: url("img/print.png");
+}
+.olControlPanel .olControlb_printMapItemActive{
+    background-image: url("img/print.png");
+}
+
+.olControlPanel .olControlb_layerSelectionItemInactive{
+    background-image: url("img/book_open.png");
+}
+.olControlPanel .olControlb_layerSelectionItemActive{
+    background-image: url("img/book_open.png");
+}
+
+.olControlPanel .olControlb_removePolygonsItemInactive{
+    background-image: url("img/polygon_delete.png");
+}
+.olControlPanel .olControlb_removePolygonsItemActive{
+    background-image: url("img/polygon_delete.png");
+}
+
+.olControlPanel .olControlb_bookMarkItemInactive{
+    background-image: url("img/bookmark.png");
+}
+.olControlPanel .olControlb_bookMarkItemActive{
+    background-image: url("img/bookmark.png");
+}
+
+.olControlPanel .olControlb_getfeaturesItemInactive{
+    background-image: url("img/polygon_info.png");
+}
+.olControlPanel .olControlb_getfeaturesItemActive{
+    background-image: url("img/polygon_info.png");
+}
+
+.olControlPanel .olControlDrawFeaturePointItemInactive{
+    background-image: url("../default/img/draw_point_off.png");
+}
+
+.olControlPanel .olControlDrawFeaturePointItemActive{
+    background-image: url("../default/img/draw_point_on.png");
+}
+
+.olControlPanel .olControlDrawFeaturePathItemInactive{
+    background-image: url("../default/img/draw_line_off.png");
+}
+
+.olControlPanel .olControlDrawFeaturePathItemActive{
+    background-image: url("../default/img/draw_line_on.png");
+}
+
+.olControlPanel .olControlDrawFeaturePolygonItemInactive{
+    background-image: url("../default/img/draw_polygon_off.png");
+}
+
+.olControlPanel .olControlDrawFeaturePolygonItemActive{
+    background-image: url("../default/img/draw_polygon_on.png");
+}*/

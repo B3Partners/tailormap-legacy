@@ -327,8 +327,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT ||
             type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19 - 20,            
             return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory());
-        }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,
-            this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
+        }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,            
+            //this.getMap().setGetFeatureInfoControl(identifyTool);
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomToMaxExtent());
+            //this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
             return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
         }else{
@@ -414,7 +416,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 me.getPanel().addControls([navControl.next]);
                 me.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             };
-            this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);            
+            this.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);        
         }else {
             var ft = tool.getFrameworkTool();
             this.getPanel().addControls([tool.getFrameworkTool()]);
