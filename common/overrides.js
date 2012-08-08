@@ -27,3 +27,11 @@ Ext.override(Ext.form.field.Picker, {
         }, 0);
     }
 });
+if(MobileDetect.isMobile()) {
+    Ext.override(Ext.form.field.ComboBox, {
+        editable: false 
+    });
+    Ext.override(Ext.form.field.Trigger, {
+        editable: false 
+    });
+}
