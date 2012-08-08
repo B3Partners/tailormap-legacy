@@ -1,0 +1,29 @@
+
+/* Styling for legends, see for example:
+ * http://jsfiddle.net/ZVUBv/1/
+ */
+
+.legend {
+    width: 100%; 
+    height: 100%; 
+    overflow: auto;
+}
+
+.legend .layer {
+    clear: left;
+}
+
+.legend .layer .name {
+    font-weight: bold;
+}
+
+.legend .layer .image {
+    clear: left;
+    float: left;
+    padding-right: 3px;
+}
+
+.legend .layer .label {
+    line-height: 31px; /* center single-line label vertically to align to image */
+    white-space: nowrap;    
+}

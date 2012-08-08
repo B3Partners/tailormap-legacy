@@ -15,47 +15,142 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /**
  * Legend
- * Creates the legend of the current switched on layers.
- * This legend uses a queue to load the images.
- * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ * 
+ * Shows legends for layers.
+ * 
+ * To prevent starvation of available HTTP requests for loading maps, this 
+ * component limits the concurrent loading of legend images.
+ * 
+ * Legend images which use the data: protocol are not queued.
+ * 
+ * XXX are WMS getlegendgraphics requested again when unchecked and then checked?
+ * XXX same for selectedcontentchange
  */
-Ext.define ("viewer.components.Legend",{
+Ext.define("viewer.components.Legend", {
     extend: "viewer.components.Component",
-    queue : null,
-    legends : null,    
+    
+    appLayerOrder: null,
+    
+    /*
+    queue: null,
+    legends: null,    
     initLegends: null,
-    config:{
-        // name: "Legend",
+    */
+    config: {
         title: "Legend",
-        titlebarIcon : "",
-        tooltip : "",
+        titlebarIcon: "",
+        tooltip: "",
         showBackground: false
     },
     constructor: function (conf){
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.legends={};
+        
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
         this.panel = Ext.create('Ext.panel.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'legendContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>'
+            html: '<div id="' + this.name + 'legendContainer" class="legend"></div>'
         });
         
         this.legendContainer = document.getElementById(this.name + 'legendContainer');
-        this.legendContainer.style.overflow = "auto";
         
-        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
         
-        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
-        this.start();
+        // DISABLED OLD CODE
+        //this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
+        //this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        //this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
+        
+        //this.start();
+        
+        // TODO hide legend for layer on event
+        
+        // TODO recreate legend on selected content change
+        
         return this;
     },
+    
+    onLayersInitialized: function() {
+        console.log("received layers initialized event, creating legend");
+        this.createLegendForSelectedContent();
+    },
+    
+    createLegendForSelectedContent: function() {
+        var me = this;
+        
+        var index = 0;
+        me.appLayerOrder = {};
+        
+        this.viewerController.traverseSelectedContent(
+            Ext.emptyFn,
+            function(appLayer) {
+                me.appLayerOrder[appLayer.id] = index++;
+                
+                if(!this.showBackground && appLayer.background) {
+                    return;
+                }
+                
+                if(appLayer.checked) {
+                    me.createLegendForAppLayer(appLayer);
+                }
+            }
+        );
+    },
+
+    createLegendForAppLayer: function(appLayer) {
+        console.log("create legend for appLayer " + appLayer.alias +", order " + this.appLayerOrder[appLayer.id]);
+        var me = this;
+        this.viewerController.getLayerLegendInfo(
+            appLayer,
+            function(al, legend) {
+                console.log("legend info received for appLayer " + al.alias, legend);
+                
+                // TODO use queue to prevent starvation of HTTP requests for 
+                // map requests which should have priority
+                
+                var divLayer = document.createElement("div");
+                divLayer.className = "layer";
+                divLayer.data = appLayer.id;
+                var divName = document.createElement("div");
+                divName.className = "name";
+                divName.innerHTML = Ext.htmlEncode(appLayer.alias);
+                divLayer.appendChild(divName);
+
+                if(legend.url) {
+                    var img = document.createElement("img");
+                    img.src = legend.url;
+                    var divImage = document.createElement("div");
+                    divImage.className = "image";
+                    divImage.appendChild(img);
+                    divLayer.appendChild(divImage);
+                } else {
+                    for(var i in legend.parts) {
+                        var part = legend.parts[i];
+                        var img = document.createElement("img");
+                        img.src = part.url;
+                        // TODO onload of image set label line-height to image heightr
+                        var divImage = document.createElement("div");
+                        divImage.className = "image";
+                        divImage.appendChild(img);
+                        divLayer.appendChild(divImage);
+                        var divLabel = document.createElement("div");
+                        divLabel.className = "label";
+                        divLabel.innerHTML = Ext.htmlEncode(part.label);
+                        divLayer.appendChild(divLabel);                        
+                    }
+                }
+                // TODO use order to insert element at correct position
+                me.legendContainer.appendChild(divLayer);
+            },
+            Ext.emptyFn
+        );
+    },
+    
     // Construct the list of images to be retrieved by the queue
     makeLegendList : function (){
         this.initLegends = new Array();        
@@ -67,7 +162,7 @@ Ext.define ("viewer.components.Legend",{
         if(vis){
             this.addLayer(layer);
         }else{
-           this.removeLayer(layer);
+            this.removeLayer(layer);
         }
     },
     /**
