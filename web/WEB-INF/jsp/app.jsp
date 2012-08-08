@@ -44,7 +44,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     isMobile: function() { return mobile; },
                     isIOS: function() { return ios; },
                     isAndroid: function() { return android; },
-                    isLandscape: function() { return landscapeOrientation; }
+                    isLandscape: function() { return landscapeOrientation; },
+					hasHammer: function () { return (Hammer !== undefined); }
                 };
             }();
 			if(!MobileDetect.isMobile()) {
@@ -175,8 +176,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<script type="text/javascript">
 			if(MobileDetect.isMobile()) {
 				document.write('<meta name="HandheldFriendly" content="True">');
-				document.write('<meta name="MobileOptimized" content="width=device-width; height=device-height; user-scalable=yes; initial-scale=1.0">');
-				document.write('<meta name="viewport" content="width=device-width, initial-scale=1">');
+				document.write('<meta name="MobileOptimized" content="width=device-width; height=device-height; user-scalable=no; initial-scale=1.0">');
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">');
 				document.write('<meta http-equiv="cleartype" content="on">');
 				document.write('<script type="text/javascript" src="${contextPath}/resources/js/hammer.js"></' + 'script>');
 				document.write('<link href="${contextPath}/resources/css/mobile.css" rel="stylesheet">');
