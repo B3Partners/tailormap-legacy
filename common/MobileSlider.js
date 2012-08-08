@@ -88,7 +88,7 @@ Ext.define ("viewer.components.MobileSlider", {
             start = start / speedup;
             me.sliderChanged(target, target.value);
         }
-        if(Hammer) {
+        if(MobileDetect.hasHammer()) {
             var hammer = new Hammer(btn);
             hammer.onhold = changeSliderValue;
             hammer.onrelease = function(ev) {

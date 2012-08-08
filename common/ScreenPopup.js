@@ -107,6 +107,13 @@ Ext.define ("viewer.components.ScreenPopup",{
                 setTimeout(function() { me.component.resizeScreenComponent() }, 0);
             }
         });
+		if(MobileDetect.isMobile() && MobileDetect.hasHammer()) {
+			// Hide the window on double tapping the header
+			var hammer = new Hammer(document.getElementById(me.popupWin.header.id));
+			hammer.ondoubletap = function(ev) {
+				me.hide();
+			};
+		}
         return this;
     },
     setComponent: function(component) {

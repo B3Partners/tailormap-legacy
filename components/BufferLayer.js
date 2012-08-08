@@ -107,12 +107,18 @@ Ext.define ("viewer.components.BufferLayer",{
         if(layer != null && radius != ""){
             layer.setBuffer(radius, layer.options.name);
         }
+		if(MobileDetect.isMobile()) {
+			this.popup.hide();
+		}
     },
     removeBuffer : function(){
         var layer = this.combobox.getValue();
         if(layer != null){
             layer.removeBuffer( layer.options.name);
         }
+		if(MobileDetect.isMobile()) {
+			this.popup.hide();
+		}
     },
     getExtComponents: function() {
         return [
