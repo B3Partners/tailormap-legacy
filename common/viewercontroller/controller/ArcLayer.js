@@ -23,8 +23,11 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
     
     /** Cache of http://<arcgis-server>/.../MapServer/legend JSON data keyed by
      * the server URL and then by layer name
+     * 
+     * The object for a server also contains info whether a Ajax call is in 
+     * progress to prevent duplicate Ajax calls  
      */
-    legendInfoCache: {},
+    /* static */ legendInfoCache: {}, 
     
     constructor: function(config){
         viewer.viewercontroller.controller.ArcLayer.superclass.constructor.call(this,config);
@@ -124,12 +127,29 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             }
         };
             
-        if(serviceCache) {
+        if(serviceCache && !serviceCache.inProgress) {
+            //console.log("using cached legend data for app layer id" + appLayerId);
+            
             onServiceCached(serviceCache);
+        } else if(serviceCache && serviceCache.inProgress) {
+            // An Ajax call is already in progress for this server, join the
+            // request
+            
+            //console.log("joining legend data Ajax call for app layer id" + appLayerId);
+            
+            serviceCache.joiners.push({
+                success: onServiceCached,
+                failure: failure
+            });
         } else {
+            //console.log("doing first-time legend data Ajax call for app layer id" + appLayerId);
+            //
             // First time requesting legend data from server, requires a Ajax
             // JSONP call
-            serviceCache = {};
+            serviceCache = { 
+                inProgress: true, 
+                joiners: []
+            };
             this.legendInfoCache[service.url] = serviceCache;
             
             Ext.data.JsonP.request({
@@ -146,14 +166,31 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                         
                         serviceCache[layer.layerId] = layer;
                     }
+                    serviceCache.inProgress = false;
                     
+                   //console.log("legend data received, calling success function");
                     onServiceCached(serviceCache);
+                    
+                    for(var i in serviceCache.joiners) {
+                        var joiner = serviceCache.joiners[i];
+                        //console.log("legend data received, calling joined success function");
+                        joiner.success(serviceCache);
+                    }
+                    delete serviceCache.joiners;
                 },
                 failure: function() {
                     serviceCache.failedPreviously = true;
+                    serviceCache.inProgress = false;
                   
                     me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS");
                     if(failure) { fialure(); }                   
+                    
+                    for(var i in serviceCache.joiners) {
+                        //console.log("legend data Ajax failure, calling joined failure function");
+                        var joiner = serviceCache.joiners[i];
+                        joiner.failure();
+                    }
+                    delete serviceCache.joiners;
                 }
             });
         } 
