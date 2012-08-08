@@ -30,15 +30,33 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
         this.onActiveHandler = new Object();
+        
+        this.overwriteStyle();
         return this;
     },
-    
     /**
-     * @see viewer.viewercontroller.controller.Tool#getId
+     * If iconUrl paths are set, add a style to show the correct images.
      */
-    getId : function(){
-        return this.id;
+    overwriteStyle: function(){
+        if (this.iconUrl_up!= null || this.iconUrl_sel!=null){
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            var html=""
+            if (this.iconUrl_up!= null){
+                html += ".olControlPanel ."+this.frameworkObject.displayClass+"ItemInactive";
+                html += "{ background-image: url(\""+this.iconUrl_up+"\")}";
+            }
+            if (this.iconUrl_sel!= null){
+                html += ".olControlPanel ."+this.frameworkObject.displayClass+"ItemActive";
+                html += "{ background-image: url(\""+this.iconUrl_sel+"\")}";
+            }
+           
+            style.innerHTML=html;
+            document.getElementsByTagName('head')[0].appendChild(style);
+        }
+
     },
+            
     
     /**
      * @see viewer.viewercontroller.controller.Tool#setToolVisible

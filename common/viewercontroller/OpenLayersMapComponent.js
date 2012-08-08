@@ -233,49 +233,42 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return comp;
     },
     /**
-     *Create a tool: the initializing of a piece of functionality to link to a button
-     *@param id
-     *@param type: the type of the tool. Possible values: @see viewer.viewercontroller.controller.Tool#statics   *
-     *@param options: the options used for initializing the Tool
-     *  Posible options:
-     *  handlerGetFeatureHandler: the handler for getFeatures
-     *  handlerBeforeGetFeatureHandler: the handler for before getFeatures
-     *  layer: the layer that is needed for some drawing tools
-     *  All other openlayer options.
+     * @see viewer.viewercontroller.MapComponent#createTool
+     * 
      **/
     createTool : function (conf){
         var type = conf.type;
-        var id = conf.id;
-        var options = {
-                id: id,
-                type: type,
-                viewerController: this.viewerController
-        };
+        var id = conf.id;       
+        conf.viewerController=this.viewerController;
+        var frameworkOptions={};
+        //pass the tool tip to the framework object.
+        if (conf.toolTip){
+            frameworkOptions.title=conf.toolTip;
+        }
 
         if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory(options));
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory(options));
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomBox())
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomBox(frameworkOptions))
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomOut());
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomOut(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan())
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions))
         }else if (type==viewer.viewercontroller.controller.Tool.SUPERPAN){//5,
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.DragPan({enableKinetic: true}));            
-        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {            
-            var frameworkOptions=new Object();
+            frameworkOptions.enableKinetic=true;
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));            
+        }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {  
             //olControlidentify
             frameworkOptions["displayClass"]="olControlidentify";
             frameworkOptions["type"]=OpenLayers.Control.TYPE_TOOL;
             
-            //options.olMap= this.getMap().getFrameworkMap();
+            //conf.olMap= this.getMap().getFrameworkMap();
             var identifyTool = new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(
-                options ,new OpenLayers.Control(frameworkOptions),this.getMap());
+                conf ,new OpenLayers.Control(frameworkOptions),this.getMap());
             
             //this.getMap().setGetFeatureInfoControl(identifyTool);
             return identifyTool;
         }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
-            var frameworkOptions=new Object();
             
             frameworkOptions["persist"]=true;
             frameworkOptions["callbacks"]={
@@ -304,7 +297,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     }
                 }
             }
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
                 if (measureValueDiv){                
@@ -320,19 +313,26 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             });
             return measureTool;
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,            
-            return new OpenLayersTool(options,new OpenLayers.Control.PanZoomBar()); 
+            return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions)); 
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
             // The default tool is always available in openlayers.
             //this.viewerController.logger.info("Tool DEFAULT is default available in OpenLayers, no configuration needed");
         }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT ||
             type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19 - 20,            
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options,new OpenLayers.Control.NavigationHistory());
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory());
         }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,            
             //this.getMap().setGetFeatureInfoControl(identifyTool);
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(options, new OpenLayers.Control.ZoomToMaxExtent());
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomToMaxExtent(frameworkOptions));
             //this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
             return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
+        }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE){
+            frameworkOptions.type=OpenLayers.Control.TYPE_TOGGLE;
+            frameworkOptions.displayClass ="fuck";
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
+        }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
+            frameworkOptions.type=OpenLayers.Control.TYPE_BUTTON;
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
         }

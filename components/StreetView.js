@@ -66,11 +66,10 @@ Ext.define ("viewer.components.tools.StreetView",{
             iconUrl_over: this.iconUrl_over,
             iconUrl_sel: this.iconUrl_sel,
             iconUrl_dis: this.iconUrl_dis,
-            enabled: false,
-            selected:false,
             tooltip: this.config.tooltip || null,
             viewerController: this.viewerController
         });
+        this.viewerController.mapComponent.addTool(this.button);
         
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);

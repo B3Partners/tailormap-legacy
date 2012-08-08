@@ -50,8 +50,15 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         id: null,
         frameworkObject: null,
         visible: true,
-        type: null
+        type: null,
+        tooltip:null,
+        iconUrl_up: null,
+        iconUrl_over: null,
+        iconUrl_sel:null,
+        iconUrl_dis:null,        
+        viewerController:null
     },
+    
     constructor: function (config){
         this.initConfig(config);
         this.events = [];
@@ -64,11 +71,9 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     getFrameworkTool : function(){
         return this.frameworkObject;
     },
-    
-    getId : function(){
-        return this.id;
-    },
-
+    /**
+     *Must set the visibility of the tool.
+     */
     setToolVisible : function(){
         Ext.Error.raise({msg: "Tool.setVisible() not implemented! Must be implemented in sub-class"});
     },

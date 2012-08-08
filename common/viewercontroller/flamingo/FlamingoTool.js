@@ -13,13 +13,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         right: null,
         top: null,
         bottom: null,
-        tooltip: null,
         listenTo: null,
         //for measure
         decimals: null,
         magicnumber: null,
-        units: null,
-        viewerController:null
+        units: null
     },       
     /** Create a new FlamingoTool
      *@construct

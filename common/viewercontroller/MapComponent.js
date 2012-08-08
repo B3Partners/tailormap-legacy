@@ -115,11 +115,16 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     },
     /**
     *Must be implemented by the sub-class
-    *This creates a tool.
-    * @param conf the configuration, containing:
-    * @param conf.id the id of the toolmapclick
-    * @param conf.type the type of the tool
-    */
+    *Create a tool
+    *@param conf: the options used for initializing the Tool
+    *@param conf.id the id
+    *@param conf.type the type tool @see viewer.viewercontroller.controller.Tool#statics
+    *@param conf.tooltip the tooltip for this tool
+    *@param conf.iconUrl_up overwrite (or set if not available for the tool type) the icon url for the up state of the control
+    *@param conf.iconUrl_over  overwrite (or set if not available for the tool type) the icon url for the over state of the control
+    *@param conf.iconUrl_sel overwrite (or set if not available for the tool type) the icon url for the selected state of the control
+    *@param conf.iconUrl_dis overwrite (or set if not available for the tool type) the icon url for the disabled state of the control
+    **/
     createTool: function (conf){
         Ext.Error.raise({msg: "MapComponent.createTool(...) not implemented! Must be implemented in sub-class"});
     },

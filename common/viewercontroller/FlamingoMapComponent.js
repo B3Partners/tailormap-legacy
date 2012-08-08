@@ -192,14 +192,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         config.frameworkLayer = this.viewerObject
         return new viewer.viewercontroller.flamingo.FlamingoVectorLayer(config);
     },
-    /** @See MapComponent.createTool
-    * @param conf the configuration, containing:
-    * @param conf.id the id of the toolmapclick
-    * @param conf.type the type of the tool
-    * @param conf.handler.fn The function to be called
-    * @param conf.handler.scope The scope in which the function has to be called
-    * @param conf.viewerController The viewercontrollerreference 
-    **/
+    /**
+     * @see viewer.viewercontroller.MapComponent#createTool
+     * As addition: 
+     * @param conf.listenTo set if the tool must listen to another object then the map
+     **/
     createTool: function (conf){   
         if (Ext.isEmpty(conf.listenTo)){
             conf.listenTo=this.getMap().getId();
