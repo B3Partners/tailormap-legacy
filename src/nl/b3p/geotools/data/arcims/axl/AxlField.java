@@ -83,10 +83,17 @@ public class AxlField {
         }
         if(binding.equals(String.class)) {
             return value;
-        } else if(binding.equals(Integer.class)) {
-            return Integer.parseInt(value);
         } else if(binding.equals(Boolean.class)) {
             return "true".equals(value);
+        }
+        
+        // For the following bindings empty string is null
+        if(value.trim().length() == 0) {
+            return null;
+        }
+        
+        if(binding.equals(Integer.class)) {
+            return Integer.parseInt(value);
         } else if(binding.equals(BigInteger.class)) {
             return new BigInteger(value);
         } else if(binding.equals(Character.class)) {
