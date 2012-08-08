@@ -119,9 +119,9 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             if(!layerLegend) {
                 me.getViewerController().logger.warn(errorMsg + "server did not return legend info for layer with id " + appLayer.layerName);
                 if(failure) { failure(); }
+            } else {
+                if(success) { success(layerLegend); }           
             }
-         
-            if(success) { success(layerLegend); }           
         };
             
         if(serviceCache) {
