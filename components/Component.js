@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Expression organization is undefined on line 4, column 61 in Templates/Licenses/license-gpl30.txt.
+ * Copyright (C) 2012 B3Partners B.V
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
