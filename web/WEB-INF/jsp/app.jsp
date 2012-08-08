@@ -61,6 +61,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="${contextPath}/viewer-html/components/resources/css/featureinfo.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/relatedDocuments.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/css/legend.css" rel="stylesheet">
         
         
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
