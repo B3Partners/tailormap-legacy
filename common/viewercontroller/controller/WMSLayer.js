@@ -46,7 +46,7 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
             this.getViewerController().logger.debug("appLayer " + appLayerId + ": no legendImageUrl found, GetLegendGraphic request: " + url);
         }
 
-        if(success) { success({ url: url }); }
+        success({ url: url });
     },
     
     getLegendGraphic : function () {

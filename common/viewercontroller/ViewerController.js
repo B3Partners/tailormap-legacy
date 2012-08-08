@@ -768,12 +768,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     );
             } else {
                 this.logger.error("Layer class " + l.$className + " does not support getLayerLegendInfo");
-                if(failure) { failure(appLayer); }
+                failure(appLayer);
             }
         
         } catch(e) {
             this.logger.error("Error creating legend info for appLayerId " + appLayer.id + ": " + e);
-            if(failure) { failure(appLayer); }
+            failure(appLayer);
         }        
     },
     

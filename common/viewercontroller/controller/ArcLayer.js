@@ -69,11 +69,10 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
         } else {
             /* ArcXML legends not yet supported, needs server side support for a
              * cross-domain POST
-             * Please provide a patch :)
              */
             this.getViewerController().logger.warn("appLayer " + this.getAppLayerId() + ": legend for ArcXML layers not supported");
 
-            if(failure) { failure(); }
+            failure();
         }
     },
     
@@ -98,12 +97,12 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
         if(!service.arcGISVersion) {
             // Only available since version 4.2
             this.getViewerController().logger.warn(errorMsg + "no server version info, please update service registry");
-            if(failure) { failure(); }
+            failure();
             return;
         }
         if(service.arcGISVersion.major < 10) {
             this.getViewerController().logger.warn(errorMsg + "needs at least ArcGIS Server version 10 but version is " + service.arcGISVersion.s);
-            if(failure) { failure(); }
+            failure();
             return;            
         }
         
@@ -112,7 +111,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
         if(serviceCache && serviceCache.failedPreviously) {
             // Don't try fetching from service everytime, a previous attempt 
             // failed and logged an error
-            if(failure) { failure(); }
+            failure();
             return;            
         }
         
@@ -121,30 +120,30 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             
             if(!layerLegend) {
                 me.getViewerController().logger.warn(errorMsg + "server did not return legend info for layer with id " + appLayer.layerName);
-                if(failure) { failure(); }
+                failure();
             } else {
-                if(success) { success(layerLegend); }           
+                success(layerLegend);
             }
         };
             
         if(serviceCache && !serviceCache.inProgress) {
-            //console.log("using cached legend data for app layer id" + appLayerId);
+            //console.log("using cached legend data for app layer id " + appLayerId);
             
             onServiceCached(serviceCache);
         } else if(serviceCache && serviceCache.inProgress) {
             // An Ajax call is already in progress for this server, join the
             // request
             
-            //console.log("joining legend data Ajax call for app layer id" + appLayerId);
+            //console.log("joining legend data Ajax call for app layer id " + appLayerId);
             
             serviceCache.joiners.push({
                 success: onServiceCached,
                 failure: failure
             });
         } else {
-            //console.log("doing first-time legend data Ajax call for app layer id" + appLayerId);
+            //console.log("doing first-time legend data Ajax call for app layer id " + appLayerId);
             //
-            // First time requesting legend data from server, requires a Ajax
+            // First time requesting legend data from server, requires an Ajax
             // JSONP call
             serviceCache = { 
                 inProgress: true, 
@@ -183,7 +182,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     serviceCache.inProgress = false;
                   
                     me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS");
-                    if(failure) { fialure(); }                   
+                    failure();
                     
                     for(var i in serviceCache.joiners) {
                         //console.log("legend data Ajax failure, calling joined failure function");
