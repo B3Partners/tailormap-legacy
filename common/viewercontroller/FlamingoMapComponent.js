@@ -212,6 +212,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }else */
         if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){           
             tool = Ext.create ("viewer.viewercontroller.flamingo.ToolMapClick",conf);
+        }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE){
+            conf.toggle=true;
+            tool = Ext.create("viewer.components.tools.JSButton",conf);
+        }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
+            conf.toggle=false;
+            tool = Ext.create("viewer.components.tools.JSButton",conf);
         }else{
             tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
         }

@@ -39,7 +39,9 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         PREVIOUS_EXTENT            : 19,
         NEXT_EXTENT                : 20,
         FULL_EXTENT                : 21,
-        MAP_CLICK                  : 22
+        MAP_CLICK                  : 22,
+        TOGGLE                     : 23,
+        BUTTON                     : 24
     },
     tool: null,    
     mapComponent: null,

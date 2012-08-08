@@ -59,13 +59,13 @@ Ext.define ("viewer.components.tools.StreetView",{
         this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_ACTIVATE,this.onActivate,this);
         this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_DEACTIVATE,this.onDeactivate,this);
         
-        this.button= Ext.create("viewer.components.tools.JSButton",{
+        this.button= this.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.TOGGLE,
             name: this.getName(),
             iconUrl_up: this.iconUrl_up,
             iconUrl_over: this.iconUrl_over,
             iconUrl_sel: this.iconUrl_sel,
             iconUrl_dis: this.iconUrl_dis,
-            toggle: true,
             enabled: false,
             selected:false,
             tooltip: this.config.tooltip || null,
