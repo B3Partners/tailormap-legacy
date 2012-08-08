@@ -56,7 +56,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                         var agsPart = agsLegend.legend[i];
                         var part = {
                             label: agsPart.label,
-                            url: "data:" + agsPart.contentType + ",base64," + agsPart.imageData
+                            url: "data:" + agsPart.contentType + ";base64," + agsPart.imageData
                         };
                         legend.parts.push(part);
                     }
