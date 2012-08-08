@@ -36,3 +36,6 @@ input[type='range']::-webkit-slider-thumb {
 .tristatenode .x-tree-checkbox {
     background-position: 0 -57px !important;
 }
+* {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);	
+}
