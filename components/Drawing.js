@@ -57,6 +57,14 @@ Ext.define ("viewer.components.Drawing",{
             tooltip: me.tooltip
         });
         
+        // Needed to untoggle the buttons when drawing is finished
+        this.drawingButtonIds = {
+            'point': Ext.id(),
+            'line': Ext.id(),
+            'polygon': Ext.id(),
+            'circle': Ext.id()
+        };
+        
         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
@@ -139,8 +147,11 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     items: [{
                         xtype: 'button',
+                        id: this.drawingButtonIds.point,
                         icon: this.iconPath+"bullet_red.png",
                         tooltip: "Teken een punt",
+                        enableToggle: true,
+                        toggleGroup: 'drawingTools',
                         listeners: {
                             click:{
                                 scope: me,
@@ -150,8 +161,11 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     {
                         xtype: 'button',
+                        id: this.drawingButtonIds.line,
                         icon: this.iconPath+"line_red.png",
                         tooltip: "Teken een lijn",
+                        enableToggle: true,
+                        toggleGroup: 'drawingTools',
                         listeners: {
                             click:{
                                 scope: me,
@@ -161,8 +175,11 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     {
                         xtype: 'button',
+                        id: this.drawingButtonIds.polygon,
                         icon: this.iconPath+"shape_square_red.png",
                         tooltip: "Teken een polygoon",
+                        enableToggle: true,
+                        toggleGroup: 'drawingTools',
                         listeners: {
                             click:{
                                 scope: me,
@@ -172,8 +189,11 @@ Ext.define ("viewer.components.Drawing",{
                     },
                     {
                         xtype: 'button',
+                        id: this.drawingButtonIds.circle,
                         icon: this.iconPath+"shape_circle_red.png",
                         tooltip: "Teken een cirkel",
+                        enableToggle: true,
+                        toggleGroup: 'drawingTools',
                         listeners: {
                             click:{
                                 scope: me,
@@ -246,64 +266,66 @@ Ext.define ("viewer.components.Drawing",{
             id: 'description'
         });
         // Build the saving form
-        this.formsave = new Ext.form.FormPanel({
-            standardSubmit: true,
-            url: actionBeans["drawing"] + "?save",
-            items: [
-            { 
-                xtype: 'label',
-                text: 'Op de kaart getekende objecten opslaan'
-            },
-            this.title,
-            this.description,
-            {
-                xtype: 'hiddenfield',
-                name: 'saveObject',
-                id: 'saveObject'
-            },
-            { 
-                xtype: 'button',
-                text: 'Opslaan als bestand',
-                listeners: {
-                    click:{
-                        scope: me,
-                        fn: me.saveFile
+        if(!MobileDetect.isMobile()) { // Disable for mobile for now...
+            this.formsave = new Ext.form.FormPanel({
+                standardSubmit: true,
+                url: actionBeans["drawing"] + "?save",
+                items: [
+                { 
+                    xtype: 'label',
+                    text: 'Op de kaart getekende objecten opslaan'
+                },
+                this.title,
+                this.description,
+                {
+                    xtype: 'hiddenfield',
+                    name: 'saveObject',
+                    id: 'saveObject'
+                },
+                { 
+                    xtype: 'button',
+                    text: 'Opslaan als bestand',
+                    listeners: {
+                        click:{
+                            scope: me,
+                            fn: me.saveFile
+                        }
                     }
                 }
-            }
-            ],
-            renderTo: this.getContentDiv()
-        });
-        
-        this.file = Ext.create("Ext.form.field.File", {
-            fieldLabel: 'Tekstbestand',
-            name: 'featureFile',
-            allowBlank:false,
-            msgTarget: 'side',
-            anchor: '100%',
-            buttonText: 'Bladeren',
-            id: 'featureFile'
-        });
-        this.formopen = new Ext.form.FormPanel({
-            items: [
-            {
-                xtype: 'label',
-                text: 'Bestand met getekende objecten openen'
-            },
-            this.file,
-            {
-                xtype: 'button',
-                text: 'bestand openen',
-                listeners: {
-                    click:{
-                        scope: me,
-                        fn: me.openFile
+                ],
+                renderTo: this.getContentDiv()
+            });
+
+            this.file = Ext.create("Ext.form.field.File", {
+                fieldLabel: 'Tekstbestand',
+                name: 'featureFile',
+                allowBlank:false,
+                msgTarget: 'side',
+                anchor: '100%',
+                buttonText: 'Bladeren',
+                id: 'featureFile'
+            });
+            this.formopen = new Ext.form.FormPanel({
+                items: [
+                {
+                    xtype: 'label',
+                    text: 'Bestand met getekende objecten openen'
+                },
+                this.file,
+                {
+                    xtype: 'button',
+                    text: 'bestand openen',
+                    listeners: {
+                        click:{
+                            scope: me,
+                            fn: me.openFile
+                        }
                     }
                 }
-            }
-            ],
-            renderTo: this.getContentDiv()
-        });
+                ],
+                renderTo: this.getContentDiv()
+            });
+        }
         
         this.formselect.setVisible(false);
     },
@@ -328,6 +350,10 @@ Ext.define ("viewer.components.Drawing",{
     //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
         this.activeFeature.wktgeom = feature.wktgeom;
+        Ext.Object.each(this.drawingButtonIds, function(key, id) {
+            var button = Ext.getCmp(id);
+            if(button) button.toggle(false);
+        });
     },
     colorChanged : function (hexColor){
         this.color = '0x'+hexColor;
@@ -431,17 +457,20 @@ Ext.define ("viewer.components.Drawing",{
         }
     },
     getExtComponents: function() {
-        return [
+        var compIds = [
             this.colorPicker.getId(),
             this.label.getId(),
             this.formdraw.getId(),
             this.formselect.getId(),
             this.title.getId(),
-            this.description.getId(),
-            this.formsave.getId(),
-            this.file.getId(),
-            this.formopen.getId()
+            this.description.getId()
         ];
+        if(!MobileDetect.isMobile()) {
+            compIds.push(this.formsave.getId());
+            compIds.push(this.file.getId());
+            compIds.push(this.formopen.getId());
+        }
+        return compIds;
     }
 });
  
