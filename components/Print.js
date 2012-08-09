@@ -137,7 +137,9 @@ Ext.define ("viewer.components.Print",{
      */
     createForm: function(){
         var me = this;
-          
+        
+        var qualitySliderId = Ext.id();
+        var rotateSliderId = Ext.id();
         this.panel = Ext.create('Ext.panel.Panel', {
             frame: false,
             bodyPadding: 5,
@@ -229,21 +231,8 @@ Ext.define ("viewer.components.Print",{
                             },
                             width: '100%',
                             items: [{
-                                xtype: 'slider',
-                                name: "quality",
-                                id: "formQuality",
-                                value: 11,
-                                increment: 1,
-                                minValue: me.minQuality,
-                                maxValue: me.max_imagesize,
-                                listeners: {
-                                    changecomplete: {
-                                        scope: this,
-                                        fn: function (slider,newValue){
-                                            this.qualityChanged(newValue);
-                                        }
-                                    }
-                                },
+                                xtype: 'container',
+                                html: '<div id="' + qualitySliderId + '"></div>',
                                 columnWidth: 1
                             },{
                                 xtype: 'button',
@@ -253,7 +242,7 @@ Ext.define ("viewer.components.Print",{
                                     click:{
                                         scope: this,
                                         fn: function (){
-                                            Ext.getCmp('formQuality').setValue(this.getMapQuality());
+                                            this.qualitySlider.setValue(this.getMapQuality());
                                         }
                                     }
                                 }  
@@ -308,28 +297,8 @@ Ext.define ("viewer.components.Print",{
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
-                                xtype: 'label',  
-                                text: "Kaart draaien *"  
-                            },{
-                                xtype: 'slider',
-                                name: 'angle',
-                                id: 'formAngle',
-                                value: 0,
-                                increment: 1,                                
-                                minValue: 0,
-                                maxValue: 360,
-                                width: 100,
-                                tipText: function(tumb){
-                                    return tumb.value+"º";
-                                },
-                                listeners: {
-                                    changecomplete: {
-                                        scope: this,
-                                        fn: function (slider,newValue){
-                                            this.angleChanged(newValue);
-                                        }
-                                    }
-                                }
+                                xtype: 'container',
+                                html: '<div id="' + rotateSliderId + '"></div>'
                             }] 
                         }]
                     }]                        
@@ -393,6 +362,47 @@ Ext.define ("viewer.components.Print",{
             }]
         });
         
+        this.qualitySlider = Ext.create(MobileDetect.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
+            renderTo: qualitySliderId,
+            name: "quality",
+            value: 11,
+            increment: 1,
+            minValue: me.minQuality,
+            maxValue: me.max_imagesize,
+            width: Ext.get(qualitySliderId).getWidth(),
+            listeners: {
+                changecomplete: {
+                    scope: this,
+                    fn: function (slider,newValue){
+                        this.qualityChanged(newValue);
+                    }
+                }
+            }
+        });
+        
+        this.rotateSlider = Ext.create(MobileDetect.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
+            renderTo: rotateSliderId,
+            name: 'angle',
+            value: 0,
+            increment: 1,
+            minValue: 0,
+            maxValue: 360,
+            width: 100,
+            labelAlign: "top",
+            fieldLabel: 'Kaart draaien *',
+            tipText: function(tumb){
+                return tumb.value+"º";
+            },
+            listeners: {
+                changecomplete: {
+                    scope: this,
+                    fn: function (slider,newValue){
+                        this.angleChanged(newValue);
+                    }
+                }
+            }
+        });
+        
         this.printForm = Ext.create('Ext.form.Panel', {            
             renderTo: me.getContentDiv(),
             url: actionBeans["print"],
@@ -441,7 +451,7 @@ Ext.define ("viewer.components.Print",{
      * Set the quality from the map in the slider
      */
     setQuality: function(){
-        Ext.getCmp('formQuality').setValue(this.getMapQuality(),false);
+        this.qualitySlider.setValue(this.getMapQuality(),false);
     },
     /**
      *Gets the map 'quality'
@@ -456,7 +466,7 @@ Ext.define ("viewer.components.Print",{
      * Called when quality is changed.
      */
     qualityChanged: function(newValue){
-        var angle=Ext.getCmp('formAngle').getValue();
+        var angle=this.rotateSlider.getValue();
         if (angle>0){
             this.correctQuality(angle);
         }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
@@ -478,9 +488,9 @@ Ext.define ("viewer.components.Print",{
     correctQuality: function(angle){
         //get the max quality that is allowed with the given angle
         var maxQuality =this.getMaxQualityWithAngle(angle);        
-        var sliderQuality = Ext.getCmp('formQuality').getValue();
+        var sliderQuality = this.qualitySlider.getValue();
         if (sliderQuality > maxQuality){
-            Ext.getCmp('formQuality').setValue(maxQuality);
+            this.qualitySlider.setValue(maxQuality);
         }
     },
     /**
@@ -493,7 +503,7 @@ Ext.define ("viewer.components.Print",{
         
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
-        var sliderQuality = Ext.getCmp('formQuality').getValue();
+        var sliderQuality = this.qualitySlider.getValue();
         var ratio = width/height;
         //calculate the new widht and height with the quality
         if (height> width){

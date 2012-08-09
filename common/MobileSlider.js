@@ -17,7 +17,9 @@
 
 Ext.define ("viewer.components.MobileSlider", {
     extend: "Ext.util.Observable",
+    xtype: "mobileslider",
     sliderid: '',
+    labelid: '',
 	eventTimer: null,
     config: {
         width: '100%',
@@ -32,7 +34,7 @@ Ext.define ("viewer.components.MobileSlider", {
         var me = this;
         this.initConfig(conf);
         this.render();
-        this.addEvents('change');
+        this.addEvents('change', 'changecomplete');
         this.listeners = conf.listeners;
         this.callParent(arguments);
     },
@@ -40,8 +42,10 @@ Ext.define ("viewer.components.MobileSlider", {
         var me = this;
         // Get new id
         me.sliderid = Ext.id();
+        me.labelid = Ext.id();
         // Create the label
         var label = document.createElement('label');
+        label.id = me.labelid;
         if(me.config.fieldLabel !== '') {
             label.innerHTML = me.config.fieldLabel;
         }
@@ -107,7 +111,33 @@ Ext.define ("viewer.components.MobileSlider", {
 		if(me.eventTimer !== null) clearTimeout(me.eventTimer);
         me.eventTimer = setTimeout(function() {
 			me.fireEvent('change', obj, value);
+            me.fireEvent('changecomplete', obj, value);
+            if(me.config.tipText) {
+                me.changeLabel(me.config.tipText(obj));
+            }
 		}, 50);
+    },
+    changeLabel: function(text) {
+        var me = this;
+        var newText = '';
+        if(me.config.fieldLabel !== '') {
+            newText = me.config.fieldLabel + ' ';
+        }
+        document.getElementById(me.labelid).innerHTML = newText + text;
+    },
+    setValue: function(value) {
+        var me = this;
+        if(me.sliderid !== "") {
+            var sliderObj = document.getElementById(me.sliderid);
+            sliderObj.value = value;
+            me.sliderChanged(sliderObj, value);
+        }
+    },
+    getValue: function() {
+        if(this.sliderid !== "") {
+            return document.getElementById(this.sliderid).value;
+        }
+        return 0;
     },
     getId: function() {
         return this.sliderid;

@@ -37,41 +37,24 @@ Ext.define("viewer.components.Slider",{
         this.initConfig(conf);
         this.layers=new Array();
         this.currentSliderValue = this.initialTransparency;
-        if(MobileDetect.isMobile()) {
-            this.slider = Ext.create('viewer.components.MobileSlider', {
-                width: '100%',
-                value: this.initialTransparency,
-                increment: 1,
-                fieldLabel: this.name,
-                minValue: 0,
-                maxValue: 100,
-                renderTo: conf.sliderContainer,
-                listeners:{
-                    change: {                    
-                        fn: this.sliderChanged,
-                        scope: this
-                    }
+
+        this.slider = Ext.create(MobileDetect.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
+            width: MobileDetect.isMobile() ? '100%' : 200,
+            value: this.initialTransparency,
+            increment: 1,
+            fieldLabel: this.name,
+            labelAlign: "top",
+            minValue: 0,
+            maxValue: 100,
+            renderTo: conf.sliderContainer,
+            listeners:{
+                change: {                    
+                    fn: this.sliderChanged,
+                    scope: this
                 }
-            });
-        } else {
-            this.slider = Ext.create('Ext.slider.Single', {
-                width: 200,
-                value: this.initialTransparency,
-                increment: 1,
-                fieldLabel: this.name,
-                labelAlign: "top",
-                minValue: 0,
-                maxValue: 100,
-                renderTo: conf.sliderContainer,
-                listeners:{
-                    change: {                    
-                        fn: this.sliderChanged,
-                        scope: this
-                    }
-                }
-            });
-        }
-        
+            }
+        });
+
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
         
