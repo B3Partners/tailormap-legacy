@@ -166,9 +166,9 @@ public class BufferActionBean implements ActionBean {
     
     @DefaultHandler
     public Resolution image() {
-
+        final CombineImageSettings cis = new CombineImageSettings();
         try {
-            final CombineImageSettings cis = new CombineImageSettings();
+            
             cis.setBbox(bbox);
             cis.setWidth(width);
             cis.setHeight(height);
@@ -184,21 +184,27 @@ public class BufferActionBean implements ActionBean {
             final BufferedImage bi = ImageTool.drawGeometries(null, cis);
             if (bi!=null){
                 StreamingResolution res = new StreamingResolution(cis.getMimeType()) {
-
                     @Override
                     public void stream(HttpServletResponse response) throws Exception {
                         ImageTool.writeImage(bi, cis.getMimeType(), response.getOutputStream());
                     }
                 };
                 return res;
-            }else{                
-                return new ForwardResolution(JSP);
+            }else{     
+                log.info("No geometries used to draw a buffer");               
             }
         } catch (Exception e) {
-            log.error("Fout genereren layerimage", e);
-            BufferedImage leeg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+            log.error("Error generating buffered image", e);            
         }
-        return new ForwardResolution(JSP);
+        //if not returned, return a empty image
+        final BufferedImage empty = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+        StreamingResolution res = new StreamingResolution(cis.getMimeType()) {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                ImageTool.writeImage(empty, cis.getMimeType(), response.getOutputStream());
+            }
+        };
+        return res;
     }
 
     private List<CombineImageWkt> getFeatures(Bbox bbox) throws Exception {
@@ -240,9 +246,10 @@ public class BufferActionBean implements ActionBean {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
                 Geometry g = (Geometry) f.getDefaultGeometry();
-                g = g.buffer(buffer);
-                wkts.add(new CombineImageWkt(g.toText()));
-                System.out.println(f);
+                if (g!=null){
+                    g = g.buffer(buffer);                
+                    wkts.add(new CombineImageWkt(g.toText()));
+                }
             }
         } finally {
             it.close();
