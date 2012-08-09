@@ -25,17 +25,20 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     extend: "viewer.viewercontroller.controller.Tool",
     onActiveHandler:null,
     controls:null,
+    enabledEvents: null,
     constructor : function (conf,frameworkObject){
         viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);                       
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
         this.onActiveHandler = new Object();
-        
+        this.enabledEvents= new Object();
         this.overwriteStyle();
         return this;
     },
     /**
      * If iconUrl paths are set, add a style to show the correct images.
+     * This needs to add a style to the page because the html element is loaded after
+     * the Tool is added to the panel
      */
     overwriteStyle: function(){
         if (this.iconUrl_up!= null || this.iconUrl_sel!=null){
@@ -55,8 +58,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
             document.getElementsByTagName('head')[0].appendChild(style);
         }
 
-    },
-            
+    },            
     
     /**
      * @see viewer.viewercontroller.controller.Tool#setToolVisible
@@ -78,9 +80,69 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     },
     
     /**
-     * @see viewer.viewercontroller.controller.Tool#onSetActive
+     * @see Ext.util.Observable#addListener
+     * @param event the event
+     * @param handler the handler
+     * @param scope the scope 
+     * Overwrite the addListener. Register event on the OpenLayers tool (only once)
+     * If the event is thrown by the OpenLayers Tool, the given handlers are called.
      */
-    onSetActive : function(data){
-        this.onActiveHandler(this.getId(),data);
+    addListener : function(event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            /* Add event to OpenLayers Layer only once, to prevent multiple fired events.    
+             * count the events for removing the listener again.
+             */            
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]++;                
+            }else{
+                this.enabledEvents[olSpecificEvent] = 1;
+                this.frameworkObject.events.register(olSpecificEvent, this, this.handleEvent);
+            }
+            
+        }        
+        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.addListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see Ext.util.Observable#removeListener
+     * @param event the event
+     * @param handler the handler
+     * @param scope the scope 
+     * Overwrite the removeListener. Unregister the event on the OpenLayers Control if there
+     * are no listeners anymore.     
+     */
+    removeListener : function (event,handler,scope){
+        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        if(olSpecificEvent){
+            if(!scope){
+                scope = this;
+            }
+            /* Remove event from OpenLayers Layer if the number of events == 0
+             * If there are no listeners for the OpenLayers event, remove the listener.             
+             */
+            if(this.enabledEvents[olSpecificEvent]){
+                this.enabledEvents[olSpecificEvent]--;
+                if (this.enabledEvents[olSpecificEvent] <= 0){
+                    this.enabledEvents[olSpecificEvent]=0;
+                    this.frameworkObject.events.unregister(olSpecificEvent, this, this.handleEvent);
+                }
+            }            
+        }
+        viewer.viewercontroller.openlayers.OpenLayersTool.superclass.removeListener.call(this,event,handler,scope);
+    },
+    /**
+     * Handles the OpenLayers generated events for this Layer
+     * And make use of the ext framework to fire the event.
+     */
+    handleEvent : function (event){
+        var eventName = this.viewerController.mapComponent.getGenericEventName(event.type);
+        if(!eventName){
+            eventName = event;
+        }
+        this.fire(eventName,{});
     }
+    
 });

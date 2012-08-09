@@ -57,6 +57,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                            = "addlayer";
         this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]                       = "getfeatureinfo";
         this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]               = "changelayer";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                               = "activate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                             = "deactivate";
         
     },
     /**
@@ -328,10 +330,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
         }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE){
             frameworkOptions.type=OpenLayers.Control.TYPE_TOGGLE;
-            frameworkOptions.displayClass ="fuck";
+            frameworkOptions.displayClass ="olToggle_"+conf.id;
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
             frameworkOptions.type=OpenLayers.Control.TYPE_BUTTON;
+            frameworkOptions.displayClass ="olButton_"+conf.id;
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
