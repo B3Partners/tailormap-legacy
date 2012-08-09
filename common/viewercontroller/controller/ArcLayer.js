@@ -178,11 +178,11 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     }
                     delete serviceCache.joiners;
                 },
-                failure: function() {
+                failure: function(msg) {
                     serviceCache.failedPreviously = true;
                     serviceCache.inProgress = false;
-                  
-                    me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS");
+
+                    me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS: " + msg);
                     failure();
                     
                     for(var i in serviceCache.joiners) {
