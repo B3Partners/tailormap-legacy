@@ -16,28 +16,43 @@
  */
 
 /**
- * Legend
+ * Legend: Shows legends for layers.
  * 
- * Shows legends for layers.
+ * XXX Determine if many WMS legend graphic requests cause starvation of 
+ * available HTTP requests for loading maps so we should limit the concurrent 
+ * loading of legend images (legend images which use the data: protocol should 
+ * not be queued).
  * 
- * To prevent starvation of available HTTP requests for loading maps, this 
- * component limits the concurrent loading of legend images.
+ * When legend info cannot be shown for an appLayer it is not shown, no 
+ * placeholders are displayed. If the layer cannot be shown because of an error 
+ * the logger should show messages.
  * 
- * Legend images which use the data: protocol are not queued.
- * 
- * XXX are WMS getlegendgraphics requested again when unchecked and then checked?
- * XXX same for selectedcontentchange
+ * @author Matthijs Laan, B3Partners
  */
 Ext.define("viewer.components.Legend", {
     extend: "viewer.components.Component",
     
-    appLayerOrder: null,
+    /**
+     * Legend data keyed by appLayer id
+     * Object properties:
+     * order: When traversing the tree, assign an order to appLayers for display
+     *  in a flat list. This should be the z-order for the appLayers on the map.
+     * waitingForInfo: Whether info for the legend has been requested and is 
+     *   being waited for. If true the element is null. If false and element is 
+     *   null, no info has been requested yet.
+     * element: DOM element for the legend
+     */
+    legends: null,
     
-    /*
-    queue: null,
-    legends: null,    
-    initLegends: null,
-    */
+    /**
+     * Sparse array containing DOM elements for legends indexed by the z-order 
+     * of the appLayer.
+     * Used to find the DOM element to insertBefore() new legend elements.
+     * Contains object with appLayer and element properties so we can also find
+     * the appLayer by order.
+     */
+    orderedElements: null,
+    
     config: {
         title: "Legend",
         titlebarIcon: "",
@@ -60,39 +75,70 @@ Ext.define("viewer.components.Legend", {
         this.legendContainer = document.getElementById(this.name + 'legendContainer');
         
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
-        
-        // DISABLED OLD CODE
-        //this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
-        //this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
-        //this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
-        
-        //this.start();
-        
-        // TODO hide legend for layer on event
-        
-        // TODO recreate legend on selected content change
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChanged,this);
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
         
         return this;
     },
     
-    onLayersInitialized: function() {
-        console.log("received layers initialized event, creating legend");
-        this.createLegendForSelectedContent();
+    getExtComponents: function() {
+        return [ this.panel.getId() ];
     },
     
-    createLegendForSelectedContent: function() {
+    onLayersInitialized: function() {
+        this.initLegend();
+    },
+    
+    onSelectedContentChange: function() {
+        this.resetLegend();
+        this.initLegend();
+    },
+    
+    onLayerVisibilityChanged: function(map, object) {
+        var layer = object.layer;
+        var vis = object.visible;
+        var appLayer = this.getViewerController().app.appLayers[layer.appLayerId];
+        
+        if(this.legends == null) {
+            // layersInitialized event not yet received, ignore
+            return;
+        }
+       
+        var legend = this.legends[appLayer.id];
+        
+        if(legend.element != null) {
+            Ext.fly(legend.element).setVisible(vis);
+        } else if(legend.waitingForInfo) {
+            // do nothing - visibility is checked again when info is received
+        } else {
+            this.createLegendForAppLayer(appLayer);
+        }
+        
+    },
+    
+    resetLegend: function() {
+        while(this.legendContainer.firstChild) {
+            Ext.removeNode(this.legendContainer.firstChild);
+        }
+        this.legends = null;
+        this.orderedElements = null;
+    },
+    
+    initLegend: function() {
         var me = this;
         
+        me.legends = {};
+        me.orderedElements = [];
+
         var index = 0;
-        me.appLayerOrder = {};
         
         this.viewerController.traverseSelectedContent(
             Ext.emptyFn,
             function(appLayer) {
-                me.appLayerOrder[appLayer.id] = index++;
-                
-                if(!this.showBackground && appLayer.background) {
-                    return;
+                me.legends[appLayer.id] = {
+                    order: index++,
+                    waitingForInfo: false,
+                    element: null
                 }
                 
                 if(appLayer.checked) {
@@ -103,230 +149,130 @@ Ext.define("viewer.components.Legend", {
     },
 
     createLegendForAppLayer: function(appLayer) {
-        console.log("create legend for appLayer " + appLayer.alias +", order " + this.appLayerOrder[appLayer.id]);
         var me = this;
+
+        if(!this.showBackground && appLayer.background) {
+            return;
+        }
+
+        //console.log("get legend info for appLayer " + appLayer.alias);
+
+        var legend = this.legends[appLayer.id];
+
+        if(legend.waitingForInfo || legend.element) {
+            // should never happen
+            return;
+        }
+        legend.waitingForInfo = true;
+        
+        // TODO if necessary with a large legend, use a queue to prevent 
+        // starvation of HTTP requests for map requests which should have 
+        // priority
+        
         this.viewerController.getLayerLegendInfo(
             appLayer,
-            function(al, legend) {
-                console.log("legend info received for appLayer " + al.alias, legend);
-                
-                // TODO use queue to prevent starvation of HTTP requests for 
-                // map requests which should have priority
-                
-                var divLayer = document.createElement("div");
-                divLayer.className = "layer";
-                divLayer.data = appLayer.id;
-                var divName = document.createElement("div");
-                divName.className = "name";
-                divName.innerHTML = Ext.htmlEncode(appLayer.alias);
-                divLayer.appendChild(divName);
-
-                if(legend.url) {
-                    var img = document.createElement("img");
-                    img.src = legend.url;
-                    var divImage = document.createElement("div");
-                    divImage.className = "image";
-                    divImage.appendChild(img);
-                    divLayer.appendChild(divImage);
-                } else {
-                    for(var i in legend.parts) {
-                        var part = legend.parts[i];
-                        var img = document.createElement("img");
-                        img.src = part.url;
-                        // TODO onload of image set label line-height to image heightr
-                        var divImage = document.createElement("div");
-                        divImage.className = "image";
-                        divImage.appendChild(img);
-                        divLayer.appendChild(divImage);
-                        var divLabel = document.createElement("div");
-                        divLabel.className = "label";
-                        divLabel.innerHTML = Ext.htmlEncode(part.label);
-                        divLayer.appendChild(divLabel);                        
-                    }
-                }
-                // TODO use order to insert element at correct position
-                me.legendContainer.appendChild(divLayer);
+            function(appLayer, legendInfo) {
+                me.onLayerLegendInfo(appLayer, legendInfo);
             },
             Ext.emptyFn
         );
     },
     
-    // Construct the list of images to be retrieved by the queue
-    makeLegendList : function (){
-        this.initLegends = new Array();        
-    },
-    // Handler for changes to the visibility of layers
-    layerVisibilityChanged : function (map,object ){
-        var layer = object.layer;
-        var vis = object.visible;
-        if(vis){
-            this.addLayer(layer);
-        }else{
-            this.removeLayer(layer);
-        }
-    },
-    /**
-     * Called when a layer is added
-     * @param layer a viewer.viewercontroller.controller.Layer
-     */
-    addLayer : function (layer){
-        var appLayer=this.viewerController.getAppLayerById(layer.appLayerId);
-        var layerName = layer.getAppLayerName();
-        /*if already added return; Still use serviceId_layerName because only one of the layer
-        graphics must be added*/
-        if(this.legends[layer.appLayerId]){
-            return;
-        }        
-        //show backgrounds == false then don't show backgrounds.
-        if (!this.getShowBackground()){
-            if (appLayer.background){
-                return;
-            }
-        }
-        var url = this.viewerController.getLayerLegendImage(appLayer);
-        if (url!=null){
-            var legend = {
-                src: url,
-                title: layerName,
-                id: layer.appLayerId
-            };
-            this.legends[layer.appLayerId]=true;
-            this.queue.addItem(legend);
-        }
-    },
-    layerRemoved : function(map, object){
-        var layer = object.layer;
-        if(layer != null){
-            this.removeLayer(layer);
-        }
-    },
-    removeLayer: function (layer){
-        var appLayerId = layer.appLayerId;
-        var id = appLayerId+"-div";
-        var node =document.getElementById(id);
-        if (node!=null){
-            this.legendContainer.removeChild(node);
-        }
-        if (this.legends[appLayerId]){
-            delete this.legends[appLayerId];
-        }
-    },
-    // Start the legend: make a list of images to be retrieved, make a queue and start it
-    start : function (){
-        this.makeLegendList();
-        var config ={
-            legends: this.initLegends, 
-            queueSize: 2,
-            div: this.legendContainer
-        };
-        this.queue = Ext.create("viewer.components.ImageQueue",config);
-        this.queue.load();
-    },
-    
-    getExtComponents: function() {
-        return [ this.panel.getId() ];
-    }
-});
-/**
- * ImageQueue: A queue to load images
- */
-Ext.define ("viewer.components.ImageQueue",{
-    loadedLegends : null,
-    config :{
-        legends : null,
-        queueSize : null,
-        div : null
-    },
-    /**
-    * @constructs
-    * @param config.legends {Array} The legends to load
-    * @param config.div {DomElement} the div where the images must be placed
-    * @param config.queueSize {Number} How many images may be loaded at the same time
-    */
-    constructor : function (config){
-        this.initConfig(config);
-    },
-    addItem : function (item){
-        this.legends.push(item);
-        this.load();
-    },
-    // Make the queue fill up all slots from the legends
-    load : function (){
-        while(this.queueSize > 0){
-            var item = this.legends[0];
-            if(item == undefined){
-                return;
-            }
-            this.queueSize--;
-            var config = {
-                item: item,
-                id : item.id,
-                queue: this,
-                div : this.div
-            };
-            var image = Ext.create("viewer.components.Image",config);
-            this.removeLegend (item);
-            image.loadImage();
-        }
-    },
-    // Called when an image is ready loading
-    imageLoaded : function (img,item){
-        this.queueSize++;
-        this.load();
-    },
-    
-    removeLegend : function (item){
-        for (var i = 0 ; i < this.legends.length ;i++){
-            var legend = this.legends[i];
-            if(legend.src == item.src){
-                this.legends.splice(i,1);
-                break;
-            }
-        }
-    }
-});
-
-Ext.define("viewer.components.Image",{
-    legendimg : null,
-    config :{
-        item : null,
-        queue : null,
-        div : null
-    },
-    constructor : function (config){
-        this.initConfig(config);
-    },
-    /**
-     * Start loading
-     */
-    loadImage: function (){
-        var div = document.createElement("div");
-        div.id = this.item.id + "-div";
-        div.innerHTML = "<h3>"+ this.item.title+"</h3>";
-        this.div.appendChild(div);
-        this.legendimg = document.createElement("img");
-        div.appendChild(this.legendimg);
-        this.legendimg.name = this.item.title;
-        this.legendimg.id = this.item.id;
-        this.legendimg.alt = "Legenda " + this.item.title;
-        this.legendimg.imgObj = this;        
-        this.legendimg.onabort=this.treeImageError;
-        this.legendimg.onerror=this.treeImageError;
-        this.legendimg.onload=this.treeImageOnload;
+    onLayerLegendInfo: function(appLayer, legendInfo) {
         
-        this.legendimg.className = 'treeLegendImage';
-        this.legendimg.src = this.item.src;
+        var legend = this.legends[appLayer.id];
+        //console.log("legend info received for appLayer " + appLayer.alias + ", order " + legend.order, legendInfo);
+
+        legend.waitingForInfo = false;
+        
+        // if layer was turned off since we requested the legend info, do not
+        // create an element (the info should be from cache next time the layer
+        // is turned on, so do not create an invisible legend element)
+        // 
+        // Test this by calling this function with setTimeout() in 
+        // createLegendForAppLayer and turn the layer off before this function
+        // is called
+        if(!appLayer.checked) {
+            //console.log("appLayer " + appLayer.alias + " was unchecked since requesting legend info! not creating legend");
+            return;
+        }
+
+        var legendElement = this.createLegendElement(appLayer, legendInfo);
+        
+        legend.element = legendElement;
+        this.orderedElements[legend.order] = {
+            appLayer: appLayer,
+            element: legendElement
+        };
+
+        var indexAfter = this.findElementAfter(this.orderedElements, legend.order);
+        var legendAfter = indexAfter == null ? null : this.orderedElements[indexAfter].element;
+        //console.log("for appLayer " + appLayer.alias + " with order " + legend.order + ", insert before order " + indexAfter +
+        //    (legendAfter == null ? " (append at end)" : " (before " + this.orderedElements[indexAfter].appLayer.alias + ")")
+        //);
+        
+        this.legendContainer.insertBefore(legendElement, legendAfter);
     },
-    /**
-     * If images is loaded
-     */
-    treeImageOnload : function (){
-        this.imgObj.queue.imageLoaded(this.imgObj.legendimg,this.imgObj.item);
+    
+    createLegendElement: function(al, legendInfo) {
+        var divLayer = document.createElement("div");
+        divLayer.className = "layer";
+        var divName = document.createElement("div");
+        divName.className = "name";
+        divName.innerHTML = Ext.htmlEncode(al.alias);
+        divLayer.appendChild(divName);
+
+        var img, divImage;
+        if(legendInfo.url) {
+            img = document.createElement("img");
+            img.src = legendInfo.url;
+            divImage = document.createElement("div");
+            divImage.className = "image";
+            divImage.appendChild(img);
+            divLayer.appendChild(divImage);
+        } else {
+            for(var i in legendInfo.parts) {
+                var part = legendInfo.parts[i];
+                img = document.createElement("img");
+                img.src = part.url;
+                // TODO on onload of image set label line-height to image height
+                // is currently hardcoded in stylesheet
+                divImage = document.createElement("div");
+                divImage.className = "image";
+                divImage.appendChild(img);
+                divLayer.appendChild(divImage);
+                var divLabel = document.createElement("div");
+                divLabel.className = "label";
+                divLabel.innerHTML = Ext.htmlEncode(part.label);
+                divLayer.appendChild(divLabel);                        
+            }
+        }
+        Ext.fly(divLayer).setVisibilityMode(Ext.Element.DISPLAY);
+        return divLayer;
     },
+    
     /**
-     * Called when images has error.
+     * Finds the smallest index in the (sparse) array that is greater than the 
+     * given search index.
+     * If no indexes are greater than search, null is returned.
+     * If the array is empty, null is returned.
      */
-    treeImageError :function (){  
-        this.imgObj.queue.queueSize++;
+    findElementAfter: function(a, search) {
+        if(!(a instanceof Array)) {
+            throw "findElementAfter only works on arrays";
+        }        
+        if(a.length == 0) {
+            return null;
+        }
+       
+        for(var i in a) {
+            if(!a.hasOwnProperty(i)) {
+                continue;
+            }
+            if(i > search) {
+                return i;
+            }
+        }
+        return null;
     }
 });
