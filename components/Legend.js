@@ -242,7 +242,7 @@ Ext.define("viewer.components.Legend", {
                     img = document.createElement("img");
                     img.src = part.url;
                     img.onload = function() {
-                        console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
+                        //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
                         divLabel.style.lineHeight = (this.height + 4) + "px";
                     };
 
