@@ -119,6 +119,7 @@ Ext.define ("viewer.components.LayerSelector",{
         }
         var store = this.combobox.getStore();
         store.removeAll();
+        var addedLayers = 0;
         if(this.layerList != null){
             for (var i = 0 ; i < this.layerList.length ;i++){
                 var l = this.layerList[i];
@@ -130,9 +131,17 @@ Ext.define ("viewer.components.LayerSelector",{
                             title: l.alias || l.layerName,
                             layer: l
                         });
+                        addedLayers++;
                     }
                 }
             }
+        }
+        if(addedLayers === 0) {
+            this.combobox.inputEl.dom.placeholder='Geen kaartlagen beschikbaar';
+            this.combobox.setDisabled(true);
+        } else {
+            this.combobox.inputEl.dom.placeholder='Maak uw keuze';
+            this.combobox.setDisabled(false);
         }
     },
     changed :function (combobox,appLayer,previousSelected){
