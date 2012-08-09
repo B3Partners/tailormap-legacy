@@ -20,10 +20,11 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
+    defaultMaxFeatures: 250,
     constructor: function (parentId,configObject){
         if(configObject === null) {
             configObject = {};
-            configObject.maxFeatures = 0;
+            configObject.maxFeatures = this.defaultMaxFeatures;
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.createCheckBoxes(this.configObject.layers,{
@@ -40,7 +41,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth:this.labelWidth,
             width: 500,
             id: "maxFeatures",
-            value: configObject.maxFeatures
+            value: configObject.maxFeatures ? configObject.maxFeatures : this.defaultMaxFeatures
         }
         ]);
     }

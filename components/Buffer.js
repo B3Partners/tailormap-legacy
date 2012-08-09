@@ -104,7 +104,10 @@ Ext.define ("viewer.components.Buffer",{
         this.remove = Ext.create("Ext.button.Button",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
-            text: "Huidige buffer verwijderen",
+            text: "Huidige buffer verwijderen", 
+            style: {
+                marginLeft: '15px'
+            },           
             listeners: {
                 click:{
                     scope: this,
@@ -114,9 +117,8 @@ Ext.define ("viewer.components.Buffer",{
         });
         
         Ext.create ("Ext.container.Container",{
-            layout: 'fit',
             id: this.name +"Container",
-            renderTo : this.getContentDiv(),
+            renderTo : this.getContentDiv(),            
             items:[
                 this.radius,
                 this.colorPicker,
