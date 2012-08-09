@@ -91,7 +91,7 @@ Ext.define ("viewer.components.Drawing",{
             showText: false,
             name: 'color',
             id:'color',
-            value: this.color,
+            value: this.color ? this.color : 'FF0000',
             listeners :{
                 select : {
                     fn: this.colorChanged,

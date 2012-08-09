@@ -80,7 +80,8 @@ Ext.define ("viewer.components.Buffer",{
             showText: true,
             name: 'color',
             fieldLabel : "Kleur buffer",
-            id:'color' + this.name,
+            id:'color' + this.name,            
+            value: "FF0000",
             listeners :{
                 select : {
                     fn: this.colorChanged,
