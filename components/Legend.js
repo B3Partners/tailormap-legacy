@@ -233,15 +233,23 @@ Ext.define("viewer.components.Legend", {
         } else {
             for(var i in legendInfo.parts) {
                 var part = legendInfo.parts[i];
+                
+                divImage = document.createElement("div");
+                var divLabel = document.createElement("div");
+                
                 img = document.createElement("img");
                 img.src = part.url;
-                // TODO on onload of image set label line-height to image height
-                // is currently hardcoded in stylesheet
-                divImage = document.createElement("div");
+                img.onload = function() {
+                    // XXX divLabel is not the correct node?
+                    var theActualLabel = this.parentNode.nextSibling;
+                    //console.log("legend image for label " + theActualLabel.innerHTML + " loaded, height " + this.height);
+                    theActualLabel.style.lineHeight = (this.height + 4) + "px";
+                };
+
                 divImage.className = "image";
                 divImage.appendChild(img);
                 divLayer.appendChild(divImage);
-                var divLabel = document.createElement("div");
+
                 divLabel.className = "label";
                 divLabel.innerHTML = Ext.htmlEncode(part.label);
                 divLayer.appendChild(divLabel);                        
