@@ -134,11 +134,20 @@ Ext.define ("viewer.components.SelectionModule",{
         titlebarIcon : "",
         tooltip : ""
     },
-    constructor: function (conf) {
+    constructor: function (conf) {        
+        //set defaults
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
+        if (Ext.isEmpty(conf.selectGroups)){
+            conf.selectGroups=true;
+        }if (Ext.isEmpty(conf.selectLayers)){
+            conf.selectLayers=true;
+        }if (Ext.isEmpty(conf.selectOwnServices)){
+            conf.selectOwnServices=true;
+        } 
+        
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
-        this.initConfig(conf);
+        this.initConfig(conf);        
         this.renderButton();
         var me = this;
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
