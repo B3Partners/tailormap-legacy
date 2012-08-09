@@ -232,27 +232,28 @@ Ext.define("viewer.components.Legend", {
             divLayer.appendChild(divImage);
         } else {
             for(var i in legendInfo.parts) {
-                var part = legendInfo.parts[i];
-                
-                divImage = document.createElement("div");
-                var divLabel = document.createElement("div");
-                
-                img = document.createElement("img");
-                img.src = part.url;
-                img.onload = function() {
-                    // XXX divLabel is not the correct node?
-                    var theActualLabel = this.parentNode.nextSibling;
-                    //console.log("legend image for label " + theActualLabel.innerHTML + " loaded, height " + this.height);
-                    theActualLabel.style.lineHeight = (this.height + 4) + "px";
-                };
+                (function() { // IIFE needed for img.onload handler to reference divLabel
+                    
+                    var part = legendInfo.parts[i];
 
-                divImage.className = "image";
-                divImage.appendChild(img);
-                divLayer.appendChild(divImage);
+                    divImage = document.createElement("div");
+                    var divLabel = document.createElement("div");
 
-                divLabel.className = "label";
-                divLabel.innerHTML = Ext.htmlEncode(part.label);
-                divLayer.appendChild(divLabel);                        
+                    img = document.createElement("img");
+                    img.src = part.url;
+                    img.onload = function() {
+                        console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
+                        divLabel.style.lineHeight = (this.height + 4) + "px";
+                    };
+
+                    divImage.className = "image";
+                    divImage.appendChild(img);
+                    divLayer.appendChild(divImage);
+
+                    divLabel.className = "label";
+                    divLabel.innerHTML = Ext.htmlEncode(part.label);
+                    divLayer.appendChild(divLabel);                        
+                }());
             }
         }
         Ext.fly(divLayer).setVisibilityMode(Ext.Element.DISPLAY);
