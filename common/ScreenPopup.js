@@ -36,6 +36,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         }
     },
     component: null,
+    currentOrientation: null,
     constructor: function (conf){
         var me = this;
         this.initConfig(conf);
@@ -65,6 +66,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.height = '90%';
             config.draggable = false;
             config.resizable = false;
+            this.currentOrientation = MobileManager.getOrientation();
         }
 		
         if(this.details.items){
@@ -101,10 +103,10 @@ Ext.define ("viewer.components.ScreenPopup",{
                 me.component.setButtonState('click', true);
             }
             if(MobileManager.isMobile()) {
-                // Resize the popup every time it is shown, because orientation might
-                // have changes since the previous show, which would result in incorrect
-                // rendering of the popups. Settimeout to make sure the window is loaded & ready
-                setTimeout(function() { me.component.resizeScreenComponent() }, 0);
+                if(MobileManager.getOrientation() !== me.currentOrientation) {
+                    me.currentOrientation = MobileManager.getOrientation();
+                    setTimeout(function() { me.component.resizeScreenComponent() }, 0);
+                }
                 if(config.modal) MobileManager.closePopupOnTapMask(me.popupWin);
             }
         });

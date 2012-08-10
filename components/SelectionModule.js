@@ -405,7 +405,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             {id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}}
                         ]
                     }],
-                    height: 30,
+                    height: MobileManager.isMobile() ? 40 : 30,
                     padding: '5px',
                     border: 0,
                     id: 'selectionModuleFormContainer'
@@ -440,7 +440,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             }}
                         ]
                     }],
-                    height: 35,
+                    height: MobileManager.isMobile() ? 40 : 35,
                     padding: '5px',
                     border: 0,
                     id: 'selectionModuleCustomFormContainer'

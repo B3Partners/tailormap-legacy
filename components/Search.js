@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Search",{
     searchResult: null,
     results: null,
     margin: "0 5 0 0",
+    resultPanelId: '',
     config:{
         title: null,
         iconUrl: null,
@@ -50,11 +51,57 @@ Ext.define ("viewer.components.Search",{
         });
     },
     loadWindow : function(){
+        var me = this;
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
-            bodyPadding: 5,
+            height: MobileManager.isMobile() ? 90 : 80,
             items: this.getFormItems(),
-            renderTo: this.getContentDiv()
+            border: 0,
+            style: { 
+                padding: '0px 10px 0px 10px'
+            }
+        });
+        this.resultPanelId = Ext.id();
+        this.mainContainer = Ext.create('Ext.container.Container', {
+            id: this.name + 'Container',
+            width: '100%',
+            height: '100%',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            style: {
+                backgroundColor: 'White'
+            },
+            renderTo: this.getContentDiv(),
+            items: [
+                this.form, {
+                    id: this.name + 'ContentPanel',
+                    xtype: "container",
+                    autoScroll: true,
+                    width: '100%',
+                    flex: 1,
+                    html: '<div id="' + me.resultPanelId + '" style="width: 100%; height: 100%; padding: 0px 10px 0px 10px;"></div>'
+                }, {
+                    id: this.name + 'ClosingPanel',
+                    xtype: "container",
+                    width: '100%',
+                    height: MobileManager.isMobile() ? 45 : 25,
+                    style: {
+                        marginTop: '10px',
+                        marginRight: '5px'
+                    },
+                    layout: {
+                        type:'hbox',
+                        pack:'end'
+                    },
+                    items: [
+                        {xtype: 'button', text: 'Sluiten', padding: MobileManager.isMobile() ? '10px' : '2px', handler: function() {
+                            me.popup.hide();
+                        }}
+                    ]
+                }
+            ]
         });
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
     },
@@ -101,6 +148,7 @@ Ext.define ("viewer.components.Search",{
             itemList.push({ 
                 xtype: 'button',
                 text: 'Zoeken',
+                padding: MobileManager.isMobile() ? '10px' : '2px',
                 margin: this.margin,
                 listeners: {
                     click:{
@@ -114,6 +162,7 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             text: 'Zoekactie afbreken',
             margin: this.margin,
+            padding: MobileManager.isMobile() ? '10px' : '2px',
             name: 'cancel',
             id: 'cancel'+ this.name,
             listeners: {
@@ -160,16 +209,16 @@ Ext.define ("viewer.components.Search",{
                     Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
                 }
             });
-        }else{
+            this.form.getChildByElement("cancel"+ this.name).setVisible(true);
+        } else {
             Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevult te worden.");
             // search request is not complete
         }        
-        this.form.getChildByElement("cancel"+ this.name).setVisible(true);
     },
     showSearchResults : function(){
         var html = "";
         if(this.searchResult.length <= 0){
-            html = "Er zijn geen resultaten gevonden.";
+            html = "<div style=\"padding: 10px;\">Er zijn geen resultaten gevonden.</div>";
         }
         var me = this;
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
@@ -179,6 +228,8 @@ Ext.define ("viewer.components.Search",{
             buttonList.push({
                 text: result.address,
                 xtype: 'button',
+                margin: '10px 10px 0px 10px',
+                padding: MobileManager.isMobile() ? '10px' : '2px',
                 tooltip: 'Zoom naar locatie',
                 listeners: {
                     click:{
@@ -189,13 +240,15 @@ Ext.define ("viewer.components.Search",{
             });
         }
         
-        var height = Ext.get(this.getContentDiv()).getHeight() - this.form.getHeight();
         me.results = Ext.create('Ext.form.Panel', {
             title: 'Resultaten:',
-            renderTo: this.getContentDiv(),
+            renderTo: this.resultPanelId,
             html: html,
-            height: height,
+            height: '100%',
             autoScroll: true,
+            style: { 
+                padding: '0px 0px 10px 0px'
+            },
             items: buttonList
         });
         
@@ -218,15 +271,9 @@ Ext.define ("viewer.components.Search",{
         this.popup.hide();
     },
     getExtComponents: function() {
-        return [ this.form.getId() ];
-    },
-    // Override doResize function to resize results field
-    doResize: function() {
-        this.form.doLayout();
-        if(this.results !== null) {
-            var contentEl = Ext.get(this.getContentDiv());
-            this.results.setHeight(contentEl.getHeight() - this.form.getHeight());
-        }
+        var c = [ this.mainContainer.getId(), this.form.getId() ];
+        if(this.results) c.push(this.results.getId());
+        return c;
     }
 });
 

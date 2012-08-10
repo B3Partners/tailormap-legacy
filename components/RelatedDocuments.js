@@ -27,6 +27,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
     extend: "viewer.components.Component",
     documentImg: null,
     iconPath: null,
+    contentId: '',
     config:{
         name: "Related Documents",
         title: "",
@@ -58,7 +59,51 @@ Ext.define ("viewer.components.RelatedDocuments",{
      *When the button is clicked
      */
     buttonClick: function (){
-        //console.log("!!!"+this.viewerController);        
+        //console.log("!!!"+this.viewerController);
+        var me = this;
+        if(this.contentId === '') {
+            this.contentId = Ext.id();
+            Ext.create('Ext.container.Container', {
+                id: this.name + 'Container',
+                width: '100%',
+                height: '100%',
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                style: {
+                    backgroundColor: 'White'
+                },
+                renderTo: this.getContentDiv(),
+                items: [{
+                    id: this.name + 'GridPanel',
+                    xtype: "container",
+                    autoScroll: true,
+                    width: '100%',
+                    flex: 1,
+                    html: '<div id="' + me.contentId + '" style="width: 100%; height: 100%;"></div>'
+                },{
+                    id: this.name + 'ClosingPanel',
+                    xtype: "container",
+                    width: '100%',
+                    height: MobileManager.isMobile() ? 45 : 25,
+                    style: {
+                        marginTop: '10px',
+                        marginRight: '5px'
+                    },
+                    layout: {
+                        type:'hbox',
+                        pack:'end'
+                    },
+                    items: [
+                        {xtype: 'button', text: 'Sluiten', padding: MobileManager.isMobile() ? '10px' : '2px', handler: function() {
+                            me.popup.hide();
+                        }}
+                    ]
+                }]
+            });
+            this.baseLayoutLoaded = true;
+        }
         this.reinit();
         this.popup.show();
     },
@@ -68,7 +113,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
     reinit: function(){
         var documents=this.getDocuments();
         var html = this.createHtml(documents);
-        var contentDiv=Ext.get(this.getContentDiv());
+        var contentDiv=Ext.get(this.contentId);
         contentDiv.update("");
         contentDiv.appendChild(html);
         this.loadImages();
@@ -149,6 +194,11 @@ Ext.define ("viewer.components.RelatedDocuments",{
         }else{
             Ext.get(imgId).dom.src=defaultSrc;
         }
+    },
+    getExtComponents: function() {
+        var c = [];
+        if(this.contentId === '') c.push(this.name + 'Container');
+        return c;
     }
     
 });

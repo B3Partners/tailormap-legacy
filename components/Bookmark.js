@@ -50,19 +50,26 @@ Ext.define ("viewer.components.Bookmark",{
     loadWindow : function(){
         this.form = new Ext.form.FormPanel({
             frame: false,
+            border: 0,
+            width: '100%',
+            margin: '0px 0px 0px 10px',
             items: [{ 
                 xtype: 'textfield',
                 fieldLabel: 'Bookmark',
                 name: 'bookmark',
+                anchor: '80%',
                 id: 'bookmark',
                 value: this.url
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Compact link',
                 name: 'compactlink',
+                anchor: '80%',
                 id: 'compactlink'
             },{ 
                 xtype: 'button',
+                padding: MobileManager.isMobile() ? '10px' : '2px',
+                margin: '10px 0px 0px 0px',
                 text: 'Toevoegen aan favorieten',
                 listeners: {
                     click:{
@@ -72,6 +79,8 @@ Ext.define ("viewer.components.Bookmark",{
                 }
             },{ 
                 xtype: 'button',
+                padding: MobileManager.isMobile() ? '10px' : '2px',
+                margin: '10px 0px 0px 10px',
                 text: 'Sluiten',
                 listeners: {
                     click:{

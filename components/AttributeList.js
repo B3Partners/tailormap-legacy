@@ -52,17 +52,18 @@ Ext.define ("viewer.components.AttributeList",{
         return this;
     },
     getExtComponents: function() {
-        var c = [];
-        c.push(this.name + 'Container');
-        c.push(this.name + 'LayerSelectorPanel');
-        c.push(this.name + 'GridPanel');
-        c.push(this.name + 'Grid');
-        c.push(this.name + 'PagerPanel');
-        c.push(this.name + 'Pager');
-        return c;
+        return [
+            this.name + 'Container',
+            this.name + 'LayerSelectorPanel',
+            this.name + 'GridPanel',
+            this.name + 'Grid',
+            this.name + 'PagerPanel',
+            this.name + 'Pager',
+            this.name + 'ClosingPanel',
+        ];
     },
     loadWindow : function(){
-        
+        var me = this;
         Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
@@ -92,6 +93,23 @@ Ext.define ("viewer.components.AttributeList",{
                 xtype: "container",
                 width: '100%',
                 height: 30
+            },{
+                id: this.name + 'ClosingPanel',
+                xtype: "container",
+                width: '100%',
+                height: MobileManager.isMobile() ? 45 : 25,
+                style: {
+                    marginTop: '10px'
+                },
+                layout: {
+                    type:'hbox',
+                    pack:'end'
+                },
+                items: [
+                    {xtype: 'button', text: 'Sluiten', padding: MobileManager.isMobile() ? '10px' : '2px', handler: function() {
+                        me.popup.hide();
+                    }}
+                ]
             }]
         });
               

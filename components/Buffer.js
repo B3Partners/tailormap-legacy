@@ -63,13 +63,7 @@ Ext.define ("viewer.components.Buffer",{
         this.popup.show();
     },
     loadWindow : function(){
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",{
-            viewerController : this.viewerController,
-            div: this.getContentDiv(),
-            id: this.name + "LayerSelector",
-            layers : this.layers
-        });    
-        
+
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             id: this.name + "Radius",
@@ -94,6 +88,8 @@ Ext.define ("viewer.components.Buffer",{
             name: "buffer" ,
             id: this.name + "BufferButton",
             text: "Buffer",
+            padding: MobileManager.isMobile() ? '10px' : '2px',
+            margin: '10px 0px 0px 0px',
             listeners: {
                 click:{
                     scope: this,
@@ -106,9 +102,8 @@ Ext.define ("viewer.components.Buffer",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
             text: "Huidige buffer verwijderen", 
-            style: {
-                marginLeft: '15px'
-            },           
+            padding: MobileManager.isMobile() ? '10px' : '2px',
+            margin: '10px 0px 0px 10px',           
             listeners: {
                 click:{
                     scope: this,
@@ -117,15 +112,26 @@ Ext.define ("viewer.components.Buffer",{
             }
         });
         
+        var layerSelectorId = Ext.id();
         Ext.create ("Ext.container.Container",{
             id: this.name +"Container",
-            renderTo : this.getContentDiv(),            
+            renderTo : this.getContentDiv(),
+            margin: '0px 0px 0px 10px',
             items:[
+                { xtype: 'container', html: '<div id="' + layerSelectorId + '"></div>' },
                 this.radius,
                 this.colorPicker,
                 this.buffer,
                 this.remove
             ]
+        });
+        
+        
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",{
+            viewerController : this.viewerController,
+            div: layerSelectorId,
+            id: this.name + "LayerSelector",
+            layers : this.layers
         });
     },
     buffer : function (){
@@ -156,6 +162,9 @@ Ext.define ("viewer.components.Buffer",{
             var imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.layerName+"ImageLayer", url, bbox);
             this.imageLayers.push(imageLayer);
             this.viewerController.mapComponent.getMap().addLayer(imageLayer);
+            if(MobileManager.isMobile()) {
+                this.popup.hide();
+            }
         }
     },
     removeBuffer : function(){
@@ -175,12 +184,14 @@ Ext.define ("viewer.components.Buffer",{
     },
     getExtComponents: function() {
         return Ext.Array.merge(
-            this.layerSelector.getExtComponents(),
             [
+                this.name +"Container",
                 this.radius.getId(),
                 this.buffer.getId(),
-                this.remove.getId()
-            ]
+                this.remove.getId(),
+                'color' + this.name
+            ],
+            this.layerSelector.getExtComponents()
         );
     },
     colorChanged : function (color){
