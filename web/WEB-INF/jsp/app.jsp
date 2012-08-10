@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     isMobile: function() { return mobile; },
                     isIOS: function() { return ios; },
                     isAndroid: function() { return android; },
-                    isLandscape: function() { return landscapeOrientation; },
+                    getOrientation: function() { return landscapeOrientation ? 'landscape' : 'portrait'; },
 					hasHammer: function () { return (Hammer !== undefined); },
                     closePopupOnTapMask: function(popupWin) {
                         var me = this;
