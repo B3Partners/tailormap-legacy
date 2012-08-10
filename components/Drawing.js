@@ -87,7 +87,7 @@ Ext.define ("viewer.components.Drawing",{
         return this;
     },
     selectedContentChanged : function (){
-        this.viewerController.mapComponent.getMap().reAddLayer(this.vectorLayer);
+        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     /**
      * Create the GUI

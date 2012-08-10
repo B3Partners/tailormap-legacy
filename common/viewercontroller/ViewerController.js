@@ -241,20 +241,37 @@ Ext.define("viewer.viewercontroller.ViewerController", {
    
     counter: 0,
     max: 0,
+    /**
+     * set the selected content. Raises a ON_SELECTEDCONTENT_CHANGE. First all layers are removed
+     * when all layers are removed, the new selectedcontent is initialized.
+     * @param selectedContent the new selected content
+     * TODO: Don't remove the selectedContent first and then set the new one. Have to make it smarter
+     * - make some layers persistent, a addition to layer(image for Influence and Vector for drawing module) and don't remove those
+     * - remove all layers that doesn't exist in new selectedcontent
+     * - walk the new selected content
+     * - if layer (in framework) exists set to new index
+     * - if not exists add as new.
+     */
     setSelectedContent: function(selectedContent) {
-        
         this.counter = 0;
         this.max = this.mapComponent.getMap().layers.length;
         var me = this;
-        var f = function  (){
+        var f = function  (map,options){
             this.counter++;
-            if(this.counter == this.max){
-                this.app.selectedContent = selectedContent;
-                this.uncheckUnselectedContent();
-                this.initLayers();
-                this.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,f, this);
-                this.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
+            if(this.counter >= this.max){                
+                setTimeout(function(){
+                    me.app.selectedContent = selectedContent;
+                    me.uncheckUnselectedContent();
+                    me.initLayers();
+                    me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,f, me);
+                    me.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
+                },1);
+                
             }
+        }
+        //fallback if the framework is out of sync
+        if (this.max==0){
+            f.call(this);
         }
         this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,f, this);
         this.clearLayers();

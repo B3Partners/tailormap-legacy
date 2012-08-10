@@ -86,7 +86,7 @@ Ext.define ("viewer.components.Edit",{
         return this;
     },
     selectedContentChanged : function (){
-        this.viewerController.mapComponent.getMap().reAddLayer(this.vectorLayer);
+        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     loadWindow : function (){
         var me =this;

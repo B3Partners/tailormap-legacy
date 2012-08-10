@@ -33,6 +33,7 @@ Ext.define ("viewer.components.InfluenceImage",{
         //this.initConfig(conf);  
         if (this.vectorLayer!=null){
             this.viewerController.mapComponent.getMap().removeLayer(this.vectorLayer);
+            delete this.vectorLayer;
         }
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
@@ -43,7 +44,7 @@ Ext.define ("viewer.components.InfluenceImage",{
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
         }
         if(this.vectorLayer){
-            this.viewerController.mapComponent.getMap().reAddLayer(this.vectorLayer);
+            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
     },
     /**
