@@ -108,7 +108,7 @@ Ext.define ("viewer.components.BufferLayer",{
         if(layer != null && radius != ""){
             layer.setBuffer(radius, layer.options.name);
         }
-		if(MobileDetect.isMobile()) {
+		if(MobileManager.isMobile()) {
 			this.popup.hide();
 		}
     },
@@ -117,7 +117,7 @@ Ext.define ("viewer.components.BufferLayer",{
         if(layer != null){
             layer.removeBuffer( layer.options.name);
         }
-		if(MobileDetect.isMobile()) {
+		if(MobileManager.isMobile()) {
 			this.popup.hide();
 		}
     },

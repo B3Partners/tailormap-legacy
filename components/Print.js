@@ -362,7 +362,7 @@ Ext.define ("viewer.components.Print",{
             }]
         });
         
-        this.qualitySlider = Ext.create(MobileDetect.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
+        this.qualitySlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
             renderTo: qualitySliderId,
             name: "quality",
             value: 11,
@@ -380,7 +380,7 @@ Ext.define ("viewer.components.Print",{
             }
         });
         
-        this.rotateSlider = Ext.create(MobileDetect.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
+        this.rotateSlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
             renderTo: rotateSliderId,
             name: 'angle',
             value: 0,
@@ -699,7 +699,7 @@ Ext.define ("viewer.components.Print",{
     },
 
     getExtComponents: function() {
-        return [ this.panel.getId() ];
+        return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }
 });
 

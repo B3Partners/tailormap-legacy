@@ -266,7 +266,7 @@ Ext.define ("viewer.components.Drawing",{
             id: 'description'
         });
         // Build the saving form
-        if(!MobileDetect.isMobile()) { // Disable for mobile for now...
+        if(!MobileManager.isMobile()) { // Disable for mobile for now...
             this.formsave = new Ext.form.FormPanel({
                 standardSubmit: true,
                 url: actionBeans["drawing"] + "?save",
@@ -465,7 +465,7 @@ Ext.define ("viewer.components.Drawing",{
             this.title.getId(),
             this.description.getId()
         ];
-        if(!MobileDetect.isMobile()) {
+        if(!MobileManager.isMobile()) {
             compIds.push(this.formsave.getId());
             compIds.push(this.file.getId());
             compIds.push(this.formopen.getId());

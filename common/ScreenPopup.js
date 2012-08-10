@@ -53,13 +53,13 @@ Ext.define ("viewer.components.ScreenPopup",{
             renderTo: Ext.getBody(),
             autoScroll: true
         };
-        if(this.details.position == 'fixed' && !MobileDetect.isMobile()) {
+        if(this.details.position == 'fixed' && !MobileManager.isMobile()) {
             var wrapper = Ext.get('wrapper');
             config.x = parseInt(this.details.x) + wrapper.getX();
             config.y = parseInt(this.details.y) + wrapper.getY();
         }
         
-        if(MobileDetect.isMobile()) {
+        if(MobileManager.isMobile()) {
             config.modal = true;
             config.width = '90%';
             config.height = '90%';
@@ -100,14 +100,15 @@ Ext.define ("viewer.components.ScreenPopup",{
             if(me.component) {
                 me.component.setButtonState('click', true);
             }
-            if(MobileDetect.isMobile()) {
+            if(MobileManager.isMobile()) {
                 // Resize the popup every time it is shown, because orientation might
                 // have changes since the previous show, which would result in incorrect
                 // rendering of the popups. Settimeout to make sure the window is loaded & ready
                 setTimeout(function() { me.component.resizeScreenComponent() }, 0);
+                if(config.modal) MobileManager.closePopupOnTapMask(me.popupWin);
             }
         });
-		if(MobileDetect.isMobile() && MobileDetect.hasHammer()) {
+		if(MobileManager.isMobile() && MobileManager.hasHammer()) {
 			// Hide the window on double tapping the header
 			var hammer = new Hammer(document.getElementById(me.popupWin.header.id));
 			hammer.ondoubletap = function(ev) {
@@ -141,7 +142,7 @@ Ext.define ("viewer.components.ScreenPopup",{
         return this.popupWin.isVisible();
     },
 	resizePopup: function() {
-        if(MobileDetect.isMobile()) {
+        if(MobileManager.isMobile()) {
     		// First set window size to 1px so it wont take any space
             this.popupWin.setSize('1px', '1px');
     		// Then set size back to 90%/90% so the percentages are calculated correctly
