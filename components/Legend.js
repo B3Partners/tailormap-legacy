@@ -141,17 +141,21 @@ Ext.define("viewer.components.Legend", {
                     element: null
                 }
                 
-                if(appLayer.checked) {
-                    me.createLegendForAppLayer(appLayer);
-                }
+                me.createLegendForAppLayer(appLayer);
             }
         );
     },
 
+    /**
+     * This function also does the check whether a legend should be visible 
+     * before the legend is actually created. This way the check can be in once 
+     * place instead of before each call to this function.
+     */
     createLegendForAppLayer: function(appLayer) {
         var me = this;
 
-        if(!this.showBackground && appLayer.background) {
+        if(!this.showBackground && appLayer.background 
+        || !appLayer.checked) {
             return;
         }
 
