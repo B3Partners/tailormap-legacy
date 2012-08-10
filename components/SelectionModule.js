@@ -463,7 +463,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             {xtype: 'button', text: 'Annuleren', handler: function() {
                                 me.cancelSelection();
                             }},
-                            {xtype: 'button', text: 'OK', handler: function() {
+                            {xtype: 'button', text: 'OK', style: {marginLeft: '10px'},handler: function() {
                                 me.saveSelection();
                             }}
                     ],

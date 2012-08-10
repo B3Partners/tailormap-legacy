@@ -94,9 +94,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
      *remove the specific layer. See @link Map.removeLayer
      **/
     removeLayer:function(layer){
-        if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
+        if (layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer){
+            this.getFrameworkMap().callMethod(this.gisId,'removeLayer',layer.getId());
+        }else{
             this.getFrameworkMap().callMethod(this.getId(),'removeLayer',this.getId()+'_'+layer.getId());
-        } 
+            
+        }
         //call super function
         this.superclass.removeLayer.call(this,layer);
     },
@@ -329,7 +332,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         if (flamEvent!=undefined){
             //if not enabled yet, enable
             if (this.enabledEvents[flamEvent]==undefined){
-                this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                
+                this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);                
+                //on remove layer also listen on Gis.
+                if (flamEvent == "onRemoveLayer" || flamEvent =="onAddLayer"){
+                    this.getFrameworkMap().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.gisId+"."+flamEvent);
+                }
                 this.enabledEvents[flamEvent]=true;
             }
         }

@@ -529,7 +529,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         } 
         name=""+name;                
         if(this.getMap(name)!= null){
-            return this.getMap(name);
+            return this.getMap(name);        
         }else if (this.getMap() && this.getMap().getLayer(name)!=null){
             return this.getMap().getLayer(name);
         }else if(this.getMap() && name.indexOf(this.getMap().getId()+"_")==0 && this.getMap().getLayer( (name.replace(this.getMap().getId() + "_" ,""))) != null){        
@@ -538,6 +538,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             return this.getTool(name);
         }else if(name == this.getId()){
             return this;
+        }else if (this.getMap() && this.getMap().gisId == name){
+            return this.getMap();
         }else if(this.getMap() && this.getMap().editMapId){
         }else{
             return null;
