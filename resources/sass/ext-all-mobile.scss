@@ -151,6 +151,9 @@ $button-toolbar-background-gradient-color-stops-focus: null;
 $button-toolbar-background-gradient-color-stops-pressed: null;
 $button-toolbar-background-gradient-color-stops-disabled: null;
 
+// Tools / Panels
+$tool-size: 25px;
+
 @import 'ext4/default/all';
 
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
