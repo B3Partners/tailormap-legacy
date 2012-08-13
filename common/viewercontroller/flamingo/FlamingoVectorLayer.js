@@ -205,9 +205,18 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         }
         return flFeature;
     },
+    /**
+     * return visibility
+     */
+    getVisible: function(){
+        return this.visible;
+    },
     fire : function (event,options){
         this.fireEvent(event,this,options);
     },
+    /**
+     *@see viewer.viewercontroller.flamingo.FlamingoLayer#getType
+     */
     getType : function (){
         return this.mixins.flamingoLayer.getType.call(this);
     },
