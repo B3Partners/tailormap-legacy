@@ -27,22 +27,40 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         left:null,
         url:null,
         layers:null,
-        position:null
+        position:null,
+        height: 300,
+        width: 300,
+        lox: null,
+        loy: null,
+        rbx: null,
+        rby: null        
     },
     
     constructor: function (conf){        
         viewer.viewercontroller.openlayers.components.OpenLayersOverview.superclass.constructor.call(this, conf);
-        var layer =  new OpenLayers.Layer.WMS(
+        
+        var maxBounds =this.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
+        var bounds;
+        if (this.getLox()!=null && this.getLoy()!=null && this.getRbx()!=null && this.getRby()!=null){
+            bounds = new OpenLayers.Bounds(this.getLox(),this.getLoy(),this.getRbx(),this.getRby());
+        }else{
+            bounds= maxBounds;
+        }
+        var size=new OpenLayers.Size(""+this.height,""+this.width);
+        var layer =  new OpenLayers.Layer.Image(
             "OverviewLaag", 
             this.url,
-            {layers: this.layers}); 
-        var maxExtent =this.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
+            bounds,
+            size
+        );
+        
         this.frameworkObject = new OpenLayers.Control.OverviewMap({
             maximized: true,
             mapOptions: {
-                maxExtent: maxExtent,
+                maxExtent: maxBounds,
                 projection: "EPSG:28992"
             },
+            size: size,
             layers: [layer]
         });
         
@@ -51,6 +69,51 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
     
     getExtComponents: function() {
         return [];
+    },
+    
+    //setters for bounds, make sure it are numbers
+    setLox: function (value){
+        if (isNaN(value)){
+            this.lox=null;
+            return;
+        }
+        this.lox = Number(value);
+    },
+    setLoy: function (value){
+        if (isNaN(value)){
+            this.loy=null;
+            return;
+        }
+        this.loy = Number(value);
+    },
+    setRbx: function (value){
+        if (isNaN(value)){
+            this.rbx=null;
+            return;
+        }
+        this.rbx = Number(value);
+    },
+    setRby: function (value){
+        if (isNaN(value)){
+            this.rby=null;
+            return;
+        }
+        this.rby = Number(value);
+    },
+    //make sure the heigth and width are numbers
+    setHeight: function (value){
+        if (isNaN(value)){
+            this.height=null;
+            return;
+        }
+        this.height = Number(value);
+    },
+    setWidth: function (value){
+        if (isNaN(value)){
+            this.width=null;
+            return;
+        }
+        this.width = Number(value);
     }
 });
 
