@@ -108,6 +108,20 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         if (this.options!=null)
             this.options["visible"] = this.visible;
         return this.visible;
+    },
+    /**
+     * Overwrite destroy, clear Listeners and forward to super.destroy
+     */
+    destroy: function(){        
+        /* fix for infinite loop:
+         * If this is called from a layer that extends the FlamingoArcLayer the superclass is
+         * that FlamingoArcLayer and this function is called again when this.superclass.function is called
+         **/
+        if (this.superclass.$className == "viewer.viewercontroller.flamingo.FlamingoArcLayer"){
+            this.superclass.superclass.destroy.call(this);
+        }else{
+            this.superclass.destroy.call(this);
+        }
     }
     
 });

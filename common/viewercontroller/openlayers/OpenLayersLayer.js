@@ -192,6 +192,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         if (this.frameworkLayer!=null){
             this.frameworkLayer.destroy();
         }
+        /* fix for infinite loop:
+         * If this is called from a layer that extends the OpenLayersArcLayer the superclass is
+         * that OpenLayersArcLayer and this function is called again when 
+         * this.superclass.function is called
+         **/
         if (this.superclass.$className == "viewer.viewercontroller.openlayers.OpenLayersArcLayer"){
             this.superclass.superclass.destroy.call(this);
         }else{

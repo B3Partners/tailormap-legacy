@@ -129,6 +129,12 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      */
     getType : function(){
         return this.mixins.flamingoLayer.getType.call(this);
+    },    
+    /**
+     * @see viewer.viewercontroller.flamingo.FlamingoLayer#destroy
+     */
+    destroy: function (){
+        this.mixins.flamingoLayer.destroy.call(this);
     }
 });
 
