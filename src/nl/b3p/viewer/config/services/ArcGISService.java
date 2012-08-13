@@ -21,6 +21,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.geotools.data.ows.HTTPClient;
 import org.geotools.data.ows.SimpleHttpClient;
 import org.json.JSONArray;
@@ -50,6 +51,19 @@ public class ArcGISService extends GeoService {
     public static final String DETAIL_GEOMETRY_TYPE = "arcgis_geometryType";
     /** Layer.details map key for ArcGIS capabilities property */
     public static final String DETAIL_CAPABILITIES = "arcgis_capabilities";
+    /** Layer.details map key for ArcGIS defaultVisibility property */
+    public static final String DETAIL_DEFAULT_VISIBILITY = "arcgis_defaultVisibility";
+    /** Layer.details map key for ArcGIS definitionExpression property */
+    public static final String DETAIL_DEFINITION_EXPRESSION = "arcgis_definitionExpression";
+    
+    // Layer types are not specified in the ArcGIS API reference, so these are guesses.
+    // See {nl.b3p.viewer.config.services.Layer#virtual}
+    // Group layers are thus non-virtual layers. Sometimes ArcGIS even has layers 
+    // without a type...
+    public static final Set<String> NON_VIRTUAL_LAYER_TYPES = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {
+        "Feature Layer",
+        "Annotation Layer" // not sure about this one...
+    })));
     
     private static JSONObject issueRequest(String url, HTTPClient client) throws Exception {
         return new JSONObject(IOUtils.toString(client.get(new URL(url)).getResponseStream(), "UTF-8"));
@@ -132,13 +146,20 @@ public class ArcGISService extends GeoService {
             top.setService(s);
             top.getDetails().put(DETAIL_CURRENT_VERSION, currentVersion);
 
+            Map<String,Layer> layersById = new HashMap();
+            Map<String,List<String>> childrenByLayerId = new HashMap();
+            List<Layer> allLayers = new ArrayList();
+            
             if(currentVersionMajor >= 10) {
                 // info is the MapServer/layers response, all layers JSON info
                 // immediately available
                 JSONArray layers = info.getJSONArray("layers");
                 for(i = 0; i < layers.length(); i++) {
                     JSONObject layer = layers.getJSONObject(i);
-                    top.getChildren().add(parseArcGISLayer(layer, s, fs, top));
+                    
+                    Layer l = parseArcGISLayer(layer, s, fs, childrenByLayerId);
+                    layersById.put(l.getName(), l);
+                    allLayers.add(l);
                 }
             } else {
                 // In 9.x, request needed for each layer
@@ -148,9 +169,35 @@ public class ArcGISService extends GeoService {
                     String id = layer.getString("id");
                     status.setCurrentAction("Inladen laag \"" + layer.optString("name", id) + "\"");
                     layer = issueRequest(url + "/" + id + "?f=json", client);
-                    top.getChildren().add(parseArcGISLayer(layer, s, fs, top));
+                    
+                    Layer l = parseArcGISLayer(layer, s, fs, childrenByLayerId);
+                    layersById.put(l.getName(), l);
+                    allLayers.add(l);
                     status.setProgress((int)Math.round( 100.0/(layerCount+1) * i+2 ));                    
                 }                
+            }
+            
+            /* 2nd pass: fill children list and parent references */
+            /* children of top layer is special because those have parentLayerId -1 */
+            
+            for(Layer l: allLayers) {
+                List<String> childrenIds = childrenByLayerId.get(l.getName());
+                if(childrenIds != null) {
+                    for(String childId: childrenIds) {
+                        Layer child = layersById.get(childId);
+                        if(child != null) {
+                            l.getChildren().add(child);
+                            child.setParent(l);
+                        }
+                    }
+                }
+            }
+            
+            for(Layer l: allLayers) {
+                if(l.getParent() == null) {
+                    top.getChildren().add(l);
+                    l.setParent(top);
+                }
             }
                 
             s.setTopLayer(top);
@@ -212,21 +259,32 @@ public class ArcGISService extends GeoService {
         return toJSONObject(flatten, null);
     }
     
-    private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Layer parent) throws JSONException {
+    private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Map<String,List<String>> childrenByLayerId) throws JSONException {
         Layer l = new Layer();
-        l.setParent(parent);
+        // parent set later in 2nd pass
         l.setService(service);
-        l.setFilterable(true);
-        l.setQueryable(true); // Could check capabilities field for "Query", but don't bother
         l.setName(agsl.getString("id"));
         l.setTitle(agsl.getString("name"));
+        
+        JSONArray subLayerIds = agsl.optJSONArray("subLayers");
+        if(subLayerIds != null) {
+            List<String> childrenIds = new ArrayList();
+            for(int i = 0; i < subLayerIds.length(); i++) {
+                JSONObject subLayer = subLayerIds.getJSONObject(i);
+                String subLayerId = subLayer.getInt("id") + "";
+                childrenIds.add(subLayerId);
+            }
+            childrenByLayerId.put(l.getName(), childrenIds);
+        }
 
         l.getDetails().put(DETAIL_TYPE, agsl.getString("type"));
         l.getDetails().put(DETAIL_CURRENT_VERSION, agsl.optString("currentVersion", currentVersion));        
-        l.getDetails().put(DETAIL_DESCRIPTION, agsl.getString("description"));        
+        l.getDetails().put(DETAIL_DESCRIPTION, StringUtils.defaultIfBlank(agsl.getString("description"),null));        
         l.getDetails().put(DETAIL_GEOMETRY_TYPE, agsl.getString("geometryType"));  
-        l.getDetails().put(DETAIL_CAPABILITIES, agsl.optString("capabilities"));        
-        
+        l.getDetails().put(DETAIL_CAPABILITIES, agsl.optString("capabilities"));    
+        l.getDetails().put(DETAIL_DEFAULT_VISIBILITY, agsl.optBoolean("defaultVisibility",false) ? "true" : "false");
+        l.getDetails().put(DETAIL_DEFINITION_EXPRESSION, StringUtils.defaultIfBlank(agsl.optString("definitionExpression"), null));
+
         try {
             l.setMinScale(agsl.getDouble("minScale"));
             l.setMaxScale(agsl.getDouble("maxScale"));
@@ -296,16 +354,18 @@ public class ArcGISService extends GeoService {
             }
             fs.getFeatureTypes().add(sft);
             l.setFeatureType(sft);
-        }        
-/* XXX subLayers references top level layer, not a full JSON layer object
- * two passes needed to properly parse tree structure to set Layer.parent and
- * Layer.children
-        JSONArray children = agsl.getJSONArray("subLayers");
-        for(int i = 0; i < children.length(); i++) {
-            l.getChildren().add(parseArcGISLayer(children.getJSONObject(i), service, fs, l));
-        }
-*/                        
+        }  
+       
+        boolean hasFields = fields.length() > 0;        
+        
+        /* We could check capabilities field for "Query", but don't bother,
+         * group layers have Query in that property but no fields...
+         */
+        l.setQueryable(hasFields); 
+        l.setFilterable(hasFields);
+        
+        l.setVirtual(!NON_VIRTUAL_LAYER_TYPES.contains(l.getDetails().get(DETAIL_TYPE)));
+                       
         return l;
-    }
-    
+    }    
 }
