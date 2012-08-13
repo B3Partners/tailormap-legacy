@@ -27,7 +27,7 @@ Ext.override(Ext.form.field.Picker, {
         }, 0);
     }
 });
-if(MobileManager !== undefined && MobileManager.isMobile()) {
+if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
     Ext.override(Ext.form.field.ComboBox, {
         editable: false 
     });
