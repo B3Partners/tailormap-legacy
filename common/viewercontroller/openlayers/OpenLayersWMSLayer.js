@@ -150,5 +150,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
      */
     getType : function (){
         return this.mixins.openLayersLayer.getType.call(this);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#destroy
+     */
+    destroy: function (){
+        this.mixins.openLayersLayer.destroy.call(this);
     }
 });

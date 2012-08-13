@@ -53,7 +53,14 @@ Ext.define("viewer.viewercontroller.controller.Component",{
      */
     setVisible: function (vis){
         Ext.Error.raise({msg: "setVisible() function must be implemented in implementation"});
-    }
+    },
     
+    /**
+     *Overwrite the destroy function. Clear all listeners and forward to the super.destroy
+     */
+    destroy: function(){
+        this.clearListeners();
+        viewer.viewercontroller.controller.Component.superclass.destroy.call(this);
+    }
 });
 

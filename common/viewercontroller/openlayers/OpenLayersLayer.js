@@ -185,12 +185,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         }
         return null;
     },
-    layerFeatureHandler : function (obj){
-        // TODO: FIX THIS. this handles the registered event directly. Ugh
-        var id = obj.object.id;
-        var eventName = this.viewerController.mapComponent.getGenericEventName(obj.type);
-        var wkt = obj.feature.geometry.toString();
-        var feature = new Feature(id,wkt);
-        webMapController.events[eventName][id](id,feature);
-    }
+    /**
+     * Destroy object
+     */
+    destroy: function(){
+        if (this.frameworkLayer!=null){
+            this.frameworkLayer.destroy();
+        }
+        if (this.superclass.$className == "viewer.viewercontroller.openlayers.OpenLayersArcLayer"){
+            this.superclass.superclass.destroy.call(this);
+        }else{
+            this.superclass.destroy.call(this);
+        }
+    }    
 });

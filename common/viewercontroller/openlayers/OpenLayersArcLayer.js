@@ -111,6 +111,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcLayer",{
      */
     removeListener: function (event,handler,scope){
         this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
+    },
+    /**
+     * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#destroy
+     */
+    destroy: function (){
+        this.mixins.openLayersLayer.destroy.call(this);
     }
 });
 

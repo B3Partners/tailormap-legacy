@@ -158,6 +158,13 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     fire : function (event,options){
         this.fireEvent(event,this,options);
     },
+    /**
+     *Overwrite the destroy function. Clear all listeners and forward to the super.destroy
+     */
+    destroy: function(){
+        this.clearListeners();
+        viewer.viewercontroller.controller.Layer.superclass.destroy.call(this);
+    },
 
     registerEvent : function (event,handler,scope){
         this.superclass.addListener(event,handler,scope);
