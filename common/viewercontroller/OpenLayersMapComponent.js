@@ -229,6 +229,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
                 new OpenLayers.Control.PanZoomBar({zoomWorldIcon: true}));
+        }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
+            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
+                new OpenLayers.Control.MousePosition({
+                    numDigits: config.decimals
+                }));
         }else{
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
@@ -457,12 +462,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         MapComponent.prototype.removeTool.call(this,tool);
     },
     addComponent: function(component){
-        /*if(false){
-        }else{*/
+        if(Ext.isEmpty(component)){
+            this.viewerController.logger.warning("Empty component added to OpenLayersMapComponent. \n\
+                Properly not yet implemented");
+        }else{
             //add the component to the map
             this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());
             component.getFrameworkObject().activate();
-        //}
+        }
     },
     /**Add a map to the controller.
      *For know only 1 map supported.
