@@ -261,15 +261,16 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
         initBeforeRequest();
         
         Map<String,String> params = new HashMap<String,String>();
-        params.put("f","json");
-        params.put("outFields", getOutFields());
-        params.put("returnGeometry", returnGeometry + "");        
         
         try {
-            params.put("where", createQueryParams().get("where"));
+            params.putAll(createQueryParams());
         } catch (FilterToSQLException ex) {
             throw new IOException(ex);
         }        
+
+        params.put("f","json");
+        params.put("outFields", getOutFields());
+        params.put("returnGeometry", returnGeometry + "");        
 
         try {
             JSONObject response = fs.getArcGISDataStore().getServerJSONResponse(typeName + "/query", params);
