@@ -235,8 +235,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     numDigits: config.decimals
                 }));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
+            var frameworkOptions={}
+            frameworkOptions.bottomOutUnits='';
+            frameworkOptions.bottomInUnits='';
+            if (!Ext.isEmpty(config.units)){
+                frameworkOptions.topOutUnits=config.units;
+            }
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
-                new OpenLayers.Control.ScaleLine({ebottomOutUnits:'',bottomInUnits:''}));
+                new OpenLayers.Control.ScaleLine(frameworkOptions));
         }else{
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
