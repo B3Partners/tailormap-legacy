@@ -657,6 +657,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
         }
+        if (layerObj==null){
+            return null;
+        }
         layerObj.serviceId = appLayer.serviceId;
         layerObj.appLayerId = appLayer.id;
         this.layers[id] = layerObj;

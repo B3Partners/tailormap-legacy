@@ -164,14 +164,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     //appLayer.layerName,server,servlet,service.serviceName, options,this);
     createArcIMSLayer : function (name,url, servlet, serviceName,options){
-        options.name=name;
+        /*options.name=name;
         options.url=url;
         options.servlet = servlet;
         options.serviceName = serviceName;
         options.viewerController=this.viewerController;
         
         var arcIMS= Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",options);
-        return arcIMS;
+        return arcIMS;*/
+        this.viewerController.logger.error("ArcIms not (yet) supported in OpenLayers implementation");
+        return null;
     },
     /**
      *see @link MapComponent#createArcServerLayer
