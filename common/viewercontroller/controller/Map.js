@@ -130,9 +130,11 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     removeLayer:function(layer){
         
         var index=this.getLayerIndex(layer);
-        if (index==-1)
-            Ext.Error.raise({msg: "Map.removeLayer(): Layer not available in map!"});
-        this.layers.splice(index,1);
+        if (index==-1){
+            this.viewerController.logger.warning("Map.removeLayer(): Layer not available in map!");
+        }else{            
+            this.layers.splice(index,1);
+        }
     },
     /**
      * Set the layer index of the given layer. The subclass needs to implement

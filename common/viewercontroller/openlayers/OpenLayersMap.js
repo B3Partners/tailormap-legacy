@@ -93,7 +93,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     *Add a layer. Also see @link Map.addLayer
     **/
     addLayer : function(layer){        
-        this.superclass.addLayer.call(this,layer);        
+        this.superclass.addLayer.call(this,layer);   
+        //delete layer.getFrameworkLayer().id;
         this.getFrameworkMap().addLayer(layer.getFrameworkLayer());       
     },
     
@@ -101,17 +102,13 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     *remove the specific layer. See @link Map.removeLayer
     **/
     removeLayer : function(layer){
-        // don't call super function, but manually manage the removal of layers from this.layers
-
-        if (layer instanceof viewer.viewercontroller.openlayers.OpenLayersWMSLayer){
-            if(layer.getGetFeatureInfoControl()!=null){
-                layer.getGetFeatureInfoControl().destroy();
-            }
-            if (layer.getMapTipControl()!=null){
-                layer.getMapTipControl().destroy();
-            }
-        }
-        layer.getFrameworkLayer().destroy(false);
+        //remove layer from framework
+        this.getFrameworkMap().removeLayer(layer.getFrameworkLayer());
+        /**
+         *Dont call super because we listen to a remove of the layer with a listener
+         *at the framework:
+         *viewer.viewercontroller.openlayers.OpenLayersMap.superclass.removeLayer.call(this,layer);
+         */       
     },
     
     layerRemoved : function (map, options){
