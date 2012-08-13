@@ -234,6 +234,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 new OpenLayers.Control.MousePosition({
                     numDigits: config.decimals
                 }));
+        }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
+            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
+                new OpenLayers.Control.ScaleLine({ebottomOutUnits:'',bottomInUnits:''}));
         }else{
             this.viewerController.logger.warning ("Framework specific component with type " + type + " not yet implemented!");
         }
