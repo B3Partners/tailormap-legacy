@@ -54,7 +54,7 @@ Ext.define ("viewer.components.Search",{
         var me = this;
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
-            height: MobileManager.isMobile() ? 90 : 80,
+            height: MobileManager.isMobile() ? 100 : 90,
             items: this.getFormItems(),
             border: 0,
             style: { 
