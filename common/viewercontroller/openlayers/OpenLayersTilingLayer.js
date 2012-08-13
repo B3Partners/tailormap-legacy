@@ -88,7 +88,20 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     getLayers: function (){
         return this.frameworkLayer.options.layername;
     },
-    
+    /**
+     * @see viewer.viewercontroller.controller.Layer.getLegendGraphic
+     * @return null because there are no legends for Tiling layers.
+     */
+    getLegendGraphic: function(){
+        return null;
+    },
+    /**
+     * Return the last Map requests as object.
+     * @see viewer.viewercontroller.controller.Layer#getLastMapRequest
+     * @return a array of objects with
+     * .url the url to the image and 
+     * .extent the extent of the image
+     */
     getLastMapRequest: function(){
         var requests=[];
         var mapWidth = this.getMap().getWidth();
