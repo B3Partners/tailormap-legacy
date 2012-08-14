@@ -256,9 +256,9 @@ public class CombineImageActionBean implements ActionBean {
         //final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
         final CombineImageSettings settings = imageSettings.get(imageId);
         //if these settings are given then overwrite those in the CombineImageSettings
-        if (this.getWidth()!=null){
+        if (this.getWidth()!=null && this.getWidth()>0){
             settings.setWidth(getWidth());
-        }if (this.getHeight()!=null){
+        }if (this.getHeight()!=null && this.getHeight()>0){
             settings.setHeight(getHeight());
         }if (this.getBbox()!=null){
             settings.setBbox(getBbox());
