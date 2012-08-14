@@ -73,9 +73,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     adjustStyle : function(){
         this.viewerController.logger.error("OpenLayersVectorLayer.adjustStyle() not yet implemented!");
     },
-    
+    /**
+     * Removes all features and all 'sketches' (not finished geometries)
+     */
     removeAllFeatures : function(){
         this.getFrameworkLayer().removeAllFeatures();
+        this.stopDrawing();
     },
 
     getActiveFeature : function(){
@@ -125,6 +128,19 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.polygon.activate();
         }else{
            this.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
+        }
+    },
+    /**
+     * Stop the drawing controls
+     */
+    stopDrawing: function(){
+        //also stop drawing
+        if (this.point.active){
+            this.point.cancel();
+        }if (this.line.active){
+            this.point.cancel();
+        }if (this.polygon.active){
+            this.polygon.cancel();
         }
     },
     
