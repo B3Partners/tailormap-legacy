@@ -567,7 +567,8 @@
         shortName: "AL",
         sources: ["AttributeList.js"],
         configSource: ["SelectionWindowConfig.js","AttributeList-config.js"],
-        restrictions: ["left_menu"] ,        
+        restrictions: ["left_menu"] , 
+        singleton: true,       
         type: "popup"        
     },
     {
