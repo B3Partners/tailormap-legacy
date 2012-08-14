@@ -186,7 +186,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/Twitter.js"></script>
             </c:when>
             <c:otherwise>
-                <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>
+                <c:if test="${viewerType == 'openlayers'}"> 
+                    <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
+                </c:if>
+                <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>                
             </c:otherwise>
         </c:choose>
 		<script type="text/javascript">
