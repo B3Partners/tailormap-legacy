@@ -750,10 +750,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             scale = this.mapComponent.getMap().getScale();
         }
         var serviceLayer=this.getServiceLayer(appLayer);
-        if (serviceLayer.minScale && scale < serviceLayer.minScale){
+        /* If minScale or maxScale is '0' then ignore it that check
+         * It's not correct but this is how it's configured in ESRI by most of the users.
+         */
+        if (serviceLayer.minScale && serviceLayer.minScale != 0 && scale < serviceLayer.minScale){
             return false;            
         }
-        if (serviceLayer.maxScale && scale > serviceLayer.maxScale){
+        if (serviceLayer.maxScale && serviceLayer.maxScale != 0 && scale > serviceLayer.maxScale){
             return false;
         }            
         return true;        

@@ -539,12 +539,12 @@ Ext.define ("viewer.components.TOC",{
             var layerObj = null;
             if(child.raw && child.raw.layerObj) layerObj = child.raw.layerObj;
             if(child.data && child.data.layerObj) layerObj = child.data.layerObj;
-            var layer = this.viewerController.app.services[layerObj.service].layers[layerObj.layerName];
             var record = this.panel.getView().getNodeByRecord(child);
             // Check for not existing/visible layers (ie. layers in (background) levels 
             if(record != null){
                 var extElement = Ext.fly(record);
-                if(this.isInScale(scale, layer.minScale, layer.maxScale)){
+                //if(this.isInScale(scale, layer.minScale, layer.maxScale)){
+                if (this.viewerController.isWithinScale(layerObj.appLayer,scale)){
                     extElement.removeCls("toc-outofscale");
                     extElement.addCls("toc-inscale");
                 }else{
@@ -568,19 +568,5 @@ Ext.define ("viewer.components.TOC",{
         var me = this;
         me.panel.doLayout();
         me.applyTreeScrollFix();
-    },
-    isInScale : function ( scale, min, max ){
-        var inScale = true;
-        if(min){
-            if(scale < min){
-                inScale  = false;
-            }
-        }
-        if(max){
-            if( scale > max){
-                inScale = false;
-            }
-        }
-        return inScale;
     }
 });
