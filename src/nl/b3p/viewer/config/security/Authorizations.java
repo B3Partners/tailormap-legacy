@@ -269,12 +269,42 @@ public class Authorizations {
         }
     }
     
+    private static final String REQUEST_APP_CACHE = Authorizations.class.getName() + ".REQUEST_APP_CACHE";
+    
+    public static ApplicationCache getApplicationCacheFromRequest(Application app, HttpServletRequest request) {
+        
+        // Cache applicationCache instances per request so the 
+        // allServicesAuthLastChanged date is not requested multiple times
+        // for a single request
+        
+        // It is requested once per request, so the applicationCache is still
+        // immediately refreshed once authorizations change for new requests
+        
+        Map<Long,ApplicationCache> requestCache = (Map)request.getAttribute(REQUEST_APP_CACHE);
+        if(requestCache == null) {
+            requestCache = new HashMap();
+            request.setAttribute(REQUEST_APP_CACHE, requestCache);
+        }
+        ApplicationCache appCache = requestCache.get(app.getId());
+        if(appCache == null) {
+            appCache = getApplicationCache(app);
+            requestCache.put(app.getId(),appCache);
+        }
+        return appCache;
+    }
+    
     public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request) {
+        return isLevelReadAuthorized(app, l, request, getApplicationCacheFromRequest(app, request));
+    }
+
+    public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request, ApplicationCache appCache) {
         if(app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
-        ApplicationCache appCache = getApplicationCache(app);        
+        if(appCache == null) {
+            appCache = getApplicationCache(app);        
+        }
         Read auths = appCache.protectedLevels.get(l.getId());       
         return isReadAuthorized(request, auths);
     }
@@ -284,13 +314,19 @@ public class Authorizations {
             throw new Exception(unauthMsg(request,false) + " level #" + l.getId());
         }
     }
-    
+
     public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) {
+        return isAppLayerReadAuthorized(app, al, request, getApplicationCacheFromRequest(app, request));
+    }
+    
+    public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, ApplicationCache appCache) {
         if(app == null || app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
-        ApplicationCache appCache = getApplicationCache(app);
+        if(appCache == null) {
+            appCache = getApplicationCache(app);
+        }
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
         return isReadAuthorized(request, auths);
     }
@@ -302,11 +338,17 @@ public class Authorizations {
     }    
     
     public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request) {
+        return isAppLayerWriteAuthorized(app, al, request, getApplicationCacheFromRequest(app, request));
+    }
+    
+    public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, ApplicationCache appCache) {
         if(app == null || app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
             return false;
         }
         
-        ApplicationCache appCache = getApplicationCache(app);
+        if(appCache == null) {
+            appCache = getApplicationCache(app);
+        }
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
         return isWriteAuthorized(request, auths);
     }
@@ -450,9 +492,18 @@ public class Authorizations {
             ApplicationCache cache = applicationCache.get(app.getId());
 
             if(cache != null) {
-                if(cache.modified.equals(app.getAuthorizationsModified())) {
+                // Check if the data was not cached before the authorizations 
+                // were modified
+                if(!cache.modified.before(app.getAuthorizationsModified())) {
                     
                     try {
+                        // Because the cached data is also stale when authorizations
+                        // for a service used in the application change, check if
+                        // the cache was made before a change to authorizations to
+                        // a service (any service, not only those used in app - 
+                        // checking only services used is not worth it because the
+                        // authorizations for services should only change infrequently)
+                        
                         Date allServicesAuthLastChanged = (Date)Stripersist.getEntityManager().createQuery("select max(authorizationsModified) from GeoService").getSingleResult();
                         
                         if(allServicesAuthLastChanged.before(cache.modified)) {
