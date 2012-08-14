@@ -346,11 +346,11 @@ public class ImageTool {
      */
     private static BufferedImage combineJPGImages(List<ReferencedImage> images,Integer width, Integer height) {
         if (images.get(0)!=null){
-        BufferedImage bi = images.get(0).getImage();
-            if (width==null){
+            BufferedImage bi = images.get(0).getImage();
+            if (width==null || width <=0){
                 width = bi.getWidth();
             }
-            if (height==null){
+            if (height==null || height <=0){
                 height = bi.getHeight();
             }
         }
@@ -376,14 +376,13 @@ public class ImageTool {
         if (images.get(0)!=null){
             BufferedImage bi = images.get(0).getImage();
             //if no height / width use the height/widht of the first image.
-            if (height==null){
+            if (height==null || height <=0){
                 height= bi.getHeight();
             }
-            if (width==null){
+            if (width==null || width <=0){
                 width= bi.getWidth();
             }
         }
-        
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);        
         
         Graphics2D gbi = newBufIm.createGraphics();
