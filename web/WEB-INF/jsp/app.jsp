@@ -89,6 +89,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </c:if>
             <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/OpenLayers.js"></script>
             <!--script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/lib/OpenLayers.js"></script-->
+            <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
 
         <c:choose>
             <c:when test="${param.debug == true}">
