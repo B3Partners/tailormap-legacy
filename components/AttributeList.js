@@ -59,7 +59,7 @@ Ext.define ("viewer.components.AttributeList",{
             this.name + 'Grid',
             this.name + 'PagerPanel',
             this.name + 'Pager',
-            this.name + 'ClosingPanel',
+            this.name + 'ClosingPanel'
         ];
     },
     loadWindow : function(){
