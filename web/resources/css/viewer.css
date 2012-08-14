@@ -9,6 +9,28 @@ div {
     padding: 0px;
     margin: 0px;
 }
+
+#loadwrapper {
+    position: relative; 
+    margin: 0 auto; 
+    text-align: left; 
+    width: 100px
+}
+
+#loader {
+    position: absolute;
+        
+    text-align: center;    
+    padding: 5px;
+    font: bold small sans-serif;
+    background-color: #ffffaa;
+    border: 1px solid #888888;
+    
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px; 
+}
+
 /* messages */
 
 .messages .box {
@@ -36,7 +58,7 @@ div {
 }
 
 .security div {
-    background: url(../images/lock.gif) no-repeat;
+    background: url('../images/lock.gif') no-repeat;
     color: #7f7f00;
 }
 
@@ -46,7 +68,7 @@ div {
 }
 
 .errors div {
-    background: url(../images/error.gif) no-repeat;
+    background: url('../images/error.gif') no-repeat;
     color: red;
 }
 
@@ -56,7 +78,7 @@ div {
 }
 
 .info div {
-    background: url(../images/info.gif) no-repeat;
+    background: url('../images/info.gif') no-repeat;
     color: blue;
 }
 
@@ -66,7 +88,7 @@ div {
 }
 
 .warnings div {
-    background: url(../images/warning.gif) no-repeat;
+    background: url('../images/warning.gif') no-repeat;
     color: #7f7f00;
 }
 
