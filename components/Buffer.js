@@ -63,7 +63,7 @@ Ext.define ("viewer.components.Buffer",{
         this.popup.show();
     },
     loadWindow : function(){
-
+        var me = this;
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
             id: this.name + "Radius",
@@ -107,7 +107,12 @@ Ext.define ("viewer.components.Buffer",{
             listeners: {
                 click:{
                     scope: this,
-                    fn: this.removeBuffer
+                    fn: function(){
+                        me.removeBuffer();
+                        if(MobileManager.isMobile()) {
+                            me.popup.hide();
+                        }
+                    }
                 }
             }
         });
@@ -164,7 +169,7 @@ Ext.define ("viewer.components.Buffer",{
             this.viewerController.mapComponent.getMap().addLayer(imageLayer);
             if(MobileManager.isMobile()) {
                 this.popup.hide();
-            }
+            }            
         }
     },
     removeBuffer : function(){
