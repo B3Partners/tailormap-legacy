@@ -48,7 +48,7 @@ Ext.define ("viewer.components.Print",{
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
-        this.legends=new Array();
+        this.legends={};
         
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
@@ -73,11 +73,14 @@ Ext.define ("viewer.components.Print",{
         var layer = object.layer;
         var vis = object.visible;
         if(vis){
-            this.addLegend(layer);
+            this.loadLegend(layer);
         }else{
            this.removeLegend(layer);
         }
     },
+    /**
+     *Called when a layer is removed
+     */
     layerRemoved : function(map, object){
         var layer = object.layer;
         this.removeLegend(layer);
@@ -86,7 +89,7 @@ Ext.define ("viewer.components.Print",{
      * Called when a layer is added
      * @param layer the map layer of type viewer.viewerController.controller.Layer
      */
-    addLegend : function (layer){
+    loadLegend : function (layer){
         var appLayer = this.viewerController.getAppLayerById(layer.appLayerId);
         if (appLayer==undefined || appLayer==null){
             return;
@@ -94,25 +97,61 @@ Ext.define ("viewer.components.Print",{
         var serviceId = layer.serviceId;
         var layerName = layer.getAppLayerName();// TODO: not yet correct
         var layerTitle = this.viewerController.getLayerTitle(serviceId,layerName);
-        var url = this.viewerController.getLayerLegendImage(appLayer);
-        if (url!=null){
+        //make the var ready, so we now it's loading.
+        this.legends[appLayer.id]={};
+        var me = this;
+        this.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){me.addLegend(appLayer,legendObject)},function(appLayer){me.failLegend(appLayer)});
+        
+        /*if (url!=null){
             var legend = {
                 url: url,
-                id: layer.id,
+                id: layer.appLayerId,
                 name: layerTitle
             };
             this.legends.push(legend);
-        }
+        }*/
     },
+    
     removeLegend: function (layer){
         if (layer!=null){
-            for (var i=0; i < this.legends.length; i++){
-                if (this.legends[i].id==layer.id){
-                    this.legends.splice(i,1)
-                    return;
-                }
+            delete this.legends[layer.appLayerId];
+        }
+        if (!this.legendLoading()){
+            this.createLegendSelector();
+        }
+    },
+    /**
+     * when Legend is succesfully loaded, add it to the legend object.
+     */
+    addLegend: function (appLayer,legendObject){
+        if (this.legends[appLayer.id]!=undefined){           
+            this.legends[appLayer.id]= legendObject;            
+        }
+        if (!this.legendLoading()){
+            this.createLegendSelector();
+        }
+    },
+    /**
+     * When getting the legend failed, remove the var.
+     */
+    failLegend: function(appLayer){
+        delete this.legends[appLayer.id];
+        if (!this.legendLoading()){
+            this.createLegendSelector();
+        }
+    },
+    /**
+     * Checks if there are still some legends loading
+     * @return true if legends are loaded and false if loading legend finished.
+     */
+    legendLoading: function (){
+        for (var key in this.legends){
+            //if there is a var for the legend, it's not yet succesfully loaded nor it failed
+            if (this.legends[key]==null){
+                return true;
             }
         }
+        return false;
     },
     /**
      * Called when the button is clicked. Opens the print window (if not already opened) and creates a form.
@@ -427,25 +466,30 @@ Ext.define ("viewer.components.Print",{
     /**
      * 
      */
-    createLegendSelector: function(){
-        var checkboxes= new Array();      
-        checkboxes.push({
-            xtype: "label",
-            text: "Opnemen in legenda:"
-        });
-        for (var i=0; i < this.legends.length; i++){
+    createLegendSelector: function(){       
+        //only create legend when legends are loaded and the panel is created.        
+        if (!this.legendLoading() && this.panel!=null){
+            var checkboxes= new Array();      
             checkboxes.push({
-                xtype: "checkbox",
-                boxLabel: this.legends[i].name,
-                name: 'legendUrl',
-                inputValue: this.legends[i].url,
-                id: 'legendCheckBox'+this.legends[i].id,
-                checked: true
+                xtype: "label",
+                text: "Opnemen in legenda:"
             });
-        } 
-        Ext.getCmp('legendContainer').removeAll();
-        Ext.getCmp('legendContainer').add(checkboxes);        
-        Ext.getCmp('legendContainer').doLayout();
+            for (var key in this.legends){
+                var appLayer =this.viewerController.getAppLayerById(key);
+                var title = this.viewerController.getLayerTitle(appLayer.serviceId,appLayer.layerName);
+                checkboxes.push({
+                    xtype: "checkbox",
+                    boxLabel: title,
+                    name: 'legendUrl',
+                    inputValue: JSON.stringify(this.legends[key]),
+                    id: 'legendCheckBox'+key,
+                    checked: true
+                });
+            } 
+            Ext.getCmp('legendContainer').removeAll();
+            Ext.getCmp('legendContainer').add(checkboxes);        
+            Ext.getCmp('legendContainer').doLayout();
+        }
     },
     /**
      * Set the quality from the map in the slider
