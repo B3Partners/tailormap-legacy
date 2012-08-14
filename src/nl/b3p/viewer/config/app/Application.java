@@ -232,11 +232,10 @@ public class Application {
     
     public TreeCache loadTreeCache() {
         if(treeCache == null) {
-            // XXX Oracle specific, use recursive CTE for other dialects
-            // Retrieve level tree structure in single query
             
             treeCache = new TreeCache();
             
+            // Retrieve level tree structure in single query
             treeCache.levels = Stripersist.getEntityManager().createNamedQuery("getLevelTree")
                 .setParameter("rootId", root.getId())
                 .getResultList();
