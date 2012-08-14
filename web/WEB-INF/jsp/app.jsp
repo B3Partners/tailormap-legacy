@@ -73,126 +73,141 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
 
-        <!--XXX must only be loaded if component is added -->
+        <%--XXX must only be loaded if component is added --%>
         <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/featureinfo.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/relatedDocuments.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/legend.css" rel="stylesheet">
         
-        
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
-
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
+        
+        <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
+        
         <c:if test="${viewerType == 'flamingo'}">
             <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         </c:if>
-            <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/OpenLayers.js"></script>
-            <!--script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/lib/OpenLayers.js"></script-->
-            <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
+        <c:if test="${viewerType == 'openlayers'}">                 
+            <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
+
+            <c:choose>
+                <c:when test="${param.ol == 'debug'}">
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/lib/OpenLayers.js"></script>
+                </c:when>
+                <c:otherwise>
+                    <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/OpenLayers.js"></script>
+                </c:otherwise>
+            </c:choose>
+        </c:if>
 
         <c:choose>
-            <c:when test="${param.debug == true}">
-                <!-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use -->  
+            <c:when test="${!(param.debug == true)}">
+                <script type="text/javascript" src="${contextPath}/viewer-html/viewer-min.js"></script>                
+                <script type="text/javascript" src="${contextPath}/viewer-html/${viewerType}-min.js"></script>                
+            </c:when>
+            <c:otherwise>
+                <%-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use --%>
+                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/ViewerController.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
+                
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/Component.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/LogMessage.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/Logger.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/DataSelectionChecker.js"></script>
+                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
-                
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Map.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Layer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/TilingLayer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/WMSLayer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/ArcLayer.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/ImageLayer.js"></script>                
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/VectorLayer.js"></script>                
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/MapTip.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Extent.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Feature.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Event.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Tool.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/Component.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/controller/ToolMapClick.js"></script>
-
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/MapComponent.js"></script>
-                
-                <c:choose>
-                    <c:when test="${viewerType == 'openlayers'}"> 
-                        <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcIMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersWMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersVectorLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersImageLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersTilingLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersTool.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersMap.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/Utils.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/ToolMapClick.js"></script>
-                        
-                        <!-- The components -->
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/OpenLayersComponent.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/LoadingPanel.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersLoadMonitor.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersOverview.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/components/OpenLayersMaptip.js"></script>
-                        
-                        <!-- The tools -->                        
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js"></script>
-                        
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/OpenLayersMapComponent.js"></script>
-                    </c:when>
-                    <c:otherwise>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoWMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoArcLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoArcIMSLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoVectorLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoImageLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoTilingLayer.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoMap.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoTool.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/FlamingoComponent.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/ToolMapClick.js"></script>
-                        
-                        <!-- The components -->
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/components/Overview.js"></script>
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/flamingo/tools/JSButton.js"></script>
-                        
-                        <script type="text/javascript" src="${contextPath}/viewer-html/common/viewercontroller/FlamingoMapComponent.js"></script> 
-                        
-                    </c:otherwise>
-                </c:choose>
-                    
-                
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/MobileSlider.js"></script>
                 
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/LayerSelector.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/ServiceInfo.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/CSWClient.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/FeatureService.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/SLD.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/Bookmark.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/CombineImage.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/FeatureInfo.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/EditFeature.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/ArcQueryUtil.js"></script>
-       			<script type="text/javascript" src="${contextPath}/viewer-html/common/ajax/Twitter.js"></script>
-            </c:when>
-            <c:otherwise>
-                <c:if test="${viewerType == 'openlayers'}"> 
-                    <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
-                </c:if>
-                <script type="text/javascript" src="${contextPath}/viewer-html/viewercontroller-compiled.js"></script>                
+                <c:set var="scriptDir" value="${contextPath}/viewer-html/common/ajax"/>
+                <script type="text/javascript" src="${scriptDir}/ServiceInfo.js"></script>
+                <script type="text/javascript" src="${scriptDir}/CSWClient.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/FeatureService.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/SLD.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/Bookmark.js"></script>
+                <script type="text/javascript" src="${scriptDir}/LayerSelector.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/CombineImage.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/FeatureInfo.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/EditFeature.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/ArcQueryUtil.js"></script>
+       			<script type="text/javascript" src="${scriptDir}//Twitter.js"></script>
+                
+                <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/controller"/>
+                <script type="text/javascript" src="${scriptDir}/Map.js"></script>
+                <script type="text/javascript" src="${scriptDir}/Layer.js"></script>
+                <script type="text/javascript" src="${scriptDir}/TilingLayer.js"></script>
+                <script type="text/javascript" src="${scriptDir}/WMSLayer.js"></script>
+                <script type="text/javascript" src="${scriptDir}/ImageLayer.js"></script>                
+                <script type="text/javascript" src="${scriptDir}/VectorLayer.js"></script>                
+                <script type="text/javascript" src="${scriptDir}/ArcLayer.js"></script>
+                <script type="text/javascript" src="${scriptDir}/Feature.js"></script>
+                <script type="text/javascript" src="${scriptDir}/MapTip.js"></script>
+                <script type="text/javascript" src="${scriptDir}/Extent.js"></script>
+                <script type="text/javascript" src="${scriptDir}/Event.js"></script>
+                <script type="text/javascript" src="${scriptDir}/Tool.js"></script>
+                <script type="text/javascript" src="${scriptDir}/Component.js"></script>
+                <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
+                
+                <c:choose>
+                    <c:when test="${viewerType == 'openlayers'}"> 
+                        <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers"/>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersArcLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersArcIMSLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersArcServerLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersWMSLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersVectorLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersImageLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersTilingLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersMap.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/Utils.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
+                        
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersComponent.js"></script>
+
+                        <script type="text/javascript" src="${scriptDir}/OpenLayersMapComponent.js"></script>
+                        
+                        <!-- The components -->
+                        <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayersLoadMonitor.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayersOverview.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayersMaptip.js"></script>
+                        
+                        <!-- The tools -->                        
+                        <script type="text/javascript" src="${scriptDir}/tools/OpenLayersIdentifyTool.js"></script>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/flamingo"/>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoArcLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoArcServerLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoArcIMSLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoWMSLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoVectorLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoMap.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoTool.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoImageLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/FlamingoTilingLayer.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
+
+                        <script type="text/javascript" src="${scriptDir}/FlamingoComponent.js"></script>
+
+                        <script type="text/javascript" src="${scriptDir}/FlamingoMapComponent.js"></script> 
+                        
+                        <!-- The components -->
+                        <script type="text/javascript" src="${scriptDir}/components/Overview.js"></script>
+                        
+                        <script type="text/javascript" src="${scriptDir}/tools/JSButton.js"></script>
+                    </c:otherwise>
+                </c:choose>
+
             </c:otherwise>
         </c:choose>
+                
 		<script type="text/javascript">
 			if(MobileManager.isMobile()) {
 				document.write('<meta name="HandheldFriendly" content="True">');
@@ -205,106 +220,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		</script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
 
-        <style type="text/css">
-            /* Main background colors */
-            .x-border-layout-ct {
-                background-color: #FFFFFF;
-            }
-
-            <c:if test="${!empty actionBean.application.details.steunkleur1.value && !empty actionBean.application.details.steunkleur2.value}">
-                <c:set var="steunkleur1" value="${actionBean.application.details.steunkleur1.value}" />
-                <c:set var="steunkleur2" value="${actionBean.application.details.steunkleur2.value}" />
-                /* Popup borders & background colors (popup borders) */
-                .x-window-default {
-                    border-color: ${steunkleur1};
-                    box-shadow: 0 1px 0 0 ${steunkleur1} inset, 0 -1px 0 0 ${steunkleur1} inset, -1px 0 0 0 ${steunkleur1} inset, 1px 0 0 0 ${steunkleur1} inset;
-                    background-color: ${steunkleur1};
-                }
-
-                /* Popup window header */
-                .x-window-header-default-top {
-                    background-color: ${steunkleur1}; /* Header background color */
-                    box-shadow: 0 1px 0 0 ${steunkleur1} inset, -1px 0 0 0 ${steunkleur1} inset, 1px 0 0 0 ${steunkleur1} inset;
-                }
-
-                /* Popup content colors */
-                .x-window-body-default {
-                    background-color: ${steunkleur1};  /* Visible when dragging the popup  */
-                    border-color: ${steunkleur1}; /* Border round the content */
-                }
-
-                /* Panel header colors */
-                .x-panel-header-default {
-                    background-color: ${steunkleur1};
-                    background-image: -moz-linear-gradient(center top, ${steunkleur1}, ${steunkleur1});
-                    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, ${steunkleur1}), color-stop(100%, ${steunkleur1}));
-                    background-image: -webkit-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
-                    background-image: -o-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
-                    background-image: -ms-linear-gradient(top, ${steunkleur1}, ${steunkleur1});
-                    background-image: linear-gradient(top, ${steunkleur1}, ${steunkleur1});
-                    border-color: ${steunkleur1};
-                }
-
-                /* Panel header colors */
-                .x-panel-header-default-top {
-                    box-shadow: 0 1px 0 0 ${steunkleur1} inset;
-                }
-
-                /* When using user-defined colors, disable header image in IE */
-                .x-nlg .x-panel-header-default-top, /* Panel headers */
-                .x-nlg .x-window-default-tl, /* this and below: Popup header and borders */
-                .x-nlg .x-window-default-tc,
-                .x-nlg .x-window-default-tr,
-                .x-nlg .x-window-default-ml,
-                .x-nlg .x-window-default-mc,
-                .x-nlg .x-window-default-mr,
-                .x-nlg .x-window-default-bl,
-                .x-nlg .x-window-default-bc,
-                .x-nlg .x-window-default-br,
-                .x-nlg .x-window-header-default-top-tl,
-                .x-nlg .x-window-header-default-top-tc,
-                .x-nlg .x-window-header-default-top-tr,
-                .x-nlg .x-window-header-default-top-ml,
-                .x-nlg .x-window-header-default-top-mc,
-                .x-nlg .x-window-header-default-top-mr,
-                .x-nlg .x-window-header-default-top-bl,
-                .x-nlg .x-window-header-default-top-bc,
-                .x-nlg .x-window-header-default-top-br{
-                    background-image: none;
-                    background-color: ${steunkleur1};
-                }
-
-                /* Panel border */
-                .x-panel-default {
-                    border-color: ${steunkleur1};
-                }
-                
-                /* Textcolor */
-                .x-panel-header-text-default /* Panel headers */,
-                .x-window-header-text-default /* Popup header */ {
-                    color: ${steunkleur2};
-                }
-            </c:if>
-            <c:if test="${!empty actionBean.application.details.font.value}">
-                /* Textcolor */
-                .x-grid-row .x-grid-cell /* Tree */,
-                .x-grid-cell /* Tree */,
-                .x-panel-body-default /* Panels (tree's, etc.) */,
-                .x-panel-header-text-default /* Panel headers */,
-                .x-window-body-default /* Popup body */,
-                .x-border-layout-ct /* Main containers */,
-                .x-body /* Body class */,
-                .x-btn, .x-btn-inner, .x-btn .x-btn-inner /* Button classes */,
-                .x-field /* Form fields */,
-                .x-tab /* Tabs */,
-                .x-tab button /* Tabs */,
-                .x-form-field /* Form fields */,
-                .x-form-item /* Form items */,
-                .x-window-header-text-default /* Popup header */ {
-                    font-family: ${actionBean.application.details.font.value};
-                }
-            </c:if>
-        </style>
+        <%@include file="app/style.jsp" %>
         
         ${actionBean.componentSourceHTML}
     </head>
