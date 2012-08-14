@@ -223,7 +223,8 @@ Ext.define("viewer.components.Legend", {
         divLayer.className = "layer";
         var divName = document.createElement("div");
         divName.className = "name";
-        divName.innerHTML = Ext.htmlEncode(al.alias);
+        var layerTitle = this.viewerController.getLayerTitle(al.serviceId, al.layerName);
+        divName.innerHTML = Ext.htmlEncode(layerTitle);
         divLayer.appendChild(divName);
 
         var img, divImage;
