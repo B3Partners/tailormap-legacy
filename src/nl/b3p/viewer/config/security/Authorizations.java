@@ -143,6 +143,12 @@ public class Authorizations {
             return protectedLevels;
         }
     }
+
+    public static class AppConfiguredComponentsReadersCache {
+        Date modified;
+        
+        Map<Long,Set<String>> readersByConfiguredComponentId;
+    }
     
     public static class Read {
         Set<String> readers;       
@@ -173,12 +179,17 @@ public class Authorizations {
      * Map of protected Layers per GeoService. Only public for UserAction to 
      * display all authorizations.
      */
-    public static Map<Long, GeoServiceCache> serviceCache = new HashMap();
+    public static final Map<Long, GeoServiceCache> serviceCache = new HashMap();
     
     /**
      * Map of protected Levels and ApplicationLayers per Application
      */
-    private static Map<Long, ApplicationCache> applicationCache = new HashMap();
+    private static final Map<Long, ApplicationCache> applicationCache = new HashMap();
+    
+    /**
+     * Map of reader role names per ConfiguredComponent per Application
+     */
+    private static final Map<Long, AppConfiguredComponentsReadersCache> appConfiguredComponentsReadersCache = new HashMap();
     
     public static Set<String> getRoles(HttpServletRequest request) {
 
@@ -305,9 +316,50 @@ public class Authorizations {
             throw new Exception(unauthMsg(request,true) + " application layer #" + al.getId());
         }
     }   
-    
+        
     public static boolean isConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request) {
-        return isReadAuthorized(request, new Read(component.getReaders()));
+        
+        Application app = component.getApplication();
+        Long appId = app.getId();
+        
+        Set<String> componentReaders;
+        
+        synchronized(appConfiguredComponentsReadersCache) {
+            AppConfiguredComponentsReadersCache appCache = appConfiguredComponentsReadersCache.get(appId);
+        
+            if(appCache == null || appCache.modified.before(app.getAuthorizationsModified())) {
+
+                appCache = new AppConfiguredComponentsReadersCache();
+                appConfiguredComponentsReadersCache.put(appId, appCache);
+                appCache.modified = component.getApplication().getAuthorizationsModified();
+                appCache.readersByConfiguredComponentId = new HashMap();
+
+                List<Object[]> readers = Stripersist.getEntityManager().createQuery(
+                          "select cc.id, r "
+                        + "from ConfiguredComponent cc "
+                        + "join cc.readers r "
+                        + "where cc.application = :app")
+                        .setParameter("app", component.getApplication())
+                        .getResultList();
+                for(Object[] row: readers) {
+                    Long ccId = (Long)row[0];
+                    String role = (String)row[1];
+                    Set<String> roles = appCache.readersByConfiguredComponentId.get(ccId);
+                    if(roles == null) {
+                        roles = new HashSet<String>();
+                        appCache.readersByConfiguredComponentId.put(ccId, roles);
+                    }
+                    roles.add(role);
+                }
+            }
+            componentReaders = appCache.readersByConfiguredComponentId.get(component.getId());
+        }
+        
+        if(componentReaders == null) {
+            componentReaders = EVERYBODY;
+        }
+        
+        return isReadAuthorized(request, new Read(componentReaders));
     }
     
     public static void checkConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request) throws Exception {
