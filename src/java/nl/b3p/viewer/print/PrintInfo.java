@@ -37,7 +37,7 @@ public class PrintInfo {
     private String remark;
     private int quality;
     private int angle;
-    private ArrayList<String> legendUrls;
+    private ArrayList<Legend> legendUrls;
 
     public PrintInfo() {
     }    
@@ -104,13 +104,13 @@ public class PrintInfo {
         this.subtitle = subtitle;
     }
 
-    public void setLegendUrls(ArrayList<String> legendUrls) {
+    public void setLegendUrls(ArrayList<Legend> legendUrls) {
         this.legendUrls=legendUrls;
     }
     
     @XmlElementWrapper(name="legendUrls")
     @XmlElement(name="legendUrl")
-    public ArrayList<String> getLegendUrls(){
+    public ArrayList<Legend> getLegendUrls(){
         return this.legendUrls;
     }
 

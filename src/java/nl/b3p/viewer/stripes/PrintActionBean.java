@@ -35,6 +35,7 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.print.Legend;
 import nl.b3p.viewer.print.PrintInfo;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -98,23 +99,19 @@ public class PrintActionBean implements ActionBean {
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
         }
+        /* !!!!temp skip the legend, WIP
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
-                ArrayList<String> legendUrls = new ArrayList<String>();
-                Object o = jRequest.get("legendUrl");
-                if (o instanceof String){
-                    legendUrls.add((String)o);
-                }else if (o instanceof JSONArray){
-                    JSONArray jarray=(JSONArray)o;
-                    for (int i=0; i < jarray.length();i++){
-                        if (jarray.get(i)!=null){
-                            legendUrls.add(jarray.getString(i));
-                        }
-                    }
+                ArrayList<Legend> legends= new ArrayList<Legend>();
+                JSONArray jarray=jRequest.getJSONArray("legendUrl");
+                for (int i=0; i < jarray.length();i++){
+                    JSONObject legendJson = jarray.getJSONObject(i);
+                    Legend legend = new Legend(legendJson);   
+                    legends.add(legend);
                 }
-                info.setLegendUrls(legendUrls);
+                info.setLegendUrls(legends);
             }
-        }
+        }*/
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;
