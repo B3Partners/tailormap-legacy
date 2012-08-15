@@ -144,13 +144,15 @@ Ext.define ("viewer.components.ScreenPopup",{
         return this.popupWin.isVisible();
     },
 	resizePopup: function() {
-        if(MobileManager.isMobile()) {
-    		// First set window size to 1px so it wont take any space
-            this.popupWin.setSize('1px', '1px');
-    		// Then set size back to 90%/90% so the percentages are calculated correctly
-    		this.popupWin.setSize('90%', '90%');
+        if(MobileManager.isMobile() && this.isVisible()) {
+    		// Set size in pixels to 90%/90% of the viewportwidth / height
+    		this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
+			// Reset position so popup remains centered
+			this.popupWin.setPosition(Ext.Element.getViewportWidth() * .05, Ext.Element.getViewportHeight() * .05);
     		// doLayout on the window
             this.popupWin.doLayout();
+			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
+			this.currentOrientation = MobileManager.getOrientation();
         }
 	}
 });

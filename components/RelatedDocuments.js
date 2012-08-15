@@ -199,7 +199,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
     },
     getExtComponents: function() {
         var c = [];
-        if(this.contentId === '') c.push(this.name + 'Container');
+        if(this.contentId !== '') c.push(this.name + 'Container');
         return c;
     }
     
