@@ -405,10 +405,10 @@ Ext.define ("viewer.components.Maptip",{
      */
     isSummaryAppLayer: function (appLayer){
         if (appLayer && appLayer.details !=undefined &&
-            (appLayer.details["summary.description"]!=undefined ||
-                appLayer.details["summary.image"]!=undefined ||
-                appLayer.details["summary.link"]!=undefined ||
-                appLayer.details["summary.title"]!=undefined)){
+            (!Ext.isEmpty(appLayer.details["summary.description"]) ||
+                !Ext.isEmpty(appLayer.details["summary.image"]) ||
+                !Ext.isEmpty(appLayer.details["summary.link"]) ||
+                !Ext.isEmpty(appLayer.details["summary.title"]))){
             return true;
         }
         return false;
