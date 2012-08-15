@@ -113,10 +113,12 @@ Ext.define ("viewer.components.RelatedDocuments",{
     reinit: function(){
         var documents=this.getDocuments();
         var html = this.createHtml(documents);
-        var contentDiv=Ext.get(this.contentId);
-        contentDiv.update("");
-        contentDiv.appendChild(html);
-        this.loadImages();
+        if (!Ext.isEmpty(this.contentId)){
+            var contentDiv=Ext.get(this.contentId);
+            contentDiv.update("");
+            contentDiv.appendChild(html);
+            this.loadImages();
+        }
     },
     /**
      *Gets all the documents with the selectedContent
