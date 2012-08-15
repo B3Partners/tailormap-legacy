@@ -316,7 +316,7 @@ public class ApplicationActionBean implements ActionBean {
         for (ConfiguredComponent component : components) {
             String className = component.getClassName();
             if(className.startsWith(typePrefix)){
-                type = className.substring(typePrefix.length() +1);
+                type = className.substring(typePrefix.length() +1).toLowerCase().replace("map", "");
                 break;
             }
         }

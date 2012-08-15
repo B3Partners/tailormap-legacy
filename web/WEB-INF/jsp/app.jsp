@@ -23,14 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <head>
         <title><c:out value="${actionBean.application.name}"/></title>
                
-        <c:choose>
-            <c:when test="${actionBean.viewerType == 'OpenLayersMap'}">
-                <c:set var="viewerType" value="openlayers"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="viewerType" value="flamingo"/>
-            </c:otherwise>
-        </c:choose>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
 		<script type="text/javascript">
@@ -85,10 +77,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
         <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
         
-        <c:if test="${viewerType == 'flamingo'}">
+        <c:if test="${actionBean.viewerType == 'flamingo'}">
             <script type="text/javascript" src="${contextPath}/viewer-html/common/swfobject.js"></script>
         </c:if>
-        <c:if test="${viewerType == 'openlayers'}">                 
+        <c:if test="${actionBean.viewerType == 'openlayers'}">                 
             <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
 
             <c:choose>
@@ -104,7 +96,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:choose>
             <c:when test="${!(param.debug == true)}">
                 <script type="text/javascript" src="${contextPath}/viewer-html/viewer-min.js"></script>                
-                <script type="text/javascript" src="${contextPath}/viewer-html/${viewerType}-min.js"></script>                
+                <script type="text/javascript" src="${contextPath}/viewer-html/${actionBean.viewerType}-min.js"></script>                
             </c:when>
             <c:otherwise>
                 <%-- Also add scripts to <projectdir>/minify/build.xml, so it's build as minified for non debug use --%>
@@ -133,7 +125,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        			<script type="text/javascript" src="${scriptDir}/FeatureInfo.js"></script>
        			<script type="text/javascript" src="${scriptDir}/EditFeature.js"></script>
        			<script type="text/javascript" src="${scriptDir}/ArcQueryUtil.js"></script>
-       			<script type="text/javascript" src="${scriptDir}//Twitter.js"></script>
+       			<script type="text/javascript" src="${scriptDir}/Twitter.js"></script>
                 
                 <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/controller"/>
                 <script type="text/javascript" src="${scriptDir}/Map.js"></script>
@@ -152,7 +144,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
                 
                 <c:choose>
-                    <c:when test="${viewerType == 'openlayers'}"> 
+                    <c:when test="${actionBean.viewerType == 'openlayers'}"> 
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers"/>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcLayer.js"></script>
@@ -294,9 +286,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var config = ${actionBean.appConfigJSON};
           
                 Ext.onReady(function() {
-                    //TODO set the correct viewertype
                     
-                    var viewerType = "${viewerType}";
+                    var viewerType = <js:quote value="${actionBean.viewerType}"/>;
                     viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config);
                     if(!MobileManager.isMobile() || MobileManager.isAndroid() || window.onorientationchange === undefined) {
                         // Android devices seem to react better to window.resize than window.orientationchange, probably timing issue
