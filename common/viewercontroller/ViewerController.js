@@ -105,6 +105,17 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
     },
     
+    showLoading: function(msg) {
+        var loadingMsg = 'Loading...';
+        if(msg) loadingMsg += ' ' + msg;
+        document.getElementById('loader').innerHTML = loadingMsg;
+        document.getElementById('loadwrapper').style.zIndex = '900000';
+    },
+    
+    hideLoading: function() {
+        document.getElementById('loadwrapper').style.zIndex = '0';
+    },
+    
     isDebug: function() {
         return this.queryParams.hasOwnProperty("debug") && this.queryParams.debug == "true";
     },

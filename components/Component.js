@@ -111,7 +111,11 @@ Ext.define("viewer.components.Component",{
                 if(me.popup && me.popup.isVisible()) {
                     me.popup.hide();
                 } else {
-                    options.handler();
+                    me.viewerController.showLoading(this.title || '');
+                    setTimeout(function() {
+                        options.handler();
+                        me.viewerController.hideLoading();
+                    }, 0);
                 }
             },
             width: buttonWidth,
