@@ -371,8 +371,8 @@ Ext.onReady(function() {
                                 value:(layoutJson[regionId]['layout']['height'] || '')
                             });
                             var heightMeasureSelect = Ext.get(regionId + '_heightmeasure');
-                            Ext.each(heightMeasureSelect.options, function(item, index){
-                                if(item.value == layoutJson[regionId]['layout']['heighthmeasure']) heightMeasureSelect.selectedIndex = index;
+                            Ext.each(heightMeasureSelect.dom.options, function(item, index){
+                                if(item.value == layoutJson[regionId]['layout']['heightmeasure']) heightMeasureSelect.dom.selectedIndex = index;
                             });
                             Ext.fly(regionId + '_maxheight').set({
                                 value:(layoutJson[regionId]['layout']['maxheight'] || '')
