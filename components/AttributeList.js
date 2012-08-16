@@ -32,6 +32,7 @@ Ext.define ("viewer.components.AttributeList",{
     appLayer: null,
     featureService: null,
     layerSelector:null,
+    topContainer: null,
     constructor: function (conf){        
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
@@ -40,14 +41,13 @@ Ext.define ("viewer.components.AttributeList",{
         var me = this;
         this.renderButton({
             handler: function(){
+                me.showWindow();                
                 me.layerSelector.initLayers();
-                me.showWindow();
             },
             text: me.title,
             icon: me.iconUrl,
             tooltip: me.tooltip
-        });      
-        this.loadWindow();
+        }); 
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
         return this;
     },
@@ -64,7 +64,7 @@ Ext.define ("viewer.components.AttributeList",{
     },
     loadWindow : function(){
         var me = this;
-        Ext.create('Ext.container.Container', {
+        this.topContainer=Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
             height: '100%',
@@ -125,6 +125,9 @@ Ext.define ("viewer.components.AttributeList",{
 
     },
     showWindow : function (){
+        if (this.topContainer==null){
+            this.loadWindow();
+        }
         this.popup.show();
     },
     clear: function() {
@@ -163,11 +166,13 @@ Ext.define ("viewer.components.AttributeList",{
         this.loadAttributes(appLayer);
     },
     filterChanged : function (filter,appLayer){
-        var selectedLayer = this.layerSelector.getValue();
- 
-        if(selectedLayer){
-            if(selectedLayer.id == appLayer.id){
-                this.loadAttributes(appLayer);
+        if (this.layerSelector!=null){
+            var selectedLayer = this.layerSelector.getValue();
+
+            if(selectedLayer){
+                if(selectedLayer.id == appLayer.id){
+                    this.loadAttributes(appLayer);
+                }
             }
         }
     },
