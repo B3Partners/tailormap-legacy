@@ -130,6 +130,82 @@ Ext.define ("viewer.components.Drawing",{
                 }
             }
         });
+        var drawingItems = [{
+            xtype: 'button',
+            id: this.drawingButtonIds.point,
+            icon: this.iconPath+"bullet_red.png",
+            padding: MobileManager.isMobile() ? '10px' : '2px',
+            tooltip: "Teken een punt",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: me.drawPoint
+                }
+            }
+        },
+        {
+            xtype: 'button',
+            id: this.drawingButtonIds.line,
+            icon: this.iconPath+"line_red.png",
+            padding: MobileManager.isMobile() ? '10px' : '2px',
+            tooltip: "Teken een lijn",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: me.drawLine
+                }
+            }
+        },
+        {
+            xtype: 'button',
+            id: this.drawingButtonIds.polygon,
+            icon: this.iconPath+"shape_square_red.png",
+            padding: MobileManager.isMobile() ? '10px' : '2px',
+            tooltip: "Teken een polygoon",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: me.drawPolygon
+                }
+            }
+        }];
+        if(!MobileManager.isMobile()) {
+            drawingItems.push({
+                xtype: 'button',
+                id: this.drawingButtonIds.circle,
+                icon: this.iconPath+"shape_circle_red.png",
+                padding: MobileManager.isMobile() ? '10px' : '2px',
+                tooltip: "Teken een cirkel",
+                enableToggle: true,
+                toggleGroup: 'drawingTools',
+                listeners: {
+                    click:{
+                        scope: me,
+                        fn: me.drawCircle
+                    }
+                }
+            });
+        }
+        drawingItems.push(this.colorPicker);
+        drawingItems.push({
+            xtype: 'button',
+            icon: this.iconPath+"delete.png",
+            tooltip: "Verwijder alle objecten",
+            padding: MobileManager.isMobile() ? '10px' : '2px',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: me.deleteAll
+                }
+            } 
+        });
+                    
         this.formdraw = new Ext.form.FormPanel({
             border: 0,
             style: {
@@ -164,79 +240,7 @@ Ext.define ("viewer.components.Drawing",{
                             left: 0
                         }
                     },
-                    items: [{
-                        xtype: 'button',
-                        id: this.drawingButtonIds.point,
-                        icon: this.iconPath+"bullet_red.png",
-                        padding: MobileManager.isMobile() ? '10px' : '2px',
-                        tooltip: "Teken een punt",
-                        enableToggle: true,
-                        toggleGroup: 'drawingTools',
-                        listeners: {
-                            click:{
-                                scope: me,
-                                fn: me.drawPoint
-                            }
-                        }
-                    },
-                    {
-                        xtype: 'button',
-                        id: this.drawingButtonIds.line,
-                        icon: this.iconPath+"line_red.png",
-                        padding: MobileManager.isMobile() ? '10px' : '2px',
-                        tooltip: "Teken een lijn",
-                        enableToggle: true,
-                        toggleGroup: 'drawingTools',
-                        listeners: {
-                            click:{
-                                scope: me,
-                                fn: me.drawLine
-                            }
-                        }
-                    },
-                    {
-                        xtype: 'button',
-                        id: this.drawingButtonIds.polygon,
-                        icon: this.iconPath+"shape_square_red.png",
-                        padding: MobileManager.isMobile() ? '10px' : '2px',
-                        tooltip: "Teken een polygoon",
-                        enableToggle: true,
-                        toggleGroup: 'drawingTools',
-                        listeners: {
-                            click:{
-                                scope: me,
-                                fn: me.drawPolygon
-                            }
-                        }
-                    },
-                    {
-                        xtype: 'button',
-                        id: this.drawingButtonIds.circle,
-                        icon: this.iconPath+"shape_circle_red.png",
-                        padding: MobileManager.isMobile() ? '10px' : '2px',
-                        tooltip: "Teken een cirkel",
-                        enableToggle: true,
-                        toggleGroup: 'drawingTools',
-                        listeners: {
-                            click:{
-                                scope: me,
-                                fn: me.drawCircle
-                            }
-                        }
-                    },
-                    this.colorPicker,
-                    {
-                        xtype: 'button',
-                        icon: this.iconPath+"delete.png",
-                        tooltip: "Verwijder alle objecten",
-                        padding: MobileManager.isMobile() ? '10px' : '2px',
-                        listeners: {
-                            click:{
-                                scope: me,
-                                fn: me.deleteAll
-                            }
-                        } 
-                    }]
+                    items: drawingItems
                 }
                 ]
             }]            
