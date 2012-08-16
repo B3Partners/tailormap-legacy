@@ -31,22 +31,8 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
      * Exceptions to be catched by the caller.
      */
     getLayerLegendInfo: function(success, failure) {
-        
-        /* Check the layer details for a LegendURL from the WMS GetCap */
-        var appLayerId = this.getAppLayerId();
-        var appLayer = this.getViewerController().getAppLayerById(appLayerId);
-        var serviceLayer = this.getViewerController().getServiceLayer(appLayer);
-
-        var url;
-        if(serviceLayer.legendImageUrl) {
-            url = serviceLayer.legendImageUrl;
-            this.getViewerController().logger.debug("appLayer " + appLayerId + ": found legendImageUrl: " + url);
-        } else {
-            url = this.getLegendGraphic();
-            this.getViewerController().logger.debug("appLayer " + appLayerId + ": no legendImageUrl found, GetLegendGraphic request: " + url);
-        }
-
-        success({ url: url });
+        // XXX service may not support GETLEGENDGRAPHIC
+        success({ url: this.getLegendGraphic() });
     },
     
     getLegendGraphic : function () {

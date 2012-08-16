@@ -814,6 +814,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         try {
             var l = this.getLayer(appLayer);
+            
+            // Check override by service admin
+            var serviceLayer = this.getServiceLayer(appLayer);
+            if(serviceLayer.legendImageUrl) {
+                success(appLayer, { url: serviceLayer.legendImageUrl });
+                return;
+            }
+            
             if(l.getLayerLegendInfo) {
                 l.getLayerLegendInfo(
                     function(legendInfo) {
