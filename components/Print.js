@@ -205,24 +205,22 @@ Ext.define ("viewer.components.Print",{
                     xtype: 'container',
                     id: 'legendContainer',
                     height: 200,
-                    width: 200,
+                    flex: 0.4,
                     items: [{}]
                 },{
-                    xtype: 'image',
-                    src: '',
-                    id: 'previewImg',                    
+                    xtype: 'container',
+                    flex: 0.6,
                     height: 200,
-                    style: {
-                        border: "1px solid gray",
-                        "margin-left": "10px",
-                        'float': 'right'
-                    }
+                    html: '<div id="previewImg" style="width: 100%; height: 100%;"></div>'
                 }]                
             },{
                 //bottom container (2)
                 xtype: 'container',
                 layout: {
                     type: 'column'
+                },
+                style: {
+                    marginTop: '15px'
                 },
                 width: '100%',
                 items: [{
@@ -276,7 +274,8 @@ Ext.define ("viewer.components.Print",{
                             },{
                                 xtype: 'button',
                                 text: '<',
-                                width: 30,
+                                width: MobileManager.isMobile() ? 50 : 30,
+                                padding: MobileManager.isMobile() ? '10px' : '2px',
                                 listeners: {
                                     click:{
                                         scope: this,
@@ -302,7 +301,7 @@ Ext.define ("viewer.components.Print",{
                             },{
                                 xtype: 'radiogroup',
                                 name: "orientation", 
-                                width: 125,
+                                width: MobileManager.isMobile() ? 185 : 125,
                                 items: [{
                                     boxLabel: 'Liggend', 
                                     name: 'orientation', 
@@ -343,15 +342,38 @@ Ext.define ("viewer.components.Print",{
                     }]                        
                 }]
             },{
+                 xtype: 'label',
+                 style: {
+                     marginTop: "15px"
+                 },
+                 text: "* Door het draaien van de kaart kan niet de maximale kwaliteit worden opgehaald."  
+            },{
                 //button container 2b
                 xtype: 'container',
                 frame: false,
                 style: {
-                    paddingTop: "5px"
+                    marginTop: "15px"
                 },
                 items: [{
                     xtype: 'button',
+                    text: 'Sluiten',
+                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                this.popup.hide()
+                            }
+                        }
+                    }  
+                },{
+                    xtype: 'button',
                     text: 'Opslaan als RTF'  ,
+                    padding: MobileManager.isMobile() ? '10px' : '2px',
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -367,6 +389,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als PDF'  ,
+                    padding: MobileManager.isMobile() ? '10px' : '2px',
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -382,6 +405,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Printen via PDF',
+                    padding: MobileManager.isMobile() ? '10px' : '2px',
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -395,9 +419,6 @@ Ext.define ("viewer.components.Print",{
                         }
                     }  
                 }]                
-            },{
-                 xtype: 'label',  
-                 text: "* Door het draaien van de kaart kan niet de maximale kwaliteit worden opgehaald."  
             }]
         });
         
@@ -459,7 +480,7 @@ Ext.define ("viewer.components.Print",{
     * Call to redraw the preview
     */
     redrawPreview: function (){
-        Ext.getCmp("previewImg").el.dom.src="";
+        document.getElementById('previewImg').innerHTML = 'Loading...';
         var properties = this.getProperties();
         this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
     },
@@ -633,7 +654,21 @@ Ext.define ("viewer.components.Print",{
      */
     imageSuccess: function(imageUrl){        
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
-        Ext.getCmp("previewImg").el.dom.src = imageUrl;
+        if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt';
+        else {
+            var image = new Image();
+            image.onload = function() {
+                var img = document.createElement('img');
+                img.src = imageUrl;
+                img.style.border = "1px solid gray";
+                img.style.maxWidth = "100%";
+                img.style.maxHeight = "100%";
+                var preview = document.getElementById('previewImg');
+                preview.innerHTML = '';
+                preview.appendChild(img);
+            }
+            image.src = imageUrl;
+        }
     },
     /**
      *Called when the imageUrl is succesfully returned
