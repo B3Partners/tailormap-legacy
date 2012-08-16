@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     isIOS: function() { return ios; },
                     isAndroid: function() { return android; },
                     getOrientation: function() { return (ios ? ( window.orientation == 90 || window.orientation == -90 ) : ( screen.width > screen.height )) ? 'landscape' : 'portrait'; },
-					hasHammer: function () { return (Hammer !== undefined); },
+					hasHammer: function () { return (typeof Hammer !== "undefined"); },
                     closePopupOnTapMask: function(popupWin) {
                         var me = this;
                         if(!me.hasHammer()) return;
@@ -202,8 +202,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<script type="text/javascript">
 			if(MobileManager.isMobile()) {
 				document.write('<meta name="HandheldFriendly" content="True">');
-				document.write('<meta name="MobileOptimized" content="width=device-width; height=device-height; user-scalable=no; initial-scale=1.0">');
-				document.write('<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">');
+				document.write('<meta name="MobileOptimized" content="width=device-width; height=device-height; user-scalable=no; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0">');
+				document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">');
 				document.write('<meta http-equiv="cleartype" content="on">');
 				document.write('<script type="text/javascript" src="${contextPath}/resources/js/hammer.js"></' + 'script>');
 				document.write('<link href="${contextPath}/resources/css/mobile.css" rel="stylesheet">');
