@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         if(!me.hasHammer()) return;
                         currentPopup = popupWin;
                         if(hammerMask === null) {
-                            hammerMask = new Hammer(document.getElementById(popupWin.zIndexManager.mask.id));
+                            hammerMask = new Hammer(document.getElementById(popupWin.zIndexManager.mask.id), { prevent_default: true });
                             hammerMask.ontap = function(ev) {
                                 closePopup();
                             };
