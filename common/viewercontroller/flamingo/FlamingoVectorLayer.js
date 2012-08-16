@@ -30,6 +30,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         return this;
     },
     
+    /**
+     * Overwrite getFrameworkId With javascript the vector layer cant be called directly
+     * To call functions on it and register on events we need the id of the map where it's added
+     * on.
+     */
+    getFrameworkId: function (){
+        return this.map.editMapId;
+    },
+    
     toXML : function(){    
         var xml= "<fmc:Layer ";
         xml+= "id='"+this.id+"' ";
