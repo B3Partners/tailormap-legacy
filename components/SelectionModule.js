@@ -179,7 +179,10 @@ Ext.define ("viewer.components.SelectionModule",{
             me.initApplicationLayers();
         }
         me.loadSelectedLayers();
-        me.activeTree = me.treePanels.applicationTree.treePanel;
+        
+        Ext.getCmp('selectionModuleFormFieldContainer').items.each(function(item){
+            if(item.checked) me.handleSourceChange(item, item.checked);
+        });
         
         me.applyTreeScrollFix();
 
@@ -367,6 +370,17 @@ Ext.define ("viewer.components.SelectionModule",{
     },
     initInterface: function() {
         var me = this;
+        var radioControls = [];
+        // Add only if config option is set to true
+        if(me.config.selectGroups) radioControls.push({id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+        // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
+        if(me.config.selectLayers) radioControls.push({id: 'radioRegistry', checked: (radioControls.length === 0), name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+        // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
+        if(me.config.selectOwnServices) {
+            radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+            radioControls.push({id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+        }
+        
         // Create main container
         Ext.create('Ext.container.Container', {
             id: 'selectionModuleMainContainer',
@@ -398,12 +412,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         width: '100%',
                         height: '100%',
                         defaultType: 'radio',
-                        items: [
-                            {id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
-                            {id: 'radioRegistry', name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
-                            {id: 'radioCustom', name: 'layerSource', boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}},
-                            {id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}}
-                        ]
+                        items: radioControls
                     }],
                     height: MobileManager.isMobile() ? 40 : 30,
                     padding: '5px',
@@ -478,6 +487,42 @@ Ext.define ("viewer.components.SelectionModule",{
     
     initTreeSelectionContainer: function() {
         var me = this;
+        var moveButtons = [ {xtype: 'container', html: '<div></div>', flex: 1} ];
+        if(me.config.selectGroups || me.config.selectLayers || me.config.selectOwnServices)
+        {
+            moveButtons = [
+                {xtype: 'container', html: '<div></div>', flex: 1},
+                {
+                    xtype: 'button',
+                    icon: me.moveRightIcon,
+                    width: 23,
+                    height: 22,
+                    handler: function() {
+                        me.addSelectedLayers();
+                    },
+                    listeners: {
+                        afterrender: function(button) {
+                            me.fixButtonLayout(button);
+                        }
+                    }
+                },
+                {
+                    xtype: 'button',
+                    icon: me.moveLeftIcon,
+                    width: 23,
+                    height: 22,
+                    handler: function() {
+                        me.removeSelectedNodes();
+                    },
+                    listeners: {
+                        afterrender: function(button) {
+                            me.fixButtonLayout(button);
+                        }
+                    }
+                },
+                {xtype: 'container', html: '<div></div>', flex: 1}
+            ];
+        }
         Ext.create('Ext.container.Container', {
             layout: {
                 type: 'hbox',
@@ -494,38 +539,7 @@ Ext.define ("viewer.components.SelectionModule",{
                           '<div id="registryTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>' + 
                           '<div id="customTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>'
                 },
-                {xtype: 'container', width: 30, layout: {type: 'vbox', align: 'center'}, items: [
-                    {xtype: 'container', html: '<div></div>', flex: 1},
-                    {
-                        xtype: 'button',
-                        icon: me.moveRightIcon,
-                        width: 23,
-                        height: 22,
-                        handler: function() {
-                            me.addSelectedLayers();
-                        },
-                        listeners: {
-                            afterrender: function(button) {
-                                me.fixButtonLayout(button);
-                            }
-                        }
-                    },
-                    {
-                        xtype: 'button',
-                        icon: me.moveLeftIcon,
-                        width: 23,
-                        height: 22,
-                        handler: function() {
-                            me.removeSelectedNodes();
-                        },
-                        listeners: {
-                            afterrender: function(button) {
-                                me.fixButtonLayout(button);
-                            }
-                        }
-                    },
-                    {xtype: 'container', html: '<div></div>', flex: 1}
-                ]},
+                {xtype: 'container', width: 30, layout: {type: 'vbox', align: 'center'}, items: moveButtons },
                 {
                     xtype: 'container',
                     flex: 1,
