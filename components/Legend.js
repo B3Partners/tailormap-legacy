@@ -106,6 +106,13 @@ Ext.define("viewer.components.Legend", {
        
         var legend = this.legends[appLayer.id];
         
+        if(!legend) {
+            // Happens when a new layer is added to selectedcontent using 
+            // ViewerController.setSelectedContent()
+            // onSelectedContentChange() will be called later
+            return;
+        }
+                
         if(legend.element != null) {
             Ext.fly(legend.element).setVisible(vis);
         } else if(legend.waitingForInfo) {
