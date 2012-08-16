@@ -16,6 +16,10 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +43,16 @@ public class AttributeDescriptor {
     public static final String TYPE_GEOMETRY_MLINESTRING = "multilinestring";
     public static final String TYPE_GEOMETRY_POLYGON = "polygon";
     public static final String TYPE_GEOMETRY_MPOLYGON = "multipolygon";
+    
+    public static final Set<String> GEOMETRY_TYPES = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {
+        TYPE_GEOMETRY,
+        TYPE_GEOMETRY_POINT,
+        TYPE_GEOMETRY_MPOINT,
+        TYPE_GEOMETRY_LINESTRING,
+        TYPE_GEOMETRY_MLINESTRING,
+        TYPE_GEOMETRY_POLYGON,
+        TYPE_GEOMETRY_MPOLYGON
+    })));
 
     @Id
     private Long id;
