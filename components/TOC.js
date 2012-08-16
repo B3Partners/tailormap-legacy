@@ -27,7 +27,6 @@ Ext.define ("viewer.components.TOC",{
     service : null,
     levels : null,
     backgroundLayers: null,
-    checkClicked : false,
     popup:null,
     config: {
         groupCheck:true,
@@ -449,7 +448,6 @@ Ext.define ("viewer.components.TOC",{
      
     checkboxClicked : function(nodeObj,checked,toc){
         this.updateMap(nodeObj, checked);
-        this.checkClicked= true;
         this.setTriState(nodeObj);
         
         var scale = this.viewerController.mapComponent.getMap().getScale();
@@ -458,8 +456,7 @@ Ext.define ("viewer.components.TOC",{
     },
     // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
-        if(this.checkClicked){
-            this.checkClicked =false;
+        if(e.target.nodeName.toUpperCase() === "INPUT"){
             return
         }
         var node = record.raw;
