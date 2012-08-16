@@ -64,7 +64,7 @@
         className: "viewer.components.tools.StreetView",
         name: "Streetview",
         shortName: "Sv",
-        sources: ["../common/proj4js-compressed.js","StreetView.js"],
+        sources: ["StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
