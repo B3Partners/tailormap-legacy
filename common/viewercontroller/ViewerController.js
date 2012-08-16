@@ -715,7 +715,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return this.app.services[appLayer.serviceId].layers[appLayer.layerName];
     },
     /** 
-     * Receives an array with visible map layers
+     * Receives an array with visible map layers ids
      * @return a array of Layer id's (same as appLayerIds) objects
      **/
     getVisibleLayers : function (){
@@ -723,7 +723,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layerArray = new Array();
         for ( var i in layers){
             var layer = layers[i];
-            if(layer.visible){
+            if(layer.getVisible()){
                 layerArray.push(i);
             }
         }

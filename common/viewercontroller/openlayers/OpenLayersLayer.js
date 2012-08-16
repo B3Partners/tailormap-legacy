@@ -172,6 +172,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
      * @visible true or false
      */
     setVisible : function (visible){
+        this.visible=visible;
         if (this.frameworkLayer!=null){
             this.frameworkLayer.setVisibility(visible);
         }
