@@ -86,10 +86,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                  * applicationLayer. Otherwise the user can never configure edit
                  * and selection/filter.
                  */
+                // XXX does not work correctly for feature type changes
                 if ((applicationLayer.getAttributes() == null || applicationLayer.getAttributes().size() < 1) && (attributesList != null && attributesList.size() > 0)) {
                     for (Iterator it = attributesList.iterator(); it.hasNext();) {
                         AttributeDescriptor attribute = (AttributeDescriptor) it.next();
                         ConfiguredAttribute confAttribute = new ConfiguredAttribute();
+                        // default visible if not geometry type
+                        confAttribute.setVisible(! AttributeDescriptor.GEOMETRY_TYPES.contains(attribute.getType()));
                         confAttribute.setAttributeName(attribute.getName());
                         Stripersist.getEntityManager().persist(confAttribute);
                         applicationLayer.getAttributes().add(confAttribute);

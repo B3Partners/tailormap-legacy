@@ -233,6 +233,8 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                                 AttributeDescriptor ad = (AttributeDescriptor)it.next();
                                 ConfiguredAttribute confAttribute = new ConfiguredAttribute();
                                 confAttribute.setAttributeName(ad.getName());
+                                // default visible if not geometry type
+                                confAttribute.setVisible(! AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType()));
                                 appLayer.getAttributes().add(confAttribute);
                             }
                         }
