@@ -22,6 +22,7 @@
 Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
     map: null,
+    deactivatedControls: null,
     /**
      * Constructor
      * @param conf the configuration object
@@ -37,9 +38,31 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         return this;
     },
     activate: function(){
+        //if mobile: disable the dragging navigation event. To make sure the click can be handled
+        //Click won't be handled if there is a dragging event active.        
+        if (MobileManager.isMobile()){
+            if (this.deactivatedControls==null){
+                this.deactivatedControls=[];
+            }
+            var navigationTools= this.map.getFrameworkMap().getControlsByClass("OpenLayers.Control.Navigation");
+            for (var i=0; i < navigationTools.length; i++){
+                if (navigationTools[i].dragPan.active){
+                    this.deactivatedControls.push(navigationTools[i].dragPan);
+                    navigationTools[i].dragPan.deactivate();
+                }
+            }
+        }
+        //set dragPan.activate();
         this.map.getFrameworkMap().events.register("click", this, this.handleClick);
     },
     deactivate: function(){
+        //if mobile: enable the disactivated controls again
+        if (MobileManager.isMobile()){
+            while (!Ext.isEmpty(this.deactivatedControls)){
+                var disCont = this.deactivatedControls.pop();
+                disCont.activate();
+            }
+        }
         this.map.getFrameworkMap().events.unregister("click", this, this.handleClick);
     },
     handleClick: function(event){
