@@ -24,7 +24,6 @@ Ext.define ("viewer.components.Overview",{
     overview:null,
     constructor: function (conf){
         viewer.components.Overview.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
         
         conf.id=conf.name;
         conf.type = viewer.viewercontroller.controller.Component.OVERVIEW;

@@ -28,8 +28,8 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         url:null,
         layers:null,
         position:null,
-        height: 300,
-        width: 300,
+        height: null,
+        width: null,
         lox: null,
         loy: null,
         rbx: null,
@@ -37,11 +37,18 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
     },
     
     constructor: function (conf){        
+        this.height = 300;
+        this.width= 300;
         viewer.viewercontroller.openlayers.components.OpenLayersOverview.superclass.constructor.call(this, conf);
         
+        if (Ext.isEmpty(this.url)){
+            this.viewerController.logger.warning("No URL set for Overview component, unable to load component");
+            return null;
+        }
         var maxBounds =this.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
         var bounds;
-        if (this.getLox()!=null && this.getLoy()!=null && this.getRbx()!=null && this.getRby()!=null){
+        if (this.getLox()!=null && this.getLoy()!=null && this.getRbx()!=null && this.getRby()!=null
+            && this.getLox()!=this.getRbx() && this.getLoy() != this.getRby()){            
             bounds = new OpenLayers.Bounds(this.getLox(),this.getLoy(),this.getRbx(),this.getRby());
         }else{
             bounds= maxBounds;
@@ -105,15 +112,18 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         if (isNaN(value)){
             this.height=null;
             return;
+        }else if (!Ext.isEmpty(value) && value > 0){
+            this.height = Number(value);
         }
-        this.height = Number(value);
     },
     setWidth: function (value){
         if (isNaN(value)){
             this.width=null;
             return;
+        }else if (!Ext.isEmpty(value) && value > 0){
+            this.width = Number(value);
         }
-        this.width = Number(value);
+        
     }
 });
 
