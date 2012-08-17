@@ -682,6 +682,8 @@ Ext.define ("viewer.components.Print",{
      */
     getProperties: function(){
         var properties = this.getValuesFromContainer(this.panel);
+        properties.angle = this.rotateSlider.getValue();
+        properties.quality = this.qualitySlider.getValue();
         var mapProperties=this.getMapValues();        
         Ext.apply(properties, mapProperties);
         return properties;
