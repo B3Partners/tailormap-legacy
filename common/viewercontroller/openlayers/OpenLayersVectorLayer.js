@@ -27,6 +27,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     point:null,
     line:null,
     polygon:null,
+    circle: null,
     drawFeatureControls:null,
     modifyFeature:null,
     constructor : function (config){
@@ -48,7 +49,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.polygon =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
             displayClass: 'olControlDrawFeaturePolygon'
         });
+        this.circle = new OpenLayers.Control.DrawFeature(this.frameworkLayer,OpenLayers.Handler.RegularPolygon,{
+            handlerOptions: {
+                sides: 40}
+        });
         this.drawFeatureControls = new Array();
+        this.drawFeatureControls.push(this.circle);
         this.drawFeatureControls.push(this.polygon);
         this.drawFeatureControls.push(this.line);
         this.drawFeatureControls.push(this.point);
@@ -60,6 +66,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.point);
         map.addControl(this.line);
         map.addControl(this.polygon);
+        map.addControl(this.circle);
         map.addControl(this.modifyFeature);
         
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
@@ -126,6 +133,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.line.activate();
         }else if(type == "Polygon"){
             this.polygon.activate();
+        }else if(type == "Circle"){
+            this.circle.activate();
         }else{
            this.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
@@ -141,6 +150,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.point.cancel();
         }if (this.polygon.active){
             this.polygon.cancel();
+        }if (this.circle.active){
+            this.circle.cancel();
         }
     },
     
