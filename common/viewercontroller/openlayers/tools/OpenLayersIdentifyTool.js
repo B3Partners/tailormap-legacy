@@ -38,17 +38,17 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         return this;
     },
     activate: function(){
-        //if mobile: disable the dragging navigation event. To make sure the click can be handled
-        //Click won't be handled if there is a dragging event active.        
+        //if mobile: disable the navigation control. To make sure the click can be handled
+        //Click won't be handled if there is a navigation controller enabled (for mobile) 
         if (MobileManager.isMobile()){
             if (this.deactivatedControls==null){
                 this.deactivatedControls=[];
             }
             var navigationTools= this.map.getFrameworkMap().getControlsByClass("OpenLayers.Control.Navigation");
             for (var i=0; i < navigationTools.length; i++){
-                if (navigationTools[i].dragPan.active){
-                    this.deactivatedControls.push(navigationTools[i].dragPan);
-                    navigationTools[i].dragPan.deactivate();
+                if (navigationTools[i].active){
+                    this.deactivatedControls.push(navigationTools[i]);
+                    navigationTools[i].deactivate();
                 }
             }
         }
