@@ -40,6 +40,13 @@ Ext.define("viewer.viewercontroller.controller.TilingLayer",{
      */
     setQuery : function (query){
         return;
+    },
+    /**
+     * @see viewer.viewercontroller.controller.Layer#getLayerLegendInfo
+     * @return null, no legend available for imagelayers
+     */
+    getLayerLegendInfo: function (){
+        return null;
     }
     
 });

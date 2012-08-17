@@ -144,6 +144,19 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         Ext.Error.raise({msg: "Layer.setQuery() Not implemented! Must be implemented in sub-class"});
     },
     /**
+     * must be implemented in subclass. 
+     * @see viewer.viewercontroller.ViewerController#getLayerLegendInfo
+     * @return object with that gives info about the legend
+     * object.name: String, server provided label for the legend of this layer
+     * object.parts: Array of:
+     *   label: String, label for legend part
+     *   url: String, URL for image, usually provided as data: protocol base64
+     *        encoded image 27x27 PNG (no label) by ArcGIS
+     **/
+    getLayerLegendInfo: function (){
+        Ext.Error.raise({msg: "Layer.getLayerLegendInfo() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
      * Needs to return a object with the last request
      * @return array of objects with:
      *  object.url the url of the last request

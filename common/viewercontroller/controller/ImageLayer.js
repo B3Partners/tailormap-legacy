@@ -31,6 +31,14 @@ Ext.define("viewer.viewercontroller.controller.ImageLayer",{
     setExtent: function(extent){
         Ext.Error.raise({msg: "ImageLayer.setExtent() Not implemented! Must be implemented in sub-class"});
         
+    },
+    /**
+     * @see viewer.viewercontroller.controller.Layer#getLayerLegendInfo
+     * @return null, no legend available for imagelayers
+     */
+    getLayerLegendInfo: function (){
+        return null;
     }
+    
 });
 
