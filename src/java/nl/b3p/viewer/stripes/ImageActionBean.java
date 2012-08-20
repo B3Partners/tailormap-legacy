@@ -20,7 +20,6 @@ import java.io.*;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Resource;
 import org.apache.commons.io.IOUtils;
 import org.stripesstuff.stripersist.Stripersist;
@@ -79,7 +78,7 @@ public class ImageActionBean implements ActionBean {
 
                 OutputStream out = response.getOutputStream();
 
-                InputStream in = r.getData().getBinaryStream();
+                InputStream in = new ByteArrayInputStream(r.getData());
                 IOUtils.copy(in, out);
                 in.close();
             }
@@ -87,6 +86,7 @@ public class ImageActionBean implements ActionBean {
         res.setLastModified(r.getModified().getTime());
         res.setFilename(r.getName());       
         res.setLength(r.getSize());
+        res.setAttachment(false);
         return res;
     }
 }
