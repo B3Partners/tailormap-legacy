@@ -122,7 +122,7 @@ Ext.define ("viewer.components.BufferObject",{
     },
     mapClicked : function (toolMapClick,comp){
         this.tmc.deactivateTool();
-        var coords = comp[1];
+        var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
         //console.log("xy", x,y);

@@ -24,9 +24,21 @@ Ext.define ("viewer.viewercontroller.controller.ToolMapClick",{
     extend: "viewer.viewercontroller.controller.Tool",
     id: null,
     config:{
-        name: null,
-        viewerController:null
+        name: null
     },
+    /**
+     *@constructor
+     *@see viewer.viewercontroller.controller.Tool#constructor
+     *Extra options:
+     *@param conf.name the name     
+     *@param conf.handler the handling object. 2 values needed:
+     *@param conf.handler.fn the function that is called when clicked on the map with this tool. 
+     * The given function is called with 2 arguments:
+     * tool: this tool
+     * result: a result object with .coord object that has a .x and .y  as world coords.
+     * Optional the result object can also have a x or y as screen pixels.
+     *@param conf.handler.scope the scope of the function
+     */    
     constructor: function (conf){              
         viewer.viewercontroller.controller.ToolMapClick.superclass.constructor.call(this, conf);
         return this;

@@ -734,6 +734,11 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 extent : object.getExtent()
             }
             component=comp;
+        }else if (event == viewer.viewercontroller.controller.Event.ON_MAP_CLICKED){
+            var comp = {
+                coord: component[1]
+            };
+            component=comp;
         }
         if(object != undefined){
             object.fire(event,component);

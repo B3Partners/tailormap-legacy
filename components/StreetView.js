@@ -82,7 +82,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         return this;
     },
     mapClicked : function (toolMapClick,comp){        
-        var coords = comp[1];
+        var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
         var point = this.transformLatLon(x,y);

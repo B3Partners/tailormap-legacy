@@ -23,6 +23,10 @@
 Ext.define ("viewer.viewercontroller.flamingo.ToolMapClick",{
     extend: "viewer.viewercontroller.controller.ToolMapClick",
     enabledEvents : null,
+    /**
+     *@constructor
+     *@see viewer.viewercontroller.controller.ToolMapClick#constructor
+     */
     constructor: function (conf){              
         viewer.viewercontroller.flamingo.ToolMapClick.superclass.constructor.call(this, conf);
         this.visible=false;

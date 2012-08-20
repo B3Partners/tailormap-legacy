@@ -28,6 +28,10 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         id:null,
         name: null
     },
+    /**
+     * @constructor
+     * @see viewer.viewercontroller.controller.ToolMapClick#constructor
+     */
     constructor: function (conf){
         viewer.viewercontroller.openlayers.ToolMapClick.superclass.constructor.call(this, conf);
         this.initConfig(conf);
@@ -39,22 +43,32 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         this.olMap=this.viewerController.mapComponent.getMap().getFrameworkMap();
         return this;
     },
+    /**
+     *Called when there is clicked on the map with this tool, do some pre work before calling
+     *the handler.
+     */
     handleClick : function(event){
         var opx = this.olMap.getLonLatFromPixel(event.xy)
-        var options = [{
+        var options = {            
             x: event.xy.x,
-            y: event.xy.y},
-            {
+            y: event.xy.y,
+            coord: {
                 x: opx.lon,
                 y: opx.lat
             }
-        ];
+        };
         this.handler.call(this.scope, this,options);
         
     },
+    /**
+     * Activate the tool
+     */
     activateTool : function(){
         this.olMap.events.register("click", this, this.handleClick);
     },
+    /**
+     * Deactivate the tool
+     */
     deactivateTool : function (){
         this.olMap.events.unregister("click", this, this.handleClick);
     }

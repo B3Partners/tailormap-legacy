@@ -357,7 +357,7 @@ Ext.define ("viewer.components.Edit",{
     mapClicked : function (toolMapClick,comp){
         this.toolMapClick.deactivateTool();
         Ext.get(this.getContentDiv()).mask("Haalt features op...")
-        var coords = comp[1];
+        var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
         

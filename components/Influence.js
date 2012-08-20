@@ -172,7 +172,7 @@ Ext.define ("viewer.components.Influence",{
         this.toolMapClick.deactivateTool();
         this.layerSelector.initLayers();
         this.popup.show();
-        var coords = comp[1];
+        var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;        
         this.handleSearchResult({
