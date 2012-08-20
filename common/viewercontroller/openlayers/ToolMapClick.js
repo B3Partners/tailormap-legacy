@@ -36,11 +36,29 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         viewer.viewercontroller.openlayers.ToolMapClick.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         //this.visible=false;
+        var me = this;
+        
         this.type = viewer.viewercontroller.controller.Tool.MAP_CLICK;
         this.initConfig(conf);
         this.handler = conf.handler.fn;
         this.scope = conf.handler.scope;
         this.olMap=this.viewerController.mapComponent.getMap().getFrameworkMap();
+        
+        //create a click control that handles only single click
+        this.clickControl = new OpenLayers.Control({
+            //create the click handler here the this is the Control
+            handler : new OpenLayers.Handler.Click(this,{
+                    click: function(evt){
+                        me.handleClick(evt);
+                    }
+                },{
+                single: true,
+                "double": false,
+                map: this.olMap
+                })
+        });
+        this.olMap.addControl(this.clickControl);
+        
         return this;
     },
     /**
@@ -64,12 +82,12 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
      * Activate the tool
      */
     activateTool : function(){
-        this.olMap.events.register("click", this, this.handleClick);
+        this.clickControl.activate();
     },
     /**
      * Deactivate the tool
      */
     deactivateTool : function (){
-        this.olMap.events.unregister("click", this, this.handleClick);
+        this.clickControl.deactivate();
     }
 });

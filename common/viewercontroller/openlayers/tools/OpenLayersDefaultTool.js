@@ -23,6 +23,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
     map: null,
     navigationControl: null,
+    mapClick: null,
     /**
      * Constructor
      * @param conf the configuration object
@@ -37,22 +38,42 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
         var olTool= new OpenLayers.Control(controlOptions);
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,olTool);
         this.map=this.viewerController.mapComponent.getMap();
-        
+        //navigation tool
         this.navigationControl = new OpenLayers.Control.Navigation(); 
         this.map.getFrameworkMap().addControls([this.navigationControl]);                
-        this.navigationControl.deactivate();
+        
+        //single map click
+        this.mapClick=new viewer.viewercontroller.openlayers.ToolMapClick({
+            id: "mapclick_"+this.id,
+            viewerController: this.viewerController,
+            handler: {
+                    fn: this.mapClicked,
+                    scope: this
+                }
+        });
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
         return this;
     },
-    activate: function(){        
-        //alert("don't click me again!");
-        this.navigationControl.activate();
+    /**
+     * called when the map is clicked with this tool
+     */
+    mapClicked: function(tool,options){
+        this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     },
+    /**
+     *Activate the tool
+     */
+    activate: function(){        
+        this.navigationControl.activate();
+        this.mapClick.activateTool();
+    },
+    /**
+     *Deactivate the tool
+     */
     deactivate: function(){  
-        this.navigationControl.deactivate();
-        //this.map.getFrameworkMap().events.unregister("click", this, this.handleClick);
-        //deactivate all controls.
+        this.navigationControl.deactivate();  
+        this.mapClick.deactivateTool();
     }
 });
