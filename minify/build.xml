@@ -125,6 +125,7 @@
           
           <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers/tools">
             <file name="OpenLayersIdentifyTool.js"/>
+            <file name="OpenLayersDefaultTool.js"/>
           </sources> 
         </jscomp>
 	</target>
