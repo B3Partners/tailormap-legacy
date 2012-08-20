@@ -278,16 +278,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             frameworkOptions.enableKinetic=true;
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));            
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {  
-            //olControlidentify
-            frameworkOptions["displayClass"]="olControlidentify";
-            frameworkOptions["type"]=OpenLayers.Control.TYPE_TOOL;
-            
-            //conf.olMap= this.getMap().getFrameworkMap();
-            var identifyTool = new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(
-                conf ,new OpenLayers.Control(frameworkOptions),this.getMap());
-            
-            //this.getMap().setGetFeatureInfoControl(identifyTool);
-            return identifyTool;
+            return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
         }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
             
             frameworkOptions["persist"]=true;
@@ -335,8 +326,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOM_BAR){//13,            
             return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions)); 
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
-            // The default tool is always available in openlayers.
-            //this.viewerController.logger.info("Tool DEFAULT is default available in OpenLayers, no configuration needed");
+            return new viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool(conf);
         }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT ||
             type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19 - 20,            
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory());

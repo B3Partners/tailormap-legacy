@@ -43,7 +43,11 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         config["center"] = maxBounds.getCenterLonLat();
         
         config.maxExtent = maxBounds;
-              
+        //Overwrite default OpenLayers tools,don't set any mouse controls
+        config.controls=[
+            new OpenLayers.Control.ArgParser(),
+            new OpenLayers.Control.Attribution
+        ];
         this.frameworkMap=new OpenLayers.Map(config.domId,config);
         this.frameworkMap.centerLayerContainer();
        

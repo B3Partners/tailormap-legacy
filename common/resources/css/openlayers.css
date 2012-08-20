@@ -54,10 +54,10 @@
 .olControlPanel .olControlZoomOutItemInactive {    
     background-image: url("../../openlayers/theme/default/img/zoom_out_off.png");
 }
-.olControlPanel .olControlidentifyItemActive{
+.olControlPanel .olControlIdentifyItemActive{
     background-image: url("../../openlayers/theme/default/img/identify_on.png");
 }
-.olControlPanel .olControlidentifyItemInactive{
+.olControlPanel .olControlIdentifyItemInactive{
     background-image: url("../../openlayers/theme/default/img/identify_off.png");
 }
 .olControlLoadingPanel {
@@ -81,6 +81,13 @@
 .olControlPanel .olControlMeasureItemActive{
     background-image: url("../../openlayers/theme/default/img/measure_on.png");
 }
+.olControlPanel .olControlDefaultItemActive{
+    background-image: url("../../openlayers/theme/default/img/default_on.png");
+}
+.olControlPanel .olControlDefaultItemInactive{
+    background-image: url("../../openlayers/theme/default/img/default_off.png");
+}
+
 /*.olControlPanel .olControlb_bufferItemInactive{
     background-image: url("img/buffer_tool.png");
 }

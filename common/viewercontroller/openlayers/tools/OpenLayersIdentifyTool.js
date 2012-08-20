@@ -29,9 +29,14 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
      * @param frameworkTool the openlayers control
      * @param map the viewer.viewercontroller.openlayers.OpenLayersMap
      */
-    constructor : function (conf,frameworkTool,map){
+    constructor : function (conf){
+        var frameworkOptions = {
+            displayClass: "olControlIdentify",
+            type: OpenLayers.Control.TYPE_TOOL
+        };        
+        var frameworkTool= new OpenLayers.Control(frameworkOptions);
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
-        this.map=map;
+        this.map=this.viewerController.mapComponent.getMap();
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
