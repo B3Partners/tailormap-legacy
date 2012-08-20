@@ -476,7 +476,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         
         var layer = this.getOrCreateLayer(appLayer);
-        this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
+        if (layer){
+            this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
+        }
     },
       
     /**
