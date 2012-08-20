@@ -16,12 +16,11 @@
  */
 package nl.b3p.viewer.config.app;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Date;
 import javax.persistence.*;
-import org.hibernate.Session;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -45,15 +44,14 @@ public class Resource {
 
     @Column(nullable=false, name="data_")
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
-    private java.sql.Blob data;
+    private byte[] data;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
-    public Blob getData() {
+    public byte[] getData() {
         return data;
     }
     
-    public void setData(Blob data) {
+    public void setData(byte[] data) {
         this.data = data;
     }
    
@@ -90,13 +88,9 @@ public class Resource {
     }
     //</editor-fold>
     
-    public void setDataContent(InputStream data, long size) {
-        EntityManager em = Stripersist.getEntityManager();
-        this.data = ((Session)em.getDelegate()).getLobHelper().createBlob(data, size);
-    }
-
-    public void setDataContent(byte[] data) {
-        EntityManager em = Stripersist.getEntityManager();
-        this.data = ((Session)em.getDelegate()).getLobHelper().createBlob(data);
+    public void setDataContent(InputStream data, long size) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        org.apache.commons.io.IOUtils.copy(data, bos);
+        this.data = bos.toByteArray();
     }
 }

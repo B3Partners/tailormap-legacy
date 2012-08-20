@@ -140,4 +140,12 @@
             </id>
         </attributes>
     </entity>    
+    
+    <entity class="nl.b3p.viewer.config.app.Resource">
+        <attributes>
+            <basic name="data">
+                <column nullable="false" name="data_" column-definition="bytea"/>
+            </basic>
+        </attributes>
+    </entity>
 </entity-mappings>
