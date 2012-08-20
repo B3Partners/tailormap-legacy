@@ -40,8 +40,12 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         NEXT_EXTENT                : 20,
         FULL_EXTENT                : 21,
         MAP_CLICK                  : 22,
+        //toggle
         TOGGLE                     : 23,
-        BUTTON                     : 24
+        //button
+        BUTTON                     : 24,
+        //only one tool can be active, other are disabled
+        MAP_TOOL                   : 25
     },
     tool: null,    
     mapComponent: null,

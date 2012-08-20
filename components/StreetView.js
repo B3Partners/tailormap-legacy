@@ -60,7 +60,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         this.toolMapClick.addListener(viewer.viewercontroller.controller.Event.ON_DEACTIVATE,this.onDeactivate,this);
         
         this.button= this.viewerController.mapComponent.createTool({
-            type: viewer.viewercontroller.controller.Tool.TOGGLE,
+            type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
             name: this.getName(),
             iconUrl_up: this.iconUrl_up,
             iconUrl_over: this.iconUrl_over,

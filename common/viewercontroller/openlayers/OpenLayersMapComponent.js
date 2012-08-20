@@ -77,11 +77,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      * @description Creates a OpenLayers.Control.Panel and adds it to the map
      */
     createPanel : function (id){
-        var paneel= new OpenLayers.Control.Panel({
+        var panel= new OpenLayers.Control.Panel({
             saveState: true,
             allowDepress : true
         });
-        this.panel = paneel;
+        this.panel = panel;        
         this.maps[0].getFrameworkMap().addControl(this.panel);
     },
     /**
@@ -339,6 +339,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE){
             frameworkOptions.type=OpenLayers.Control.TYPE_TOGGLE;
             frameworkOptions.displayClass ="olToggle_"+conf.id;
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
+        }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
+            frameworkOptions.type=OpenLayers.Control.TYPE_TOOL;
+            frameworkOptions.displayClass ="olTool_"+conf.id;
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
             frameworkOptions.type=OpenLayers.Control.TYPE_BUTTON;
