@@ -48,7 +48,6 @@ Ext.define ("viewer.components.Buffer",{
             icon: me.iconUrl,
             tooltip: me.tooltip
         });      
-        this.loadWindow();
         this.imageLayers = new Array();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
@@ -58,7 +57,8 @@ Ext.define ("viewer.components.Buffer",{
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
         }
     },
-    buttonClick : function (){
+    buttonClick : function (){        
+        this.loadWindow();
         this.layerSelector.initLayers();
         this.popup.show();
     },
@@ -136,7 +136,8 @@ Ext.define ("viewer.components.Buffer",{
             viewerController : this.viewerController,
             div: layerSelectorId,
             id: this.name + "LayerSelector",
-            layers : this.layers
+            layers : this.layers,
+            restriction: "bufferable"
         });
     },
     buffer : function (){

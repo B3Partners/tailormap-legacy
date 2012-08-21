@@ -62,7 +62,7 @@ Ext.define ("viewer.components.LayerSelector",{
         // TODO make layerselector so, that the layerselector can use a filtered list of layers
         requestParams[this.restriction]= true;
         requestParams["appId"]= appId;
-        if(this.layers != null){
+        if(this.layers != null && this.layers.length > 0){
             requestParams["layers"]= this.layers;
             requestParams["hasConfiguredLayers"]= true;
             this.layerList = new Array();
