@@ -27,43 +27,75 @@ Ext.define("viewer.viewercontroller.openlayers.Utils",{
         return new viewer.viewercontroller.controller.Extent(bounds.left,bounds.bottom,bounds.right,bounds.top);
     }
 });
-
-
-OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+/**
+ * Class for creating a MouseZoom only control.
+ */
+OpenLayers.Control.MouseZoom = OpenLayers.Class(OpenLayers.Control, {
     button: null,
-
-    defaultHandlerOptions: {
-        'single': true,
-        'double': true,
-        'pixelTolerance': 0,
-        'stopSingle': false,
-        'stopDouble': false
-    },
-    initialize: function(options) {
-        this.handlerOptions = OpenLayers.Util.extend(
-        {}, this.defaultHandlerOptions
-            );
+    
+    initialize: function(options) {        
         OpenLayers.Control.prototype.initialize.apply(
             this, arguments
             );
-        this.handler = new OpenLayers.Handler.Click(
-            this, {
-                'click': this.onClick,
-                'dblclick': this.onDblclick
-            }, this.handlerOptions
-            );
-        var buttonOptions= {
-            displayClass: this.displayClass + "Button",
-            type: OpenLayers.Control.TYPE_TOOL
-        };
-        this.button= new OpenLayers.Control(buttonOptions);
-        this.button.events.register("activate",this,this.activate);
-        this.button.events.register("deactivate",this,this.deactivate);        
-    },
-    onClick: function(evt) {
+        this.handler = new OpenLayers.Handler.MouseWheel(this,{
+            'up': function(evt,delta){
+                this.wheelUp(evt,delta);//this.handler.wheelZoom(evt);
+            },
+            'down':function(evt,delta){
+                this.wheelDown(evt,delta);//this.handler.wheelZoom(evt);
+            }
+        });        
+    },    
+    /**      * 
+     * Method: wheelChange  
+     * Copied from: @see OpenLayers.Control.Navigation#wheelChange
+     * Parameters:
+     * evt - {Event}
+     * deltaZ - {Integer}
+     */
+    wheelChange: function(evt, deltaZ) {
+        var currentZoom = this.map.getZoom();
+        var newZoom = this.map.getZoom() + Math.round(deltaZ);
+        newZoom = Math.max(newZoom, 0);
+        newZoom = Math.min(newZoom, this.map.getNumZoomLevels());
+        if (newZoom === currentZoom) {
+            return;
+        }
+        var size    = this.map.getSize();
+        var deltaX  = size.w/2 - evt.xy.x;
+        var deltaY  = evt.xy.y - size.h/2;
+        var newRes  = this.map.baseLayer.getResolutionForZoom(newZoom);
+        var zoomPoint = this.map.getLonLatFromPixel(evt.xy);
+        var newCenter = new OpenLayers.LonLat(
+                            zoomPoint.lon + deltaX * newRes,
+                            zoomPoint.lat + deltaY * newRes );
+        this.map.setCenter( newCenter, newZoom );
     },
 
-    onDblclick: function(evt) {
+    /** 
+     * Method: wheelUp
+     * Copied from: @see OpenLayers.Control.Navigation#wheelUp
+     * User spun scroll wheel up
+     * 
+     * Parameters:
+     * evt - {Event}
+     * delta - {Integer}
+     */
+    wheelUp: function(evt, delta) {
+        this.wheelChange(evt, delta || 1);
+    },
+
+    /** 
+     * Method: wheelDown
+     * Copied from: @see OpenLayers.Control.Navigation#wheelDown
+     * User spun scroll wheel down
+     * 
+     * Parameters:
+     * evt - {Event}
+     * delta - {Integer}
+     */
+    wheelDown: function(evt, delta) {
+        this.wheelChange(evt, delta || -1);
     }
 });
 

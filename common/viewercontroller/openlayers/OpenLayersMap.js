@@ -43,10 +43,12 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         config["center"] = maxBounds.getCenterLonLat();
         
         config.maxExtent = maxBounds;
+        
         //Overwrite default OpenLayers tools,don't set any mouse controls
         config.controls=[
             new OpenLayers.Control.ArgParser(),
-            new OpenLayers.Control.Attribution
+            new OpenLayers.Control.Attribution(),
+            new OpenLayers.Control.MouseWheelZoom({autoActivate: true})
         ];
         this.frameworkMap=new OpenLayers.Map(config.domId,config);
         this.frameworkMap.centerLayerContainer();
@@ -59,7 +61,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved, this);
         return this;
     },
-
+    
     /**
     *See @link Map.getAllWMSLayers
     */
