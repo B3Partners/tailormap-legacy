@@ -98,6 +98,7 @@ Ext.define ("viewer.components.SelectionModule",{
     addedLayersCount: 0,
     addedServices: [],
     addedServicesCount: 0,
+    layerMergeServices: {},
     rootLevel: null,
     rendered: false,
     treePanels: {
@@ -1215,20 +1216,28 @@ Ext.define ("viewer.components.SelectionModule",{
         }
     },
     
+    /**
+     * Makes sure the service for a layer will be available in the app
+     */
     addService: function(customService) {
         var me = this;
-        var added = false;
-        Ext.Array.each(me.addedServices, function(addedService) {
-            if(addedService.id == customService.id) {
-                added = true;
-            }
-        });
-        Ext.Array.each(me.services, function(service) {
-            if(service.id == customService.id) {
-                added = true;
-            }
-        });
-        if(!added) me.addedServices.push(customService);
+
+        // If service was already added for a previous layer, do nothing
+        if(Ext.Array.some(me.addedServices, function(addedService) {
+            return addedService.id == customService.id;
+        })) {
+            return;
+        }
+        
+        // Check if the service was already in app
+        if(me.services[customService.id]) {
+            // We may need to supplement the existing service with new layer 
+            // info - add all layer ids to the service info when saving
+            me.layerMergeServices[customService.id] = customService;
+        } else {
+            // New service
+            me.addedServices.push(customService);
+        }
     },
     
     removeSelectedNodes: function() {
@@ -1329,6 +1338,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.removeService(addedService.id);
             }
         });
+        me.layerMergeServices = {};
         me.popup.hide();
     },
     
@@ -1339,6 +1349,15 @@ Ext.define ("viewer.components.SelectionModule",{
                 addedService.status = 'added';
                 me.viewerController.addService(addedService);
             }
+        });
+        Ext.Object.each(me.layerMergeServices, function(mergeServiceId, mergeService) {
+            var mergedService = me.viewerController.app.services[mergeService.id];
+            Ext.Object.each(mergeService.layers, function(name, layer) {
+                if(mergedService.layers[name] == undefined) {
+                    mergedService.layers[name] = layer;
+                    mergedService.layers[name].status = "added";
+                }
+            });
         });
         Ext.Array.each(me.addedLevels, function(addedLevel) {
             if(addedLevel.status == 'new') {
