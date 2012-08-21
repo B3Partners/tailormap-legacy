@@ -30,7 +30,7 @@ Ext.define("viewer.viewercontroller.openlayers.Utils",{
 /**
  * Class for creating a MouseZoom only control.
  */
-OpenLayers.Control.MouseZoom = OpenLayers.Class(OpenLayers.Control, {
+OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
     button: null,
     
     initialize: function(options) {        
