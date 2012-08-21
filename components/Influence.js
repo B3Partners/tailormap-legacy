@@ -77,8 +77,7 @@ Ext.define ("viewer.components.Influence",{
         
         var config = {
             viewerController : this.viewerController,
-            restriction : "hasConfiguredLayers",
-            id : this.name + "layerSelector",
+            restriction : "influence",
             layers: this.layers,
             div: this.name + 'LayerSelectorPanel'
         };
