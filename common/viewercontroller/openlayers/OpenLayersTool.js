@@ -63,12 +63,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     /**
      * @see viewer.viewercontroller.controller.Tool#setToolVisible
      */
-    setToolVisible : function(visibility){
-        this.setVisible(visibility);
-        if (visibility){
-            this.getFrameworkTool().panel_div.style.display="block";
-        }else{
-            this.getFrameworkTool().panel_div.style.display="none";
+    setVisible : function(vis){
+        this.visible= vis;
+        if (this.getFrameworkTool()){
+            if (vis){
+                this.getFrameworkTool().panel_div.style.display="block";
+            }else{
+                this.getFrameworkTool().panel_div.style.display="none";
+            }
         }
     },
     

@@ -10,11 +10,11 @@
  */
 Ext.define("viewer.viewercontroller.MapComponent",{
     extend: "Ext.util.Observable",
-    eventList: new Object(),
-    maps: new Array(),
-    tools : new Array(),
-    events: new Array(),
-    components: new Array(),
+    eventList: null,
+    maps: null,
+    tools : null,
+    events: null,
+    components: null,
     panel : null,    
     viewerController: null,
     config:{
@@ -22,6 +22,13 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         id: null
     },
     constructor :function (viewerController,domId,config){
+        //init values
+        this.eventList={};
+        this.maps=[];
+        this.tools=[];
+        this.events=[];
+        this.components=[];
+        //init the config
         this.initConfig(config);
         this.initEvents();
         this.viewerController=viewerController;
@@ -191,6 +198,13 @@ Ext.define("viewer.viewercontroller.MapComponent",{
             }
         }
         return null;
+    },
+    /**
+     * Return a array of tool object
+     * @return [{Tool}]
+     */
+    getTools: function(){
+        return this.tools;
     },
     /**
  *Returns the tools that are added with type: type

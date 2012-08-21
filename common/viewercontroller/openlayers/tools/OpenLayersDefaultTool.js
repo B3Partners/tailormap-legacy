@@ -35,8 +35,11 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
             displayClass: "olControlDefault",
             type: OpenLayers.Control.TYPE_TOOL
         };        
-        var olTool= new OpenLayers.Control(controlOptions);
-        viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,olTool);
+        var olTool= new OpenLayers.Control(controlOptions);        
+        viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool.superclass.constructor.call(this,conf,olTool);
+        //set type to correct tool type.
+        this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
+        //get the map.
         this.map=this.viewerController.mapComponent.getMap();
         //navigation tool
         this.navigationControl = new OpenLayers.Control.Navigation({autoActivate: false}); 
@@ -68,6 +71,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
     activate: function(){        
         this.navigationControl.activate();
         this.mapClick.activateTool();
+        this.getFrameworkObject().activate();
     },
     /**
      *Deactivate the tool
@@ -75,5 +79,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
     deactivate: function(){  
         this.navigationControl.deactivate();  
         this.mapClick.deactivateTool();
+        this.getFrameworkObject().deactivate();
     }
 });

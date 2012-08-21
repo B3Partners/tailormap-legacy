@@ -28,13 +28,30 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             allOverlays: true,
             units :'m',
             resolutions: resolutions,
-            resolution: 512,
-            controls : [new OpenLayers.Control.Navigation({
-                    zoomBoxEnabled: true
-                }),new OpenLayers.Control.ArgParser()]
+            resolution: 512
         };
+        /*listen to ON_COMPONENTS_FINISHED_LOADING to check if there is a tool configured
+         *Otherwise add default tool. Small delay to step out of the thread.
+         */
+        var me =this
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
+            setTimeout(function(){me.checkTools()},10);
+        },this);
         
         return this;
+    },
+    
+    checkTools : function(){
+        if(this.getTools().length==0){
+            var defaultTool = new viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool({
+                viewerController: this.viewerController,
+                id: 'defaultTool'
+            });
+            //defaultTool.setFrameworkObject(null);
+            this.addTool(defaultTool);
+            defaultTool.setVisible(false);
+            defaultTool.activate();
+        }
     },
 
     /**

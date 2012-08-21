@@ -46,9 +46,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
      * @param visibility the visibility
      * @see MapComponent#setVisible
      */
-    setToolVisible: function (visibility){
-        this.setVisible(visibility);
-        this.getFrameworkTool().callMethod(this.getId(),'setVisible',visibility);
+    setVisible: function (vis){
+        this.visible=vis;
+        if (this.getFrameworkTool){
+            this.getFrameworkTool().callMethod(this.getId(),'setVisible',visibility);
+        }
     },
     /**
      * Create a xml string for this object.
