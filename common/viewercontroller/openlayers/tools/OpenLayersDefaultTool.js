@@ -39,8 +39,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,olTool);
         this.map=this.viewerController.mapComponent.getMap();
         //navigation tool
-        this.navigationControl = new OpenLayers.Control.Navigation(); 
-        this.map.getFrameworkMap().addControls([this.navigationControl]);                
+        this.navigationControl = new OpenLayers.Control.Navigation({autoActivate: false}); 
+        this.map.getFrameworkMap().addControls([this.navigationControl]);
         
         //single map click
         this.mapClick=new viewer.viewercontroller.openlayers.ToolMapClick({
