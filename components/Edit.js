@@ -195,7 +195,7 @@ Ext.define ("viewer.components.Edit",{
         
         var config = {
             viewerController : this.viewerController,
-            restriction : "hasConfiguredLayers",
+            restriction : "editable",
             id : this.name + "layerSelector",
             layers: this.layers,
             div: this.name + 'LayerSelectorPanel'
