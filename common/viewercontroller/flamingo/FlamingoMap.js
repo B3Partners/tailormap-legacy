@@ -75,7 +75,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             }
             layer.setGisId(this.gisId);
             this.addLayerToGis(layer);
-        }else if (!(layer instanceof viewer.viewercontroller.flamingo.FlamingoVectorLayer)){
+        }else{
             this.getFrameworkMap().callMethod(this.getId(),'addLayer',layer.toXML());
         }
     },
