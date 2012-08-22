@@ -48,7 +48,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
      */
     setVisible: function (vis){
         this.visible=vis;
-        if (this.getFrameworkTool){
+        if (this.getFrameworkTool()){
             this.getFrameworkTool().callMethod(this.getId(),'setVisible',visibility);
         }
     },
