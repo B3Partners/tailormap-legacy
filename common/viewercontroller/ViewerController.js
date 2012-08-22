@@ -479,8 +479,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         /** not needed anymore?
         if (layer){
             this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
-        */
-        }
+        } */
     },
       
     /**
