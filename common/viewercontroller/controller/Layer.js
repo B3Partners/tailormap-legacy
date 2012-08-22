@@ -19,7 +19,6 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         IMAGE_TYPE: "IMAGE",
         TILING_TYPE: "TILING"
     },
-    events: [],
     maptips: new Array(),
     map:null,
     visible: true,
@@ -37,9 +36,9 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         frameworkLayer: null
     },
     
-    constructor: function (config){
-        viewer.viewercontroller.controller.Layer.superclass.constructor.call(this, config);
+    constructor: function (config){        
         this.initConfig(config);        
+        this.callParent(arguments);
     },
         
     /**

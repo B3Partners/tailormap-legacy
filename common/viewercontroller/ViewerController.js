@@ -9,7 +9,6 @@
  */
 Ext.define("viewer.viewercontroller.ViewerController", {
     extend: "Ext.util.Observable", 
-    events: [],
 
     queryParams: null,
     
