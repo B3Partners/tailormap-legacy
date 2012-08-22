@@ -49,6 +49,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @constructor
      */
     constructor: function(viewerType, mapId, app) {
+        this.callParent(arguments);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker",{viewerController:this});
         this.app = app;
         
@@ -475,8 +476,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         
         var layer = this.getOrCreateLayer(appLayer);
+        /** not needed anymore?
         if (layer){
             this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
+        */
         }
     },
       
@@ -619,7 +622,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layer = service.layers[appLayer.layerName];
         var options={
             id: id,
-            ratio: 1
+            ratio: 1,
+            visible: appLayer.checked
         };
 
         var layerObj = null;
@@ -632,7 +636,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 srs: "EPSG:28992",
                 version: "1.1.1",
                 layers:layer.name,
-                visible: appLayer.checked,
                 styles: "",
                 format: "image/png",
                 transparent: true,
