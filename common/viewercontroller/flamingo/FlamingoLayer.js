@@ -92,7 +92,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
                this.enabledEvents[flamEvent]=true;
             }
         }
-        viewer.viewercontroller.controller.Layer.superclass.addListener.call(this,event,handler,scope);
+        /* fix for infinite loop:
+         * If this is called from a layer that extends the FlamingoArcLayer the superclass is
+         * that FlamingoArcLayer and this function is called again when this.superclass.function is called
+         **/
+        if (this.superclass.$className == "viewer.viewercontroller.flamingo.FlamingoArcLayer"){
+            this.superclass.superclass.addListener.call(this,event,handler,scope);
+        }else{
+            this.superclass.addListener.call(this,event,handler,scope);
+        }
+        //viewer.viewercontroller.controller.Layer.superclass.addListener.call(this,event,handler,scope);
     },
     setVisible : function (visible){
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);

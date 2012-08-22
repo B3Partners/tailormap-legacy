@@ -677,10 +677,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         layerObj.appLayerId = appLayer.id;
         this.layers[id] = layerObj;
         this.mapComponent.getMap().addLayer(layerObj);  
+        /** xxxxx Still needed?**/
         if(service.protocol == "arcgis"){
-            layerObj.addListener(viewer.viewercontroller.controller.Event.ON_GET_SERVICE_INFO,function(){
-                    layerObj.setVisible(appLayer.checked)
-                },this);
+            this.layers[id].addListener(viewer.viewercontroller.controller.Event.ON_GET_SERVICE_INFO,function(){
+                    this.setVisible(appLayer.checked)
+                },this.layers[id]);
         }
         return layerObj;
     },
