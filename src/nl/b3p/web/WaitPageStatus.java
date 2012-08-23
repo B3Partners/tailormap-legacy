@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.*;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -94,6 +95,33 @@ public class WaitPageStatus {
         }
         logDequeueCount += currentLogs.size();
         return currentLogs;
+    }
+    
+    public WaitPageStatus subtask(final String subtaskPrefix, final float percent) {
+        
+        final MutableInt progressUntilSubtask = new MutableInt(getProgress());
+        
+        return new WaitPageStatus() {
+            @Override
+            public void setProgress(int progress) {
+                super.setProgress(progressUntilSubtask.intValue() + (int)Math.round((progress / 100.0) * percent));
+            }
+            
+            @Override
+            public void addLog(String message) {
+                super.addLog(subtaskPrefix + message);
+            }
+            
+            @Override
+            public void addLog(String messageFormat, Object... args) {
+                super.addLog(subtaskPrefix + String.format(messageFormat, args));
+            }
+            
+            @Override
+            public void setCurrentAction(String currentAction) {
+                super.setCurrentAction(subtaskPrefix + currentAction);
+            }
+        };
     }
 
     public String getJSON() throws JSONException {
