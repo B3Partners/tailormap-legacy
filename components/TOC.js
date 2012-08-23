@@ -39,7 +39,6 @@ Ext.define ("viewer.components.TOC",{
         this.initConfig(config);
         this.loadTree();
         this.loadInitLayers();
-        this.applyTreeScrollFix();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
@@ -126,6 +125,8 @@ Ext.define ("viewer.components.TOC",{
         var map = this.viewerController.mapComponent.getMap();
         var scale = map.getResolution();
         this.checkScaleLayer(this.panel.getRootNode(),scale);
+        // Apply the scroll fix when all layers are added
+        this.applyTreeScrollFix();
     },
     // Add a level to the tree, and load all it's levels and applayers
     addLevel : function (levelId){
