@@ -1000,7 +1000,7 @@ Ext.define ("viewer.components.SelectionModule",{
         me.userServices[userServiceId] = userService;
         var serviceNode = me.createNode('s' + userServiceId, userService.name, null, false);
         serviceNode.type = 'service';
-        serviceNode.children = me.createCustomNodesList(userService.topLayer, userServiceId);
+        serviceNode.children = me.createCustomNodesList(userService.topLayer, userServiceId, true);
         me.insertTreeNode(serviceNode, node, autoExpand);
     },
     
@@ -1045,11 +1045,12 @@ Ext.define ("viewer.components.SelectionModule",{
         });
     },
     
-    createCustomNodesList: function(node, userServiceId) {
+    createCustomNodesList: function(node, userServiceId, isTopLayer) {
         var me = this;
         var treeNode = null;
         var hasChildren = Ext.isDefined(node.children);
-        if(!node.virtual) {
+        // If topLayer is virtual, do not create node for topLayer
+        if(!(isTopLayer && node.virtual)) {
             var leaf = true;
             if(hasChildren && node.children.length > 0) leaf = false;
             var layerId = 'usl' +  + (++me.addedLayersCount);
@@ -1061,12 +1062,16 @@ Ext.define ("viewer.components.SelectionModule",{
         if(hasChildren && node.children.length > 0) {
             var childnodes = [];
             for(var i = 0 ; i < node.children.length; i++) {
-                var l = me.createCustomNodesList(node.children[i], userServiceId);
+                var l = me.createCustomNodesList(node.children[i], userServiceId, false);
                 if(l !== null) {
                     childnodes.push(l);
                 }
             }
-            if(node.virtual) return childnodes;
+            // If no node was created for topLayer, return the children of the
+            // topLayer
+            if(isTopLayer && node.virtual) {
+                return childnodes;
+            }
             treeNode.children = childnodes;
         }
         return treeNode;
