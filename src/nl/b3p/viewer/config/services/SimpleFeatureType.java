@@ -36,7 +36,7 @@ public class SimpleFeatureType {
     @Id
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.PERSIST)
     private FeatureSource featureSource;    
     
     private String typeName;

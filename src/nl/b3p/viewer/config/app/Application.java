@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.app;
 
+import nl.b3p.viewer.config.ClobElement;
 import java.util.*;
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +59,6 @@ public class Application {
     private String layout;
 
     @ElementCollection
-
     @JoinTable(joinColumns=@JoinColumn(name="application"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();

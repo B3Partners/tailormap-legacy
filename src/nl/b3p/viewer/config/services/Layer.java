@@ -19,9 +19,9 @@ package nl.b3p.viewer.config.services;
 import java.util.*;
 import javax.persistence.*;
 import org.geotools.data.ows.CRSEnvelope;
-import org.geotools.data.wms.xml.MetadataURL;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -35,12 +35,16 @@ public class Layer {
     public static final String EXTRA_KEY_FILTERABLE = "filterable";
     public static final String EXTRA_IMAGE_EXTENSION ="image_extension";
     
-    private static Set interestingDetails = new HashSet<String>(Arrays.asList(new String[] { 
+    private static Set<String> interestingDetails = new HashSet<String>(Arrays.asList(new String[] { 
         EXTRA_KEY_METADATA_URL, 
         EXTRA_KEY_METADATA_STYLESHEET_URL,
         EXTRA_KEY_DOWNLOAD_URL,
         EXTRA_KEY_FILTERABLE,
         EXTRA_IMAGE_EXTENSION        
+    }));  
+    
+    private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] { 
+        EXTRA_KEY_METADATA_URL       
     }));        
             
     @Id
@@ -87,7 +91,7 @@ public class Layer {
     private boolean queryable;
     private boolean filterable;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE})
     private SimpleFeatureType featureType;
 
     @ElementCollection
@@ -140,12 +144,11 @@ public class Layer {
             keywords.addAll(Arrays.asList(l.getKeywords()));
         }
         
-        for( MetadataURL mURL : l.getMetadataURL()){
-            details.put("metadata.stylesheet", mURL.getUrl().toString());
-            break;
+        if(!l.getMetadataURL().isEmpty()) {
+            details.put(EXTRA_KEY_METADATA_URL, l.getMetadataURL().get(0).getUrl().toString());
         }
         
-        if( l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0){
+        if(l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0) {
             String legendUrl = (String)l.getStyles().get(0).getLegendURLs().get(0);
             legendImageUrl = legendUrl;
         }
@@ -154,8 +157,79 @@ public class Layer {
             Layer childLayer = new Layer(child, service);
             childLayer.setParent(this);
             children.add(childLayer);
+        }             
+    }
+    
+    protected void update(Layer update) {
+        if(!getName().equals(update.getName())) {
+            throw new IllegalArgumentException("Cannot update layer with properties from layer with different name!");
+        }
+        
+        virtual = update.virtual;
+        queryable = update.queryable;
+        filterable = update.filterable;
+        title = update.title;
+        minScale = update.minScale;
+        maxScale = update.maxScale;
+        
+        // XXX check if equals() required to avoid update statements
+        if(!boundingBoxes.equals(update.boundingBoxes)) {
+            boundingBoxes.clear();
+            boundingBoxes.putAll(update.boundingBoxes);
+        }        
+        if(!crsList.equals(update.crsList)) {
+            crsList.clear();
+            crsList.addAll(update.crsList);
+        }
+        if(!keywords.equals(update.keywords)) {
+            keywords.clear();
+            keywords.addAll(update.keywords);
+        }
+        
+        for(String s: updatableDetails) {
+            details.remove(s);
+        }
+        details.putAll(update.getDetails());
+        
+        legendImageUrl = update.legendImageUrl;
+        
+        // tileSet ignored -- only for tile services!
+    }
+
+    /**
+     * Copy user modified properties of given layer onto this instance. Used for
+     * updating the topLayer. Not called for other layers, those instances are 
+     * updated with update().
+     */
+    protected void copyUserModifiedProperties(Layer other) {     
+        setTitleAlias(other.getTitleAlias());
+        getReaders().clear();
+        getReaders().addAll(other.getReaders());
+        getWriters().clear();
+        getWriters().addAll(other.getWriters());
+    }
+    
+    /**
+     * Clone this layer and remove it from the tree of the GeoService this Layer
+     * is part of. Used for updating service, call only on non-persistent objects.
+     * @return a clone of this Layer with its parent and service set to null and
+     * children set to a new, empty list. 
+     */
+    public Layer pluckCopy() {
+        if(Stripersist.getEntityManager().contains(this)) {
+            throw new IllegalStateException();
+        }
+        try {
+            Layer clone = (Layer)super.clone();
+            clone.setParent(null);
+            clone.setChildren(new ArrayList());
+            clone.setService(null);
+            return clone;
+        } catch(CloneNotSupportedException e) {
+            return null;
         }
     }
+
     /**
      * Checks if the layer is bufferable.
      * if service type of this layer is ArcIms or ArcGis or if the layer has a featuretype
@@ -164,6 +238,24 @@ public class Layer {
     public boolean isBufferable(){
         return getService().getProtocol().equals(ArcIMSService.PROTOCOL) || 
                 this.getFeatureType() != null;
+    }
+
+    public interface Visitor {
+        public boolean visit(Layer l);
+    }
+
+    /**
+     * Do a depth-first traversal while the visitor returns true. Uses the call
+     * stack to save layers yet to visit.
+     * @return true if visitor accepted all layers
+     */
+    public boolean accept(Layer.Visitor visitor) {
+        for(Layer child: getCachedChildren()) {
+            if(!child.accept(visitor)) {
+                return false;
+            }
+        }
+        return visitor.visit(this);
     }
     
     public JSONObject toJSONObject() throws JSONException {

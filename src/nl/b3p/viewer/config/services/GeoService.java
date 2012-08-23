@@ -18,7 +18,9 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +34,14 @@ import org.stripesstuff.stripersist.Stripersist;
 @DiscriminatorColumn(name="protocol")
 public abstract class GeoService {
     public static final String PARAM_ONLINE_CHECK_ONLY = "onlineCheckOnly";
+    
+    /**
+     * @deprecated cascaded instead
+     */
     public static final String PARAM_PERSIST_FEATURESOURCE = "persistFeatureSource";
+    
+    public static final String DETAIL_OVERRIDDEN_URL = "overridenUrl";
+    public static final String DETAIL_ORIGINAL_NAME = "originalName";
     
     @Id
     private Long id;
@@ -70,6 +79,11 @@ public abstract class GeoService {
     @Temporal(TemporalType.TIMESTAMP)
     private Date authorizationsModified = new Date();
 
+    @ElementCollection    
+    @JoinTable(joinColumns=@JoinColumn(name="geoservice"))
+    // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
+    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
+   
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
         return id;
@@ -158,6 +172,14 @@ public abstract class GeoService {
     public void setMonitoringStatusOK(boolean monitoringStatusOK) {
         this.monitoringStatusOK = monitoringStatusOK;
     }
+
+    public Map<String, ClobElement> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, ClobElement> details) {
+        this.details = details;
+    }
     //</editor-fold>
       
     public GeoService loadFromUrl(String url, Map params) throws Exception {
@@ -213,7 +235,6 @@ public abstract class GeoService {
             return Collections.EMPTY_LIST;
         }
         
-        // XXX Oracle specific
         // Retrieve layer tree structure in single query
         layers = Stripersist.getEntityManager().createNamedQuery("getLayerTree")
             .setParameter("rootId", topLayer.getId())
@@ -327,35 +348,32 @@ public abstract class GeoService {
     }
 
     /**
-     * Returns the layer with the given name in this server
-     * @param layerName The layer name
+     * Returns the layer with the given name in this server. The first layer in
+     * a depth-first tree traversal with the name is returned. If a child has
+     * the same name as its parent, the child is returned.
+     * @param layerName the layer name to search for
      * @return the Layer or null if not found
      */
-    public Layer getLayer(String layerName) {
+    public Layer getLayer(final String layerName) {
         loadLayerTree();
-        return getLayer(layerName,topLayer);
-    }
-    /**
-     * Returns the layer in the given Layer (inLayer) with the given layerName
-     * @param layerName the name of the layer
-     * @param inLayer the layer to search in
-     * @return the Layer with name == layerName or null if not found
-     */
-    private Layer getLayer(String layerName,Layer inLayer){  
-        if (layerName==null)
+        
+        if(layerName == null || topLayer == null) {
             return null;
-        if(layerName.equals(inLayer.getName()))
-            return inLayer;
-        //walk through layers
-        Layer returnLayer=null;        
-        for (Layer layer : inLayer.getCachedChildren()){
-            returnLayer= getLayer(layerName,layer);
-            if(returnLayer!=null){
-                return returnLayer;
-            }
         }
-        return returnLayer;            
+        
+        final MutableObject<Layer> layer = new MutableObject(null);
+        
+        topLayer.accept(new Layer.Visitor() {
+            @Override
+            public boolean visit(Layer l) {
+                if(l.getName().equals(layerName)) {
+                    layer.setValue(l);
+                    return false;
+                }
+                return true;
+            }
+        });
+        
+        return layer.getValue();
     }
-    
-
 }

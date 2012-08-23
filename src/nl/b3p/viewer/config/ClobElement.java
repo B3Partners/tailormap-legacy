@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.config.app;
+package nl.b3p.viewer.config;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
