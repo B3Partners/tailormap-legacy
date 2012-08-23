@@ -146,10 +146,11 @@ Ext.define ("viewer.components.SelectionModule",{
         }if (Ext.isEmpty(conf.selectOwnServices)){
             conf.selectOwnServices=true;
         } 
-        
+        // call constructor and init config
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         this.renderButton();
+        // if there is no selected content, show selection module
         var me = this;
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
             if(this.viewerController.app.selectedContent.length == 0 ){
@@ -162,39 +163,81 @@ Ext.define ("viewer.components.SelectionModule",{
         },this);
         return this;
     },
+    renderButton: function() {
+        var me = this;
+        this.superclass.renderButton.call(this,{
+            text: me.title,
+            icon: me.titlebarIcon,
+            tooltip: me.tooltip,
+            handler: function() {
+                me.openWindow();
+            }
+        });
+        
+    },
+    openWindow: function() {
+        var me = this;
+        me.popup.show();
+        if(!me.rendered) {
+            // If the component is not rendered before (opened for the first time) init the component
+            me.initComponent();
+        } else {
+            if(me.treePanels.registryTree.treePanel) {
+                // Sometimes the tree is not loaded yet when the popup is closed,
+                // causing the tree to stay empty when the popup is opened again.
+                // To prevent this we reload the tree when no nodes are available
+                var rootNode = me.treePanels.registryTree.treePanel.getRootNode();
+                if(!rootNode || !rootNode.hasChildNodes()) {
+                    // No rootnode or rootnode has no children, so empty tree
+                    me.treePanels.registryTree.treeStore.load();
+                }
+            }
+            // get data from viewer controller
+            me.initViewerControllerData();
+            me.loadSelectedLayers();
+        }
+    },
+    // only executed once, when opening the selection module for the first time
     initComponent: function() {
         var me = this;
-
+        // set icon urls
         me.moveRightIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-right.gif';
         me.moveLeftIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-left.gif';
         me.moveUpIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-up.gif';
         me.moveDownIcon = contextPath + '/viewer-html/components/resources/images/selectionModule/move-down.gif';
-        
+        // get data from viewer controller
         me.initViewerControllerData();
-
+        // init base interface
         me.initInterface();
+        // init tree containers
         me.initTreeSelectionContainer();
+        // init trees
         me.initTrees();
-        
+        // if application layers / levels can be added, init them
         if(me.config.selectGroups) {
             me.initApplicationLayers();
         }
+        // load the selected content to the right container
         me.loadSelectedLayers();
-        
-        Ext.getCmp('selectionModuleFormFieldContainer').items.each(function(item){
-            if(item.checked) me.handleSourceChange(item, item.checked);
-        });
-        
+        // iterate over radio buttons on top to activate the checked item
+        var selectionModuleFormField = Ext.getCmp('selectionModuleFormFieldContainer');
+        if(selectionModuleFormField) {
+            selectionModuleFormField.items.each(function(item){
+                if(item.checked) me.handleSourceChange(item, item.checked);
+            });
+        }
+        // apply a scroll fix
         me.applyTreeScrollFix();
-
+        // add listeners to the popupwin to hide and show tree containers (which would otherwise remain visible)
         me.popup.popupWin.addListener('hide', me.hideTreeContainers);
         me.popup.popupWin.addListener('show', me.showTreeContainers);
         me.popup.popupWin.addListener("dragstart", me.hideTreeContainers);
         me.popup.popupWin.addListener("dragend", me.showTreeContainers);
         me.popup.popupWin.addListener("resize", me.applyTreeScrollFix, me);
-        
+        // set rendered to true so this function won't be called again
         me.rendered = true;
     },
+    // helper function to check if selected content has only background layers
     selectedContentHasOnlyBackgroundLayers : function (){
         var sc = this.viewerController.app.selectedContent;
         for( var i = 0 ; i < sc.length ; i++){
@@ -213,33 +256,19 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         return true;
     },
-    
+    // hide all trees (happens when closing or moving popup)
     hideTreeContainers: function() {
         var treeContainers = Ext.query('.selectionModuleTreeContainer');
         Ext.Array.each(treeContainers, function(treeContainer) {
             treeContainer.style.display = 'none';
         });
     },
-    
+    // show all trees (happens when opening or stop moving popup)
     showTreeContainers: function() {
         var treeContainers = Ext.query('.selectionModuleTreeContainer');
         Ext.Array.each(treeContainers, function(treeContainer) {
             treeContainer.style.display = 'block';
         });
-    },
-    
-    getExtComponents: function() {
-        var me = this;
-        var extComponents = [];
-        extComponents.push('selectionModuleMainContainer');
-        extComponents.push('selectionModuleFormContainer');
-        extComponents.push('selectionModuleCustomFormContainer');
-        extComponents.push('selectionModuleTreeContentContainer');
-        extComponents.push('selectionModuleSaveFormContainer');
-        extComponents.push('selectionModuleTreesContainer');
-        extComponents.push('selectionModuleFormFieldContainer');
-        extComponents.push('selectionModuleCustomFormFieldContainer');
-        return Ext.Array.merge(extComponents, me.getActiveTreePanelIds());
     },
     
     getActiveTreePanels: function() {
@@ -297,40 +326,6 @@ Ext.define ("viewer.components.SelectionModule",{
         me.services = this.viewerController.app.services;
         me.rootLevel = this.viewerController.app.rootLevel;
     },
-   
-    renderButton: function() {
-        var me = this;
-        this.superclass.renderButton.call(this,{
-            text: me.title,
-            icon: me.titlebarIcon,
-            tooltip: me.tooltip,
-            handler: function() {
-                me.openWindow();
-            }
-        });
-        
-    },
-    
-    openWindow: function() {
-        var me = this;
-        me.popup.show();
-        if(!me.rendered) {
-            me.initComponent();
-        } else {
-            if(me.treePanels.registryTree.treePanel) {
-                // Sometimes the tree is not loaded yet when the popup is closed,
-                // causing the tree to stay empty when the popup is opened again.
-                // To prevent this we reload the tree when no nodes are available
-                var rootNode = me.treePanels.registryTree.treePanel.getRootNode();
-                if(!rootNode || !rootNode.hasChildNodes()) {
-                    // No rootnode or rootnode has no children, so empty tree
-                    me.treePanels.registryTree.treeStore.load();
-                }
-            }
-            me.initViewerControllerData();
-            me.loadSelectedLayers();
-        }
-    },
 
     loadCustomService: function() {
         var me = this;
@@ -382,21 +377,75 @@ Ext.define ("viewer.components.SelectionModule",{
             radioControls.push({id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
         }
         
-        // Create main container
-        Ext.create('Ext.container.Container', {
-            id: 'selectionModuleMainContainer',
+        // minimal interface, just tree container and save/cancel buttons
+        var items = [{
+            xtype: 'container',
+            flex: 1,
             width: '100%',
-            height: '100%',
+            html: '<div id="treeSelectionContainer" style="width: 100%; height: 100%;"></div>',
+            id: 'selectionModuleTreeContentContainer'
+        },
+        {
+            // Form above the trees with radiobuttons and textfields
+            xtype: 'form',
             layout: {
-                type: 'vbox',
-                align: 'stretch'
+                type:'hbox',
+                pack:'end'
             },
-            style: {
-                backgroundColor: 'White'
-            },
-            renderTo: me.popup.getContentId(),
             items: [
-                {
+                    {xtype: 'button', text: 'Annuleren', handler: function() {
+                        me.cancelSelection();
+                    }},
+                    {xtype: 'button', text: 'OK', style: {marginLeft: '10px'},handler: function() {
+                        me.saveSelection();
+                    }}
+            ],
+            height: 35,
+            padding: '5px',
+            border: 0,
+            id: 'selectionModuleSaveFormContainer'
+        }];
+        // when there is one tree configured show radio buttons and form buttons above
+        if(me.hasLeftTrees())
+        {
+            if(me.config.selectOwnServices) {
+                items.unshift({
+                        // Form above the trees with radiobuttons and textfields
+                        xtype: 'form',
+                        items: [{
+                            xtype: 'fieldcontainer',
+                            id: 'selectionModuleCustomFormFieldContainer',
+                            layout: 'hbox',
+                            border: 0,
+                            defaults: {
+                                xtype: 'textfield',
+                                style: {
+                                    marginRight: '5px'
+                                }
+                            },
+                            width: '100%',
+                            height: '100%',
+                            defaultType: 'textfield',
+                            items: [
+                                {hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
+                                {xtype: 'combo', store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Maak uw keuze'},
+                                {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
+                                        me.loadCustomService();
+                                }},
+                                {hidden: true, id: 'cswServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
+                                {hidden: true, id: 'cswSearchTextfield', flex: 1, emptyText:'Zoekterm'},
+                                {xtype: 'button', text: 'CSW doorzoeken', hidden: true, id: 'cswServiceUrlButton', handler: function() {
+                                        me.loadCustomService();
+                                }}
+                            ]
+                        }],
+                        height: MobileManager.isMobile() ? 40 : 35,
+                        padding: '5px',
+                        border: 0,
+                        id: 'selectionModuleCustomFormContainer'
+                });
+            }
+            items.unshift({
                     // Form above the trees with radiobuttons and textfields
                     xtype: 'form',
                     items: [{
@@ -419,128 +468,30 @@ Ext.define ("viewer.components.SelectionModule",{
                     padding: '5px',
                     border: 0,
                     id: 'selectionModuleFormContainer'
-                },
-                {
-                    // Form above the trees with radiobuttons and textfields
-                    xtype: 'form',
-                    items: [{
-                        xtype: 'fieldcontainer',
-                        id: 'selectionModuleCustomFormFieldContainer',
-                        layout: 'hbox',
-                        border: 0,
-                        defaults: {
-                            xtype: 'textfield',
-                            style: {
-                                marginRight: '5px'
-                            }
-                        },
-                        width: '100%',
-                        height: '100%',
-                        defaultType: 'textfield',
-                        items: [
-                            {hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
-                            {xtype: 'combo', store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Maak uw keuze'},
-                            {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
-                                    me.loadCustomService();
-                            }},
-                            {hidden: true, id: 'cswServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
-                            {hidden: true, id: 'cswSearchTextfield', flex: 1, emptyText:'Zoekterm'},
-                            {xtype: 'button', text: 'CSW doorzoeken', hidden: true, id: 'cswServiceUrlButton', handler: function() {
-                                    me.loadCustomService();
-                            }}
-                        ]
-                    }],
-                    height: MobileManager.isMobile() ? 40 : 35,
-                    padding: '5px',
-                    border: 0,
-                    id: 'selectionModuleCustomFormContainer'
-                },
-                {
-                    xtype: 'container',
-                    flex: 1,
-                    width: '100%',
-                    html: '<div id="treeSelectionContainer" style="width: 100%; height: 100%;"></div>',
-                    id: 'selectionModuleTreeContentContainer'
-                },
-                {
-                    // Form above the trees with radiobuttons and textfields
-                    xtype: 'form',
-                    layout: {
-                        type:'hbox',
-                        pack:'end'
-                    },
-                    items: [
-                            {xtype: 'button', text: 'Annuleren', handler: function() {
-                                me.cancelSelection();
-                            }},
-                            {xtype: 'button', text: 'OK', style: {marginLeft: '10px'},handler: function() {
-                                me.saveSelection();
-                            }}
-                    ],
-                    height: 35,
-                    padding: '5px',
-                    border: 0,
-                    id: 'selectionModuleSaveFormContainer'
-                }
-            ]
+            });
+        }
+        
+        // Create main container
+        Ext.create('Ext.container.Container', {
+            id: 'selectionModuleMainContainer',
+            width: '100%',
+            height: '100%',
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            style: {
+                backgroundColor: 'White'
+            },
+            renderTo: me.popup.getContentId(),
+            items: items
         });
     },
     
     initTreeSelectionContainer: function() {
         var me = this;
-        var moveButtons = [ {xtype: 'container', html: '<div></div>', flex: 1} ];
-        if(me.config.selectGroups || me.config.selectLayers || me.config.selectOwnServices)
-        {
-            moveButtons = [
-                {xtype: 'container', html: '<div></div>', flex: 1},
-                {
-                    xtype: 'button',
-                    icon: me.moveRightIcon,
-                    width: 23,
-                    height: 22,
-                    handler: function() {
-                        me.addSelectedLayers();
-                    },
-                    listeners: {
-                        afterrender: function(button) {
-                            me.fixButtonLayout(button);
-                        }
-                    }
-                },
-                {
-                    xtype: 'button',
-                    icon: me.moveLeftIcon,
-                    width: 23,
-                    height: 22,
-                    handler: function() {
-                        me.removeSelectedNodes();
-                    },
-                    listeners: {
-                        afterrender: function(button) {
-                            me.fixButtonLayout(button);
-                        }
-                    }
-                },
-                {xtype: 'container', html: '<div></div>', flex: 1}
-            ];
-        }
-        Ext.create('Ext.container.Container', {
-            layout: {
-                type: 'hbox',
-                align: 'stretch'
-            },
-            width: '100%',
-            height: '100%',
-            id: 'selectionModuleTreesContainer',
-            items: [
-                {
-                    xtype: 'container',
-                    flex: 1,
-                    html: '<div id="applicationTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: visible;"></div>' + 
-                          '<div id="registryTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>' + 
-                          '<div id="customTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>'
-                },
-                {xtype: 'container', width: 30, layout: {type: 'vbox', align: 'center'}, items: moveButtons },
+        // minimal tree interface (right tree with selected content and move up/down buttons)
+        var items = [
                 {
                     xtype: 'container',
                     flex: 1,
@@ -578,7 +529,61 @@ Ext.define ("viewer.components.SelectionModule",{
                     },
                     {xtype: 'container', html: '<div></div>', flex: 1}
                 ]}
-            ],
+            ];
+        // when there is one or more left trees configured, add left interface (left tree and move from/to tree buttons)
+        if(me.hasLeftTrees())
+        {
+            items.unshift(
+                {
+                    xtype: 'container',
+                    flex: 1,
+                    html: '<div id="applicationTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: visible;"></div>' + 
+                          '<div id="registryTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>' + 
+                          '<div id="customTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>'
+                },
+                {xtype: 'container', width: 30, layout: {type: 'vbox', align: 'center'}, items: [
+                    {xtype: 'container', html: '<div></div>', flex: 1},
+                    {
+                        xtype: 'button',
+                        icon: me.moveRightIcon,
+                        width: 23,
+                        height: 22,
+                        handler: function() {
+                            me.addSelectedLayers();
+                        },
+                        listeners: {
+                            afterrender: function(button) {
+                                me.fixButtonLayout(button);
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        icon: me.moveLeftIcon,
+                        width: 23,
+                        height: 22,
+                        handler: function() {
+                            me.removeSelectedNodes();
+                        },
+                        listeners: {
+                            afterrender: function(button) {
+                                me.fixButtonLayout(button);
+                            }
+                        }
+                    },
+                    {xtype: 'container', html: '<div></div>', flex: 1}
+                ] }
+            );
+        }
+        Ext.create('Ext.container.Container', {
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            width: '100%',
+            height: '100%',
+            id: 'selectionModuleTreesContainer',
+            items: items,
             renderTo: 'treeSelectionContainer'
         });
     },
@@ -785,6 +790,10 @@ Ext.define ("viewer.components.SelectionModule",{
             me.setAllNodesVisible(false, treePanelType, visibleParents);
         }
     },
+    
+    hasLeftTrees: function() {
+        return (this.config.selectGroups || this.config.selectLayers || this.config.selectOwnServices);
+    },
 
     setAllNodesVisible: function(visible, treePanelName, visibleParents) {
         var me = this;
@@ -917,7 +926,7 @@ Ext.define ("viewer.components.SelectionModule",{
             expanded: expanded,
             leaf: leaf,
             origData: {
-                id: nodeid.substring(1),
+                id: nodeid.substring(0,2) === 'rl' ? nodeid : nodeid.substring(1),
                 service: serviceid
             }
         };
@@ -943,13 +952,15 @@ Ext.define ("viewer.components.SelectionModule",{
         var cswSearchTextfield = Ext.getCmp('cswSearchTextfield');
         var cswServiceUrlButton = Ext.getCmp('cswServiceUrlButton');
         
-        if(newval) {
-            customServiceUrlTextfield.setVisible(false);
-            customServiceUrlSelect.setVisible(false);
-            customServiceUrlButton.setVisible(false);
-            cswServiceUrlTextfield.setVisible(false);
-            cswSearchTextfield.setVisible(false);
-            cswServiceUrlButton.setVisible(false);
+        if(newval && me.hasLeftTrees()) {
+            if(me.config.selectOwnServices) {
+                customServiceUrlTextfield.setVisible(false);
+                customServiceUrlSelect.setVisible(false);
+                customServiceUrlButton.setVisible(false);
+                cswServiceUrlTextfield.setVisible(false);
+                cswSearchTextfield.setVisible(false);
+                cswServiceUrlButton.setVisible(false);
+            }
             applicationTreeContainer.setStyle('visibility', 'hidden');
             registryTreeContainer.setStyle('visibility', 'hidden');
             customTreeContainer.setStyle('visibility', 'hidden');
@@ -1395,6 +1406,19 @@ Ext.define ("viewer.components.SelectionModule",{
         var foundNode = tree.getRootNode().findChild('id', record.get('id'), false);
         if(foundNode !== null) return true;
         return false;
-    }
+    },
     
+    getExtComponents: function() {
+        var me = this;
+        var extComponents = [];
+        extComponents.push('selectionModuleMainContainer');
+        extComponents.push('selectionModuleFormContainer');
+        extComponents.push('selectionModuleCustomFormContainer');
+        extComponents.push('selectionModuleTreeContentContainer');
+        extComponents.push('selectionModuleSaveFormContainer');
+        extComponents.push('selectionModuleTreesContainer');
+        extComponents.push('selectionModuleFormFieldContainer');
+        extComponents.push('selectionModuleCustomFormFieldContainer');
+        return Ext.Array.merge(extComponents, me.getActiveTreePanelIds());
+    }
 });
