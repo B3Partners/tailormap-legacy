@@ -179,6 +179,6 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     },
 
     registerEvent : function (event,handler,scope){
-        this.superclass.addListener(event,handler,scope);
+        this.addListener(event,handler,scope);
     }
 });
