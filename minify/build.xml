@@ -118,6 +118,7 @@
 
           <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers/components">
             <file name="LoadingPanel.js"/>
+            <file name="OpenLayersBorderNavigation.js"/>
             <file name="OpenLayersLoadMonitor.js"/>
             <file name="OpenLayersOverview.js"/>
             <file name="OpenLayersMaptip.js"/>             

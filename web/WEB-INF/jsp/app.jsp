@@ -164,6 +164,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         
                         <!-- The components -->
                         <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayersBorderNavigation.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayersLoadMonitor.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayersOverview.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayersMaptip.js"></script>
