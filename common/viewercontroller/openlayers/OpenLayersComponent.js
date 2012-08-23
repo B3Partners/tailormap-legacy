@@ -30,5 +30,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersComponent",{
     constructor : function (conf,frameworkObject){
         viewer.viewercontroller.openlayers.OpenLayersComponent.superclass.constructor.call(this,conf);
         this.frameworkObject=frameworkObject;
+    },
+    /**
+     * Can be overwritten to do something after the component is added.
+     */
+    doAfterAdd : function (){
     }
 });

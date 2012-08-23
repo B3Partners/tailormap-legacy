@@ -19,7 +19,7 @@
  * Creates a LoadMonitor component for OpenLayers
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.viewercontroller.openlayers.LoadMonitor",{
+Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
     config:{
         top:null,

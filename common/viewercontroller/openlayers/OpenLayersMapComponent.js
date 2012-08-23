@@ -242,7 +242,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var type = config.type;
         var comp = null;
         if(type == viewer.viewercontroller.controller.Component.LOADMONITOR){
-            comp = Ext.create("viewer.viewercontroller.openlayers.LoadMonitor",config);
+            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor",config);
         }else if(type == viewer.viewercontroller.controller.Component.OVERVIEW){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersOverview",config);
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
@@ -250,6 +250,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
                 new OpenLayers.Control.PanZoomBar({zoomWorldIcon: true}));
+        }else if (type == viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
+            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);                
         }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
                 new OpenLayers.Control.MousePosition({
@@ -493,6 +495,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             //add the component to the map
             this.getMap().getFrameworkMap().addControl(component.getFrameworkObject());
             component.getFrameworkObject().activate();
+            component.doAfterAdd();
         }
     },
     /**Add a map to the controller.
