@@ -224,7 +224,9 @@ public class WMSService extends GeoService implements Updatable {
     @Override
     public UpdateResult update() {
         
+        initLayerCollectionsForUpdate();
         final UpdateResult result = new UpdateResult(this);
+                
         try {
             Map params = new HashMap();
             params.put(PARAM_OVERRIDE_URL, getOverrideUrl());

@@ -196,6 +196,17 @@ public abstract class GeoService {
         }
     }
     
+    public void initLayerCollectionsForUpdate() {
+        EntityManager em = Stripersist.getEntityManager();
+        // Use separate query instead of one combined one: may lead to lots of
+        // duplicate fields depending on the size of each collection
+        em.createQuery("from Layer l left join fetch l.crsList where l.service = :this").setParameter("this", this).getResultList();
+        em.createQuery("from Layer l left join fetch l.boundingBoxes where l.service = :this").setParameter("this", this).getResultList();
+        em.createQuery("from Layer l left join fetch l.keywords where l.service = :this").setParameter("this", this).getResultList();
+        em.createQuery("from Layer l left join fetch l.details where l.service = :this").setParameter("this", this).getResultList();
+        em.createQuery("from Layer l left join fetch l.children where l.service = :this").setParameter("this", this).getResultList();
+    }
+    
     public GeoService loadFromUrl(String url, Map params) throws Exception {
         return loadFromUrl(url, params, new WaitPageStatus());
     }

@@ -28,6 +28,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Matthijs Laan
  */
 @Entity
+@org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class Layer implements Cloneable {
     public static final String EXTRA_KEY_METADATA_URL = "metadata.url";
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
