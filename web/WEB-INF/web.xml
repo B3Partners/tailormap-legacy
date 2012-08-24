@@ -46,6 +46,10 @@
             <param-value>net.sourceforge.stripes.controller.multipart.CommonsMultipartWrapper</param-value>
         </init-param>
         <init-param>
+            <param-name>Stripersist.InitializeSettingsClass</param-name>
+            <param-value>nl.b3p.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
+        </init-param>        
+        <init-param>
             <param-name>LocalePicker.Locales</param-name>
             <param-value>nl_NL</param-value>
         </init-param>
