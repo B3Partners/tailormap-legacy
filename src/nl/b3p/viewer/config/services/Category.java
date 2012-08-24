@@ -50,12 +50,12 @@ public class Category {
     @ManyToOne
     private Category parent;
 
-    @OneToMany
+    @ManyToMany // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Category> children = new ArrayList<Category>();
 
-    @OneToMany
+    @ManyToMany // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="service"))
     @OrderColumn(name="list_index")
     private List<GeoService> services = new ArrayList<GeoService>();

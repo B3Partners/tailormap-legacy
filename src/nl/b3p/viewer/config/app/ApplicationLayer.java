@@ -64,7 +64,7 @@ public class ApplicationLayer {
     @ElementCollection
     private Map<String,String> details = new HashMap<String,String>();
 
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
     @OrderColumn(name="list_index")
     private List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();

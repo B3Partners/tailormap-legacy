@@ -56,7 +56,7 @@ public abstract class FeatureSource {
     @ManyToOne
     private GeoService linkedService;
     
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="feature_type"))
     @OrderColumn(name="list_index")
     private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();

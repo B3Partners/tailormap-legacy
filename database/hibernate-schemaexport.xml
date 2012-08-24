@@ -2,7 +2,7 @@
 
 	<dirname property="destdir" file="${ant.file.hibernate-schemaexport}"/>
 
-	<property name="outputfile" value="schema-export.sql"/>
+	<property name="outputfile" value="schema-export"/>
 
 	<target name="schemaexport" depends="compile">
 		<taskdef name="hibernatetool"
@@ -16,13 +16,29 @@
 				<path location="${j2ee.platform.classpath}"/>
 			</classpath>
 
-			<jpaconfiguration/>
+			<jpaconfiguration persistenceUnit="viewer-config-oracle"/>
 
 			<hbm2ddl
 				export="false"
 				drop="false"
 				create="true"
-				outputfilename="${outputfile}"
+				outputfilename="${outputfile}-oracle.sql"
+				format="true"/>
+		</hibernatetool>
+
+		<hibernatetool destdir="${destdir}">
+			<classpath>
+				<path location="${build.classes.dir}"/>
+				<path location="${j2ee.platform.classpath}"/>
+			</classpath>
+
+			<jpaconfiguration persistenceUnit="viewer-config-postgresql"/>
+
+			<hbm2ddl
+				export="false"
+				drop="false"
+				create="true"
+				outputfilename="${outputfile}-postgresql.sql"
 				format="true"/>
 		</hibernatetool>
 

@@ -46,8 +46,8 @@ public class SimpleFeatureType {
     private boolean writeable;
 
     private String geometryAttribute;
-
-    @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL)
+    
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
     @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();

@@ -106,7 +106,7 @@ public class Layer implements Cloneable {
     @Column(name="role_name")
     private Set<String> writers = new HashSet<String>();
 
-    @OneToMany(cascade=CascadeType.PERSIST)
+    @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Layer> children = new ArrayList<Layer>();

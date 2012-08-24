@@ -45,14 +45,14 @@ public class Level {
 
     private Integer selectedIndex;
 
-    @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(name="level_children", inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Level> children = new ArrayList<Level>();
 
     private boolean background;
 
-    @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(name="level_layers", inverseJoinColumns=@JoinColumn(name="layer"))
     @OrderColumn(name="list_index")
     private List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
