@@ -80,6 +80,8 @@ public class GeoServiceActionBean implements ActionBean {
     private String crs;
     private WaitPageStatus status;
     private JSONObject newService;
+    
+    private boolean updatable;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -233,6 +235,14 @@ public class GeoServiceActionBean implements ActionBean {
     public void setCrs(String crs) {
         this.crs = crs;
     }
+
+    public boolean isUpdatable() {
+        return updatable;
+    }
+
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
+    }
     //</editor-fold>
    
     
@@ -374,6 +384,38 @@ public class GeoServiceActionBean implements ActionBean {
             getContext().getMessages().add(new SimpleMessage("De service is verwijderd"));
             return new ForwardResolution(JSP);
         }
+    }
+    
+    @Before
+    public void setUpdatable() {
+        updatable = service instanceof Updatable;
+    }
+    
+    public Resolution update() {
+        if(!isUpdatable()) {
+            getContext().getMessages().add(new SimpleMessage("Services van protocol {0} kunnen niet worden geupdate",
+                    service.getProtocol()));
+            return new ForwardResolution(JSP);
+        }
+        UpdateResult result = ((Updatable)service).update();
+        
+        Map<UpdateResult.Status,List<String>> byStatus = result.getLayerNamesByStatus();
+        
+        log.info(String.format("Update layer stats: unmodified %d, updated %d, new %d, missing %d",
+                byStatus.get(UpdateResult.Status.UNMODIFIED).size(),
+                byStatus.get(UpdateResult.Status.UPDATED).size(),
+                byStatus.get(UpdateResult.Status.NEW).size(),
+                byStatus.get(UpdateResult.Status.MISSING).size()
+        ));
+        log.info("Unmodified layers: " + byStatus.get(UpdateResult.Status.UNMODIFIED));
+        log.info("Updated layers: " + byStatus.get(UpdateResult.Status.UPDATED));
+        log.info("New layers: " + byStatus.get(UpdateResult.Status.NEW));
+        log.info("Missing layers: " + byStatus.get(UpdateResult.Status.MISSING));
+                
+        Stripersist.getEntityManager().getTransaction().commit();
+        getContext().getMessages().add(new SimpleMessage("De service is geupdate"));
+        
+        return new ForwardResolution(JSP);
     }
 
     @ValidationMethod(on = "add")
