@@ -20,6 +20,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -379,7 +380,7 @@ public abstract class GeoService {
         topLayer.accept(new Layer.Visitor() {
             @Override
             public boolean visit(Layer l) {
-                if(l.getName().equals(layerName)) {
+                if(StringUtils.equals(l.getName(),layerName)) {
                     layer.setValue(l);
                     return false;
                 }
