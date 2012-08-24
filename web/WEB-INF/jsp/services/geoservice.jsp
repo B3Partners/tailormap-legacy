@@ -195,10 +195,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:otherwise>
                 <stripes:submit name="save" value="Opslaan"/>
                 <stripes:submit name="delete" onclick="return deleteServiceConfirm();" value="Verwijder service"/>
+                <stripes:submit name="update" onclick="return updateConfirm();" value="Update"/>
                 <stripes:reset name="cancel" class="extlikebutton" value="Annuleren"/>
                 <script type="text/javascript">
                     function deleteServiceConfirm() {
                         return confirm('Weet u zeker dat u deze service wilt verwijderen?');
+                    }
+                    function updateConfirm() {
+                        <c:if test="${!actionBean.updatable}">
+                            alert('Deze service kan niet worden geupdate!');
+                            return false;
+                        </c:if>
+                        <c:if test="${actionBean.updatable}">
+                            return confirm('Weet u zeker dat u deze service wilt updaten? Lagen die de server niet meer aanbiedt worden verwijderd.');
+                        </c:if>
                     }
                 </script>
             </c:otherwise>
