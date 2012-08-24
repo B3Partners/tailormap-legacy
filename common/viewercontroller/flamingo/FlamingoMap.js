@@ -12,10 +12,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     enabledEvents: new Object(),
     editMapId: null,
     gisId: 'gis',
-    config: {
-        options: null,
-        viewerController:null
-    },
+    /**
+     * @constructor
+     * @see viewer.viewercontroller.controller.Map#constructor
+     */    
     constructor: function(config){
         //reformat the options.
         if (config.options.startExtent){

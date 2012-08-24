@@ -118,8 +118,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     },
     /**
      *See @link MapComponent.createWMSLayer
-     */
-    
+     */    
     createWMSLayer : function(name, wmsurl,ogcParams,config){
         config.options = new Object();
         config.options["id"]=null;

@@ -14,10 +14,18 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     enabledEvents: new Object(),
     config :{
         id: null ,
-        mapComponent: null
+        mapComponent: null,
+        viewerController: null,
+        options: null
     },
     /**
      * @constructor
+     * Create a Map Object
+     * @param config configuration object
+     * @param config.id the id of this map
+     * @param config.viewerController the viewer controller (viewer.viewercontroller.ViewerController)
+     * @param config.mapComponent the mapping component (viewer.viewercontroller.MapComponent)
+     * @param config.options options for the map @see viewer.viewercontroller.MapComponent#createMap
      */
     constructor: function(config){
         this.initConfig(config);

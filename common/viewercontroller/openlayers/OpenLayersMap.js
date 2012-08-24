@@ -24,9 +24,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     extend: "viewer.viewercontroller.controller.Map",
     layersLoading : null,
     utils:null,
-    config:{
-        viewerController:null
-    },
+    /**
+     * @constructor
+     * @see viewer.viewercontroller.controller.Map#constructor
+     */  
     constructor: function(config){
         viewer.viewercontroller.openlayers.OpenLayersMap.superclass.constructor.call(this, config);        
         this.initConfig(config);

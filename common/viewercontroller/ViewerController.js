@@ -157,6 +157,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }else{
                 startExtent = Ext.create("viewer.viewercontroller.controller.Extent","12000,304000,280000,620000");
             }
+            //xxx todo: remove specific flamingo things.
             var map = this.mapComponent.createMap("map", {
                 viewerController: this,
                 options: {

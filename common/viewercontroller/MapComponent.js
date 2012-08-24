@@ -21,6 +21,13 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         resolutions : null,
         id: null
     },
+    /**
+     * Construct a map component
+     * @param viewerController the viewerController
+     * @param domId id of the dom where this map component must be added
+     * @param config a config object
+     * @param config.resolutions a array of resolutions for the map     
+     */    
     constructor :function (viewerController,domId,config){
         //init values
         this.eventList={};
