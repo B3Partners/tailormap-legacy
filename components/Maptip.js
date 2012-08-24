@@ -43,10 +43,7 @@ Ext.define ("viewer.components.Maptip",{
         conf.isPopup=true;
         viewer.components.Maptip.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        //set some defaults
-        if (this.getMoreLink()==null){
-            this.setMoreLink("Meer");
-        }
+        
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon",this.width,this.height);
         this.balloon.zIndex = this.balloon.zIndex+1;
@@ -417,6 +414,17 @@ Ext.define ("viewer.components.Maptip",{
             return true;
         }
         return false;
+    },
+    
+    /**
+     * Over write the getMoreLink function so it always returns a String even when empty
+     * @return the configured 'moreLink' or the default when not configured.
+     */
+    getMoreLink: function(){
+        if (Ext.isEmpty(this.moreLink)){
+            return "Meer";
+        }
+        return this.moreLink;
     },
     /**
      *Get the application layer
