@@ -17,6 +17,15 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         viewerController:null
     },
     constructor: function(config){
+        //reformat the options.
+        if (config.options.startExtent){
+            config.options.extent=config.options.startExtent.toString();
+            delete config.options.startExtent;
+        }
+        if (config.options.maxExtent){
+            config.options.fullextent=config.options.maxExtent.toString();
+            delete config.options.maxExtent;
+        }        
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
         this.initConfig(config);        
         this.frameworkMap = this.mapComponent.viewerObject;

@@ -32,17 +32,23 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.initConfig(config);
         this.utils = Ext.create("viewer.viewercontroller.openlayers.Utils");
         var maxBounds=null;
-        if (config.options.fullextent){
-            var fullExtent = Ext.create("viewer.viewercontroller.controller.Extent",config.options.fullextent);
-            maxBounds = new OpenLayers.Bounds(fullExtent.minx, fullExtent.miny, fullExtent.maxx, fullExtent.maxy);
+        if (config.options.maxExtent){
+            maxBounds = this.utils.createBounds(config.options.maxExtent);
         }
-        else{
-            //fallback for bounds: the extent of the Netherlands
-            maxBounds= new OpenLayers.Bounds(12000,304000,280000,620000);
+        var startBounds;
+        if (config.options.startExtent){
+            startBounds= this.utils.createBounds(config.options.startExtent);
+        }       
+        //set the Center point
+        if (startBounds){
+            config.center = startBounds.getCenterLonLat();
+        }else if (maxBounds){
+            config.center = maxBounds.getCenterLonLat();
+        }else{
+            this.viewerController.logger.error("No bounds found, can't center viewport");
         }
-        config["center"] = maxBounds.getCenterLonLat();
         
-        config.maxExtent = maxBounds;
+        config.restrictedExtent = maxBounds;
         
         //Overwrite default OpenLayers tools,don't set any mouse controls
         config.controls=[
@@ -52,7 +58,22 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         ];
         this.frameworkMap=new OpenLayers.Map(config.domId,config);
         this.frameworkMap.centerLayerContainer();
-       
+        //zoom to start extent.
+        /*
+            this.zoomToExtent(config.options.startExtent);
+        }*/
+        /* Zoom to the start extent when the first layer is added
+         * because openlayers needs the baselayer to zoom. After zooming, remove the listener.
+         */
+        if(config.options.startExtent){
+            var me = this;
+            var handler = function(){
+                //me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
+                me.zoomToExtent(config.options.startExtent);            
+                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+            };
+            this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+        }
         this.layersLoading = 0;
         this.markerLayer=null;
         this.defaultIcon=null;

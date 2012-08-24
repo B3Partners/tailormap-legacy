@@ -70,8 +70,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     /**
      *Creates a Openlayers.Map object for this framework. See the openlayers.map docs
-     *@param id the id of the map that is configured in the configuration xml
-     *@param options Options for the map
+     *@see viewer.viewercontroller.MapComponent#createMap
      *@returns a FlamingoMapComponent
      */
     createMap : function(id,options){

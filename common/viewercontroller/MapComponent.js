@@ -40,6 +40,8 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     *Creates a Map object for this framework
     *@param id the id of the map
     *@param options extra options for the map
+    *@param options.startExtent the starting extent (viewer.viewercontroller.controller.Extent) of the map 
+    *@param options.maxExtent the max extent (viewer.viewercontroller.controller.Extent) of the map
     *Must be implemented by subclass
     */
     createMap : function(id, options){
