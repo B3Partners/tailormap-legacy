@@ -17,7 +17,9 @@
 package nl.b3p.viewer.config.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import nl.b3p.web.WaitPageStatus;
@@ -87,6 +89,20 @@ public class UpdateResult {
                     layers.intValue(),
                     duplicateOrNoNameLayers.size());
         }       
+    }
+    
+    public Map<Status,List<String>> getLayerNamesByStatus() {
+        Map<Status,List<String>> byStatus = new HashMap();
+        byStatus.put(Status.NEW, new ArrayList());
+        byStatus.put(Status.UNMODIFIED, new ArrayList());
+        byStatus.put(Status.UPDATED, new ArrayList());
+        byStatus.put(Status.MISSING, new ArrayList());
+        
+        for(Map.Entry<String,MutablePair<Layer,Status>> entry: layerStatus.entrySet()) {
+            List<String> layers = byStatus.get(entry.getValue().getRight());
+            layers.add(entry.getKey());
+        }
+        return byStatus;
     }
     
     public void failedWithException(Exception e) {

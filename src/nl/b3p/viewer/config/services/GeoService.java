@@ -62,7 +62,7 @@ public abstract class GeoService {
     
     private boolean monitoringStatusOK = true;
 
-    @OneToOne(orphanRemoval=true, cascade=CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.PERSIST)
     private Layer topLayer;
 
     @ElementCollection
@@ -182,6 +182,19 @@ public abstract class GeoService {
     }
     //</editor-fold>
       
+    @PreRemove
+    public void removeAllLayers() {
+        EntityManager em = Stripersist.getEntityManager();
+        List<Layer> allLayers = em.createQuery("from Layer where service = :this")
+                .setParameter("this", this)
+                .getResultList();
+        
+        for(Layer l: allLayers) {
+            l.getChildren().clear();
+            em.remove(l);
+        }
+    }
+    
     public GeoService loadFromUrl(String url, Map params) throws Exception {
         return loadFromUrl(url, params, new WaitPageStatus());
     }

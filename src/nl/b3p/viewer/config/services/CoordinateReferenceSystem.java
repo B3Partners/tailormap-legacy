@@ -55,6 +55,16 @@ public class CoordinateReferenceSystem implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        return name.equals(obj);
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CoordinateReferenceSystem other = (CoordinateReferenceSystem) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
 }

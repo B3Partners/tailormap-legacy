@@ -28,7 +28,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Matthijs Laan
  */
 @Entity
-public class Layer {
+public class Layer implements Cloneable {
     public static final String EXTRA_KEY_METADATA_URL = "metadata.url";
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
     public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
@@ -106,7 +106,7 @@ public class Layer {
     @Column(name="role_name")
     private Set<String> writers = new HashSet<String>();
 
-    @OneToMany(orphanRemoval=true, cascade= CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.PERSIST)
     @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Layer> children = new ArrayList<Layer>();
@@ -172,7 +172,6 @@ public class Layer {
         minScale = update.minScale;
         maxScale = update.maxScale;
         
-        // XXX check if equals() required to avoid update statements
         if(!boundingBoxes.equals(update.boundingBoxes)) {
             boundingBoxes.clear();
             boundingBoxes.putAll(update.boundingBoxes);
@@ -224,6 +223,10 @@ public class Layer {
             clone.setParent(null);
             clone.setChildren(new ArrayList());
             clone.setService(null);
+            
+            if(clone.getFeatureType() != null) {
+                clone.getFeatureType().getFeatureSource().setLinkedService(null);
+            }
             return clone;
         } catch(CloneNotSupportedException e) {
             return null;
