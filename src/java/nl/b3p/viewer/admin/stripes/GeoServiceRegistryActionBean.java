@@ -17,6 +17,9 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -293,7 +296,13 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             GeoService gs = em.find(GeoService.class, new Long(id));
             // GeoService may be invalid and not have a top layer
             if(gs.getTopLayer() != null) {
-                for(Layer sublayer: gs.getTopLayer().getChildren()) {
+                List<Layer> layers;
+                if(!gs.getTopLayer().isVirtual()) {
+                    layers = Collections.singletonList(gs.getTopLayer());
+                } else {
+                    layers = gs.getTopLayer().getChildren();
+                }
+                for(Layer sublayer: layers) {
                     JSONObject j = new JSONObject();
                     j.put("id", "l" + sublayer.getId());
                     if(sublayer.getTitleAlias() != null){
