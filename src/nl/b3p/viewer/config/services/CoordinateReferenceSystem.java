@@ -42,9 +42,29 @@ public class CoordinateReferenceSystem implements Cloneable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     @Override
     public CoordinateReferenceSystem clone() throws CloneNotSupportedException { 
         return (CoordinateReferenceSystem)super.clone();
+    }
+    
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CoordinateReferenceSystem other = (CoordinateReferenceSystem) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -113,4 +113,42 @@ public class BoundingBox implements Cloneable {
         }
         return clone;
     }
+    
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + (this.crs != null ? this.crs.hashCode() : 0);
+        hash = 89 * hash + (this.minx != null ? this.minx.hashCode() : 0);
+        hash = 89 * hash + (this.miny != null ? this.miny.hashCode() : 0);
+        hash = 89 * hash + (this.maxx != null ? this.maxx.hashCode() : 0);
+        hash = 89 * hash + (this.maxy != null ? this.maxy.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final BoundingBox other = (BoundingBox) obj;
+        if (this.crs != other.crs && (this.crs == null || !this.crs.equals(other.crs))) {
+            return false;
+        }
+        if (this.minx != other.minx && (this.minx == null || !this.minx.equals(other.minx))) {
+            return false;
+        }
+        if (this.miny != other.miny && (this.miny == null || !this.miny.equals(other.miny))) {
+            return false;
+        }
+        if (this.maxx != other.maxx && (this.maxx == null || !this.maxx.equals(other.maxx))) {
+            return false;
+        }
+        if (this.maxy != other.maxy && (this.maxy == null || !this.maxy.equals(other.maxy))) {
+            return false;
+        }
+        return true;
+    }
 }
