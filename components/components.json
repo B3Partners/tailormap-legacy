@@ -100,6 +100,33 @@
         }
     },
     {
+        className: "viewer.components.Maptip",
+        name: "Maptip",
+        shortName: "Mt",
+        sources: ["Maptip.js"],
+        restrictions: ["content"],
+        type : "popup",
+        singleton: true,
+        extPropertyGridConfigs: {
+            propertyNames: {
+                maptipdelay: "Maptip Delay",
+                height: 'Samenvatting hoogte',
+                width: 'Samenvatting breedte',
+                title: "Detailscherm titel", 
+                titlebarIcon:"Detailscherm titelbalk icoon",
+                moreLink: 'Link naar meer'
+            },
+            source: {
+                maptipdelay: 500,
+                height: 300,
+                width: 300,                
+                title : "", 
+                titlebarIcon: "",
+                moreLink: 'Meer'
+            }
+        }             
+    },
+    {
         className: "viewer.components.FeatureInfo",
         name: "Feature info",
         shortName: "Fi",
@@ -113,13 +140,15 @@
                 title: "Detailscherm titel", 
                 titlebarIcon:"Detailscherm titelbalk icoon",
                 height: 'Samenvatting hoogte',
-                width: 'Samenvatting breedte'
+                width: 'Samenvatting breedte',
+                moreLink: 'Link naar meer'
             },
             source: {
                 title : "Details", 
                 titlebarIcon: "",
                 height : 300, 
-                width: 300    
+                width: 300,
+                moreLink: 'Meer'
             }
         }
     },
@@ -515,31 +544,6 @@
         configSource: ["SelectionWindowConfig.js","Buffer-config.js"],
         restrictions: ["left_menu"],            
         type: "popup"
-    },
-    {
-        className: "viewer.components.Maptip",
-        name: "Maptip",
-        shortName: "Mt",
-        sources: ["Maptip.js"],
-        restrictions: ["content"],
-        type : "popup",
-        singleton: true,
-        extPropertyGridConfigs: {
-            propertyNames: {
-                maptipdelay: "Maptip Delay",
-                height: 'Samenvatting hoogte',
-                width: 'Samenvatting breedte',
-                title: "Detailscherm titel", 
-                titlebarIcon:"Detailscherm titelbalk icoon"
-            },
-            source: {
-                maptipdelay: 500,
-                height: 300,
-                width: 300,                
-                title : "", 
-                titlebarIcon: ""
-            }
-        }             
     },
     {
         className: "viewer.components.LoadMonitor",

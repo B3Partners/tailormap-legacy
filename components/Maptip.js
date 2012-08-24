@@ -27,7 +27,8 @@ Ext.define ("viewer.components.Maptip",{
         maptipdelay: null,
         height: null,
         width: null,
-        maxDescLength: 30
+        maxDescLength: 30,
+        moreLink: null
     },
     serverRequestEnabled: false,
     serverRequestLayers: null,
@@ -41,7 +42,11 @@ Ext.define ("viewer.components.Maptip",{
     constructor: function (conf){     
         conf.isPopup=true;
         viewer.components.Maptip.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
+        this.initConfig(conf);
+        //set some defaults
+        if (this.getMoreLink()==null){
+            this.setMoreLink("Meer");
+        }
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon",this.width,this.height);
         this.balloon.zIndex = this.balloon.zIndex+1;
@@ -243,7 +248,7 @@ Ext.define ("viewer.components.Maptip",{
                                     me.showDetails(el.appLayer,el.feature);
                                 },
                                 this);
-                            detailLink.insertHtml("beforeEnd","Detail");
+                            detailLink.insertHtml("beforeEnd",this.getMoreLink());
                             detailDiv.appendChild(detailLink);
                             leftColumnDiv.appendChild(detailDiv);
 

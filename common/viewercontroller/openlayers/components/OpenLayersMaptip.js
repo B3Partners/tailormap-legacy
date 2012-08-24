@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * LoadMonitor component
+ * OpenLayersMaptip component
  * Creates a Maptip component for OpenLayers
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
