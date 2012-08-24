@@ -82,14 +82,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         }else if(config.type==viewer.viewercontroller.controller.Component.SCALEBAR){
             this.setTagName("Scalebar");
             this.setBottom("bottom +20");
-            this.setRight("right -50");
+            this.setLeft("50");
             this.setWidth("200");
             if (this.getUnits()==null)
                 this.setUnits("m");                
         }else if(config.type==viewer.viewercontroller.controller.Component.COORDINATES){
             this.setTagName("Coordinates");
             this.setBottom("bottom");
-            this.setLeft("left +10");
+            this.setRight("right -80");
             this.addString("xy","X: [x] Y: [y]");
         }else if(config.type==viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
             this.setTagName("NavigationControl");

@@ -88,6 +88,12 @@
     background-image: url("../../openlayers/theme/default/img/default_off.png");
 }
 
+div.olControlMousePosition{
+    bottom: 10px !important;
+    right: 10px !important;
+    font-size: small !important;
+}
+
 /*.olControlPanel .olControlb_bufferItemInactive{
     background-image: url("img/buffer_tool.png");
 }
