@@ -48,8 +48,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
     },
     
     setQuery : function (filter){
+        var me = this;
         if(filter){
-            var me = this;
             var f = function(ids,colName) { 
                 // Hack: An empty query returns all the features
                 var query = "-1";
@@ -71,8 +71,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
             var cql = filter.getCQL();
             util.cqlToArcFIDS(cql,this.appLayerId,f,console.log);
         }else{
-            this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.config.options.name);
-            this.reload();
+            me.getFrameworkLayer().setLayerFilter(me.layers, null);
+            setTimeout (function(){
+                me.reload();
+            }, 500);
         }
     }
 });
