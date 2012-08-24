@@ -106,90 +106,98 @@ public class WMSService extends GeoService implements Updatable {
         getKeywords().addAll(si.getKeywords());
 
         status.setCurrentAction("Inladen layers...");
-        status.setProgress(50);
+        
+        boolean supportsDescribeLayer = wms.getCapabilities().getRequest().getDescribeLayer() != null;
+        
+        status.setProgress(supportsDescribeLayer ? 40 : 90);
 
         org.geotools.data.ows.Layer rl = wms.getCapabilities().getLayer();
         setTopLayer(new Layer(rl, this));
 
-        status.setProgress(60);
-        status.setCurrentAction("Gerelateerde WFS bronnen opzoeken...");
+        if(supportsDescribeLayer) {
+            status.setProgress(60);
+            status.setCurrentAction("Gerelateerde WFS bronnen opzoeken...");
 
-        StringBuffer layers = new StringBuffer();
-        try {
-            getAllNonVirtualLayers(layers, getTopLayer());
+            StringBuffer layers = new StringBuffer();
+            DescribeLayerResponse dlr = null;
+            try {
+                getAllNonVirtualLayers(layers, getTopLayer());
 
-            DescribeLayerRequest dlreq = wms.createDescribeLayerRequest();
-            dlreq.setLayers(layers.toString());
-            log.debug("Issuing DescribeLayer request for WMS " + getUrl() + " with layers=" + layers);
-            DescribeLayerResponse dlr = wms.issueRequest(dlreq);
+                DescribeLayerRequest dlreq = wms.createDescribeLayerRequest();
+                dlreq.setLayers(layers.toString());
+                log.debug("Issuing DescribeLayer request for WMS " + getUrl() + " with layers=" + layers);
+                dlr = wms.issueRequest(dlreq);
+            } catch(Exception e) {
+                log.warn("DescribeLayer request failed for layers " + layers + " on service " + getUrl(), e);
+            } 
 
-            Map<String,List<LayerDescription>> layerDescByWfs = new HashMap<String,List<LayerDescription>>();
+            if(dlr != null) {
+                Map<String,List<LayerDescription>> layerDescByWfs = new HashMap<String,List<LayerDescription>>();
 
-            for(LayerDescription ld: dlr.getLayerDescs()) {
-                log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, typeNames=%s",
-                        ld.getName(),
-                        ld.getWfs(),
-                        Arrays.toString(ld.getQueries())
-                ));
-                if(ld.getWfs() != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-                    if(ld.getQueries().length != 1) {
-                        log.debug("Cannot handle multiple typeNames for this layer, only using the first");
-                    }
-                    List<LayerDescription> lds = layerDescByWfs.get(ld.getWfs().toString());
-                    if(lds == null) {
-                        lds = new ArrayList<LayerDescription>();
-                        layerDescByWfs.put(ld.getWfs().toString(), lds);
-                    }
-                    lds.add(ld);
-                }                                
-            }
+                for(LayerDescription ld: dlr.getLayerDescs()) {
+                    log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, typeNames=%s",
+                            ld.getName(),
+                            ld.getWfs(),
+                            Arrays.toString(ld.getQueries())
+                    ));
+                    if(ld.getWfs() != null && ld.getQueries() != null && ld.getQueries().length != 0) {
+                        if(ld.getQueries().length != 1) {
+                            log.debug("Cannot handle multiple typeNames for this layer, only using the first");
+                        }
+                        List<LayerDescription> lds = layerDescByWfs.get(ld.getWfs().toString());
+                        if(lds == null) {
+                            lds = new ArrayList<LayerDescription>();
+                            layerDescByWfs.put(ld.getWfs().toString(), lds);
+                        }
+                        lds.add(ld);
+                    }                                
+                }
 
-            status.setProgress(70);
-            String action = "Gerelateerde WFS bron inladen";
-            String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
-            for(int i = 0; i < wfses.length; i++) {
-                String wfsUrl = wfses[i];
+                status.setProgress(80);
+                String action = "Gerelateerde WFS bron inladen";
+                String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
+                for(int i = 0; i < wfses.length; i++) {
+                    String wfsUrl = wfses[i];
 
-                String thisAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
-                status.setCurrentAction(thisAction + ": GetCapabilities...");
+                    String thisAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
+                    status.setCurrentAction(thisAction + ": GetCapabilities...");
 
-                Map p = new HashMap();
-                p.put(WFSDataStoreFactory.URL.key, wfsUrl);
-                p.put(WFSDataStoreFactory.USERNAME.key, getUsername());
-                p.put(WFSDataStoreFactory.PASSWORD.key, getPassword());
+                    Map p = new HashMap();
+                    p.put(WFSDataStoreFactory.URL.key, wfsUrl);
+                    p.put(WFSDataStoreFactory.USERNAME.key, getUsername());
+                    p.put(WFSDataStoreFactory.PASSWORD.key, getPassword());
 
-                try {
-                    WFSFeatureSource wfsFs = new WFSFeatureSource(p);
-                    wfsFs.loadFeatureTypes();
+                    try {
+                        WFSFeatureSource wfsFs = new WFSFeatureSource(p);
+                        wfsFs.loadFeatureTypes();
 
-                    boolean used = false;
-                    for(LayerDescription ld: layerDescByWfs.get(wfsUrl)) {
-                        Layer l = getLayer(ld.getName());
-                        if(l != null) {
-                            SimpleFeatureType sft = wfsFs.getFeatureType(ld.getQueries()[0]);
-                            if(sft != null) {
-                                l.setFeatureType(sft);
-                                log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
-                                used = true;
-                            }
-                        }                            
-                    }
-                    if(used) {
-                        log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS");
+                        boolean used = false;
+                        for(LayerDescription ld: layerDescByWfs.get(wfsUrl)) {
+                            Layer l = getLayer(ld.getName());
+                            if(l != null) {
+                                SimpleFeatureType sft = wfsFs.getFeatureType(ld.getQueries()[0]);
+                                if(sft != null) {
+                                    l.setFeatureType(sft);
+                                    log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
+                                    used = true;
+                                }
+                            }                            
+                        }
+                        if(used) {
+                            log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS");
 
-                        wfsFs.setName(FeatureSource.findUniqueName(getName()));
-                        wfsFs.setLinkedService(this);
-                        log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
-                    } else {
-                        log.debug("No type from WFSFeatureSource with url " + wfsUrl + " used!");
-                    }
-                } catch(Exception e) {
-                    log.error("Error loading WFS from url " + wfsUrl, e);
-                }                    
-            }
-        } catch(Exception e) {
-            log.warn("DescribeLayer request failed for layers " + layers + " on service " + getUrl(), e);
-        }                    
+                            wfsFs.setName(FeatureSource.findUniqueName(getName()));
+                            wfsFs.setLinkedService(this);
+                            log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
+                        } else {
+                            log.debug("No type from WFSFeatureSource with url " + wfsUrl + " used!");
+                        }
+                    } catch(Exception e) {
+                        log.error("Error loading WFS from url " + wfsUrl, e);
+                    }                    
+                }
+            }                   
+        }
     }
     
     protected WebMapServer getWebMapServer() throws IOException, MalformedURLException, ServiceException {
