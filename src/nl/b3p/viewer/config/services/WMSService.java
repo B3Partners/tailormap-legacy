@@ -41,7 +41,14 @@ import org.geotools.ows.ServiceException;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
- *
+ * Entity for saving WMS service metadata. Enables the administration module to
+ * easily work with WMS service entities and the viewer to quickly marshall the
+ * metadata without having to do a GetCapabilities request each time the viewer 
+ * starts.
+ * <p>
+ * This requires an option to update the metadata should the service change, so
+ * this class implements Updatable.
+ * <p>
  * @author Matthijs Laan
  */
 @Entity
@@ -49,14 +56,40 @@ import org.stripesstuff.stripersist.Stripersist;
 public class WMSService extends GeoService implements Updatable {
     private static final Log log = LogFactory.getLog(WMSService.class);
     
+    /**
+     * JPA DiscriminatorValue for this class.
+     */
     public static final String PROTOCOL = "wms";
 
+    /**
+     * Parameter to specify the value for #getOverrideUrl().
+     */
     public static final String PARAM_OVERRIDE_URL = "overrideUrl";
-    public static final String PARAM_USERNAME = "username";
-    public static final String PARAM_PASSWORD = "password";
     
+    /**
+     * HTTP Basic authentication username to use with pre-emptive authentication.
+     */
+    public static final String PARAM_USERNAME = "username";
+    
+    /**
+     * HTTP Basic authentication password to use with pre-emptive authentication.
+     */
+    public static final String PARAM_PASSWORD = "password";
+
+    /**
+     * Additional persistent property for this subclass, so type must be nullable.
+     */
     private Boolean overrideUrl;
 
+    /**
+     * Whether to use the original URL the Capabilities was loaded with or the
+     * URL the WMS reports it is at in the Capabilities. Sometimes the URL reported
+     * by the WMS is outdated, but it can also be used to migrate the service
+     * to another URL or load Capabilities from a static XML Capabilities document
+     * on a simple HTTP server. According to the standard the URL in the Capabilities
+     * should be used, so set this to false by default except if the user requests
+     * an override.
+     */
     public Boolean getOverrideUrl() {
         return overrideUrl;
     }
@@ -64,12 +97,25 @@ public class WMSService extends GeoService implements Updatable {
     public void setOverrideUrl(Boolean overrideUrl) {
         this.overrideUrl = overrideUrl;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("WMS service \"%s\" at %s", getName(), getUrl());
+    }
 
+    //<editor-fold desc="Loading from WMS URL">
+    /**
+     * Load WMS metadata from URL or only check if the service is online when
+     * PARAM_ONLINE_CHECK_ONLY is true.
+     * @param url The location of the WMS.
+     * @param params Map containing parameters, keys are finals in this class.
+     * @param status For reporting progress.
+     */
     @Override
     public WMSService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
-
+            
             WMSService wmsService = new WMSService();
             wmsService.setUsername((String)params.get(PARAM_USERNAME));
             wmsService.setPassword((String)params.get(PARAM_PASSWORD));
@@ -81,7 +127,7 @@ public class WMSService extends GeoService implements Updatable {
             if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
                 return null;
             }
-
+            
             wmsService.load(wms, params, status);
             
             return wmsService;
@@ -91,115 +137,58 @@ public class WMSService extends GeoService implements Updatable {
             status.setFinished(true);
         }
     }
-    
+
+    /**
+     * Do the actual loading work.
+     */
     protected void load(WebMapServer wms, Map params, WaitPageStatus status) throws IOException, MalformedURLException, ServiceException {
         ServiceInfo si = wms.getInfo();
         setName(si.getTitle());
-
+        
         String serviceUrl = si.getSource().toString();
         if(getOverrideUrl() &&!getUrl().equals(serviceUrl)) {
             getDetails().put(GeoService.DETAIL_OVERRIDDEN_URL, new ClobElement(serviceUrl));
         } else {
             setUrl(serviceUrl);
         }
-
+        
         getKeywords().addAll(si.getKeywords());
-
+        
         status.setCurrentAction("Inladen layers...");
         
         boolean supportsDescribeLayer = wms.getCapabilities().getRequest().getDescribeLayer() != null;
         
         status.setProgress(supportsDescribeLayer ? 40 : 90);
-
+        
         org.geotools.data.ows.Layer rl = wms.getCapabilities().getLayer();
         setTopLayer(new Layer(rl, this));
-
+        
         if(supportsDescribeLayer) {
             status.setProgress(60);
             status.setCurrentAction("Gerelateerde WFS bronnen opzoeken...");
-
-            StringBuffer layers = new StringBuffer();
-            DescribeLayerResponse dlr = null;
-            try {
-                getAllNonVirtualLayers(layers, getTopLayer());
-
-                DescribeLayerRequest dlreq = wms.createDescribeLayerRequest();
-                dlreq.setLayers(layers.toString());
-                log.debug("Issuing DescribeLayer request for WMS " + getUrl() + " with layers=" + layers);
-                dlr = wms.issueRequest(dlreq);
-            } catch(Exception e) {
-                log.warn("DescribeLayer request failed for layers " + layers + " on service " + getUrl(), e);
-            } 
-
-            if(dlr != null) {
-                Map<String,List<LayerDescription>> layerDescByWfs = new HashMap<String,List<LayerDescription>>();
-
-                for(LayerDescription ld: dlr.getLayerDescs()) {
-                    log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, typeNames=%s",
-                            ld.getName(),
-                            ld.getWfs(),
-                            Arrays.toString(ld.getQueries())
-                    ));
-                    if(ld.getWfs() != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-                        if(ld.getQueries().length != 1) {
-                            log.debug("Cannot handle multiple typeNames for this layer, only using the first");
-                        }
-                        List<LayerDescription> lds = layerDescByWfs.get(ld.getWfs().toString());
-                        if(lds == null) {
-                            lds = new ArrayList<LayerDescription>();
-                            layerDescByWfs.put(ld.getWfs().toString(), lds);
-                        }
-                        lds.add(ld);
-                    }                                
-                }
-
-                status.setProgress(80);
-                String action = "Gerelateerde WFS bron inladen";
-                String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
-                for(int i = 0; i < wfses.length; i++) {
-                    String wfsUrl = wfses[i];
-
-                    String thisAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
-                    status.setCurrentAction(thisAction + ": GetCapabilities...");
-
-                    Map p = new HashMap();
-                    p.put(WFSDataStoreFactory.URL.key, wfsUrl);
-                    p.put(WFSDataStoreFactory.USERNAME.key, getUsername());
-                    p.put(WFSDataStoreFactory.PASSWORD.key, getPassword());
-
-                    try {
-                        WFSFeatureSource wfsFs = new WFSFeatureSource(p);
-                        wfsFs.loadFeatureTypes();
-
-                        boolean used = false;
-                        for(LayerDescription ld: layerDescByWfs.get(wfsUrl)) {
-                            Layer l = getLayer(ld.getName());
-                            if(l != null) {
-                                SimpleFeatureType sft = wfsFs.getFeatureType(ld.getQueries()[0]);
-                                if(sft != null) {
-                                    l.setFeatureType(sft);
-                                    log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
-                                    used = true;
-                                }
-                            }                            
-                        }
-                        if(used) {
-                            log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS");
-
-                            wfsFs.setName(FeatureSource.findUniqueName(getName()));
-                            wfsFs.setLinkedService(this);
-                            log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
-                        } else {
-                            log.debug("No type from WFSFeatureSource with url " + wfsUrl + " used!");
-                        }
-                    } catch(Exception e) {
-                        log.error("Error loading WFS from url " + wfsUrl, e);
-                    }                    
-                }
-            }                   
+            
+            Map<String,List<LayerDescription>> layerDescByWfs = getDescribeLayerPerWFS(wms);
+            
+            status.setProgress(80);
+            String action = "Gerelateerde WFS bron inladen...";
+            
+            String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
+            for(int i = 0; i < wfses.length; i++) {
+                String wfsUrl = wfses[i];
+                
+                String wfsAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
+                status.setCurrentAction(wfsAction);
+                
+                List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
+                
+                loadLayerFeatureTypes(wfsUrl, layerDescriptions);
+            }
         }
     }
     
+    /**
+     * Construct the GeoTools WebMapServer metadata object.
+     */
     protected WebMapServer getWebMapServer() throws IOException, MalformedURLException, ServiceException {
         HTTPClient client = new SimpleHttpClient();
         client.setUser(getUsername());
@@ -212,28 +201,35 @@ public class WMSService extends GeoService implements Updatable {
                     new WMS1_0_0(),
                     new WMS1_1_0(),
                     new WMS1_1_1()
-                    // No WMS 1.3.0, GeoTools GetCaps parser cannot handle 
-                    // ExtendedCapabilities such as inspire_common:MetadataUrl,
-                    // for example PDOK. See:
-                    // http://sourceforge.net/mailarchive/message.php?msg_id=28640690
+                        // No WMS 1.3.0, GeoTools GetCaps parser cannot handle
+                        // ExtendedCapabilities such as inspire_common:MetadataUrl,
+                        // for example PDOK. See:
+                        // http://sourceforge.net/mailarchive/message.php?msg_id=28640690
                 };
             }
-        };        
+        };
     }
+    //</editor-fold>
     
+    // <editor-fold desc="Updating">
+    /**
+     * Reload the WMS capabilities metadata and update this entity if it is 
+     * changed. If {@link #getOverrideUrl()} is false, will pickup URL changes
+     * from the service.
+     */
     @Override
     public UpdateResult update() {
         
         initLayerCollectionsForUpdate();
         final UpdateResult result = new UpdateResult(this);
-                
+        
         try {
             Map params = new HashMap();
             params.put(PARAM_OVERRIDE_URL, getOverrideUrl());
             params.put(PARAM_USERNAME, getUsername());
             params.put(PARAM_PASSWORD, getPassword());
             WMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
-
+            
             if(!getUrl().equals(update.getUrl())) {
                 this.setUrl(update.getUrl());
                 result.changed();
@@ -273,16 +269,18 @@ public class WMSService extends GeoService implements Updatable {
         }
         return result;
     }
-    
+
+    /**
+     * Internal update method for layers. Update result.layerStatus() which 
+     * currently has all layers set to MISSING. New layers are set to NEW, with 
+     * a clone plucked from the updated service tree. Existing layers are set to 
+     * UNMODIFIED or UPDATED (Layer entities modified)
+     * <p>
+     * Duplicate layers are not updated (will be removed later).
+     * <p>
+     * Grouping layers (no name) are ignored.
+     */
     private void updateLayers(final WMSService update, final UpdateResult result) {
-        // Update result.layerStatus() which currently has all layers set
-        // to MISSING. 
-        // New layers are set to NEW, with a clone plucked from the updated service tree
-        // Existing layers are set to UNMODIFIED or UPDATED (Layer entities modified).
-        
-        // Duplicate layers are not updated
-        
-        // Grouping layers (no name) are ignored
         
         update.getTopLayer().accept(new Layer.Visitor() {
             @Override
@@ -293,25 +291,25 @@ public class WMSService extends GeoService implements Updatable {
                 }
                 
                 MutablePair<Layer,UpdateResult.Status> layerStatus = result.getLayerStatus().get(l.getName());
-
+                
                 if(layerStatus == null) {
-                    // New layer, pluck a copy from the tree that will be made 
+                    // New layer, pluck a copy from the tree that will be made
                     // persistent.
-                    // Plucking a clone is necessary because the children 
-                    // and parent will be set on this instance later on and we 
+                    // Plucking a clone is necessary because the children
+                    // and parent will be set on this instance later on and we
                     // need the original children to traverse the updated service
                     // tree while doing that
                     l = l.pluckCopy();
                     result.getLayerStatus().put(l.getName(), new MutablePair(l, UpdateResult.Status.NEW));
                 } else {
-
+                    
                     if(layerStatus.getRight() != UpdateResult.Status.MISSING) {
                         // Already processed, ignore duplicate layer
                         return true;
                     }
-
+                    
                     Layer old = layerStatus.getLeft();
-
+                    
                     // Pluck from old tree
                     old.setParent(null);
                     old.getChildren().clear();
@@ -332,8 +330,20 @@ public class WMSService extends GeoService implements Updatable {
         });
     }
     
+    /**
+     * Update the tree structure of Layers by following the tree structure and
+     * setting the parent and children accordingly. Reuses entities for layers
+     * which are UNMODIFIED or UPDATED and inserts new entities for NEW layers.
+     * <p>
+     * Because virtual layers with null name cannot be updated, those are always
+     * recreated and user set properties are lost, except those set on the top
+     * layer which are preserved.
+     * <p>
+     * Interface should disallow setting user properties (especially authorizations)
+     * on virtual layers.
+     */
     private void updateLayerTree(final WMSService update, final UpdateResult result) {
-
+        
         Layer newTopLayer;
         
         String topLayerName = update.getTopLayer().getName();
@@ -345,10 +355,10 @@ public class WMSService extends GeoService implements Updatable {
             newTopLayer = result.getLayerStatus().get(topLayerName).getLeft();
         }
         
-        // Copy user set stuff over from old toplayer, even if name was changed 
+        // Copy user set stuff over from old toplayer, even if name was changed
         // or topLayer has no name
         newTopLayer.copyUserModifiedProperties(getTopLayer());
-
+        
         newTopLayer.setParent(null);
         newTopLayer.setService(this);
         newTopLayer.getChildren().clear();
@@ -356,11 +366,13 @@ public class WMSService extends GeoService implements Updatable {
         
         // Do a breadth-first traversal to set the parent and fill the children
         // list of all layers.
-        // For the breadth-first traversal save layers from updated service to 
+        // For the breadth-first traversal save layers from updated service to
         // visit with their (possibly persistent) parent layers from this service
         
+        // XXX why did we need BFS?
+        
         Queue<Pair<Layer,Layer>> q = new LinkedList();
-
+        
         // Start at children of topLayer from updated service, topLayer handled
         // above
         for(Layer child: update.getTopLayer().getChildren()) {
@@ -395,7 +407,7 @@ public class WMSService extends GeoService implements Updatable {
                     visitedLayerNames.add(layerName);
                 }
             }
-
+            
             if(thisLayer != null) {
                 thisLayer.setService(this);
                 thisLayer.setParent(parent);
@@ -423,23 +435,120 @@ public class WMSService extends GeoService implements Updatable {
                 Stripersist.getEntityManager().remove(p.getLeft());
             }
         }
+    }
+    //</editor-fold>
+    
+    //<editor-fold desc="DescribeLayer and WFS">
+    /**
+     * Do a DescribeLayer request and put the response LayerDescription in a map
+     * keyed by WFS URL
+     * @param wms WebMapServer to get the DescribeLayer response from
+     * @return A map keyed with the WFS URL containing LayerDescriptions for that WFS
+     *   or null if something went wrong (non-fatal - warning logged)
+     */
+    private static Map<String,List<LayerDescription>> getDescribeLayerPerWFS(WebMapServer wms) {
+        StringBuffer layers = new StringBuffer();
+        DescribeLayerResponse dlr = null;
+        try {
+            getAllNonVirtualLayers(layers, wms.getCapabilities().getLayer());
+            
+            DescribeLayerRequest dlreq = wms.createDescribeLayerRequest();
+            dlreq.setLayers(layers.toString());
+            
+            log.debug("Issuing DescribeLayer request for WMS " + wms.getInfo().getSource().toString() + " with layers=" + layers);
+            dlr = wms.issueRequest(dlreq);
+        } catch(Exception e) {
+            log.warn("DescribeLayer request failed for layers " + layers + " on service " + wms.getInfo().getSource().toString(), e);
+        }
         
+        if(dlr == null) {
+            return null;
+        }
+        
+        Map<String,List<LayerDescription>> layerDescByWfs = new HashMap<String,List<LayerDescription>>();
+        
+        for(LayerDescription ld: dlr.getLayerDescs()) {
+            log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, typeNames=%s",
+                    ld.getName(),
+                    ld.getWfs(),
+                    Arrays.toString(ld.getQueries())
+                    ));
+            if(ld.getWfs() != null && ld.getQueries() != null && ld.getQueries().length != 0) {
+                List<LayerDescription> lds = layerDescByWfs.get(ld.getWfs().toString());
+                if(lds == null) {
+                    lds = new ArrayList<LayerDescription>();
+                    layerDescByWfs.put(ld.getWfs().toString(), lds);
+                }
+                lds.add(ld);
+            }
+        }
+        return layerDescByWfs;
     }
     
-    private void getAllNonVirtualLayers(StringBuffer sb, Layer l) {
-        if(!l.isVirtual()) {
+    /**
+     * Get all non-virtual layers for the DescribeLayer request (layer with a
+     * name is non-virtual).
+     * @param sb StringBuffer building the LAYERS parameter for DescribeLayer
+     * @param l the top layer
+     */
+    private static void getAllNonVirtualLayers(StringBuffer sb, org.geotools.data.ows.Layer l) {
+        if(l.getName() != null) {
             if(sb.length() > 0) {
                 sb.append(",");
             }
             sb.append(l.getName());
         }
-        for(Layer child: l.getChildren()) {
+        for(org.geotools.data.ows.Layer child: l.getChildren()) {
             getAllNonVirtualLayers(sb, child);
         }
     }
-
-    @Override
-    public String toString() {
-        return String.format("WMS service \"%s\" at %s", getName(), getUrl());
+    
+    /**
+     * Set feature types for layers in the WMSService from the given WFS according
+     * to the DescribeLayer response. When errors occur these are logged but no
+     * exception is thrown. Note: DescribeLayer may return multiple type names
+     * for a layer, this is not supported - only the first one is used.
+     * @param wfsUrl the WFS URL
+     * @param layerDescriptions description of which feature types of the WFS are
+     *   used in layers of this service according to DescribeLayer
+     */
+    public void loadLayerFeatureTypes(String wfsUrl, List<LayerDescription> layerDescriptions) {
+        Map p = new HashMap();
+        p.put(WFSDataStoreFactory.URL.key, wfsUrl);
+        p.put(WFSDataStoreFactory.USERNAME.key, getUsername());
+        p.put(WFSDataStoreFactory.PASSWORD.key, getPassword());
+        
+        try {
+            WFSFeatureSource wfsFs = new WFSFeatureSource(p);
+            wfsFs.loadFeatureTypes();
+            
+            boolean used = false;
+            for(LayerDescription ld: layerDescriptions) {
+                Layer l = getLayer(ld.getName());
+                if(l != null) {
+                    if(ld.getQueries().length != 1) {
+                        log.debug("Cannot handle multiple typeNames for this layer, only using the first");
+                    }
+                    SimpleFeatureType sft = wfsFs.getFeatureType(ld.getQueries()[0]);
+                    if(sft != null) {
+                        l.setFeatureType(sft);
+                        log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
+                        used = true;
+                    }
+                }
+            }
+            if(used) {
+                log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS");
+                
+                wfsFs.setName(FeatureSource.findUniqueName(getName()));
+                wfsFs.setLinkedService(this);
+                log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
+            } else {
+                log.debug("No type from WFSFeatureSource with url " + wfsUrl + " used!");
+            }
+        } catch(Exception e) {
+            log.error("Error loading WFS from url " + wfsUrl, e);
+        }
     }
+    //</editor-fold>
 }
