@@ -63,7 +63,7 @@ Ext.define ("viewer.components.Print",{
         });
         
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
-        
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
         
         return this;
@@ -76,6 +76,16 @@ Ext.define ("viewer.components.Print",{
             this.loadLegend(layer);
         }else{
            this.removeLegend(layer);
+        }
+    },
+    /**/
+    layerAdded: function (map,object){
+        var layer = object.layer;
+        var vis = layer.getVisible();
+        if (vis){
+            this.loadLegend(layer);
+        }else{
+            this.removeLegend(layer);
         }
     },
     /**
@@ -100,7 +110,12 @@ Ext.define ("viewer.components.Print",{
         //make the var ready, so we now it's loading.
         this.legends[appLayer.id]={};
         var me = this;
-        this.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){me.addLegend(appLayer,legendObject)},function(appLayer){me.failLegend(appLayer)});
+        this.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){
+                me.addLegend(appLayer,legendObject)
+            },
+            function(appLayer){
+                me.failLegend(appLayer)
+            });
         
         /*if (url!=null){
             var legend = {
