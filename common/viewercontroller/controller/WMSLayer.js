@@ -27,12 +27,26 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
     },
     
     /** 
-     * Get info as specified by ViewerController.getLayerLegendInfo() 
-     * Exceptions to be catched by the caller.
+     * Get info as specified by ViewerController.getLayerLegendInfo()  
+     * @see viewer.viewercontroller.controller.Layer#getLayerLegendInfo
      */
     getLayerLegendInfo: function(success, failure) {
         // XXX service may not support GETLEGENDGRAPHIC
-        success({ url: this.getLegendGraphic() });
+        var name=this.id;
+        if (this.appLayerId){
+            var appLayer=this.viewerController.getAppLayerById(this.appLayerId);
+            name=appLayer.alias;
+        }
+        success({
+            name: name,
+            parts: [
+                {
+                    //label: no label? only one per layer for WMS.
+                    url: this.getLegendGraphic() 
+                }
+            ]
+            
+        });
     },
     
     getLegendGraphic : function () {
