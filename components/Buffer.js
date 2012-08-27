@@ -26,6 +26,7 @@ Ext.define ("viewer.components.Buffer",{
     imageLayers:null,
     colorPicker:null,
     color:null,
+    panel: null,
     config: {
         layers:null,
         title:null,
@@ -57,12 +58,14 @@ Ext.define ("viewer.components.Buffer",{
             this.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
         }
     },
-    buttonClick : function (){        
-        this.loadWindow();
+    buttonClick : function (){ 
+        if (this.panel ==null){
+            this.loadWindow();
+        }
         this.layerSelector.initLayers();
         this.popup.show();
     },
-    loadWindow : function(){
+    loadWindow : function(){        
         var me = this;
         this.radius = Ext.create("Ext.form.field.Text",{
             name: "straal" ,
@@ -118,7 +121,7 @@ Ext.define ("viewer.components.Buffer",{
         });
         
         var layerSelectorId = Ext.id();
-        Ext.create ("Ext.container.Container",{
+        this.panel = Ext.create ("Ext.container.Container",{
             id: this.name +"Container",
             renderTo : this.getContentDiv(),
             margin: '0px 0px 0px 10px',
