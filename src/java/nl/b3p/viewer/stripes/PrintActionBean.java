@@ -99,19 +99,19 @@ public class PrintActionBean implements ActionBean {
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
         }
-        /* !!!!temp skip the legend, WIP
+        /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
                 ArrayList<Legend> legends= new ArrayList<Legend>();
                 JSONArray jarray=jRequest.getJSONArray("legendUrl");
                 for (int i=0; i < jarray.length();i++){
-                    JSONObject legendJson = jarray.getJSONObject(i);
+                    JSONObject legendJson = new JSONObject(jarray.getString(i));
                     Legend legend = new Legend(legendJson);   
                     legends.add(legend);
                 }
                 info.setLegendUrls(legends);
             }
-        }*/
+        }
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;

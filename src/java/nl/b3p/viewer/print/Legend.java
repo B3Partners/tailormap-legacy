@@ -34,7 +34,7 @@ import org.json.JSONObject;
 @XmlType(propOrder = {"name","legendParts"})
 public class Legend {
     private String name;
-    private ArrayList<LegendPart> legendParts;
+    private ArrayList<LegendPart> legendParts=null;
 
     public Legend(){}
     public Legend(JSONObject json) throws JSONException {
@@ -46,6 +46,7 @@ public class Legend {
             for (int i=0; i < jsonParts.length(); i++){
                 JSONObject jsonPart = jsonParts.getJSONObject(i);
                 LegendPart legendPart = new LegendPart(jsonPart);
+                this.addLegendpart(legendPart);
             }
         }
     }
@@ -66,5 +67,12 @@ public class Legend {
 
     public void setLegendParts(ArrayList<LegendPart> legendParts) {
         this.legendParts = legendParts;
+    }
+    
+    public void addLegendpart(LegendPart legendPart){
+        if (this.getLegendParts() == null){
+            this.setLegendParts(new ArrayList<LegendPart>());
+        }
+        this.legendParts.add(legendPart);
     }
 }
