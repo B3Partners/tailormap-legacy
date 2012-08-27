@@ -169,19 +169,21 @@ public class WMSService extends GeoService implements Updatable {
             
             Map<String,List<LayerDescription>> layerDescByWfs = getDescribeLayerPerWFS(wms);
             
-            status.setProgress(80);
-            String action = "Gerelateerde WFS bron inladen...";
-            
-            String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
-            for(int i = 0; i < wfses.length; i++) {
-                String wfsUrl = wfses[i];
-                
-                String wfsAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
-                status.setCurrentAction(wfsAction);
-                
-                List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
-                
-                loadLayerFeatureTypes(wfsUrl, layerDescriptions);
+            if(layerDescByWfs != null) {
+                status.setProgress(80);
+                String action = "Gerelateerde WFS bron inladen...";
+
+                String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
+                for(int i = 0; i < wfses.length; i++) {
+                    String wfsUrl = wfses[i];
+
+                    String wfsAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
+                    status.setCurrentAction(wfsAction);
+
+                    List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
+
+                    loadLayerFeatureTypes(wfsUrl, layerDescriptions);
+                }
             }
         }
     }
