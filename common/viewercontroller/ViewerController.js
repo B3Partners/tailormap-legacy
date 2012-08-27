@@ -819,16 +819,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * The success function is called with the given appLayer argument and a 
      * Object argument with the following properties:
      * 
-     * for WMS services:
-     * url: String, legend image URL which may include a label in the image, 
-     *      unknown size - may include many parts in a tall image. 
-     * 
-     * for ArcGIS services, a legend of multiple parts:
-     * name: String, server provided label for the legend of this layer
+     * name: optional String, server provided label for the legend of this layer
      * parts: Array of:
-     *   label: String, label for legend part
-     *   url: String, URL for image, usually provided as data: protocol base64
-     *        encoded image 27x27 PNG (no label) by ArcGIS
+     *   label: optional String, label for legend part
+     *   url: String, URL for image, may be provided as data: protocol base64
+     *        encoded image by ArcGIS
      */
     getLayerLegendInfo: function(appLayer, success, failure) {
         
@@ -838,7 +833,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // Check override by service admin
             var serviceLayer = this.getServiceLayer(appLayer);
             if(serviceLayer.legendImageUrl) {
-                success(appLayer, { url: serviceLayer.legendImageUrl });
+                success(appLayer, { parts: [ {url: serviceLayer.legendImageUrl}] });
                 return;
             }
             
