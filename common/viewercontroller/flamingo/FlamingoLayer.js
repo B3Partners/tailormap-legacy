@@ -103,14 +103,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         }
         //viewer.viewercontroller.controller.Layer.superclass.addListener.call(this,event,handler,scope);
     },
-    setVisible : function (visible){        
+    setVisible : function (visible){  
+        this.visible = visible;
+        
+        if (this.options!=null){
+            this.options["visible"] = visible;
+        }
+              
         if (this.map !=null){
             this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setVisible", visible);
         }
-        this.visible = visible;
-        
-        if (this.options!=null)
-            this.options["visible"] = visible;
     },
     /**
      * Get the visibility
