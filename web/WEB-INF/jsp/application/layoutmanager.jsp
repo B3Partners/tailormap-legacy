@@ -39,6 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:set var="maxHeight" value="${actionBean.application.details.maxHeight}" />
             </c:if>
             <div id="layoutManagerApplicationSettings">
+                <button id="savebutton">Opslaan</button>            
                 Maximale breedte: <input id="app_max_width" type="text" name="app_max_width" value="${maxWidth}" /> px | Maximale hoogte: <input id="app_max_height" type="text" name="app_max_height" value="${maxHeight}" /> px
                 <a href="#Toevoegen_Componenten_Layout_Help" title="Help" class="helplink"></a>
             </div>
@@ -75,7 +76,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 <iframe id="configPage" style="width: 100%; height: 100%; border: 0px none; display: none;" frameborder="0" src=""></iframe>
             </div>
-            <button id="savebutton">Opslaan</button>
         </div>
 
         <script type="text/javascript">            
