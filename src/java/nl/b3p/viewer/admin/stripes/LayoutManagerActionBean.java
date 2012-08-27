@@ -351,7 +351,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     @Before(stages = {LifecycleStage.HandlerResolution})
     public void getComponentList() {
         components = new JSONArray();
-        for (String cn : ComponentRegistry.getInstance().getSortedComponentClassNameList()) {
+        for (String cn : ComponentRegistry.getInstance().getClassNameListSortedByDisplayName()) {
             components.put(ComponentRegistry.getInstance().getViewerComponent(cn).getMetadata());
         }
     }
