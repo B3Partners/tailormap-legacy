@@ -29,6 +29,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
@@ -193,7 +194,8 @@ public class EditFeatureActionBean  implements ActionBean {
                 }
                 f.setDefaultGeometry(g);
             } else {
-                f.setAttribute(ad.getLocalName(), jsonFeature.opt(ad.getLocalName()));
+                String v = jsonFeature.optString(ad.getLocalName());
+                f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));
             }
         }      
 
@@ -240,7 +242,8 @@ public class EditFeatureActionBean  implements ActionBean {
                         } 
                         values.add(g);
                     } else {
-                        values.add(jsonFeature.get(attribute));
+                        String v = jsonFeature.getString(attribute);
+                        values.add(StringUtils.defaultIfBlank(v, null));                        
                     }
                 } else {
                     log.warn(String.format("Attribute \"%s\" not in feature type; ignoring", attribute));
