@@ -162,6 +162,10 @@ public class Layer implements Cloneable {
     }
     
     protected void update(Layer update) {
+        update(update, null);
+    }
+    
+    protected void update(Layer update, Set<String> additionalUpdatableDetails) {
         if(!getName().equals(update.getName())) {
             throw new IllegalArgumentException("Cannot update layer with properties from layer with different name!");
         }
@@ -186,9 +190,16 @@ public class Layer implements Cloneable {
             keywords.addAll(update.keywords);
         }
         
+        // updateableDetails maps are used for clearing only details which are 
+        // set by loading metadata, leave details set by other code alone
+        
         for(String s: updatableDetails) {
             details.remove(s);
         }
+        for(String s: additionalUpdatableDetails) {
+            details.remove(s);
+        }        
+        // update all metadata loaded details
         details.putAll(update.getDetails());
         
         legendImageUrl = update.legendImageUrl;

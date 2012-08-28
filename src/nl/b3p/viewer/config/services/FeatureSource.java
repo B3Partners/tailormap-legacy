@@ -207,4 +207,22 @@ public abstract class FeatureSource {
         }  
         return name;
     }
+    
+    public SimpleFeatureType addOrUpdateFeatureType(String typeName, SimpleFeatureType newType) {
+        SimpleFeatureType old = getFeatureType(typeName);
+        if(old != null) {
+            old.update(newType);
+            return old;
+        }
+
+        newType.setFeatureSource(this);
+        getFeatureTypes().add(newType);
+        
+        return newType; 
+    }
+    
+    public void removeFeatureType(SimpleFeatureType featureType) {
+        Stripersist.getEntityManager().remove(featureType);
+        getFeatureTypes().remove(featureType);
+    }
 }

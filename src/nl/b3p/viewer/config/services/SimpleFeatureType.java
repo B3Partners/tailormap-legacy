@@ -29,6 +29,7 @@ import org.json.JSONObject;
  */
 @Entity
 @Table(name="feature_type")
+@org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class SimpleFeatureType {
     public static final int MAX_FEATURES_DEFAULT = 250;
     public static final int MAX_FEATURES_UNBOUNDED = -1;
@@ -141,6 +142,21 @@ public class SimpleFeatureType {
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(int timeout) throws Exception {
         return featureSource.openGeoToolsFeatureSource(this, timeout);
     }    
+    
+    public void update(SimpleFeatureType update) {
+        if(!getTypeName().equals(update.getTypeName())) {
+            throw new IllegalArgumentException("Cannot update feature type with properties from feature type with different type name!");
+        }        
+
+        description = update.description;
+        writeable = update.writeable;
+        geometryAttribute = update.geometryAttribute;
+        
+        if(!attributes.equals(update.attributes)) {
+            attributes.clear();
+            attributes.addAll(update.attributes);
+        }                
+    }
     
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();

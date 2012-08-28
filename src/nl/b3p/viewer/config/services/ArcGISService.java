@@ -23,11 +23,14 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.ows.HTTPClient;
 import org.geotools.data.ows.SimpleHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -35,7 +38,9 @@ import org.json.JSONObject;
  */
 @Entity
 @DiscriminatorValue(ArcGISService.PROTOCOL)
-public class ArcGISService extends GeoService {
+public class ArcGISService extends GeoService implements Updatable {
+    private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(ArcGISService.class);
+   
     public static final String PROTOCOL = "arcgis";
 
     public static final String PARAM_USERNAME = "username";
@@ -67,6 +72,15 @@ public class ArcGISService extends GeoService {
         "Annotation Layer" // not sure about this one...
     })));
     
+    private static Set<String> additionalUpdatableDetails = new HashSet<String>(Arrays.asList(new String[] { 
+        DETAIL_TYPE,
+        DETAIL_DESCRIPTION,
+        DETAIL_GEOMETRY_TYPE,
+        DETAIL_CAPABILITIES,
+        DETAIL_DEFAULT_VISIBILITY,
+        DETAIL_DEFINITION_EXPRESSION
+    }));        
+             
     private static JSONObject issueRequest(String url, HTTPClient client) throws Exception {
         return new JSONObject(IOUtils.toString(client.get(new URL(url)).getResponseStream(), "UTF-8"));
     }
@@ -77,6 +91,10 @@ public class ArcGISService extends GeoService {
     private String currentVersion;
     @Transient
     private int currentVersionMajor;
+    @Transient
+    private SortedMap<String,Layer> layersById;
+    @Transient
+    private Map<String,List<String>> childrenByLayerId;
     
     //<editor-fold defaultstate="collapsed" desc="Loading service metadata from ArcGIS">
     @Override
@@ -162,10 +180,10 @@ public class ArcGISService extends GeoService {
         top.setVirtual(true);
         top.setTitle("Layers");
         top.setService(this);
+        setTopLayer(top);
         
-        Map<String,Layer> layersById = new HashMap();
-        Map<String,List<String>> childrenByLayerId = new HashMap();
-        List<Layer> allLayers = new ArrayList();
+        layersById = new TreeMap();
+        childrenByLayerId = new HashMap();
         
         if(currentVersionMajor >= 10) {
             // info is the MapServer/layers response, all layers JSON info
@@ -176,7 +194,6 @@ public class ArcGISService extends GeoService {
                 
                 Layer l = parseArcGISLayer(layer, this, fs, childrenByLayerId);
                 layersById.put(l.getName(), l);
-                allLayers.add(l);
             }
         } else {
             // In 9.x, request needed for each layer
@@ -189,15 +206,21 @@ public class ArcGISService extends GeoService {
                 
                 Layer l = parseArcGISLayer(layer, this, fs, childrenByLayerId);
                 layersById.put(l.getName(), l);
-                allLayers.add(l);
                 status.setProgress((int)Math.round( 100.0/(layerCount+1) * i+2 ));
             }
         }
         
-        /* 2nd pass: fill children list and parent references */
-        /* children of top layer is special because those have parentLayerId -1 */
-        
-        for(Layer l: allLayers) {
+        setLayerTree(layersById);
+       
+        // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
+        if(!fs.getFeatureTypes().isEmpty()) {
+            fs.setName(FeatureSource.findUniqueName(getName()));
+        }
+    }
+    
+    private void setLayerTree(Map<String,Layer> layersById) {
+        /* fill children list and parent references */
+        for(Layer l: layersById.values()) {
             List<String> childrenIds = childrenByLayerId.get(l.getName());
             if(childrenIds != null) {
                 for(String childId: childrenIds) {
@@ -210,19 +233,14 @@ public class ArcGISService extends GeoService {
             }
         }
         
-        for(Layer l: allLayers) {
+        /* children of top layer is special because those have parentLayerId -1 */
+        getTopLayer().getChildren().clear();
+        for(Layer l: layersById.values()) {
             if(l.getParent() == null) {
-                top.getChildren().add(l);
-                l.setParent(top);
+                getTopLayer().getChildren().add(l);
+                l.setParent(getTopLayer());
             }
-        }
-        
-        setTopLayer(top);
-        
-        // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
-        if(!fs.getFeatureTypes().isEmpty()) {
-            fs.setName(FeatureSource.findUniqueName(getName()));
-        }
+        }        
     }
     
     private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Map<String,List<String>> childrenByLayerId) throws JSONException {
@@ -334,6 +352,140 @@ public class ArcGISService extends GeoService {
         
         return l;
     }
+    //</editor-fold>
+    
+    //<editor-fold desc="Updating">
+    @Override
+    public UpdateResult update() {
+        
+        initLayerCollectionsForUpdate();
+        
+        final UpdateResult result = new UpdateResult(this);
+        
+        try {
+            
+            Map params = new HashMap();
+            params.put(PARAM_USERNAME, getUsername());
+            params.put(PARAM_PASSWORD, getPassword());
+
+            ArcGISService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
+
+            getDetails().put(DETAIL_CURRENT_VERSION, update.getDetails().get(DETAIL_CURRENT_VERSION));
+            
+            // Our virtual top layer doesn't have to be updated unless we put 
+            // extra stuff from the metadata in it
+            
+            // Remove old stuff from before GeoService.details was added
+            getTopLayer().getDetails().remove(DETAIL_CURRENT_VERSION);
+            
+            // Find auto-linked FeatureSource (manually linked feature sources
+            // not updated automatically) (TODO: maybe provide option to do that)
+            ArcGISFeatureSource linkedFS = null;
+            try {
+                linkedFS = (ArcGISFeatureSource)Stripersist.getEntityManager().createQuery(
+                    "from FeatureSource where linkedService = :this")
+                    .setParameter("this", this)
+                    .getSingleResult();
+            } catch(NoResultException nre) {
+                // linked FeatureSource was removed by user
+            }
+                
+            updateLayers(update, linkedFS, result);
+            
+            removeOrphanLayersAfterUpdate(result);
+
+            if(linkedFS.getFeatureTypes().isEmpty()) {
+                log.debug("Linked ArcGISFeatureSource has no type names anymore, removing it");
+                Stripersist.getEntityManager().remove(linkedFS);
+            }
+            
+        } catch(Exception e) {
+            result.failedWithException(e);
+        } 
+        return result;
+    }
+    
+    private void updateLayers(final ArcGISService update, final ArcGISFeatureSource linkedFS, final UpdateResult result) {
+        /* This is a lot simpler than WMS, because layers always have an id
+         * (name in WMS and our Layer object)
+         */
+        
+        Map<String,Layer> updatedLayersById = new HashMap();
+        
+        SimpleFeatureType ft;
+        
+        for(Layer updateLayer: update.layersById.values()) {
+            
+            MutablePair<Layer,UpdateResult.Status> layerStatus = result.getLayerStatus().get(updateLayer.getName());
+            Layer updatedLayer = null;
+            
+            if(layerStatus == null) {
+                // New layer
+                ft = updateLayer.getFeatureType();
+                if(updateLayer.getFeatureType() != null) {
+                    
+                    if(linkedFS != null) {
+                        linkedFS.addOrUpdateFeatureType(updateLayer.getName(), ft);
+                    } else {
+                        // New FeatureSource to be persisted, already has unique name
+                        ft.getFeatureSource().setLinkedService(this); 
+                    }
+                }
+                result.getLayerStatus().put(updateLayer.getName(), new MutablePair(updateLayer, UpdateResult.Status.NEW));
+
+                updatedLayer = updateLayer;
+            } else {
+                
+                assert(layerStatus.getRight() == UpdateResult.Status.MISSING);
+                
+                Layer old = layerStatus.getLeft();
+                
+                old.setParent(null);                
+                old.update(updateLayer, additionalUpdatableDetails);
+                
+                // Update feature type
+                if(updateLayer.getFeatureType() == null) {
+                    // If was set before the old feature type will be removed 
+                    // later when all orphan MISSING layers are removed
+                    old.setFeatureType(null);
+                } else {
+                    if(linkedFS != null) {
+                        ft = linkedFS.addOrUpdateFeatureType(updateLayer.getName(), updateLayer.getFeatureType());
+                    } else {
+                        ft = updateLayer.getFeatureType();  
+                        // New FeatureSource to be persisted, already has unique name
+                        ft.getFeatureSource().setLinkedService(this);
+                    }
+                    old.setFeatureType(ft);
+                }   
+                
+                layerStatus.setRight(UpdateResult.Status.UNMODIFIED);     
+                updatedLayer = old;
+            }
+            
+            updatedLayersById.put(updateLayer.getName(), updatedLayer);
+        }     
+        
+        setLayerTree(updatedLayersById);
+    }    
+    
+    private void removeOrphanLayersAfterUpdate(UpdateResult result) {
+
+        assert(result.getDuplicateOrNoNameLayers().size() == 1);
+        assert(result.getDuplicateOrNoNameLayers().get(0) == getTopLayer());
+        
+        // Remove old layers from this service which are missing from updated
+        // service
+        for(Pair<Layer,UpdateResult.Status> p: result.getLayerStatus().values()) {
+            if(p.getRight() == UpdateResult.Status.MISSING) {
+                Layer removed = p.getLeft();
+                if(removed.getFeatureType() != null) {
+                    removed.getFeatureType().getFeatureSource().removeFeatureType(removed.getFeatureType());
+                }
+                Stripersist.getEntityManager().remove(removed);
+            }
+        }
+    }    
     //</editor-fold>
     
     //<editor-fold desc="Add currentVersion to toJSONObject()">
