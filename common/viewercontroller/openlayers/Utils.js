@@ -304,3 +304,43 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
     CLASS_NAME: "OpenLayers.Control.LoadingPanel"
 
 });
+
+/**
+ * Create a Click controller
+ * @param options
+ * @param options.handlerOptions options passed to the OpenLayers.Handler.Click
+ * @param options.click the function that is called on a single click (optional)
+ * @param options.dblclick the function that is called on a dubble click (optional)
+ */
+OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
+    defaultHandlerOptions: {
+        'single': true,
+        'double': false,
+        'stopSingle': false,
+        'stopDouble': false
+    },
+    initialize: function(options) {
+        this.handlerOptions = OpenLayers.Util.extend(
+            {}, this.defaultHandlerOptions
+        );
+        OpenLayers.Control.prototype.initialize.apply(
+            this, arguments
+        );
+        if (options.click){
+            this.onClick=options.click;
+        }
+        if (options.dblclick){
+            this.onDblclick=options.dblclick;
+        }
+        this.handler = new OpenLayers.Handler.Click(
+            this, {
+                'click': this.onClick,
+                'dblclick': this.onDblclick 
+            }, this.handlerOptions
+        );
+    },
+    onClick: function(evt) {        
+    },
+    onDblclick: function(evt) {          
+    }
+});

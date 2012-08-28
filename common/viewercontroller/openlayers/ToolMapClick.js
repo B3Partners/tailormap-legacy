@@ -44,17 +44,15 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         this.scope = conf.handler.scope;
         this.olMap=this.viewerController.mapComponent.getMap().getFrameworkMap();
         
-        //create a click control that handles only single click
-        this.clickControl = new OpenLayers.Control({
-            //create the click handler here the 'this' is the Control
-            handler : new OpenLayers.Handler.Click(this,{
-                    click: function(evt){
-                        me.handleClick(evt);
-                    }
-                },{
+        //create a click control that handles only single click        
+        this.clickControl = new OpenLayers.Control.Click({
+            handlerOptions: {
                 single: true,
                 "double": false
-                })
+            },
+            click: function(evt){
+                me.handleClick(evt)
+            }
         });
         this.olMap.addControl(this.clickControl);
         
