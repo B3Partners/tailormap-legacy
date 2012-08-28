@@ -399,6 +399,11 @@ public class GeoServiceActionBean implements ActionBean {
         }
         UpdateResult result = ((Updatable)service).update();
         
+        if(result.getStatus() == UpdateResult.Status.FAILED) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
+            return new ForwardResolution(JSP);
+        }
+        
         Map<UpdateResult.Status,List<String>> byStatus = result.getLayerNamesByStatus();
         
         log.info(String.format("Update layer stats: unmodified %d, updated %d, new %d, missing %d",
