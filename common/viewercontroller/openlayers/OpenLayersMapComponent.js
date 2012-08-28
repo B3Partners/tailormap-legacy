@@ -95,8 +95,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     createPanel : function (id){
         var panel= new OpenLayers.Control.Panel({
-            saveState: true,
-            allowDepress : true
+            saveState: true            
         });
         this.panel = panel;        
         this.maps[0].getFrameworkMap().addControl(this.panel);
