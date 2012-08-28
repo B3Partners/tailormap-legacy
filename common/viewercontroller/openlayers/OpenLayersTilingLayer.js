@@ -45,7 +45,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             type: this.extension,
             transitionEffect: "resize",
             maxExtent: new OpenLayers.Bounds(Number(serviceEnvelopeTokens[0]),Number(serviceEnvelopeTokens[1]),Number(serviceEnvelopeTokens[2]),Number(serviceEnvelopeTokens[3])),
-            maxResolution: this.resolutions[0]
+            maxResolution: this.resolutions[0],
+            visibility: this.visible==undefined ? true : this.visible
         }
         if (this.getProtocol()=="TMS"){
             //fix the url: example: "http://tilecache.kaartenbalie.nl/tilecache.cgi/1.0.0/osm/"

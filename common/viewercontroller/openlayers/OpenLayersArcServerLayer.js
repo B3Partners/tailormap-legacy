@@ -23,12 +23,14 @@
  **/
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersArcLayer",
-    constructor: function(config){
+    constructor: function(config){        
         viewer.viewercontroller.openlayers.OpenLayersArcServerLayer.superclass.constructor.call(this, config);        
         this.frameworkLayer = new OpenLayers.Layer.ArcGIS93Rest(this.name,this.url+"/export",{
             layers: "show: "+config.layers,
             transparent: 'true'
-        });        
+        },{
+            visibility: this.visible
+        });
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE;
     },
     /**

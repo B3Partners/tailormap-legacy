@@ -46,6 +46,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
             this.options.displayOutsideMaxExtent=true;
             this.options.alwaysInRange=true;
         }
+        //set the start visibility
+        this.options.visibility = this.visible;
+        
         var me=this;
         this.frameworkLayer = new OpenLayers.Layer.Image(
              this.name,
