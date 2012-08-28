@@ -1033,6 +1033,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         
         var visLayers = this.getVisibleLayers();
+        for (var i = visLayers.length-1; i >= 0 ; i--){
+            var appLayer = this.getAppLayerById(visLayers[i]);
+            //remove the layers that are added by user.
+            if (appLayer.status == "added"){
+                visLayers.splice(i,1);
+            }
+        }
         if(visLayers.length != 0 ){
             var layerParam = {
                 name: "layers", 
