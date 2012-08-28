@@ -63,6 +63,7 @@ public class ArcGISService extends GeoService {
     // without a type...
     public static final Set<String> NON_VIRTUAL_LAYER_TYPES = Collections.unmodifiableSet(new HashSet(Arrays.asList(new String[] {
         "Feature Layer",
+        "Raster Layer",
         "Annotation Layer" // not sure about this one...
     })));
     
