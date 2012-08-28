@@ -114,7 +114,7 @@ Ext.define ("viewer.components.Edit",{
                 xtype: "container",
                 padding: "4px",
                 width: '100%',
-                height: 36,
+                height: MobileManager.isMobile() ? 60 : 36,
                 items:[
                 {
                     xtype: 'button',
@@ -122,6 +122,7 @@ Ext.define ("viewer.components.Edit",{
                     disabled: true,
                     tooltip: "Nieuw",
                     text: "Nieuw",
+                    padding: MobileManager.isMobile() ? '10px' : '2px',
                     listeners: {
                         click:{
                             scope: me,
@@ -133,6 +134,7 @@ Ext.define ("viewer.components.Edit",{
                     xtype: 'button',
                     id : this.name + "editButton",
                     tooltip: "Bewerk",
+                    padding: MobileManager.isMobile() ? '10px' : '2px',
                     disabled: true,
                     text: "Bewerk",
                     listeners: {
@@ -161,10 +163,17 @@ Ext.define ("viewer.components.Edit",{
                 id: this.name + 'savePanel',
                 xtype: "container",
                 width: '100%',
-                height: 25,
+                height: MobileManager.isMobile() ? 45 : 30,
+                layout: {
+                    type: 'hbox',
+                    pack: 'end'
+                },
+                defaults: {
+                    xtype: 'button',
+                    padding: MobileManager.isMobile() ? '10px' : '2px'
+                },
                 items:[
                 {
-                    xtype: 'button',
                     id : this.name + "cancelButton",
                     tooltip: "Annuleren",
                     text: "Annuleren",
@@ -176,7 +185,6 @@ Ext.define ("viewer.components.Edit",{
                     }
                 },
                 {
-                    xtype: 'button',
                     id : this.name + "saveButton",
                     tooltip: "Opslaan",
                     text: "Opslaan",
