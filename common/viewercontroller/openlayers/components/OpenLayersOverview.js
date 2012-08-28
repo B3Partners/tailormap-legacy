@@ -53,7 +53,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         }else{
             bounds= maxBounds;
         }
-        var size=new OpenLayers.Size(""+this.height,""+this.width);
+        var size=new OpenLayers.Size(""+this.width,""+this.height);
         var layer =  new OpenLayers.Layer.Image(
             "OverviewLaag", 
             this.url,
