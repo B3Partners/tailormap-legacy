@@ -84,7 +84,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                     this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
                         if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
                             this.viewerController.setLayerVisible(me, true);
-                            ds.removeForcedLayer(layer.serviceId +"_"+ layer.layerName);
+                            ds.removeForcedLayer(appLayer);
                             
                         }
                     },this);
