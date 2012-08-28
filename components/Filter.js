@@ -31,77 +31,61 @@ Ext.define ("viewer.components.Filter",{
     attributeFilters : null,    
     id: null,
     container : null,
+	leftWidth: 150,
     config: {
-        width: null,
-        height: null,
         attributes:null,
-        logicOperator:null
+        logicOperator:null,
+		parentMainContainer:null
     },
     constructor: function(config){
-        this.initConfig(config); 
+        this.initConfig(config);
         this.id = Ext.id();
-        this.attributeFilters = new Array();
+		this.attributeFilters = [];
         this.attributeStore = Ext.create('Ext.data.Store', {
-            fields: ['id', 'title','value'],
+            fields: ['id', 'title', 'value'],
             data : this.attributes
         });
-
         this.attributeCombobox = Ext.create('Ext.form.ComboBox', {
             fieldLabel: '',
             store: this.attributeStore,
             queryMode: 'local',
             displayField: 'title',
-            valueField: 'value'
+            valueField: 'value',
+			width: this.leftWidth
         });
-        var add = Ext.create('Ext.Button', { 
-            text : '+',
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.addAttributeFilter
-                }
-            }
-        });
-        
-        var attribuutFilter = Ext.create("viewer.components.AttributeFilter",{
-            first:true,
+		var attribuutFilter = Ext.create("viewer.components.AttributeFilter",{
+            first: true,
             id: this.id,
-            number:1
+            number: 1
         });
         this.attributeFilters.push(attribuutFilter);
         var attributeFilterUI = attribuutFilter.getUI();
-        attributeFilterUI.add(add);
-        
-        var items = new Array();
-        items.push(this.attributeCombobox);
-        items.push(attributeFilterUI);
-        
-        var eersteAttribuutFilter =  Ext.create("Ext.container.Container",{
-            width:350,
-            height:25,
-            autoScroll:true,
-            layout: {
-                type: 'hbox',
-                align:'stretch'
-            },
-            items:  items
-        });
-      
-        var vitems = [eersteAttribuutFilter];
-       /* var vf = Ext.create('Ext.Button', { 
-            text : 'Verwijder filter',
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.cancel
-                }
-            }
-        });*/
-        this.container = Ext.create("Ext.form.FieldSet",{
-            height: 125,
-            width:380,
-            autoScroll:true,
-            items:  vitems
+        attributeFilterUI.add({ 
+			xtype: 'button',
+			text : '+',
+			width: 20,
+			listeners: {
+				click:{
+					scope: this,
+					fn: this.addAttributeFilter
+				}
+			}
+		});
+        var firstContainer =  Ext.create('Ext.container.Container', {
+			width: '100%',
+			height: 25,
+			layout: {
+				type: 'hbox',
+				align:'stretch'
+			},
+			items:  [
+				this.attributeCombobox,
+				attributeFilterUI
+			]
+		});
+		this.container = Ext.create("Ext.container.Container", {
+			width: '100%',
+			items: [ firstContainer ]
         });
         return this;
     },
@@ -113,32 +97,51 @@ Ext.define ("viewer.components.Filter",{
     },
     //Add a new attributefilter (to expand this filter)
     addAttributeFilter : function (){
-        var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
-            first:false,
-            id:this.id,
-            number:this.attributeFilters.length + 1
+        var me = this;
+		var filterContainer = Ext.create('Ext.container.Container', {
+			width: '100%',
+			height: 25,
+			layout: {
+				type: 'hbox',
+				align:'stretch'
+			},
+			items:  [
+				// left = leftwidth - 50 (or/and combobox of attributefilter)
+				{ xtype: 'container', width: (this.leftWidth - 50) },
+			]
+		});
+		var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
+            first: false,
+            id: this.id,
+            number: this.attributeFilters.length + 1
         });
-        var afUI = attributeFilter.getUI();
-        var remove = Ext.create('Ext.Button', { 
-            text : '-'
+        var attributeFilterUI = attributeFilter.getUI();
+        attributeFilterUI.add({ 
+            xtype: 'button',
+			text : '-',
+			width: 20,
+			listeners: {
+				click: function() {
+					me.removeAttributeFilter(attributeFilter, filterContainer)
+				}
+			}
         });
-        remove.addListener('click',this.removeAttributeFilter,this,attributeFilter);
-        afUI.add(remove);
-        
-        this.container.add(afUI);
+		filterContainer.add(attributeFilterUI);
+		filterContainer.doLayout();
+        this.container.add(filterContainer);
         this.attributeFilters.push(attributeFilter);
+		if(this.parentMainContainer) this.parentMainContainer.doLayout();
     },
-    removeAttributeFilter : function (button,event,attributeFilter){
-        var id = attributeFilter.container.id;
-        var node = Ext.get(id);
-        node.remove();
-        
+    removeAttributeFilter : function (attributeFilter, filterContainer){
         for ( var i = 0 ; i < this.attributeFilters.length;i++){
             var af = this.attributeFilters[i];
             if(af == attributeFilter){
                 this.attributeFilters.splice(i,1);
             }
         }
+		// We have to remove all items from the attribute filter due to some weird Ext bug
+		attributeFilter.removeItems();
+		this.container.remove(filterContainer.getId());
     },
     getUI : function (){
         return this.container;
@@ -152,8 +155,9 @@ Ext.define ("viewer.components.Filter",{
             cql += " " + this.logicOperator.getValue() + " ";
         }
         cql += "(";
+		var attribute = this.attributeCombobox.getValue();
+		if(attribute === null) return "";
         for(var i = 0 ; i < this.attributeFilters.length;i++){
-            var attribute = this.attributeCombobox.getValue();
             var af = this.attributeFilters[i];
             var type = this.getAttributeType(attribute);
             af.attribute = attribute;

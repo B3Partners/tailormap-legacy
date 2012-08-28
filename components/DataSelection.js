@@ -28,7 +28,6 @@ Ext.define ("viewer.components.DataSelection",{
     layerSelector:null,
     appLayer: null,
     filters:null,
-    filterActive:null,
     uniqueValuesAttributes : null,
     // 0 when the datatab is fully initialized, otherwise false
     itemsLoaded : null,
@@ -43,7 +42,11 @@ Ext.define ("viewer.components.DataSelection",{
         }
     },
     constructor: function (conf){
-        this.attributes =[];
+		// minimal width = 600
+		var minwidth = 600;
+        if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
+		
+		this.attributes =[];
         viewer.components.DataSelection.superclass.constructor.call(this, conf);
         this.filters = new Array();
         this.initConfig(conf); 
@@ -76,91 +79,104 @@ Ext.define ("viewer.components.DataSelection",{
     },
     loadWindow : function(){
         this.itemsLoaded = 0;
-        var config = {
-            viewerController : this.viewerController,
-            div: this.getContentDiv(),
-            layers : this.layers,
-            restriction: "filterable"
-        };
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
-   
-        // Make the tabs
-        this.tabpanel = Ext.create('Ext.tab.Panel', {
-            height: parseInt(this.details.height) - 100,
-            width: parseInt(this.details.width)-40,
-            hideMode: 'offsets',
-            autoScroll:true,
+		var layerSelectorId = Ext.id();
+        this.mainContent = Ext.create('Ext.container.Container', {
+            width: '100%',
+            height: '100%',
             layout: {
-                type: 'fit'
-            },            
-            tabBar:{
-                style: 'background:#fff;'
+                type: 'vbox',
+                align: 'stretch'
             },
             items: [
-            {
-                id   : 'filterTab',
-                title: 'Filter',// TODO Do renaming of variables dataselection-->filter
-                hideMode: 'offsets',
-                autoScroll:true,
-                html: "<div id='filterTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
-            },
-            {
-                id : "dataTab",
-                title: 'Dataselectie',// TODO Do renaming of variables filter->dataselection
-                hideMode: 'offsets',
-                autoScroll:true,
-                html: "<div id='dataTabDiv' style='width:100%; height=100%;overflow:auto;'></div>"
-            }
+				{
+					xtype: 'container',
+					height: 30,
+					html: '<div id="' + layerSelectorId + '" style="width: 100%; height: 100%;"></div>'
+				},
+                {
+                    xtype: 'tabpanel',
+                    id: this.name + 'TabPanel',
+                    flex: 1,
+                    width: '100%',
+                    hideMode: 'offsets',
+                    autoScroll: true,
+                    layout: {
+                        type: 'fit'
+                    },
+                    tabBar:{
+                        style: 'background: #fff;'
+                    },
+					defaults: {
+						style: {
+							padding: '5px'
+						},
+						border: false,
+						autoScroll: true
+					},
+                    items: [{
+                        xtype: 'panel',
+                        id: this.name + 'FilterTab',
+                        title: 'Filter',
+                        hideMode: 'offsets'
+                    },{
+                        xtype: 'panel',
+                        id: this.name + "DataTab",
+                        title: 'Dataselectie',
+                        hideMode: 'offsets'
+                    }],
+                    activeTab : this.name + "DataTab"
+                },
+                {
+                    xtype: 'container',
+                    height: 30,
+                    defaultType: 'button',
+					style: {
+						paddingTop: '5px'
+					},
+					layout: {
+						type: 'hbox',
+						pack: 'end'
+					},
+                    items: [{
+                        text: 'Toepassen',
+                        listeners: {
+                            click:{
+                                scope: this,
+                                fn: this.applyFilter
+                            }
+                        }
+                    },{
+                        text: 'Annuleren',
+                        listeners: {
+                            click:{
+                                scope: this,
+                                fn: this.cancel
+                            }
+                        }
+                    },{
+                        text: 'Reset',
+                        listeners: {
+                            click:{
+                                scope: this,
+                                fn: this.removeFilter
+                            }
+                        }
+                    }]
+                }
             ],
-            activeTab : "dataTab",
-            renderTo : this.getContentDiv()
+			renderTo: this.getContentDiv()
         });
-        
-        // Make panels in tabs and save them
-        this.dataTab = Ext.create('Ext.panel.Panel', {
-            autoScroll: true,
-            renderTo: 'dataTabDiv'
+        this.layerSelector = Ext.create("viewer.components.LayerSelector", {
+            viewerController : this.viewerController,
+            div: layerSelectorId,
+            layers : this.layers,
+            restriction: "filterable"
         });
-        
-        this.filterTab = Ext.create('Ext.panel.Panel', {
-            autoScroll: true,
-            renderTo: 'filterTabDiv'
-        });
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
+        this.tabPanel = Ext.getCmp(this.name + 'TabPanel');
+        this.dataTab = Ext.getCmp(this.name + 'FilterTab');
+        this.filterTab = Ext.getCmp(this.name + 'DataTab')
         this.createFilterTab();
-        // Make lower buttons
-        this.button1 = Ext.create('Ext.Button', { 
-            text : 'Toepassen',
-            renderTo: this.getContentDiv(),
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.applyFilter
-                }
-            }
-        });
-         
-        this.button2 = Ext.create('Ext.Button', { 
-            text : 'Annuleren',
-            renderTo: this.getContentDiv(),
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.cancel
-                }
-            }
-        });
-        
-        this.button3 = Ext.create('Ext.Button', { 
-            text : 'Reset',
-            renderTo: this.getContentDiv(),
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.removeFilter
-                }
-            }
-        });
     },
     createDataTab : function (appLayer){
         var attributes = appLayer.attributes;
@@ -195,7 +211,10 @@ Ext.define ("viewer.components.DataSelection",{
                     displayField: 'id',
                     valueField: 'id',
                     value : defaultVal,
-                    width: 400,
+                    width: 500,
+					style: {
+						marginTop: '5px'
+					},
                     emptyText:'Maak uw keuze',
                     store: {
                         fields: [{name:'id',convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}],
@@ -219,29 +238,31 @@ Ext.define ("viewer.components.DataSelection",{
         this.dataTab.add(dataSelectieAttributes);
         this.initMinMaxValues(minMaxAttrs,appLayer);
     },
-    
-    createFilterTab : function (){
+    createFilterTab : function () {
+        // Remove all filters (used when clicking reset)
         this.filterTab.removeAll();
-        this.filters = new Array();
-        // Add the button to the filtertab
-        var addFilter = Ext.create('Ext.Button', { 
-            text : 'Voeg filter toe',
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.addFilter
-                }
-            }
-        });        
-        this.filterTab.add(addFilter);
-        this.filterActive = Ext.create ("Ext.form.field.Checkbox",{
-            boxLabel  : 'Filter is actief',
-            name      : 'filterActive',
-            inputValue: true,
-            checked   : false
-                
-        });
-        this.filterTab.add(this.filterActive);
+        // Reset filters to empty array
+        this.filters = [];
+       
+		this.filterTab.add({
+			xtype: 'container',
+			width: '95%',
+			height: 25,
+			layout: {
+				type: 'hbox',
+				pack: 'end'
+			},
+			items: [{
+				// Add the checkbox to active filter
+				xtype: 'checkbox',
+				id: this.name + 'FilterActive',
+				boxLabel  : 'Filter is actief',
+				name      : 'filterActive',
+				inputValue: true,
+				checked   : false,
+				width: 200
+			}]
+		})
         // Add the first filter
         this.addFilter();
     },
@@ -288,7 +309,7 @@ Ext.define ("viewer.components.DataSelection",{
         var appLayer = this.layerSelector.getValue();
         if(this.uniqueValuesAttributes.length > 0){
             this.itemsLoaded++;
-            this.dataTab.getEl().mask("Laad unieke waardes...");
+            this.dataTab.setLoading("Laad unieke waardes...");
             Ext.Ajax.request({ 
                 url: actionBeans.unique, 
                 timeout: 240000,
@@ -321,19 +342,17 @@ Ext.define ("viewer.components.DataSelection",{
             var unique = values[attribute];
             this.addValuesToCombobox(unique, attribute);
         }
-        this.dataTab.getEl().unmask();
+        this.dataTab.setLoading(false);
         this.itemsLoaded--;        
     },
     addValuesToCombobox : function (values, attribute){
         var combobox = Ext.getCmp (attribute);
         if(combobox){   // In case there are more than one layer with dataselection fields. This method can be called with an attribute of layer 1, when layer 2 is initialized
             combobox.setDisabled(false);
-            combobox.getEl().unmask();
             var SingleArray = Ext.define('SingleArray', {
                 extend: 'Ext.data.Model',
                 fields: [{name: 'id'  , convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}]
             });
-
             var myReader = new Ext.data.reader.Array({
                 model: 'SingleArray'
             }, SingleArray);
@@ -346,42 +365,51 @@ Ext.define ("viewer.components.DataSelection",{
      *  Add a filter to the current filterlist.
      */
     addFilter : function (){
-        var logicOperator = null;
-        if(this.filters.length != 0){
-            var logicStore = Ext.create('Ext.data.Store', {
-                fields: ['id','title'],
-                data : [{
-                    id:"OR",
-                    title:"of"
-                }, {
-                    id:"AND",
-                    title:"en"
-                }]
-            });
-
+		var leftContainer = Ext.create('Ext.container.Container', {
+			xtype: 'container',
+			columnWidth: .2
+		});
+		var rightContainer = Ext.create('Ext.container.Container', {
+			xtype: 'container',
+			columnWidth: .8
+		});
+		var filterContainer = Ext.create('Ext.container.Container', {
+			width: '95%',
+			layout:'column',
+			items: [ leftContainer, rightContainer ],
+			style: {
+				overflow: 'visible'
+			}
+		});
+		var logicOperator = null;
+        if(this.filters.length != 0) {
             logicOperator = Ext.create('Ext.form.ComboBox', {
-                fieldLabel: '',
-                store: logicStore,
-                queryMode: 'local',
-                displayField: 'title',
-                width:50,
-                value:'OR',
-                valueField: 'id'
+                store: [ ['OR', 'of'], ['AND', 'en'] ],
+                width: 50,
+                value: 'OR'
             });
-            // Insert before the checkbox
-            this.filterTab.insert(this.filterTab.items.length - 1,logicOperator);
-            
-        }
-        var config = {
-            width: parseInt(this.details.width),
-            height: parseInt(this.details.height),
-            attributes:this.attributes,
-            logicOperator:logicOperator
-        };
-        var filter = Ext.create("viewer.components.Filter",config);
+            leftContainer.add(logicOperator);
+        } else {
+			leftContainer.add({
+				// Add the add-button to the filtertab
+				xtype: 'button',
+				text : 'Voeg filter toe',
+				listeners: {
+					click:{
+						scope: this,
+						fn: this.addFilter
+					}
+				}
+			});
+		}
+        var filter = Ext.create("viewer.components.Filter", {
+            attributes: this.attributes,
+            logicOperator: logicOperator,
+			parentMainContainer: this.filterTab
+        });
         this.filters.push(filter);
-        // Insert before the checkbox
-        this.filterTab.insert(this.filterTab.items.length - 1,filter.getUI());
+        rightContainer.add(filter.getUI());
+		this.filterTab.add(filterContainer);
     },
     selectAppLayer : function (appLayer){
         if(appLayer){
@@ -408,7 +436,8 @@ Ext.define ("viewer.components.DataSelection",{
         var cql = "";
      
         cql += this.getDataTabCQL();
-        if(this.filterActive.getValue()){
+        var filterActive = Ext.getCmp(this.name + 'FilterActive');
+        if(filterActive && filterActive.getValue()){
             if(cql != ""){
                 cql += " AND ";
             }
@@ -518,16 +547,9 @@ Ext.define ("viewer.components.DataSelection",{
         this.createDataTab(appLayer);
     },
     getExtComponents: function() {
-        return Ext.Array.merge(
-            this.layerSelector.getExtComponents(),
-            [
-            this.tabpanel.getId(),
-            this.dataTab.getId(),
-            this.filterTab.getId(),
-            this.button1.getId(),
-            this.button2.getId()
-            ]
-            );
+        return [
+			this.mainContent.getId()
+		]
     },
     resetForm :function(){
         this.dataTab.removeAll();

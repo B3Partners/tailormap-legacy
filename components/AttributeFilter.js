@@ -27,24 +27,7 @@
  */
 Ext.define ("viewer.components.AttributeFilter",{
     extend: "viewer.components.Component",
-    numericOperators : [{
-        id:"<"
-    }, {
-        id:">"
-    },{
-        id:"="
-    },{
-        id:"<="
-    },{
-        id:">="
-    },{
-        id:"<>"
-    }],
-    stringOperators : [{
-        id:"="
-    },{
-        id:"<>"
-    }],
+    numericOperators: ["<", ">", "=", "<=", ">=", "<>"],
     operator: null,
     value:null,
     logicOperator:null,
@@ -58,15 +41,9 @@ Ext.define ("viewer.components.AttributeFilter",{
     },
     constructor: function(config){
         this.initConfig(config);
-        var attributeStore = Ext.create('Ext.data.Store', {
-            fields: ['id'],
-            data : this.numericOperators
-        });
-
-        
         this.operator = Ext.create('Ext.form.ComboBox', {
             fieldLabel: '',
-            store: attributeStore,
+            store: this.numericOperators,
             queryMode: 'local',
             displayField: 'id',
             value:'=',
@@ -75,46 +52,48 @@ Ext.define ("viewer.components.AttributeFilter",{
         });
         this.value = Ext.create("Ext.form.field.Text",{
             width: 100,
-            id: "value" + this.id
+            id: "value" + this.id + "-" + this.number
         });
         return this;
     },
     getUI : function (){
-        var items = new Array();
-        if(!this.first){
-            var logicStore = Ext.create('Ext.data.Store', {
-                fields: ['id','title'],
-                data : [{
-                    id:"OR",
-                    title:"of"
-                }, {
-                    id:"AND",
-                    title:"en"
-                }]
-            });
+		if(this.container === null) {
+			var items = [];
+			if(!this.first){
+				var logicStore = Ext.create('Ext.data.Store', {
+					fields: ['id','title'],
+					data : [{
+						id:"OR",
+						title:"of"
+					}, {
+						id:"AND",
+						title:"en"
+					}]
+				});
+				this.logicOperator = Ext.create('Ext.form.ComboBox', {
+					fieldLabel: '',
+					store: logicStore,
+					queryMode: 'local',
+					displayField: 'title',
+					width: 50,
+					value:'OR',
+					valueField: 'id'
+				});
+				items.push(this.logicOperator);
+			}
+			items.push(this.operator);
+			items.push(this.value);
 
-            this.logicOperator = Ext.create('Ext.form.ComboBox', {
-                fieldLabel: '',
-                store: logicStore,
-                queryMode: 'local',
-                displayField: 'title',
-                width:50,
-                value:'OR',
-                valueField: 'id'
-            });
-            items.push(this.logicOperator);
-        }
-        items.push(this.operator);
-        items.push(this.value);
-        
-        this.container =  Ext.create("Ext.container.Container",{
-            width: 230,
-            id:"attributeFilter-"+this.id+"-"+this.number,
-            layout: {
-                type: 'hbox'
-            },
-            items:  items
-        });
+			this.container =  Ext.create("Ext.container.Container",{
+				id:"attributeFilter-"+this.id+"-"+this.number,
+				layout: {
+					type: 'hbox'
+				},
+				width: 220,
+				items:  items,
+				height: 25
+			});
+		}
         return this.container;
     },
     getCQL : function (){
@@ -134,6 +113,13 @@ Ext.define ("viewer.components.AttributeFilter",{
         }      
         return cql;
     },
+	// We have to remove all items from the attribute filter due to some weird Ext bug
+	removeItems: function() {
+		this.operator.destroy();
+		this.value.destroy();
+		if(this.logicStore) this.logicStore.destroy();
+		this.container.destroy();
+	},
     getExtComponents: function() {
         return [ this.container.getId() ];
     }
