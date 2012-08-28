@@ -210,7 +210,7 @@ public class ArcGISService extends GeoService implements Updatable {
             }
         }
         
-        setLayerTree(layersById);
+        setLayerTree(getTopLayer(), layersById, childrenByLayerId);
        
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
         if(!fs.getFeatureTypes().isEmpty()) {
@@ -218,7 +218,7 @@ public class ArcGISService extends GeoService implements Updatable {
         }
     }
     
-    private void setLayerTree(Map<String,Layer> layersById) {
+    private static void setLayerTree(Layer topLayer, Map<String,Layer> layersById, Map<String,List<String>> childrenByLayerId) {
         /* fill children list and parent references */
         for(Layer l: layersById.values()) {
             List<String> childrenIds = childrenByLayerId.get(l.getName());
@@ -234,11 +234,11 @@ public class ArcGISService extends GeoService implements Updatable {
         }
         
         /* children of top layer is special because those have parentLayerId -1 */
-        getTopLayer().getChildren().clear();
+        topLayer.getChildren().clear();
         for(Layer l: layersById.values()) {
             if(l.getParent() == null) {
-                getTopLayer().getChildren().add(l);
-                l.setParent(getTopLayer());
+                topLayer.getChildren().add(l);
+                l.setParent(topLayer);
             }
         }        
     }
@@ -466,7 +466,7 @@ public class ArcGISService extends GeoService implements Updatable {
             updatedLayersById.put(updateLayer.getName(), updatedLayer);
         }     
         
-        setLayerTree(updatedLayersById);
+        setLayerTree(getTopLayer(), updatedLayersById, update.childrenByLayerId);
     }    
     
     private void removeOrphanLayersAfterUpdate(UpdateResult result) {
