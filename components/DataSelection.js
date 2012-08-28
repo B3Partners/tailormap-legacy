@@ -42,11 +42,11 @@ Ext.define ("viewer.components.DataSelection",{
         }
     },
     constructor: function (conf){
-		// minimal width = 600
-		var minwidth = 600;
+        // minimal width = 600
+        var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
 		
-		this.attributes =[];
+        this.attributes =[];
         viewer.components.DataSelection.superclass.constructor.call(this, conf);
         this.filters = new Array();
         this.initConfig(conf); 
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.DataSelection",{
     },
     loadWindow : function(){
         this.itemsLoaded = 0;
-		var layerSelectorId = Ext.id();
+        var layerSelectorId = Ext.id();
         this.mainContent = Ext.create('Ext.container.Container', {
             width: '100%',
             height: '100%',
@@ -88,83 +88,83 @@ Ext.define ("viewer.components.DataSelection",{
                 align: 'stretch'
             },
             items: [
-				{
-					xtype: 'container',
-					height: 30,
-					html: '<div id="' + layerSelectorId + '" style="width: 100%; height: 100%;"></div>'
-				},
-                {
-                    xtype: 'tabpanel',
-                    id: this.name + 'TabPanel',
-                    flex: 1,
-                    width: '100%',
-                    hideMode: 'offsets',
-                    autoScroll: true,
-                    layout: {
-                        type: 'fit'
-                    },
-                    tabBar:{
-                        style: 'background: #fff;'
-                    },
-					defaults: {
-						style: {
-							padding: '5px'
-						},
-						border: false,
-						autoScroll: true
-					},
-                    items: [{
-                        xtype: 'panel',
-                        id: this.name + 'FilterTab',
-                        title: 'Filter',
-                        hideMode: 'offsets'
-                    },{
-                        xtype: 'panel',
-                        id: this.name + "DataTab",
-                        title: 'Dataselectie',
-                        hideMode: 'offsets'
-                    }],
-                    activeTab : this.name + "DataTab"
+            {
+                xtype: 'container',
+                height: 30,
+                html: '<div id="' + layerSelectorId + '" style="width: 100%; height: 100%;"></div>'
+            },
+            {
+                xtype: 'tabpanel',
+                id: this.name + 'TabPanel',
+                flex: 1,
+                width: '100%',
+                hideMode: 'offsets',
+                autoScroll: true,
+                layout: {
+                    type: 'fit'
                 },
-                {
-                    xtype: 'container',
-                    height: 30,
-                    defaultType: 'button',
-					style: {
-						paddingTop: '5px'
-					},
-					layout: {
-						type: 'hbox',
-						pack: 'end'
-					},
-                    items: [{
-                        text: 'Toepassen',
-                        listeners: {
-                            click:{
-                                scope: this,
-                                fn: this.applyFilter
-                            }
+                tabBar:{
+                    style: 'background: #fff;'
+                },
+                defaults: {
+                    style: {
+                        padding: '5px'
+                    },
+                    border: false,
+                    autoScroll: true
+                },
+                items: [{
+                    xtype: 'panel',
+                    id: this.name + 'FilterTab',
+                    title: 'Filter',
+                    hideMode: 'offsets'
+                },{
+                    xtype: 'panel',
+                    id: this.name + "DataTab",
+                    title: 'Dataselectie',
+                    hideMode: 'offsets'
+                }],
+                activeTab : this.name + "DataTab"
+            },
+            {
+                xtype: 'container',
+                height: 30,
+                defaultType: 'button',
+                style: {
+                    paddingTop: '5px'
+                },
+                layout: {
+                    type: 'hbox',
+                    pack: 'end'
+                },
+                items: [{
+                    text: 'Toepassen',
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: this.applyFilter
                         }
-                    },{
-                        text: 'Annuleren',
-                        listeners: {
-                            click:{
-                                scope: this,
-                                fn: this.cancel
-                            }
+                    }
+                },{
+                    text: 'Annuleren',
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: this.cancel
                         }
-                    },{
-                        text: 'Reset',
-                        listeners: {
-                            click:{
-                                scope: this,
-                                fn: this.removeFilter
-                            }
+                    }
+                },{
+                    text: 'Reset',
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: this.removeFilter
                         }
-                    }]
-                }
+                    }
+                }]
+            }
             ],
-			renderTo: this.getContentDiv()
+            renderTo: this.getContentDiv()
         });
         this.layerSelector = Ext.create("viewer.components.LayerSelector", {
             viewerController : this.viewerController,
@@ -174,8 +174,8 @@ Ext.define ("viewer.components.DataSelection",{
         });
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
         this.tabPanel = Ext.getCmp(this.name + 'TabPanel');
-        this.dataTab = Ext.getCmp(this.name + 'FilterTab');
-        this.filterTab = Ext.getCmp(this.name + 'DataTab')
+        this.dataTab = Ext.getCmp(this.name + 'DataTab');
+        this.filterTab = Ext.getCmp(this.name + 'FilterTab')
         this.createFilterTab();
     },
     createDataTab : function (appLayer){
@@ -212,347 +212,366 @@ Ext.define ("viewer.components.DataSelection",{
                     valueField: 'id',
                     value : defaultVal,
                     width: 500,
-					style: {
-						marginTop: '5px'
-					},
+                    style: {
+                        marginTop: '5px'
+                    },
                     emptyText:'Maak uw keuze',
                     store: {
-                        fields: [{name:'id',convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}],
-                        data : []
-                    }
-                });
+                        fields: [{
+                            name:'id',
+                            convert:function(v,row){
+                                if(row.raw){
+                                    return row.raw;
+                                }else{
+                                    return "";
+                                }
+                            }
+                        }],
+                data : []
+                }
+            });
                 
-                this.uniqueValuesAttributes.push(attribute.name);
-            }
+        this.uniqueValuesAttributes.push(attribute.name);
         }
-        this.dataTab.removeAll();
-        var defaultText = 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie';
-        if(this.uniqueValuesAttributes.length == 0){
-            defaultText = '';
-        }
-        this.dataTab.add({
-            xtype : 'label',
-            text: defaultText
-        });
-        this.getUniques();
-        this.dataTab.add(dataSelectieAttributes);
-        this.initMinMaxValues(minMaxAttrs,appLayer);
-    },
-    createFilterTab : function () {
-        // Remove all filters (used when clicking reset)
-        this.filterTab.removeAll();
-        // Reset filters to empty array
-        this.filters = [];
+    }
+this.dataTab.removeAll();
+    var defaultText = 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie';
+    if(this.uniqueValuesAttributes.length == 0){
+        defaultText = '';
+    }
+    this.dataTab.add({
+        xtype : 'label',
+        text: defaultText
+    });
+    this.getUniques();
+    this.dataTab.add(dataSelectieAttributes);
+    this.initMinMaxValues(minMaxAttrs,appLayer);
+},
+createFilterTab : function () {
+    // Remove all filters (used when clicking reset)
+    this.filterTab.removeAll();
+    // Reset filters to empty array
+    this.filters = [];
        
-		this.filterTab.add({
-			xtype: 'container',
-			width: '95%',
-			height: 25,
-			layout: {
-				type: 'hbox',
-				pack: 'end'
-			},
-			items: [{
-				// Add the checkbox to active filter
-				xtype: 'checkbox',
-				id: this.name + 'FilterActive',
-				boxLabel  : 'Filter is actief',
-				name      : 'filterActive',
-				inputValue: true,
-				checked   : false,
-				width: 200
-			}]
-		})
-        // Add the first filter
-        this.addFilter();
-    },
-    initMinMaxValues : function (minMaxAttrs,appLayer){
-        for(var i = 0 ; i < minMaxAttrs.length ; i++){
-            var attr = minMaxAttrs[i];
-            this.itemsLoaded++;
-            this.getMinMax(attr.operator, attr.attribute, appLayer);
-        }
-    },
-    getMinMax : function (operator, attribute,appLayer){
-        var cb = Ext.getCmp(attribute.name);
-        cb.setDisabled(true);
+    this.filterTab.add({
+        xtype: 'container',
+        width: '95%',
+        height: 25,
+        layout: {
+            type: 'hbox',
+            pack: 'end'
+        },
+        items: [{
+            // Add the checkbox to active filter
+            xtype: 'checkbox',
+            id: this.name + 'FilterActive',
+            boxLabel  : 'Filter is actief',
+            name      : 'filterActive',
+            inputValue: true,
+            checked   : false,
+            width: 200
+        }]
+    })
+    // Add the first filter
+    this.addFilter();
+},
+initMinMaxValues : function (minMaxAttrs,appLayer){
+    for(var i = 0 ; i < minMaxAttrs.length ; i++){
+        var attr = minMaxAttrs[i];
+        this.itemsLoaded++;
+        this.getMinMax(attr.operator, attr.attribute, appLayer);
+    }
+},
+getMinMax : function (operator, attribute,appLayer){
+    var cb = Ext.getCmp(attribute.name);
+    cb.setDisabled(true);
+    Ext.Ajax.request({ 
+        url: actionBeans.unique, 
+        timeout: 240000,
+        scope:this,
+        params: { 
+            attribute: attribute.name,
+            applicationLayer: appLayer.id,
+            getMinMaxValue: 't',
+            operator: operator
+        }, 
+        success: function ( result, request ) { 
+            var res = Ext.JSON.decode(result.responseText);
+            if(res.success){
+                var value = res.value;
+                cb.setValue(value);
+            }else{
+                Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + res.msg);
+            }
+                
+            this.itemsLoaded--;
+            cb.setDisabled(false);
+        }, 
+        failure: function ( result, request) {
+            Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + result.responseText);
+            cb.setDisabled(false);
+            this.itemsLoaded--;
+        } 
+    });
+},
+getUniques : function (){
+    var appLayer = this.layerSelector.getValue();
+    if(this.uniqueValuesAttributes.length > 0){
+        this.itemsLoaded++;
+        this.dataTab.setLoading("Laad unieke waardes...");
         Ext.Ajax.request({ 
             url: actionBeans.unique, 
             timeout: 240000,
             scope:this,
             params: { 
-                attribute: attribute.name,
-                applicationLayer: appLayer.id,
-                getMinMaxValue: 't',
-                operator: operator
+                attributes: this.uniqueValuesAttributes,
+                applicationLayer: appLayer.id
             }, 
             success: function ( result, request ) { 
                 var res = Ext.JSON.decode(result.responseText);
                 if(res.success){
-                    var value = res.value;
-                    cb.setValue(value);
+                    var values = res.uniqueValues;
+                    if(res.msg){
+                        Ext.MessageBox.alert('Info', res.msg);
+                    }
+                    this.receiveUniqueValues(values);
                 }else{
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + res.msg);
+                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
                 }
-                
-                this.itemsLoaded--;
-                cb.setDisabled(false);
             }, 
             failure: function ( result, request) {
-                Ext.MessageBox.alert('Foutmelding', "Kan geen minmax waardes ophalen: " + result.responseText);
-                cb.setDisabled(false);
+                Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
                 this.itemsLoaded--;
             } 
         });
-    },
-    getUniques : function (){
-        var appLayer = this.layerSelector.getValue();
-        if(this.uniqueValuesAttributes.length > 0){
-            this.itemsLoaded++;
-            this.dataTab.setLoading("Laad unieke waardes...");
-            Ext.Ajax.request({ 
-                url: actionBeans.unique, 
-                timeout: 240000,
-                scope:this,
-                params: { 
-                    attributes: this.uniqueValuesAttributes,
-                    applicationLayer: appLayer.id
-                }, 
-                success: function ( result, request ) { 
-                    var res = Ext.JSON.decode(result.responseText);
-                    if(res.success){
-                        var values = res.uniqueValues;
-                        if(res.msg){
-                            Ext.MessageBox.alert('Info', res.msg);
-                        }
-                        this.receiveUniqueValues(values);
+    }
+},
+receiveUniqueValues : function (values){
+    for(var attribute in values){
+        var unique = values[attribute];
+        this.addValuesToCombobox(unique, attribute);
+    }
+    this.dataTab.setLoading(false);
+    this.itemsLoaded--;        
+},
+addValuesToCombobox : function (values, attribute){
+    var combobox = Ext.getCmp (attribute);
+    if(combobox){   // In case there are more than one layer with dataselection fields. This method can be called with an attribute of layer 1, when layer 2 is initialized
+        combobox.setDisabled(false);
+        var SingleArray = Ext.define('SingleArray', {
+            extend: 'Ext.data.Model',
+            fields: [{
+                name: 'id'  , 
+                convert:function(v,row){
+                    if(row.raw){
+                        return row.raw;
                     }else{
-                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
+                        return "";
                     }
-                }, 
-                failure: function ( result, request) {
-                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
-                    this.itemsLoaded--;
-                } 
-            });
-        }
-    },
-    receiveUniqueValues : function (values){
-        for(var attribute in values){
-            var unique = values[attribute];
-            this.addValuesToCombobox(unique, attribute);
-        }
-        this.dataTab.setLoading(false);
-        this.itemsLoaded--;        
-    },
-    addValuesToCombobox : function (values, attribute){
-        var combobox = Ext.getCmp (attribute);
-        if(combobox){   // In case there are more than one layer with dataselection fields. This method can be called with an attribute of layer 1, when layer 2 is initialized
-            combobox.setDisabled(false);
-            var SingleArray = Ext.define('SingleArray', {
-                extend: 'Ext.data.Model',
-                fields: [{name: 'id'  , convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}]
-            });
-            var myReader = new Ext.data.reader.Array({
-                model: 'SingleArray'
-            }, SingleArray);
-            var rs =  myReader.read(values);
-            combobox.getStore().add(rs.records);
-        }
-    },
+                }
+            }]
+    });
+var myReader = new Ext.data.reader.Array({
+    model: 'SingleArray'
+}, SingleArray);
+var rs =  myReader.read(values);
+    combobox.getStore().add(rs.records);
+}
+},
     
-    /**
+/**
      *  Add a filter to the current filterlist.
      */
-    addFilter : function (){
-		var leftContainer = Ext.create('Ext.container.Container', {
-			xtype: 'container',
-			columnWidth: .2
-		});
-		var rightContainer = Ext.create('Ext.container.Container', {
-			xtype: 'container',
-			columnWidth: .8
-		});
-		var filterContainer = Ext.create('Ext.container.Container', {
-			width: '95%',
-			layout:'column',
-			items: [ leftContainer, rightContainer ],
-			style: {
-				overflow: 'visible'
-			}
-		});
-		var logicOperator = null;
-        if(this.filters.length != 0) {
-            logicOperator = Ext.create('Ext.form.ComboBox', {
-                store: [ ['OR', 'of'], ['AND', 'en'] ],
-                width: 50,
-                value: 'OR'
-            });
-            leftContainer.add(logicOperator);
-        } else {
-			leftContainer.add({
-				// Add the add-button to the filtertab
-				xtype: 'button',
-				text : 'Voeg filter toe',
-				listeners: {
-					click:{
-						scope: this,
-						fn: this.addFilter
-					}
-				}
-			});
-		}
-        var filter = Ext.create("viewer.components.Filter", {
-            attributes: this.attributes,
-            logicOperator: logicOperator,
-			parentMainContainer: this.filterTab
+addFilter : function (){
+    var leftContainer = Ext.create('Ext.container.Container', {
+        xtype: 'container',
+        columnWidth: .2
+    });
+    var rightContainer = Ext.create('Ext.container.Container', {
+        xtype: 'container',
+        columnWidth: .8
+    });
+    var filterContainer = Ext.create('Ext.container.Container', {
+        width: '95%',
+        layout:'column',
+        items: [ leftContainer, rightContainer ],
+        style: {
+            overflow: 'visible'
+        }
+    });
+    var logicOperator = null;
+    if(this.filters.length != 0) {
+        logicOperator = Ext.create('Ext.form.ComboBox', {
+            store: [ ['OR', 'of'], ['AND', 'en'] ],
+            width: 50,
+            value: 'OR'
         });
-        this.filters.push(filter);
-        rightContainer.add(filter.getUI());
-		this.filterTab.add(filterContainer);
-    },
-    selectAppLayer : function (appLayer){
-        if(appLayer){
-            this.layerSelector.setValue(appLayer);
-        }
-    },
-    isDatatabLoaded : function(){
-        if(this.itemsLoaded == 0){
-            return true;
-        }else{
-            return false;
-        }
-    },
-    applyFilterWithDefaults : function (){
-        if(this.isDatatabLoaded()){
-            this.applyFilter();
-        }else{
-            var me = this;
-            setTimeout(function(){
-                        me.applyFilterWithDefaults();}, 100);
-        }
-    },
-    applyFilter : function (){
-        var cql = "";
+        leftContainer.add(logicOperator);
+    } else {
+        leftContainer.add({
+            // Add the add-button to the filtertab
+            xtype: 'button',
+            text : 'Voeg filter toe',
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.addFilter
+                }
+            }
+        });
+    }
+    var filter = Ext.create("viewer.components.Filter", {
+        attributes: this.attributes,
+        logicOperator: logicOperator,
+        parentMainContainer: this.filterTab
+    });
+    this.filters.push(filter);
+    rightContainer.add(filter.getUI());
+    this.filterTab.add(filterContainer);
+},
+selectAppLayer : function (appLayer){
+    if(appLayer){
+        this.layerSelector.setValue(appLayer);
+    }
+},
+isDatatabLoaded : function(){
+    if(this.itemsLoaded == 0){
+        return true;
+    }else{
+        return false;
+    }
+},
+applyFilterWithDefaults : function (){
+    if(this.isDatatabLoaded()){
+        this.applyFilter();
+    }else{
+        var me = this;
+        setTimeout(function(){
+            me.applyFilterWithDefaults();
+        }, 100);
+    }
+},
+applyFilter : function (){
+    var cql = "";
      
-        cql += this.getDataTabCQL();
-        var filterActive = Ext.getCmp(this.name + 'FilterActive');
-        if(filterActive && filterActive.getValue()){
-            if(cql != ""){
+    cql += this.getDataTabCQL();
+    var filterActive = Ext.getCmp(this.name + 'FilterActive');
+    if(filterActive && filterActive.getValue()){
+        if(cql != ""){
+            cql += " AND ";
+        }
+        for ( var i = 0 ; i < this.filters.length;i++){
+            var filter = this.filters[i];
+            cql += filter.getCQL();
+        }
+        
+    }
+    if(cql != ""){
+        cql = "(" + cql + ")";
+    }
+    var layer = this.layerSelector.getValue();
+    if(layer){
+        var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
+            id: this.name + this.layerSelector.getValue().layerName,
+            cql: cql,
+            operator : "AND",
+            type: "ATTRIBUTE"
+        });
+
+        this.viewerController.setFilter(filterWrapper,layer);
+    }
+        
+//console.log("CQL: " + layer.filter.getCQL());
+},
+getDataTabCQL : function (){
+    var items = this.dataTab.items.items;
+    var cql = "";
+    for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection.
+        var item = items[i];
+        if(item.getValue() != ""){
+            if(i > 1 ){
                 cql += " AND ";
             }
-            for ( var i = 0 ; i < this.filters.length;i++){
-                var filter = this.filters[i];
-                cql += filter.getCQL();
-            }
-        
-        }
-        if(cql != ""){
-            cql = "(" + cql + ")";
-        }
-        var layer = this.layerSelector.getValue();
-        if(layer){
-            var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
-                id: this.name + this.layerSelector.getValue().layerName,
-                cql: cql,
-                operator : "AND",
-                type: "ATTRIBUTE"
-            });
-
-            this.viewerController.setFilter(filterWrapper,layer);
-        }
-        
-    //console.log("CQL: " + layer.filter.getCQL());
-    },
-    getDataTabCQL : function (){
-        var items = this.dataTab.items.items;
-        var cql = "";
-        for ( var i = 1 ; i < items.length;i++){ // Skip the default text for dataselection.
-            var item = items[i];
-            if(item.getValue() != ""){
-                if(i > 1 ){
-                    cql += " AND ";
-                }
-                cql += "\"" +item.id + "\"=";
-                var attributeType = item.dataType;
-                if(attributeType && attributeType.toLowerCase() == "string"){
-                    cql += "\'";
-                }  
-                cql += item.getValue();
-                if(attributeType && attributeType.toLowerCase() == "string"){
-                    cql += "\'";
-                }
+            cql += "\"" +item.id + "\"=";
+            var attributeType = item.dataType;
+            if(attributeType && attributeType.toLowerCase() == "string"){
+                cql += "\'";
+            }  
+            cql += item.getValue();
+            if(attributeType && attributeType.toLowerCase() == "string"){
+                cql += "\'";
             }
         }
-        return cql;
-    },
-    cancel : function (){
-        this.popup.hide();
-    },
-    removeFilter : function (){
-        var appLayer = this.layerSelector.getValue();
-        if(appLayer){
-            var filterId = this.name + appLayer.layerName;
-            this.viewerController.removeFilter(filterId,appLayer);
-        }
-        this.layerSelector.setValue();
-        this.resetForm();
-    },
-    /**
+    }
+    return cql;
+},
+cancel : function (){
+    this.popup.hide();
+},
+removeFilter : function (){
+    var appLayer = this.layerSelector.getValue();
+    if(appLayer){
+        var filterId = this.name + appLayer.layerName;
+        this.viewerController.removeFilter(filterId,appLayer);
+    }
+    this.layerSelector.setValue();
+    this.resetForm();
+},
+/**
      *  Reset all comboboxes when a different layer is selected
      */
-    layerChanged : function (item,prev){
-        this.appLayer = item;
+layerChanged : function (item,prev){
+    this.appLayer = item;
         
-        if(this.appLayer != null){
-            this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
-            var me = this;
-            // check if featuretype was loaded
-            if(this.appLayer.attributes == undefined) {
-                this.featureService.loadAttributes(me.appLayer, function(attributes) {
-                    me.changeAttributes(me.appLayer);
-                });
-            } else {
-                this.changeAttributes(me.appLayer);
-            }    
-        }
-        
-        if(prev != undefined){
-            if(this.appLayer){
-                var prevLayer = this.viewerController.getLayer(this.appLayer);
-                prevLayer.setQuery(null);
-            }
-        }
-    },
-    // Change the comboboxes of the attributefilters. Happens when a new layer is chosen.
-    changeAttributes : function (appLayer){
-        var attributes = appLayer.attributes;
-        var attributeList = new Array();
-        for(var i= 0 ; i < attributes.length ;i++){
-            var attribute = attributes[i];
-            if(attribute.filterable){
-                attributeList.push({
-                    id: attribute.id,
-                    title: attribute.alias || attribute.name,
-                    value: attribute.name,
-                    type: attribute.type
-                });
-            }
-        }
-        this.attributes = attributeList;
-        for (var j = 0 ; j < this.filters.length ;j++){
-            var filter = this.filters[j];
-            filter.setNewAttributeList(attributeList);
-        }
-        this.createDataTab(appLayer);
-    },
-    getExtComponents: function() {
-        return [
-			this.mainContent.getId()
-		]
-    },
-    resetForm :function(){
-        this.dataTab.removeAll();
-        this.createFilterTab();
+    if(this.appLayer != null){
+        this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
+        var me = this;
+        // check if featuretype was loaded
+        if(this.appLayer.attributes == undefined) {
+            this.featureService.loadAttributes(me.appLayer, function(attributes) {
+                me.changeAttributes(me.appLayer);
+            });
+        } else {
+            this.changeAttributes(me.appLayer);
+        }    
     }
+        
+    if(prev != undefined){
+        if(this.appLayer){
+            var prevLayer = this.viewerController.getLayer(this.appLayer);
+            prevLayer.setQuery(null);
+        }
+    }
+},
+// Change the comboboxes of the attributefilters. Happens when a new layer is chosen.
+changeAttributes : function (appLayer){
+    var attributes = appLayer.attributes;
+    var attributeList = new Array();
+    for(var i= 0 ; i < attributes.length ;i++){
+        var attribute = attributes[i];
+        if(attribute.filterable){
+            attributeList.push({
+                id: attribute.id,
+                title: attribute.alias || attribute.name,
+                value: attribute.name,
+                type: attribute.type
+            });
+        }
+    }
+    this.attributes = attributeList;
+    for (var j = 0 ; j < this.filters.length ;j++){
+        var filter = this.filters[j];
+        filter.setNewAttributeList(attributeList);
+    }
+    this.createDataTab(appLayer);
+},
+getExtComponents: function() {
+    return [
+    this.mainContent.getId()
+    ]
+},
+resetForm :function(){
+    this.dataTab.removeAll();
+    this.createFilterTab();
+}
 });
