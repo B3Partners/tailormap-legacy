@@ -29,11 +29,12 @@ Ext.define ("viewer.components.DataSelectionChecker",{
     },
     init : function (){
         this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);    
+        this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerVisibilityChanged,this);    
     },
     layerVisibilityChanged : function (map,object){
         var layer = object.layer;
         var appLayer= this.viewerController.getAppLayerById(layer.appLayerId);
-        var vis = object.visible;
+        var vis = appLayer.checked;
         if(vis){
             this.hasLayerDataSelectionAttributes(appLayer, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
