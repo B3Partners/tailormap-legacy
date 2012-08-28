@@ -29,7 +29,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
             layers: "show: "+config.layers,
             transparent: 'true'
         },{
-            visibility: this.visible
+            visibility: this.visible,            
+            singleTile : true
         });
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE;
     },

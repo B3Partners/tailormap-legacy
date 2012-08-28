@@ -123,7 +123,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         config.options = new Object();
         config.options["id"]=null;
         config.options["isBaseLayer"]=true;
-        config.options["singleTile"]=true;
         config.options["transitionEffect"] = "resize";
         config.options["events"] = new Object();
         config.options["visibility"] = ogcParams["visible"];

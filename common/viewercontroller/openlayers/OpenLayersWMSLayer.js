@@ -29,6 +29,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         this.mixins.openLayersLayer.constructor.call(this,config);
         
         this.options.visibility = this.visible;
+        this.options.singleTile=true;
         this.frameworkLayer = new OpenLayers.Layer.WMS(this.options.name,this.url,this.ogcParams,this.options);
                 
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
