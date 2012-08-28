@@ -196,9 +196,11 @@ public class Layer implements Cloneable {
         for(String s: updatableDetails) {
             details.remove(s);
         }
-        for(String s: additionalUpdatableDetails) {
-            details.remove(s);
-        }        
+        if(additionalUpdatableDetails != null) {
+            for(String s: additionalUpdatableDetails) {
+                details.remove(s);
+            }        
+        }
         // update all metadata loaded details
         details.putAll(update.getDetails());
         

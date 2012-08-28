@@ -25,12 +25,14 @@ import java.util.TreeMap;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
  * @author Matthijs Laan
  */
 public class UpdateResult {
+    private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(UpdateResult.class);
 
     public enum Status {
         FAILED, 
@@ -45,9 +47,9 @@ public class UpdateResult {
     
     private GeoService geoService;
     
-    private Error exception;
+    private Throwable exception;
     
-    private String message;
+    private String message = "Unknown error";
     
     private SortedMap<String, MutablePair<Layer,Status>> layerStatus = new TreeMap();
     
@@ -106,13 +108,17 @@ public class UpdateResult {
     }
     
     public void failedWithException(Exception e) {
+        this.exception = e;
         setStatus(Status.FAILED);
-        setMessage(String.format("Error updating %s service #%d \"%s\": %s: %s",
+        String msg = String.format("Error updating %s service #%d \"%s\": %s: %s",
                 geoService.getProtocol(),
                 geoService.getId(),
                 geoService.getName(),
                 e.getClass().getName(),
-                e.getMessage()));
+                e.getMessage());
+        log.error(msg, e);
+        setMessage(msg);
+        Stripersist.getEntityManager().getTransaction().rollback();
     }
     
     public void changed() {
@@ -131,11 +137,11 @@ public class UpdateResult {
         this.geoService = geoService;
     }
     
-    public Error getException() {
+    public Throwable getException() {
         return exception;
     }
 
-    public void setException(Error exception) {
+    public void setException(Throwable exception) {
         this.exception = exception;
     }
     

@@ -266,6 +266,7 @@ public class WMSService extends GeoService implements Updatable {
             // XXX removeOrphanFeatureTypes()
             // XXX removeOrphanFeatureSources()
             
+            result.setStatus(UpdateResult.Status.UPDATED);
         } catch(Exception e) {
             result.failedWithException(e);
         }

@@ -399,6 +399,7 @@ public class ArcGISService extends GeoService implements Updatable {
                 Stripersist.getEntityManager().remove(linkedFS);
             }
             
+            result.setStatus(UpdateResult.Status.UPDATED);
         } catch(Exception e) {
             result.failedWithException(e);
         } 
