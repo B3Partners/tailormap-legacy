@@ -192,16 +192,11 @@ Ext.define ("viewer.components.Buffer",{
         }
     },
     getExtComponents: function() {
-        return Ext.Array.merge(
-            [
-                this.name +"Container",
-                this.radius.getId(),
-                this.buffer.getId(),
-                this.remove.getId(),
-                'color' + this.name
-            ],
-            this.layerSelector.getExtComponents()
-        );
+        if(this.panel) {
+            return Ext.Array.merge([ this.name +"Container" ], this.layerSelector.getExtComponents());
+        } else {
+            return [];
+        }
     },
     colorChanged : function (color){
         this.color = color;

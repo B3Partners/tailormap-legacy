@@ -26,11 +26,13 @@ Ext.define ("viewer.components.Search",{
     results: null,
     margin: "0 5 0 0",
     resultPanelId: '',
+    defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
     config:{
         title: null,
         iconUrl: null,
         tooltip: null,
-        searchconfigs: null
+        searchconfigs: null,
+        formHeight:null
     },    
     constructor: function (conf){        
         viewer.components.Search.superclass.constructor.call(this, conf);
@@ -54,7 +56,7 @@ Ext.define ("viewer.components.Search",{
         var me = this;
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
-            height: MobileManager.isMobile() ? 100 : 90,
+            height: this.formHeight || this.defaultFormHeight,
             items: this.getFormItems(),
             border: 0,
             style: { 

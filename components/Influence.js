@@ -45,6 +45,7 @@ Ext.define ("viewer.components.Influence",{
         }else{
             conf.searchconfigs=[];
         }
+        conf.formHeight = MobileManager.isMobile() ? 160 : 150;
         viewer.components.Influence.superclass.constructor.call(this, conf);
         this.removeButton=this.form.getChildByElement(this.name+"_remove")
         this.removeButton.setVisible(false);
@@ -97,7 +98,7 @@ Ext.define ("viewer.components.Influence",{
             id: this.name + 'LayerSelectorPanel',
             xtype: "container",
             width: '100%',
-            height: 25
+            height: 50
         });
         itemList= formItemsBefore.concat(itemList);
         //only if there is a search button add the or label
@@ -112,6 +113,7 @@ Ext.define ("viewer.components.Influence",{
             xtype: 'button',
             text: 'Locatie aanwijzen op kaart',
             margin: this.margin,
+            padding: MobileManager.isMobile() ? '10px' : '2px',
             listeners: {
                 click:{
                     scope: this,
@@ -124,6 +126,7 @@ Ext.define ("viewer.components.Influence",{
             xtype: 'button',
             text: 'Verwijder invloedsgebied',
             margin: this.margin,
+            padding: MobileManager.isMobile() ? '10px' : '2px',
             listeners: {
                 click:{
                     scope: this,
