@@ -20,11 +20,8 @@ import java.util.*;
 import javax.persistence.*;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.visitor.CalcResult;
-import org.geotools.feature.visitor.MaxVisitor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Function;
 import org.stripesstuff.stripersist.Stripersist;
 
