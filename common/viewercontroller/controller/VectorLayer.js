@@ -40,7 +40,8 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
             strokecolor: "0xFF0000",
             //@field (0 – 100, default: 100) Stroke opacity. A value of 0 means completely transparent.
             strokeopacity: 100
-        }
+        },
+        colorPrefix:null
     },
     constructor : function (config){
         viewer.viewercontroller.controller.VectorLayer.superclass.constructor.call(this, config);

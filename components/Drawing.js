@@ -71,10 +71,10 @@ Ext.define ("viewer.components.Drawing",{
             showmeasures:false,
             viewerController: this.viewerController,
             style: {
-                fillcolor: "0x"+this.color,
-                fillopacity: 50,
-                strokecolor: "0xFF0000",
-                strokeopacity: 50
+                'fillcolor': this.color,
+                'fillopacity': 50,
+                'strokecolor': "FF0000",
+                'strokeopacity': 50
             }
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
@@ -420,11 +420,11 @@ Ext.define ("viewer.components.Drawing",{
     activeFeatureChanged : function (vectorLayer,feature){
         this.toggleSelectForm(true);
         if(this.features[feature.id] == undefined){
-            feature.color = "0x"+this.color;
+            feature.color = this.color;
             this.features[feature.id] = feature;
         }else{
             var color = this.features[feature.id].color;
-            color = color.substring(2);
+         //   color = color.substring(2);
             this.colorPicker.setColor(color);
             this.color = color;
         }
@@ -440,7 +440,7 @@ Ext.define ("viewer.components.Drawing",{
         });
     },
     colorChanged : function (hexColor){
-        this.color = '0x'+hexColor;
+        this.color = hexColor;
         this.vectorLayer.style.fillcolor = this.color;
         this.vectorLayer.adjustStyle();
         if(this.activeFeature != null){
@@ -525,6 +525,7 @@ Ext.define ("viewer.components.Drawing",{
                         var feature = features[i];
                         var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
                         this.vectorLayer.style.fillcolor = featureObject.color;
+                        //this.color = featureObject.color;
                         this.vectorLayer.adjustStyle();
                         this.vectorLayer.addFeature(featureObject);
                     }

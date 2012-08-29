@@ -24,7 +24,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         }
         viewer.viewercontroller.flamingo.FlamingoVectorLayer.superclass.constructor.call(this, config);
         this.mixins.flamingoLayer.constructor.call(this,config);
-        this.initConfig(config);   
+        this.initConfig(config);
+        this.colorPrefix = '0x';
         this.id = config.name;
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
         return this;
@@ -57,11 +58,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
         //add style
         xml+="<fmc:Style ";
         if (this.style.fillcolor!=null)
-            xml+="fillcolor='"+this.style.fillcolor+"' ";
+            xml+="fillcolor='"+ this.colorPrefix + this.style.fillcolor+"' ";
         if (this.style.fillopacity!=null)
             xml+="fillopacity='"+this.style.fillopacity+"' ";
         if (this.style.strokecolor!=null)
-            xml+="strokecolor='"+this.style.strokecolor+"' ";
+            xml+="strokecolor='"+this.colorPrefix + this.style.strokecolor+"' ";
         if (this.style.strokeopacity!=null)
             xml+="strokeopacity='"+this.style.strokeopacity+"' ";
         xml+="/></fmc:Layer>";
@@ -71,11 +72,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     adjustStyle : function (){
         var xml ="<fmc:Style ";
         if (this.style.fillcolor!=null)
-            xml+="fillcolor='"+this.style.fillcolor+"' ";
+            xml+="fillcolor='"+this.colorPrefix + this.style.fillcolor+"' ";
         if (this.style.fillopacity!=null)
             xml+="fillopacity='"+this.style.fillopacity+"' ";
         if (this.style.strokecolor!=null)
-            xml+="strokecolor='"+this.style.strokecolor+"' ";
+            xml+="strokecolor='"+this.colorPrefix + this.style.strokecolor+"' ";
         if (this.style.strokeopacity!=null)
             xml+="strokeopacity='"+this.style.strokeopacity+"' ";
         xml+="/>";
