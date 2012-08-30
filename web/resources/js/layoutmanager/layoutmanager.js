@@ -464,10 +464,21 @@ Ext.onReady(function() {
         if(i != -1) {
             componentName = componentName.substring((i+1));
         }
-        componentName = changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);
+        componentName = changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);            
         // used when loading existing conf
         if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
             componentName = data.componentName;
+        } else {
+           // Remove any dangling component config which remained after 
+           // adding a new component, saving it, but then not saving the layout
+           // then when re-adding the same component class it will reload the
+           // config
+            Ext.Ajax.request({ 
+                url: removeComponentUrl, 
+                params: { 
+                    name: componentName
+                } 
+            });             
         }
         var addItem = {
             id: itemId,
