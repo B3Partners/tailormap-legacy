@@ -82,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var activelink = 'menu_layout';
             var components = ${actionBean.components};
             <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="config">
-                <c:if test="${param.debug == 'true'}"><stripes:param name="debug">true</stripes:param></c:if>
+                <c:if test="${param.debug}"><stripes:param name="debug" value="true"/></c:if>
             </stripes:url>
             var configPageLink = <js:quote value="${url}"/>;
             var layoutSaveUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>';
