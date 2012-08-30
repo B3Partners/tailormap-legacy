@@ -432,6 +432,10 @@ public class ArcGISService extends GeoService implements Updatable {
                         ft.getFeatureSource().setLinkedService(this); 
                     }
                 }
+                
+                // will be filled in setLayerTree()                
+                updateLayer.getChildren().clear();
+                
                 result.getLayerStatus().put(updateLayer.getName(), new MutablePair(updateLayer, UpdateResult.Status.NEW));
 
                 updatedLayer = updateLayer;
@@ -443,6 +447,9 @@ public class ArcGISService extends GeoService implements Updatable {
                 
                 old.setParent(null);                
                 old.update(updateLayer, additionalUpdatableDetails);
+                
+                // will be filled in setLayerTree()
+                old.getChildren().clear();
                 
                 // Update feature type
                 if(updateLayer.getFeatureType() == null) {
