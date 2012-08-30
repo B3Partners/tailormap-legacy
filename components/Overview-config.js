@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Custom configuration object for HTML configuration
+ * Custom configuration object for Overview
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
-    htmlEditor: null,
     constructor: function (parentid,configObject){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,configObject);
         this.createForm(this.configObject);
