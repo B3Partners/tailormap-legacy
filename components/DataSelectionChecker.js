@@ -34,8 +34,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
     layerVisibilityChanged : function (map,object){
         var layer = object.layer;
         var appLayer= this.viewerController.getAppLayerById(layer.appLayerId);
-        var vis = appLayer.checked;
-        if(vis){
+        if(appLayer && appLayer.checked){
             this.hasLayerDataSelectionAttributes(appLayer, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
                     setTimeout(function(){
