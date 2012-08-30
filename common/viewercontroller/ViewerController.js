@@ -757,12 +757,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Check's if this layer is within the current map scale
+     * Not yet working for arcGis services, always return true;
      * @param appLayer the applayer
      * @return true/false
      */
     isWithinScale: function (appLayer,scale){
         if (scale==undefined || scale==null){
             scale = this.mapComponent.getMap().getScale();
+        }
+        //temp fix for scale in ArcGis, always return true if arcgis
+        var service=this.app.services[appLayer.serviceId];
+        if (service && service.protocol == "arcgis"){
+            return true
         }
         var serviceLayer=this.getServiceLayer(appLayer);
         /* If minScale or maxScale is '0' then ignore it that check
