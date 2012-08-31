@@ -213,6 +213,37 @@ public abstract class GeoService {
 
     public abstract GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus) throws Exception;
     
+    protected static void setAllChildrenDetail(Layer layer) {
+        
+        layer.accept(new Layer.Visitor() {
+
+            @Override
+            public boolean visit(final Layer l) {
+                
+                if(!l.getChildren().isEmpty()) {
+                    final MutableObject<List<String>> layerNames = new MutableObject<List<String>>(new ArrayList());
+                    l.accept(new Layer.Visitor() {
+
+                        @Override
+                        public boolean visit(Layer child) {
+                            if(child != l) {
+                                layerNames.getValue().add(child.getName());
+                            }
+                            return true;
+                        }
+                    });
+                    
+                    if(!layerNames.getValue().isEmpty()) {
+                        l.getDetails().put(Layer.DETAIL_ALL_CHILDREN, StringUtils.join(layerNames.getValue(), ","));
+                        l.setVirtual(false);
+                    }
+                }
+                
+                return true;
+            }
+        });
+    }
+    
     public void checkOnline() throws Exception {
         Map params = new HashMap();
         params.put(PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);

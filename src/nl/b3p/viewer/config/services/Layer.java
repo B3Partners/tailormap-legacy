@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
 import org.geotools.data.ows.CRSEnvelope;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,17 +37,24 @@ public class Layer implements Cloneable {
     public static final String EXTRA_KEY_FILTERABLE = "filterable";
     public static final String EXTRA_IMAGE_EXTENSION ="image_extension";
     
+    /**
+     * Layer.details map key for comma separated list of layer names of children 
+     * of this layer.
+     */ 
+    public static final String DETAIL_ALL_CHILDREN = "all_children";
+    
     private static Set<String> interestingDetails = new HashSet<String>(Arrays.asList(new String[] { 
         EXTRA_KEY_METADATA_URL, 
         EXTRA_KEY_METADATA_STYLESHEET_URL,
         EXTRA_KEY_DOWNLOAD_URL,
         EXTRA_KEY_FILTERABLE,
         EXTRA_IMAGE_EXTENSION,
-        ArcGISService.DETAIL_DEFAULT_VISIBLE_CHILDREN
+        DETAIL_ALL_CHILDREN
     }));  
     
     private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] { 
-        EXTRA_KEY_METADATA_URL       
+        EXTRA_KEY_METADATA_URL,
+        DETAIL_ALL_CHILDREN
     }));        
             
     @Id
@@ -204,6 +212,7 @@ public class Layer implements Cloneable {
         }
         // update all metadata loaded details
         details.putAll(update.getDetails());
+        removeEmptyMapValues(details);
         
         legendImageUrl = update.legendImageUrl;
         

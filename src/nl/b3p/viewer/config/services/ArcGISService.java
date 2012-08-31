@@ -23,7 +23,6 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.ows.HTTPClient;
@@ -32,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
+import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
 
 /**
  *
@@ -62,11 +62,6 @@ public class ArcGISService extends GeoService implements Updatable {
     public static final String DETAIL_DEFAULT_VISIBILITY = "arcgis_defaultVisibility";
     /** Layer.details map key for ArcGIS definitionExpression property */
     public static final String DETAIL_DEFINITION_EXPRESSION = "arcgis_definitionExpression";
-    /**
-     * Layer.details map key for comma separated list of children which are 
-     * defaultVisible
-     */ 
-    public static final String DETAIL_DEFAULT_VISIBLE_CHILDREN = "arcgis_defaultVisibleChildren";
     
     private static final String TOPLAYER_ID = "-1";
     
@@ -86,8 +81,7 @@ public class ArcGISService extends GeoService implements Updatable {
         DETAIL_GEOMETRY_TYPE,
         DETAIL_CAPABILITIES,
         DETAIL_DEFAULT_VISIBILITY,
-        DETAIL_DEFINITION_EXPRESSION,
-        DETAIL_DEFAULT_VISIBLE_CHILDREN
+        DETAIL_DEFINITION_EXPRESSION
     }));        
              
     private static JSONObject issueRequest(String url, HTTPClient client) throws Exception {
@@ -223,7 +217,7 @@ public class ArcGISService extends GeoService implements Updatable {
         }
         
         setLayerTree(getTopLayer(), layersById, childrenByLayerId);
-        setDefaultVisibleChildren(getTopLayer());
+        setAllChildrenDetail(getTopLayer());
        
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
         if(!fs.getFeatureTypes().isEmpty()) {
@@ -256,37 +250,6 @@ public class ArcGISService extends GeoService implements Updatable {
         }        
     }
     
-    private static void setDefaultVisibleChildren(Layer layer) {
-        
-        layer.accept(new Layer.Visitor() {
-
-            @Override
-            public boolean visit(Layer l) {
-                
-                if(!l.getChildren().isEmpty()) {
-                    final MutableObject<List<String>> layerNames = new MutableObject<List<String>>(new ArrayList());
-                    l.accept(new Layer.Visitor() {
-
-                        @Override
-                        public boolean visit(Layer child) {
-                            if("true".equals(child.getDetails().get(DETAIL_DEFAULT_VISIBILITY))) {
-                                layerNames.getValue().add(child.getName());
-                            }
-                            return true;
-                        }
-                    });
-                    
-                    if(!layerNames.getValue().isEmpty()) {
-                        l.getDetails().put(DETAIL_DEFAULT_VISIBLE_CHILDREN, StringUtils.join(layerNames.getValue(), ","));
-                        l.setVirtual(false);
-                    }
-                }
-                
-                return true;
-            }
-        });
-    }
-    
     private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Map<String,List<String>> childrenByLayerId) throws JSONException {
         Layer l = new Layer();
         // parent set later in 2nd pass
@@ -312,6 +275,8 @@ public class ArcGISService extends GeoService implements Updatable {
         l.getDetails().put(DETAIL_CAPABILITIES, agsl.optString("capabilities"));
         l.getDetails().put(DETAIL_DEFAULT_VISIBILITY, agsl.optBoolean("defaultVisibility",false) ? "true" : "false");
         l.getDetails().put(DETAIL_DEFINITION_EXPRESSION, StringUtils.defaultIfBlank(agsl.optString("definitionExpression"), null));
+        
+        removeEmptyMapValues(l.getDetails());
         
         try {
             l.setMinScale(agsl.getDouble("minScale"));
@@ -481,9 +446,6 @@ public class ArcGISService extends GeoService implements Updatable {
                     }
                 }
                 
-                // will be filled in setLayerTree()                
-                updateLayer.getChildren().clear();
-                
                 result.getLayerStatus().put(updateLayer.getName(), new MutablePair(updateLayer, UpdateResult.Status.NEW));
 
                 updatedLayer = updateLayer;
@@ -495,9 +457,6 @@ public class ArcGISService extends GeoService implements Updatable {
                 
                 old.setParent(null);                
                 old.update(updateLayer, additionalUpdatableDetails);
-                
-                // will be filled in setLayerTree()
-                old.getChildren().clear();
                 
                 // Update feature type
                 if(updateLayer.getFeatureType() == null) {
@@ -518,6 +477,9 @@ public class ArcGISService extends GeoService implements Updatable {
                 layerStatus.setRight(UpdateResult.Status.UNMODIFIED);     
                 updatedLayer = old;
             }
+            
+            // will be filled in setLayerTree()                
+            updatedLayer.getChildren().clear();            
             
             updatedLayersById.put(updateLayer.getName(), updatedLayer);
         }     
