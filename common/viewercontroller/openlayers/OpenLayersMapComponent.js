@@ -94,10 +94,23 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      * @description Creates a OpenLayers.Control.Panel and adds it to the map
      */
     createPanel : function (id){
+        // Make a panel div in order to:
+        // 1. catch mouseclicks/touch events to the panel (when a misclick is done) so it doesn't propagate to the map (and trigger some other controls)
+        // 2. make it possible to place the toolbar out of the map
+        var panelDiv = document.createElement('div');
+        var panelStyle = panelDiv.style;
+        panelDiv.id = 'panelDiv';
+        panelStyle.top = '0px';
+        panelStyle.position = "absolute";
+        // Give it a high z-index to render it on top of the map
+        panelStyle.zIndex = 100000;
+        panelDiv.setAttribute("class","olControlPanel");
+        document.getElementById(this.domId).appendChild(panelDiv);
         var panel= new OpenLayers.Control.Panel({
-            saveState: true
+            saveState: true,
+            div: document.getElementById('panelDiv') // Render the panel to the previously created div
         });
-        this.panel = panel;        
+        this.panel = panel;
         this.maps[0].getFrameworkMap().addControl(this.panel);
     },
     /**
