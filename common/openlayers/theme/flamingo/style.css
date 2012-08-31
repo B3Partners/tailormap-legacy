@@ -1,0 +1,66 @@
+@import url('../default/style.css');
+
+.olControlPanel div{
+    width: 28px;
+    height: 28px;
+}
+.olControlPanel .olControlZoomBoxItemInactive {
+    background: url("img/sprite.png") 295px 280px;    
+}
+.olControlPanel .olControlZoomBoxItemActive {    
+    background: url("img/sprite.png") 0 280px;
+}
+
+.olControlPanel .olControlDragPanItemActive {
+    background: url("img/sprite.png") 0 308px;    
+}
+.olControlPanel .olControlDragPanItemInactive {
+    background: url("img/sprite.png") 295px 308px;    
+}
+
+.olControlPanel .olControlZoomOutItemActive {    
+    background: url("img/sprite.png") 0 252px;
+}
+.olControlPanel .olControlZoomOutItemInactive {
+    background: url("img/sprite.png") 295px 252px;
+}
+.olControlPanel .olControlIdentifyItemActive{
+    background: url("img/sprite.png") 0 364px;
+}
+.olControlPanel .olControlIdentifyItemInactive{    
+    background: url("img/sprite.png") 295px 364px;
+}
+
+.olControlPanel .olControlZoomToMaxExtentItemInactive {
+    background: url("img/sprite.png") 295px 476px;
+    width: 28px;
+    height: 28px;
+}
+
+.olControlPanel .olControlMeasureItemActive{
+    background: url("img/sprite.png") 0 336px;
+}
+.olControlPanel .olControlMeasureItemInactive{
+    background: url("img/sprite.png") 295px 336px;
+}
+
+.olControlPanel .olControlDefaultItemActive{
+    background: url("img/sprite.png") 0 224px;
+}
+.olControlPanel .olControlDefaultItemInactive{
+    background: url("img/sprite.png") 295px 224px;
+}
+
+.olControlPanel .olControlNavigationHistoryPreviousItemActive{
+    background: url("img/sprite.png") 0 420px;
+}
+.olControlPanel .olControlNavigationHistoryPreviousItemInactive{
+    background: url("img/sprite.png") 295px 420px;
+}
+
+.olControlPanel .olControlNavigationHistoryNextItemActive{
+    background: url("img/sprite.png") 0 448px;
+}
+.olControlPanel .olControlNavigationHistoryNextItemInactive{
+    background: url("img/sprite.png") 295px 448px;
+}
