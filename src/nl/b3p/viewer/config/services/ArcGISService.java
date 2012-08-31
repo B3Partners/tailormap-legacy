@@ -23,6 +23,7 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.ows.HTTPClient;
@@ -61,6 +62,13 @@ public class ArcGISService extends GeoService implements Updatable {
     public static final String DETAIL_DEFAULT_VISIBILITY = "arcgis_defaultVisibility";
     /** Layer.details map key for ArcGIS definitionExpression property */
     public static final String DETAIL_DEFINITION_EXPRESSION = "arcgis_definitionExpression";
+    /**
+     * Layer.details map key for comma separated list of children which are 
+     * defaultVisible
+     */ 
+    public static final String DETAIL_DEFAULT_VISIBLE_CHILDREN = "arcgis_defaultVisibleChildren";
+    
+    private static final String TOPLAYER_ID = "-1";
     
     // Layer types are not specified in the ArcGIS API reference, so these are guesses.
     // See {nl.b3p.viewer.config.services.Layer#virtual}
@@ -78,7 +86,8 @@ public class ArcGISService extends GeoService implements Updatable {
         DETAIL_GEOMETRY_TYPE,
         DETAIL_CAPABILITIES,
         DETAIL_DEFAULT_VISIBILITY,
-        DETAIL_DEFINITION_EXPRESSION
+        DETAIL_DEFINITION_EXPRESSION,
+        DETAIL_DEFAULT_VISIBLE_CHILDREN
     }));        
              
     private static JSONObject issueRequest(String url, HTTPClient client) throws Exception {
@@ -177,13 +186,16 @@ public class ArcGISService extends GeoService implements Updatable {
         
         Layer top = new Layer();
         
-        top.setVirtual(true);
-        top.setTitle("Layers");
+        top.setVirtual(true);       // set to false later if any defaultVisible children
+        top.setName(TOPLAYER_ID);   // name needed for possible non-virtual layer 
+        top.setTitle(getName());
         top.setService(this);
         setTopLayer(top);
         
         layersById = new TreeMap();
         childrenByLayerId = new HashMap();
+        
+        layersById.put(top.getName(), top);
         
         if(currentVersionMajor >= 10) {
             // info is the MapServer/layers response, all layers JSON info
@@ -211,6 +223,7 @@ public class ArcGISService extends GeoService implements Updatable {
         }
         
         setLayerTree(getTopLayer(), layersById, childrenByLayerId);
+        setDefaultVisibleChildren(getTopLayer());
        
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
         if(!fs.getFeatureTypes().isEmpty()) {
@@ -236,11 +249,42 @@ public class ArcGISService extends GeoService implements Updatable {
         /* children of top layer is special because those have parentLayerId -1 */
         topLayer.getChildren().clear();
         for(Layer l: layersById.values()) {
-            if(l.getParent() == null) {
+            if(l.getParent() == null && !TOPLAYER_ID.equals(l.getName())) {
                 topLayer.getChildren().add(l);
                 l.setParent(topLayer);
             }
         }        
+    }
+    
+    private static void setDefaultVisibleChildren(Layer layer) {
+        
+        layer.accept(new Layer.Visitor() {
+
+            @Override
+            public boolean visit(Layer l) {
+                
+                if(!l.getChildren().isEmpty()) {
+                    final MutableObject<List<String>> layerNames = new MutableObject<List<String>>(new ArrayList());
+                    l.accept(new Layer.Visitor() {
+
+                        @Override
+                        public boolean visit(Layer child) {
+                            if("true".equals(child.getDetails().get(DETAIL_DEFAULT_VISIBILITY))) {
+                                layerNames.getValue().add(child.getName());
+                            }
+                            return true;
+                        }
+                    });
+                    
+                    if(!layerNames.getValue().isEmpty()) {
+                        l.getDetails().put(DETAIL_DEFAULT_VISIBLE_CHILDREN, StringUtils.join(layerNames.getValue(), ","));
+                        l.setVirtual(false);
+                    }
+                }
+                
+                return true;
+            }
+        });
     }
     
     private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Map<String,List<String>> childrenByLayerId) throws JSONException {
@@ -377,6 +421,10 @@ public class ArcGISService extends GeoService implements Updatable {
             
             // Remove old stuff from before GeoService.details was added
             getTopLayer().getDetails().remove(DETAIL_CURRENT_VERSION);
+            
+            // For updating - old toplayer may have had null name
+            getTopLayer().setName(TOPLAYER_ID);
+            result.getLayerStatus().put(getTopLayer().getName(), new MutablePair(getTopLayer(), UpdateResult.Status.UNMODIFIED));
             
             // Find auto-linked FeatureSource (manually linked feature sources
             // not updated automatically) (TODO: maybe provide option to do that)
