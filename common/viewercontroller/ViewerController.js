@@ -648,12 +648,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (layer.queryable){
                 ogcOptions.query_layers= layer.name;
             }
+            if(layer.name == undefined && layer.details && layer.details.all_children) {
+                options.layers = layer.details.all_children;
+            }
+            
             layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
                 
         }else if(service.protocol == "arcims" || service.protocol == "arcgis"){            
             options.layers= layer.name;
-            if(layer.details && layer.details.arcgis_defaultVisibleChildren) {
-                options.layers = layer.details.arcgis_defaultVisibleChildren;
+            if(layer.details && layer.details.all_children) {
+                options.layers = layer.details.all_children;
             }
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
