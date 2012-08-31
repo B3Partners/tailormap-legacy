@@ -765,22 +765,41 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @return true/false
      */
     isWithinScale: function (appLayer,scale){
+        //get the serviceLayer
+        var serviceLayer=this.getServiceLayer(appLayer);
+        
+        var minScale=serviceLayer.minScale;
+        var maxScale=serviceLayer.maxScale;
+        
+        //fix for Esri Configurations. Sometimes users switch max with min. Make 
+        //the min the minimal scale and max the maximal scale
+        if (minScale!=undefined && maxScale!=undefined && minScale > maxScale){
+            minScale=serviceLayer.maxScale;
+            maxScale=serviceLayer.minScale;
+        }
+        
+        /* If minScale or maxScale is '0' then ignore that check
+         * It's not correct but this is how it's configured in ESRI by most of the users.
+         */
+        //no min/max scale or 0? Return true;
+        if (!minScale && !maxScale){
+            return true;
+        }        
+        //if scale empty, get from map
         if (scale==undefined || scale==null){
             scale = this.mapComponent.getMap().getScale();
         }
-        //temp fix for scale in ArcGis, always return true if arcgis
+        
+        //ArcGis doesn't give the scale in pixel per unit, calculate the 'ArcGis scale'
         var service=this.app.services[appLayer.serviceId];
-        if (service && service.protocol == "arcgis"){
-            return true
-        }
-        var serviceLayer=this.getServiceLayer(appLayer);
-        /* If minScale or maxScale is '0' then ignore it that check
-         * It's not correct but this is how it's configured in ESRI by most of the users.
-         */
-        if (serviceLayer.minScale && serviceLayer.minScale != 0 && scale < serviceLayer.minScale){
+        if (service && service.protocol == "arcgis"){            
+            //scale * (dpi / ratio dpi to dpm)
+            scale = scale * (96/0.0254);
+        }        
+        if (minScale && scale < minScale){
             return false;            
         }
-        if (serviceLayer.maxScale && serviceLayer.maxScale != 0 && scale > serviceLayer.maxScale){
+        if (maxScale && scale > maxScale){
             return false;
         }            
         return true;        
