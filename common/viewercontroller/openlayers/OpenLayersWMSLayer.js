@@ -30,6 +30,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         
         this.options.visibility = this.visible;
         this.options.singleTile=true;
+        this.options.transitionEffect = "resize";
         this.frameworkLayer = new OpenLayers.Layer.WMS(this.options.name,this.url,this.ogcParams,this.options);
                 
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
