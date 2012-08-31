@@ -78,23 +78,22 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         if(mapId == null && this.layoutManager != null) {
             mapId = this.layoutManager.getMapId();
-        }
-        
-        if(viewerType == "flamingo") {
-            // Get config for map
-            var comps = this.app.components;
-            var config = null;
-            var cn = "viewer.mapcomponents.FlamingoMap";
-            for (var c in comps){
-                var component = comps[c];
-                if(component.className == cn){
-                    config = component.config;
-                    break;
-                }
+        }        
+        // Get config for map
+        var comps = this.app.components;
+        var config = null;            
+        for (var c in comps){
+            var component = comps[c];
+            if(component.className == "viewer.mapcomponents.FlamingoMap" ||
+                component.className == "viewer.mapcomponents.OpenLayersMap"){
+                config = component.config;
+                break;
             }
+        }
+        if(viewerType == "flamingo") {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         } else if(viewerType == "openlayers") {
-            this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId);
+            this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }
               
         this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
