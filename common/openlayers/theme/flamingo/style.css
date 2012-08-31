@@ -77,17 +77,17 @@
 }
 
 .olControlPanPanel .olControlPanNorthItemInactive{
-    background: url("img/sprite.png") 0 672px;
+    background: url("img/sprite.png") 295px 672px;
 }
 
 .olControlPanPanel .olControlPanSouthItemInactive{
-    background: url("img/sprite.png") 0 588px;
+    background: url("img/sprite.png") 295px 588px;
 }
 
 .olControlPanPanel .olControlPanEastItemInactive{
-    background: url("img/sprite.png") 0 0;
+    background: url("img/sprite.png") 295px 0;
 }
 
 .olControlPanPanel .olControlPanWestItemInactive{
-    background: url("img/sprite.png") 0 504px;
+    background: url("img/sprite.png") 295px 504px;
 }

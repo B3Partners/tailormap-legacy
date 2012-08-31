@@ -57,7 +57,7 @@
         extPropertyGridConfigs: {
             propertyNames: {
                 resolutions: "Resoluties",
-                theme: "Theme"
+                theme: "Theme ('flamingo' or 'default')"
             },
             source: {
                 resolutions: "",
