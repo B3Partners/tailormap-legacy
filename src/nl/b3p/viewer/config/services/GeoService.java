@@ -226,7 +226,7 @@ public abstract class GeoService {
 
                         @Override
                         public boolean visit(Layer child) {
-                            if(child != l) {
+                            if(child != l && child.getChildren().isEmpty() && !child.isVirtual()) {
                                 layerNames.getValue().add(child.getName());
                             }
                             return true;
