@@ -409,7 +409,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     addToSelection: function(record) {
         var me = this;
         var nodeType = record.get('type');
-        if(((nodeType == "layer" || nodeType == "document") && record.get('isLeaf')) || (me.allowLevelMove && nodeType == "level" && !me.onRootLevel(record, me.tree))) {
+        if(((nodeType == "layer" || nodeType == "document") && !record.get('isVirtual')) || (me.allowLevelMove && nodeType == "level" && !me.onRootLevel(record, me.tree))) {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
                 var objData = record.raw;
