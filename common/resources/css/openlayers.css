@@ -18,11 +18,13 @@
     background-color: transparent !important;
 }
 .olControlPanel{
+    position: absolute;
     float: left;
-    margin-left: 75px;
-    margin-top: 5px;
     border: 1px solid grey;
     padding: 2px;
+    top: 0px;
+    left: 0px;
+    width: 100%;
     background-color: #EEE;
 }
 .olControlPanel div {
@@ -89,7 +91,6 @@
 }
 
 div.olControlMousePosition{
-    bottom: 10px !important;
     right: 10px !important;
     font-size: small !important;
 }

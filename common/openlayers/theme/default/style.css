@@ -36,8 +36,8 @@ div.olLayerDiv {
     display: block;
 }
 .olControlScale {
-    right: 3px;
-    bottom: 3em;
+    left: 3px;
+    bottom: 10px;
     display: block;
     position: absolute;
     font-size: smaller;
@@ -70,7 +70,7 @@ div.olLayerDiv {
 }
 
 div.olControlMousePosition {
-    bottom: 0;
+    bottom: 10px;
     right: 3px;
     display: block;
     position: absolute;

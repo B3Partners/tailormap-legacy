@@ -9,6 +9,9 @@
 Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
     mapOptions:null,
+    // References to the dom object of the content top and -bottom.
+    contentTop:null,
+    contentBottom:null,
     config:{        
         theme: "flamingo"
     },
@@ -40,7 +43,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
             setTimeout(function(){me.checkTools()},10);
         },this);
-        
         return this;
     },
     
@@ -97,21 +99,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      * @description Creates a OpenLayers.Control.Panel and adds it to the map
      */
     createPanel : function (id){
-        // Make a panel div in order to:
-        // 1. catch mouseclicks/touch events to the panel (when a misclick is done) so it doesn't propagate to the map (and trigger some other controls)
-        // 2. make it possible to place the toolbar out of the map
-        var panelDiv = document.createElement('div');
-        var panelStyle = panelDiv.style;
-        panelDiv.id = 'panelDiv';
-        panelStyle.top = '0px';
-        panelStyle.position = "absolute";
-        // Give it a high z-index to render it on top of the map
-        panelStyle.zIndex = 100000;
-        panelDiv.setAttribute("class","olControlPanel");
-        document.getElementById(this.domId).appendChild(panelDiv);
         var panel= new OpenLayers.Control.Panel({
             saveState: true,
-            div: document.getElementById('panelDiv') // Render the panel to the previously created div
+            div: this.contentTop // Render the panel to the previously created div
         });
         this.panel = panel;
         this.maps[0].getFrameworkMap().addControl(this.panel);
@@ -129,6 +119,75 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.domId=this.domId;
         var olMap = Ext.create("viewer.viewercontroller.openlayers.OpenLayersMap",options);
         return olMap;
+    },
+    
+    createMenus : function(top, bottom){
+        // Make a panel div in order to:
+        // 1. catch mouseclicks/touch events to the panel (when a misclick is done) so it doesn't propagate to the map (and trigger some other controls)
+        // 2. make it possible to place the toolbar out of the map
+        // 3. make it possible to place scalebar/mouseposition/etc. out of the map
+        
+        // Div container for content
+        var container = document.getElementById(this.domId);
+        
+        // Top menu
+        var mapEl = Ext.get(this.getMap().frameworkMap.viewPortDiv.id);
+        var currentHeight = mapEl.getHeight();
+        mapEl.dom.style.position = "absolute";
+        
+        var topHeight;
+        if(top.indexOf("%") == -1){
+            currentHeight -= top;
+            topHeight = top;
+            mapEl.setTop(top + "px");
+        }else{
+            var percent = top.substring(0,top.indexOf("%"));
+            var heightInPixels = currentHeight / 100 * percent;
+            currentHeight -= heightInPixels;
+            topHeight = heightInPixels;
+            mapEl.setTop(heightInPixels + "px");
+        }
+        
+        // Bottom menu
+        var bottomHeight;
+        if(bottom.indexOf("%") == -1){
+            bottomHeight = bottom;
+            currentHeight -= bottom;
+        }else{
+            var percent = bottom.substring(0,bottom.indexOf("%"));
+            var heightInPixels = currentHeight / 100 * percent;
+            bottomHeight = heightInPixels;
+            currentHeight -= heightInPixels;
+        }
+        
+        mapEl.setHeight(currentHeight);
+        
+        // Make divs
+        this.contentTop = document.createElement('div');
+        this.contentTop.id = 'content_top';
+        
+        var topStyle = this.contentTop.style;
+        var topLayout= this.viewerController.getLayout('top_menu');
+        topStyle.background = topLayout.bgcolor;
+        topStyle.height = topLayout.height + topLayout.heightmeasure;
+        // Give it a higher z-index than the map to render it on top of the map
+        mapEl.dom.style.zIndex = 100;
+        topStyle.zIndex = mapEl.dom.style.zIndex + 1;
+        this.contentTop.setAttribute("class","olControlPanel");
+        container.appendChild(this.contentTop);
+        
+        // Make content_bottom
+        if(bottomHeight && parseInt(bottomHeight) > 0 ){
+            this.contentBottom = document.createElement('div');
+            this.contentBottom.id = "content_bottom";
+            var bottomStyle = this.contentBottom.style;
+            var bottomLayout = this.viewerController.getLayout('content_bottom');
+            bottomStyle.height = bottomHeight + "px";
+            bottomStyle.background = bottomLayout.bgcolor;
+            bottomStyle.top = currentHeight + parseInt(topHeight) + "px";
+            bottomStyle.position = "relative";
+            container.appendChild(this.contentBottom);
+        }
     },
     /**
      *See @link MapComponent.createWMSLayer
@@ -264,16 +323,22 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if (type == viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);                
         }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
-            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
-                new OpenLayers.Control.MousePosition({
-                    numDigits: config.decimals
-                }));
+            var options = { numDigits: config.decimals};
+            if(this.contentBottom){
+                options.div = this.contentBottom;
+                config.cssClass = "olControlMousePosition";
+            }
+            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
             var frameworkOptions={}
             frameworkOptions.bottomOutUnits='';
             frameworkOptions.bottomInUnits='';
             if (!Ext.isEmpty(config.units)){
                 frameworkOptions.topOutUnits=config.units;
+            }
+            if(this.contentBottom){
+                frameworkOptions.div = this.contentBottom;
+                config.cssClass = "olControlScale";
             }
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
                 new OpenLayers.Control.ScaleLine(frameworkOptions));
@@ -520,6 +585,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             Ext.Error.raise({msg: "Multiple maps not supported yet"});
         this.maps.push(map);
         
+        this.createMenus(this.mapOptions.options.top,this.mapOptions.options.bottom);
         map.getFrameworkMap().events.register("mousemove",this,this.removeMaptip);
     },
     /**

@@ -25,7 +25,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         if (config.options.maxExtent){
             config.options.fullextent=config.options.maxExtent.toString();
             delete config.options.maxExtent;
-        }        
+        }
+        config.options["bottom"] = "bottom -" + config.options["bottom"];
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
         this.initConfig(config);        
         this.frameworkMap = this.mapComponent.viewerObject;

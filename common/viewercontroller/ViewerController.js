@@ -163,7 +163,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     left: 0,
                     top: mapTop,
                     width: "100%",
-                    bottom: "bottom -"+mapBottom,
+                    bottom: mapBottom,
                     visible: "true",
                     maxExtent : maxExtent,
                     startExtent: startExtent,
