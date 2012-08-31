@@ -41,7 +41,8 @@ public class Layer implements Cloneable {
         EXTRA_KEY_METADATA_STYLESHEET_URL,
         EXTRA_KEY_DOWNLOAD_URL,
         EXTRA_KEY_FILTERABLE,
-        EXTRA_IMAGE_EXTENSION        
+        EXTRA_IMAGE_EXTENSION,
+        ArcGISService.DETAIL_DEFAULT_VISIBLE_CHILDREN
     }));  
     
     private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] { 
