@@ -26,7 +26,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
     constructor: function(config){        
         viewer.viewercontroller.openlayers.OpenLayersArcServerLayer.superclass.constructor.call(this, config);        
         this.frameworkLayer = new OpenLayers.Layer.ArcGIS93Rest(this.name,this.url+"/export",{
-            layers: "include: "+config.layers,
+            layers: "show:"+config.layers,
             transparent: 'true'
         },{
             visibility: this.visible,            
