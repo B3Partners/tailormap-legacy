@@ -1,5 +1,10 @@
 @import url('../default/style.css');
 
+.olControlPanel{
+    border: 0px transparent;
+    background-color: transparent;
+}
+
 .olControlPanel div{
     width: 28px;
     height: 28px;
@@ -63,4 +68,26 @@
 }
 .olControlPanel .olControlNavigationHistoryNextItemInactive{
     background: url("img/sprite.png") 295px 448px;
+}
+
+/*Border nav*/
+.olControlPanPanel div{
+    width: 28px;
+    height: 28px;
+}
+
+.olControlPanPanel .olControlPanNorthItemInactive{
+    background: url("img/sprite.png") 0 672px;
+}
+
+.olControlPanPanel .olControlPanSouthItemInactive{
+    background: url("img/sprite.png") 0 588px;
+}
+
+.olControlPanPanel .olControlPanEastItemInactive{
+    background: url("img/sprite.png") 0 0;
+}
+
+.olControlPanPanel .olControlPanWestItemInactive{
+    background: url("img/sprite.png") 0 504px;
 }

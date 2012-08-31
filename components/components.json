@@ -55,8 +55,14 @@
         restrictions: ["content"],
         notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
         extPropertyGridConfigs: {
-            propertyNames: {resolutions: "Resoluties"},
-            source: {resolutions: ""}
+            propertyNames: {
+                resolutions: "Resoluties",
+                theme: "Theme"
+            },
+            source: {
+                resolutions: "",
+                theme: "flamingo",
+            }
         }
     },
 

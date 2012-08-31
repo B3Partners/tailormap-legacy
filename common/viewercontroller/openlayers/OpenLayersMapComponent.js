@@ -9,6 +9,9 @@
 Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
     mapOptions:null,
+    config:{        
+        theme: "flamingo"
+    },
     constructor :function (viewerController, domId,config){
         viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController,domId,config);        
         this.domId = domId;
@@ -120,12 +123,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     createMap : function(id, options){
         options = Ext.merge(this.mapOptions,options);
-        options["theme"]=OpenLayers._getScriptLocation()+'theme/default/style.css';
+        options["theme"]=OpenLayers._getScriptLocation()+'theme/'+this.getTheme()+'/style.css';        
         options.mapComponent=this;   
         options.viewerController = this.viewerController;
         options.domId=this.domId;
         var olMap = Ext.create("viewer.viewercontroller.openlayers.OpenLayersMap",options);
-        //map.events.register("click",this, this.onIdentifyHandler);
         return olMap;
     },
     /**

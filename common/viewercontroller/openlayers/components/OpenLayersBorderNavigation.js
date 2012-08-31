@@ -26,7 +26,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
     south: null,
     east: null,
     west: null,
-    
+    buttonSize: 0,
     timer:null,
     
     constructor: function (conf){        
@@ -43,8 +43,10 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         this.south = Ext.select(".olControlPanSouthItemInactive");
         this.east = Ext.select(".olControlPanEastItemInactive");
         this.west = Ext.select(".olControlPanWestItemInactive");     
+                
         Ext.select(".olControlPanPanel").setStyle("left","0px");
         Ext.select(".olControlPanPanel").setStyle("top","0px");
+        
         var me = this;
         Ext.EventManager.onWindowResize(function (){me.resizeOnceAfter(100);});
         this.resize();
@@ -66,19 +68,28 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
      * resize the component
      */
     resize: function(){
+        if (this.buttonSize == 0){
+            //wait for the button to be ready and get the width
+            this.buttonSize =this.north.item(0).getHeight();
+            var me = this;
+            setTimeout(function(){me.resize();},50);
+            return;
+        }
         var height  = Ext.select(".olMap").item(0).getHeight();
         var width  = Ext.select(".olMap").item(0).getWidth();
-        var buttonSize=18;
-        var halfwayHeight = Number((height-buttonSize)/2);
-        var halfwayWidth = Number((width-buttonSize)/2);
+        
+        var halfwayHeight = Number((height-this.buttonSize)/2);
+        var halfwayWidth = Number((width-this.buttonSize)/2);
         this.north.setStyle("top","0px");
         this.north.setStyle("left",halfwayWidth+"px");
-        this.south.setStyle("top",height-buttonSize+"px");
+        this.south.setStyle("top",height-this.buttonSize+"px");
         this.south.setStyle("left",halfwayWidth+"px");
         this.west.setStyle("top",halfwayHeight+"px");
         this.west.setStyle("left","0px");
         this.east.setStyle("top",halfwayHeight+"px");
-        this.east.setStyle("left",width-buttonSize+"px");
+        this.east.setStyle("left",width-this.buttonSize+"px");
+        
+        
     }
 });
 
