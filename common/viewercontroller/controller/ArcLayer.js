@@ -119,7 +119,8 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             var layerLegend = theServiceCache[appLayer.layerName];
             
             if(!layerLegend) {
-                me.getViewerController().logger.warn(errorMsg + "server did not return legend info for layer with id " + appLayer.layerName);
+                // XXX temp disable
+                //me.getViewerController().logger.warn(errorMsg + "server did not return legend info for layer with id " + appLayer.layerName);
                 failure();
             } else {
                 success(layerLegend);
