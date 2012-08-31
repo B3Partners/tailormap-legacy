@@ -652,6 +652,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 
         }else if(service.protocol == "arcims" || service.protocol == "arcgis"){            
             options.layers= layer.name;
+            if(layer.details && layer.details.arcgis_defaultVisibleChildren) {
+                options.layers = layer.details.arcgis_defaultVisibleChildren;
+            }
             if (service.protocol == "arcims"){
                 options.type= "ArcIMS";
                 options.mapservice=service.serviceName;
