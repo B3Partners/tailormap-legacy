@@ -79,7 +79,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
                     if(filterable){
                         var me = this;
                         var f = function(sld) { 
-                            me.options["SLD_BODY"] = encodeURIComponent(sld);
+                            var fl = me.getFrameworkLayer();
+                            fl.callMethod(me.map.getId() + "_" + me.getId(),"setAttribute","SLD_BODY",encodeURIComponent(sld));
                             me.reload();
                         };
                         var sld = Ext.create("viewer.SLD",{});
