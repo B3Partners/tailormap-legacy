@@ -282,8 +282,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     
     setLabel : function (id, label){
         var olFeature = this.getFrameworkLayer().getFeatureById(id);
-        olFeature.style.label = label;
-        this.reload();
+        if(olFeature){
+            olFeature.style.label = label;
+            this.reload();
+        }
     },
     
     /******** overwrite functions to make use of the mixin functions **********/    
