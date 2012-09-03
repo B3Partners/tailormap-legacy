@@ -27,6 +27,7 @@
             <file name="ScreenPopup.js"/>
 			<file name="CQLFilterWrapper.js"/>
             <file name="MobileSlider.js"/>
+            <file name="MobileCombobox.js"/>
           </sources>
           
 		  <!-- server-side Ajax wrappers -->
