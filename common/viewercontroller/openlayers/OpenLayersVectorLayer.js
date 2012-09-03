@@ -258,6 +258,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     toOpenLayersFeature : function(feature){
         var geom = OpenLayers.Geometry.fromWKT(feature.wktgeom);
         var style = this.frameworkLayer.styleMap.styles["default"];    
+        style.label = feature.label;
         var olFeature = new OpenLayers.Feature.Vector(geom,{id: feature.id},{style:style});
         return olFeature;
     },
@@ -268,13 +269,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      * @return The generic feature
      */
     fromOpenLayersFeature : function(openLayersFeature){
-        var feature = new viewer.viewercontroller.controller.Feature({id:openLayersFeature.id,wktgeom: openLayersFeature.geometry.toString()});
+        var feature = new viewer.viewercontroller.controller.Feature(
+        {
+            id:openLayersFeature.id,
+            wktgeom: openLayersFeature.geometry.toString()
+        });
+        if(openLayersFeature.style){
+            feature.label = openLayersFeature.style.label;
+        }
         return feature;
     }, 
     
     setLabel : function (id, label){
         var olFeature = this.getFrameworkLayer().getFeatureById(id);
         olFeature.style.label = label;
+        this.reload();
     },
     
     /******** overwrite functions to make use of the mixin functions **********/    
