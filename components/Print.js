@@ -343,7 +343,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'label',  
                                 text: "Pagina formaat"  
                             },{
-                                xtype: 'combo',                                
+                                xtype: MobileManager.isMobile() ? "mobilecombo" : "combobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
                                 store: [['a4','A4'],['a3','A3']],

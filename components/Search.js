@@ -121,7 +121,7 @@ Ext.define ("viewer.components.Search",{
                 data : this.searchconfigs
             });
             itemList.push({
-                xtype: 'combo',
+                xtype: MobileManager.isMobile() ? "mobilecombo" : "combobox",
                 fieldLabel: 'Zoek op',
                 store: configs,
                 queryMode: 'local',

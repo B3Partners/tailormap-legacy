@@ -27,6 +27,7 @@ Ext.define ("viewer.components.MobileCombobox", {
         dom: {}
     },
     prevValue: null,
+    renderComplete: false,
     config: {
         // Label before select
         fieldLabel: '',
@@ -64,6 +65,8 @@ Ext.define ("viewer.components.MobileCombobox", {
     constructor: function(conf){
         // init config
         this.initConfig(conf);
+        // set id
+        if(this.id === '') this.id = Ext.id();
         // bind listeners
         this.listeners = conf.listeners;
         // bind the store, get config back
@@ -72,7 +75,8 @@ Ext.define ("viewer.components.MobileCombobox", {
         this.callParent(arguments);
         // bind change event
         this.bindChangeEvent();
-        this.on('change', function(obj,val){ console.log(obj,val); });
+        // set render complete
+        this.renderComplete = true;
     },
     /**
      * Bind the store. Converts arrays or config objects to stores.
@@ -134,11 +138,14 @@ Ext.define ("viewer.components.MobileCombobox", {
     bindChangeEvent: function() {
         var me = this;
         if (me.inputEl.dom.addEventListener) {
-          me.inputEl.dom.addEventListener('change', function() { me.fireEvent('change', me, me.getValue(), me.prevValue, {}) }, false);
+          me.inputEl.dom.addEventListener('change', function() { me.fireChangeEvent(); }, false);
         } else if (me.inputEl.dom.attachEvent)  {
-          me.inputEl.dom.attachEvent('change', function() { me.fireEvent('change', me, me.getValue(), me.prevValue, {}) });
+          me.inputEl.dom.attachEvent('change', function() { me.fireChangeEvent(); });
         }
         me.prevValue = me.getValue();
+    },
+    fireChangeEvent: function() {
+        this.fireEvent('change', this, this.getValue(), this.prevValue, {});
     },
     /**
      * Iterate over the store and create option fields from it
@@ -220,8 +227,9 @@ Ext.define ("viewer.components.MobileCombobox", {
     setValue: function(value) {
         var me = this;
         for(var i in me.options) {
-            if(me.options[i].value == value) this.inputEl.dom.selectedIndex = me.options[i].index;
+            if(me.options[i].value == value) me.inputEl.dom.selectedIndex = me.options[i].index;
         }
+        if(this.rendered) me.fireChangeEvent();
     },
     /**
      * Alternative for setValue function
@@ -245,6 +253,7 @@ Ext.define ("viewer.components.MobileCombobox", {
      * Get the raw HTML value
      */
     getRawValue: function() {
+        if(this.inputEl.dom.selectedIndex === -1) return '';
         return this.inputEl.dom[this.inputEl.dom.selectedIndex].value;
     },
     /**
@@ -260,6 +269,7 @@ Ext.define ("viewer.components.MobileCombobox", {
      */
     setDisabled: function(bool) {
         this.inputEl.dom.disabled = bool;
+        if(this.rendered) this.callParent(arguments);
     },
     /**
      * Get the id

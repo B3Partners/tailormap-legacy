@@ -45,7 +45,7 @@ Ext.define ("viewer.components.Filter",{
             fields: ['id', 'title', 'value'],
             data : this.attributes
         });
-        this.attributeCombobox = Ext.create('Ext.form.ComboBox', {
+        this.attributeCombobox = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
             fieldLabel: '',
             store: this.attributeStore,
             queryMode: 'local',
@@ -73,7 +73,7 @@ Ext.define ("viewer.components.Filter",{
 		});
         var firstContainer =  Ext.create('Ext.container.Container', {
 			width: '100%',
-			height: 25,
+			height: MobileManager.isMobile() ? 30 : 25,
 			layout: {
 				type: 'hbox',
 				align:'stretch'
@@ -100,7 +100,7 @@ Ext.define ("viewer.components.Filter",{
         var me = this;
 		var filterContainer = Ext.create('Ext.container.Container', {
 			width: '100%',
-			height: 25,
+			height: MobileManager.isMobile() ? 30 : 25,
 			layout: {
 				type: 'hbox',
 				align:'stretch'

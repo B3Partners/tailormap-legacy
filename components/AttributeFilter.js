@@ -41,7 +41,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     },
     constructor: function(config){
         this.initConfig(config);
-        this.operator = Ext.create('Ext.form.ComboBox', {
+        this.operator = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
             fieldLabel: '',
             store: this.numericOperators,
             queryMode: 'local',
@@ -70,7 +70,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 						title:"en"
 					}]
 				});
-				this.logicOperator = Ext.create('Ext.form.ComboBox', {
+				this.logicOperator = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
 					fieldLabel: '',
 					store: logicStore,
 					queryMode: 'local',
@@ -91,7 +91,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 				},
 				width: 220,
 				items:  items,
-				height: 25
+				height: MobileManager.isMobile() ? 30 : 25
 			});
 		}
         return this.container;
