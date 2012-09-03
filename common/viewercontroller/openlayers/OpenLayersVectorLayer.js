@@ -31,15 +31,30 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     drawFeatureControls:null,
     modifyFeature:null,
     constructor : function (config){
-        // TODO make styles work in openlayersvectorlayers
-        delete config.style;
+        config.colorPrefix = '#';
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
         this.mixins.openLayersLayer.constructor.call(this,config);
+   
+        var styleMap = new OpenLayers.StyleMap (
+        {
+            "default" :this.getCurrentStyleHash(),
+            "select":{
+                'strokeColor' : '#FF0000',
+                'strokeWidth': 2,
+                'fillColor' : this.colorPrefix + config.style['fillcolor'],
+                'fillOpacity': 0.4,
+                'strokeOpacity':0.8,
+                'pointRadius': 6
+            }
+        },{extendDefault:false});
+        config.styleMap = styleMap;
+        
+        // Delete style from config, because it messes up the styling in the vectorlayer.
+        delete config.style;
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
         this.type=viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
         
         // Make all drawFeature controls: the controls to draw features on the vectorlayer
-        //TODO: Make a circlecontrol
         this.point =  new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Point, {
             displayClass: 'olControlDrawFeaturePoint'
         });
@@ -60,7 +75,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.point);
         
         // The modifyfeature control allows us to edit and select features.
-        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer);
+        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : false,vertexRenderIntent: "select"});
         
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
         map.addControl(this.point);
@@ -76,9 +91,24 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         
         this.modifyFeature.activate();
     },
+    /**
+     * Get the current hash with all the stylesettings. To be used in olFeature.style
+     */
+    getCurrentStyleHash : function(){
+          var hash = {
+            'strokeColor' : this.colorPrefix+ this.style['strokecolor'],
+            'strokeWidth': 3,
+            'pointRadius': 6,
+            'fillColor' : this.colorPrefix + this.style['fillcolor'],
+            'fillOpacity': this.style['fillopacity'] / 100
+        };
+        return hash;
+    },
     
+    /**
+     * Does nothing, but is needed for API compliance
+     */
     adjustStyle : function(){
-        this.viewerController.logger.error("OpenLayersVectorLayer.adjustStyle() not yet implemented!");
     },
     /**
      * Removes all features and all 'sketches' (not finished geometries)
@@ -95,8 +125,16 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         return feature;
     },
 
-    getFeature : function(id){
-        return this.getFrameworkLayer().features[id];
+    getFeature : function(index){
+        return this.getFrameworkLayer().features[index];
+    },
+
+    /**
+     * Gets a feature by the id. 
+     *
+     */
+    getFeatureById : function (id){
+        return this.fromOpenLayersFeature(this.getFrameworkLayer().getFeatureById(id));
     },
 
     getAllFeatures : function(){
@@ -116,12 +154,26 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.addFeatures(features);
     },
 
+    /**
+     * Removes the given feature from this vectorlayer
+     * @param feature The feature to be removed
+     */
+    removeFeature : function (feature){
+        var olFeature = this.getFrameworkLayer().getFeatureById(feature.getId());
+        this.getFrameworkLayer().removeFeatures([olFeature]);
+    },
+    
     addFeatures : function(features){
         var olFeatures = new Array();
         for(var i = 0 ; i < features.length ; i++){
             var feature = features[i];
             var olFeature = this.toOpenLayersFeature(feature);
             olFeatures.push(olFeature);
+            olFeature.style = this.getCurrentStyleHash();
+            // Check if framework independed feature has a label. If so, set it to the style
+            if(feature.label){
+                olFeature.style['label'] = feature.label;
+            }
         }
         return this.getFrameworkLayer().addFeatures(olFeatures);
     },
@@ -180,6 +232,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             var control = this.drawFeatureControls[i];
             control.deactivate();
         }
+        // If no stylehash is set for the feature, set it to the current settings
+        if(!object.feature.style){
+            object.feature.style = this.getCurrentStyleHash();
+        }
         this.editFeature(object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
     },
@@ -201,7 +257,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     toOpenLayersFeature : function(feature){
         var geom = OpenLayers.Geometry.fromWKT(feature.wktgeom);
-        var olFeature = new OpenLayers.Feature.Vector(geom);
+        var style = this.frameworkLayer.styleMap.styles["default"];    
+        var olFeature = new OpenLayers.Feature.Vector(geom,{id: feature.id},{style:style});
         return olFeature;
     },
 
@@ -215,9 +272,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         return feature;
     }, 
     
-    // TODO: implement this
     setLabel : function (id, label){
-        this.viewerController.logger.warning("OpenLayersVectorLayer.setLabel() not yet implemented!");
+        var olFeature = this.getFrameworkLayer().getFeatureById(id);
+        olFeature.style.label = label;
     },
     
     /******** overwrite functions to make use of the mixin functions **********/    
