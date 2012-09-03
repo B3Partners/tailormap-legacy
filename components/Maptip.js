@@ -59,9 +59,9 @@ Ext.define ("viewer.components.Maptip",{
         this.onResize();
         
         //listen to the on addlayer
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         //listen to the onmaptipcancel
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
                 
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
@@ -88,7 +88,7 @@ Ext.define ("viewer.components.Maptip",{
                     //let the mapComponent handle the getFeature
                     mapLayer.setMaptips(mapLayer.getLayers().split(","));
                     //listen to the onMaptipData
-                    mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);       
+                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);       
                 }
             }            
         }
@@ -105,7 +105,7 @@ Ext.define ("viewer.components.Maptip",{
     addLayerInServerRequest: function (appLayer){ 
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
-            this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
+            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
             this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
             this.serverRequestEnabled = true;
         }
@@ -825,7 +825,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      **/
     this.remove = function(){
         this.balloon.remove();
-        this.viewerController.getMap().unRegisterEvent(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,viewerController.getMap(), this.setPosition,this);
+        this.viewerController.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,viewerController.getMap(), this.setPosition,this);
         delete this.balloon;
     }
     /*Get the DOM element where the content can be placed.*/

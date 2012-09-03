@@ -41,10 +41,6 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         return this;
     },
     
-    registerEvent : function (event,handler,scope){
-        this.addListener(event,handler,scope);
-    },
-
     fire : function (event,options){
         this.fireEvent (event,this,options);
     },

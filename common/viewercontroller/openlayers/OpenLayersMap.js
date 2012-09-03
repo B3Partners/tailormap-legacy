@@ -388,14 +388,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }
         this.fireEvent(genericEvent,this,options);
     },
-    
-    //xxx remove
-    unRegisterEvent : function (event,handler,thisObj){
-        var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
-        this.getFrameworkMap().events.unregister(specificName,handler,thisObj);
-        this.removeListener(event,handler,thisObj);
-    },
-    
+       
     /**
     *See @link Map.getScale
     *@deprecated, use getResolution because it returns the resolution and not the scale

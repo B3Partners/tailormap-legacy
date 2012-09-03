@@ -96,7 +96,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }
               
-        this.mapComponent.registerEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE, this.mapComponent, this.onMapContainerLoaded,this);
+        this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
         
         if(viewerType == "openlayers") {

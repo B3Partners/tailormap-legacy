@@ -202,10 +202,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         conf.viewerController = this.viewerController;
         var tool = null;// new viewer.viewercontroller.flamingo.FlamingoTool(conf);
-        /*if(conf.type == Tool.GET_FEATURE_INFO){
-            this.registerEvent(viewer.viewercontroller.controller.ON_GET_FEATURE_INFO, this.getMap(), options["handlerBeforeGetFeatureHandler"]);
-            this.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, this.getMap(), options["handlerGetFeatureHandler"]);
-        }else */
+        
         if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){           
             tool = Ext.create ("viewer.viewercontroller.flamingo.ToolMapClick",conf);
         }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE || 
@@ -481,48 +478,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     },
     /****************************************************************Event handling***********************************************************/
 
-    /**
-     * Registers an event to a handler, on a object. Flamingo doesn't implement per component eventhandling,
-     * so this MapComponent stores the event in one big array.
-     * This array is a two-dimensional array: the first index is the eventname (the generic one! Actually, not a name, but the given id).
-     * The second index is the id of the object. 
-     */
-    registerEvent : function (event,object,handler,scope){
-        if(object instanceof Ext.util.Observable){
-            if(object == this){
-                this.addListener(event,handler,scope);
-            }else{
-                object.registerEvent(event,handler,scope);
-            }
-        }else{
-            alert("Unmapped event:",event);
-            if( this.events[event] == undefined){
-                this.events[event] = new Object();
-            }
-        
-            if (this.events[event][object.getId()]==undefined){
-                this.events[event][object.getId()]=new Array();
-            }
-            this.events[event][object.getId()].push(handler);
-        }
-    },
-    /**
-     *Unregister the event @link see MapComponent.unRegisterEvent
-     */
-    unRegisterEvent : function (event,object,handler){
-        var newHandlerArray=new Array();
-        for (var i=0; i < this.events[event][object.getId()].length; i++){
-            if (handler != this.events[event][object.getId()][i]){
-                newHandlerArray.push(this.events[event][object.getId()][i]);
-            }
-        }    
-        if (newHandlerArray.length==0){
-            delete this.events[event][object.getId()];
-        }else{
-            this.events[event][object.getId()]=newHandlerArray;
-        }
-    
-    },
     getObject : function(name){
         if( name instanceof Array){
             name = name[0];

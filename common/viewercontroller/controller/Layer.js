@@ -176,9 +176,5 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
     destroy: function(){
         this.clearListeners();
         viewer.viewercontroller.controller.Layer.superclass.destroy.call(this);
-    },
-
-    registerEvent : function (event,handler,scope){
-        this.addListener(event,handler,scope);
     }
 });

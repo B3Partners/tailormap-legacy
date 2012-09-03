@@ -161,12 +161,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         this.fireEvent(eventName,options);
     },    
 
-    // @deprecated use removeListener() instead
-    unRegisterEvent : function (event,handler,thisObj){
-        var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
-        this.getFrameworkLayer().events.unregister(specificName,handler,thisObj);
-        this.removeListener(event,handler,thisObj);
-    },
     /**
      * Sets the visibility of the layer
      * @visible true or false

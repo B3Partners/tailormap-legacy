@@ -61,11 +61,11 @@ Ext.define ("viewer.components.FeatureInfo",{
         }
         this.onResize();
         //listen to the on addlayer
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
          //Add event when started the identify (clicked on the map)
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
-        this.getViewerController().mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,
         function(map,options){
             me.onChangeExtent(map,options);
         },this);
@@ -88,7 +88,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             }else{
                 //TODO: add query layers to the map
                 //listen to the onMaptipData
-                mapLayer.registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
+                mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
             }            
         }
     },
@@ -99,7 +99,7 @@ Ext.define ("viewer.components.FeatureInfo",{
     addLayerInServerRequest: function (appLayer){ 
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
-            this.viewerController.mapComponent.getMap().registerEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
+            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
             this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
             this.serverRequestEnabled = true;
         }

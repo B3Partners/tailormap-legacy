@@ -274,27 +274,6 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         Ext.Error.raise({msg: "MapComponent.removeMap() Not implemented! Must be implemented in sub-class"});
     },
 
- /**
- * Registers a function with a given event on the given object
- * Must be implemented by subclass
- * @param event The generic name for the event. Possible values declared as Event.ON_EVENT, etc. See the constructor of this class for the complete list of events.
- * @param object The object on which the event has effect
- * @param handler The function to be called when event takes place. The function must have the following signature:
- * handlerFunction(id,params).
- *
- */
-    registerEvent : function(event, object, handler){
-        Ext.Error.raise({msg: "MapComponent.registerEvent() Not implemented! Must be implemented in sub-class"});
-    },
-    /**
- *Unregisters a event.
- *@param event is the event that needs to be unregisterd
- *@param object is the object on which the event must be unregisterd.
- */
-    unRegisterEvent : function (event, object){
-        Ext.Error.raise({msg: "MapComponent.unRegisterEvent() Not implemented! Must be implemented in sub-class"});
-    },
- 
     /**
  * Entrypoint for all the fired events.
  * Must be implemented by subclass

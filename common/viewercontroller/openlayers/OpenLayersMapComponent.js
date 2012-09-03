@@ -630,40 +630,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return m.getWidth();
         }
         return null;
-    },
+    }
     /****************************************************************Event handling***********************************************************/
 
-
-    /**
-     * Registers an event to a handler.
-     * @param event The generic eventname to register
-     * @param handler The handlerfunction to execute
-     * @param scope The scope to fire the events in
-     */
-     registerEvent : function(event,object,handler,scope){
-        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
-         
-        if(olSpecificEvent){
-            if(object == this){
-                this.addListener(event,handler,scope);
-            }else{
-                object.registerEvent(event,handler,scope);
-            }
-        }else{
-            this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
-        }
-    },
-    /**
-     *All registerd handlers for event 'event' that equals 'handler' are removed as listener.
-     *This is because you don't want duplication of the same handler and event. This will
-     *result in multiple calls of a handler on the same event.
-     *@param event the event
-     *@param handler the handler you want to remove
-     */
-    unRegisterEvent : function (event,handler,thisObj){
-        var specificName = this.viewerController.mapComponent.getSpecificEventName(event);
-        this.removeListener(specificName,handler,thisObj);
-    }
 });
 
 

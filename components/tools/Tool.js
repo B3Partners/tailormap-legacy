@@ -39,9 +39,5 @@ Ext.define("viewer.components.tools.Tool",{
     },
     fire : function (event,options){
         this.fireEvent(event,this,options);
-    },
-
-    registerEvent : function (event,handler){
-        this.addListener(event,handler);
-    }
+    }    
 });
