@@ -111,9 +111,9 @@ Ext.define("viewer.components.Component",{
                 if(me.popup && me.popup.isVisible()) {
                     me.popup.hide();
                 } else {
-                    me.viewerController.showLoading(this.title || '');
+                    me.viewerController.showLoading(me.title || '');
                     setTimeout(function() {
-                        options.handler();
+                    options.handler();
                         me.viewerController.hideLoading();
                     }, 0);
                 }
@@ -225,9 +225,10 @@ Ext.define("viewer.components.Component",{
             me.haveSprite = false;
             return;
         }
+        me.haveSprite = true;
         
         // Prepend context path for relative URLs
-        if(appSprite.indexOf("://") == -1) {
+        if(appSprite.indexOf("://") == -1) {            
             // By accident a fixed context path was put in the default value for
             // the sprite url in many apps which does not work for other 
             // context paths
