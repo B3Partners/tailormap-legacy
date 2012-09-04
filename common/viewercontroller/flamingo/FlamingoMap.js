@@ -27,8 +27,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
             delete config.options.maxExtent;
         }
         config.options["bottom"] = "bottom -" + config.options["bottom"];
-        viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);
-        this.initConfig(config);        
+        viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);        
         this.frameworkMap = this.mapComponent.viewerObject;
         return this;
     },
@@ -316,8 +315,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         for (var key in this.options){
             xml+=" "+key+"=\""+this.options[key]+"\"";
         }
-        xml+=">";
-        xml+="<fmc:LayerIdentifyIcon id=\"identifyicon\"/>";
+        xml+=">";        
 		xml+="</fmc:Map>";
         return xml;
     },
