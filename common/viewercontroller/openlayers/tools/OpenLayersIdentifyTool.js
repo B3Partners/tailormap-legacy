@@ -38,6 +38,15 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
         this.map=this.viewerController.mapComponent.getMap();
         
+        this.mapClick=new viewer.viewercontroller.openlayers.ToolMapClick({
+            id: "mapclick_"+this.id,
+            viewerController: this.viewerController,
+            handler: {
+                    fn: this.handleClick,
+                    scope: this
+                }
+        });
+        
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
         return this;
@@ -58,7 +67,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             }
         }
         //set dragPan.activate();
-        this.map.getFrameworkMap().events.register("click", this, this.handleClick);
+        //this.map.getFrameworkMap().events.register("click", this, this.handleClick);    
+        this.mapClick.activateTool();
     },
     deactivate: function(){
         //if mobile: enable the disactivated controls again
@@ -68,18 +78,10 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 disCont.activate();
             }
         }
-        this.map.getFrameworkMap().events.unregister("click", this, this.handleClick);
+        //this.map.getFrameworkMap().events.unregister("click", this, this.handleClick);
+        this.mapClick.deactivateTool();
     },
-    handleClick: function(event){
-        var opx = this.map.getFrameworkMap().getLonLatFromPixel(event.xy)
-        var options = {
-            x: event.xy.x,
-            y: event.xy.y,
-            coord: {
-                x: opx.lon,
-                y: opx.lat
-            }
-        };
+    handleClick: function(tool,options){                
         this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     }  
 });
