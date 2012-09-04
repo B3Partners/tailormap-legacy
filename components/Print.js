@@ -78,7 +78,11 @@ Ext.define ("viewer.components.Print",{
            this.removeLegend(layer);
         }
     },
-    /**/
+    /**
+     *Called when layer is added to the map
+     *@param map the map
+     *@param object event object.
+     */
     layerAdded: function (map,object){
         var layer = object.layer;
         var vis = layer.getVisible();
