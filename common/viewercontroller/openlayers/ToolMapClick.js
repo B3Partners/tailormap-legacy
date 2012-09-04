@@ -26,7 +26,8 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
     scope:null,
     config:{
         id:null,
-        name: null
+        name: null,
+        handlerOptions: null
     },
     /**
      * @constructor
@@ -46,10 +47,7 @@ Ext.define ("viewer.viewercontroller.openlayers.ToolMapClick",{
         
         //create a click control that handles only single click        
         this.clickControl = new OpenLayers.Control.Click({
-            handlerOptions: {
-                single: true,
-                "double": false
-            },
+            handlerOptions: me.handlerOptions,
             click: function(evt){
                 me.handleClick(evt)
             }

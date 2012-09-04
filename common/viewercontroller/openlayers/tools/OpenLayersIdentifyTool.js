@@ -44,7 +44,10 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             handler: {
                     fn: this.handleClick,
                     scope: this
-                }
+            },
+            handlerOptions: {                
+                'stopSingle': true
+            }
         });
         
         this.getFrameworkTool().events.register("activate",this,this.activate);

@@ -323,6 +323,7 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
         this.handlerOptions = OpenLayers.Util.extend(
             {}, this.defaultHandlerOptions
         );
+        Ext.apply(this.handlerOptions,options.handlerOptions);
         OpenLayers.Control.prototype.initialize.apply(
             this, arguments
         );
