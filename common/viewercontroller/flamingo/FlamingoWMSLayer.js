@@ -89,7 +89,8 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
                 }
             }
         }else{
-            this.options["SLD_BODY"] = null;
+            var fl = this.getFrameworkLayer();
+            fl.callMethod(this.map.getId() + "_" + this.getId(),"setAttribute","SLD_BODY",null);
             this.reload();
         }
     },
