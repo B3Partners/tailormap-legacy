@@ -99,6 +99,11 @@ Ext.define("viewer.components.Legend", {
         var vis = object.visible;
         var appLayer = this.getViewerController().app.appLayers[layer.appLayerId];
         
+        // When appLayer is non-existing (ie. vectorlayeres, imagelayers,etc.), return. 
+        if(!appLayer){
+            return;
+        }
+        
         if(this.legends == null) {
             // layersInitialized event not yet received, ignore
             return;
