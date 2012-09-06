@@ -216,11 +216,7 @@ Ext.define ("viewer.components.Maptip",{
                                 var descriptionDiv = new Ext.Element(document.createElement("div"));
                                 descriptionDiv.addCls("feature_summary_description");
                                 var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature);
-                                //remove html layout
-                                var desc = desc.replace(/(<([^>]+)>)/ig,"");
-                                if (desc && desc.length > this.maxDescLength){
-                                    desc=desc.substr(0, this.maxDescLength)+"...";
-                                }
+                                
                                 descriptionDiv.insertHtml("beforeEnd",desc);
                                 leftColumnDiv.appendChild(descriptionDiv);
                             }
