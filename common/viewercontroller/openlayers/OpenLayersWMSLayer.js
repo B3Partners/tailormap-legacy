@@ -96,7 +96,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
                         var me = this;
                         var f = function(sld) { 
                             me.setOGCParams({
-                                "SLD_BODY" : encodeURIComponent(sld)
+                                "SLD_BODY" : sld
                             });
                             me.reload();
                         };
