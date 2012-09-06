@@ -71,7 +71,7 @@ Ext.define ("viewer.components.Drawing",{
             showmeasures:false,
             viewerController: this.viewerController,
             style: {
-                'fillcolor': this.color,
+                'fillcolor': this.color || 'FF0000',
                 'fillopacity': 50,
                 'strokecolor': "FF0000",
                 'strokeopacity': 50
