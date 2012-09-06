@@ -72,7 +72,7 @@ Ext.define ("viewer.components.Filter",{
 			}
 		});
         var firstContainer =  Ext.create('Ext.container.Container', {
-			width: '100%',
+			width: 400,
 			height: MobileManager.isMobile() ? 30 : 25,
 			layout: {
 				type: 'hbox',
@@ -99,7 +99,7 @@ Ext.define ("viewer.components.Filter",{
     addAttributeFilter : function (){
         var me = this;
 		var filterContainer = Ext.create('Ext.container.Container', {
-			width: '100%',
+			width: 400,
 			height: MobileManager.isMobile() ? 30 : 25,
 			layout: {
 				type: 'hbox',
