@@ -521,7 +521,7 @@ Ext.define ("viewer.components.Print",{
                     xtype: "checkbox",
                     boxLabel: title,
                     name: 'legendUrl',
-                    inputValue: Ext.JSON.stringify(this.legends[key]),
+                    inputValue: Ext.JSON.encode(this.legends[key]),
                     id: 'legendCheckBox'+key,
                     checked: true
                 });
