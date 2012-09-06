@@ -180,7 +180,9 @@ Ext.define ("viewer.components.Buffer",{
         var map = this.viewerController.mapComponent.getMap();
         var layer = this.layerSelector.getValue();
         if(layer != null){
-            var mapLayer = map.getLayer(this.name + layer.layerName+"ImageLayer");
+            var id = this.name + layer.layerName+"ImageLayer";
+            id = this.viewerController.mapComponent.makeFlamingoAcceptableId(id);
+            var mapLayer = map.getLayer(id);
             if(mapLayer!=null){
                 map.removeLayer(mapLayer);
             }

@@ -735,6 +735,17 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     getHeight: function(){
         return this.viewerObject.callMethod(this.flamingoId,"getHeight");
+    },
+    
+    /**
+     * Helper function to make an id which is correct for flamingo (ie not colons)
+     */
+    makeFlamingoAcceptableId : function (id){
+        id=""+id;
+        if((id).indexOf(":") != -1){
+            id = (id).replace(/:/g,'_');
+        }
+        return id;
     }
 });
 
