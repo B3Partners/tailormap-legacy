@@ -37,6 +37,10 @@ Ext.define ("viewer.components.InfluenceImage",{
         }
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        var me = this;
+        this.popup.popupWin.addListener("show",function(){
+            me.layerSelector.initLayers();
+        },this);
         return this;
     },
     selectedContentChanged : function (){
