@@ -199,7 +199,7 @@ Ext.define ("viewer.components.DataSelection",{
                     }
                 }
                 dataSelectieAttributes.push({
-                    xtype: MobileManager.isMobile() ? "mobilecombo" : "combobox",
+                    xtype: "flamingocombobox",
                     id: attribute.name,
                     queryMode : 'local',
                     disabled: true,
@@ -401,7 +401,7 @@ addFilter : function (){
     });
     var logicOperator = null;
     if(this.filters.length != 0) {
-        logicOperator = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
+        logicOperator = Ext.create('viewer.components.FlamingoCombobox', {
             store: [ ['OR', 'of'], ['AND', 'en'] ],
             width: 50,
             value: 'OR'

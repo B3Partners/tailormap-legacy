@@ -62,7 +62,7 @@ Ext.define ("viewer.components.BufferLayer",{
             data : layers
         });
 
-        this.combobox = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
+        this.combobox = Ext.create('viewer.components.FlamingoCombobox', {
             fieldLabel: 'Kies kaartlaag',
             emptyText: layers.length === 0 ? 'Geen lagen beschikbaar' : 'Maak uw keuze',
             disabled: layers.length === 0,

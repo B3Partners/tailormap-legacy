@@ -294,7 +294,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'button',
                                 text: '<',
                                 width: MobileManager.isMobile() ? 50 : 30,
-                                padding: MobileManager.isMobile() ? '10px' : '2px',
+                                componentCls: 'mobileLarge',
                                 listeners: {
                                     click:{
                                         scope: this,
@@ -347,7 +347,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'label',  
                                 text: "Pagina formaat"  
                             },{
-                                xtype: MobileManager.isMobile() ? "mobilecombo" : "combobox",                                
+                                xtype: "flamingocombobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
                                 store: [['a4','A4'],['a3','A3']],
@@ -376,7 +376,7 @@ Ext.define ("viewer.components.Print",{
                 items: [{
                     xtype: 'button',
                     text: 'Sluiten',
-                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -392,7 +392,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
-                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -408,7 +408,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als PDF'  ,
-                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
                         marginLeft: '5px'
@@ -424,7 +424,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Printen via PDF',
-                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
                         marginLeft: '5px'

@@ -41,7 +41,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     },
     constructor: function(config){
         this.initConfig(config);
-        this.operator = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
+        this.operator = Ext.create('viewer.components.FlamingoCombobox', {
             fieldLabel: '',
             store: this.numericOperators,
             queryMode: 'local',
@@ -70,7 +70,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 						title:"en"
 					}]
 				});
-				this.logicOperator = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
+				this.logicOperator = Ext.create('viewer.components.FlamingoCombobox', {
 					fieldLabel: '',
 					store: logicStore,
 					queryMode: 'local',

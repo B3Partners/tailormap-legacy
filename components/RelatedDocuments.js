@@ -96,7 +96,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
                         pack:'end'
                     },
                     items: [
-                        {xtype: 'button', text: 'Sluiten', padding: MobileManager.isMobile() ? '10px' : '2px', handler: function() {
+                        {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
                             me.popup.hide();
                         }}
                     ]

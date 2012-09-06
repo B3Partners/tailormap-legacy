@@ -68,7 +68,7 @@ Ext.define ("viewer.components.Bookmark",{
                 id: 'compactlink'
             },{ 
                 xtype: 'button',
-                padding: MobileManager.isMobile() ? '10px' : '2px',
+                componentCls: 'mobileLarge',
                 margin: '10px 0px 0px 0px',
                 text: 'Toevoegen aan favorieten',
                 listeners: {
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.Bookmark",{
                 }
             },{ 
                 xtype: 'button',
-                padding: MobileManager.isMobile() ? '10px' : '2px',
+                componentCls: 'mobileLarge',
                 margin: '10px 0px 0px 10px',
                 text: 'Sluiten',
                 listeners: {

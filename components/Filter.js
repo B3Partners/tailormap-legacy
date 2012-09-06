@@ -45,7 +45,7 @@ Ext.define ("viewer.components.Filter",{
             fields: ['id', 'title', 'value'],
             data : this.attributes
         });
-        this.attributeCombobox = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
+        this.attributeCombobox = Ext.create('viewer.components.FlamingoCombobox', {
             fieldLabel: '',
             store: this.attributeStore,
             queryMode: 'local',

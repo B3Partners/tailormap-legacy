@@ -91,7 +91,7 @@ Ext.define ("viewer.components.Buffer",{
             name: "buffer" ,
             id: this.name + "BufferButton",
             text: "Buffer",
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             margin: '10px 0px 0px 0px',
             listeners: {
                 click:{
@@ -105,7 +105,7 @@ Ext.define ("viewer.components.Buffer",{
             name: "removeBuffer" ,
             id : this.name + "RemoveButton",
             text: "Huidige buffer verwijderen", 
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             margin: '10px 0px 0px 10px',           
             listeners: {
                 click:{

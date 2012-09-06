@@ -98,7 +98,7 @@ Ext.define ("viewer.components.Search",{
                         pack:'end'
                     },
                     items: [
-                        {xtype: 'button', text: 'Sluiten', padding: MobileManager.isMobile() ? '10px' : '2px', handler: function() {
+                        {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
                             me.popup.hide();
                         }}
                     ]
@@ -121,7 +121,7 @@ Ext.define ("viewer.components.Search",{
                 data : this.searchconfigs
             });
             itemList.push({
-                xtype: MobileManager.isMobile() ? "mobilecombo" : "combobox",
+                xtype: "flamingocombobox",
                 fieldLabel: 'Zoek op',
                 store: configs,
                 queryMode: 'local',
@@ -150,7 +150,7 @@ Ext.define ("viewer.components.Search",{
             itemList.push({ 
                 xtype: 'button',
                 text: 'Zoeken',
-                padding: MobileManager.isMobile() ? '10px' : '2px',
+                componentCls: 'mobileLarge',
                 margin: this.margin,
                 listeners: {
                     click:{
@@ -164,7 +164,7 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             text: 'Zoekactie afbreken',
             margin: this.margin,
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             name: 'cancel',
             id: 'cancel'+ this.name,
             listeners: {
@@ -231,7 +231,7 @@ Ext.define ("viewer.components.Search",{
                 text: result.address,
                 xtype: 'button',
                 margin: '10px 10px 0px 10px',
-                padding: MobileManager.isMobile() ? '10px' : '2px',
+                componentCls: 'mobileLarge',
                 tooltip: 'Zoom naar locatie',
                 listeners: {
                     click:{

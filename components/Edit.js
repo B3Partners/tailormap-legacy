@@ -122,7 +122,7 @@ Ext.define ("viewer.components.Edit",{
                     disabled: true,
                     tooltip: "Nieuw",
                     text: "Nieuw",
-                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    componentCls: 'mobileLarge',
                     listeners: {
                         click:{
                             scope: me,
@@ -134,7 +134,7 @@ Ext.define ("viewer.components.Edit",{
                     xtype: 'button',
                     id : this.name + "editButton",
                     tooltip: "Bewerk",
-                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    componentCls: 'mobileLarge',
                     disabled: true,
                     text: "Bewerk",
                     listeners: {
@@ -170,7 +170,7 @@ Ext.define ("viewer.components.Edit",{
                 },
                 defaults: {
                     xtype: 'button',
-                    padding: MobileManager.isMobile() ? '10px' : '2px'
+                    componentCls: 'mobileLarge'
                 },
                 items:[
                 {
@@ -341,7 +341,7 @@ Ext.define ("viewer.components.Edit",{
                             data : values
                         });
 
-                        input = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileCombobox' : 'Ext.form.ComboBox', {
+                        input = Ext.create('viewer.components.FlamingoCombobox', {
                             fieldLabel: attribute.editAlias || attribute.name,
                             store: valueStore,
                             queryMode: 'local',

@@ -113,7 +113,7 @@ Ext.define ("viewer.components.Influence",{
             xtype: 'button',
             text: 'Locatie aanwijzen op kaart',
             margin: this.margin,
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             listeners: {
                 click:{
                     scope: this,
@@ -126,7 +126,7 @@ Ext.define ("viewer.components.Influence",{
             xtype: 'button',
             text: 'Verwijder invloedsgebied',
             margin: this.margin,
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             listeners: {
                 click:{
                     scope: this,

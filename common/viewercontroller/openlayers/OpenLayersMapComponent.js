@@ -179,8 +179,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var topLayout= this.viewerController.getLayout('top_menu');
         if(topLayout.height ){
             topStyle.background = topLayout.bgcolor;
+            topStyle.height = topLayout.height + topLayout.heightmeasure;
         }
-        topStyle.height = topLayout.height + topLayout.heightmeasure;
+        
         // Give it a higher z-index than the map to render it on top of the map
         mapEl.dom.style.zIndex = 100;
         topStyle.zIndex = mapEl.dom.style.zIndex + 1;

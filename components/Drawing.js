@@ -134,7 +134,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.point,
             icon: this.iconPath+"bullet_red.png",
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             tooltip: "Teken een punt",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -149,7 +149,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.line,
             icon: this.iconPath+"line_red.png",
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             tooltip: "Teken een lijn",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -164,7 +164,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
             icon: this.iconPath+"shape_square_red.png",
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             tooltip: "Teken een polygoon",
             enableToggle: true,
             toggleGroup: 'drawingTools',
@@ -180,7 +180,7 @@ Ext.define ("viewer.components.Drawing",{
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
-                padding: MobileManager.isMobile() ? '10px' : '2px',
+                componentCls: 'mobileLarge',
                 tooltip: "Teken een cirkel",
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
@@ -197,7 +197,7 @@ Ext.define ("viewer.components.Drawing",{
             xtype: 'button',
             icon: this.iconPath+"delete.png",
             tooltip: "Verwijder alle objecten",
-            padding: MobileManager.isMobile() ? '10px' : '2px',
+            componentCls: 'mobileLarge',
             listeners: {
                 click:{
                     scope: me,
@@ -268,7 +268,7 @@ Ext.define ("viewer.components.Drawing",{
                     xtype: 'button',
                     icon: this.iconPath+"delete.png",
                     tooltip: "Verwijder geselecteerd object",
-                    padding: MobileManager.isMobile() ? '10px' : '2px',
+                    componentCls: 'mobileLarge',
                     listeners: {
                         click:{
                             scope: me,
@@ -403,7 +403,7 @@ Ext.define ("viewer.components.Drawing",{
                         pack:'end'
                     },
                     items: [
-                        {xtype: 'button', text: 'Sluiten', padding: MobileManager.isMobile() ? '10px' : '2px', handler: function() {
+                        {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
                             me.popup.hide();
                         }}
                     ]
