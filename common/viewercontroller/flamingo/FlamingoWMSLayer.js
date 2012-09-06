@@ -90,7 +90,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
             }
         }else{
             var fl = this.getFrameworkLayer();
-            fl.callMethod(this.map.getId() + "_" + this.getId(),"setAttribute","SLD_BODY",null);
+            fl.callMethod(this.map.getId() + "_" + this.getId(),"removeAttribute","SLD_BODY");
             this.reload();
         }
     },
