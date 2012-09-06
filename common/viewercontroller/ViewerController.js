@@ -94,6 +94,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         } else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
+        }else{
+            this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
         }
               
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
