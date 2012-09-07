@@ -7,10 +7,11 @@ create table layar_source (
 
 create table layar_source_details (
         layar_source number(19,0) not null,
-        details varchar2(255 char),
+        value clob,
         details_key varchar2(255 char),
         primary key (layar_source, details_key)
 );
+
 
 alter table layar_source 
         add constraint FKFC8466C580F5B5AC 

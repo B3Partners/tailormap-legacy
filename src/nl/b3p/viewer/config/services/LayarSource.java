@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.*;
+import nl.b3p.viewer.config.ClobElement;
 
 /**
  *
@@ -36,7 +37,7 @@ public class LayarSource {
     private SimpleFeatureType featureType;
     
     @ElementCollection
-    private Map<String,String> details = new HashMap<String,String>();
+    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
     public Long getId() {
@@ -63,11 +64,11 @@ public class LayarSource {
         this.featureType = featureType;
     }
     
-    public Map<String,String> getDetails() {
+    public Map<String,ClobElement> getDetails() {
         return details;
     }
     
-    public void setDetails(Map<String,String> details) {
+    public void setDetails(Map<String,ClobElement> details) {
         this.details = details;
     }    
     //</editor-fold>
