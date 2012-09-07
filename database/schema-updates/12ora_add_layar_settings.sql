@@ -7,8 +7,8 @@ create table layar_source (
 
 create table layar_source_details (
         layar_source number(19,0) not null,
-        details varchar2(1020 char),
-        details_key varchar2(1020 char),
+        details varchar2(255 char),
+        details_key varchar2(255 char),
         primary key (layar_source, details_key)
 );
 
