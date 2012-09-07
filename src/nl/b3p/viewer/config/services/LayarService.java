@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -31,6 +33,9 @@ public class LayarService {
     @Basic(optional=false)
     @Column(unique=true)
     private String name;
+    
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="layarService")
+    private List<LayarSource> layarSources = new ArrayList<LayarSource>();
 
     public String getName() {
         return name;
@@ -46,5 +51,13 @@ public class LayarService {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<LayarSource> getLayarSources() {
+        return layarSources;
+    }
+
+    public void setLayarSources(List<LayarSource> layarSources) {
+        this.layarSources = layarSources;
     }
 }

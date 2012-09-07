@@ -141,4 +141,13 @@
             </id>
         </attributes>
     </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.LayarSource">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="layar_source_id_seq"/>
+                <sequence-generator name="layar_source_id_seq" sequence-name="layar_source_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
 </entity-mappings>
