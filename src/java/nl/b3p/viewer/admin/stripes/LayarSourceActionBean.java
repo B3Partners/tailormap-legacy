@@ -153,7 +153,7 @@ public class LayarSourceActionBean implements ActionBean {
                     if(property.equals("featureType")) {                        
                         c.add(Restrictions.ilike("f.typeName",value,MatchMode.ANYWHERE));
                     }
-                    if(property.equals("layerService")) {
+                    if(property.equals("layarService")) {
                         c.add(Restrictions.ilike("l.name",value,MatchMode.ANYWHERE));
                     }
                 }
@@ -180,7 +180,7 @@ public class LayarSourceActionBean implements ActionBean {
             c.addOrder(order); 
         }
         if(layarServiceId != null && layarServiceId != -1){
-            Criterion attrCrit = Restrictions.eq("layarService", layarServiceId);
+            Criterion attrCrit = Restrictions.eq("l.id", layarServiceId);
             c.add(attrCrit);
         }
         List sources = c.list();

@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div style="margin-bottom: 10px;">
                 <p>LayarBronnen beheren</p>
                 <select name="layarServiceId" id="layarServiceId">
-                    <option value="1">Maak uw keuze..</option>
+                    <option value="-1">Maak uw keuze..</option>
                     <c:forEach var="service" items="${actionBean.layarServices}">
                         <c:set var="selected" value="" />
                         <c:if test="${actionBean.layarServiceId == service.id}">
@@ -50,6 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
             
+        <script type="text/javascript" src="${contextPath}/resources/js/services/layarsource.js"></script>
         <script type="text/javascript">
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="edit"/>';
@@ -84,7 +85,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             function layarServiceChange(selectElement) {
                 var selectedValue = parseInt(selectElement.getValue());
 
-                if(selectedValue != 1) {                   
+                //if(selectedValue ) {                   
                     var gridStore = Ext.getCmp('editGrid').getStore();
                     gridStore.proxy.extraParams.layarServiceId = selectedValue;
                     // Go back to page 1 and reload store
@@ -94,13 +95,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         limit: 10
                     }});
                     gridStore.loadPage(1, {limit:10});
-                }
+                //}
             }
             function reloadGrid(){
                 Ext.getCmp('editGrid').getStore().load(); 
             }
         </script>
-        <script type="text/javascript" src="${contextPath}/resources/js/services/layarsource.js"></script>
     </stripes:layout-component>
 
 </stripes:layout-render>
