@@ -33,6 +33,7 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.csw.jaxb.gml.MultiGeometry;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.LayarService;
 import nl.b3p.viewer.config.services.LayarSource;
 import org.apache.commons.logging.Log;
@@ -170,8 +171,13 @@ public class LayarActionBean implements ActionBean {
         }        
         root.put("errorString",error);
         if (error.length()>0){
-            root.put("errorCode",errorCode);
+            //if error, errorCode must be at least 20
+            if (errorCode < 20){
+                errorCode=20;
+            }
         }
+        root.put("errorCode",errorCode);
+        
         root.put("radius",this.radius);
         return new StreamingResolution("application/json", new StringReader(root.toString()));                
     }
@@ -224,7 +230,7 @@ public class LayarActionBean implements ActionBean {
         hotspot.put("anchor", createAnchor(feature));
         hotspot.put("text",createText(feature,layarSource));
         if (layarSource.getDetails().get("imageURL")!=null){
-            hotspot.put("imageURL",layarSource.getDetails().get("imageURL"));
+            hotspot.put("imageURL",replaceValuesInString(layarSource.getDetails().get("imageURL"),feature));
         }
         return hotspot;
     }
@@ -253,8 +259,8 @@ public class LayarActionBean implements ActionBean {
         Point latLonPoint = (Point) transform(featurePoint,sourceCRS,layarCRS);
         
         JSONObject geolocation = new JSONObject();
-        geolocation.put("lat", latLonPoint.getX());
-        geolocation.put("lon", latLonPoint.getY());
+        geolocation.put("lat", latLonPoint.getY());
+        geolocation.put("lon", latLonPoint.getX());
         anchor.put("geolocation", geolocation);
         return anchor;
     }
@@ -268,7 +274,7 @@ public class LayarActionBean implements ActionBean {
      */
     private JSONObject createText(SimpleFeature f,LayarSource layarSource) throws JSONException, Exception{
         JSONObject text = new JSONObject();
-        Map<String, String> details=layarSource.getDetails();
+        Map<String, ClobElement> details=layarSource.getDetails();
         if (details.get("text.title")==null){
             throw new Exception("text.title must be configured");
         }
@@ -280,6 +286,9 @@ public class LayarActionBean implements ActionBean {
             text.put("footnote",replaceValuesInString(details.get("text.footnote"),f));
         }
         return text;
+    }
+    private String replaceValuesInString(ClobElement clob, SimpleFeature f) throws Exception {
+        return replaceValuesInString(clob.toString(), f);
     }
     /**
      * Replace all the [attributename] in the given string with the values in the SimpleFeature
