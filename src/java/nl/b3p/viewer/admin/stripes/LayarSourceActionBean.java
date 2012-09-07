@@ -16,8 +16,10 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
@@ -31,6 +33,7 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.LayarService;
 import nl.b3p.viewer.config.services.LayarSource;
@@ -81,9 +84,11 @@ public class LayarSourceActionBean implements ActionBean {
     private String dir;
     
     @Validate
+    private Map<String, ClobElement> details = new HashMap<String, ClobElement>();
+    
+    @Validate
     @ValidateNestedProperties({
         @Validate(field="featureType"),
-        @Validate(field="details"),
         @Validate(field="layarService")
     })
     private LayarSource layarSource = null;
@@ -95,6 +100,9 @@ public class LayarSourceActionBean implements ActionBean {
     }
     
     public Resolution save(){        
+        layarSource.getDetails().clear();
+        layarSource.getDetails().putAll(details);
+        
         Stripersist.getEntityManager().persist(layarSource);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -103,6 +111,9 @@ public class LayarSourceActionBean implements ActionBean {
     }
     
     public Resolution edit() {
+        if (layarSource != null) {
+            details = layarSource.getDetails();
+        }
         layarServices = Stripersist.getEntityManager().createQuery("from LayarService").getResultList();
         featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType").getResultList();        
         Stripersist.getEntityManager().getTransaction().commit();
@@ -290,6 +301,14 @@ public class LayarSourceActionBean implements ActionBean {
     public void setFeatureTypes(List<SimpleFeatureType> featureTypes) {
         this.featureTypes = featureTypes;
     }
-    
+
+    public Map<String, ClobElement> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, ClobElement> details) {
+        this.details = details;
+    }
     //</editor-fold>
 }
+    

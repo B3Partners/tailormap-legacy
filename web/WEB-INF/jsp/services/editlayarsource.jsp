@@ -73,25 +73,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <tr>
                                     <td>Titel:</td>
                                     <td>
-                                        <stripes:text name="layarSource.details['text.title']"></stripes:text>
+                                        <stripes:text name="details['text.title']"></stripes:text>
                                     </td>
                                 </tr> 
                                 <tr>
                                     <td>Omschrijving:</td>
                                     <td>
-                                        <stripes:text name="layarSource.details['text.description']"></stripes:text>
+                                        <stripes:text name="details['text.description']"></stripes:text>
                                     </td>
                                 </tr>  
                                 <tr>
                                     <td>Footnote</td>
                                     <td>
-                                        <stripes:text name="layarSource.details['text.footnote']"></stripes:text>
+                                        <stripes:text name="details['text.footnote']"></stripes:text>
                                     </td>
                                 </tr>                         
                                 <tr>
                                     <td>Url</td>
                                     <td>
-                                        <stripes:text name="layarSource.details['imageURL']"></stripes:text>
+                                        <stripes:text name="details['imageURL']"></stripes:text>
                                     </td>
                                 </tr>                                                        
                             </table>
