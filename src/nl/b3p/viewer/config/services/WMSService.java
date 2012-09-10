@@ -441,6 +441,24 @@ public class WMSService extends GeoService implements Updatable {
     }
     //</editor-fold>
     
+    
+    public static void main(String[] args) throws Exception {
+        WebMapServer wms = new WebMapServer(new URL("http://localhost:8084/geoserver/ows")) {
+            protected void setupSpecifications() {
+                specs = new Specification[] {
+                    new WMS1_1_1() // GeoServer supports no DescribeLayer in WMS 1.3.0 capabilities
+                };
+            }
+        };
+        System.out.println("Capabilities version: " + wms.getCapabilities().getVersion());
+        DescribeLayerRequest dlr = wms.createDescribeLayerRequest();
+        dlr.setLayers("tiger:giant_polygon");
+        //dlr.setProperty("VERSION", wms.getCapabilities().getVersion());           
+
+        System.out.println("DescribeLayer URL: " + dlr.getFinalURL());
+        System.out.println(wms.issueRequest(dlr).getLayerDescs());
+    }
+    
     //<editor-fold desc="DescribeLayer and WFS">
     /**
      * Do a DescribeLayer request and put the response LayerDescription in a map
@@ -456,6 +474,7 @@ public class WMSService extends GeoService implements Updatable {
             getAllNonVirtualLayers(layers, wms.getCapabilities().getLayer());
             
             DescribeLayerRequest dlreq = wms.createDescribeLayerRequest();
+            dlreq.setProperty("VERSION", wms.getCapabilities().getVersion());            
             dlreq.setLayers(layers.toString());
             
             log.debug("Issuing DescribeLayer request for WMS " + wms.getInfo().getSource().toString() + " with layers=" + layers);
