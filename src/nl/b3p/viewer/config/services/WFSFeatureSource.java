@@ -65,6 +65,9 @@ public class WFSFeatureSource extends FeatureSource {
         DataStore store = null;
         try {
             store = createDataStore();
+            
+            setName(store.getInfo().getTitle());
+            
             status.setProgress(10);
             status.setCurrentAction("Lijst van type-namen ophalen...");
             String[] typeNames = store.getTypeNames();
