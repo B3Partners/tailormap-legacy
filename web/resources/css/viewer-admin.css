@@ -78,7 +78,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 }
 
 .attributeListClass{
-    width: 20%;
+    width: 30%;
     float: left;
     overflow: auto; 
     height: 200px;

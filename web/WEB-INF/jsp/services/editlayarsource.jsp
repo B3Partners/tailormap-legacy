@@ -34,13 +34,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="layarSource" value="${actionBean.layarSource.id}"/>
                         <h1 id="headertext">Layar bron bewerken</h1>
-                        <!-- TODO: better selection for featuretype-->
+                        <script>var featureTypes={};</script>
                         <div style="float: left;width: 100%">
-                            <div style="width: 80%; float: left;">
+                            <div style="width: 70%; float: left;">
                             <table class="formtable">                      
                                 <tr>
                                     <td>Attribuutbron</td>
                                     <td>
+                                        <select id="featureSourceSelect">
+                                            <c:forEach var="s" items="${actionBean.featureSources}">
+                                                <c:set var="selected" value="" />
+                                                <c:if test="${actionBean.layarSource.featureType.featureSource.id == s.id}">
+                                                    <c:set var="selected" value=" selected=\"selected\"" />
+                                                </c:if>
+                                                <option value="${s.id}"${selected}>${s.name}</option>
+                                            </c:forEach>
+                                        </select>
                                         <stripes:select name="layarSource.featureType" id="featuretypeSelect">
                                             <option value="1">Maak uw keuze..</option>
                                             <c:forEach var="f" items="${actionBean.featureTypes}">    
@@ -49,6 +58,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                                     <c:set var="selected" value=" selected=\"selected\"" />
                                                 </c:if>
                                                 <option value="${f.id}"${selected}><c:out value="${f.featureSource.name}"/> - <c:out value="${f.typeName}"/></option>
+                                                <script>
+                                                    if(featureTypes[${f.featureSource.id}]==undefined){
+                                                        featureTypes[${f.featureSource.id}]=[];
+                                                    }
+                                                    featureTypes[${f.featureSource.id}].push({id: ${f.id}, label: "${f.typeName}"});
+                                                </script>
                                             </c:forEach>
                                         </stripes:select>
                                 </td>
@@ -104,6 +119,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <stripes:submit name="save" value="Opslaan"/>
                             <stripes:submit name="cancel" value="Annuleren"/>
                         </div>
+                        <script>
+                            var selectedFeatureTypeId=${actionBean.layarSource.featureType.id};
+                        </script>
                         <script type="text/javascript" src="${contextPath}/resources/js/services/editlayarsource.js"></script>
                     </c:when>
                     <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">

@@ -36,6 +36,7 @@ import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.LayarService;
 import nl.b3p.viewer.config.services.LayarSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
@@ -66,6 +67,8 @@ public class LayarSourceActionBean implements ActionBean {
     private List<LayarService> layarServices;
     
     private List<SimpleFeatureType> featureTypes;
+    
+    private List<FeatureSource> featureSources;
     
     @Validate
     private Long layarServiceId;
@@ -120,6 +123,7 @@ public class LayarSourceActionBean implements ActionBean {
         }
         layarServices = Stripersist.getEntityManager().createQuery("from LayarService").getResultList();
         featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType").getResultList();        
+        featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
         Stripersist.getEntityManager().getTransaction().commit();
         return new ForwardResolution(EDITJSP);
     }
@@ -353,6 +357,14 @@ public class LayarSourceActionBean implements ActionBean {
 
     public void setFeatureTypeId(Long featureTypeId) {
         this.featureTypeId = featureTypeId;
+    }
+
+    public List<FeatureSource> getFeatureSources() {
+        return featureSources;
+    }
+
+    public void setFeatureSources(List<FeatureSource> featureSources) {
+        this.featureSources = featureSources;
     }
     //</editor-fold>
 }
