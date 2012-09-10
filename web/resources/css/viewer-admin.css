@@ -76,3 +76,10 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     background-color: white;
     border: 2px solid red;
 }
+
+.attributeListClass{
+    width: 20%;
+    float: left;
+    overflow: auto; 
+    height: 200px;
+}

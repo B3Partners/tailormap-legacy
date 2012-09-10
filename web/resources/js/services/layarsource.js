@@ -73,7 +73,7 @@ Ext.onReady(function(){
                 }
             },{
                 id: 'featureType',
-                text: "FeatureType",
+                text: "Attribuutbron",
                 dataIndex: 'featureType',
                 flex: 1,
                 filter: {

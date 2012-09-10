@@ -35,6 +35,7 @@ import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.LayarService;
 import nl.b3p.viewer.config.services.LayarSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
@@ -92,6 +93,9 @@ public class LayarSourceActionBean implements ActionBean {
         @Validate(field="layarService")
     })
     private LayarSource layarSource = null;
+    //for list of attributes
+    @Validate
+    private Long featureTypeId;
     
     @DefaultHandler
     public Resolution view() {
@@ -211,6 +215,39 @@ public class LayarSourceActionBean implements ActionBean {
            }
         };
     }
+    /**
+     * Get the attribute names for the given FeatureType that are not of type Geometry
+     * @return A JSON object formated as:
+     *  Object {
+     *      attributes [<attributeName>,<attributeName>]
+     *      error
+     *  }
+     */
+    public Resolution getAttributes () throws JSONException{
+        final JSONObject json = new JSONObject();
+        boolean success=false;
+        SimpleFeatureType featureType = Stripersist.getEntityManager().find(SimpleFeatureType.class, featureTypeId);
+        if (featureType!=null){                        
+            JSONArray array = new JSONArray();
+            List<AttributeDescriptor> attributes=featureType.getAttributes();
+            for (AttributeDescriptor attr : attributes){
+                if (!AttributeDescriptor.GEOMETRY_TYPES.contains(attr.getType())){
+                    array.put(attr.getName());
+                }
+                json.put("attributes", array);
+            }
+            success=true;
+        }else{
+            json.put("error", "No featureType found");
+        }
+        json.put("success", success);
+        return new StreamingResolution("application/json") {
+           @Override
+           public void stream(HttpServletResponse response) throws Exception {
+               response.getWriter().print(json.toString());
+           }
+        };
+    }
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">
     @Override
     public void setContext(ActionBeanContext context) {
@@ -308,6 +345,14 @@ public class LayarSourceActionBean implements ActionBean {
 
     public void setDetails(Map<String, ClobElement> details) {
         this.details = details;
+    }
+
+    public Long getFeatureType() {
+        return featureTypeId;
+    }
+
+    public void setFeatureTypeId(Long featureTypeId) {
+        this.featureTypeId = featureTypeId;
     }
     //</editor-fold>
 }

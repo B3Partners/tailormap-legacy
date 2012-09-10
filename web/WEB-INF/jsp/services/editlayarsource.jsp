@@ -36,25 +36,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <h1 id="headertext">Layar bron bewerken</h1>
                         <!-- TODO: better selection for featuretype-->
                         <div style="float: left;width: 100%">
-                            <div style="width: 50%; float: left;">
+                            <div style="width: 80%; float: left;">
                             <table class="formtable">                      
                                 <tr>
-                                    <td>Attribuut bron <c:out value="${actionBean.layarSource.featureType.id}"/>:</td>
+                                    <td>Attribuutbron</td>
                                     <td>
-                                        <stripes:select name="layarSource.featureType">
-                                    <option value="1">Maak uw keuze..</option>
-                                    <c:forEach var="f" items="${actionBean.featureTypes}">    
-                                        <c:set var="selected" value="" />
-                                        <c:if test="${actionBean.layarSource.featureType.id == f.id}">
-                                            <c:set var="selected" value=" selected=\"selected\"" />
-                                        </c:if>
-                                        <option value="${f.id}"${selected}><c:out value="${f.featureSource.name}"/> <c:out value="${f.typeName}"/></option>
-                                    </c:forEach>
-                                </stripes:select>
+                                        <stripes:select name="layarSource.featureType" id="featuretypeSelect">
+                                            <option value="1">Maak uw keuze..</option>
+                                            <c:forEach var="f" items="${actionBean.featureTypes}">    
+                                                <c:set var="selected" value="" />
+                                                <c:if test="${actionBean.layarSource.featureType.id == f.id}">
+                                                    <c:set var="selected" value=" selected=\"selected\"" />
+                                                </c:if>
+                                                <option value="${f.id}"${selected}><c:out value="${f.featureSource.name}"/> - <c:out value="${f.typeName}"/></option>
+                                            </c:forEach>
+                                        </stripes:select>
                                 </td>
                                 </tr>
                                 <tr>
-                                    <td>Layar service <c:out value="${actionBean.layarSource.layarService.id}"/></td>
+                                    <td>Layar service</td>
                                     <td>
                                         <stripes:select name="layarSource.layarService">
                                     <option value="1">Maak uw keuze..</option>                      
@@ -69,7 +69,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                                 </tr>  
                                 <tr><td colspan="2">Te publiceren velden, geef aan hoe deze gevuld moeten worden per Object. 
-                                        Gebruik '[attribuutnaam]' om een waarde van het object te gebruiken</td></tr>                                
+                                        Gebruik '[attribuutnaam]' om een waarde van het object te gebruiken. 
+                                        Aan de rechterkant wordt een lijst getoond met mogelijke attribuutnamen.</td></tr>                                
                                 <tr>
                                     <td>Titel:</td>
                                     <td>
@@ -96,14 +97,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </tr>                                                        
                             </table>
                         </div>
-                        <div style="width: 50%;float: left">
-                            <!--TODO: some sort of possible attributes for configuring a layer source-->
+                        <div id="attributeList" class="attributeListClass">                            
                         </div>
                         </div>
                         <div class="submitbuttons">
                             <stripes:submit name="save" value="Opslaan"/>
                             <stripes:submit name="cancel" value="Annuleren"/>
                         </div>
+                        <script type="text/javascript" src="${contextPath}/resources/js/services/editlayarsource.js"></script>
                     </c:when>
                     <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                         <script type="text/javascript">
@@ -119,8 +120,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </c:otherwise>
                 </c:choose>
             </stripes:form>
-        </div>
+        </div>        
         <script type="text/javascript">
+            var attributesUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="getAttributes"/>';
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent');
             });
