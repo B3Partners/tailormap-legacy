@@ -29,6 +29,16 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         config.options["bottom"] = "bottom -" + config.options["bottom"];
         viewer.viewercontroller.flamingo.FlamingoMap.superclass.constructor.call(this, config);        
         this.frameworkMap = this.mapComponent.viewerObject;
+        //if fire fox pass mouse event.
+        if(Ext.isGecko){
+            var me=this;
+            //works only for ff but as designed.
+            this.frameworkMap.addEventListener('DOMMouseScroll', function(event){
+                //switch delta (negative to pos and pos to negative) for Flamingo-flash
+                var delta= 0-event.detail;                 
+                me.frameworkMap.callMethod(me.id,'mouseWheelUsed',delta);
+            },false);
+        }
         return this;
     },
     
