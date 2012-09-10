@@ -67,35 +67,45 @@ Ext.define ("viewer.components.DataSelectionChecker",{
     /**
      * Check the appLayer for DataSelection
      * @param appLayer the applayer that needs to be checked
-     * @return true/false    
+     * @return true/false False when layer will not be visible, true when layer will be visible
      */
     checkAppLayerForDataselection : function ( appLayer){
         var selectableAttributes = this.hasSelectableAttributes(appLayer);
         if( selectableAttributes >= 0 && (appLayer.filter == undefined || appLayer.filter == null)){
+            var layerName = appLayer.alias || appLayer.layerName;
             var dsArray = this.viewerController.getComponentsByClassName("viewer.components.DataSelection");
             if( dsArray.length == 0){
-                Ext.Msg.alert('Mislukt', 'Dataselectiemodule niet beschikbaar, kaartlaag kan niet weergegeven worden.');
-                return true;
+                this.viewerController.logger.warning( 'Dataselectiemodule niet beschikbaar, kaartlaag "' + layerName + '" kan niet weergegeven worden.');
+                return false;
             }else{
+                var appLayerConfigured = false;
                 for( var j = 0 ; j < dsArray.length ; j++){
                     var ds = dsArray[j];
                     var me = appLayer;
-                    this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
-                        if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
-                            this.viewerController.setLayerVisible(me, true);
-                            ds.removeForcedLayer(appLayer);
-                            
+                    if(ds.allLayers || ds.hasAppLayerConfigured(appLayer)){
+                        appLayerConfigured = true;
+                        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
+                            if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
+                                this.viewerController.setLayerVisible(me, true);
+                                ds.removeForcedLayer(appLayer);
+
+                            }
+                        },this);
+                        if(selectableAttributes == 1){
+                            ds.applyFilterWithDefaults();
+                            return true;
+                        }else{
+                            ds.showAndForceLayer(appLayer);
                         }
-                    },this);
-                    ds.selectAppLayer(appLayer);
-                    if(selectableAttributes == 1){
-                        ds.applyFilterWithDefaults();
-                        return true;
-                    }else{
-                        ds.showAndForceLayer(appLayer);
+                        ds.selectAppLayer(appLayer);
                     }
                 }
-                return false;
+                if(!appLayerConfigured){
+                    this.viewerController.logger.warning( 'Kaartlaag "' + layerName+'" niet geconfigureerd bij een dataselectiecomponent.');
+                    return false;
+                }else{
+                    return false;
+                }
             }
         }else{
             return true;
