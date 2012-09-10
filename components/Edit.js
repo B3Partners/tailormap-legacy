@@ -48,28 +48,12 @@ Ext.define ("viewer.components.Edit",{
         }
         this.renderButton({
             handler: function(){
-                me.layerSelector.initLayers();
-                me.popup.popupWin.setTitle(me.title);
-                me.popup.show();
+                me.showWindow();
             },
             text: me.title,
             icon: me.iconUrl,
             tooltip: me.tooltip
         });
-          
-        this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
-            name: this.name + 'VectorLayer',
-            geometrytypes:["Circle","Polygon","MultiPolygon","Point", "LineString"],
-            showmeasures:false,
-            viewerController : this.viewerController,
-            style: {
-                fillcolor: "0xFF0000",
-                fillopacity: 50,
-                strokecolor: "0xFF0000",
-                strokeopacity: 50
-            }
-        });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         
         this.toolMapClick =  this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
@@ -86,7 +70,34 @@ Ext.define ("viewer.components.Edit",{
         return this;
     },
     selectedContentChanged : function (){
+        if(this.vectorLayer == null){
+            this.createVectorLayer();
+        }else{
+            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        }
+    },
+    createVectorLayer : function (){
+         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+            name: this.name + 'VectorLayer',
+            geometrytypes:["Circle","Polygon","MultiPolygon","Point", "LineString"],
+            showmeasures:false,
+            viewerController : this.viewerController,
+            style: {
+                fillcolor: "0xFF0000",
+                fillopacity: 50,
+                strokecolor: "0xFF0000",
+                strokeopacity: 50
+            }
+        });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+    },
+    showWindow : function(){
+        if(this.vectorLayer == null){
+            this.createVectorLayer();
+        }
+        this.layerSelector.initLayers();
+        this.popup.popupWin.setTitle(this.title);
+        this.popup.show();
     },
     loadWindow : function (){
         var me =this;

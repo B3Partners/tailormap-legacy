@@ -34,19 +34,6 @@ Ext.define ("viewer.components.BufferObject",{
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         
-        this.vectorLayer=viewerController.mapComponent.createVectorLayer({
-            id: 'boVectorLayer',
-            name:'boVectorLayer',
-            geometrytypes:["Circle","Polygon"],
-            showmeasures:false,
-                style: {
-                fillcolor: "0xFF0000",
-                fillopacity: 50,
-                strokecolor: "0xFF0000",
-                strokeopacity: 100
-            }
-        });
-        viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.tmc =this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name,
@@ -70,11 +57,33 @@ Ext.define ("viewer.components.BufferObject",{
         return this;
     },
     selectedContentChanged : function (){
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        if(this.vectorLayer == null){
+            this.createVectorLayer();
+        }else{
+            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        }
     },
     buttonClick : function (){
         this.layerSelector.initLayers();
+        if(this.vectorLayer == null){        
+            this.createVectorLayer();
+        }
         this.popup.show();
+    },
+    createVectorLayer : function(){
+        this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+              id: 'boVectorLayer',
+              name:'boVectorLayer',
+              geometrytypes:["Circle","Polygon"],
+              showmeasures:false,
+                  style: {
+                  fillcolor: "0xFF0000",
+                  fillopacity: 50,
+                  strokecolor: "0xFF0000",
+                  strokeopacity: 100
+              }
+          });
+          this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     loadWindow : function(){
         

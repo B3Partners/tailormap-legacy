@@ -50,7 +50,7 @@ Ext.define ("viewer.components.Drawing",{
         var me = this;
         this.renderButton({
             handler: function(){
-                me.popup.show();
+                me.showWindow();
             },
             text: me.title,
             icon: me.iconUrl,
@@ -65,6 +65,26 @@ Ext.define ("viewer.components.Drawing",{
             'circle': Ext.id()
         };
         
+       
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
+        this.loadWindow();
+        return this;
+    },
+    showWindow : function (){
+        if(this.vectorLayer == null){
+            this.createVectorLayer();
+        }  
+        this.popup.show();
+    },
+    selectedContentChanged : function (){
+        if(this.vectorLayer == null){
+            this.createVectorLayer();
+        }else{
+            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        }
+    },
+    createVectorLayer : function (){
         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
@@ -78,16 +98,9 @@ Ext.define ("viewer.components.Drawing",{
             }
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        
+
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
-        this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
-        this.loadWindow();
-        return this;
-    },
-    selectedContentChanged : function (){
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     /**
      * Create the GUI
