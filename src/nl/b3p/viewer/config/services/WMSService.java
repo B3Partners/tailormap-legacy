@@ -130,6 +130,9 @@ public class WMSService extends GeoService implements Updatable {
             
             wmsService.load(wms, params, status);
             
+            // Set unique Feature Source names            
+            FeatureSource.setUniqueNames(getAutomaticallyLinkedFeatureSources(wmsService.getTopLayer()));
+            
             return wmsService;
         } finally {
             status.setProgress(100);
@@ -255,16 +258,21 @@ public class WMSService extends GeoService implements Updatable {
                 getKeywords().addAll(update.getKeywords());
             }
             
-            updateLayers(update, result);
+            // Find auto-linked FeatureSource (manually linked feature sources
+            // not updated automatically)
+            Set<FeatureSource> linkedFS = getAutomaticallyLinkedFeatureSources(getTopLayer());
+            Map<String,WFSFeatureSource> linkedFSByURL = createFeatureSourceMapByURL(linkedFS); 
+            
+            List<SimpleFeatureType> typesToRemove = new ArrayList();
+            updateWFS(update, linkedFSByURL, typesToRemove, result);            
+            updateLayers(update, linkedFSByURL, result);
             updateLayerTree(update, result);
-            // XXX update auto linked feature types
-            // report non auto linked separately -- may affect multiple layers
-            // anyway
-            // XXX updateFeatureTypes(update, result);
             
             removeOrphanLayersAfterUpdate(result);
-            // XXX removeOrphanFeatureTypes()
-            // XXX removeOrphanFeatureSources()
+            removeFeatureTypes(typesToRemove, result);
+            
+            // WFSFeatureSources which are no longer used are not updated
+            // Maybe remove these
             
             result.setStatus(UpdateResult.Status.UPDATED);
         } catch(Exception e) {
@@ -272,7 +280,90 @@ public class WMSService extends GeoService implements Updatable {
         }
         return result;
     }
+    
+    private Map<String, WFSFeatureSource> createFeatureSourceMapByURL(Collection<FeatureSource> fsCollection) {
+        Map<String, WFSFeatureSource> map = new HashMap();
+        for(FeatureSource fs: fsCollection) {
+            map.put(fs.getUrl(), (WFSFeatureSource)fs);
+        }
+        return map;
+    }
+    
+    private void removeFeatureTypes(Collection<SimpleFeatureType> typesToRemove, UpdateResult result) {
+        if(typesToRemove.isEmpty()) {
+            return;
+        }
 
+        SimpleFeatureType.clearReferences(typesToRemove);
+        
+        for(SimpleFeatureType typeToRemove: typesToRemove) {
+            typeToRemove.getFeatureSource().getFeatureTypes().remove(typeToRemove);
+            Stripersist.getEntityManager().remove(typeToRemove);
+        }
+    }
+    
+    private static Set<FeatureSource> getAutomaticallyLinkedFeatureSources(Layer top) {
+        final GeoService service = top.getService();
+        final Set<FeatureSource> featureSources = new HashSet();
+        top.accept(new Layer.Visitor() {
+            @Override
+            public boolean visit(Layer l) {
+                if(l.getFeatureType() != null) {
+                    FeatureSource fs = l.getFeatureType().getFeatureSource();
+                    // Do not include manually linked feature sources
+                    if(fs.getLinkedService() == service) {
+                        featureSources.add((WFSFeatureSource)fs);
+                    }
+                }
+                return true;
+            }
+        });
+        return featureSources;
+    }
+
+    private void updateWFS(final WMSService updateWMS, final Map<String,WFSFeatureSource> linkedFSesByURL, Collection<SimpleFeatureType> outTypesToRemove, final UpdateResult result) {
+        
+        final Set<FeatureSource> updateFSes = getAutomaticallyLinkedFeatureSources(updateWMS.getTopLayer());
+        
+        for(FeatureSource fs: updateFSes) {
+            
+            WFSFeatureSource oldFS = linkedFSesByURL.get(fs.getUrl());
+
+            if(oldFS == null) {
+                log.info("Found new WFS with URL " + fs.getUrl() + " linked to WMS");
+                
+                // Make available for updating layers in map, will be persisted
+                // by cascade from Layer
+                linkedFSesByURL.put(fs.getUrl(), (WFSFeatureSource)fs);
+
+                fs.setLinkedService(this);
+            } else {
+                log.info("Updating WFS with URL " + fs.getUrl() + " linked to WMS");
+                
+                // Update or add all feature types from updated FS
+                for(SimpleFeatureType updateFT: fs.getFeatureTypes()) {
+                    boolean isNew = updateFT == oldFS.addOrUpdateFeatureType(updateFT.getTypeName(), updateFT);
+                    if(isNew) {
+                        log.info("New feature type in WFS: " + updateFT.getTypeName());
+                    }
+                }
+                
+                // Find feature types which do not exist in updated FS
+                // Remove these later on-
+                // 
+                Set<SimpleFeatureType> typesToRemove = new HashSet();
+                for(SimpleFeatureType oldFT: oldFS.getFeatureTypes()) {
+                    if(fs.getFeatureType(oldFT.getTypeName()) == null) {
+                        // Don'tnot modify list which we are iterating on
+                        typesToRemove.add(oldFT);
+                        log.info("Feature type " + oldFT.getTypeName() + " does no longer exist");
+                    }
+                }
+                outTypesToRemove.addAll(typesToRemove);
+            }
+        }        
+    }
+    
     /**
      * Internal update method for layers. Update result.layerStatus() which 
      * currently has all layers set to MISSING. New layers are set to NEW, with 
@@ -283,7 +374,9 @@ public class WMSService extends GeoService implements Updatable {
      * <p>
      * Grouping layers (no name) are ignored.
      */
-    private void updateLayers(final WMSService update, final UpdateResult result) {
+    private void updateLayers(final WMSService update, final Map<String,WFSFeatureSource> linkedFSesByURL, final UpdateResult result) {
+        
+        final WMSService updatingWMSService = this;
         
         update.getTopLayer().accept(new Layer.Visitor() {
             @Override
@@ -304,6 +397,15 @@ public class WMSService extends GeoService implements Updatable {
                     // tree while doing that
                     l = l.pluckCopy();
                     result.getLayerStatus().put(l.getName(), new MutablePair(l, UpdateResult.Status.NEW));
+                    
+                    if(l.getFeatureType() != null) {
+                        // We may already have an updated previously persistent
+                        // FeatureType / FeatureSource
+                        // New FeatureSources were added to the linkedFSesByURL
+                        // map in updateWFS()
+                        WFSFeatureSource fs = linkedFSesByURL.get(l.getFeatureType().getFeatureSource().getUrl());
+                        l.setFeatureType(fs.getFeatureType(l.getFeatureType().getTypeName()));
+                    }
                 } else {
                     
                     if(layerStatus.getRight() != UpdateResult.Status.MISSING) {
@@ -322,11 +424,22 @@ public class WMSService extends GeoService implements Updatable {
                     old.update(l);
                     layerStatus.setRight(UpdateResult.Status.UNMODIFIED);
                     
-                    // XXX update feature type here or in separate method?
+                    // Only update feature type if not manually set to feature 
+                    // type of feature source not automatically created by loading
+                    // this service (has linkedService set to updatingWMSService)
+                    if(old.getFeatureType() == null || old.getFeatureType().getFeatureSource().getLinkedService() == updatingWMSService) {
+                        // FeatureType instance may be the same (already updated in
+                        // updateWFS(), or a new FeatureType (put in linkedFSesByURL
+                        // map by the same method)
+                        if(l.getFeatureType() != null) {
+                            WFSFeatureSource fs = linkedFSesByURL.get(l.getFeatureType().getFeatureSource().getUrl());
+                            old.setFeatureType(fs.getFeatureType(l.getFeatureType().getTypeName()));
+                        } else {
+                            old.setFeatureType(null);
+                        }
+                    }
                     
-                    //boolean layerUpdated = old.updateFeatureType(l);
-                    //layerStatus.setRight(layerUpdated ? UpdateResult.Status.UPDATED : UpdateResult.Status.UNMODIFIED);
-                    //changed.setValue(changed.booleanValue() | layerUpdated);
+                    // XXX set UPDATED status if different
                 }
                 return true;
             }
@@ -544,7 +657,6 @@ public class WMSService extends GeoService implements Updatable {
             if(used) {
                 log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS");
                 
-                wfsFs.setName(FeatureSource.findUniqueName(getName()));
                 wfsFs.setLinkedService(this);
                 log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
             } else {
