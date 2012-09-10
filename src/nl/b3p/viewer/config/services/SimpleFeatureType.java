@@ -19,9 +19,12 @@ package nl.b3p.viewer.config.services;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -31,9 +34,11 @@ import org.json.JSONObject;
 @Table(name="feature_type")
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class SimpleFeatureType {
+    private static final Log log = LogFactory.getLog(SimpleFeatureType.class);
+    
     public static final int MAX_FEATURES_DEFAULT = 250;
     public static final int MAX_FEATURES_UNBOUNDED = -1;
-    
+
     @Id
     private Long id;
 
@@ -157,6 +162,18 @@ public class SimpleFeatureType {
             attributes.addAll(update.attributes);
         }                
     }
+    
+    public static void clearReferences(Collection<SimpleFeatureType> typesToRemove) {
+        // Clear references
+        int removed = Stripersist.getEntityManager().createQuery("update Layer set featureType = null where featureType in (:types)")
+                .setParameter("types", typesToRemove)
+                .executeUpdate();
+        if(removed > 0) {
+            log.warn("Cleared " + removed + " references to " + typesToRemove.size() + " type names which are to be removed");
+        }
+        
+        // Ignore Layar references
+    }    
     
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();
