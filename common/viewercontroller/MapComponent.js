@@ -140,6 +140,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     *@param conf.iconUrl_over  overwrite (or set if not available for the tool type) the icon url for the over state of the control
     *@param conf.iconUrl_sel overwrite (or set if not available for the tool type) the icon url for the selected state of the control
     *@param conf.iconUrl_dis overwrite (or set if not available for the tool type) the icon url for the disabled state of the control
+    *@return object of type: viewer.viewercontroller.controller.Tool
     **/
     createTool: function (conf){
         Ext.Error.raise({msg: "MapComponent.createTool(...) not implemented! Must be implemented in sub-class"});

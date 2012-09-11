@@ -88,5 +88,19 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     
     isActive : function(){
         Ext.Error.raise({msg: "Tool.isActive() not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Activate tool
+     * must be implemented
+     */
+    activate: function(){
+        Ext.Error.raise({msg: "Tool.activate() not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Deactivate tool
+     * must be implemented
+     */
+    deactivate: function(){
+        Ext.Error.raise({msg: "Tool.deactivate() not implemented! Must be implemented in sub-class"});
     }
 });

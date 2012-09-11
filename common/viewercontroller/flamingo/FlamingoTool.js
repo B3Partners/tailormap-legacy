@@ -115,6 +115,18 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     },
     
     /**
+     * @see viewer.viewercontroller.controller.Tool#activate
+     */
+    activate: function(){
+        this.frameworkObject.callMethod(this.getId(),"setActive",true);
+    },
+    /**
+     * @see viewer.viewercontroller.controller.Tool#deactivate
+     */
+    deactivate: function(){
+        this.frameworkObject.callMethod(this.getId(),"setActive",true);
+    },
+    /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
      * so flamingo is allowed to broadcast the event.
      */

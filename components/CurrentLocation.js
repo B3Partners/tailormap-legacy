@@ -25,6 +25,7 @@ Ext.define ("viewer.components.CurrentLocation",{
     watchId: null,
     geolocationProj: null,
     mapProj: null,
+    lastPoint: null,
     MARKER_PREFIX: "CurrentLocation_",
     config: {
         interval: null,
@@ -34,7 +35,23 @@ Ext.define ("viewer.components.CurrentLocation",{
         iconUrl_dis: null
     },
     constructor: function(config){
-        this.callParent(config);
+        this.callParent(arguments);
+        //set some defaults.
+        if (this.iconUrl_up==null){
+            this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
+        }if (this.iconUrl_over ==null){
+            this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/streetview/streetview_over.png";
+        }if (this.iconUrl_sel==null){
+            this.iconUrl_sel= contextPath+"/viewer-html/components/resources/images/streetview/streetview_down.png";
+        }if (this.iconUrl_dis ==null){
+            this.iconUrl_dis= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
+        }
+        if (this.interval==null || isNaN(this.interval)){
+            this.interval=0;
+        }        
+        if (Proj4js.defs["EPSG:4326"]==undefined){
+            Proj4js.defs["EPSG:4236"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ";
+        }
         this.geolocationProj= new Proj4js.Proj("EPSG:4236");
         //needs to be configurable
         if (Proj4js.defs["EPSG:28992"]==undefined){
@@ -49,7 +66,7 @@ Ext.define ("viewer.components.CurrentLocation",{
     createButton: function(){
         //if there is a interval defined. Make the button a toggle
         var type=viewer.viewercontroller.controller.Tool.TOGGLE;
-        if (this.interval==null){
+        if (this.interval==0){
             type=viewer.viewercontroller.controller.Tool.BUTTON;
         }
         this.button= this.viewerController.mapComponent.createTool({
@@ -68,7 +85,7 @@ Ext.define ("viewer.components.CurrentLocation",{
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);
     },
     buttonDown: function(){
-        if (this.interval==null){
+        if (this.interval==0){
             this.getLocation();
         }else{
             this.startWatch();
@@ -81,13 +98,23 @@ Ext.define ("viewer.components.CurrentLocation",{
      * Get the location.
      */
     getLocation: function(){
-        navigator.geolocation.getCurrentPosition(this.locationHandler,this.errorHandler);
+        var me = this;
+        navigator.geolocation.getCurrentPosition(function(pos){
+            me.locationHandler(pos);
+        },function(pos){
+            me.errorHandler(pos);
+        });
     },
     /**
      *Start watching the position
      */
     startWatch: function(){
-        this.watchId = navigator.geolocation.watchPosition(this.locationHandler,this.errorHandler,{
+        var me = this;
+        this.watchId = navigator.geolocation.watchPosition(function(pos){
+            me.locationHandler(pos);
+        },function(pos){
+            me.errorHandler(pos);
+        },{
             timeout: this.interval
         })
     },
@@ -96,23 +123,36 @@ Ext.define ("viewer.components.CurrentLocation",{
      */
     stopWatch: function(){
         navigator.geolocation.clearWatch(this.watchId);
-        this.viewerController.mapComponent.getMap().removeMarker(MARKER_PREFIX+this.getName());
+        this.viewerController.mapComponent.getMap().removeMarker(this.MARKER_PREFIX+this.getName());
     },
     /**
      * Handles the location
      */
     locationHandler: function(position){
-        var lat = Number(location.coords.latitude);
-        var lon = Number(location.coords.longitude);
-        var point = this.transformLatLon(lat,lon);
-        this.viewerController.mapComponent.getMap().moveTo(point.x,point.y);
-        this.viewerController.mapComponent.getMap().setMarker(MARKER_PREFIX+this.getName(),point.x,point.y);
+        var lat = Number(position.coords.latitude);
+        var lon = Number(position.coords.longitude);
+        this.lastPoint = this.transformLatLon(lon,lat);
+        this.viewerController.mapComponent.getMap().moveTo(this.lastPoint.x,this.lastPoint.y);
+        this.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
     },
     /**
      * Handle errors.
      */
     errorHandler: function(error){
-        this.viewerController.logger.error("Error while recieving location: "+error);
+        var message="";
+        if (error.code == error.PERMISSION_DENIED){
+            message="PERMISSION_DENIED! You did not allowed this site to get your position.";
+        }if (error.code == error.POSITION_UNAVAILABLE){
+            message="POSITION_UNAVAILABLE! Can't get your position, are you on planet earth?";
+        }if (error.code == error.TIMEOUT){
+            message="TIMEOUT! Did you allowed this site to ALWAYS get your position? If not, "+
+                "we can't follow your position and can only update your position one time.";
+        }
+        this.button.deactivate();
+        if (this.lastPoint!=null){
+            this.viewerController.mapComponent.getMap().setMarker(this.MARKER_PREFIX+this.getName(),this.lastPoint.x,this.lastPoint.y);
+        }
+        this.viewerController.logger.error("Error while recieving location: "+message);
     },
     transformLatLon: function(x,y){
         var point = new Proj4js.Point(x,y);

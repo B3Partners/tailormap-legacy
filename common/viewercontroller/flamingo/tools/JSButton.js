@@ -89,6 +89,19 @@ Ext.define ("viewer.components.tools.JSButton",{
     getTagName: function (){
         return "JsButton";
     },
+    
+    /**
+     * @see viewer.viewercontroller.controller.Tool#activate
+     */
+    activate: function(){
+        this.setSelectedState(true);
+    },
+    /**
+     * @see viewer.viewercontroller.controller.Tool#deactivate
+     */
+    deactivate: function(){
+        this.setSelectedState(false);
+    },
     /**
      * Show selected state
      * @param selected true/false if true the button selected state is shown

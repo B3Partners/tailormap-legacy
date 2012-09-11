@@ -80,6 +80,18 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     isActive : function (){
         return this.getFrameworkTool().active;
     },
+    /**
+     * @see viewer.viewercontroller.controller.Tool#activate
+     */
+    activate: function(){
+        this.getFrameworkTool().activate();
+    },
+    /**
+     * @see viewer.viewercontroller.controller.Tool#deactivate
+     */
+    deactivate: function(){
+        this.getFrameworkTool().deactivate();
+    },
     
     /**
      * @see Ext.util.Observable#addListener
