@@ -97,7 +97,6 @@ public class ServiceActionBean implements ActionBean {
         } else {
             
             Map params = new HashMap();
-            params.put(GeoService.PARAM_PERSIST_FEATURESOURCE, Boolean.FALSE);
             
             try {
                 if(protocol.equals(WMSService.PROTOCOL)) {
