@@ -40,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <c:if test="${actionBean.featureSourceId == source.id}">
                             <c:set var="selected" value=" selected=\"selected\"" />
                         </c:if>
-                        <option value="${source.id}"${selected}><c:out value="${source.name}"/></option>
+                        <option value="${source.id}"${selected}>${source.protocol} #${source.id} <c:out value="${source.name}"/></option>
                     </c:forEach>
                 </select>
                 <select name="simpleFeatureTypeId" id="simpleFeatureTypeId">

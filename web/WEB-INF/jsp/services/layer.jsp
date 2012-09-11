@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <stripes:select name="featureSourceId" id="featureSourceId">
                                 <stripes:option value="1">Kies..</stripes:option>
                                 <c:forEach var="source" items="${actionBean.featureSources}">
-                                    <stripes:option value="${source.id}"><c:out value="${source.name}"/></stripes:option>
+                                    <stripes:option value="${source.id}">${source.protocol} #${source.id} <c:out value="${source.name}"/></stripes:option>
                                 </c:forEach>
                             </stripes:select>
                         </td>
