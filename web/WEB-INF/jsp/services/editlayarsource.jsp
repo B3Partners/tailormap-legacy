@@ -119,9 +119,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <stripes:submit name="save" value="Opslaan"/>
                             <stripes:submit name="cancel" value="Annuleren"/>
                         </div>
-                        <script>
-                            var selectedFeatureTypeId=${actionBean.layarSource.featureType.id};
-                        </script>
+                        <c:choose>
+                            <c:when test="${not empty actionBean.layarSource.featureType.id}">
+                                <script>var selectedFeatureTypeId=${actionBean.layarSource.featureType.id};</script>
+                            </c:when>
+                            <c:otherwise>
+                                <script>var selectedFeatureTypeId=null;</script>
+                            </c:otherwise>
+                        </c:choose>
                         <script type="text/javascript" src="${contextPath}/resources/js/services/editlayarsource.js"></script>
                     </c:when>
                     <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">

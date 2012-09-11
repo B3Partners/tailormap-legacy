@@ -23,7 +23,7 @@ function featureSourceChanged(el){
     for (id in fts){
         var ft=fts[id];       
         html+="<option value=\""+ft.id+"\"";
-        if (selectedFeatureTypeId == ft.id){
+        if (ft.id==selectedFeatureTypeId){
             html+=" selected=\"true\"";
         }
         html+=">"+ft.label+"</option>";        
