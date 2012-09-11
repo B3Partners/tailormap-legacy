@@ -52,16 +52,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="attributes-tab" class="x-hide-display"><div>
                     <a href="#Attributen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
-                        <c:when test="${not empty actionBean.attributesList}">
-                            <c:forEach var="attribute" items="${actionBean.attributesList}">
-                                <stripes:checkbox name="selectedAttributes" value="${attribute.name}"/>
+                        <c:when test="${!empty actionBean.applicationLayer.attributes}">
+                            <c:forEach var="attribute" items="${actionBean.applicationLayer.attributes}">
+                                <stripes:checkbox name="selectedAttributes" value="${attribute.attributeName}"/>
+                                
+                                <c:set var="name" value="${attribute.attributeName}"/>
+                                <c:set var="alias" value="${actionBean.attributeAliases[name]}"/>
+                                
                                 <c:choose>
-                                    <c:when test="${not empty attribute.alias}">
-                                        ${attribute.alias}
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${attribute.name}
-                                    </c:otherwise>
+                                    <c:when test="${alias == null || alias == name}"><c:out value="${name}"/></c:when>
+                                    <c:otherwise><c:out value="${alias} (${name})"/></c:otherwise>
                                 </c:choose>
                                 <br>
                             </c:forEach>
