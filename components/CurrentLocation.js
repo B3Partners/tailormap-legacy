@@ -38,13 +38,13 @@ Ext.define ("viewer.components.CurrentLocation",{
         this.callParent(arguments);
         //set some defaults.
         if (this.iconUrl_up==null){
-            this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
+            this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_up.png";
         }if (this.iconUrl_over ==null){
-            this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/streetview/streetview_over.png";
+            this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_over.png";
         }if (this.iconUrl_sel==null){
-            this.iconUrl_sel= contextPath+"/viewer-html/components/resources/images/streetview/streetview_down.png";
+            this.iconUrl_sel= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_down.png";
         }if (this.iconUrl_dis ==null){
-            this.iconUrl_dis= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
+            this.iconUrl_dis= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_up.png";
         }
         if (this.interval==null || isNaN(this.interval)){
             this.interval=0;
