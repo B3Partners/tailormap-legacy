@@ -655,7 +655,6 @@ public class WMSService extends GeoService implements Updatable {
                 log.debug("Type from WFSFeatureSource with url " + wfsUrl + " used by layer of WMS");
                 
                 wfsFs.setLinkedService(this);
-                log.debug("Unique name found for WFSFeatureSource: " + wfsFs.getName());
             } else {
                 log.debug("No type from WFSFeatureSource with url " + wfsUrl + " used!");
             }

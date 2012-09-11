@@ -248,9 +248,6 @@ public class Layer implements Cloneable {
             clone.setChildren(new ArrayList());
             clone.setService(null);
             
-            if(clone.getFeatureType() != null) {
-                clone.getFeatureType().getFeatureSource().setLinkedService(null);
-            }
             return clone;
         } catch(CloneNotSupportedException e) {
             return null;
