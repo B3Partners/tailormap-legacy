@@ -26,6 +26,9 @@ import nl.b3p.geotools.data.arcims.axl.AxlField;
 import nl.b3p.geotools.data.arcims.axl.AxlFieldInfo;
 import nl.b3p.geotools.data.arcims.axl.AxlLayerInfo;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.HTTPClient;
 import org.geotools.data.ows.SimpleHttpClient;
@@ -39,12 +42,16 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @Entity
 @DiscriminatorValue(ArcIMSService.PROTOCOL)
-public class ArcIMSService extends GeoService {
+public class ArcIMSService extends GeoService implements Updatable {
+    private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(ArcIMSService.class);
+    
     public static final String PROTOCOL = "arcims";
       
     public static final String PARAM_SERVICENAME = "ServiceName";
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";    
+    
+    private static final String TOPLAYER_ID = "-1";
     
     @Basic
     private String serviceName;
@@ -82,7 +89,7 @@ public class ArcIMSService extends GeoService {
 
     //<editor-fold desc="Loading service metadata from ArcIMS">
     @Override
-    public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
+    public ArcIMSService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
             
@@ -110,9 +117,10 @@ public class ArcIMSService extends GeoService {
             status.setProgress(50);
             status.setCurrentAction("Inladen layers...");
             
-            /* Automatically create featuresource */
+            /* Automatically create featuresource, persisted by cascade from Layer.featureType */
             ArcXMLFeatureSource fs = new ArcXMLFeatureSource();
             fs.setLinkedService(ims);
+            fs.setName(ims.getName());
             fs.setServiceName(ims.getServiceName());
             fs.setUsername(ims.getUsername());
             fs.setPassword(ims.getPassword());
@@ -131,11 +139,6 @@ public class ArcIMSService extends GeoService {
                 top.getChildren().add(parseAxlLayerInfo(axlLayerInfo, ims, fs, top));
             }
             ims.setTopLayer(top);
-            
-            if(!Boolean.FALSE.equals(params.get(PARAM_PERSIST_FEATURESOURCE)) && !fs.getFeatureTypes().isEmpty()) {
-                fs.setName(ims.getName());
-                Stripersist.getEntityManager().persist(fs);
-            }
             
             return ims;
         } finally {
@@ -218,6 +221,151 @@ public class ArcIMSService extends GeoService {
         
         return l;
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Updating">
+    @Override
+    public UpdateResult update() {
+        
+        initLayerCollectionsForUpdate();
+        
+        final UpdateResult result = new UpdateResult(this);
+        
+        try {
+            Map params = new HashMap();
+            params.put(PARAM_USERNAME, getUsername());
+            params.put(PARAM_PASSWORD, getPassword());
+            if(getServiceName() != null) {
+                params.put(PARAM_SERVICENAME, getServiceName());
+            }            
+            
+            ArcIMSService update = loadFromUrl(getUrl(), params, result.getWaitPageStatus().subtask("", 80));
+            
+            // Find auto-linked FeatureSource (manually linked feature sources
+            // not updated automatically) (TODO: maybe provide option to do that)
+            ArcXMLFeatureSource linkedFS = null;
+            try {
+                linkedFS = (ArcXMLFeatureSource)Stripersist.getEntityManager().createQuery(
+                    "from FeatureSource where linkedService = :this")
+                    .setParameter("this", this)
+                    .getSingleResult();
+            } catch(NoResultException nre) {
+                // linked FeatureSource was removed by user
+            }
+            
+            updateLayers(update, linkedFS, result);
+            removeOrphanLayersAfterUpdate(result);
+            
+            if(linkedFS.getFeatureTypes().isEmpty()) {
+                log.debug("Linked ArcGISFeatureSource has no type names anymore, removing it");
+                Stripersist.getEntityManager().remove(linkedFS);
+            }
+            
+            
+            result.setStatus(UpdateResult.Status.UPDATED);
+        } catch(Exception e) {
+            result.failedWithException(e);
+        } 
+        return result;
+    }
+    
+    private void updateLayers(final ArcIMSService update, final ArcXMLFeatureSource linkedFS, final UpdateResult result) {
+        /* This is a lot simpler than WMS, because layers always have an id
+         * (name in WMS and our Layer object)
+         * 
+         * And even simpler than ArcGIS because layers have no tree structure.
+         */
+        
+        getTopLayer().getChildren().clear();
+        
+        SimpleFeatureType ft;
+        
+        for(Layer updateLayer: update.getTopLayer().getChildren()) {
+
+            MutablePair<Layer,UpdateResult.Status> layerStatus = result.getLayerStatus().get(updateLayer.getName());
+            Layer updatedLayer;
+            
+            if(layerStatus == null) {
+                // New layer
+                ft = updateLayer.getFeatureType();
+                if(updateLayer.getFeatureType() != null) {
+                    
+                    if(linkedFS != null) {
+                        linkedFS.addOrUpdateFeatureType(updateLayer.getName(), ft, new MutableBoolean());
+                    } else {
+                        // New FeatureSource to be persisted
+                        ft.getFeatureSource().setLinkedService(this); 
+                    }
+                }
+                
+                result.getLayerStatus().put(updateLayer.getName(), new MutablePair(updateLayer, UpdateResult.Status.NEW));
+
+                updatedLayer = updateLayer;
+            } else {
+                
+                assert(layerStatus.getRight() == UpdateResult.Status.MISSING);
+                
+                Layer old = layerStatus.getLeft();
+                               
+                old.update(updateLayer);
+                
+                layerStatus.setRight(UpdateResult.Status.UNMODIFIED);     
+                
+                // Do not overwrite manually set feature source
+                if(old.getFeatureType() == null || old.getFeatureType().getFeatureSource().getLinkedService() == this) {
+                    if(updateLayer.getFeatureType() == null) {
+                        // If was set before the old feature type will be removed 
+                        // later when all orphan MISSING layers are removed
+                        if(old.getFeatureType() != null) {
+                            layerStatus.setRight(UpdateResult.Status.UPDATED);     
+                        }
+                        old.setFeatureType(null);
+                    } else {
+                        if(linkedFS != null) {
+                            MutableBoolean updated = new MutableBoolean(false);
+                            ft = linkedFS.addOrUpdateFeatureType(updateLayer.getName(), updateLayer.getFeatureType(), updated);
+                            if(old.getFeatureType() == null || updated.isTrue()) {
+                                layerStatus.setRight(UpdateResult.Status.UPDATED);     
+                            }
+                        } else {
+                            ft = updateLayer.getFeatureType();  
+                            // New FeatureSource to be persisted
+                            ft.getFeatureSource().setLinkedService(this);
+                            layerStatus.setRight(UpdateResult.Status.UPDATED);     
+                        }
+                        old.setFeatureType(ft);
+                    }   
+                }
+                
+                updatedLayer = old;
+            }
+            
+            assert updatedLayer.getChildren().isEmpty();
+            
+            updatedLayer.setService(this);
+            updatedLayer.setParent(getTopLayer());
+            getTopLayer().getChildren().add(updatedLayer);
+        }     
+    }    
+    
+    private void removeOrphanLayersAfterUpdate(UpdateResult result) {
+
+        assert(result.getDuplicateOrNoNameLayers().size() == 1);
+        assert(result.getDuplicateOrNoNameLayers().get(0) == getTopLayer());
+        
+        // Remove old layers from this service which are missing from updated
+        // service
+        for(Pair<Layer,UpdateResult.Status> p: result.getLayerStatus().values()) {
+            if(p.getRight() == UpdateResult.Status.MISSING) {
+                Layer removed = p.getLeft();
+                if(removed.getFeatureType() != null) {
+                    removed.getFeatureType().getFeatureSource().removeFeatureType(removed.getFeatureType());
+                }
+                Stripersist.getEntityManager().remove(removed);
+            }
+        }
+    }        
+    
     //</editor-fold>
     
     //<editor-fold desc="Add serviceName to toJSONObject()">

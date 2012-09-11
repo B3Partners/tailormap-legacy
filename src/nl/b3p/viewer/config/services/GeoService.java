@@ -36,11 +36,6 @@ import org.stripesstuff.stripersist.Stripersist;
 public abstract class GeoService {
     public static final String PARAM_ONLINE_CHECK_ONLY = "onlineCheckOnly";
     
-    /**
-     * @deprecated cascaded instead
-     */
-    public static final String PARAM_PERSIST_FEATURESOURCE = "persistFeatureSource";
-    
     public static final String DETAIL_OVERRIDDEN_URL = "overridenUrl";
     public static final String DETAIL_ORIGINAL_NAME = "originalName";
     
