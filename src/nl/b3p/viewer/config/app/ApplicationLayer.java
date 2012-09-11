@@ -144,6 +144,15 @@ public class ApplicationLayer {
     }
     //</editor-fold> 
     
+    public ConfiguredAttribute getAttribute(String name) {
+        for(ConfiguredAttribute att: attributes) {
+            if(att.getAttributeName().equals(name)) {
+                return att;
+            }
+        }
+        return null;
+    }
+
     public JSONObject toJSONObject() throws JSONException {
 
         JSONObject o = new JSONObject();

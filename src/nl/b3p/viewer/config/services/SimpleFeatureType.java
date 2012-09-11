@@ -197,7 +197,16 @@ public class SimpleFeatureType {
         }
         
         // Ignore Layar references
-    }    
+    }
+    
+    public AttributeDescriptor getAttribute(String attributeName) {
+        for(AttributeDescriptor ad: attributes) {
+            if(ad.getName().equals(attributeName)) {
+                return ad;
+            }
+        }
+        return null;
+    }   
     
     public JSONObject toJSONObject() throws JSONException {
         JSONObject o = new JSONObject();
