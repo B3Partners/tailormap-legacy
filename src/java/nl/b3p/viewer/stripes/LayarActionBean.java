@@ -137,32 +137,34 @@ public class LayarActionBean implements ActionBean {
                 //layarSource.getFeatureType().
                 FeatureSource fs=null;
                 FeatureIterator<SimpleFeature> it=null;
-                try{
-                    fs =layarSource.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
-                    CoordinateReferenceSystem featureCrs = getCRS(fs);
-                    //create filter
-                    Filter filter = createFilter(fs,featureCrs);
-                    Query q= new Query(fs.getName().toString(),filter);
-                    q.setMaxFeatures(MAX_FEATURES-hotspots.length());
-                    it = fs.getFeatures(q).features();                    
-                    while(it.hasNext()){
-                        SimpleFeature f = it.next();
-                        try{
-                            JSONObject hotspot = createHotspot(f,layarSource);
-                            hotspots.put(hotspot);
-                        }catch(Exception e){
-                            log.error("Error creating hotspot",e);
+                if(layarSource.getFeatureType()!=null){
+                    try{
+                        fs =layarSource.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                        CoordinateReferenceSystem featureCrs = getCRS(fs);
+                        //create filter
+                        Filter filter = createFilter(fs,featureCrs);
+                        Query q= new Query(fs.getName().toString(),filter);
+                        q.setMaxFeatures(MAX_FEATURES-hotspots.length());
+                        it = fs.getFeatures(q).features();                    
+                        while(it.hasNext()){
+                            SimpleFeature f = it.next();
+                            try{
+                                JSONObject hotspot = createHotspot(f,layarSource);
+                                hotspots.put(hotspot);
+                            }catch(Exception e){
+                                log.error("Error creating hotspot",e);
+                            }
                         }
-                    }
-                }catch(Exception e){
-                    log.error("Error while retrieving features ",e);
-                    error= "Error while retrieving features: "+e.getMessage();
-                }finally{
-                    if (it!=null){
-                        it.close();
-                    }
-                    if(fs!=null){
-                        fs.getDataStore().dispose();
+                    }catch(Exception e){
+                        log.error("Error while retrieving features ",e);
+                        error= "Error while retrieving features: "+e.getMessage();
+                    }finally{
+                        if (it!=null){
+                            it.close();
+                        }
+                        if(fs!=null){
+                            fs.getDataStore().dispose();
+                        }
                     }
                 }
                 
