@@ -975,7 +975,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }else{
                     newExtent = coords;
                 }
-                this.mapComponent.getMap().zoomToExtent(newExtent);
+                var me = this;
+                me.newExtent = newExtent;
+                var handler = function(){
+                    me.mapComponent.getMap().zoomToExtent(me.newExtent);
+                    me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+                };
+                this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);   
             }
         }
 
