@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 /**
  *
@@ -439,7 +440,7 @@ public class ArcGISService extends GeoService implements Updatable {
                 if(updateLayer.getFeatureType() != null) {
                     
                     if(linkedFS != null) {
-                        linkedFS.addOrUpdateFeatureType(updateLayer.getName(), ft);
+                        linkedFS.addOrUpdateFeatureType(updateLayer.getName(), ft, new MutableBoolean());
                     } else {
                         // New FeatureSource to be persisted, already has unique name
                         ft.getFeatureSource().setLinkedService(this); 
@@ -458,23 +459,34 @@ public class ArcGISService extends GeoService implements Updatable {
                 old.setParent(null);                
                 old.update(updateLayer, additionalUpdatableDetails);
                 
-                // Update feature type
-                if(updateLayer.getFeatureType() == null) {
-                    // If was set before the old feature type will be removed 
-                    // later when all orphan MISSING layers are removed
-                    old.setFeatureType(null);
-                } else {
-                    if(linkedFS != null) {
-                        ft = linkedFS.addOrUpdateFeatureType(updateLayer.getName(), updateLayer.getFeatureType());
-                    } else {
-                        ft = updateLayer.getFeatureType();  
-                        // New FeatureSource to be persisted, already has unique name
-                        ft.getFeatureSource().setLinkedService(this);
-                    }
-                    old.setFeatureType(ft);
-                }   
-                
                 layerStatus.setRight(UpdateResult.Status.UNMODIFIED);     
+                
+                // Do not overwrite manually set feature source
+                if(old.getFeatureType() == null || old.getFeatureType().getFeatureSource().getLinkedService() == this) {
+                    if(updateLayer.getFeatureType() == null) {
+                        // If was set before the old feature type will be removed 
+                        // later when all orphan MISSING layers are removed
+                        if(old.getFeatureType() != null) {
+                            layerStatus.setRight(UpdateResult.Status.UPDATED);     
+                        }
+                        old.setFeatureType(null);
+                    } else {
+                        if(linkedFS != null) {
+                            MutableBoolean updated = new MutableBoolean(false);
+                            ft = linkedFS.addOrUpdateFeatureType(updateLayer.getName(), updateLayer.getFeatureType(), updated);
+                            if(old.getFeatureType() == null || updated.isTrue()) {
+                                layerStatus.setRight(UpdateResult.Status.UPDATED);     
+                            }
+                        } else {
+                            ft = updateLayer.getFeatureType();  
+                            // New FeatureSource to be persisted
+                            ft.getFeatureSource().setLinkedService(this);
+                            layerStatus.setRight(UpdateResult.Status.UPDATED);     
+                        }
+                        old.setFeatureType(ft);
+                    }   
+                }
+                
                 updatedLayer = old;
             }
             
