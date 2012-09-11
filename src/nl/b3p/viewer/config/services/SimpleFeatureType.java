@@ -149,7 +149,7 @@ public class SimpleFeatureType {
         return featureSource.openGeoToolsFeatureSource(this, timeout);
     }    
     
-    public void update(SimpleFeatureType update) {
+    public boolean update(SimpleFeatureType update) {
         if(!getTypeName().equals(update.getTypeName())) {
             throw new IllegalArgumentException("Cannot update feature type with properties from feature type with different type name!");
         }        
@@ -157,6 +157,8 @@ public class SimpleFeatureType {
         description = update.description;
         writeable = update.writeable;
         geometryAttribute = update.geometryAttribute;
+        
+        boolean changed = false;
         
         // Retain user set aliases for attributes
         
@@ -173,6 +175,7 @@ public class SimpleFeatureType {
         if(!attributes.equals(update.attributes)) {
             attributes.clear();
             attributes.addAll(update.attributes);
+            changed = true;
         }                
         
         for(AttributeDescriptor ad: attributes) {
@@ -181,6 +184,7 @@ public class SimpleFeatureType {
                 ad.setAlias(alias);
             }
         }
+        return changed;
     }
     
     public static void clearReferences(Collection<SimpleFeatureType> typesToRemove) {
