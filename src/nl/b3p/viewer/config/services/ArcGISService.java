@@ -249,6 +249,12 @@ public class ArcGISService extends GeoService implements Updatable {
                 l.setParent(topLayer);
             }
         }        
+        Collections.sort(topLayer.getChildren(), new Comparator<Layer>() {
+            @Override
+            public int compare(Layer lhs, Layer rhs) {
+                return lhs.getName().compareTo(rhs.getName());
+            }
+        });
     }
     
     private Layer parseArcGISLayer(JSONObject agsl, GeoService service, ArcGISFeatureSource fs, Map<String,List<String>> childrenByLayerId) throws JSONException {
@@ -429,7 +435,7 @@ public class ArcGISService extends GeoService implements Updatable {
         
         SimpleFeatureType ft;
         
-        for(Layer updateLayer: update.layersById.values()) {
+        for(Layer updateLayer: update.layersById.values()) {            
             
             MutablePair<Layer,UpdateResult.Status> layerStatus = result.getLayerStatus().get(updateLayer.getName());
             Layer updatedLayer = null;
@@ -440,9 +446,9 @@ public class ArcGISService extends GeoService implements Updatable {
                 if(updateLayer.getFeatureType() != null) {
                     
                     if(linkedFS != null) {
-                        linkedFS.addOrUpdateFeatureType(updateLayer.getName(), ft, new MutableBoolean());
+                        updateLayer.setFeatureType(linkedFS.addOrUpdateFeatureType(updateLayer.getName(), ft, new MutableBoolean()));
                     } else {
-                        // New FeatureSource to be persisted, already has unique name
+                        // New FeatureSource to be persisted
                         ft.getFeatureSource().setLinkedService(this); 
                     }
                 }
@@ -492,6 +498,9 @@ public class ArcGISService extends GeoService implements Updatable {
             
             // will be filled in setLayerTree()                
             updatedLayer.getChildren().clear();            
+            updatedLayer.setParent(null);
+            
+            updatedLayer.setService(this);
             
             updatedLayersById.put(updateLayer.getName(), updatedLayer);
         }     
