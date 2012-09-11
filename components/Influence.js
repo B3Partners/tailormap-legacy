@@ -60,22 +60,6 @@ Ext.define ("viewer.components.Influence",{
             viewerController: this.viewerController
         });
         
-        /*this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
-            name: this.name + 'VectorLayer',
-            geometrytypes:["Polygon"],
-            showmeasures:false,
-            viewerController: this.viewerController,
-            editable: true,
-            style: {
-                fillcolor: "0xFF0000",
-                fillopacity: 50,
-                strokecolor: "0xFF0000",
-                strokeopacity: 50
-            }
-        });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);  */      
-        
-        
         var config = {
             viewerController : this.viewerController,
             restriction : "influence",
