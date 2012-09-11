@@ -88,7 +88,7 @@ public class WFSFeatureSource extends FeatureSource {
                     SimpleFeatureType sft = new SimpleFeatureType();
                     sft.setTypeName(typeName);
                     sft.setFeatureSource(this);
-                    sft.setWriteable(true);
+                    sft.setWriteable(false);
                     if (gtFs.getInfo() != null) {
                         sft.setDescription(gtFs.getInfo().getDescription());
                     }
