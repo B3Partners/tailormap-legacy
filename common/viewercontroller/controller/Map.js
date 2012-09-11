@@ -239,6 +239,13 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     zoomToResolution : function(resolution){
         Ext.Error.raise({msg: "Map.zoomToResolution() Not implemented! Must be implemented in sub-class"});
     },
+    /**
+     *Moves the map to the given coord
+     *Must be implemented in subclass
+     */
+    moveTo: function(x,y){
+        Ext.Error.raise({msg: "Map.moveTo() Not implemented! Must be implemented in sub-class"});
+    },
 
     /**
      *Returns the current extent of the viewport as a extent object.

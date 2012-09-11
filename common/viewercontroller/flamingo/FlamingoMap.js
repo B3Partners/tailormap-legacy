@@ -196,6 +196,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     zoomToScale : function(resolution){
         this.zoomToResolution(resolution);
     },
+    
+    /**
+    * See @link viewer.viewercontroller.controller.Map#moveTo
+    */
+    moveTo: function(x,y){
+        //update with delay 1ms otherwise the update event is not triggerd.
+        this.getFrameworkMap().callMethod(this.getId(),"moveToCoordinate",{x:x,y:y},1);
+    },
 
     /**
      * see @link Map.setMaxExtent

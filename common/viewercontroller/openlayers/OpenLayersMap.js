@@ -228,6 +228,13 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     zoomToResolution : function(resolution){
         this.getFrameworkMap().zoomTo(this.getFrameworkMap().getZoomForResolution(resolution));
     },
+    
+    /**
+    * See @link viewer.viewercontroller.controller.Map#moveTo
+    */
+    moveTo: function(x,y){
+        this.getFrameworkMap().panTo(new OpenLayers.LonLat(x,y));
+    },
 
     /**
     * See @link Map.setMaxExtent
