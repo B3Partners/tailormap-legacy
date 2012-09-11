@@ -23,6 +23,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -158,31 +159,48 @@ public class WMSService extends GeoService implements Updatable {
         
         boolean supportsDescribeLayer = wms.getCapabilities().getRequest().getDescribeLayer() != null;
         
-        status.setProgress(supportsDescribeLayer ? 40 : 90);
+        status.setProgress(40);
         
         org.geotools.data.ows.Layer rl = wms.getCapabilities().getLayer();
         setTopLayer(new Layer(rl, this));
         
-        if(supportsDescribeLayer) {
-            status.setProgress(60);
-            status.setCurrentAction("Gerelateerde WFS bronnen opzoeken...");
+        Map<String,List<LayerDescription>> layerDescByWfs = null;
+        
+        // Some servers are shy about supporting DescribeLayer in the 
+        // Capabilities, so do the request anyway, but only if version is not
+        // WMS 1.0.0 
+        if(!"1.0.0".equals(wms.getCapabilities().getVersion())) {
+            try {
+                status.setProgress(60);
+                status.setCurrentAction("Gerelateerde WFS bronnen opzoeken...");
+
+                layerDescByWfs = getDescribeLayerPerWFS(wms);
+            } catch(Exception e) {
+                if(supportsDescribeLayer) {
+                    log.error("DescribeLayer request failed", e);
+                } else {
+                    log.debug("DescribeLayer not supported in Capabilities, did request anyway but failed");
+                }
+            }
+        }
             
-            Map<String,List<LayerDescription>> layerDescByWfs = getDescribeLayerPerWFS(wms);
-            
-            if(layerDescByWfs != null) {
-                status.setProgress(80);
-                String action = "Gerelateerde WFS bron inladen...";
+        if(layerDescByWfs != null) {
+            status.setProgress(80);
+            String action = "Gerelateerde WFS bron inladen...";
 
-                String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
-                for(int i = 0; i < wfses.length; i++) {
-                    String wfsUrl = wfses[i];
+            String[] wfses = (String[])layerDescByWfs.keySet().toArray(new String[] {});
+            for(int i = 0; i < wfses.length; i++) {
+                String wfsUrl = wfses[i];
 
-                    String wfsAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
-                    status.setCurrentAction(wfsAction);
+                String wfsAction = action + (wfses.length > 1 ? " (" + (i+1) + " van " + wfses.length + ")" : "");
+                status.setCurrentAction(wfsAction);
 
+                try {
                     List<LayerDescription> layerDescriptions = layerDescByWfs.get(wfsUrl);
 
                     loadLayerFeatureTypes(wfsUrl, layerDescriptions);
+                } catch(Exception e) {
+                    log.error("Failed loading feature types from WFS " + wfsUrl, e);
                 }
             }
         }
@@ -261,8 +279,9 @@ public class WMSService extends GeoService implements Updatable {
             Map<String,WFSFeatureSource> linkedFSByURL = createFeatureSourceMapByURL(linkedFS); 
             
             List<SimpleFeatureType> typesToRemove = new ArrayList();
-            updateWFS(update, linkedFSByURL, typesToRemove, result);            
-            updateLayers(update, linkedFSByURL, result);
+            Set<SimpleFeatureType> updatedFeatureTypes = new HashSet();
+            updateWFS(update, linkedFSByURL, updatedFeatureTypes, typesToRemove, result);            
+            updateLayers(update, linkedFSByURL, updatedFeatureTypes, result);
             updateLayerTree(update, result);
             
             removeOrphanLayersAfterUpdate(result);
@@ -318,7 +337,7 @@ public class WMSService extends GeoService implements Updatable {
         return featureSources;
     }
 
-    private void updateWFS(final WMSService updateWMS, final Map<String,WFSFeatureSource> linkedFSesByURL, Collection<SimpleFeatureType> outTypesToRemove, final UpdateResult result) {
+    private void updateWFS(final WMSService updateWMS, final Map<String,WFSFeatureSource> linkedFSesByURL, Set<SimpleFeatureType> updatedFeatureTypes, Collection<SimpleFeatureType> outTypesToRemove, final UpdateResult result) {
         
         final Set<FeatureSource> updateFSes = getAutomaticallyLinkedFeatureSources(updateWMS.getTopLayer());
         
@@ -339,7 +358,12 @@ public class WMSService extends GeoService implements Updatable {
                 
                 // Update or add all feature types from updated FS
                 for(SimpleFeatureType updateFT: fs.getFeatureTypes()) {
-                    boolean isNew = updateFT == oldFS.addOrUpdateFeatureType(updateFT.getTypeName(), updateFT);
+                    MutableBoolean updated = new MutableBoolean();
+                    SimpleFeatureType updatedFT = oldFS.addOrUpdateFeatureType(updateFT.getTypeName(), updateFT, updated);
+                    boolean isNew = updateFT == updatedFT;
+                    if(updated.isTrue()) {
+                        updatedFeatureTypes.add(updatedFT);
+                    }
                     if(isNew) {
                         log.info("New feature type in WFS: " + updateFT.getTypeName());
                     }
@@ -371,7 +395,7 @@ public class WMSService extends GeoService implements Updatable {
      * <p>
      * Grouping layers (no name) are ignored.
      */
-    private void updateLayers(final WMSService update, final Map<String,WFSFeatureSource> linkedFSesByURL, final UpdateResult result) {
+    private void updateLayers(final WMSService update, final Map<String,WFSFeatureSource> linkedFSesByURL, final Set<SimpleFeatureType> updatedFeatureTypes, final UpdateResult result) {
         
         final WMSService updatingWMSService = this;
         
@@ -430,13 +454,19 @@ public class WMSService extends GeoService implements Updatable {
                         // map by the same method)
                         if(l.getFeatureType() != null) {
                             WFSFeatureSource fs = linkedFSesByURL.get(l.getFeatureType().getFeatureSource().getUrl());
+                            boolean wasNull = old.getFeatureType() == null;
                             old.setFeatureType(fs.getFeatureType(l.getFeatureType().getTypeName()));
+                            
+                            if(wasNull || updatedFeatureTypes.contains(old.getFeatureType())) {
+                                layerStatus.setRight(UpdateResult.Status.UPDATED);
+                            }
                         } else {
+                            if(old.getFeatureType() != null) {
+                                layerStatus.setRight(UpdateResult.Status.UPDATED);
+                            }
                             old.setFeatureType(null);
                         }
                     }
-                    
-                    // XXX set UPDATED status if different
                 }
                 return true;
             }
@@ -565,7 +595,12 @@ public class WMSService extends GeoService implements Updatable {
         try {
             getAllNonVirtualLayers(layers, wms.getCapabilities().getLayer());
             
-            DescribeLayerRequest dlreq = wms.createDescribeLayerRequest();
+            DescribeLayerRequest dlreq = null;
+            if(wms.getCapabilities().getRequest().getDescribeLayer() != null) {
+                dlreq = wms.createDescribeLayerRequest();
+            } else {
+                dlreq = new WMS1_1_0().createDescribeLayerRequest(wms.getCapabilities().getService().getOnlineResource());
+            }
             dlreq.setProperty("VERSION", wms.getCapabilities().getVersion());            
             dlreq.setLayers(layers.toString());
             
@@ -582,16 +617,29 @@ public class WMSService extends GeoService implements Updatable {
         Map<String,List<LayerDescription>> layerDescByWfs = new HashMap<String,List<LayerDescription>>();
         
         for(LayerDescription ld: dlr.getLayerDescs()) {
-            log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, typeNames=%s",
+            log.debug(String.format("DescribeLayer response, name=%s, wfs=%s, owsType=%s, owsURL=%s, typeNames=%s",
                     ld.getName(),
                     ld.getWfs(),
+                    ld.getOwsType(),
+                    ld.getOwsURL(),
                     Arrays.toString(ld.getQueries())
                     ));
-            if(ld.getWfs() != null && ld.getQueries() != null && ld.getQueries().length != 0) {
-                List<LayerDescription> lds = layerDescByWfs.get(ld.getWfs().toString());
+            String wfsUrl = ld.getWfs() != null ? ld.getWfs().toString() : null;
+            if(wfsUrl == null && "WFS".equalsIgnoreCase(ld.getOwsType())) {
+                wfsUrl = ld.getOwsURL().toString();
+            }
+            // OGC 02-070 Annex B says the wfs/owsURL attributed are not required but 
+            // implied. Some Deegree instance encountered has all attributes empty,
+            // and apparently the meaning is that the WFS URL is the same as the 
+            // WMS URL (not explicitly defined in the spec).
+            if(wfsUrl == null) {
+                wfsUrl = wms.getInfo().getSource().toString();
+            }
+            if(wfsUrl != null && ld.getQueries() != null && ld.getQueries().length != 0) {
+                List<LayerDescription> lds = layerDescByWfs.get(wfsUrl);
                 if(lds == null) {
                     lds = new ArrayList<LayerDescription>();
-                    layerDescByWfs.put(ld.getWfs().toString(), lds);
+                    layerDescByWfs.put(wfsUrl, lds);
                 }
                 lds.add(ld);
             }
@@ -640,14 +688,22 @@ public class WMSService extends GeoService implements Updatable {
             for(LayerDescription ld: layerDescriptions) {
                 Layer l = getLayer(ld.getName());
                 if(l != null) {
-                    if(ld.getQueries().length != 1) {
-                        log.debug("Cannot handle multiple typeNames for this layer, only using the first");
+                    // Prevent warning when multiple queries for all the same type name
+                    // by removing duplicates, but keeping sort order to pick the first
+                    SortedSet<String> uniqueQueries = new TreeSet(Arrays.asList(ld.getQueries()));
+                    if(uniqueQueries.size() != 1) {
+                        // Allowed by spec but not handled by this application
+                        log.warn("Cannot handle multiple typeNames for layer " + l.getName() + ", only using the first. Type names: " + Arrays.toString(ld.getQueries()));
                     }
-                    SimpleFeatureType sft = wfsFs.getFeatureType(ld.getQueries()[0]);
+                    // Queries is not empty, checked before this method is called
+                    SimpleFeatureType sft = wfsFs.getFeatureType(uniqueQueries.first());
                     if(sft != null) {
+                        // Type name may not exist in the referenced WFS
                         l.setFeatureType(sft);
                         log.debug("Feature type for layer " + l.getName() + " set to feature type " + sft.getTypeName());
                         used = true;
+                    } else {
+                        log.warn("Type name " + uniqueQueries.first() + " in WFS for described layer " + l.getName() + " does not exist!");
                     }
                 }
             }
