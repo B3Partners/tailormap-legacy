@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.filter.Filter;
@@ -177,10 +178,10 @@ public abstract class FeatureSource {
         return null;
     }
     
-    public SimpleFeatureType addOrUpdateFeatureType(String typeName, SimpleFeatureType newType) {
+    public SimpleFeatureType addOrUpdateFeatureType(String typeName, SimpleFeatureType newType, MutableBoolean updated) {
         SimpleFeatureType old = getFeatureType(typeName);
         if(old != null) {
-            old.update(newType);
+            updated.setValue(old.update(newType));
             return old;
         }
 
