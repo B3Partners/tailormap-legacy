@@ -36,7 +36,6 @@ public abstract class FeatureSource {
     @Id
     private Long id;
 
-    @Column(unique=true)
     @Basic(optional=false)
     private String name;
     
@@ -176,62 +175,6 @@ public abstract class FeatureSource {
             }
         }
         return null;
-    }
-    
-    /**
-     * Checks if a FeatureSource with given name already exists and if needed
-     * returns name with sequence number in brackets added to make it unique.
-     * @param name Name to make unique
-     * @return A unique name for a FeatureSource
-     */
-    public static String findUniqueName(String name) {
-        int sequence = findUniqueNameSequence(name);
-        
-        return uniqueNameForSequence(name, sequence);
-    }
-    
-    public static int findUniqueNameSequence(String name) {
-        int uniqueCounter = 0;
-        while(true) {
-            String testName = uniqueNameForSequence(name, uniqueCounter);
-            try {
-                Stripersist.getEntityManager().createQuery("select 1 from FeatureSource where name = :name")
-                    .setParameter("name", testName)
-                    .setMaxResults(1)
-                    .getSingleResult();
-
-                uniqueCounter++;
-            } catch(NoResultException nre) {
-                break;
-            }
-        }  
-        return uniqueCounter;
-    }
-    
-    public static String uniqueNameForSequence(String name, int sequence) {
-        return sequence == 0 ? name : name + " (" + sequence + ")";
-    }
-    
-    public static void setNextUniqueName(FeatureSource fs, Map<String, Integer> sequenceByName) {
-        // When creating multiple new Feature Source entities which have the same
-        // name, findUniqueName() will return the same name from the db
-        
-        String name = fs.getName() == null ? "(no name)" : fs.getName();
-        
-        Integer sequence = sequenceByName.get(name);
-        if(sequence == null) {
-            sequence = findUniqueNameSequence(name);
-        } 
-        fs.setName(uniqueNameForSequence(name, sequence));
-        sequenceByName.put(name, sequence + 1);
-    }    
-    
-    public static void setUniqueNames(Set<FeatureSource> featureSources) {
-        Map<String,Integer> sequenceByName = new HashMap();
-        
-        for(FeatureSource fs: featureSources) {
-            setNextUniqueName(fs, sequenceByName);
-        }
     }
     
     public SimpleFeatureType addOrUpdateFeatureType(String typeName, SimpleFeatureType newType) {

@@ -221,7 +221,7 @@ public class ArcGISService extends GeoService implements Updatable {
        
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
         if(!fs.getFeatureTypes().isEmpty()) {
-            fs.setName(FeatureSource.findUniqueName(getName()));
+            fs.setName(getName());
         }
     }
     

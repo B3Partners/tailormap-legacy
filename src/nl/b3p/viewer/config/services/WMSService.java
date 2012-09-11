@@ -130,9 +130,6 @@ public class WMSService extends GeoService implements Updatable {
             
             wmsService.load(wms, params, status);
             
-            // Set unique Feature Source names            
-            FeatureSource.setUniqueNames(getAutomaticallyLinkedFeatureSources(wmsService.getTopLayer()));
-            
             return wmsService;
         } finally {
             status.setProgress(100);

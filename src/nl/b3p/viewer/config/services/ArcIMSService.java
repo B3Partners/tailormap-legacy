@@ -132,7 +132,7 @@ public class ArcIMSService extends GeoService {
             ims.setTopLayer(top);
             
             if(!Boolean.FALSE.equals(params.get(PARAM_PERSIST_FEATURESOURCE)) && !fs.getFeatureTypes().isEmpty()) {
-                fs.setName(FeatureSource.findUniqueName(ims.getName()));
+                fs.setName(ims.getName());
                 Stripersist.getEntityManager().persist(fs);
             }
             
