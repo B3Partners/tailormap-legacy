@@ -78,6 +78,19 @@
             source: { tooltip: 'Streetview' }
         }
     },
+    
+    {
+        className: "viewer.components.CurrentLocation",
+        name: "Current Location",
+        shortName: "LOC",
+        sources: ["CurrentLocation.js"],
+        singleton: true,
+        restrictions: ["top_menu"],
+        extPropertyGridConfigs: {
+            propertyNames: { interval: 'Interval(ms)' },
+            source: { interval: 0 }
+        }
+    },
 
     {
         className: "viewer.components.tools.ZoomIn",
