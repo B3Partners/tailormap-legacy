@@ -80,23 +80,24 @@ public class ArcIMSService extends GeoService {
         });
     }    
 
+    //<editor-fold desc="Loading service metadata from ArcIMS">
     @Override
     public GeoService loadFromUrl(String url, Map params, WaitPageStatus status) throws Exception {
         try {
             status.setCurrentAction("Ophalen informatie...");
-
+            
             ArcIMSService ims = new ArcIMSService();
             ims.setUsername((String)params.get(PARAM_USERNAME));
-            ims.setPassword((String)params.get(PARAM_PASSWORD));            
-           
+            ims.setPassword((String)params.get(PARAM_PASSWORD));
+            
             HTTPClient client = new SimpleHttpClient();
             client.setUser(ims.getUsername());
             client.setPassword(ims.getPassword());
             
             serviceName = (String)params.get(PARAM_SERVICENAME);
-           
+            
             ArcIMSServer gtims = new ArcIMSServer(new URL(url), serviceName, client);
-
+            
             if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
                 return null;
             }
@@ -105,7 +106,7 @@ public class ArcIMSService extends GeoService {
             ims.setName(si.getTitle());
             ims.setServiceName(gtims.getServiceName());
             ims.setUrl(url);
-
+            
             status.setProgress(50);
             status.setCurrentAction("Inladen layers...");
             
@@ -125,7 +126,7 @@ public class ArcIMSService extends GeoService {
             top.setVirtual(true);
             top.setTitle("Layers");
             top.setService(ims);
-
+            
             for(AxlLayerInfo axlLayerInfo: gtims.getAxlServiceInfo().getLayers()) {
                 top.getChildren().add(parseAxlLayerInfo(axlLayerInfo, ims, fs, top));
             }
@@ -142,21 +143,6 @@ public class ArcIMSService extends GeoService {
             status.setProgress(100);
             status.setFinished(true);
         }
-    }
-    
-    
-    @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude);
-        if(serviceName != null) {
-            o.put("serviceName", serviceName);
-        }
-        return o;
-    }    
-    
-    @Override
-    public JSONObject toJSONObject(boolean flatten) throws JSONException {
-        return toJSONObject(flatten, null);
     }
     
     private Layer parseAxlLayerInfo(AxlLayerInfo axl, GeoService service, ArcXMLFeatureSource fs, Layer parent) {
@@ -189,15 +175,15 @@ public class ArcIMSService extends GeoService {
             sft.setTypeName(axl.getId());
             sft.setWriteable(false);
             sft.setDescription(axl.getName());
-
+            
             for(AxlFieldInfo axlField: axl.getFclass().getFields()) {
                 AttributeDescriptor att = new AttributeDescriptor();
                 sft.getAttributes().add(att);
                 att.setName(axlField.getName());
-
+                
                 String type;
                 switch(axlField.getType()) {
-                    case AxlField.TYPE_SHAPE: 
+                    case AxlField.TYPE_SHAPE:
                         if(sft.getGeometryAttribute() == null) {
                             sft.setGeometryAttribute(att.getName());
                         }
@@ -229,7 +215,24 @@ public class ArcIMSService extends GeoService {
             fs.getFeatureTypes().add(sft);
             l.setFeatureType(sft);
         }
-                        
+        
         return l;
     }
+    //</editor-fold>
+    
+    //<editor-fold desc="Add serviceName to toJSONObject()">
+    @Override
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude);
+        if(serviceName != null) {
+            o.put("serviceName", serviceName);
+        }
+        return o;
+    }
+    
+    @Override
+    public JSONObject toJSONObject(boolean flatten) throws JSONException {
+        return toJSONObject(flatten, null);
+    }
+    //</editor-fold>
 }
