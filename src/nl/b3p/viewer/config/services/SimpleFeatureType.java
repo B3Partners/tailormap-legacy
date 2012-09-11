@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -157,10 +158,29 @@ public class SimpleFeatureType {
         writeable = update.writeable;
         geometryAttribute = update.geometryAttribute;
         
+        // Retain user set aliases for attributes
+        
+        // Does not work correctly for Arc* feature sources which set attribute
+        // title in alias... Needs other field to differentiate user set title
+        
+        Map<String,String> aliasesByAttributeName = new HashMap();
+        for(AttributeDescriptor ad: attributes) {
+            if(StringUtils.isNotBlank(ad.getAlias())) {
+                aliasesByAttributeName.put(ad.getName(), ad.getAlias());
+            }
+        }
+        
         if(!attributes.equals(update.attributes)) {
             attributes.clear();
             attributes.addAll(update.attributes);
         }                
+        
+        for(AttributeDescriptor ad: attributes) {
+            String alias = aliasesByAttributeName.get(ad.getName());
+            if(alias != null) {
+                ad.setAlias(alias);
+            }
+        }
     }
     
     public static void clearReferences(Collection<SimpleFeatureType> typesToRemove) {
