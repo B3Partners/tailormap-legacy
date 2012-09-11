@@ -31,8 +31,11 @@ import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import net.sourceforge.stripes.validation.ValidationErrors;
+import net.sourceforge.stripes.validation.ValidationMethod;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
@@ -106,7 +109,7 @@ public class LayarSourceActionBean implements ActionBean {
         return new ForwardResolution(JSP);
     }
     
-    public Resolution save(){        
+    public Resolution save(){                        
         layarSource.getDetails().clear();
         layarSource.getDetails().putAll(details);
         
@@ -251,6 +254,15 @@ public class LayarSourceActionBean implements ActionBean {
                response.getWriter().print(json.toString());
            }
         };
+    }
+    
+    @ValidationMethod(on = "save")
+    public void validateParams(ValidationErrors errors) {        
+        if (layarSource == null||layarSource.getLayarService() == null){
+            errors.add("layarService", new LocalizableError("validation.required.valueNotPresent"));
+        }if (layarSource == null||layarSource.getFeatureType() == null){
+            errors.add("featureType", new LocalizableError("validation.required.valueNotPresent"));
+        }
     }
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">
     @Override

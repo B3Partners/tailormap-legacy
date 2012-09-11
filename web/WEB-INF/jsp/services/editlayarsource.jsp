@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <div style="width: 70%; float: left;">
                             <table class="formtable">                      
                                 <tr>
-                                    <td>Attribuutbron</td>
+                                    <td>Attribuutbron*</td>
                                     <td>
                                         <select id="featureSourceSelect">
                                             <c:forEach var="s" items="${actionBean.featureSources}">
@@ -69,7 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </td>
                                 </tr>
                                 <tr>
-                                    <td>Layar service</td>
+                                    <td>Layar service*</td>
                                     <td>
                                         <stripes:select name="layarSource.layarService">
                                     <option value="1">Maak uw keuze..</option>                      
@@ -87,13 +87,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         Gebruik '[attribuutnaam]' om een waarde van het object te gebruiken. 
                                         Aan de rechterkant wordt een lijst getoond met mogelijke attribuutnamen.</td></tr>                                
                                 <tr>
-                                    <td>Titel:</td>
+                                    <td>Titel</td>
                                     <td>
                                         <stripes:text name="details['text.title']"></stripes:text>
                                     </td>
                                 </tr> 
                                 <tr>
-                                    <td>Omschrijving:</td>
+                                    <td>Omschrijving</td>
                                     <td>
                                         <stripes:text name="details['text.description']"></stripes:text>
                                     </td>
@@ -105,11 +105,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </td>
                                 </tr>                         
                                 <tr>
-                                    <td>Url</td>
+                                    <td>Url naar afbeelding</td>
                                     <td>
                                         <stripes:text name="details['imageURL']"></stripes:text>
                                     </td>
-                                </tr>                                                        
+                                </tr>             
+                                <tr>
+                                    <td colspan="2">* = verplicht</td>
+                                </tr>
                             </table>
                         </div>
                         <div id="attributeList" class="attributeListClass">                            
