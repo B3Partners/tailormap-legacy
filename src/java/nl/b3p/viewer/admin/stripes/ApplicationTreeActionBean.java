@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
@@ -133,23 +134,28 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                 }
 
                 for(ApplicationLayer layer: l.getLayers()) {
-                    Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
-                            .setParameter("service", layer.getService()).setParameter("name", layer.getLayerName())
-                            .getSingleResult();
+                    
+                    // XXX code duplication with loadSelectedLayers()
                     
                     JSONObject j = new JSONObject();
-                    j.put("id", "s" + layer.getId());
-                    if(realLayer.getTitleAlias() != null){
-                        j.put("name", realLayer.getTitleAlias());
-                    }else if(realLayer.getTitle() != null){
-                        j.put("name", realLayer.getTitle());
-                    }else{
-                        j.put("name", layer.getLayerName());
-                    }
+                    j.put("id", "s" + layer.getId()); // XXX WTF? other id prefix than in loadSelectedLayers()
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
+                    j.put("name", layer.getLayerName());
                     children.put(j);
+
+                    try {
+                        Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
+                                .setParameter("service", layer.getService()).setParameter("name", layer.getLayerName())
+                                .getSingleResult();
+                        if(realLayer.getTitleAlias() != null) {
+                            j.put("name", realLayer.getTitleAlias());
+                        } else if(realLayer.getTitle() != null){
+                            j.put("name", realLayer.getTitle());
+                        }
+                    } catch(NoResultException nre) {
+                    }
                 }
             } 
         }
@@ -172,22 +178,28 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             int id = Integer.parseInt(levelId);
             Level l = em.find(Level.class, new Long(id));
             for(ApplicationLayer appl: l.getLayers()) {
-                Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
-                            .setParameter("service", appl.getService()).setParameter("name", appl.getLayerName())
-                            .getSingleResult();
-                
-                JSONObject j = new JSONObject();
+                JSONObject j = new JSONObject();                
                 j.put("id", "al" + appl.getId());
-                if(realLayer.getTitleAlias() != null){
-                    j.put("name", realLayer.getTitleAlias());
-                }else if(realLayer.getTitle() != null){
-                    j.put("name", realLayer.getTitle());
-                }else{
-                    j.put("name", appl.getLayerName());
-                }
                 j.put("type", "layer");
                 j.put("isLeaf", true);
+                j.put("name", appl.getLayerName());
                 children.put(j);
+
+                try {
+                    Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
+                            .setParameter("service", appl.getService()).setParameter("name", appl.getLayerName())
+                            .getSingleResult();
+                    j.put("status", "ok");
+                    
+                    if(realLayer.getTitleAlias() != null){
+                        j.put("name", realLayer.getTitleAlias());
+                    }else if(realLayer.getTitle() != null){
+                        j.put("name", realLayer.getTitle());
+                    }
+                } catch(NoResultException nre) {
+                    j.put("status", "error");
+                }
+
             }
         }
         
