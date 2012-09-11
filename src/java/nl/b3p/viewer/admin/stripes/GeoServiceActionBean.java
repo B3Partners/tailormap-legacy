@@ -80,6 +80,7 @@ public class GeoServiceActionBean implements ActionBean {
     private String crs;
     private WaitPageStatus status;
     private JSONObject newService;
+    private JSONObject updatedService;
     
     private boolean updatable;
 
@@ -178,6 +179,14 @@ public class GeoServiceActionBean implements ActionBean {
 
     public void setNewService(JSONObject newService) {
         this.newService = newService;
+    }
+
+    public JSONObject getUpdatedService() {
+        return updatedService;
+    }
+
+    public void setUpdatedService(JSONObject updatedService) {
+        this.updatedService = updatedService;
     }
 
     public boolean isServiceDeleted() {
@@ -391,7 +400,7 @@ public class GeoServiceActionBean implements ActionBean {
         updatable = service instanceof Updatable;
     }
     
-    public Resolution update() {
+    public Resolution update() throws JSONException {
         if(!isUpdatable()) {
             getContext().getMessages().add(new SimpleMessage("Services van protocol {0} kunnen niet worden geupdate",
                     service.getProtocol()));
@@ -418,6 +427,15 @@ public class GeoServiceActionBean implements ActionBean {
         log.info("Missing layers: " + byStatus.get(UpdateResult.Status.MISSING));
                 
         Stripersist.getEntityManager().getTransaction().commit();
+        
+        updatedService = new JSONObject();
+        updatedService.put("id", "s" + service.getId());
+        updatedService.put("name", service.getName());
+        updatedService.put("type", "service");
+        updatedService.put("isLeaf", service.getTopLayer() == null);
+        updatedService.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
+        updatedService.put("parentid", "c" + category.getId());
+        
         getContext().getMessages().add(new SimpleMessage("De service is geupdate"));
         
         return new ForwardResolution(JSP);

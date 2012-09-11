@@ -371,6 +371,20 @@ function addServiceNode(service) {
     addNode(newNode, service.parentid);
 }
 
+function updateServiceNode(service) {
+    service.text = service.name; // For some reason text is not mapped to name when creating a new model
+    
+    var tree = Ext.getCmp('servicestree');
+    
+    var oldNode = tree.getRootNode().findChild('id', service.id, true);
+    
+    if(oldNode != null) {
+        var newNode = Ext.create('GeoServiceTreeModel', service);
+        oldNode.parentNode.insertBefore(newNode, oldNode);
+        oldNode.remove();    
+    }
+}
+
 // Function to rename a node, based in its ID
 function renameNode(nodeid, newname) {
     var tree = Ext.getCmp('servicestree');

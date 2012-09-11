@@ -50,6 +50,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             frameParent.renameNode('s${actionBean.service.id}','${actionBean.service.name}');
         }
     </c:if>
+    <c:if test="${actionBean.updatedService != null}">
+        if(frameParent && frameParent.updateServiceNode && '${actionBean.service.id}' != '') {
+            frameParent.updateServiceNode(${actionBean.updatedService});
+        }
+    </c:if>    
 </script>
 
 <c:if test="${!actionBean.serviceDeleted}">
