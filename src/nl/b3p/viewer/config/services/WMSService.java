@@ -599,7 +599,7 @@ public class WMSService extends GeoService implements Updatable {
             if(wms.getCapabilities().getRequest().getDescribeLayer() != null) {
                 dlreq = wms.createDescribeLayerRequest();
             } else {
-                dlreq = new WMS1_1_0().createDescribeLayerRequest(wms.getCapabilities().getService().getOnlineResource());
+                dlreq = new WMS1_1_0().createDescribeLayerRequest(wms.getInfo().getSource().toURL());
             }
             dlreq.setProperty("VERSION", wms.getCapabilities().getVersion());            
             dlreq.setLayers(layers.toString());
