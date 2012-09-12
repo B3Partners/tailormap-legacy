@@ -71,7 +71,7 @@ Ext.define ("viewer.components.CurrentLocation",{
         }
         this.button= this.viewerController.mapComponent.createTool({
             type: type,
-            name: this.getName(),
+            id: this.getName(),
             iconUrl_up: this.iconUrl_up,
             iconUrl_over: this.iconUrl_over,
             iconUrl_sel: this.iconUrl_sel,
@@ -82,7 +82,9 @@ Ext.define ("viewer.components.CurrentLocation",{
         this.viewerController.mapComponent.addTool(this.button);
         
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
-        this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);
+        if (this.interval>0){
+            this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,this.buttonUp, this);
+        }
     },
     buttonDown: function(){
         if (this.interval==0){

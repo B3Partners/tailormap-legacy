@@ -23,16 +23,20 @@
   **/
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
     extend: "viewer.viewercontroller.controller.Tool",
-    onActiveHandler:null,
     controls:null,
     enabledEvents: null,
     constructor : function (conf,frameworkObject){
         viewer.viewercontroller.openlayers.OpenLayersTool.superclass.constructor.call(this, conf);                       
         this.frameworkObject=frameworkObject;
         this.controls = new Array();
-        this.onActiveHandler = new Object();
         this.enabledEvents= new Object();
         this.overwriteStyle();
+        if (this.type == viewer.viewercontroller.controller.Tool.BUTTON){
+            var me = this;
+            frameworkObject.trigger= function(){
+                me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);
+            }
+        }
         return this;
     },
     /**
