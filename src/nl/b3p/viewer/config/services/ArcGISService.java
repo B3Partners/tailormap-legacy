@@ -414,7 +414,7 @@ public class ArcGISService extends GeoService implements Updatable {
             
             removeOrphanLayersAfterUpdate(result);
 
-            if(linkedFS.getFeatureTypes().isEmpty()) {
+            if(linkedFS != null && linkedFS.getFeatureTypes().isEmpty()) {
                 log.debug("Linked ArcGISFeatureSource has no type names anymore, removing it");
                 Stripersist.getEntityManager().remove(linkedFS);
             }
