@@ -374,7 +374,7 @@
         className: "viewer.components.tools.GoogleNavigation",
         name: "Google Navigation",
         shortName: "Gn",
-        sources: ["tools/GoogleNavigation.js","NavigationPanel.js"],
+        sources: ["tools/Tool.js","tools/GoogleNavigation.js","NavigationPanel.js"],
         closureCompilerSafe: true,
         extPropertyGridConfigs: {            
             propertyNames: {            
