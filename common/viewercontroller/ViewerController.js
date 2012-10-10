@@ -236,8 +236,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         } catch(e) {
             
             this.logger.error("Error creating component with className " + className + ": error "+e+ " with config"+ config);
-            if (this.isDebug()){
-                throw e;
+            
+            if(this.isDebug()){
+                if(e instanceof Error) {
+                    console.log(e);
+                    if(e.stack != undefined) {
+                        console.log(e.stack);
+                    }
+                }
             }
         }
 
