@@ -32,7 +32,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);   
         
         if(!Ext.Array.contains(["TMS", "ArcGisRest"], this.getProtocol())) {
-            throw "OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol();
+            throw new Error("OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
         
         this.mixins.openLayersLayer.constructor.call(this,config);
