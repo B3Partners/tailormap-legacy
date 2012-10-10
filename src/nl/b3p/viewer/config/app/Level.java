@@ -55,6 +55,7 @@ public class Level {
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(name="level_layers", inverseJoinColumns=@JoinColumn(name="layer"))
     @OrderColumn(name="list_index")
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN) // cannot use orphanRemoval=true due to workaround
     private List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
     @ManyToMany
