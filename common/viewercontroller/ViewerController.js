@@ -632,61 +632,72 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         };
 
         var layerObj = null;
-        if(service.protocol =="wms" ){
-            var layerUrl = service.url;
-            options["isBaseLayer"]=false;           
+        
+        try {
+            if(service.protocol =="wms" ){
+                var layerUrl = service.url;
+                options["isBaseLayer"]=false;           
+
+                var ogcOptions={
+                    exceptions: "application/vnd.ogc.se_inimage",
+                    srs: "EPSG:28992",
+                    version: "1.1.1",
+                    layers:layer.name,
+                    styles: "",
+                    format: "image/png",
+                    transparent: true,
+                    noCache: true
+                };
+                if (layer.queryable){
+                    ogcOptions.query_layers= layer.name;
+                }
+                if(layer.name == undefined && layer.details && layer.details.all_children) {
+                    options.layers = layer.details.all_children;
+                }
+
+                layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
+
+            }else if(service.protocol == "arcims" || service.protocol == "arcgis"){            
+                options.layers= layer.name;
+                if(layer.details && layer.details.all_children) {
+                    options.layers = layer.details.all_children;
+                }
+                if (service.protocol == "arcims"){
+                    options.type= "ArcIMS";
+                    options.mapservice=service.serviceName;
+                    layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,service.url, options,this);
+                }else{                
+                    options.type= "ArcGIS";                
+                    layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);                
+                }
+            }else if (service.protocol == "tiled"){
+                var res=layer.resolutions.split(",");
+                for (var i=0; res.length > i; i++){
+                    res[i] = Number(res[i]);
+                }
+                options.tileHeight = layer.tileHeight;
+                options.tileWidth = layer.tileWidth;
+                options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
+                options.resolutions = res,
+                options.protocol = service.tilingProtocol;
+                options.viewerController=this;
+                if (layer.details && layer.details["image_extension"]){
+                    options.extension = layer.details["image_extension"];
+                }
+                layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
+            }
+        } catch(e) {
+            var msg = Ext.String.format("Error creating layer object for appLayer #{0} ({1} {2} layer {3}: {4}",
+                id,
+                service.protocol,
+                service.url,
+                appLayer.layerName,
+                e);
+            this.logger.error(msg);
             
-            var ogcOptions={
-                exceptions: "application/vnd.ogc.se_inimage",
-                srs: "EPSG:28992",
-                version: "1.1.1",
-                layers:layer.name,
-                styles: "",
-                format: "image/png",
-                transparent: true,
-                noCache: true
-            };
-            if (layer.queryable){
-                ogcOptions.query_layers= layer.name;
-            }
-            if(layer.name == undefined && layer.details && layer.details.all_children) {
-                options.layers = layer.details.all_children;
-            }
-            
-            layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
-                
-        }else if(service.protocol == "arcims" || service.protocol == "arcgis"){            
-            options.layers= layer.name;
-            if(layer.details && layer.details.all_children) {
-                options.layers = layer.details.all_children;
-            }
-            if (service.protocol == "arcims"){
-                options.type= "ArcIMS";
-                options.mapservice=service.serviceName;
-                layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,service.url, options,this);
-            }else{                
-                options.type= "ArcGIS";                
-                layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);                
-            }
-        }else if (service.protocol == "tiled"){
-            var res=layer.resolutions.split(",");
-            for (var i=0; res.length > i; i++){
-                res[i] = Number(res[i]);
-            }
-            options.tileHeight = layer.tileHeight;
-            options.tileWidth = layer.tileWidth;
-            options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
-            options.resolutions = res,
-            options.protocol = service.tilingProtocol;
-            options.viewerController=this;
-            if (layer.details && layer.details["image_extension"]){
-                options.extension = layer.details["image_extension"];
-            }
-            layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
-        }
-        if (layerObj==null){
             return null;
         }
+            
         layerObj.serviceId = appLayer.serviceId;
         layerObj.appLayerId = appLayer.id;
         this.layers[id] = layerObj;

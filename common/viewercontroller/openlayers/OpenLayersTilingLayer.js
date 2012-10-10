@@ -29,7 +29,12 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
      *Constructor
      */
     constructor : function (config){        
-        viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);        
+        viewer.viewercontroller.openlayers.OpenLayersTilingLayer.superclass.constructor.call(this, config);   
+        
+        if(!Ext.Array.contains(["TMS", "ArcGisRest"], this.getProtocol())) {
+            throw "OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol();
+        }
+        
         this.mixins.openLayersLayer.constructor.call(this,config);
         
         this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
@@ -71,8 +76,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             //options.projection="EPSG:28992";
             //options.tileOrigin= new OpenLayers.LonLat(y,x);
             this.frameworkLayer = new OpenLayers.Layer.ArcGISCache(this.name,this.url,options);
-        }else{
-            this.viewerController.logger.error("Tiling protocol "+this.getProtocol()+" not supported bij OpenLayers Tiling layer.");
         }
     },
     /**
