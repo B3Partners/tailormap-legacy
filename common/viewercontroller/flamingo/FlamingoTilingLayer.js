@@ -48,11 +48,20 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
      *@return a xml string of this object
      **/
     toXML : function(){
+
+        var url = this.getUrl();
+
+        if(this.getProtocol() == "ArcGisRest") {
+            if(!/\/tile\/?$/.test(url)) {
+                url += "/tile/";
+            }
+        }
+        
         var xml="<fmc:";
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.getId()+"\"";     
-        xml+=" serviceurl=\""+this.getUrl()+"\"";
+        xml+=" serviceurl=\""+url+"\"";
         xml+=" resolutions=\""+this.getResolutions().join(",")+"\"";
         xml+=" serviceenvelope=\""+this.getServiceEnvelope()+"\"";
         if (this.getProtocol()!=null){
