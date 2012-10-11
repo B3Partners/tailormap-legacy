@@ -71,10 +71,32 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             
             this.frameworkLayer = new OpenLayers.Layer.TMS(layerName,this.url,options);
         }else if(this.getProtocol()=="ArcGisRest"){  
-            var tokens=this.serviceEnvelope.split(",");
-            options.tileOrigin= new OpenLayers.LonLat(Number(tokens[0]),Number(tokens[3]));
-            //options.projection="EPSG:28992";
-            //options.tileOrigin= new OpenLayers.LonLat(y,x);
+            
+            // Let ArcGISCache calculate some stuff by creating the JSON from ArcGIS Server
+            // with the stuff ArcGISCache uses and setting that in options.layerInfo
+            
+            options = {};
+            options.layerInfo = {
+                spatialReference: { "wkid": 28992 },
+                tileInfo: {
+                    height: this.getTileHeight(),
+                    width: this.getTileWidth(),
+                    origin: {
+                        x: Number(serviceEnvelopeTokens[0]),
+                        y: Number(serviceEnvelopeTokens[3])
+                    },
+                    lods: Ext.Array.map(this.resolutions, function(res) {
+                        return { resolution: res };
+                    })                    
+                },
+                fullExtent: {
+                    xmin: Number(serviceEnvelopeTokens[0]),
+                    ymin: Number(serviceEnvelopeTokens[1]),
+                    xmax: Number(serviceEnvelopeTokens[2]),
+                    ymax: Number(serviceEnvelopeTokens[3])
+                }
+            };    
+
             this.frameworkLayer = new OpenLayers.Layer.ArcGISCache(this.name,this.url,options);
         }
     },
