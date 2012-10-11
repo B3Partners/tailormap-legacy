@@ -103,8 +103,9 @@ Ext.define("viewer.FeatureInfo", {
         }
         
         var params = {featureInfo: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(queries)};
-
-        this.featureInfoInternal(params, successFunction, failureFunction);
+        if(queries.length > 0) {
+            this.featureInfoInternal(params, successFunction, failureFunction);
+        }
     },    
     editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction) {
         var query = [{appLayer: appLayer.id}];
