@@ -62,6 +62,7 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.onResize();
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
          //Add event when started the identify (clicked on the map)
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.onFeatureInfoStart,this);
         //listen to a extent change
@@ -92,6 +93,21 @@ Ext.define ("viewer.components.FeatureInfo",{
             }            
         }
     },
+    
+    onLayerRemoved: function(map,options) {
+        var mapLayer = options.layer;
+        if (mapLayer==null)
+            return;        
+        if(this.isSummaryLayer(mapLayer)){            
+            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+            if (layer.hasFeatureType){
+                Ext.Array.remove(this.serverRequestLayers, appLayer);
+            }
+        }
+
+    },
+        
     /**
      * Enable doing server requests.
      * @param appLayer the applayer
@@ -106,7 +122,7 @@ Ext.define ("viewer.components.FeatureInfo",{
         if (this.serverRequestLayers ==null){
             this.serverRequestLayers=new Array();
         }
-        this.serverRequestLayers.push(appLayer);
+        Ext.Array.include(this.serverRequestLayers, appLayer);
     },    
     /**
      * When a feature info starts.

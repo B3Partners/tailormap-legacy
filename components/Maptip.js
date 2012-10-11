@@ -60,6 +60,7 @@ Ext.define ("viewer.components.Maptip",{
         
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
         //listen to the onmaptipcancel
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
                 
@@ -93,6 +94,21 @@ Ext.define ("viewer.components.Maptip",{
             }            
         }
     },
+    
+    onLayerRemoved: function(map,options) {
+        var mapLayer = options.layer;
+        if (mapLayer==null)
+            return;        
+        if(this.isSummaryLayer(mapLayer)){            
+            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+            if (layer.hasFeatureType){
+                Ext.Array.remove(this.serverRequestLayers, appLayer);
+            }
+        }
+
+    },
+    
     onResize : function(){
         var top = this.viewerController.getTopMenuHeightInPixels();        
         this.balloon.offsetY=Number(top);
@@ -112,7 +128,7 @@ Ext.define ("viewer.components.Maptip",{
         if (this.serverRequestLayers ==null){
             this.serverRequestLayers=new Array();
         }
-        this.serverRequestLayers.push(appLayer);
+        Ext.Array.include(this.serverRequestLayers, appLayer);
     },
     /**
      * Do a server request
