@@ -57,11 +57,45 @@ Ext.define("viewer.components.Legend", {
         title: "Legend",
         titlebarIcon: "",
         tooltip: "",
+        margin: "0px",
         showBackground: false
     },
     constructor: function (conf){
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        
+        var css = "\
+/* Styling for legends, see for example:\
+ * http://jsfiddle.net/ZVUBv/1/ \
+ */\
+\
+.legend {\
+    margin: {0};\
+    width: 100%;\
+    height: 100%;\
+    overflow: auto;\
+}\
+\
+.legend .layer {\
+    clear: left;\
+}\
+\
+.legend .layer .name {\
+    font-weight: bold;\
+}\
+\
+.legend .layer .image {\
+    clear: left;\
+    float: left;\
+    padding-right: 3px;\
+}\
+\
+.legend .layer .label {\
+    line-height: 31px; /* center single-line label vertically to align to image */\
+    white-space: nowrap;\
+}";
+        css = Ext.String.format(css, this.margin);
+        Ext.util.CSS.createStyleSheet(css, "legend");
         
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;

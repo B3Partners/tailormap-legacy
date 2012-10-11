@@ -447,11 +447,13 @@
         extPropertyGridConfigs: {
             propertyNames: {               
                 title: "Titel",
-                showBackground: "Toon achtergrond kaarten"
+                showBackground: "Toon achtergrond kaarten",
+                margin: "Marge rond legenda (bijv. \"3px\")"
             },
             source: {
                 title: "Legenda",
-                showBackground: false
+                showBackground: false,
+                margin: "0px"
             }
         },
         singleton: true,
