@@ -50,6 +50,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         return request;
         
     },
+    
+    getLayers : function(){
+        return this.getFrameworkLayer().options.layers;   
+    },    
     /**
      * Implementation of setUrl in Layer
      * @see viewer.viewercontroller.controller.Layer#setUrl
