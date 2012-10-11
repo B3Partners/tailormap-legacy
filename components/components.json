@@ -577,12 +577,14 @@
             propertyNames: {
                 loadingText: "Laad tekst",
                 left: "Positie vanaf links",
-                top: "Positie vanaf boven"
+                top: "Positie vanaf boven",
+                timeout: "Timeout in milliseconden (alleen OpenLayers)",
             },
             source: {
                 loadingText: "Bezig met laden...[percentage]%",
                 left: "20",
-                top: "100"
+                top: "100",
+                timeout: "6000",
             }
         }             
     },

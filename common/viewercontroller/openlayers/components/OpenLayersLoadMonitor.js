@@ -23,14 +23,17 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor
     extend: "viewer.viewercontroller.openlayers.OpenLayersComponent",    
     config:{
         top:null,
-        left:null
+        left:null,
+        timeout:null
     },
     
     constructor: function (conf){        
         viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor.superclass.constructor.call(this, conf);
         // Make the control and add it to the openlayersmap
         var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
-        this.frameworkObject = new OpenLayers.Control.LoadingPanel();
+        this.frameworkObject = new OpenLayers.Control.LoadingPanel({
+            minimizeTimeoutDelay: this.timeout
+        });
         map.addControl(this.frameworkObject);
 
         if(this.left && this.top){

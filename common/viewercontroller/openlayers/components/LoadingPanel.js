@@ -20,6 +20,16 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
      * {Integer} A counter for the number of layers loading
      */ 
     counter: 0,
+    
+    /**
+     * Timeout ID from window.setTimeout()
+     */
+    minimizeTimeout: null,
+    
+    /**
+     * Config setting for timeout delay. If not set 5000 milliseconds is used.
+     */
+    minimizeTimeoutDelay: null,
 
     /**
      * Property: maximized
@@ -131,6 +141,19 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
      * Increase the counter and show control
     */
     increaseCounter: function() {
+        var me = this;
+        var timeoutDelay = me.minimizeTimeoutDelay || 5000;
+        if(this.counter > 0) {
+            if(this.minimizeTimeout != null) {
+                window.clearTimeout(this.minimizeTimeout);
+            }
+            this.minimizeTimeout = window.setTimeout(function() {
+                console.log("clearing loading panel after " + (timeoutDelay / 1000).toFixed(2) + "s timeout");
+                while(me.counter > 0) {
+                    me.decreaseCounter();
+                }
+            }, timeoutDelay);
+        }
         this.counter++;
         if (this.counter > 0) { 
             if (!this.maximized && this.visible) {
