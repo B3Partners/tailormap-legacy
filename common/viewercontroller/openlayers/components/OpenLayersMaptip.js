@@ -36,7 +36,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",{
                 move: this.onMove
             },{
                 //the options:
-                delay: 500,
+                delay: conf.maptipdelay,
                 pixelTolerance: null,
                 stopMove: false
             }
