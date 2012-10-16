@@ -671,7 +671,8 @@
         shortName: "Oz",
         sources: ["Overview.js"],
         configSource: ["Overview-config.js"],
-        restrictions: ["content"]
+        restrictions: ["content"],
+        singleton: true
      },
     {
         className: "viewer.components.Print",
@@ -689,7 +690,8 @@
         shortName: "LS",
         sources: ["LayerSwitch.js"],
         configSource: ["LayerSwitch-config.js"],
-        restrictions: ["content"]
+        restrictions: ["content"],
+        singleton: true
     },
     {
         className: "viewer.components.PopupButton",
