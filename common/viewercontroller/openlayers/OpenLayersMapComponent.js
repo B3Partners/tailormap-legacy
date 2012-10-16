@@ -220,6 +220,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         config.ogcParams=ogcParams;
         config.viewerController = this.viewerController;
         config.options.url = wmsurl;
+        if(config.alpha != undefined) {
+            config.options.opacity = 1 - (config.alpha / 100);
+        }
         var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",config);
         
         if(ogcParams["query_layers"] != null && ogcParams["query_layers"] != ""){
@@ -257,6 +260,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.name=name;
         options.url=url;
         options.viewerController=this.viewerController;
+        if(options.alpha != undefined) {
+            options.opacity = 1 - (options.alpha / 100);
+        }        
         var tmsLayer= new viewer.viewercontroller.openlayers.OpenLayersTilingLayer(options);
         return tmsLayer;
     },
@@ -283,6 +289,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.name=name;
         options.url=url;
         options.viewerController=viewerController;
+        if(options.alpha != undefined) {
+            options.opacity = 1 - (options.alpha / 100);
+        }             
         var arcServer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",options);
         return arcServer;
     },

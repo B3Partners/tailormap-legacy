@@ -636,6 +636,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             ratio: 1,
             visible: appLayer.checked
         };
+        if(appLayer.details && appLayer.details.transparency != undefined) {
+            options.alpha = appLayer.details.transparency;
+        }
 
         var layerObj = null;
         
@@ -700,6 +703,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 appLayer.layerName,
                 e);
             this.logger.error(msg);
+            
+            if(this.isDebug()){
+                if(e instanceof Error) {
+                    console.log(e);
+                    if(e.stack != undefined) {
+                        console.log(e.stack);
+                    }
+                }
+            }            
             
             return null;
         }

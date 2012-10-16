@@ -48,10 +48,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
         return this.map.getId()+"_"+this.getId();
     },
     setAlpha : function (alpha){
-        this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setAlpha",alpha)
+        // Fixup wrong Flash alpha, it thinks 0 is transparent and 100 is opaque
+        if(this.map) {
+            this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setAlpha",100-alpha)
+        }
     },
     getAlpha : function (){
-        return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getAlpha");
+        return 100-this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"getAlpha");
     },
     /**
      * Get the last getMap request array

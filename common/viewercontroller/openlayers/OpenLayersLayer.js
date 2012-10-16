@@ -62,7 +62,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
        
     setAlpha : function (alpha){
         this.alpha=alpha;
-        this.frameworkLayer.setOpacity(alpha/100);
+        if(this.frameworkLayer) {
+            this.frameworkLayer.setOpacity(1-(alpha/100));
+        }
     },
     
     getAlpha : function (){

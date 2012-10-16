@@ -31,7 +31,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
         },{
             visibility: this.visible,            
             singleTile : true,
-            transitionEffect : "resize"
+            transitionEffect : "resize",
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1
         });
         this.type=viewer.viewercontroller.controller.Layer.ARCSERVERREST_TYPE;
     },

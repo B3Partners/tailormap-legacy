@@ -76,6 +76,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTilingLayer",{
         if (this.getExtension()!=null){
             xml+=" extension=\""+this.getExtension()+"\"";
         }
+        if(this.config.alpha != null) {
+            xml += " alpha=\"" + this.config.alpha + "\"";
+        }
         xml+="></fmc:"+this.getTagName()+">";
         return xml;
     },

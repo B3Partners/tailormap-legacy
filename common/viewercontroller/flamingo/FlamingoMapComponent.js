@@ -109,6 +109,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 object[key]=options[key];
             }
         }
+        // Fixup wrong Flash alpha, it thinks 0 is transparent and 100 is opaque
+        if(options.alpha != undefined) {
+            object.alpha = 100-options.alpha;
+        }
         if(ide == null){
             ide = name;
         }
@@ -129,6 +133,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }
         options.url=url;
         options.type=options.protocol;
+        // Fixup wrong Flash alpha, it thinks 0 is transparent and 100 is opaque
+        if(options.alpha != undefined) {
+            options.alpha = 100-options.alpha;
+        }        
         return Ext.create("viewer.viewercontroller.flamingo.FlamingoTilingLayer",options);
     },
     createArcConfig: function(name,url,options,viewerController){

@@ -51,7 +51,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             transitionEffect: "resize",
             maxExtent: new OpenLayers.Bounds(Number(serviceEnvelopeTokens[0]),Number(serviceEnvelopeTokens[1]),Number(serviceEnvelopeTokens[2]),Number(serviceEnvelopeTokens[3])),
             maxResolution: this.resolutions[0],
-            visibility: this.visible==undefined ? true : this.visible
+            visibility: this.visible==undefined ? true : this.visible,
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1
         }
         if (this.getProtocol()=="TMS"){
             //fix the url: example: "http://tilecache.kaartenbalie.nl/tilecache.cgi/1.0.0/osm/"
@@ -75,7 +76,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             // Let ArcGISCache calculate some stuff by creating the JSON from ArcGIS Server
             // with the stuff ArcGISCache uses and setting that in options.layerInfo
             
-            options = {};
+            options = {
+                opacity: options.opacity
+            };
             options.layerInfo = {
                 spatialReference: { "wkid": 28992 },
                 tileInfo: {
