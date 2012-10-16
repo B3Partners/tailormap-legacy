@@ -30,6 +30,7 @@ Ext.define ("viewer.components.Influence",{
     vectorLayer: null,
     layerSelector:null,
     removeButton: null,
+    mapClickActivated: null,
     markerId: 'influence_marker',
     /**
      * Constructor for influence
@@ -47,6 +48,8 @@ Ext.define ("viewer.components.Influence",{
         }
         conf.formHeight = MobileManager.isMobile() ? 160 : 150;
         viewer.components.Influence.superclass.constructor.call(this, conf);
+        var me = this;
+        
         this.removeButton=this.form.getChildByElement(this.name+"_remove")
         this.removeButton.setVisible(false);
         
@@ -59,6 +62,14 @@ Ext.define ("viewer.components.Influence",{
             },
             viewerController: this.viewerController
         });
+        Ext.util.Observable.capture(this.viewerController.mapComponent.getMap(), function(event) {
+            if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO) {
+                if(me.mapClickActivated) {
+                    return false;
+                }
+            }
+            return true;
+        });        
         
         var config = {
             viewerController : this.viewerController,
@@ -127,6 +138,7 @@ Ext.define ("viewer.components.Influence",{
      */
     locationOnMap: function(){
         this.toolMapClick.activateTool();
+        this.mapClickActivated = true;
         this.popup.hide();
     },
     /**
@@ -155,7 +167,13 @@ Ext.define ("viewer.components.Influence",{
      * @param comp options.
      */
     mapClicked : function (toolMapClick,comp){                
-        this.toolMapClick.deactivateTool();
+        this.toolMapClick.deactivateTool();        
+        var me = this;
+        // Only allow feature info after some time because it is raised directly
+        // after this method for the same click
+        window.setTimeout(function() {
+            me.mapClickActivated = false;
+        }, 100);
         this.layerSelector.initLayers();
         this.popup.show();
         var coords = comp.coord;
