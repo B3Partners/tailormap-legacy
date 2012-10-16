@@ -39,6 +39,17 @@ Ext.define ("viewer.components.Edit",{
         viewer.components.Edit.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
         var me = this;
+        
+        Ext.util.Observable.capture(this.viewerController.mapComponent.getMap(), function(event) {
+            if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
+            || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
+                if(me.mode == "new" || me.mode == "edit") {
+                    return false;
+                }
+            }
+            return true;
+        });        
+        
         if (this.layers!=null){
             this.layers = Ext.Array.filter(this.layers, function(layerId) {
                 // XXX must check editAuthorized in appLayer
