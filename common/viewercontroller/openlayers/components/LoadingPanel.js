@@ -148,9 +148,11 @@ OpenLayers.Control.LoadingPanel = OpenLayers.Class(OpenLayers.Control, {
                 window.clearTimeout(this.minimizeTimeout);
             }
             this.minimizeTimeout = window.setTimeout(function() {
-                console.log("clearing loading panel after " + (timeoutDelay / 1000).toFixed(2) + "s timeout");
-                while(me.counter > 0) {
-                    me.decreaseCounter();
+                if(me.maximized) {
+                    console.log("clearing loading panel after " + (timeoutDelay / 1000).toFixed(2) + "s timeout");
+                    while(me.counter > 0) {
+                        me.decreaseCounter();
+                    }
                 }
             }, timeoutDelay);
         }
