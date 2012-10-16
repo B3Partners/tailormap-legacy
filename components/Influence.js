@@ -140,6 +140,9 @@ Ext.define ("viewer.components.Influence",{
         this.toolMapClick.activateTool();
         this.mapClickActivated = true;
         this.popup.hide();
+        if(this.results != null){
+            this.results.destroy();
+        }         
     },
     /**
      * Remove the influence filter and the map geom
