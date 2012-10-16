@@ -578,13 +578,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.createDataTab(appLayer);
     },
     hasAppLayerConfigured : function (appLayer){
-        for(var i= 0 ; i < this.layers.length ; i++){
-            var l = this.layers[i];
-            if(l.id == appLayer.id){
-                return true;
-            }
-        }
-        return false;
+        return Ext.Array.contains(this.layers, appLayer.id);
     },
     getExtComponents: function() {
         return [
