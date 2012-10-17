@@ -65,7 +65,7 @@ Ext.define ("viewer.components.LayerSwitch",{
             }
         });
         this.button.zIndexManager.bringToFront(this.button);
-        this.button.setPosition(Ext.JSON.decode(this.left),Ext.JSON.decode(this.top));
+        this.button.setPosition(Number(this.left), Number(this.top));
     },
     loadLayers : function(){
         this.layers = new Array();
