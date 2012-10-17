@@ -175,11 +175,12 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
             //for(AttributeDescriptor ad: getFeatureType().getAttributeDescriptors()) {
             //    s.add(ad.getLocalName());
             //}
+            returnGeometry = true;
         } else if(query.getPropertyNames().length > 0) {
             s.addAll(Arrays.asList(query.getPropertyNames()));
+            returnGeometry = s.contains(getFeatureType().getGeometryDescriptor().getLocalName());
+            s.remove(ArcGISFeatureSource.DEFAULT_GEOMETRY_ATTRIBUTE_NAME);
         }
-        returnGeometry = s.contains(getFeatureType().getGeometryDescriptor().getLocalName());
-        s.remove(ArcGISFeatureSource.DEFAULT_GEOMETRY_ATTRIBUTE_NAME);
         StringBuilder sb = new StringBuilder();
         for(String name: s) {
             if(sb.length() > 0) {
