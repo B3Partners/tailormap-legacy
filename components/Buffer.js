@@ -168,7 +168,7 @@ Ext.define ("viewer.components.Buffer",{
                     this.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
                 }
             }
-            var imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + layer.layerName+"ImageLayer", url, bbox);
+            var imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + "_" + layer.id, url, bbox);
             this.imageLayers.push(imageLayer);
             this.viewerController.mapComponent.getMap().addLayer(imageLayer);
             if(MobileManager.isMobile()) {
@@ -180,16 +180,15 @@ Ext.define ("viewer.components.Buffer",{
         var map = this.viewerController.mapComponent.getMap();
         var layer = this.layerSelector.getValue();
         if(layer != null){
-            var id = this.name + layer.layerName+"ImageLayer";
-            id = this.viewerController.mapComponent.makeFlamingoAcceptableId(id);
-            var mapLayer = map.getLayer(id);
+            var bufferId = this.name + "_" + layer.id;
+            var mapLayer = map.getLayer(bufferId);
             if(mapLayer!=null){
                 map.removeLayer(mapLayer);
             }
-        }
-        for(var i = 0 ; i < this.imageLayers.length ; i++ ){
-            if(this.imageLayers[i].id == this.name + layer.layerName+"ImageLayer"){
-                this.imageLayers.splice(i,1);
+            for(var i = 0 ; i < this.imageLayers.length ; i++ ){
+                if(this.imageLayers[i].id == bufferId){
+                    this.imageLayers.splice(i,1);
+                }
             }
         }
     },
