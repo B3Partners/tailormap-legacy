@@ -72,6 +72,8 @@
     float: left;
     width: 100%;
     margin-bottom: 7px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #D7D7D7; 
 }
 .feature_summary_feature div{    
     float: left;
@@ -98,7 +100,6 @@
 .feature_summary_description{
     width: 100%;
     height: 50px;
-    border-bottom: 1px solid #D7D7D7;
     overflow: hidden;
 }
 .feature_summary_link{
