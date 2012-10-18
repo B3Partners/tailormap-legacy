@@ -116,9 +116,9 @@ Ext.define ("viewer.components.Edit",{
             id: this.name + 'Container',
             width: '100%',
             height: '100%',
+            autoScroll: true,
             layout: {
-                type: 'vbox',
-                align: 'stretch'
+                type: 'vbox'
             },
             style: {
                 backgroundColor: 'White'
@@ -135,7 +135,7 @@ Ext.define ("viewer.components.Edit",{
                 id: this.name + 'ButtonPanel',
                 xtype: "container",
                 padding: "4px",
-                width: '100%',
+                width: '280px',
                 height: MobileManager.isMobile() ? 60 : 36,
                 items:[
                 {
