@@ -119,8 +119,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     getActiveFeature : function(){
-        var index = this.getFrameworkLayer().features.length - 1;
-        var olFeature = this.getFrameworkLayer().features[index];
+        var olFeature = this.getFrameworkLayer().features[0];
         var feature = this.fromOpenLayersFeature(olFeature);
         return feature;
     },
