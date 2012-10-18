@@ -94,9 +94,9 @@ Ext.define ("viewer.components.Edit",{
             showmeasures:false,
             viewerController : this.viewerController,
             style: {
-                fillcolor: "0xFF0000",
+                fillcolor: "FF0000",
                 fillopacity: 50,
-                strokecolor: "0xFF0000",
+                strokecolor: "FF0000",
                 strokeopacity: 50
             }
         });
