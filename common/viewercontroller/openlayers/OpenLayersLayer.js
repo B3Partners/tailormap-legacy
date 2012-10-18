@@ -74,7 +74,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
      * Reloads the layer.
      */
     reload : function (){
-        this.getFrameworkLayer().redraw();
+        this.getFrameworkLayer().redraw(true);
     },
     /*
      *Implement in subclass:

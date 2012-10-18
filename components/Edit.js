@@ -27,6 +27,7 @@ Ext.define ("viewer.components.Edit",{
     mode:null,
     layerSelector:null,
     toolMapClick:null,
+    editingLayer: null,
     currentFID:null,
     geometryEditable:null,
     config:{
@@ -457,20 +458,21 @@ Ext.define ("viewer.components.Edit",{
             feature.__fid = this.currentFID;
         }
         
-        var layer = this.layerSelector.getValue();
+        var me = this;
+        me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
             viewerController: this.viewerController
         })
         .edit(
-            layer,
+            me.editingLayer,
             feature,
-            this.saveSucces, 
+            function(fid) { me.saveSucces(fid); }, 
             this.failed);
     },
     saveSucces : function (fid){
-        Ext.Msg.alert('Gelukt',"Het feature is aangepast.");
+        this.editingLayer.reload();
         this.currentFID = fid;
-        this.viewerController.mapComponent.getMap().update();
+        Ext.Msg.alert('Gelukt',"Het feature is aangepast.");
     },
     saveFailed : function (msg){
         Ext.Msg.alert('Mislukt',msg);
