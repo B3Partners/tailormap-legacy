@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/viewer" antiJARLocking="true" disableURLRewriting="true">
-    <Parameter name="component-path" value="viewer-html/components:/home/matthijsln/dev/flamingo/custom-components" override="false"/>   
-
     <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>
