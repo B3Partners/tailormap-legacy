@@ -31,7 +31,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:messages/>
         </p>
         <div id="content">
-            <h1>Layar services<a href="#Layarservices_Beheren_Help" title="Help" class="helplink"></a></h1><br />
+            <h1>Layar services<a href="#Layarservices_Beheren_Help" title="Help" class="helplink"></a></h1><br />  
+            <p style="margin-bottom: 5px">
+                Gebruik de volgende URL in Layar: <code><c:out value="${actionBean.url}"/></code>
+            </p>               
             <div id="grid-container" class="documenten">
 
             </div>

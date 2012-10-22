@@ -16,9 +16,14 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
@@ -140,6 +145,25 @@ public class LayarServiceActionBean implements ActionBean {
     @DontValidate
     public Resolution defaultResolution() {
         return new ForwardResolution(JSP);
+    }
+    
+    private static final String LAYAR_ACTIONBEAN_URL = "/action/layar";
+    private static final String VIEWER_URL_PARAM = "viewer.url";    
+    
+    public String getUrl() throws UnsupportedEncodingException, MalformedURLException {
+        String url = getContext().getServletContext().getInitParameter(VIEWER_URL_PARAM) + LAYAR_ACTIONBEAN_URL;
+        
+        if(url.indexOf("://") == -1) {
+            HttpServletRequest request = getContext().getRequest();
+            boolean needPort = "http".equals(request.getScheme()) && request.getServerPort() != 80
+                            || "https".equals(request.getScheme()) && request.getServerPort() != 443;            
+            if(needPort) {
+                url = new URL(request.getScheme(), request.getServerName(), request.getServerPort(), url).toString();
+            } else {
+                url = new URL(request.getScheme(), request.getServerName(), url).toString();
+            }
+        }
+        return url;
     }
     
     @DontValidate
