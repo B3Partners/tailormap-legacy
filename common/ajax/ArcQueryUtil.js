@@ -59,7 +59,7 @@ Ext.define("viewer.ArcQueryUtil", {
                     successFunction(response.objectIds,response.objectIdFieldName);
                 } else {
                     if(failureFunction != undefined) {
-                        failureFunction(response.error);
+                        failureFunction(response.message);
                     }
                 }
             },
