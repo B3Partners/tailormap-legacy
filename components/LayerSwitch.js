@@ -100,22 +100,10 @@ Ext.define ("viewer.components.LayerSwitch",{
     loadItems: function() {
         var me = this;
         
-        // Find the (singleton) level which contains all background levels
-        // as children to put in the following array:
-        var allBackgroundLevelIds = [];        
-        Ext.iterate(this.viewerController.app.levels, function(id, level) {
-            if(level.background) {
-                /* String array to Number array */
-                allBackgroundLevelIds = Ext.Array.map(level.children, function(s) { return Number(s); });
-                return false;
-            }
-            return true;
-        });
-        
         // Find out which background levels are in the selected content
         me.selectedBackgroundLevels = [];
         this.viewerController.traverseSelectedContent(function(level) {
-            if(Ext.Array.contains(allBackgroundLevelIds, level.id)) {
+            if(level.background) {
                 me.selectedBackgroundLevels.push(level);
             }
         }, Ext.emptyFn);
