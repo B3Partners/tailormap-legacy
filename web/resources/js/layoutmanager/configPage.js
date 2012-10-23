@@ -64,7 +64,10 @@ Ext.onReady(function(){
 });
 function createLayoutTab(){
     if(details == undefined || details == null){
-        details = new Object();
+        details = {
+            changeablePosition: "true",
+            changeableSize: "true"
+        };
     }
     var labelWidth = 300;
     var centerChecked = details.position == "center";
@@ -132,8 +135,8 @@ function createLayoutTab(){
                 fieldLabel: 'Gebruiker kan de positie van de popup aanpassen',
                 inputValue: true,
                 name: 'changeablePosition',
-                checked:details.changeablePosition ? Ext.JSON.decode(details.changeablePosition) : false,
-                value: details.changeablePosition ? Ext.JSON.decode(details.changeablePosition) : false,
+                checked: "true" == details.changeablePosition,
+                value: "true" == details.changeablePosition,
                 labelWidth:labelWidth
             }]
         },
@@ -162,10 +165,8 @@ function createLayoutTab(){
                 fieldLabel: 'Gebruiker kan de grootte van de popup aanpassen',
                 inputValue: true,
                 name: 'changeableSize',
-                //checked: details.changeableSize,
-                value: details.changeableSize ? JSON.parse(details.changeableSize) : false,
-                checked: details.changeableSize ? JSON.parse(details.changeableSize) : false,
-                //value: true,
+                value: "true" == details.changeableSize,
+                checked: "true" == details.changeableSize,
                 labelWidth:labelWidth
             }]
         }],
