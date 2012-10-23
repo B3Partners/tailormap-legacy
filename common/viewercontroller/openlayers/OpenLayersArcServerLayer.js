@@ -54,17 +54,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
     
     setQuery : function (filter){
         var me = this;
-        if(filter){
+        var cql = filter != null ? filter.getCQL() : "";
+        if(cql != ""){
             var f = function(ids,colName) { 
                 // Hack: An empty query returns all the features
                 var query = "-1";
-                for(var i = 0 ; i < ids.length ;i++){
-                    if(i!=0){
-                        query += " OR ";
-                    }else{
-                        query = "";
-                    }
-                    query += colName + " = " + ids[i];
+                if(ids.length != 0) {
+                    query = colName + " IN(" + ids.join(",") + ")";
                 }
                 me.getFrameworkLayer().setLayerFilter(me.layers, query);
                 //me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.config.options.name);
@@ -73,8 +69,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",{
                 }, 500);
             };
             var util = Ext.create("viewer.ArcQueryUtil");
-            var cql = filter.getCQL();
-            util.cqlToArcFIDS(cql,this.appLayerId,f,console.log);
+            util.cqlToArcFIDS(cql,this.appLayerId,f, function(msg) { me.getViewerController().logger.error(msg); });
         }else{
             me.getFrameworkLayer().setLayerFilter(me.layers, null);
             setTimeout (function(){

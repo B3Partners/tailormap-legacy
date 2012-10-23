@@ -35,15 +35,14 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
         return "LayerArcServer";
     },
     setQuery : function (filter){
-        if(filter){
+        var cql = filter != null ? filter.getCQL() : "";        
+        if(cql != ""){
             var me = this;
             var f = function(ids,colName) { 
-                var query = "";
-                for(var i = 0 ; i < ids.length ;i++){
-                    if(i!=0){
-                        query += " OR ";
-                    }
-                    query += colName + " = " + ids[i];
+                // Hack: An empty query returns all the features
+                var query = "-1";
+                if(ids.length != 0) {
+                    query = colName + " IN(" + ids.join(",") + ")";
                 }
                 me.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setDefinitionQuery", query,me.config.options.name);
                 setTimeout (function(){
@@ -51,8 +50,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoArcServerLayer",{
                 }, 500);
             };
             var util = Ext.create("viewer.ArcQueryUtil");
-            var cql = filter.getCQL();
-            util.cqlToArcFIDS(cql,this.appLayerId,f,console.log);
+            util.cqlToArcFIDS(cql,this.appLayerId,f, function(msg) { me.getViewerController().logger.error(msg); });
         }else{
             this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"setDefinitionQuery",null,this.config.options.name);
             this.reload();
