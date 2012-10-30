@@ -290,7 +290,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 Ext.onReady(function() {
                     
                     var viewerType = <js:quote value="${actionBean.viewerType}"/>;
-                    viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config);
+                    
+                    var listeners = {
+                        // Cannot use viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING for property name here
+                        "ON_COMPONENTS_FINISHED_LOADING": updateLoginInfo
+                    };
+                    viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config, listeners);
                     if(!MobileManager.isMobile() || MobileManager.isAndroid() || window.onorientationchange === undefined) {
                         // Android devices seem to react better to window.resize than window.orientationchange, probably timing issue
                         Ext.EventManager.onWindowResize(function () {
@@ -301,8 +306,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             viewerController.resizeComponents();
                         }
                     }
-                                        
-                    viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, updateLoginInfo);
                 });
             }());
             
