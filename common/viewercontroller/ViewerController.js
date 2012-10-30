@@ -48,8 +48,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *   - components Viewer components list to be dynamically constructed
      * @constructor
      */
-    constructor: function(viewerType, mapId, app) {
-        this.callParent(arguments);
+    constructor: function(viewerType, mapId, app, listeners) {
+        this.events = {}; // this is needed if addListener() is called and we don't do addEvents() before! See Ext.util.Observable.constructor
+        this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker",{viewerController:this});
         this.app = app;
         
