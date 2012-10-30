@@ -24,6 +24,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
@@ -196,7 +197,11 @@ public class AttributeActionBean implements ActionBean {
                 
                 JSONObject j = new JSONObject();
                 j.put("id", sft.getId());
-                j.put("name", sft.getTypeName());
+                String name = sft.getTypeName();
+                if(!StringUtils.isBlank(sft.getDescription())) {
+                    name += " (" + sft.getDescription() + ")";
+                }
+                j.put("name", name);
                 simpleFeatureTypes.put(j);
             }
         }
