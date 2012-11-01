@@ -480,9 +480,26 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new OpenLayersTool(conf,new OpenLayers.Control.PanZoomBar(frameworkOptions)); 
         }else if (type==viewer.viewercontroller.controller.Tool.DEFAULT){//15,
             return new viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool(conf);
-        }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT ||
-            type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT){//19 - 20,            
-            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory());
+        }else if (type==viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT
+               || type==viewer.viewercontroller.controller.Tool.NEXT_EXTENT) {//19, 20
+               
+            // We need the tooltips from both the previous and next components, 
+            // search in viewerController for the configs... 
+            // 
+            // 'Wrong way' of navigating the API, and we can't use ViewerController.getComponentsByClassName
+            // because that isn't initialized yet
+            
+            frameworkOptions = { };
+            
+            for(var name in this.viewerController.app.components) {
+                var c = this.viewerController.app.components[name];
+                if(c.className == "viewer.components.tools.NextExtent") {
+                    frameworkOptions.nextOptions = { title: c.config.tooltip };
+                } else if(c.className == "viewer.components.tools.PreviousExtent") {
+                    frameworkOptions.previousOptions = { title: c.config.tooltip };
+                }
+            }
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,            
             //this.getMap().setGetFeatureInfoControl(identifyTool);
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomToMaxExtent(frameworkOptions));
