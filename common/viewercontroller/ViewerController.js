@@ -539,14 +539,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //if deprecatedParam is given, the old (and wrong)way of calling this function is used.
         if (deprecatedParam){
             if(this.isDebug()){
-                this.logger.warning("GetLayer() old method call is used.");
+                this.logger.warning("getLayer() old method call is used!");
             }
         }
         if(this.layers[appLayer.id] == undefined){  
             if (!this.layersInitialized){
-                this.logger.warning("Layers not initialized! Wait for the layers to be added!");
+                this.logger.warning("Layers not initialized! getLayer() caller should wait for the layers to be added!");
             }else{
-                this.logger.warning("The layer cant be found! Maybe the wrong param? "+appLayer);
+                this.logger.warning("The layer #" + appLayer.id + " can't be found!");
             }
             return null;
         }
@@ -888,7 +888,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         try {
             var l = this.getLayer(appLayer);
-            
+            if(!l) {
+                failure(appLayer);
+                return;
+            }
             // Check override by service admin
             var serviceLayer = this.getServiceLayer(appLayer);
             if(serviceLayer.legendImageUrl) {
@@ -1119,7 +1122,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             value: extent
         };
         paramJSON.params.push(extentParam);
-    
         return paramJSON;
     },
     getApplicationSprite: function() {
