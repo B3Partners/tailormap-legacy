@@ -254,7 +254,9 @@ Ext.define ("viewer.components.MobileCombobox", {
      */
     getRawValue: function() {
         if(this.inputEl.dom.selectedIndex === -1) return '';
-        return this.inputEl.dom[this.inputEl.dom.selectedIndex].value;
+        var selectValue = this.inputEl.dom[this.inputEl.dom.selectedIndex];
+        if(typeof selectValue === "undefined") return '';
+        return selectValue.value;
     },
     /**
      * Clears the selectbox and selects first item
@@ -277,5 +279,12 @@ Ext.define ("viewer.components.MobileCombobox", {
      */
     getId: function() {
         return this.sliderid;
+    },
+    /**
+     * Set the element visible
+     */
+    setVisible: function(visible) {
+        viewer.components.MobileCombobox.superclass.setVisible.call(this, visible);
+        this.inputEl.setVisible(visible);
     }
 });
