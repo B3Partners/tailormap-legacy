@@ -648,7 +648,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     getHeight: function (){        
         var m=this.getMap();
         if(m){
-            return m.getWidth();
+            return m.getHeight();
         }
         return null;
     }
