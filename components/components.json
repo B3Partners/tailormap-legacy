@@ -87,8 +87,14 @@
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
-            propertyNames: { interval: 'Interval(ms)' },
-            source: { interval: 0 }
+            propertyNames: { 
+                tooltip: 'Tooltip',
+                interval: 'Interval(ms)' 
+            },
+            source: { 
+                tooltip: 'Huidge locatie',
+                interval: 0 
+            }
         }
     },
 
