@@ -32,7 +32,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     constructor : function (conf){
         var frameworkOptions = {
             displayClass: "olControlIdentify",
-            type: OpenLayers.Control.TYPE_TOOL
+            type: OpenLayers.Control.TYPE_TOOL,
+            title: conf.tooltip
         };        
         var frameworkTool= new OpenLayers.Control(frameworkOptions);
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
