@@ -33,7 +33,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
     constructor : function (conf){
         var controlOptions = {
             displayClass: "olControlDefault",
-            type: OpenLayers.Control.TYPE_TOOL
+            type: OpenLayers.Control.TYPE_TOOL,
+            title: conf.tooltip
         };        
         var olTool= new OpenLayers.Control(controlOptions);        
         viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool.superclass.constructor.call(this,conf,olTool);
