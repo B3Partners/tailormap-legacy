@@ -95,6 +95,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-window-header-text-default /* Popup header */ {
                     color: ${steunkleur2};
                 }
+                
+                /* Openlayers Overzichtskaartbg */
+                .olControlOverviewMapElement {
+                    background-color: ${steunkleur1} !important;
+                }
+                /* Openlayers Overzichtskaart border */
+                .olControlOverviewMapExtentRectangle {
+                    border: 2px dotted ${steunkleur2} !important;
+                }
             </c:if>
             <c:if test="${!empty actionBean.application.details.font.value}">
                 /* Textcolor */

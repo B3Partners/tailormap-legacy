@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     currentPopup.hide();
                 };
                 return {
-                    isMobile: function() { return mobile; },
+                    isMobile: function() { return mobile${param.mobile == true ? ' || true' : ''}; },
                     isIOS: function() { return ios; },
                     isAndroid: function() { return android; },
                     getOrientation: function() { return (ios ? ( window.orientation == 90 || window.orientation == -90 ) : ( screen.width > screen.height )) ? 'landscape' : 'portrait'; },
@@ -252,6 +252,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "twitter":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>, 
                 "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>
             };
+            
+            // tell OpenLayers where the control images are, remember the trailing slash
+            OpenLayers.ImgPath = "${contextPath}/resources/images/openlayers_img/";
         
             var user = null;
             
