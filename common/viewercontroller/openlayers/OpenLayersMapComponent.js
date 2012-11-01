@@ -16,8 +16,15 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         theme: "flamingo"
     },
     constructor :function (viewerController, domId,config){
-        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController,domId,config);        
-        this.domId = domId;
+        /* create a wrapper div so placement of topmenu and bottomcontainer can be done properly */
+        this.domId = Ext.id();
+        var container = document.createElement('div');
+        container.id = this.domId;
+        container.style.height = '100%';
+        container.style.width = '100%';
+        document.getElementById(domId).appendChild(container);
+        
+        viewer.viewercontroller.OpenLayersMapComponent.superclass.constructor.call(this, viewerController, this.domId,config);        
         this.pointButton = null;
         this.lineButton = null;
         this.polygonButton = null;
@@ -138,6 +145,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         
         // Div container for content
         var container = document.getElementById(this.domId);
+        container.style.position = "absolute";
         
         // Top menu
         var mapEl = Ext.get(this.getMap().frameworkMap.viewPortDiv.id);
@@ -148,14 +156,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if(top.indexOf("%") == -1){
             currentHeight -= top;
             topHeight = top;
-            mapEl.setTop(top + "px");
         }else{
             var percent = top.substring(0,top.indexOf("%"));
             var heightInPixels = currentHeight / 100 * percent;
             currentHeight -= heightInPixels;
             topHeight = heightInPixels;
-            mapEl.setTop(heightInPixels + "px");
         }
+        container.style.top = topHeight + 'px';
         
         // Bottom menu
         var bottomHeight;
@@ -169,7 +176,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             currentHeight -= heightInPixels;
         }
         
-        mapEl.setHeight(currentHeight);
+        container.style.height = currentHeight + 'px';
         
         // Make divs
         this.contentTop = document.createElement('div');
@@ -177,7 +184,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         
         var topStyle = this.contentTop.style;
         var topLayout= this.viewerController.getLayout('top_menu');
-        if(topLayout.height ){
+        if(topLayout.height ) {
             topStyle.background = topLayout.bgcolor;
             topStyle.height = topLayout.height + topLayout.heightmeasure;
         }
@@ -185,8 +192,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         // Give it a higher z-index than the map to render it on top of the map
         mapEl.dom.style.zIndex = 100;
         topStyle.zIndex = mapEl.dom.style.zIndex + 1;
+        
         this.contentTop.setAttribute("class","olControlPanel");
-        container.appendChild(this.contentTop);
+        container.parentNode.insertBefore(this.contentTop, container);
         
         // Make content_bottom
         if(bottomHeight && parseInt(bottomHeight) > 0 ){
@@ -198,9 +206,32 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             bottomStyle.background = bottomLayout.bgcolor;
             bottomStyle.top = currentHeight + parseInt(topHeight) + "px";
             bottomStyle.position = "relative";
-            container.appendChild(this.contentBottom);
+            container.parentNode.appendChild(this.contentBottom);
         }
     },
+    
+    /**
+     * Resize function is called when the screen is resized
+     */
+    doResize: function() {
+        // Container
+        var container = Ext.get(document.getElementById(this.domId).parentNode);
+        var totalHeight = container.getHeight();
+        
+        // Top menu
+        var topMenu = Ext.get(this.contentTop);
+        
+        // Footer
+        if(this.contentBottom !== null) {
+            var footer = Ext.get(this.contentBottom);
+            footer.setTop((totalHeight - footer.getHeight()) + 'px');
+        }
+        
+        // Map
+        var mapEl = Ext.get(this.domId);
+        mapEl.setHeight((totalHeight - topMenu.getHeight() - footer.getHeight()) + 'px');
+    },
+    
     /**
      *See @link MapComponent.createWMSLayer
      */    
