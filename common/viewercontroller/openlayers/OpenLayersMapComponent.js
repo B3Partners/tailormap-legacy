@@ -370,8 +370,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",config,this.getMap());
         }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
+            
+            var topMenuHeight = Ext.fly(this.contentTop).getHeight();
+            var minTop = 40;
+            
+            // divide by 2 is necessary for some reason?
+            var y = topMenuHeight > minTop ? 4 : (minTop - topMenuHeight) / 2 + 2;
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
-                new OpenLayers.Control.PanZoomBar({zoomWorldIcon: true}));
+                new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(6,y), zoomWorldIcon: true}));
         }else if (type == viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);                
         }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
@@ -409,8 +415,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         conf.viewerController=this.viewerController;
         var frameworkOptions={};
         //pass the tool tip to the framework object.
-        if (conf.toolTip){
-            frameworkOptions.title=conf.toolTip;
+        if (conf.tooltip){
+            frameworkOptions.title=conf.tooltip;
         }
 
         if (type==viewer.viewercontroller.controller.Tool.NAVIGATION_HISTORY){//1
