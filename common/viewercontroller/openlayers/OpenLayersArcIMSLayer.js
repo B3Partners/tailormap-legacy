@@ -24,33 +24,49 @@
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersArcLayer",
     constructor: function(config){
-        //config.options["layerorder"]=true;
         this.id = config.id;
-        
+
         viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer.superclass.constructor.call(this, config);
         this.initConfig(config);
-     //   OpenLayers.ProxyHost = "/viewer/action/proxy?appLayer="+ this.id+ "&url=";
+        
         this.type=viewer.viewercontroller.controller.Layer.ARCIMS_TYPE;
         var options = {
-            serviceName: "atlasoverijssel",
-            async: true
+            async: true,
+            singleTile: false,
+            // usually ArcIMS is configured with <IMAGELIMIT pixelcount="1048576" />
+            // so max size is 1024 x 1024
+            tileSize: new OpenLayers.Size(1024, 1024), 
+            transparent: true,   // THIS DOES NOTHING!!!       
+            format: "image/png", // THIS DOES NOTHING EITHER!!! See ArcXML_transparency_hack.patch
+            transitionEffect : "resize",
+            opacity: this.config.opacity != undefined ? this.config.opacity : 1
         };
-            /*
-        this.frameworkLayer = new OpenLayers.Layer.ArcIMS( "hemelhelderheid_polygon",
-            "http://gisopenbaar.toverijs3.nl/GeoJuli2008/ims", options );*/
+        
+        options.serviceName = this.serviceName;
+        options.filterCoordSys = "28992";
+        options.featureCoordSys = "28992";
+        options.layers = [ {
+                id: this.layers,
+                visible: true,
+                query: { where: "" }
+        }];
+
+        this.frameworkLayer = new OpenLayers.Layer.ArcIMS(
+            this.name,
+            this.url, 
+            options);
         return this;
     },
     // Call the setLayerProperty to set the buffer radius. It must be a object with a radius property
     setBuffer : function (radius,layer){
-        //this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id,"setLayerProperty", layer,"buffer",{radius:radius});
         this.map.update();
     },
     // Set the buffer property to null to remove the buffer
     removeBuffer: function(layer){
-        // this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setLayerProperty", layer,"buffer");
         this.map.update();
     },
     setQuery : function (filter){
+        /*
         if(filter){
             var me = this;
             var f = function(query) { 
@@ -61,6 +77,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
         }else{
             //  this.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",null);
             this.reload();
-        }
+        }*/
     }
 });

@@ -298,20 +298,22 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return tmsLayer;
     },
     /**
-     *see {@link MapComponent.createTMSLayer} sdf
+     *see {@link MapComponent.createArcIMSLayer}
      */
-    //appLayer.layerName,server,servlet,service.serviceName, options,this);
-    createArcIMSLayer : function (name,url, servlet, serviceName,options){
-        /*options.name=name;
-        options.url=url;
-        options.servlet = servlet;
-        options.serviceName = serviceName;
+    createArcIMSLayer : function (name,url, options, viewerController){
+        options.name=name;
+        
+        // Set URL to proxy
+        options.url = Ext.urlAppend(actionBeans.proxy, Ext.Object.toQueryString({ url: url, mode: 'arcims'}));
+        
+        if(options.alpha != undefined) {
+            options.opacity = 1 - (options.alpha / 100);
+        }        
+        options.serviceName = options.mapservice;
         options.viewerController=this.viewerController;
         
         var arcIMS= Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",options);
-        return arcIMS;*/
-        this.viewerController.logger.error("ArcIms not (yet) supported in OpenLayers implementation");
-        return null;
+        return arcIMS;
     },
     /**
      *see @link MapComponent#createArcServerLayer
