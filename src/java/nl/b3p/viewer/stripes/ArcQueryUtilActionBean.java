@@ -61,6 +61,8 @@ public class ArcQueryUtilActionBean implements ActionBean {
     @Validate
     private String cql;
     @Validate
+    private boolean whereOnly = false;
+    @Validate
     private ApplicationLayer appLayer;
     @Validate
     private Application application;
@@ -84,6 +86,14 @@ public class ArcQueryUtilActionBean implements ActionBean {
 
     public void setCql(String cql) {
         this.cql = cql;
+    }
+
+    public boolean isWhereOnly() {
+        return whereOnly;
+    }
+
+    public void setWhereOnly(boolean whereOnly) {
+        this.whereOnly = whereOnly;
     }
 
     public ApplicationLayer getAppLayer() {
@@ -132,22 +142,27 @@ public class ArcQueryUtilActionBean implements ActionBean {
 
             Filter filter = CQL.toFilter(cql);
             String where = visitor.encodeToString(filter);
-            if (where.trim().length() > 0 && !where.trim().equals("1=1")) {
-                aq.setWhere(where);
+            
+            if(whereOnly) {
+                json.put("where", where);
+            } else {
+                if (where.trim().length() > 0 && !where.trim().equals("1=1")) {
+                    aq.setWhere(where);
+                }
+
+                StringWriter sw = new StringWriter();
+
+                Marshaller m = ArcXML.getJaxbContext().createMarshaller();
+                m.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8");
+                m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+                m.setProperty(javax.xml.bind.Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+                m.marshal(new JAXBElement(
+                        new QName(null, "SPATIALQUERY"),
+                        AxlSpatialQuery.class, aq), sw);
+                sw.close();
+
+                json.put("SPATIALQUERY", sw.toString());
             }
-
-            StringWriter sw = new StringWriter();
-
-            Marshaller m = ArcXML.getJaxbContext().createMarshaller();
-            m.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8");
-            m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            m.setProperty(javax.xml.bind.Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-            m.marshal(new JAXBElement(
-                    new QName(null, "SPATIALQUERY"),
-                    AxlSpatialQuery.class, aq), sw);
-            sw.close();
-
-            json.put("SPATIALQUERY", sw.toString());
             json.put("success", true);
         } catch (Exception e) {
             json.put("success", false);
