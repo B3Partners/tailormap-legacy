@@ -22,7 +22,6 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level; 
 import nl.b3p.viewer.config.services.ArcGISFeatureSource;
 import nl.b3p.viewer.config.services.ArcGISService;
-import nl.b3p.viewer.config.services.ArcXMLFeatureSource;
 import nl.b3p.viewer.config.services.Layer;
 
 /**
@@ -50,7 +49,7 @@ public class LayerListHelper {
             if(filterable && l.getService() instanceof ArcGISService){
                 if(l.getFeatureType() == null ){
                     continue;
-                }else if(! (l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource || l.getFeatureType().getFeatureSource() instanceof ArcXMLFeatureSource )){
+                }else if(! (l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource )){
                     continue;
                 }
             }
