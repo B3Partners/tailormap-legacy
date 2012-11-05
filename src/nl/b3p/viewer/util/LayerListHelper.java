@@ -37,17 +37,24 @@ public class LayerListHelper {
      * @param level
      * @return A list of Layer objects
      */
-    public static List<ApplicationLayer> getLayers(Level level,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,Boolean hasConfiguredLayers, List<Long> possibleLayers) {
+    public static List<ApplicationLayer> getLayers(Level level,Boolean filterable, Boolean bufferable, Boolean editable ,Boolean influence ,Boolean arc ,Boolean wfs ,Boolean attribute,
+            Boolean hasConfiguredLayers, List<Long> possibleLayers) {
         List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
         //get all the layers of this level
         for (ApplicationLayer appLayer : level.getLayers()) {
             Layer l = appLayer.getService().getLayer(appLayer.getLayerName());
             if (filterable && !l.isFilterable()
-                    || bufferable && !l.isBufferable() || 
-                    (l.getService() instanceof ArcGISService && 
-                    l.getFeatureType() == null || !(l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) &&  !(l.getFeatureType().getFeatureSource() instanceof ArcXMLFeatureSource))) {
+                    || bufferable && !l.isBufferable() ) {
                 continue;
             }
+            if(filterable && l.getService() instanceof ArcGISService){
+                if(l.getFeatureType() == null ){
+                    continue;
+                }else if(! (l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource || l.getFeatureType().getFeatureSource() instanceof ArcXMLFeatureSource )){
+                    continue;
+                }
+            }
+            
             if (editable && (l.getFeatureType() == null || !l.getFeatureType().isWriteable())) {
                 continue;
             }
@@ -63,7 +70,7 @@ public class LayerListHelper {
             if (attribute && appLayer.getAttributes().isEmpty()) {
                 continue;
             }
-            if(hasConfiguredLayers && !possibleLayers.contains(l.getId())){
+            if(hasConfiguredLayers && !possibleLayers.contains(appLayer.getId())){
                 continue;
             }            
 
