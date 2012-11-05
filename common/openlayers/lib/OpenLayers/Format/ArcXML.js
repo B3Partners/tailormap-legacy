@@ -313,6 +313,9 @@ OpenLayers.Format.ArcXML = OpenLayers.Class(OpenLayers.Format.XML, {
                 imagesz.setArrtibute("printwidth", props.imagesize.printwidth);
             }
           
+            // XXX HACK, can not be set any other way!
+            props.background = { color: { r:251, g:251, b:251 }, transcolor: { r:251, g:251, b:251 } };                                
+            
             if (props.background != null) {
                 var backgrnd = this.createElementNS("", "BACKGROUND");
                 propElem.appendChild(backgrnd);
@@ -329,6 +332,11 @@ OpenLayers.Format.ArcXML = OpenLayers.Class(OpenLayers.Format.XML, {
                         props.background.transcolor.b);
                 }
             }
+            
+            // XXX HACK
+            var output = this.createElementNS("", "OUTPUT");
+            propElem.appendChild(output);
+            output.setAttribute("type", "png24");
           
             if (props.layerlist != null && props.layerlist.length > 0) {
                 var layerlst = this.createElementNS("", "LAYERLIST");
