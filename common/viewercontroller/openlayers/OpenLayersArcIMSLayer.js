@@ -59,24 +59,25 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
     },
     // Call the setLayerProperty to set the buffer radius. It must be a object with a radius property
     setBuffer : function (radius,layer){
-        this.map.update();
+        this.viewerController.logger.error("OpenLayersArcIMSLayer: setBuffer() not supported!");
+        //this.map.update();
     },
     // Set the buffer property to null to remove the buffer
     removeBuffer: function(layer){
-        this.map.update();
+        //this.map.update();
     },
     setQuery : function (filter){
-        /*
         if(filter){
             var me = this;
             var f = function(query) { 
+                me.frameworkLayer.layers[0].query.where = query;
                 me.reload();
             };
             var util = Ext.create("viewer.ArcQueryUtil");
-            util.cqlToArcXMLSpatialQuery(filter.getCQL(),f,console.log);        
+            util.cqlToArcXMLWhere(filter.getCQL(),f, this.viewerController.logger.error);        
         }else{
-            //  this.map.getFrameworkMap().callMethod(me.getFrameworkId(),"setQuery","#ALL#",null);
+            this.frameworkLayer.layers[0].query.where = "";
             this.reload();
-        }*/
+        }
     }
 });
