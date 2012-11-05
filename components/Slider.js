@@ -89,7 +89,7 @@ Ext.define("viewer.components.Slider",{
      * @param mapLayer a viewer.viewercontroller.controller.Layer
      */
     applySlider: function(mapLayer,value) {
-        mapLayer.setAlpha(value);
+        mapLayer.setAlpha(100-value);
     },
     /**
      * Slider changed.

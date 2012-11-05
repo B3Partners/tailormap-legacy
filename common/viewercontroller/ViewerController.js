@@ -638,7 +638,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             visible: appLayer.checked
         };
         if(appLayer.details && appLayer.details.transparency != undefined) {
-            options.alpha = appLayer.details.transparency;
+            options.alpha = 100-appLayer.details.transparency;
         }
 
         var layerObj = null;
