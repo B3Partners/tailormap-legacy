@@ -248,14 +248,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "featureinfo":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureInfoActionBean"/></js:quote>,
                 "editfeature":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditFeatureActionBean"/></js:quote>,
                 "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
-                "unique":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.UniqueValuesActionBean"/></js:quote>,
-                "twitter":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>, 
+                "unique":             <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.UniqueValuesActionBean"/></js:quote>,
+                "twitter":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>, 
                 "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>
             };
             
-            // tell OpenLayers where the control images are, remember the trailing slash
-            OpenLayers.ImgPath = "${contextPath}/resources/images/openlayers_img/";
-        
+            <c:if test="${actionBean.viewerType == 'openlayers'}">            
+                <%-- XXX maybe do this in the OpenLayersMapComponent; also check theme! --%>
+                // tell OpenLayers where the control images are, remember the trailing slash
+                OpenLayers.ImgPath = "${contextPath}/resources/images/openlayers_img/";
+            </c:if>
+           
             var user = null;
             
             var updateLoginInfo = function() { };
