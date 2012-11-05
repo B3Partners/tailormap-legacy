@@ -59,34 +59,25 @@ Ext.define ("viewer.components.LayerSelector",{
         this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE);
         var requestPath= actionBeans["layerlist"];
         var requestParams = {};
-        // TODO make layerselector so, that the layerselector can use a filtered list of layers
         requestParams[this.restriction]= true;
         requestParams["appId"]= appId;
+            var me = this;
         if(this.layers != null && this.layers.length > 0){
             requestParams["layers"]= this.layers;
-            requestParams["hasConfiguredLayers"]= true;
-            this.layerList = new Array();
-            for ( var i = 0 ; i < this.layers.length ;i++){
-                //xxxxxxx werkt niet meer
-                var l = this.viewerController.getAppLayerById(this.layers[i]);
-                if(l != null){
-                    this.layerList.push(l);
-                }
-            }
-        }else{
-            var me = this;
-            Ext.Ajax.request({ 
-                url: requestPath, 
-                params: requestParams, 
-                success: function ( result, request ) {
-                    me.layerList = Ext.JSON.decode(result.responseText);
-                    me.initLayers();
-                },
-                failure: function(a,b,c) {
-                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
-                }
-            });
+            requestParams["hasConfiguredLayers"]= true;    
         }
+        
+        Ext.Ajax.request({ 
+            url: requestPath, 
+            params: requestParams, 
+            success: function ( result, request ) {
+                me.layerList = Ext.JSON.decode(result.responseText);
+                me.initLayers();
+            },
+            failure: function(a,b,c) {
+                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+            }
+        });
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
         return this;
     },
@@ -133,6 +124,7 @@ Ext.define ("viewer.components.LayerSelector",{
                             layer: l
                         });
                         addedLayers++;
+                        break;
                     }
                 }
             }
