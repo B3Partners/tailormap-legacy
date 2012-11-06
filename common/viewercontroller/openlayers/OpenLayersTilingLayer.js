@@ -132,22 +132,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
      * .extent the extent of the image
      */
     getLastMapRequest: function(){
-        var requests=[];
-        var mapWidth = this.getMap().getWidth();
-        var mapHeight = this.getMap().getHeight();
-        var tileSize = this.getMap().getFrameworkMap().getTileSize();
-        for (var x=0; x < mapWidth+tileSize.w; x+=tileSize.w){
-            //correct x to a max of the map width.
-            if (x > mapWidth){
-                x=mapWidth;
-            }
-            for (var y=0; y < mapHeight+tileSize.h; y+=tileSize.h){
-                //correct y to a max of the map height.
-                if (y > mapHeight){
-                    y=mapHeight;
-                }
-                var bounds= this.getFrameworkLayer().getTileBounds(new OpenLayers.Pixel(x,y));
-                var url = this.getFrameworkLayer().getURL(bounds);
+        var requests=[];        
+        var grid = this.getFrameworkLayer().grid;
+        for (var r=0; r < grid.length; r++){
+            for (var c=0; c < grid[r].length; c++){
+                var tile = grid[r][c]
+                var bounds=tile.bounds;
+                var url = tile.url;
                 requests.push({
                     extent: this.utils.createExtent(bounds),
                     url: url
