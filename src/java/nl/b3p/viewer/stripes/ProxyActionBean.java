@@ -102,7 +102,8 @@ public class ProxyActionBean implements ActionBean {
         }
     }
 
-    public Resolution proxyArcIMS() throws Exception {
+    // Not public, proxy() performs proxy checks!
+    private Resolution proxyArcIMS() throws Exception {
 
         HttpServletRequest request = getContext().getRequest();
 
@@ -136,6 +137,9 @@ public class ProxyActionBean implements ActionBean {
         ByteArrayOutputStream post = new ByteArrayOutputStream();
         IOUtils.copy(request.getInputStream(), post);
         
+        // This check makes some assumptions on how browsers serialize XML
+        // created by OpenLayers' ArcXML.js write() function (whitespace etc.),
+        // but all major browsers pass this check
         if(!post.toString("US-ASCII").startsWith("<ARCXML version=\"1.1\"><REQUEST><GET_IMAGE")) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
