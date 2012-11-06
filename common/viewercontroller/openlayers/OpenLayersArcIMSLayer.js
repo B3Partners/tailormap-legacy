@@ -38,7 +38,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",{
             tileSize: new OpenLayers.Size(1024, 1024), 
             transparent: true,   // THIS DOES NOTHING!!!       
             format: "image/png", // THIS DOES NOTHING EITHER!!! See ArcXML_transparency_hack.patch
-            transitionEffect : "resize",
+            //transitionEffect : "resize", // Does not work, resized tiles are not removed
             opacity: this.config.opacity != undefined ? this.config.opacity : 1
         };
         
