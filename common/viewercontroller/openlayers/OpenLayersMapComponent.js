@@ -252,7 +252,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         config.viewerController = this.viewerController;
         config.options.url = wmsurl;
         if(config.alpha != undefined) {
-            config.options.opacity = 1 - (config.alpha / 100);
+            config.options.opacity = (config.alpha / 100);
         }
         var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",config);
         
@@ -292,7 +292,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.url=url;
         options.viewerController=this.viewerController;
         if(options.alpha != undefined) {
-            options.opacity = 1 - (options.alpha / 100);
+            options.opacity = options.alpha / 100;
         }        
         var tmsLayer= new viewer.viewercontroller.openlayers.OpenLayersTilingLayer(options);
         return tmsLayer;
@@ -307,7 +307,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.url = Ext.urlAppend(actionBeans.proxy, Ext.Object.toQueryString({ url: url, mode: 'arcims'}));
         
         if(options.alpha != undefined) {
-            options.opacity = 1 - (options.alpha / 100);
+            options.opacity = options.alpha / 100;
         }        
         options.serviceName = options.mapservice;
         options.viewerController=this.viewerController;
@@ -323,7 +323,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.url=url;
         options.viewerController=viewerController;
         if(options.alpha != undefined) {
-            options.opacity = 1 - (options.alpha / 100);
+            options.opacity = options.alpha / 100;
         }             
         var arcServer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcServerLayer",options);
         return arcServer;
