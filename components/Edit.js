@@ -76,8 +76,7 @@ Ext.define ("viewer.components.Edit",{
             },
             viewerController: this.viewerController
         });
-        this.loadWindow();
-        this.popup.popupWin.addListener("beforehide",this.resetForm,this);  
+        this.loadWindow(); 
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
@@ -473,6 +472,7 @@ Ext.define ("viewer.components.Edit",{
         this.editingLayer.reload();
         this.currentFID = fid;
         Ext.Msg.alert('Gelukt',"Het feature is aangepast.");
+        this.cancel();
     },
     saveFailed : function (msg){
         Ext.Msg.alert('Mislukt',msg);

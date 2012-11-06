@@ -225,11 +225,15 @@ Ext.define ("viewer.components.MobileCombobox", {
      * options, nothing happens
      */
     setValue: function(value) {
-        var me = this;
-        for(var i in me.options) {
-            if(me.options[i].value == value) me.inputEl.dom.selectedIndex = me.options[i].index;
+        if(value == null){
+            this.clearValue();
+        }else{
+            var me = this;
+            for(var i in me.options) {
+                if(me.options[i].value == value) me.inputEl.dom.selectedIndex = me.options[i].index;
+            }
+            if(this.rendered) me.fireChangeEvent();
         }
-        if(this.rendered) me.fireChangeEvent();
     },
     /**
      * Alternative for setValue function
