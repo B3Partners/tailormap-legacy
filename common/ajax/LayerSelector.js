@@ -117,7 +117,7 @@ Ext.define ("viewer.components.LayerSelector",{
                 var l = this.layerList[i];
                 for ( var j = 0 ; j < visibleLayers.length ;j++){
                     //var appLayer = this.viewerController.getAppLayerById(visibleLayers[j]);                    
-                    if (visibleLayers[j] == l.id){                
+                    if (visibleLayers[j] == l.id || visibleLayers[j] == (""+l.id)){                
                         store.add({
                             id: l.id,
                             title: l.alias || l.layerName,
