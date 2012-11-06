@@ -72,22 +72,22 @@
 
 /*Border nav*/
 .olControlPanPanel div{
-    width: 28px;
-    height: 28px;
+    width: 28px !important;
+    height: 28px !important;
 }
 
 .olControlPanPanel .olControlPanNorthItemInactive{
-    background: url("img/sprite.png") 295px 672px;
+    background: url("img/sprite.png") 295px 672px !important;
 }
 
 .olControlPanPanel .olControlPanSouthItemInactive{
-    background: url("img/sprite.png") 295px 588px;
+    background: url("img/sprite.png") 295px 588px !important;
 }
 
 .olControlPanPanel .olControlPanEastItemInactive{
-    background: url("img/sprite.png") 295px 0;
+    background: url("img/sprite.png") 295px 0 !important;
 }
 
 .olControlPanPanel .olControlPanWestItemInactive{
-    background: url("img/sprite.png") 295px 504px;
+    background: url("img/sprite.png") 295px 504px !important;
 }
