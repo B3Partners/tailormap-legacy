@@ -74,15 +74,15 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
             
             <fo:page-sequence master-reference="a3-staand">
                 <fo:flow flow-name="body">
-                    <fo:block-container width="26.9cm" height="1.5cm" top="0cm" left="0cm" background-color="#166299" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="26.9cm" height="1.5cm" top="0cm" left="0cm" background-color="#FFFFFF" xsl:use-attribute-sets="column-block">
                         <xsl:call-template name="title-block"/>
                     </fo:block-container>
 
-                    <fo:block-container width="1.5cm" height="1.5cm" top="0cm" left="26.9cm" background-color="#166299" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="1.5cm" height="1.5cm" top="0cm" left="26.9cm" background-color="#FFFFFF" xsl:use-attribute-sets="column-block">
                         <fo:block />
                     </fo:block-container>
 
-                    <fo:block-container width="6.6cm" height="0.75cm" top="1.6cm" left="0cm" background-color="#FFD203" xsl:use-attribute-sets="column-block">
+                    <fo:block-container width="6.6cm" height="0.75cm" top="1.6cm" left="0cm" background-color="#FFFFFF" xsl:use-attribute-sets="column-block">
                         <fo:block margin-left="0.2cm" margin-top="0.2cm" xsl:use-attribute-sets="default-font">
                             <xsl:value-of select="subtitle"/>
                         </fo:block>
