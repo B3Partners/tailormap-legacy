@@ -17,15 +17,19 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     enabledEvents: new Object(),
     config: {
         movetime: null,
-        movesteps: null
+        movesteps: null,
+        swfPath: null
     },
     /**
      * 
      * @constructur
      */
     constructor :function (viewerController, domId, config){
-        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId,config);        
-        var so = new SWFObject( contextPath + "/flamingo/flamingo.swf?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
+        viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId,config);   
+        if (this.swfPath==null){
+            this.swfPath="flamingo/flamingo.swf";            
+        }
+        var so = new SWFObject(this.swfPath+"?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);
         this.viewerObject = document.getElementById("flamingo");

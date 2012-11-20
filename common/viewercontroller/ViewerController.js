@@ -38,17 +38,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /**
      * Creates a ViewerController and initializes the map container. 
      * 
-     * @param {String} viewerType Currently only the value "flamingo" is supported.
-     * @param {String} mapId The DOM element id where the map container should be displayed
+     * @param {String} viewerType Currently only the value "flamingo" and "openlayers" are supported.
+     * @param {String} domId The DOM element id where the viewer should be displayed/created
      * @param {Object} app App configuration object. Properties:
      *   - TODO server side services URL info
      *   - TODO global services index and capabilities
      *   - layout Tree structure describing a layout to be constructed dynamically
      *   - rootLevel Application content tree structure
      *   - components Viewer components list to be dynamically constructed
+     * @param {Array} listeners a array of listeners
+     * @param {Object} mapConfig config settings for map object.
      * @constructor
      */
-    constructor: function(viewerType, mapId, app, listeners) {
+    constructor: function(viewerType, domId, app, listeners,mapConfig) {
         this.events = {}; // this is needed if addListener() is called and we don't do addEvents() before! See Ext.util.Observable.constructor
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker",{viewerController:this});
@@ -69,20 +71,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // maxHeight is needed for IE8 bug where maxHeight on wrapper only does not work
             var maxHeight = null;
             if(app.details && app.details.maxHeight && parseInt(app.details.maxHeight, 10) !== 0) maxHeight = parseInt(app.details.maxHeight, 10);
-            this.layoutManager = Ext.create('viewer.LayoutManager', {
+            var layoutOptions = {
                 layout: app.layout,
                 configuredComponents: app.components,
                 maxHeight: maxHeight
-            });            
+            };
+            if (domId){
+                layoutOptions.wrapperId= domId;
+            }
+            this.layoutManager = Ext.create('viewer.LayoutManager', 
+                layoutOptions                
+            );            
         }
         this.layers = {};
         
-        if(mapId == null && this.layoutManager != null) {
-            mapId = this.layoutManager.getMapId();
-        }        
+        //get the map id
+        var mapId = this.layoutManager.getMapId();
+       
         // Get config for map
         var comps = this.app.components;
-        var config = null;            
+        var config = {};            
         for (var c in comps){
             var component = comps[c];
             if(component.className == "viewer.mapcomponents.FlamingoMap" ||
@@ -91,9 +99,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 break;
             }
         }
+        Ext.apply(config, mapConfig || {});
         if(viewerType == "flamingo") {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
-        } else if(viewerType == "openlayers") {
+        }else if(viewerType == "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
