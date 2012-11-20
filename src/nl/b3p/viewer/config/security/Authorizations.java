@@ -506,7 +506,7 @@ public class Authorizations {
                         
                         Date allServicesAuthLastChanged = (Date)Stripersist.getEntityManager().createQuery("select max(authorizationsModified) from GeoService").getSingleResult();
                         
-                        if(allServicesAuthLastChanged.before(cache.modified)) {
+                        if(allServicesAuthLastChanged != null && allServicesAuthLastChanged.before(cache.modified)) {
                             return cache;
                         }
                     } catch(NoResultException nre) {
