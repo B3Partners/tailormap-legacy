@@ -302,7 +302,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         // Cannot use viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING for property name here
                         "ON_COMPONENTS_FINISHED_LOADING": updateLoginInfo
                     };
-                    viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config, listeners);
+                    var mapConfig={};
+                    if (viewerType=="flamingo"){
+                        mapConfig.swfPath=contextPath+"/flamingo/flamingo.swf";
+                    }
+                    viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config, listeners,mapConfig);
                     if(!MobileManager.isMobile() || MobileManager.isAndroid() || window.onorientationchange === undefined) {
                         // Android devices seem to react better to window.resize than window.orientationchange, probably timing issue
                         Ext.EventManager.onWindowResize(function () {
