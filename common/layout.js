@@ -346,7 +346,7 @@ Ext.define('viewer.LayoutManager', {
                 // Title is used in tabs
                 title: component.name,
                 cls: 'component-view',
-                tpl: '<tpl for="."><div class="viewer-component-block" id="{id}"></div></tpl>',
+                tpl: '<tpl for="."><div class="viewer-component-block" id="{id}" style="width: 100%;height: 100%;margin: 0px;padding: 0px;"></div></tpl>',
                 data: {
                     id: cmpId,
                     cmp_name: component.name
