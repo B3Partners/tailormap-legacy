@@ -719,22 +719,6 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     addListener : function(event,handler,scope){
         viewer.viewercontroller.FlamingoMapComponent.superclass.addListener.call(this,event,handler,scope);
-        //enable flamingo event broadcasting
-        if (this.viewerObject!=undefined && typeof this.viewerObject.callMethod == 'function' && this.eventList!=undefined){
-            var flamEvent=this.eventList[event];
-            if (flamEvent!=undefined){
-                //if not enabled yet, enable
-                if (this.enabledEvents[flamEvent]==undefined){
-                    this.viewerObject.callMethod(this.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
-                    this.enabledEvents[flamEvent]=true;                    
-                }
-            }     
-        }else{
-            var thisObj=this;
-            setTimeout(function(){
-                thisObj.addListener(event,handler,scope);
-            },100);
-        }
     },    
     /**
      * @see viewer.viewercontroller.MapComponent#getWidth
