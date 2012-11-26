@@ -71,14 +71,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <script type="text/javascript">
         function checkProtocol() {
             var protocol = Ext.query("select[name='protocol']")[0].value;
-            Ext.fly('useUrlTr').setVisible(protocol == "wms");
-            Ext.fly('serviceNameTr').setVisible(protocol == "arcims" || protocol == "tiled");
-            Ext.fly('tileSizeTr').setVisible(protocol == "tiled");
-            Ext.fly('resolutionsTr').setVisible(protocol == "tiled");
-            Ext.fly('tilingProtocolTr').setVisible(protocol == "tiled");
-            Ext.fly('serviceBboxTr').setVisible(protocol == "tiled");
-            Ext.fly('extensionTr').setVisible(protocol == "tiled");
-            Ext.fly('crsTr').setVisible(protocol == "tiled");
+            Ext.fly('useUrlTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "wms");
+            Ext.fly('serviceNameTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "arcims" || protocol == "tiled");
+            Ext.fly('tileSizeTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
+            Ext.fly('resolutionsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
+            Ext.fly('tilingProtocolTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
+            Ext.fly('serviceBboxTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
+            Ext.fly('extensionTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
+            Ext.fly('crsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
         }
         Ext.onReady(function() {
             appendPanel('headertext', 'formcontent');
