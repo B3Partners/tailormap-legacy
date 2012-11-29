@@ -18,8 +18,11 @@ package nl.b3p.viewer.stripes;
 
 import java.io.*;
 import java.util.Arrays;
+import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.services.StyleLibrary;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.factory.CommonFactoryFinder;
@@ -28,6 +31,7 @@ import org.geotools.styling.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  * Create a SLD using GeoTools.
@@ -40,6 +44,9 @@ public class SldActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(SldActionBean.class);
     
     private ActionBeanContext context;
+    
+    @Validate
+    private Long id;
 
     @Validate
     private String[] layers;
@@ -51,12 +58,22 @@ public class SldActionBean implements ActionBean {
     private String[] filters;
     
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
+    @Override
     public ActionBeanContext getContext() {
         return context;
     }
     
+    @Override
     public void setContext(ActionBeanContext context) {
         this.context = context;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String[] getFilters() {
@@ -90,6 +107,14 @@ public class SldActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
         String error = null;
 
+        if(id != null) {
+            StyleLibrary sld = Stripersist.getEntityManager().find(StyleLibrary.class, id);
+            if(sld == null || StringUtils.isBlank(sld.getSldBody())) {
+                return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND, "Can't find SLD with id " + id);
+            }
+            return new StreamingResolution("text/xml", sld.getSldBody());
+        }
+        
         try {
             StyleFactory sldFactory = CommonFactoryFinder.getStyleFactory();
 
