@@ -156,4 +156,12 @@
             </basic>
         </attributes>
     </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.StyleLibrary">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
 </entity-mappings>

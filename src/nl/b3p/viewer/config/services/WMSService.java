@@ -76,6 +76,17 @@ public class WMSService extends GeoService implements Updatable {
      * HTTP Basic authentication password to use with pre-emptive authentication.
      */
     public static final String PARAM_PASSWORD = "password";
+    
+    /* Detail key under which "true" is saved in details if in the WMS capabilities 
+     * the <UserDefinedSymbolization> element has a positive SupportSLD attribute.
+     */ 
+    public static final String DETAIL_SUPPORT_SLD = "SupportSLD";
+    
+    /* Detail key under which "true" is saved in details if in the WMS capabilities 
+     * the <UserDefinedSymbolization> element has a positive UserStyle attribute.
+     */ 
+    public static final String DETAIL_USER_STYLE = "UserStyle";
+    
 
     /**
      * Additional persistent property for this subclass, so type must be nullable.

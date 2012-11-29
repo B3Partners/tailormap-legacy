@@ -80,6 +80,11 @@ public abstract class GeoService {
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
    
+    @OneToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="style_library"))
+    @OrderColumn(name="list_index")    
+    private List<StyleLibrary> styleLibraries = new ArrayList();
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
         return id;
@@ -176,6 +181,14 @@ public abstract class GeoService {
     public void setDetails(Map<String, ClobElement> details) {
         this.details = details;
     }
+
+    public List<StyleLibrary> getStyleLibraries() {
+        return styleLibraries;
+    }
+
+    public void setStyleLibraries(List<StyleLibrary> styleLibraries) {
+        this.styleLibraries = styleLibraries;
+    }   
     //</editor-fold>
       
     @PreRemove
@@ -331,6 +344,28 @@ public abstract class GeoService {
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
+        
+        JSONObject jStyleLibraries = new JSONObject();
+        for(StyleLibrary sld: getStyleLibraries()) {
+            JSONObject jsld = new JSONObject();
+            jStyleLibraries.put("sld:" + sld.getId(),jsld);
+            jsld.put("id", sld.getId());
+            jsld.put("title", sld.getTitle());
+            jsld.put("default", sld.isDefaultStyle());
+            if(sld.isDefaultStyle()) {
+                o.put("defaultStyleLibrary", jsld);
+            }
+            if(sld.getExternalUrl() != null) {
+                jsld.put("externalUrl", sld.getExternalUrl());
+            } else {
+                JSONArray namedLayers = new JSONArray();
+                for(String nl: sld.getNamedLayers()) {
+                    namedLayers.put(nl);
+                }
+            }
+            jsld.put("hasBody", sld.getExternalUrl() == null);
+        }
+        o.put("styleLibraries", jStyleLibraries);
         
         if(topLayer != null) {
             

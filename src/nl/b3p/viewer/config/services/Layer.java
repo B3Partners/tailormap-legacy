@@ -20,7 +20,11 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geotools.data.ows.CRSEnvelope;
+import org.geotools.data.ows.StyleImpl;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -32,11 +36,18 @@ import org.stripesstuff.stripersist.Stripersist;
 @Entity
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class Layer implements Cloneable {
+    private static final Log log = LogFactory.getLog(Layer.class);    
+    
     public static final String EXTRA_KEY_METADATA_URL = "metadata.url";
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
     public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
     public static final String EXTRA_KEY_FILTERABLE = "filterable";
     public static final String EXTRA_IMAGE_EXTENSION ="image_extension";
+    
+    /**
+     * JSON representation of wms:Style elements from capabilities for this layer
+     */
+    public static final String DETAIL_WMS_STYLES = "wms.styles";
     
     /**
      * Layer.details map key for comma separated list of layer names of children 
@@ -50,12 +61,14 @@ public class Layer implements Cloneable {
         EXTRA_KEY_DOWNLOAD_URL,
         EXTRA_KEY_FILTERABLE,
         EXTRA_IMAGE_EXTENSION,
-        DETAIL_ALL_CHILDREN
+        DETAIL_ALL_CHILDREN,
+        DETAIL_WMS_STYLES        
     }));  
     
     private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] { 
         EXTRA_KEY_METADATA_URL,
-        DETAIL_ALL_CHILDREN
+        DETAIL_ALL_CHILDREN,
+        DETAIL_WMS_STYLES
     }));        
             
     @Id
@@ -159,6 +172,33 @@ public class Layer implements Cloneable {
         
         if(!l.getMetadataURL().isEmpty()) {
             details.put(EXTRA_KEY_METADATA_URL, new ClobElement(l.getMetadataURL().get(0).getUrl().toString()));
+        }
+        
+        if(!l.getStyles().isEmpty()) {
+            try {
+                JSONArray styles = new JSONArray();
+                for(StyleImpl style: l.getStyles()) {
+                    JSONObject jstyle = new JSONObject();
+                    styles.put(jstyle);
+                    jstyle.put("name", style.getName());
+                    if(style.getTitle() != null) { // is actually required in XSD
+                        jstyle.put("title", style.getTitle().toString());
+                    }
+                    if(style.getAbstract() != null) {
+                        jstyle.put("abstract", style.getAbstract().toString());
+                    }
+                    JSONArray legendUrls = new JSONArray();
+                    jstyle.put("legendURLs", legendUrls);
+                    for(String url: (List<String>)style.getLegendURLs()) {
+                        legendUrls.put(url);
+                    }
+                }
+                if(styles.length() > 0) {
+                    details.put(DETAIL_WMS_STYLES, new ClobElement(styles.toString()));
+                }
+            } catch(JSONException e) {
+                log.error("Error creating styles JSON", e);
+            }
         }
         
         if(l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0) {

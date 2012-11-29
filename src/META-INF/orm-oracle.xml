@@ -150,4 +150,13 @@
             </id>
         </attributes>
     </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.StyleLibrary">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="style_library_id_seq"/>
+                <sequence-generator name="style_library_id_seq" sequence-name="style_library_id_seq"/>
+            </id>
+        </attributes>
+    </entity>    
 </entity-mappings>
