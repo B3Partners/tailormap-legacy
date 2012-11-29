@@ -22,6 +22,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
@@ -160,7 +161,10 @@ public class LayerActionBean implements ActionBean {
     @DefaultHandler
     public Resolution edit() {
         if (layer != null) {
-            details = layer.getDetails();
+            details = new HashMap();
+            for(Map.Entry<String,ClobElement> e: layer.getDetails().entrySet()) {
+                details.put(e.getKey(), e.getValue().getValue());
+            }
 
             groupsRead.addAll(layer.getReaders());
             groupsWrite.addAll(layer.getWriters());
@@ -210,7 +214,9 @@ public class LayerActionBean implements ActionBean {
 
     public Resolution save() {
         layer.getDetails().clear();
-        layer.getDetails().putAll(details);
+        for(Map.Entry<String,String> e: details.entrySet()) {
+            layer.getDetails().put(e.getKey(), new ClobElement(e.getValue()));
+        }
 
         layer.getReaders().clear();
         for (String groupName : groupsRead) {

@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
@@ -299,7 +300,8 @@ public class GeoServiceActionBean implements ActionBean {
                 serviceName = layer.getName();
 
                 if (layer.getDetails().containsKey("image_extension")) {
-                    imageExtension = layer.getDetails().get("image_extension");
+                    ClobElement ce = layer.getDetails().get("image_extension");
+                    imageExtension = ce != null ? ce.getValue() : null;
                 }
 
             }
@@ -338,7 +340,7 @@ public class GeoServiceActionBean implements ActionBean {
                 l.getBoundingBoxes().put(bb.getCrs(), bb);
             }
             if (imageExtension != null) {
-                l.getDetails().put("image_extension", imageExtension);
+                l.getDetails().put("image_extension", new ClobElement(imageExtension));
             }
 
         }
