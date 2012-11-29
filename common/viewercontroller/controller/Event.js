@@ -38,8 +38,10 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         /** @field 
          * Occures when a maptip returns data
          * @param layer the layer where this event occured
-         * @param options a object with options
-         * @param options.data the data as a multi array
+         * @param options a object with options         
+         * @param options.data[i].features the data as a multi array
+         * @param options.data[i].request.appLayer the appLayer
+         * @param options.data[i].request.serviceLayer the service name for the layer 
          * @param options.x the x pixel (screen location)
          * @param options.y the y pixel (screen location)
          * @param options.coord.x the x world coord 
@@ -50,7 +52,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param options.extent.maxx (not always available) the maxx world coord (world location)
          * @param options.extent.maxy (not always available) the maxy world coord (world location)
          * @param options.nr nr of layer that is done
-         * @param options.total total identifies that needs to be done
+         * @param options.total total identifies that needs to be done         
          **/        
         ON_GET_FEATURE_INFO_DATA              : "ON_GET_FEATURE_INFO_DATA",
         /** @field */

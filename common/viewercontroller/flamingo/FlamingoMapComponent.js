@@ -598,10 +598,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 total: component[2]
             };
         }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){           
-            var extent=component[2];
+            var extent=component[3];
             var centerx=(extent.minx+extent.maxx)/2;
             var centery=(extent.miny+extent.maxy)/2;
-            var map= object.map;
+            var map= object;
             var pixel = map.coordinateToPixel(centerx,centery);
             var comp= {
                 coord:{
@@ -613,18 +613,18 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             };
             //comp.data = component[1];
             comp.extent= extent;
-            comp.nr = component[3];
-            comp.total=component[4];
+            comp.nr = component[4];
+            comp.total=component[5];
             //correct the data
             var data=[];
             var i=0;
-            for (var layerName in component[1]){
+            for (var layerName in component[2]){
                 data[i]={
                     request : {
-                        appLayer: object.appLayerId
-                        
+                        appLayer: object.appLayerId,
+                        serviceLayer: layerName
                     },
-                    features: component[1][layerName]
+                    features: component[2][layerName]
                 };
             }       
             comp.data=data;
