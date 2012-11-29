@@ -673,6 +673,33 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if(layer.name == undefined && layer.details && layer.details.all_children) {
                     options.layers = layer.details.all_children;
                 }
+                
+                // styling options
+                var style = "registry_default";
+                if(appLayer.details != undefined && appLayer.details.style != undefined) {
+                    style = appLayer.details.style;
+                }
+
+                var sld = null;
+                if(style == "registry_default") {
+                    if(service.defaultStyleLibrary != undefined) {
+                        sld = service.defaultStyleLibrary;
+                    }
+                } else if(/^sld:/.test(style)) {
+                    var slds = service.styleLibraries != undefined ? service.styleLibraries : {};
+                    sld = slds[style];
+                } else if(/^wms:/.test(style)) {
+                    ogcOptions.styles = style.substring(4);
+                }
+
+                if(sld != null) {
+                    if(sld.hasBody) {
+                        sldUrl = Ext.urlAppend(absoluteURIPrefix + actionBeans["sld"], "id=" + sld.id);
+                    } else {
+                        sldUrl = sld.externalUrl;
+                    }
+                    layerUrl = Ext.urlAppend(layerUrl, "SLD=" + encodeURIComponent(sldUrl));
+                }
 
                 layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
 

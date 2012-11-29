@@ -27,7 +27,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         xml+=this.getTagName();
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.getId()+"\"";
-     
+        
+        if(this.getOption("styles") != null) {
+            xml+=' styles="' + this.getOption("styles") + '"';
+        }
+        
         xml+=" url=\""+this.getOption("url");
         //fix for SLD support in flamingo
         if (this.getOption("SLD_BODY") && this.getOption("url")){
