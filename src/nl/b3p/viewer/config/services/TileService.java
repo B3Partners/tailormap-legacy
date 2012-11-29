@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,7 +108,7 @@ public class TileService extends GeoService {
             }
             
             if (params.containsKey(PARAM_IMAGEEXTENSION)){
-                tilingLayer.getDetails().put("image_extension",(String)params.get(PARAM_IMAGEEXTENSION));
+                tilingLayer.getDetails().put("image_extension", new ClobElement((String)params.get(PARAM_IMAGEEXTENSION)));
             }
             //set tiling layer as child of top layer
             topLayer.getChildren().add(tilingLayer);

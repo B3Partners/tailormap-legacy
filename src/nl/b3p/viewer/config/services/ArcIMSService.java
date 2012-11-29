@@ -25,6 +25,7 @@ import nl.b3p.geotools.data.arcims.ArcIMSServer;
 import nl.b3p.geotools.data.arcims.axl.AxlField;
 import nl.b3p.geotools.data.arcims.axl.AxlFieldInfo;
 import nl.b3p.geotools.data.arcims.axl.AxlLayerInfo;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -156,7 +157,7 @@ public class ArcIMSService extends GeoService implements Updatable {
         l.setQueryable(true);
         l.setName(axl.getId());
         l.setTitle(axl.getName());
-        l.getDetails().put("axl_type", axl.getType());
+        l.getDetails().put("axl_type", new ClobElement(axl.getType()));
         String s = axl.getMinscale();
         if(s != null) {
             try {

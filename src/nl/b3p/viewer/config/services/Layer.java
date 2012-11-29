@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.config.ClobElement;
 import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
 import org.geotools.data.ows.CRSEnvelope;
 import org.json.JSONException;
@@ -122,7 +123,9 @@ public class Layer implements Cloneable {
     private List<Layer> children = new ArrayList<Layer>();
 
     @ElementCollection
-    private Map<String,String> details = new HashMap<String,String>();
+    @JoinTable(joinColumns=@JoinColumn(name="application"))
+    // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
+    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
     public Layer() {
     }
@@ -155,7 +158,7 @@ public class Layer implements Cloneable {
         }
         
         if(!l.getMetadataURL().isEmpty()) {
-            details.put(EXTRA_KEY_METADATA_URL, l.getMetadataURL().get(0).getUrl().toString());
+            details.put(EXTRA_KEY_METADATA_URL, new ClobElement(l.getMetadataURL().get(0).getUrl().toString()));
         }
         
         if(l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0) {
@@ -316,7 +319,7 @@ public class Layer implements Cloneable {
         if(!details.isEmpty()) {
             JSONObject d = new JSONObject();
             o.put("details", d);
-            for(Map.Entry<String,String> e: details.entrySet()) {
+            for(Map.Entry<String,ClobElement> e: details.entrySet()) {
                 if(interestingDetails.contains(e.getKey())) {
                     d.put(e.getKey(), e.getValue());
                 }
@@ -472,11 +475,11 @@ public class Layer implements Cloneable {
         this.keywords = keywords;
     }
 
-    public Map<String, String> getDetails() {
+    public Map<String, ClobElement> getDetails() {
         return details;
     }
 
-    public void setDetails(Map<String, String> details) {
+    public void setDetails(Map<String, ClobElement> details) {
         this.details = details;
     }
 

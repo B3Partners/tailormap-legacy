@@ -229,7 +229,7 @@ public abstract class GeoService {
                     });
                     
                     if(!layerNames.getValue().isEmpty()) {
-                        l.getDetails().put(Layer.DETAIL_ALL_CHILDREN, StringUtils.join(layerNames.getValue(), ","));
+                        l.getDetails().put(Layer.DETAIL_ALL_CHILDREN, new ClobElement(StringUtils.join(layerNames.getValue(), ",")));
                         l.setVirtual(false);
                     }
                 }

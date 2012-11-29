@@ -275,13 +275,13 @@ public class ArcGISService extends GeoService implements Updatable {
             childrenByLayerId.put(l.getName(), childrenIds);
         }
         
-        l.getDetails().put(DETAIL_TYPE, agsl.getString("type"));
-        l.getDetails().put(DETAIL_CURRENT_VERSION, agsl.optString("currentVersion", currentVersion));
-        l.getDetails().put(DETAIL_DESCRIPTION, StringUtils.defaultIfBlank(agsl.getString("description"),null));
-        l.getDetails().put(DETAIL_GEOMETRY_TYPE, agsl.getString("geometryType"));
-        l.getDetails().put(DETAIL_CAPABILITIES, agsl.optString("capabilities"));
-        l.getDetails().put(DETAIL_DEFAULT_VISIBILITY, agsl.optBoolean("defaultVisibility",false) ? "true" : "false");
-        l.getDetails().put(DETAIL_DEFINITION_EXPRESSION, StringUtils.defaultIfBlank(agsl.optString("definitionExpression"), null));
+        l.getDetails().put(DETAIL_TYPE, new ClobElement(agsl.getString("type")));
+        l.getDetails().put(DETAIL_CURRENT_VERSION, new ClobElement(agsl.optString("currentVersion", currentVersion)));
+        l.getDetails().put(DETAIL_DESCRIPTION, new ClobElement(StringUtils.defaultIfBlank(agsl.getString("description"),null)));
+        l.getDetails().put(DETAIL_GEOMETRY_TYPE, new ClobElement(agsl.getString("geometryType")));
+        l.getDetails().put(DETAIL_CAPABILITIES, new ClobElement(agsl.optString("capabilities")));
+        l.getDetails().put(DETAIL_DEFAULT_VISIBILITY, new ClobElement(agsl.optBoolean("defaultVisibility",false) ? "true" : "false"));
+        l.getDetails().put(DETAIL_DEFINITION_EXPRESSION, new ClobElement(StringUtils.defaultIfBlank(agsl.optString("definitionExpression"), null)));
         
         removeEmptyMapValues(l.getDetails());
         
@@ -548,11 +548,13 @@ public class ArcGISService extends GeoService implements Updatable {
         if(cv == null && getTopLayer() != null) {
             // get it from the topLayer, was saved there before GeoService.details
             // was added
-            cv = getTopLayer().getDetails().get(DETAIL_CURRENT_VERSION);
+            ce = getTopLayer().getDetails().get(DETAIL_CURRENT_VERSION);
+            cv = ce != null ? ce.getValue() : null;
             
             // try the first actual layer where may have been saved in version < 4.1
             if(cv == null && !getTopLayer().getChildren().isEmpty()) {
-                cv = getTopLayer().getChildren().get(0).getDetails().get(DETAIL_CURRENT_VERSION);
+                ce = getTopLayer().getChildren().get(0).getDetails().get(DETAIL_CURRENT_VERSION);
+                cv = ce != null ? ce.getValue() : null;
             }
         }
         
