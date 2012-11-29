@@ -123,7 +123,7 @@ public class Layer implements Cloneable {
     private List<Layer> children = new ArrayList<Layer>();
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name="application"))
+    @JoinTable(joinColumns=@JoinColumn(name="layer"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
