@@ -114,6 +114,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td>EditFunctionaliteit - titel:</td>
                             <td><stripes:text name="details['editfunction.title']" maxlength="255" size="30"/></td>
                         </tr>
+                        <c:if test="${!empty actionBean.styles}">
+                            <tr>
+                                <td>Style/SLD:</td>
+                                <td>
+                                    <stripes:select name="details['style']">
+                                        <stripes:options-collection collection="${actionBean.styles}" value="id" label="title"/>
+                                    </stripes:select>
+                                </td>
+                            </tr>                        
+                        </c:if>
                     </table>
                 </div>
                 <div id="edit-tab" class="x-hide-display">

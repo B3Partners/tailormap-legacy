@@ -189,8 +189,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </tr>
         </c:if>
     </table>
-    </p>
-
+    <p><stripes:submit name="addSld" value="Toevoegen"/>
+    
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
@@ -218,12 +218,83 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </script>
             </c:otherwise>
         </c:choose>
-    </div>
+    </div>        
+
 </c:if>
 
 </stripes:form>
 
 </div>
+
+<c:if test="${actionBean.protocol == 'wms'}">
+    <script type="text/javascript">
+        Ext.onReady(function() {
+
+            var panel = Ext.create('Ext.panel.Panel', {
+                width: '100%',
+                renderTo: Ext.getBody(),
+                title: 'Styled layer descriptors',
+                padding: '10 0 0 0',
+                contentEl: Ext.getDom('sldcontent')
+            });
+
+            Ext.EventManager.onWindowResize(function () {
+                panel.doLayout();
+            });                
+            Ext.EventManager.fireResize();            
+        });
+    </script>
+    <div id="sldcontent" class="insidePanel" style="margin: 5px">
+                    
+        <c:choose>
+            <c:when test="${empty actionBean.service.styleLibraries}">
+                Voor deze service zijn geen styled layer descriptors ingesteld.
+            </c:when>
+            <c:otherwise>
+                    
+                <table>
+                    <tr>
+                        <td style="padding: 2px"><b>Naam</b></td>
+                        <td style="padding: 2px"><b>Standaard voor kaartlagen</b></td>
+                        <td style="padding: 2px"><b>Omschrijving</b></td>
+                        <td style="padding: 2px"><b>Actie</b></td>
+                    </tr>
+                    <c:forEach var="sld" items="${actionBean.service.styleLibraries}">
+                        <tr>
+                            <td style="padding: 2px"><c:out value="${sld.title}"/></td>
+                            <td style="padding: 2px"><c:out value="${sld.defaultStyle ? 'Ja' : 'Nee'}"/></td>
+                            <td style="padding: 2px">
+                                <c:if test="${sld.externalUrl != null}">
+                                    Externe SLD op <stripes:link href="${sld.externalUrl}" target="_blank"><c:out value="${sld.externalUrl}"/></stripes:link>
+                                </c:if>
+                                <c:if test="${sld.externalUrl == null}">
+                                    Opgeslagen ${sld.valid ? 'gevalideerde' : 'niet-valide'} SLD met ${fn:length(sld.namedLayers)} NamedLayers
+                                </c:if>
+                            </td>
+                            <td style="padding: 2px">
+                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="editSld">
+                                    <stripes:param name="service" value="${actionBean.service.id}"/>
+                                    <stripes:param name="sld" value="${sld.id}"/>
+                                    Bewerken
+                                </stripes:link>
+                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="deleteSld" onclick="return confirm('Weet u zeker dat u deze SLD wilt verwijderen?')">
+                                    <stripes:param name="service" value="${actionBean.service.id}"/>
+                                    <stripes:param name="sld" value="${sld.id}"/>
+                                    Verwijderen
+                                </stripes:link>
+                                
+                            </td>
+                    </c:forEach>
+                </table>
+            </c:otherwise>
+        </c:choose>
+        <br>
+        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+            <stripes:hidden name="service"/>
+            <stripes:submit name="addSld" value="Toevoegen"/>
+        </stripes:form>            
+    </div>
+</c:if>
 
     </stripes:layout-component>
 </stripes:layout-render>

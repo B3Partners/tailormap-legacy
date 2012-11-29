@@ -56,6 +56,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private Map<String,String> attributeAliases = new HashMap();
     
+    private List<Map> styles = new ArrayList();
+    
     private boolean editable;
     
     @Validate
@@ -82,6 +84,37 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Laag niet gevonden bij originele service - verwijder deze laag uit niveau"));
             return;
         }
+
+        for(StyleLibrary sld: layer.getService().getStyleLibraries()) {
+            Map style = new HashMap();
+            style.put("id", "sld:" + sld.getId());
+            style.put("title", "SLD stijl: " + sld.getTitle() + (sld.isDefaultStyle() ? " (standaard)" : ""));
+            styles.add(style);
+        }
+        if(layer.getDetails().containsKey(Layer.DETAIL_WMS_STYLES)) {
+            JSONArray wmsStyles = new JSONArray(layer.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
+            for(int i = 0; i < wmsStyles.length(); i++) {
+                JSONObject wmsStyle = wmsStyles.getJSONObject(i);
+                Map style = new HashMap();
+                style.put("id", "wms:" + wmsStyle.getString("name"));
+                style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + " (" + wmsStyle.getString("title") + ")");
+                styles.add(style);
+            }
+        }
+        if(!styles.isEmpty()) {
+            List<Map> temp = new ArrayList();
+            Map s = new HashMap();
+            s.put("id", "registry_default");
+            s.put("title", "In gegevensregister als standaard ingestelde SLD");
+            temp.add(s);
+            s = new HashMap();
+            s.put("id", "none");
+            s.put("title", "Geen: standaard stijl van WMS service zelf");
+            temp.add(s);
+            temp.addAll(styles);
+            styles = temp;
+        }
+        
         // Synchronize configured attributes with layer feature type
 
         if(layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
@@ -352,6 +385,14 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setAttributeAliases(Map<String, String> attributeAliases) {
         this.attributeAliases = attributeAliases;
+    }
+    
+    public List<Map> getStyles() {
+        return styles;
+    }
+
+    public void setStyles(List<Map> styles) {
+        this.styles = styles;
     }
     //</editor-fold>
     

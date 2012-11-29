@@ -27,6 +27,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.*;
 import org.json.*;
 import org.stripesstuff.plugin.waitpage.WaitPage;
@@ -43,6 +44,8 @@ public class GeoServiceActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(GeoServiceActionBean.class);
     private static final String JSP = "/WEB-INF/jsp/services/geoservice.jsp";
+    private static final String JSP_EDIT_SLD = "/WEB-INF/jsp/services/editsld.jsp";    
+    
     private ActionBeanContext context;
     @Validate(on = {"add"}, required = true)
     private Category category;
@@ -82,6 +85,18 @@ public class GeoServiceActionBean implements ActionBean {
     private WaitPageStatus status;
     private JSONObject newService;
     private JSONObject updatedService;
+    
+    @Validate
+    @ValidateNestedProperties({
+            @Validate(on="saveSld",field="title", required=true),
+            @Validate(on="saveSld",field="defaultStyle"),
+            @Validate(on="saveSld",field="externalUrl"),
+            @Validate(on="saveSld",field="sldBody")
+    })
+    private StyleLibrary sld;
+    
+    @Validate
+    private String sldType = "external";
     
     private boolean updatable;
 
@@ -252,6 +267,22 @@ public class GeoServiceActionBean implements ActionBean {
 
     public void setUpdatable(boolean updatable) {
         this.updatable = updatable;
+    }
+
+    public StyleLibrary getSld() {
+        return sld;
+    }
+
+    public void setSld(StyleLibrary sld) {
+        this.sld = sld;
+    }
+
+    public String getSldType() {
+        return sldType;
+    }
+
+    public void setSldType(String sldType) {
+        this.sldType = sldType;
     }
     //</editor-fold>
    
@@ -542,6 +573,67 @@ public class GeoServiceActionBean implements ActionBean {
 
         getContext().getMessages().add(new SimpleMessage("Service is ingeladen"));
 
+        return edit();
+    }
+
+    @DontValidate
+    public Resolution addSld() {
+        return new ForwardResolution(JSP_EDIT_SLD);        
+    }
+    
+    @Before(on="editSld")
+    public void setSldType() {
+        if(sld != null) {
+            sldType = sld.getExternalUrl() != null ? "external" : "body";
+        }
+    }
+    
+    public Resolution editSld() {
+        if(sld != null) {
+            return new ForwardResolution(JSP_EDIT_SLD);        
+        } else {
+            return edit();
+        }
+    }
+    
+    public Resolution deleteSld() {
+        if(sld != null) {
+            service.getStyleLibraries().remove(sld);
+            Stripersist.getEntityManager().remove(sld);
+            Stripersist.getEntityManager().getTransaction().commit();
+            getContext().getMessages().add(new SimpleMessage("SLD verwijderd"));
+        }
+        return edit();
+    }
+    
+    @ValidationMethod(on="saveSld")
+    public void validateSld() {
+        if("external".equals(sldType) && StringUtils.isBlank(sld.getExternalUrl())) {
+            getContext().getValidationErrors().add("sld.externalUrl", new LocalizableError("validation.required.valueNotPresent"));
+            sld.setSldBody(null);
+        }
+        if("body".equals(sldType) && StringUtils.isBlank(sld.getSldBody())) {
+            getContext().getValidationErrors().add("sld.sldBody", new LocalizableError("validation.required.valueNotPresent"));
+            sld.setExternalUrl(null);
+        }
+    }
+    
+    public Resolution saveSld() {
+        
+        if(sld.getId() == null) {
+            service.getStyleLibraries().add(sld);
+        }
+        
+        if(sld.isDefaultStyle()) {
+            for(StyleLibrary otherSld: service.getStyleLibraries()) {
+                if(otherSld.getId() != null && !otherSld.getId().equals(sld.getId())) {
+                    otherSld.setDefaultStyle(false);
+                }
+            }
+        }
+        
+        Stripersist.getEntityManager().getTransaction().commit();
+        getContext().getMessages().add(new SimpleMessage("SLD opgeslagen"));
         return edit();
     }
 }
