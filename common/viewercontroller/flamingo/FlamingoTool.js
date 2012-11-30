@@ -49,7 +49,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     setVisible: function (vis){
         this.visible=vis;
         if (this.getFrameworkTool()){
-            this.getFrameworkTool().callMethod(this.getId(),'setVisible',visibility);
+            this.getFrameworkTool().callMethod(this.getId(),'setVisible',vis);
         }
     },
     /**
@@ -118,13 +118,13 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
      * @see viewer.viewercontroller.controller.Tool#activate
      */
     activate: function(){
-        this.frameworkObject.callMethod(this.getId(),"setActive",true);
+        this.getFrameworkTool().callMethod(this.getId(),"setActive",true);
     },
     /**
      * @see viewer.viewercontroller.controller.Tool#deactivate
      */
     deactivate: function(){
-        this.frameworkObject.callMethod(this.getId(),"setActive",true);
+        this.getFrameworkTool().callMethod(this.getId(),"setActive",false);
     },
     /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
@@ -137,7 +137,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
         if (flamEvent!=undefined){
             //if not enabled yet, enable
             if (this.enabledEvents[flamEvent]==undefined){
-                this.frameworkObject.callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                this.getFrameworkTool().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
                 this.enabledEvents[flamEvent]=true;
             }
         }     

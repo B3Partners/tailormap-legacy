@@ -213,7 +213,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             conf.listenTo=this.getMap().getId();
         }
         conf.viewerController = this.viewerController;
-        var tool = null;// new viewer.viewercontroller.flamingo.FlamingoTool(conf);
+        
+        var tool = null;
         
         if(conf.type == viewer.viewercontroller.controller.Tool.MAP_CLICK){           
             tool = Ext.create ("viewer.viewercontroller.flamingo.ToolMapClick",conf);
@@ -227,6 +228,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }else{
             tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
         }
+        tool.frameworkObject = this.viewerObject;
         return tool;
     },
     
