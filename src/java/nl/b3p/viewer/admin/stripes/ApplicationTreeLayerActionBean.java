@@ -239,7 +239,19 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
 
     public Resolution save() throws JSONException {
-        applicationLayer.getDetails().clear();
+        // Only remove details which are editable and re-added layer if not empty,
+        // retain other details possibly used in other parts than this page
+        // See JSP for which keys are edited         
+        applicationLayer.getDetails().keySet().removeAll(Arrays.asList(
+                "transparency",
+                "influenceradius",
+                "summary.title",
+                "summary.image",
+                "summary.description",
+                "summary.link",
+                "editfunction.title",
+                "style"
+        ));     
         applicationLayer.getDetails().putAll(details);
 
         applicationLayer.getReaders().clear();
