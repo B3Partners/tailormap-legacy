@@ -213,9 +213,18 @@ public class LayerActionBean implements ActionBean {
     }
 
     public Resolution save() {
-        layer.getDetails().clear();
+        // Only remove details which are editable and re-added layer if not empty,
+        // retain other details (for example "wms.styles")
+        // See JSP for which keys are edited 
+        layer.getDetails().keySet().removeAll(Arrays.asList(
+                Layer.EXTRA_KEY_METADATA_STYLESHEET_URL,
+                Layer.EXTRA_KEY_DOWNLOAD_URL,
+                Layer.EXTRA_KEY_FILTERABLE
+        ));
         for(Map.Entry<String,String> e: details.entrySet()) {
-            layer.getDetails().put(e.getKey(), new ClobElement(e.getValue()));
+            if(e.getValue() != null) { // Don't insert null value ClobElement 
+                layer.getDetails().put(e.getKey(), new ClobElement(e.getValue()));
+            }
         }
 
         layer.getReaders().clear();
