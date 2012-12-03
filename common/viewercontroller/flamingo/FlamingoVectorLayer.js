@@ -221,6 +221,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoVectorLayer",{
     getVisible: function(){
         return this.visible;
     },
+    setVisible: function(vis){
+        this.visible=vis;
+        this.map.getFrameworkMap().callMethod(this.map.editMapId,"setLayerVisibility",this.getId(),vis);
+    },
     fire : function (event,options){
         this.fireEvent(event,this,options);
     },
