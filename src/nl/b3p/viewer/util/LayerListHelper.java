@@ -23,6 +23,7 @@ import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.services.ArcGISFeatureSource;
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.WMSService;
 
 /**
  *
@@ -42,8 +43,24 @@ public class LayerListHelper {
         //get all the layers of this level
         for (ApplicationLayer appLayer : level.getLayers()) {
             Layer l = appLayer.getService().getLayer(appLayer.getLayerName());
-            if (filterable && !l.isFilterable()
-                    || bufferable && !l.isBufferable() ) {
+            
+            if(filterable) {
+                // The value of l.isFilterable() for WMS layers is not meaningful
+                // at the moment... Always assume a WMS layer is filterable if
+                // the layer has a feature type. There is a checkbox for an admin
+                // to specify manually if a layer supports SLD filtering for GetMap
+                if(l.getService() instanceof WMSService) {
+                    if(l.getFeatureType() == null) {
+                        continue;
+                    }
+                } else {
+                    if(!l.isFilterable()) {
+                        continue;
+                    }
+                }
+            }
+            
+            if(bufferable && !l.isBufferable() ) {
                 continue;
             }
             if(filterable && l.getService() instanceof ArcGISService){
