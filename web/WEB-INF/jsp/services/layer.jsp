@@ -35,19 +35,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                 <table class="formtable">
                     <tr>
-                        <td>Naam: 
+                        <td>Naam van layer bij service:</td>
+                        <td><stripes:text name="layer.name" disabled="true" size="30"/></td>
+                    </tr>
+                    <tr>     
+                        <td>Titel:</td> 
+                        <td><stripes:text name="layer.title" disabled="true" maxlength="255" size="30"/></td>
+                    </tr>
+                    <tr>
+                        <td>Alternatieve titel: 
                         <td><stripes:text name="layer.titleAlias" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>     
-                        <td>Layer:</td> 
-                        <td><stripes:text name="layer.title" disabled="true" maxlength="255" size="30"/></td>
+                        <td>Legenda URL:</td> 
+                        <td><stripes:text name="layer.legendImageUrl" maxlength="255" size="80"/></td>
                     </tr>
                     <tr>     
-                        <td>Legenda:</td> 
-                        <td><stripes:text name="layer.legendImageUrl" maxlength="255" size="30"/></td>
-                    </tr>
-                    <tr>     
-                        <td>Metadata:</td> 
+                        <td>Metadata stylesheet:</td> <%-- XXX wordt in TOC niet zo gebruikt, moet metadata.url zijn? --%>
                         <td><stripes:text name="details['metadata.stylesheet']" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>     
