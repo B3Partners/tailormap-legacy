@@ -698,6 +698,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     } else {
                         sldUrl = sld.externalUrl;
                     }
+                    options.sldUrl = sldUrl;
                     layerUrl = Ext.urlAppend(layerUrl, "SLD=" + encodeURIComponent(sldUrl));
                 }
 
@@ -928,8 +929,50 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 failure(appLayer);
                 return;
             }
-            // Check override by service admin
+            
             var serviceLayer = this.getServiceLayer(appLayer);
+
+            var style = "registry_default";            
+            if(appLayer.details != undefined && appLayer.details.style != undefined) {
+                style = appLayer.details.style;
+            }
+            
+            // check for WMS STYLE
+            if(/^wms:/.test(style)) {
+                // Get the legend URL from the capabilities for this style;
+                // saved in service layer details as JSON string
+                var wmsStyle = style.substring(4);
+                if(serviceLayer.details != undefined && serviceLayer.details['wms.styles']) {
+                    var styles = Ext.JSON.decode(serviceLayer.details['wms.styles']);
+                    
+                    var info = null;
+                    Ext.Array.each(styles, function(theStyle) {
+                        if(theStyle.name == wmsStyle && theStyle.legendURLs && theStyle.legendURLs.length > 0) {
+                            
+                            info = { parts: [] };
+                            Ext.Array.each(theStyle.legendURLs, function(legendURL) {
+                                info.parts.push( { url: legendURL });
+                            });
+                        }
+                    });
+
+                    if(info != null) {
+                        success(appLayer, info);
+                        return;
+                    }
+                }
+            } 
+            var service = this.app.services[appLayer.serviceId];
+            if(/^sld:/.test(style) || ("registry_default" == style && service.defaultStyleLibrary)) {
+                if(l.getLegendGraphic) {
+                    // l.getLegendGraphic() will create GetLegendGraphic URL
+                    // with the SLD parameter the layer was created with
+                    success(appLayer, { parts: [ { url: l.getLegendGraphic() } ] });
+                    return;
+                }
+            }
+            
+            // Check override by service admin
             if(serviceLayer.legendImageUrl) {
                 success(appLayer, { parts: [ {url: serviceLayer.legendImageUrl}] });
                 return;
