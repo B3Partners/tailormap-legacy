@@ -295,7 +295,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             });
         }
         //calc the number of visible tools.
-        var visibleTools=this.getNumberOfVisibleTools();
+        //var visibleTools=this.getNumberOfVisibleTools();
+        var visibleTools=this.tools.length;
         //Set the left if no left or right is set
         if (tool.getLeft()==null && tool.getRight()==null){
             tool.setLeft(visibleTools * this.toolMargin);
