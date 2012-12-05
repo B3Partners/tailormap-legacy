@@ -89,7 +89,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         return this.mapTipControl;
     },
     setQuery : function (filter){
-        if(filter){
+        if(filter && filter.getCQL() != ""){
             var service = this.viewerController.app.services[this.serviceId];
             var layer = service.layers[this.options.name];
             if(layer.details != undefined){
@@ -97,21 +97,19 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
                 if(filterable != undefined && filterable != null ){
                     filterable = Ext.JSON.decode(filterable);
                     if(filterable){
-                        var me = this;
-                        var f = function(sld) { 
-                            me.setOGCParams({
-                                "SLD_BODY" : sld
-                            });
-                            me.reload();
-                        };
-                        var sld = Ext.create("viewer.SLD",{});
-                        sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,console.log);
+                        var url = Ext.create(viewer.SLD).createURL(
+                            this.options["layers"], 
+                            this.getOption("styles") || "default", 
+                            filter.getCQL(),
+                            this.config.sld ? this.config.sld.id : null);
+                        this.setOGCParams({"SLD": url});
+                        this.reload();
                     }
                 }
             }
         }else{
             this.setOGCParams({
-                "SLD_BODY" : null
+                "SLD": this.config.originalSldUrl || null
             });
         }
     },

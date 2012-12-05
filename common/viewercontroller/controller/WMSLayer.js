@@ -50,13 +50,24 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
     },
     
     getLegendGraphic : function () {
-        var url = this.url;
-        var character = url.indexOf("?") == -1 ? "?" : "&";
-        if(url.substring(url.length) != character){
-            url += character;
+        
+        var query = {
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": this.getAppLayerName(),
+            "VERSION": "1.1.1",
+            "FORMAT": "image/png"
+        };
+        
+        if(this.getOption("sld")) {
+            query["SLD"] = this.getOption("SLD");
         }
-        var request = url + "request=GetLegendGraphic&layer="+this.getAppLayerName()+"&version=1.1.1&format=image/png";
-        return request;
+        if(this.getOption("sld_body")) {
+            query["SLD_BODY"] = this.getOption("SLD_BODY");
+        }
+        
+        url = Ext.urlAppend(this.url, Ext.Object.toQueryString(query));
+
+        return url;
     }
 });
 

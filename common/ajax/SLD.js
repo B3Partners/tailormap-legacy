@@ -26,23 +26,24 @@ Ext.define("viewer.SLD", {
         }
     },
     /**
-     * Create a SLD for named layers in the layers parameter. Optionally specify
-     * the named styles and filters. Do not use empty array values in styles and
-     * cqlFilters parameters but use "none" for no style or filter. The styles 
-     * and cqlFilters parameters can be null.
+     * Create a SLD for named layer in the layer parameter. Optionally specify
+     * the named style and filter. The style and cqlFilter parameters can be
+     * null.
+     * 
+     * Use sldId to apply filter to existing StyleLibrary saved in database (may
+     * be external, retrieved server-side).
      * 
      * Examples:
      * var f = function(sld) { alert(sld); };
-     * create( ["mylayer"], null, null, f, f);
-     * create( ["mylayer"], null, ["property = 'value'"], f, f);
-     * create( ["mylayer1", "mylayer2"], ["none", "default"], null, f, f);
-     * create( ["mylayer1", "mylayer2"], null, ["none", "property = 'value'"], f, f);
+     * create("mylayer", null, null, null, f, f);
+     * create("mylayer", null, "property = 'value'", null, f, f);
+     * create("mylayer", "default", null, null, f, f);
      */
-    create: function(layers, styles, cqlFilters, successFunction, failureFunction) {
+    create: function(layer, style, cqlFilter, sldId, successFunction, failureFunction) {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {layers: layers, styles: styles, filters: cqlFilters}, 
+            params: {layer: layer, style: style, filter: cqlFilter, id: sldId, format: 'json'}, 
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
@@ -60,5 +61,15 @@ Ext.define("viewer.SLD", {
                 }
             }
         });
+    },
+    
+    createURL: function(layer, style, cqlFilter, sldId) {
+        return absoluteURIPrefix + Ext.urlAppend(this.config.actionbeanUrl, Ext.Object.toQueryString({
+            layer: layer, 
+            style: style, 
+            filter: cqlFilter, 
+            id: sldId, 
+            format: 'xml'
+        }));
     }
 });

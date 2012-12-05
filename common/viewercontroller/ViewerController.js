@@ -655,7 +655,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         try {
             if(service.protocol =="wms" ){
                 var layerUrl = service.url;
-                options["isBaseLayer"]=false;           
 
                 var ogcOptions={
                     exceptions: "application/vnd.ogc.se_inimage",
@@ -673,12 +672,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if(layer.name == undefined && layer.details && layer.details.all_children) {
                     options.layers = layer.details.all_children;
                 }
+
+                var layerConfig = { };
                 
                 // styling options
                 var style = "registry_default";
                 if(appLayer.details != undefined && appLayer.details.style != undefined) {
                     style = appLayer.details.style;
                 }
+                layerConfig.style = style;
 
                 var sld = null;
                 if(style == "registry_default") {
@@ -690,19 +692,24 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     sld = slds[style];
                 } else if(/^wms:/.test(style)) {
                     ogcOptions.styles = style.substring(4);
+                    layerConfig.wmsStyle = ogcOptions.styles;
                 }
 
                 if(sld != null) {
+                    layerConfig.sld = sld;
+                    var sldUrl;
                     if(sld.hasBody) {
-                        sldUrl = Ext.urlAppend(absoluteURIPrefix + actionBeans["sld"], "id=" + sld.id);
+                        sldUrl = Ext.create(viewer.SLD).createURL(null,null,null,sld.id);
                     } else {
                         sldUrl = sld.externalUrl;
                     }
-                    options.sldUrl = sldUrl;
-                    layerUrl = Ext.urlAppend(layerUrl, "SLD=" + encodeURIComponent(sldUrl));
+                    ogcOptions.sld = sldUrl;
+                    layerConfig.originalSldUrl = sldUrl;
                 }
 
                 layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
+                
+                Ext.apply(layerObj.config, layerConfig);
 
             }else if(service.protocol == "arcims" || service.protocol == "arcgis"){            
                 options.layers= layer.name;
@@ -932,16 +939,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             
             var serviceLayer = this.getServiceLayer(appLayer);
 
-            var style = "registry_default";            
-            if(appLayer.details != undefined && appLayer.details.style != undefined) {
-                style = appLayer.details.style;
-            }
-            
             // check for WMS STYLE
-            if(/^wms:/.test(style)) {
+            if(l.config.wmsStyle) {
                 // Get the legend URL from the capabilities for this style;
                 // saved in service layer details as JSON string
-                var wmsStyle = style.substring(4);
+                var wmsStyle = l.config.wmsStyle;
                 if(serviceLayer.details != undefined && serviceLayer.details['wms.styles']) {
                     var styles = Ext.JSON.decode(serviceLayer.details['wms.styles']);
                     
@@ -962,8 +964,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     }
                 }
             } 
-            var service = this.app.services[appLayer.serviceId];
-            if(/^sld:/.test(style) || ("registry_default" == style && service.defaultStyleLibrary)) {
+            if(l.config.sld) {
                 if(l.getLegendGraphic) {
                     // l.getLegendGraphic() will create GetLegendGraphic URL
                     // with the SLD parameter the layer was created with

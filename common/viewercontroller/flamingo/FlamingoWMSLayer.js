@@ -28,24 +28,19 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         xml+=" xmlns:fmc=\"fmc\"";
         xml+=" id=\""+this.getId()+"\"";
         
-        if(this.getOption("styles") != null) {
-            xml+=' styles="' + this.getOption("styles") + '"';
-        }
+        // the values for these attributes are used in a URL but Flamingo does 
+        // not apply URI encoding
+        // use lowercase attribute names
+        var needsURIEncoding = { 
+            'sld': true 
+        };
         
-        xml+=" url=\""+this.getOption("url");
-        //fix for SLD support in flamingo
-        if (this.getOption("SLD_BODY") && this.getOption("url")){
-            xml+=this.getOption("url").indexOf("?")>=0 ? "&" : "?";
-            xml+="SLD_BODY="+this.getOption("SLD_BODY")+"&";
-        }
-        xml+="\"";
         for (var optKey in this.options){
-            //skip these options.
-            if (optKey.toLowerCase()== "url" ||
-                optKey.toLowerCase()== "sld_body"){}
-            else{
-                xml+=" "+optKey+"=\""+this.options[optKey]+"\"";
+            var value = this.options[optKey];
+            if(needsURIEncoding[optKey.toLowerCase()]) {
+                value = encodeURIComponent(value);
             }
+            xml+=" "+optKey+"=\""+value+"\"";
         }
         xml+=">";
         //add the maptips
@@ -73,7 +68,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
         this.map.getFrameworkMap().callMethod(this.map.id + "_" + this.id, "setMaptipLayers", this.maptips.join(","));
     },
     setQuery : function (filter){
-        if(filter){
+        if(filter && filter.getCQL() != ""){
             var service = this.viewerController.app.services[this.serviceId];
             var layer = service.layers[this.options.name];
             if(layer.details != undefined){
@@ -81,20 +76,24 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
                 if(filterable != undefined && filterable != null ){
                     filterable = Ext.JSON.decode(filterable);
                     if(filterable){
-                        var me = this;
-                        var f = function(sld) { 
-                            var fl = me.getFrameworkLayer();
-                            fl.callMethod(me.map.getId() + "_" + me.getId(),"setAttribute","SLD_BODY",encodeURIComponent(sld));
-                            me.reload();
-                        };
-                        var sld = Ext.create("viewer.SLD",{});
-                        sld.create([this.options["layers"]], ["default"], filter.getCQL(),f,console.log);
+                        var url = Ext.create(viewer.SLD).createURL(
+                            this.options["layers"], 
+                            this.getOption("styles") || "default", 
+                            filter.getCQL(),
+                            this.config.sld ? this.config.sld.id : null
+                        );
+                        this.getFrameworkLayer().callMethod(this.map.getId() + "_" + this.getId(),"setAttribute","sld",encodeURIComponent(url));
+                        this.reload();
                     }
                 }
             }
         }else{
             var fl = this.getFrameworkLayer();
-            fl.callMethod(this.map.getId() + "_" + this.getId(),"removeAttribute","SLD_BODY");
+            if(this.config.originalSldUrl) {
+                fl.callMethod(this.map.getId() + "_" + this.getId(),"setAttribute","sld",encodeURIComponent(this.config.originalSldUrl));
+            } else {
+                fl.callMethod(this.map.getId() + "_" + this.getId(),"removeAttribute","sld");
+            }
             this.reload();
         }
     },
