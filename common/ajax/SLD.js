@@ -28,22 +28,23 @@ Ext.define("viewer.SLD", {
     /**
      * Create a SLD for named layer in the layer parameter. Optionally specify
      * the named style and filter. The style and cqlFilter parameters can be
-     * null.
+     * null. Specify the feature type name when specifying a CQL filter or leave
+     * it null for the same name as the layer.
      * 
      * Use sldId to apply filter to existing StyleLibrary saved in database (may
      * be external, retrieved server-side).
      * 
      * Examples:
      * var f = function(sld) { alert(sld); };
-     * create("mylayer", null, null, null, f, f);
-     * create("mylayer", null, "property = 'value'", null, f, f);
-     * create("mylayer", "default", null, null, f, f);
+     * create("mylayer", null, null, null, null, f, f);
+     * create("mylayer", null, "property = 'value'", "thelayerfeaturetype", null, f, f);
+     * create("mylayer", "default", null, null, null, f, f);
      */
-    create: function(layer, style, cqlFilter, sldId, successFunction, failureFunction) {
+    create: function(layer, style, cqlFilter, featureTypeName, sldId, successFunction, failureFunction) {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {layer: layer, style: style, filter: cqlFilter, id: sldId, format: 'json'}, 
+            params: {layer: layer, style: style, filter: cqlFilter, featureTypeName: featureTypeName, id: sldId, format: 'json'}, 
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
@@ -63,11 +64,12 @@ Ext.define("viewer.SLD", {
         });
     },
     
-    createURL: function(layer, style, cqlFilter, sldId) {
+    createURL: function(layer, style, cqlFilter, featureTypeName, sldId) {
         return absoluteURIPrefix + Ext.urlAppend(this.config.actionbeanUrl, Ext.Object.toQueryString({
             layer: layer, 
             style: style, 
             filter: cqlFilter, 
+            featureTypeName: featureTypeName,
             id: sldId, 
             format: 'xml'
         }));

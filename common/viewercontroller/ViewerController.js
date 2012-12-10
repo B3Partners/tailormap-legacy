@@ -699,7 +699,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     layerConfig.sld = sld;
                     var sldUrl;
                     if(sld.hasBody) {
-                        sldUrl = Ext.create(viewer.SLD).createURL(null,null,null,sld.id);
+                        sldUrl = Ext.create(viewer.SLD).createURL(null,null,null,null,sld.id);
                     } else {
                         sldUrl = sld.externalUrl;
                     }

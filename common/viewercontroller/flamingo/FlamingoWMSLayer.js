@@ -80,6 +80,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
                             this.options["layers"], 
                             this.getOption("styles") || "default", 
                             filter.getCQL(),
+                            layer.hasFeatureType ? layer.featureTypeName : null,
                             this.config.sld ? this.config.sld.id : null
                         );
                         this.getFrameworkLayer().callMethod(this.map.getId() + "_" + this.getId(),"setAttribute","sld",encodeURIComponent(url));

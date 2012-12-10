@@ -101,6 +101,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
                             this.options["layers"], 
                             this.getOption("styles") || "default", 
                             filter.getCQL(),
+                            layer.hasFeatureType ? layer.featureTypeName : null,
                             this.config.sld ? this.config.sld.id : null);
                         this.setOGCParams({"SLD": url});
                         this.reload();
