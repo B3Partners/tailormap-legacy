@@ -268,7 +268,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     Externe SLD op <stripes:link href="${sld.externalUrl}" target="_blank"><c:out value="${sld.externalUrl}"/></stripes:link>
                                 </c:if>
                                 <c:if test="${sld.externalUrl == null}">
-                                    Opgeslagen ${sld.valid ? 'gevalideerde' : 'niet-valide'} SLD met ${fn:length(sld.namedLayers)} NamedLayers
+                                    Opgeslagen SLD
                                 </c:if>
                             </td>
                             <td style="padding: 2px">
