@@ -357,12 +357,7 @@ public abstract class GeoService {
             }
             if(sld.getExternalUrl() != null) {
                 jsld.put("externalUrl", sld.getExternalUrl());
-            } else {
-                JSONArray namedLayers = new JSONArray();
-                for(String nl: sld.getNamedLayers()) {
-                    namedLayers.put(nl);
-                }
-            }
+            } 
             jsld.put("hasBody", sld.getExternalUrl() == null);
         }
         o.put("styleLibraries", jStyleLibraries);

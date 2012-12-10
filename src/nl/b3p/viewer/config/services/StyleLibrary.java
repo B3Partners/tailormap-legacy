@@ -16,11 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -44,18 +41,12 @@ public class StyleLibrary {
     
     private boolean defaultStyle;
     
-    private boolean valid;
-    
     @Column(length=1000)
     private String externalUrl;
     
     @Lob
     @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
     private String sldBody;
-    
-    @ElementCollection
-    @Column(name="layer_name")    
-    private Set<String> namedLayers = new HashSet<String>();
 
     public Long getId() {
         return id;
@@ -96,21 +87,4 @@ public class StyleLibrary {
     public void setSldBody(String sldBody) {
         this.sldBody = sldBody;
     }
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
-
-    public Set<String> getNamedLayers() {
-        return namedLayers;
-    }
-
-    public void setNamedLayers(Set<String> namedLayers) {
-        this.namedLayers = namedLayers;
-    }
-       
 }

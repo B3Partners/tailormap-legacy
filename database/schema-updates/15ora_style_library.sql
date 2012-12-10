@@ -12,20 +12,9 @@
         external_url varchar2(1000 char),
         sld_body clob,
         title varchar2(255 char) not null,
-        valid number(1,0) not null,        
         primary key (id)
     );
 
-    create table style_library_named_layers (
-        style_library number(19,0) not null,
-        layer_name varchar2(255 char)
-    );
-
-    alter table style_library_named_layers 
-        add constraint FK11484BDA13076638 
-        foreign key (style_library) 
-        references style_library;
-        
     alter table geo_service_style_libraries 
         add constraint FK95F1251313076638 
         foreign key (style_library) 
