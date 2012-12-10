@@ -73,7 +73,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div id="body">
         SLD document:<br>
         <stripes:submit name="generateSld" value="Maak SLD opzet"/>
-        <stripes:submit name="validateSld" value="Valideer" onclick="alert('Nog niet beschikbaar'); return false;"/>
+        <stripes:submit name="validateSldXml" value="Valideer XML" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
         <br><br>
         <c:choose>
             <c:when test="${actionBean.context.eventName == 'generateSld'}">

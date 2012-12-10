@@ -16,23 +16,25 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayDeque;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import javax.annotation.security.RolesAllowed;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.ClobElement;
@@ -54,6 +56,7 @@ import nl.b3p.viewer.config.services.Updatable;
 import nl.b3p.viewer.config.services.UpdateResult;
 import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.*;
 import org.json.*;
@@ -61,6 +64,7 @@ import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXParseException;
 
 /**
  *
@@ -770,6 +774,57 @@ public class GeoServiceActionBean implements ActionBean {
         // indent doesn't add newline after XML declaration
         generatedSld = generatedSld.replaceFirst("\"\\?><StyledLayerDescriptor", "\"?>\n<StyledLayerDescriptor");
         return new ForwardResolution(JSP_EDIT_SLD);  
+    }
+    
+    public Resolution validateSldXml() {
+        Resolution jsp = new ForwardResolution(JSP_EDIT_SLD);  
+        Document sldXmlDoc = null;
+        String stage = "Fout bij parsen XML document";
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            
+            sldXmlDoc = db.parse(new ByteArrayInputStream(sld.getSldBody().getBytes("UTF-8")));
+            
+            stage = "Fout bij controleren SLD";
+            
+            Element root = sldXmlDoc.getDocumentElement();
+            if(!"StyledLayerDescriptor".equals(root.getLocalName())) {
+                throw new Exception("Root element moet StyledLayerDescriptor zijn");
+            }
+            String version = root.getAttribute("version");
+            if(version == null || !("1.0.0".equals(version) || "1.1.0".equals(version))) {
+                throw new Exception("Geen of ongeldige SLD versie!");
+            }
+            
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema s = sf.newSchema(new URL("http://schemas.opengis.net/sld/" + version + "/StyledLayerDescriptor.xsd"));
+            s.newValidator().validate(new DOMSource(sldXmlDoc));
+                
+        } catch(Exception e) {
+            String extra = "";
+            if(e instanceof SAXParseException) {
+                SAXParseException spe = (SAXParseException)e;
+                if(spe.getLineNumber() != -1) {
+                    extra = " (regel " + spe.getLineNumber();
+                    if(spe.getColumnNumber() != -1) {
+                        extra += ", kolom " + spe.getColumnNumber();
+                    }
+                    extra += ")";
+                }
+            }
+            getContext().getValidationErrors().addGlobalError(new SimpleError("{2}: {3}{4}",
+                    stage,
+                    ExceptionUtils.getMessage(e),
+                    extra
+            ));
+            return jsp;
+        }
+        
+        getContext().getMessages().add(new SimpleMessage("SLD is valide!"));
+        
+        return jsp;
     }
     
     public Resolution saveSld() {
