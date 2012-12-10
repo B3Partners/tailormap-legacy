@@ -16,22 +16,51 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import javax.annotation.security.RolesAllowed;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Group;
-import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.config.services.ArcGISService;
+import nl.b3p.viewer.config.services.ArcIMSService;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.BoundingBox;
+import nl.b3p.viewer.config.services.Category;
+import nl.b3p.viewer.config.services.CoordinateReferenceSystem;
+import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.StyleLibrary;
+import nl.b3p.viewer.config.services.TileService;
+import nl.b3p.viewer.config.services.TileSet;
+import nl.b3p.viewer.config.services.Updatable;
+import nl.b3p.viewer.config.services.UpdateResult;
+import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.*;
 import org.json.*;
 import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -97,6 +126,8 @@ public class GeoServiceActionBean implements ActionBean {
     
     @Validate
     private String sldType = "external";
+    
+    private String generatedSld;
     
     private boolean updatable;
 
@@ -283,6 +314,14 @@ public class GeoServiceActionBean implements ActionBean {
 
     public void setSldType(String sldType) {
         this.sldType = sldType;
+    }
+
+    public String getGeneratedSld() {
+        return generatedSld;
+    }
+
+    public void setGeneratedSld(String generatedSld) {
+        this.generatedSld = generatedSld;
     }
     //</editor-fold>
    
@@ -616,6 +655,121 @@ public class GeoServiceActionBean implements ActionBean {
             getContext().getValidationErrors().add("sld.sldBody", new LocalizableError("validation.required.valueNotPresent"));
             sld.setExternalUrl(null);
         }
+    }
+    
+    private static final String NS_SLD = "http://www.opengis.net/sld";
+    private static final String NS_OGC = "http://www.opengis.net/ogc";
+    private static final String NS_GML = "http://www.opengis.net/gml";
+    
+    public Resolution generateSld() throws Exception {
+        
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();        
+        Document sldDoc = db.newDocument();
+        
+        Element sldEl = sldDoc.createElementNS(NS_SLD, "StyledLayerDescriptor");
+        sldDoc.appendChild(sldEl);
+        sldEl.setAttributeNS(NS_SLD, "version", "1.0.0");
+        sldEl.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd");
+        sldEl.setAttribute("xmlns:ogc", NS_OGC);
+        sldEl.setAttribute("xmlns:gml", NS_GML);
+        service.loadLayerTree();
+        
+        Queue<Layer> layerStack = new LinkedList();
+        Layer l = service.getTopLayer();
+        while(l != null) {
+            layerStack.addAll(service.getLayerChildrenCache(l));
+            
+            if(l.getName() != null) {
+                Element nlEl = sldDoc.createElementNS(NS_SLD, "NamedLayer");
+                sldEl.appendChild(nlEl);
+                String title = l.getTitleAlias() != null ? l.getTitleAlias() : l.getTitle();
+                if(title != null) {
+                    nlEl.appendChild(sldDoc.createComment(" Layer '" + title + "' "));
+                }
+                Element nEl = sldDoc.createElementNS(NS_SLD, "Name");
+                nEl.setTextContent(l.getName());
+                nlEl.appendChild(nEl);
+                
+                if(l.getFeatureType() != null) {
+                    String protocol = "";
+                    if(l.getFeatureType().getFeatureSource() != null) {
+                        protocol = " (protocol " + l.getFeatureType().getFeatureSource().getProtocol() + ")";
+                    }
+                    
+                    String ftComment = " This layer has a feature type" + protocol + " you can use in a FeatureTypeConstraint element as follows:\n";
+                    ftComment += "            <LayerFeatureConstraints>\n";
+                    ftComment += "                <FeatureTypeConstraint>\n";
+                    ftComment += "                    <FeatureTypeName>" + l.getFeatureType().getTypeName() + "</FeatureTypeName>\n";
+                    ftComment += "                    Add ogc:Filter or Extent element here. ";
+                    if(l.getFeatureType().getAttributes().isEmpty()) {
+                        ftComment += " No feature type attributes are known.\n";
+                    } else {
+                        ftComment += " You can use the following feature type attributes in ogc:PropertyName elements:\n";
+                        for(AttributeDescriptor ad: l.getFeatureType().getAttributes()) {
+                            ftComment += "                    <ogc:PropertyName>" + ad.getName() + "</ogc:PropertyName>";
+                            if(ad.getAlias() != null) {
+                                ftComment += " (" + ad.getAlias() + ")";
+                            }
+                            if(ad.getType() != null) {
+                                ftComment += " (type: " + ad.getType() + ")";
+                            }
+                            ftComment += "\n";
+                        }
+                    }
+                    ftComment += "                </FeatureTypeConstraint>\n";
+                    ftComment += "            </LayerFeatureConstraints>\n";
+                    ftComment += "        ";
+                    nlEl.appendChild(sldDoc.createComment(ftComment));
+                }
+                
+                nlEl.appendChild(sldDoc.createComment(" Add a UserStyle or NamedStyle element here "));
+                String styleComment = " (no server-side named styles are known other than 'default') ";
+                ClobElement styleDetail = l.getDetails().get(Layer.DETAIL_WMS_STYLES);
+                if(styleDetail != null) {
+                    try {
+                        JSONArray styles = new JSONArray(styleDetail.getValue());
+                        
+                        if(styles.length() > 0) {
+                            styleComment = " The following NamedStyles are available according to the capabilities: \n";
+                            
+                            for(int i = 0; i < styles.length(); i++) {
+                                JSONObject jStyle = styles.getJSONObject(i);
+                                
+                                styleComment += "            <NamedStyle><Name>" + jStyle.getString("name") + "</Name></NamedStyle>";
+                                if(jStyle.has("title")) {
+                                    styleComment += " (" + jStyle.getString("title") + ")";
+                                }
+                                styleComment += "\n";
+                            }
+                        }                        
+                        
+                    } catch(JSONException e) {
+                    }
+                    styleComment += "        ";
+                }
+                nlEl.appendChild(sldDoc.createComment(styleComment));
+            }
+            
+            l = layerStack.poll();
+        }
+        
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer t = tf.newTransformer();
+        t.setOutputProperty(OutputKeys.INDENT, "yes");
+        t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        
+        DOMSource source = new DOMSource(sldDoc);
+        ByteArrayOutputStream bos =  new ByteArrayOutputStream();
+        StreamResult result = new StreamResult(bos);
+        t.transform(source, result);
+        generatedSld = new String(bos.toByteArray(), "UTF-8");  
+        
+        // indent doesn't add newline after XML declaration
+        generatedSld = generatedSld.replaceFirst("\"\\?><StyledLayerDescriptor", "\"?>\n<StyledLayerDescriptor");
+        return new ForwardResolution(JSP_EDIT_SLD);  
     }
     
     public Resolution saveSld() {

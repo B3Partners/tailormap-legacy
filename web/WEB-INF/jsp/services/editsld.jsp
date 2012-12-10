@@ -72,10 +72,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </div>
     <div id="body">
         SLD document:<br>
-        <stripes:submit name="generateSld" value="Maak lege SLD" onclick="alert('Nog niet beschikbaar'); return false;"/>
+        <stripes:submit name="generateSld" value="Maak SLD opzet"/>
         <stripes:submit name="validateSld" value="Valideer" onclick="alert('Nog niet beschikbaar'); return false;"/>
         <br><br>
-        <stripes-dynattr:textarea name="sld.sldBody" rows="12" cols="80" wrap="off"/>
+        <c:choose>
+            <c:when test="${actionBean.context.eventName == 'generateSld'}">
+                <textarea name="sld.sldBody" rows="12" cols="80" wrap="off" style="font-family: monospace"><c:out value="${actionBean.generatedSld}"/></textarea>
+            </c:when>
+            <c:otherwise>
+                <stripes-dynattr:textarea name="sld.sldBody" rows="12" cols="80" wrap="off" style="font-family: monospace"/>
+            </c:otherwise>
+        </c:choose>
     </div>
     <div class="submitbuttons">
         <c:choose>
