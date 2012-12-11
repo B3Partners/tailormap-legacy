@@ -18,6 +18,8 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -59,7 +61,10 @@ import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.*;
+import org.geotools.filter.FilterTransformer;
+import org.geotools.filter.text.cql2.CQL;
 import org.json.*;
+import org.opengis.filter.Filter;
 import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 import org.w3c.dom.Document;
@@ -130,6 +135,9 @@ public class GeoServiceActionBean implements ActionBean {
     
     @Validate
     private String sldType = "external";
+    
+    @Validate(on="cqlToFilter")
+    private String cql;
     
     private String generatedSld;
     
@@ -326,6 +334,14 @@ public class GeoServiceActionBean implements ActionBean {
 
     public void setGeneratedSld(String generatedSld) {
         this.generatedSld = generatedSld;
+    }
+
+    public String getCql() {
+        return cql;
+    }
+
+    public void setCql(String cql) {
+        this.cql = cql;
     }
     //</editor-fold>
    
@@ -774,6 +790,37 @@ public class GeoServiceActionBean implements ActionBean {
         // indent doesn't add newline after XML declaration
         generatedSld = generatedSld.replaceFirst("\"\\?><StyledLayerDescriptor", "\"?>\n<StyledLayerDescriptor");
         return new ForwardResolution(JSP_EDIT_SLD);  
+    }
+    
+    @DontValidate
+    public Resolution cqlToFilter() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
+        
+        try {
+            List<Filter> filters = CQL.toFilterList(cql);            
+            
+            FilterTransformer filterTransformer = new FilterTransformer();
+            filterTransformer.setIndentation(4);
+            filterTransformer.setOmitXMLDeclaration(true);
+            filterTransformer.setNamespaceDeclarationEnabled(false);
+            StringWriter sw = new StringWriter();
+            for(Filter filter: filters) {
+                sw.append('\n');
+                filterTransformer.transform(filter, sw);
+            }
+
+            json.put("filter", sw.toString());
+  
+            json.put("success", Boolean.TRUE);
+        } catch(Exception e) {
+            String error = ExceptionUtils.getMessage(e);
+            if(e.getCause() != null) {
+                error += "; cause: " + ExceptionUtils.getMessage(e.getCause());
+            }
+            json.put("error", error);
+        }
+        return new StreamingResolution("application/json", new StringReader(json.toString()));                     
     }
     
     public Resolution validateSldXml() {

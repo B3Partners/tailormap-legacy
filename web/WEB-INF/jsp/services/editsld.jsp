@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
 
-<div id="formcontent" style="height: 420px">
+<div id="formcontent" style="height: 620px">
 <p>
     <stripes:errors/>
     <stripes:messages/>
@@ -70,20 +70,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        URL *: <stripes:text name="sld.externalUrl" maxlength="1000" size="80"/><br>
         Let op: in de externe SLD moeten de lagen uit deze service met <code>&lt;NamedLayer&gt;</code> elementen worden genoemd<br> om effect te hebben.
     </div>
-    <div id="body">
-        SLD document:<br>
-        <stripes:submit name="generateSld" value="Maak SLD opzet"/>
-        <stripes:submit name="validateSldXml" value="Valideer XML" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
-        <br><br>
-        <c:choose>
-            <c:when test="${actionBean.context.eventName == 'generateSld'}">
-                <textarea name="sld.sldBody" rows="12" cols="80" wrap="off" style="font-family: monospace"><c:out value="${actionBean.generatedSld}"/></textarea>
-            </c:when>
-            <c:otherwise>
-                <stripes-dynattr:textarea name="sld.sldBody" rows="12" cols="80" wrap="off" style="font-family: monospace"/>
-            </c:otherwise>
-        </c:choose>
-    </div>
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
@@ -103,6 +89,60 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:param name="service" value="${actionBean.service.id}"/>
         </stripes:url>
         <stripes:button name="cancel" class="extlikebutton" value="Annuleren" onclick="window.location.href='${url}'" />
+    </div>
+    <div id="body">
+        SLD document:<br>
+        <stripes:submit name="generateSld" value="Maak SLD opzet"/>
+        <stripes:submit name="validateSldXml" value="Valideer XML" onclick="return confirm('Let op! Het valideren kan lang duren en heeft internettoegang nodig om de XML schema\\'s op te halen. Wilt u doorgaan?');"/>
+        <stripes:submit name="cqlToFilter" value="CQL naar ogc:Filter XML" onclick="doCqlToFilter(); return false;"/>&nbsp;&nbsp; <a href="http://udig.github.com/docs/user/Constraint%20Query%20Language.html" target="_blank">CQL documentatie</a>
+        <br>
+        <script type="text/javascript">
+            var cql = "";
+            function doCqlToFilter() {
+                var res = prompt('Geef CQL expressie:', cql);
+                if(!res) { 
+                    return;
+                }
+                cql = res;
+                <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="cqlToFilter"/>
+                Ext.Ajax.request({
+                    url: <js:quote value="${url}"/>,
+                    params: {cql: cql}, 
+                    success: function(result) {
+                        var response = Ext.JSON.decode(result.responseText);
+
+                        if(response.success) {
+                            Ext.getDom("filterXml").innerHTML = Ext.String.htmlEncode(response.filter);
+                            Ext.getDom("cqlText").innerHTML = Ext.String.htmlEncode(cql);
+                            Ext.fly('filter').setVisibilityMode(Ext.Element.DISPLAY).setVisible(true);
+                        } else {
+                            alert(response.error);
+                        }
+                    },
+                    failure: function(result) {
+                        alert("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    }
+                });                
+            }
+        </script>
+        <div id="filter" style="display: none">
+            <br>
+            <a href="#" onclick="Ext.fly('filter').setVisibilityMode(Ext.Element.DISPLAY).setVisible(false);">Verberg filter</a>
+            <br>
+            <b>Filter voor expressie: </b><span style="font-family: monospace" id="cqlText"></span>
+            <div id="filterXml" style="font-family: monospace; white-space: pre">
+                
+            </div>
+        </div>
+        <br>
+        <c:choose>
+            <c:when test="${actionBean.context.eventName == 'generateSld'}">
+                <textarea name="sld.sldBody" rows="25" cols="100" wrap="off" style="font-family: monospace"><c:out value="${actionBean.generatedSld}"/></textarea>
+            </c:when>
+            <c:otherwise>
+                <stripes-dynattr:textarea name="sld.sldBody" rows="25" cols="100" wrap="off" style="font-family: monospace"/>
+            </c:otherwise>
+        </c:choose>
     </div>
     
 </stripes:form>
