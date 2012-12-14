@@ -108,6 +108,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
      */
     setUrl: function (url){
         this.url = url;
+        this.mixins.flamingoLayer.reload.call(this);
         /*TODO: need to implement and give it at the framework layer*/
     },
     /**

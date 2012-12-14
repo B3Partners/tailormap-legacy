@@ -77,7 +77,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
      * reloads the framework map
      */
     reload: function(){
-        return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"update");
+        if (this.map.getFrameworkMap()){
+            return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"update");
+        }
     },
     /**
      * Overwrites the addListener function. Add's the event to allowexternalinterface of flamingo
