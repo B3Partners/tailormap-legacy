@@ -104,13 +104,6 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     border: 2px solid red;
 }
 
-.viewer-component-block {
-    width: 100%;
-    height: 100%;
-    margin: 0px;
-    padding: 0px;
-}
-
 .tristatenode .x-tree-checkbox {
     background-position: 0 -39px;
 }
