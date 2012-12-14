@@ -46,7 +46,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         //set some default options.
         this.mapOptions =  {
             projection:new OpenLayers.Projection("EPSG:28992"),
-            maxExtent: new OpenLayers.Bounds(120000,304000,280000,620000),
+            maxExtent: new OpenLayers.Bounds(7700,304000,280000,620000),
             allOverlays: true,
             units :'m',
             resolutions: resolutions,
