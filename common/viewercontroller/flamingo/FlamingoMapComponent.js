@@ -629,6 +629,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                     },
                     features: component[2][layerName]
                 };
+                i++;
             }       
             comp.data=data;
             component = comp;

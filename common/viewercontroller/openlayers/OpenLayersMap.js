@@ -419,6 +419,11 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     coordinateToPixel : function(x,y){
         return this.getFrameworkMap().getPixelFromLonLat(new OpenLayers.LonLat(x,y));
     },
+    
+    pixelToCoordinate : function (x,y){
+        var lonLat = this.getFrameworkMap().getLonLatFromPixel(new OpenLayers.Pixel(x,y));
+        return {x: lonLat.lon,y: lonLat.lat};
+    },
 
     /**
     *see @link Map.getCenter
