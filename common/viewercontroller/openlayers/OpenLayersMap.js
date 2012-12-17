@@ -93,8 +93,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
             var me = this;
             var handler = function(){
                 //me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-                me.zoomToExtent(config.options.startExtent);            
-                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+             /*   me.zoomToExtent(config.options.startExtent);            
+                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);*/
             };
             this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
         }
@@ -146,7 +146,9 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     addLayer : function(layer){        
         this.superclass.addLayer.call(this,layer);   
         //delete layer.getFrameworkLayer().id;
-        this.getFrameworkMap().addLayer(layer.getFrameworkLayer());       
+        var map = this.getFrameworkMap()
+        var l = layer.getFrameworkLayer();
+        map.addLayer(l);
     },
     
     /**
@@ -438,18 +440,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         var size = this.frameworkMap.getSize();
         return size.h;
     },
-    
-    layerFinishedLoading : function (id,data,c,d){
-        this.layersLoading--;    
-        if (this.layersLoading==0){
-            webMapController.handleEvent(webMapController.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE]);
-        }else if (this.layersLoading < 0){
-            this.layersLoading=0;
-        }
-    },
-
-    layerBeginLoading : function (id,data,c,d){
-        this.layersLoading++;
+    updateSize : function(){
+        this.getFrameworkMap().updateSize();
     },
     
     /**

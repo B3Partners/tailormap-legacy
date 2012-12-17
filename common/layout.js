@@ -473,6 +473,7 @@ Ext.define('viewer.LayoutManager', {
     resizeLayout: function() {
         var me = this;
         me.mainLayoutContainer.doLayout();
+        viewerController.mapComponent.getMap().updateSize();
     }
     
 });

@@ -307,6 +307,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
     getHeight : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "getMovieClipHeight");
     },
+    
+    updateSize : function(){
+        // Empty. Is not needed for flamingo, only for OpenLayers. updating the size to the size of the container is automatically done in flash.
+    },
+    
     isUpdating : function(){
         return this.getFrameworkMap().callMethod(this.getId(), "isUpdating");
     },

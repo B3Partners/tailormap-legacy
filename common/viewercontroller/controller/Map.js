@@ -355,5 +355,11 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     getHeight : function(){
         Ext.Error.raise({msg: "Map.getHeight() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Updates the size of the map to the current container.
+     */
+    updateSize : function(){
+        Ext.Error.raise({msg: "Map.updateSize() Not implemented! Must be implemented in sub-class"});
     }
 });
