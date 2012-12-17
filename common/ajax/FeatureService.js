@@ -70,7 +70,7 @@ Ext.define("viewer.AppLayerService", {
     },
     loadAttributes: function(theAppLayer, successFunction, failureFunction) {
         var appLayerId = theAppLayer.id;
-        if(!isNaN(appLayerId)){
+        if(!isNaN(appLayerId) && this.config.actionbeanUrl){
             Ext.Ajax.request({
                 url: this.config.actionbeanUrl,
                 params: {attributes: true, application: this.appId, appLayer: this.appLayer.id},
