@@ -734,6 +734,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
                 options.resolutions = res,
                 options.protocol = service.tilingProtocol;
+                options.title = layer.title;
                 options.viewerController=this;
                 if (layer.details && layer.details["image_extension"]){
                     options.extension = layer.details["image_extension"];
