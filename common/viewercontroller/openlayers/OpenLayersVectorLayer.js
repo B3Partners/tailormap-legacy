@@ -38,6 +38,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var styleMap = new OpenLayers.StyleMap (
         {
             "default" :this.getCurrentStyleHash(),
+            "temporary": this.getCurrentStyleHash(),
             "select":{
                 'strokeColor' : '#FF0000',
                 'strokeWidth': 2,
