@@ -254,6 +254,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if(config.alpha != undefined) {
             config.options.opacity = (config.alpha / 100);
         }
+        if (config.ratio !=undefined){
+            config.options.ratio = config.ratio;
+        }
         var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",config);
         
         if(ogcParams["query_layers"] != null && ogcParams["query_layers"] != ""){
