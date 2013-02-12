@@ -119,10 +119,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.stopDrawing();
     },
 
-    getActiveFeature : function(){
+    getActiveFeature : function(){        
         var olFeature = this.getFrameworkLayer().features[0];
-        var feature = this.fromOpenLayersFeature(olFeature);
-        return feature;
+        if (olFeature){
+            var feature = this.fromOpenLayersFeature(olFeature);
+            return feature;
+        }else{
+            return null;
+        }
     },
 
     getFeature : function(index){
