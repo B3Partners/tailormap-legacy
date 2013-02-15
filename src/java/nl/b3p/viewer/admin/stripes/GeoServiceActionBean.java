@@ -69,6 +69,7 @@ import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -129,7 +130,8 @@ public class GeoServiceActionBean implements ActionBean {
             @Validate(on="saveSld",field="title", required=true),
             @Validate(on="saveSld",field="defaultStyle"),
             @Validate(on="saveSld",field="externalUrl"),
-            @Validate(on="saveSld",field="sldBody")
+            @Validate(on="saveSld",field="sldBody"),
+            @Validate(on="saveSld",field="extraLegendParameters")
     })
     private StyleLibrary sld;
     
@@ -886,6 +888,22 @@ public class GeoServiceActionBean implements ActionBean {
                     otherSld.setDefaultStyle(false);
                 }
             }
+        }
+
+        try {
+            sld.setNamedLayerUserStylesJson(null);
+            InputSource sldBody = null;
+            
+            if(sld.getExternalUrl() == null) {
+                sldBody = new InputSource(new StringReader(sld.getSldBody()));
+            } else {
+                sldBody = new InputSource(new URL(sld.getExternalUrl()).openStream());
+            }
+        
+            sld.setNamedLayerUserStylesJson(StyleLibrary.parseSLDNamedLayerUserStyles(sldBody).toString(4));
+        } catch(Exception e) {
+            log.error("Fout bij bepalen UserStyle namen van NamedLayers", e);
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Kan geen namen van styles per layer bepalen: " + e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
         
         Stripersist.getEntityManager().getTransaction().commit();

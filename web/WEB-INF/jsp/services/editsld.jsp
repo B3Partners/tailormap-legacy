@@ -70,6 +70,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
        URL *: <stripes:text name="sld.externalUrl" maxlength="1000" size="80"/><br>
         Let op: in de externe SLD moeten de lagen uit deze service met <code>&lt;NamedLayer&gt;</code> elementen worden genoemd<br> om effect te hebben.
     </div>
+    <div style="margin: 5px 0px 5px 0px;">
+        Bij het opslaan van de SLD wordt uit de SLD bepaald per layer welke naam de eerste UserStyle
+        heeft. Deze wordt voor ArcGIS Server gebruikt voor WMS requests. Indien een externe SLD is
+        gewijzigd opnieuw op "Opslaan" drukken om deze gegevens te updaten.
+        <p>
+        Voor ArcGIS wilt u mogelijk extra URL parameters voor GetLegendGraphic (bijvoorbeeld WIDTH=200): <stripes:text name="sld.extraLegendParameters" maxlength="255" size="30"/><br/>
+    </div>
     <div class="submitbuttons">
         <c:choose>
             <c:when test="${!edit}">
