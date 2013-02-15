@@ -21,6 +21,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * Belonging to GeoService, the configuration of a style library available for
@@ -47,27 +54,44 @@ public class StyleLibrary {
     @Lob
     @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
     private String sldBody;
+    
+    /**
+     * JSON object with per &lt;NamedLayer&gt; property an array of Strings with
+     * the &lt;Name&gt; values of the &lt;UserStyle&gt; elements in the 
+     * &lt;NamedLayer&gt;. Used to find out the value of the STYLE/STYLES 
+     * parameters for GetMap/GetLegendGraphic requests, required for ArcGIS 
+     * Server.
+     */
+    @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
+    private String namedLayerUserStylesJson;
+    
+    /**
+     * Extra parameters for GetLegendGraphic requests for layers using this SLD.
+     */
+    private String extraLegendParameters;
 
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }
-
+    
     public String getTitle() {
         return title;
     }
-
+    
     public void setTitle(String title) {
         this.title = title;
     }
-
+    
     public boolean isDefaultStyle() {
         return defaultStyle;
     }
-
+    
     public void setDefaultStyle(boolean defaultStyle) {
         this.defaultStyle = defaultStyle;
     }
@@ -75,16 +99,88 @@ public class StyleLibrary {
     public String getExternalUrl() {
         return externalUrl;
     }
-
+    
     public void setExternalUrl(String externalUrl) {
         this.externalUrl = externalUrl;
     }
-
+    
     public String getSldBody() {
         return sldBody;
     }
-
+    
     public void setSldBody(String sldBody) {
         this.sldBody = sldBody;
+    }
+    
+    public String getNamedLayerUserStylesJson() {
+        return namedLayerUserStylesJson;
+    }
+    
+    public void setNamedLayerUserStylesJson(String namedLayerUserStylesJson) {
+        this.namedLayerUserStylesJson = namedLayerUserStylesJson;
+    }
+    
+    public String getExtraLegendParameters() {
+        return extraLegendParameters;
+    }
+    
+    public void setExtraLegendParameters(String extraLegendParameters) {
+        this.extraLegendParameters = extraLegendParameters;
+    }
+    //</editor-fold>
+
+    /** 
+     * Parse SLD XML and create the JSON object as described for the 
+     * namedLayerUserStylesJson property.
+     */
+    public static JSONObject parseSLDNamedLayerUserStyles(InputSource sldBody) throws Exception {
+        JSONObject j = new JSONObject();
+        
+        // parse SLD document
+        
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();   
+        org.w3c.dom.Document sld = db.parse(sldBody);
+
+        // Walk all NamedLayer elements
+        NodeList namedLayers = sld.getDocumentElement().getElementsByTagName("NamedLayer");
+        for(int i = 0; i < namedLayers.getLength(); i++) {
+            Node namedLayer = namedLayers.item(i);
+            // Find the Name child element
+            Node child = namedLayer.getFirstChild();
+            while(child != null && !"Name".equals(child.getLocalName())) {
+                child = child.getNextSibling();
+            }
+            if(child != null) {
+                String layerName = child.getTextContent();
+                JSONArray styles = new JSONArray();
+
+                do {
+                    // Find UserStyle elements which are always following 
+                    // siblings of Name elements
+                    child = child.getNextSibling();
+                    while(child != null && !"UserStyle".equals(child.getLocalName())) {
+                        child = child.getNextSibling();
+                    }
+                    if(child != null) {
+                        // Likewise find the Name child element of the UserStyle
+                        Node child2 = child.getFirstChild();
+                        while(child2 != null && !"Name".equals(child2.getLocalName())) {
+                            child2 = child2.getNextSibling();
+                        }
+                        if(child2 != null) {
+                            styles.put(child2.getTextContent());
+                        }
+                    }
+                } while(child != null);
+                
+                if(styles.length() > 0) {
+                    j.put(layerName, styles);
+                }
+            }
+        }        
+        
+        return j;
     }
 }

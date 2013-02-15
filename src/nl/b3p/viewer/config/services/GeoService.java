@@ -358,6 +358,14 @@ public abstract class GeoService {
             if(sld.getExternalUrl() != null) {
                 jsld.put("externalUrl", sld.getExternalUrl());
             } 
+            JSONObject userStylesPerNamedLayer = new JSONObject();
+            if(sld.getNamedLayerUserStylesJson() != null) {
+                userStylesPerNamedLayer = new JSONObject(sld.getNamedLayerUserStylesJson());
+            }
+            jsld.put("userStylesPerNamedLayer", userStylesPerNamedLayer);
+            if(sld.getExtraLegendParameters() != null) {
+                jsld.put("extraLegendParameters", sld.getExtraLegendParameters());
+            }
             jsld.put("hasBody", sld.getExternalUrl() == null);
         }
         o.put("styleLibraries", jStyleLibraries);
