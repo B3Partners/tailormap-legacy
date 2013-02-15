@@ -64,6 +64,12 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
         if(this.getOption("sld_body")) {
             query["SLD_BODY"] = this.getOption("SLD_BODY");
         }
+        if(this.config.sldLegendStyle) {
+            query["STYLE"] = this.config.sldLegendStyle;
+        }
+        if(this.config.extraLegendParameters) {
+            Ext.Object.merge(query, this.config.extraLegendParameters);
+        }
         
         url = Ext.urlAppend(this.url, Ext.Object.toQueryString(query));
 

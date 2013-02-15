@@ -690,6 +690,24 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 } else if(/^sld:/.test(style)) {
                     var slds = service.styleLibraries != undefined ? service.styleLibraries : {};
                     sld = slds[style];
+                    
+                    // ArcGIS requires the STYLE parameter for GetMap requests
+                    // to name the used UserStyle from the SLD
+                    if(service.url.toLowerCase().indexOf("/arcgis/") != -1) {
+                        if(sld.userStylesPerNamedLayer && sld.userStylesPerNamedLayer[layer.name]) {
+                            ogcOptions.styles = sld.userStylesPerNamedLayer[layer.name][0];
+                            layerConfig.sldLegendStyle = ogcOptions.styles;
+                            //console.log("Detected ArcGIS WMS service #" + service.id + ", for layer " + layer.name + " using SLD #" + sld.id + " setting STYLE parameter to " + ogcOptions.styles);
+                        }
+                    }
+                    
+                    if(sld.extraLegendParameters) {
+                        try {
+                            layerConfig.extraLegendParameters = Ext.Object.fromQueryString(sld.extraLegendParameters);
+                        } catch(e) {
+                            this.logger.error("Invalid extra legend parameters for SLD '" + sld.title + "': " + sld.extraLegendParameters + "; error: " + e);
+                        }
+                    }                    
                 } else if(/^wms:/.test(style)) {
                     ogcOptions.styles = style.substring(4);
                     layerConfig.wmsStyle = ogcOptions.styles;
