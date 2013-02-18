@@ -57,6 +57,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     private Map<String,String> attributeAliases = new HashMap();
     
     private List<Map> styles = new ArrayList();
+    private JSONObject stylesTitleJson = new JSONObject();
     
     private boolean editable;
     
@@ -87,9 +88,31 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
         for(StyleLibrary sld: layer.getService().getStyleLibraries()) {
             Map style = new HashMap();
+            JSONObject styleTitleJson = new JSONObject();
+            
             style.put("id", "sld:" + sld.getId());
             style.put("title", "SLD stijl: " + sld.getTitle() + (sld.isDefaultStyle() ? " (standaard)" : ""));
+            
+            // Find stuff for layerName
+            if(sld.getNamedLayerUserStylesJson() != null) {
+                JSONObject sldNamedLayerJson = new JSONObject(sld.getNamedLayerUserStylesJson());
+                if(sldNamedLayerJson.has(layer.getName())) {
+                    JSONObject namedLayer = sldNamedLayerJson.getJSONObject(layer.getName());
+                    if(namedLayer.has("title")) {
+                        styleTitleJson.put("namedLayerTitle", namedLayer.get("title"));
+                    } 
+                    JSONArray userStyles = namedLayer.getJSONArray("styles");
+                    if(userStyles.length() > 0) {
+                        JSONObject userStyle = userStyles.getJSONObject(0);
+                        if(userStyle.has("title")) {
+                            styleTitleJson.put("styleTitle", userStyle.get("title"));
+                        }
+                    }
+                }
+            }
             styles.add(style);
+            stylesTitleJson.put((String)style.get("id"), styleTitleJson);
+            
         }
         if(layer.getDetails().containsKey(Layer.DETAIL_WMS_STYLES)) {
             JSONArray wmsStyles = new JSONArray(layer.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
@@ -98,7 +121,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 Map style = new HashMap();
                 style.put("id", "wms:" + wmsStyle.getString("name"));
                 style.put("title", "WMS server stijl: " + wmsStyle.getString("name") + " (" + wmsStyle.getString("title") + ")");
+                JSONObject styleTitleJson = new JSONObject();                
+                styleTitleJson.put("styleTitle", wmsStyle.getString("title"));
                 styles.add(style);
+                stylesTitleJson.put((String)style.get("id"), styleTitleJson);
             }
         }
         if(!styles.isEmpty()) {
@@ -243,6 +269,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         // retain other details possibly used in other parts than this page
         // See JSP for which keys are edited         
         applicationLayer.getDetails().keySet().removeAll(Arrays.asList(
+                "titleAlias",
                 "transparency",
                 "influenceradius",
                 "summary.title",
@@ -405,6 +432,14 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     public void setStyles(List<Map> styles) {
         this.styles = styles;
+    }
+
+    public JSONObject getStylesTitleJson() {
+        return stylesTitleJson;
+    }
+
+    public void setStylesTitleJson(JSONObject stylesTitleJson) {
+        this.stylesTitleJson = stylesTitleJson;
     }
     //</editor-fold>
     

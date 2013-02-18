@@ -76,6 +76,61 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <a href="#Instellingen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <table class="formtable">
                         <tr>
+                            <td>Weergavenaam:</td>
+                            <td>
+                                <stripes:text id="titleAlias" name="details['titleAlias']" maxlength="255" size="30"/>
+                                Laat leeg om de naam uit het gegevensregister te gebruiken.
+                            </td>
+                        </tr>                        
+                        <c:choose>
+                            <c:when test="${!empty actionBean.styles}">
+                                <script type="text/javascript">
+                                    
+                                    var stylesTitleJson = ${actionBean.stylesTitleJson};
+                                    
+                                    var namedLayerTitle = "";
+                                    var styleTitle = "";
+                                    
+                                    function updateStyleTitles() {
+                                        var styleId = Ext.get("styleSelect").dom.options[Ext.get("styleSelect").dom.selectedIndex].value
+                                    
+                                        var titles = stylesTitleJson[styleId];
+                                        if(!titles) {
+                                            titles = {};
+                                        }
+                                        namedLayerTitle = titles.namedLayerTitle || "";
+                                        styleTitle = titles.styleTitle || "";
+                                        
+                                        Ext.get("layerTitle").dom.innerHTML = Ext.String.htmlEncode(namedLayerTitle == "" ? "-" : namedLayerTitle);
+                                        Ext.get("styleTitle").dom.innerHTML = Ext.String.htmlEncode(styleTitle == "" ? "-" : styleTitle);
+                                    }
+                                    
+                                    Ext.onReady(updateStyleTitles);
+                                    
+                                    function setTitleAlias(which) {
+                                        Ext.get("titleAlias").dom.value = which == "layer" ? namedLayerTitle : styleTitle;
+                                    }
+                                </script>
+                                <tr>
+                                    <td style="vertical-align: top">Style/SLD:</td>
+                                    <td>
+                                        <stripes:select id="styleSelect" name="details['style']" onchange="updateStyleTitles()">
+                                            <stripes:options-collection collection="${actionBean.styles}" value="id" label="title"/>
+                                        </stripes:select><br>
+                                        Titel van laag uit SLD: <a href="#" onclick="setTitleAlias('layer');" id="layerTitle">-</a><br>
+                                        Titel van stijl uit SLD: <a href="#"  onclick="setTitleAlias('style');" id="styleTitle">-</a><br>
+                                        <i>Klik op een titel om deze in te vullen bij weergavenaam.</i>
+                                    </td>
+                                </tr>                        
+                            </c:when>                        
+                            <c:otherwise>
+                                <tr>
+                                    <td>Style/SLD</td>
+                                    <td>Geen stijlen beschikbaar</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+                        <tr>
                             <td>Transparantie beginwaarde:</td>
                             <td>
                                 <stripes:text name="details['transparency']" maxlength="255" size="10" style="display: none;" id="details_transparency" />
@@ -114,16 +169,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td>EditFunctionaliteit - titel:</td>
                             <td><stripes:text name="details['editfunction.title']" maxlength="255" size="30"/></td>
                         </tr>
-                        <c:if test="${!empty actionBean.styles}">
-                            <tr>
-                                <td>Style/SLD:</td>
-                                <td>
-                                    <stripes:select name="details['style']">
-                                        <stripes:options-collection collection="${actionBean.styles}" value="id" label="title"/>
-                                    </stripes:select>
-                                </td>
-                            </tr>                        
-                        </c:if>
                     </table>
                 </div>
                 <div id="edit-tab" class="x-hide-display">
