@@ -56,11 +56,13 @@ public class StyleLibrary {
     private String sldBody;
     
     /**
-     * JSON object with per &lt;NamedLayer&gt; property an array of Strings with
-     * the &lt;Name&gt; values of the &lt;UserStyle&gt; elements in the 
+     * JSON object with per &lt;NamedLayer&gt; a property with an Object with title 
+     * property and a styles array of Objects with name and title properties 
+     * with the values of the &lt;UserStyle&gt; elements in the 
      * &lt;NamedLayer&gt;. Used to find out the value of the STYLE/STYLES 
      * parameters for GetMap/GetLegendGraphic requests, required for ArcGIS 
-     * Server.
+     * Server. The title property can be used as display name of an 
+     * ApplicationLayer.
      */
     @Lob
     @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
@@ -154,12 +156,29 @@ public class StyleLibrary {
             }
             if(child != null) {
                 String layerName = child.getTextContent();
+                JSONObject layer = new JSONObject();
                 JSONArray styles = new JSONArray();
-
+                layer.put("styles", styles);
+                
+                // Find Description element, SLD 1.1.0 only
+                child = child.getNextSibling();
+                if(child != null && !("Description".equals(child.getLocalName()) || "UserStyle".equals(child.getLocalName()))) {
+                    child = child.getNextSibling();
+                }
+                 
+                if(child != null && "Description".equals(child.getLocalName())) {
+                    Node descNode = child.getFirstChild();
+                    while(descNode != null && !"Title".equals(descNode.getLocalName())) {
+                        descNode = descNode.getNextSibling();
+                    }
+                    if(descNode != null) {
+                        layer.put("title", descNode.getTextContent());
+                    }
+                }
+                
                 do {
                     // Find UserStyle elements which are always following 
                     // siblings of Name elements
-                    child = child.getNextSibling();
                     while(child != null && !"UserStyle".equals(child.getLocalName())) {
                         child = child.getNextSibling();
                     }
@@ -169,15 +188,36 @@ public class StyleLibrary {
                         while(child2 != null && !"Name".equals(child2.getLocalName())) {
                             child2 = child2.getNextSibling();
                         }
+                        JSONObject style = null;
                         if(child2 != null) {
-                            styles.put(child2.getTextContent());
+                            style = new JSONObject();
+                            style.put("name", child2.getTextContent());
+                            styles.put(style);
+                            
+                            // Find Title (SLD 1.0.0) or Title in Description (SLD 1.1.0)
+                            child2 = child2.getNextSibling();
+                            while(child2 != null && !("Description".equals(child2.getLocalName()) || "Title".equals(child2.getLocalName()))) {
+                                child2 = child2.getNextSibling();
+                            }
+                            if(child2 != null) {
+                                if("Title".equals(child2.getLocalName())) {
+                                    style.put("title", child2.getTextContent());
+                                } else {
+                                    Node descNode = child2.getFirstChild();
+                                    while(descNode != null && !"Title".equals(descNode.getLocalName())) {
+                                        descNode = descNode.getNextSibling();
+                                    }
+                                    if(descNode != null) {
+                                        style.put("title", descNode.getTextContent());
+                                    }
+                                }
+                            }
                         }
+                        child = child.getNextSibling();
                     }
                 } while(child != null);
                 
-                if(styles.length() > 0) {
-                    j.put(layerName, styles);
-                }
+                j.put(layerName, layer);
             }
         }        
         
