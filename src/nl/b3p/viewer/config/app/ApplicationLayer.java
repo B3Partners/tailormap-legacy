@@ -52,7 +52,7 @@ public class ApplicationLayer {
      */
     @Basic(optional=false)
     private String layerName;
-
+    
     @ElementCollection
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
@@ -161,16 +161,21 @@ public class ApplicationLayer {
         o.put("layerName", getLayerName());
         if(getService() != null) {
             o.put("serviceId", getService().getId());
-            //try to get the alias.
-            Layer layer=getService().getLayer(this.getLayerName());
-            if (layer!=null){
-                String alias=layer.getName();
-                if (layer.getTitleAlias()!=null){
-                    alias=layer.getTitleAlias();
-                }else if (layer.getTitle()!=null){
-                    alias=layer.getTitle();
+            
+            if(getDetails().containsKey("titleAlias")) {
+                o.put("alias", getDetails().get("titleAlias"));
+            } else {
+                // Get alias from service registry, use layer name if none set
+                Layer layer = getService().getLayer(this.getLayerName());
+                if(layer != null) {
+                    String alias=layer.getName();
+                    if(layer.getTitleAlias() != null) {
+                        alias = layer.getTitleAlias();
+                    } else if(layer.getTitle() != null) {
+                        alias = layer.getTitle();
+                    }
+                    o.put("alias",alias);
                 }
-                o.put("alias",alias);
             }
             
         }
