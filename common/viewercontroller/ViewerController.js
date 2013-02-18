@@ -694,8 +694,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     // ArcGIS requires the STYLE parameter for GetMap requests
                     // to name the used UserStyle from the SLD
                     if(service.url.toLowerCase().indexOf("/arcgis/") != -1) {
-                        if(sld.userStylesPerNamedLayer && sld.userStylesPerNamedLayer[layer.name]) {
-                            ogcOptions.styles = sld.userStylesPerNamedLayer[layer.name][0];
+                        if(sld.userStylesPerNamedLayer && sld.userStylesPerNamedLayer[layer.name] && sld.userStylesPerNamedLayer[layer.name].styles.length > 0) {
+                            ogcOptions.styles = sld.userStylesPerNamedLayer[layer.name].styles[0].name;
                             layerConfig.sldLegendStyle = ogcOptions.styles;
                             //console.log("Detected ArcGIS WMS service #" + service.id + ", for layer " + layer.name + " using SLD #" + sld.id + " setting STYLE parameter to " + ogcOptions.styles);
                         }
