@@ -17,7 +17,6 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.Resolution;
@@ -102,7 +101,7 @@ public class TwitterActionBean implements ActionBean {
             QueryResult result = twitter.search(query);
             JSONArray tweets = new JSONArray();
             for (Tweet tweet : result.getTweets()) {
-                System.out.println(tweet.getFromUser() + ":" + tweet.getText());
+                //System.out.println(tweet.getFromUser() + ":" + tweet.getText());
                 JSONObject t = new JSONObject();
                 t.put("id_str",String.valueOf( tweet.getId()));
                 t.put("text",tweet.getText());
