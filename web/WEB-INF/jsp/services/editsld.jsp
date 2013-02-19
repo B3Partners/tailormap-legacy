@@ -144,10 +144,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <br>
         <c:choose>
             <c:when test="${actionBean.context.eventName == 'generateSld'}">
-                <textarea name="sld.sldBody" rows="25" cols="100" wrap="off" style="font-family: monospace"><c:out value="${actionBean.generatedSld}"/></textarea>
+                <textarea name="sld.sldBody" rows="20" cols="100" wrap="off" style="font-family: monospace"><c:out value="${actionBean.generatedSld}"/></textarea>
             </c:when>
             <c:otherwise>
-                <stripes-dynattr:textarea name="sld.sldBody" rows="25" cols="100" wrap="off" style="font-family: monospace"/>
+                <stripes-dynattr:textarea name="sld.sldBody" rows="20" cols="100" wrap="off" style="font-family: monospace"/>
             </c:otherwise>
         </c:choose>
     </div>
