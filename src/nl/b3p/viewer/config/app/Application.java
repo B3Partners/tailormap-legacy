@@ -395,7 +395,7 @@ public class Application {
     
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request) throws JSONException {
         if(!Authorizations.isLevelReadAuthorized(this, l, request)) {
-            System.out.printf("Level %d %s unauthorized\n", l.getId(), l.getName());
+            //System.out.printf("Level %d %s unauthorized\n", l.getId(), l.getName());
             return;
         }
         JSONObject o = l.toJSONObject(false, this, request);
