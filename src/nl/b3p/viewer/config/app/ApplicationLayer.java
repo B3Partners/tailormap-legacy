@@ -21,7 +21,7 @@ import java.util.*;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import org.apache.commons.beanutils.BeanUtils;
-import org.json.JSONArray;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -152,6 +152,19 @@ public class ApplicationLayer {
         }
         return null;
     }
+    
+    public String getDisplayName() {
+        if(StringUtils.isNotBlank(getDetails().get("titleAlias"))) {
+            return getDetails().get("titleAlias");
+        } else {
+            Layer l = getService() == null ? null : getService().getLayer(getLayerName());
+            if(l != null) {
+                return l.getDisplayName();
+            } else {
+                return getLayerName();
+            }
+        }
+    }
 
     public JSONObject toJSONObject() throws JSONException {
 
@@ -161,24 +174,8 @@ public class ApplicationLayer {
         o.put("layerName", getLayerName());
         if(getService() != null) {
             o.put("serviceId", getService().getId());
-            
-            if(getDetails().containsKey("titleAlias")) {
-                o.put("alias", getDetails().get("titleAlias"));
-            } else {
-                // Get alias from service registry, use layer name if none set
-                Layer layer = getService().getLayer(this.getLayerName());
-                if(layer != null) {
-                    String alias=layer.getName();
-                    if(layer.getTitleAlias() != null) {
-                        alias = layer.getTitleAlias();
-                    } else if(layer.getTitle() != null) {
-                        alias = layer.getTitle();
-                    }
-                    o.put("alias",alias);
-                }
-            }
-            
         }
+        o.put("alias", getDisplayName());
 
         /* TODO add attribute if writeable according to al.getWriters() */
 

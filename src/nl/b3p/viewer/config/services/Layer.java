@@ -20,6 +20,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.ows.CRSEnvelope;
@@ -323,6 +324,16 @@ public class Layer implements Cloneable {
             }
         }
         return visitor.visit(this);
+    }
+    
+    public String getDisplayName() {
+        if(StringUtils.isNotBlank(titleAlias)) {
+            return titleAlias;
+        } else if(StringUtils.isNotBlank("title")) {
+            return title;
+        } else {
+            return name;
+        }
     }
     
     public JSONObject toJSONObject() throws JSONException {
