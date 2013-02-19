@@ -941,6 +941,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getLayerLegendInfo: function(appLayer, success, failure) {
         
         try {
+            
+            // Check override for appLayer by service admin
+            if(appLayer.details.legendImageUrl) {
+                success(appLayer, { parts: [ {url: appLayer.details.legendImageUrl}] });
+                return;
+            }
+            
             var l = this.getLayer(appLayer);
             if(!l) {
                 failure(appLayer);
