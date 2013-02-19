@@ -251,14 +251,14 @@ Ext.onReady(function() {
         });
     }
     var tabconfig = [{
+        contentEl:'settings-tab', 
+        title: 'Instellingen'
+    },{
         contentEl:'rights-tab', 
         title: 'Rechten'
     },{
         contentEl:'attributes-tab', 
         title: 'Attributen'
-    },{
-        contentEl:'settings-tab', 
-        title: 'Instellingen'
     }];
     if(editAllowed && editable) {
         tabconfig.push({
