@@ -295,7 +295,6 @@ Ext.onReady(function() {
         });
     }
 
-    var htmlEditorRendered = false;
     Ext.create('Ext.tab.Panel', {
         renderTo: 'tabs',
         width: '100%',
@@ -304,46 +303,39 @@ Ext.onReady(function() {
             bodyPadding: 10
         },
         layoutOnTabChange: false,
-        items: tabconfig,
+        items: tabconfig
+    });
+    
+    Ext.create('Ext.form.field.HtmlEditor', {
+        id: 'extSettingsHtmlEditor',
+        width: 475,
+        maxWidth: 475,
+        height: 150,
+        maxHeight: 150,
+        value: Ext.get('details_summary_description').dom.value,
+        plugins: [
+            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                submitUrl: actionBeans['imageupload'],
+                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+            })),
+            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+        ],
+        renderTo: 'details_summary_description_container'
+    });
+    Ext.create('Ext.slider.Single', {
+        width: 200,
+        value: Ext.get('details_transparency').dom.value || 0,
+        increment: 1,
+        minValue: 0,
+        maxValue: 100,
+        margin: '0px 2px 0px 0px',
+        renderTo: 'details_transparency_slider',
         listeners: {
-            tabchange: function(panel, activetab, previoustab) {
-                if(activetab.contentEl && activetab.contentEl === 'settings-tab' && !htmlEditorRendered) {
-                    // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
-                    Ext.create('Ext.form.field.HtmlEditor', {
-                        id: 'extSettingsHtmlEditor',
-                        width: 475,
-                        maxWidth: 475,
-                        height: 150,
-                        maxHeight: 150,
-                        value: Ext.get('details_summary_description').dom.value,
-                        plugins: [
-                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
-                                submitUrl: actionBeans['imageupload'],
-                                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
-                            })),
-                            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
-                        ],
-                        renderTo: 'details_summary_description_container'
-                    });
-                    Ext.create('Ext.slider.Single', {
-                        width: 200,
-                        value: Ext.get('details_transparency').dom.value || 0,
-                        increment: 1,
-                        minValue: 0,
-                        maxValue: 100,
-                        margin: '0px 2px 0px 0px',
-                        renderTo: 'details_transparency_slider',
-                        listeners: {
-                            changecomplete: function(slider, val) {
-                                Ext.get('details_transparency').dom.value = val;
-                            }
-                        }
-                    });
-                    htmlEditorRendered = true;
-                }
+            changecomplete: function(slider, val) {
+                Ext.get('details_transparency').dom.value = val;
             }
         }
-    });
+    });    
     
     Ext.get('apptreelayerform').on('submit', function(e) {
         Ext.get('attributesJSON').dom.value = getJson();
