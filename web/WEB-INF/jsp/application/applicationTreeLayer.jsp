@@ -198,8 +198,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     "appTreeLayer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>
                 };
                 
-                // If layer was renamed, rename node in tree
                 <c:if test="${!empty actionBean.displayName}">
+                    // If layer was renamed, rename node in tree
                     var frameParent = getParent();
                     if(frameParent && frameParent.renameNode) {
                         frameParent.renameNode('s${actionBean.applicationLayer.id}', <js:quote value="${actionBean.displayName}"/>);
