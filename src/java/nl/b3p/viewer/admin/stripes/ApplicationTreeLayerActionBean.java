@@ -66,6 +66,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     
     @Validate(on="getUniqueValues")
     private String attribute;
+    
+    private String displayName;
 
     @DefaultHandler
     public Resolution view() {
@@ -75,13 +77,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     @Before
     public void synchronizeFeatureTypeAndLoadInfo() throws JSONException {
 
-        Layer layer = null;
-        try {
-            layer = (Layer) Stripersist.getEntityManager().createQuery("from Layer "
-                    + "where service = :service "
-                    + "and name = :name").setParameter("service", applicationLayer.getService()).setParameter("name", applicationLayer.getLayerName()).getSingleResult();
-
-        } catch (NoResultException nre) {
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        if(layer == null) {
             getContext().getValidationErrors().addGlobalError(new SimpleError("Laag niet gevonden bij originele service - verwijder deze laag uit niveau"));
             return;
         }
@@ -237,24 +234,19 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     
     public Resolution getUniqueValues() throws JSONException {
         JSONObject json = new JSONObject();
-
         json.put("success", Boolean.FALSE);
 
         try {
-            Layer layer = (Layer) Stripersist.getEntityManager().createQuery("from Layer "
-                    + "where service = :service "
-                    + "and name = :name").setParameter("service", applicationLayer.getService()).setParameter("name", applicationLayer.getLayerName()).getSingleResult();
-
-            if (layer.getFeatureType() != null) {
+            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+            if(layer != null && layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
                 List<String> beh = sft.calculateUniqueValues(attribute);
                 json.put("uniqueValues", new JSONArray(beh));
                 json.put("success", Boolean.TRUE);
             }
-        } catch (Exception e) {
-            json.put("msg",e.toString());
+        } catch(Exception e) {
+            json.put("msg", e.toString());
         }
-
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
@@ -339,6 +331,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
         Stripersist.getEntityManager().persist(applicationLayer);
         application.authorizationsModified();
+
+        displayName = applicationLayer.getDisplayName();
+        
         Stripersist.getEntityManager().getTransaction().commit();
 
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
@@ -441,6 +436,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setStylesTitleJson(JSONObject stylesTitleJson) {
         this.stylesTitleJson = stylesTitleJson;
     }
-    //</editor-fold>
     
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+    //</editor-fold>    
 }

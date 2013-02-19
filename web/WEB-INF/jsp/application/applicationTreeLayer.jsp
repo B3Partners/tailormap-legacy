@@ -197,6 +197,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
                     "appTreeLayer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>
                 };
+                
+                // If layer was renamed, rename node in tree
+                <c:if test="${!empty actionBean.displayName}">
+                    var frameParent = getParent();
+                    if(frameParent && frameParent.renameNode) {
+                        frameParent.renameNode('s${actionBean.applicationLayer.id}', <js:quote value="${actionBean.displayName}"/>);
+                    }
+                </c:if>
+                
             </script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
