@@ -262,6 +262,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         // See JSP for which keys are edited         
         applicationLayer.getDetails().keySet().removeAll(Arrays.asList(
                 "titleAlias",
+                "legendImageUrl",
                 "transparency",
                 "influenceradius",
                 "summary.title",

@@ -131,6 +131,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </c:otherwise>
                         </c:choose>
                         <tr>
+                            <td style="vertical-align: top">Alternatieve legenda afbeelding:</td>
+                            <td>
+                                <stripes:text name="details['legendImageUrl']" maxlength="255" size="80"/><br>
+                                Laat leeg om de standaardafbeelding uit het gegevensregister of de afbeelding
+                                zoals deze door de service wordt gegenereerd te gebruiken.
+                            </td>
+                        </tr>                                
+                        <tr>
                             <td>Transparantie beginwaarde:</td>
                             <td>
                                 <stripes:text name="details['transparency']" maxlength="255" size="10" style="display: none;" id="details_transparency" />
