@@ -96,71 +96,50 @@ public class UniqueValuesActionBean implements ActionBean {
     @DefaultHandler
     public Resolution getUniqueValues() throws JSONException {
         JSONObject json = new JSONObject();
-
         json.put("success", Boolean.FALSE);
-        String msg = "";
 
         try {
-            Layer layer = (Layer) Stripersist.getEntityManager().createQuery("from Layer "
-                    + "where service = :service "
-                    + "and name = :name").setParameter("service", applicationLayer.getService()).setParameter("name", applicationLayer.getLayerName()).getSingleResult();
-
-            if (layer.getFeatureType() != null) {
+            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+            if(layer != null && layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
                 JSONObject uniqueValues = new JSONObject();
                 for (int i = 0; i < attributes.length; i++) {
                     String attribute = attributes[i];
-                    try {
-                        List<String> beh = sft.calculateUniqueValues(attribute);
+                    List<String> beh = sft.calculateUniqueValues(attribute);
 
-                        uniqueValues.put(attribute, new JSONArray(beh));
-                        json.put("success", Boolean.TRUE);
-                    } catch (Exception ex) {
-                        msg += "Unieke waardes ophalen mislukt voor attribuut " + attribute + ". Reden: " + ex.toString() + "<br/>";
-                        json.put("msg", msg);
-                    }
+                    uniqueValues.put(attribute, new JSONArray(beh));
+                    json.put("success", Boolean.TRUE);
                 }
                 json.put("uniqueValues", uniqueValues);
             }
         } catch (Exception e) {
-            msg = "Unieke waardes ophalen mislukt voor laag " + applicationLayer.getLayerName() + ". Reden: " + e.toString();
-            json.put("msg", msg);
-            json.put("success", Boolean.FALSE);
+            log.error("getUniqueValues() failed", e);
+            json.put("msg", "Unieke waardes ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
         }
-
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
     public Resolution getMinMaxValue() throws JSONException {
         JSONObject json = new JSONObject();
-
         json.put("success", Boolean.FALSE);
-        String msg = "";
 
         try {
-            Layer layer = (Layer) Stripersist.getEntityManager().createQuery("from Layer "
-                    + "where service = :service "
-                    + "and name = :name").setParameter("service", applicationLayer.getService()).setParameter("name", applicationLayer.getLayerName()).getSingleResult();
-
-            if (layer.getFeatureType() != null) {
+            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+            if(layer != null && layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
-                try {
-                    Object value = null;
-                    if(operator.equals("#MAX#")){
-                        value = sft.getMaxValue(attribute);
-                    }else{
-                        value = sft.getMinValue(attribute);
-                    }
-
-                    json.put("value", value.toString());
-                    json.put("success", Boolean.TRUE);
-                } catch (Exception ex) {
-                    log.error("Minmax failed",ex);
-                    msg = "Unieke waardes ophalen mislukt voor attribuut " + attribute + ". Reden: " + ex.toString() + "<br/>";
-                    json.put("msg", msg);
+                Object value;
+                if(operator.equals("#MAX#")) {
+                    value = sft.getMaxValue(attribute);
+                } else {
+                    value = sft.getMinValue(attribute);
                 }
+
+                json.put("value", value.toString());
+                json.put("success", Boolean.TRUE);
             }
         } catch (Exception e) {
+            log.error("getMinMaxValue() failed", e);
+            json.put("msg", "Minmax waardes bepalen mislukt voor attribuut " + attribute + ": " + e.toString());
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }

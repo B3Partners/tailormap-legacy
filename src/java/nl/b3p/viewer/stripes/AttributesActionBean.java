@@ -202,16 +202,7 @@ public class AttributesActionBean implements ActionBean {
     
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
-
-        try {
-            layer = (Layer)Stripersist.getEntityManager().createQuery("from Layer where service = :service and name = :n order by virtual desc")
-                    .setParameter("service", appLayer.getService())
-                    .setParameter("n", appLayer.getLayerName())
-                    .setMaxResults(1)
-                    .getSingleResult();
-            
-        } catch(NoResultException nre) {
-        }
+        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
     }
     
     @Before(stages=LifecycleStage.EventHandling)
