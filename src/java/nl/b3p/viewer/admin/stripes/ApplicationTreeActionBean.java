@@ -142,20 +142,8 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                     j.put("type", "layer");
                     j.put("isLeaf", true);
                     j.put("parentid", nodeId);
-                    j.put("name", layer.getLayerName());
+                    j.put("name", layer.getDisplayName());
                     children.put(j);
-
-                    try {
-                        Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
-                                .setParameter("service", layer.getService()).setParameter("name", layer.getLayerName())
-                                .getSingleResult();
-                        if(realLayer.getTitleAlias() != null) {
-                            j.put("name", realLayer.getTitleAlias());
-                        } else if(realLayer.getTitle() != null){
-                            j.put("name", realLayer.getTitle());
-                        }
-                    } catch(NoResultException nre) {
-                    }
                 }
             } 
         }
@@ -182,24 +170,11 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
                 j.put("id", "al" + appl.getId());
                 j.put("type", "layer");
                 j.put("isLeaf", true);
-                j.put("name", appl.getLayerName());
+                j.put("name", appl.getDisplayName());
                 children.put(j);
 
-                try {
-                    Layer realLayer = (Layer)em.createQuery("from Layer where service = :service and name = :name")
-                            .setParameter("service", appl.getService()).setParameter("name", appl.getLayerName())
-                            .getSingleResult();
-                    j.put("status", "ok");
-                    
-                    if(realLayer.getTitleAlias() != null){
-                        j.put("name", realLayer.getTitleAlias());
-                    }else if(realLayer.getTitle() != null){
-                        j.put("name", realLayer.getTitle());
-                    }
-                } catch(NoResultException nre) {
-                    j.put("status", "error");
-                }
-
+                Layer serviceLayer = appl.getService().getLayer(appl.getLayerName());
+                j.put("status", serviceLayer != null && appl.getService().isMonitoringStatusOK() ? "ok" : "error");
             }
         }
         
