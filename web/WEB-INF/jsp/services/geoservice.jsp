@@ -189,7 +189,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </tr>
         </c:if>
     </table>
-    <p><stripes:submit name="addSld" value="Toevoegen"/>
     
     <div class="submitbuttons">
         <c:choose>
