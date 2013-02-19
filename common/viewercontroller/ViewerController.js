@@ -903,15 +903,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }            
         return true;        
     },
-    // XXX this is already done server-side setting appLayer.alias
-    getLayerTitle : function (serviceId, layerName){
-        var layer = this.app.services[serviceId].layers[layerName];
-        if(layer.titleAlias != undefined){
-            return layer.titleAlias;
-        }else{
-            return layer.title;
-        }
-    },
     /**
      * Get the Layer Legend image. Superseded by getLayerLegendInfo()
      * @param appLayer the applayer

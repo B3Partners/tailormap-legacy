@@ -207,7 +207,7 @@ Ext.define ("viewer.components.TOC",{
         var appLayerObj = this.appLayers[layerId];
         var service = this.services[appLayerObj.serviceId];
         var serviceLayer = service.layers[appLayerObj.layerName];
-        var layerTitle = this.viewerController.getLayerTitle(service.id, appLayerObj.layerName);
+        var layerTitle = appLayerObj.alias;
         var treeNodeLayer = {
             text: layerTitle,
             id: "layer-"+appLayerObj.id,

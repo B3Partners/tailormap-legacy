@@ -108,9 +108,6 @@ Ext.define ("viewer.components.Print",{
         if (appLayer==undefined || appLayer==null){
             return;
         }
-        var serviceId = layer.serviceId;
-        var layerName = layer.getAppLayerName();// TODO: not yet correct
-        var layerTitle = this.viewerController.getLayerTitle(serviceId,layerName);
         //make the var ready, so we now it's loading.
         this.legends[appLayer.id]={};
         var me = this;
@@ -516,7 +513,7 @@ Ext.define ("viewer.components.Print",{
             });
             for (var key in this.legends){
                 var appLayer =this.viewerController.getAppLayerById(key);
-                var title = this.viewerController.getLayerTitle(appLayer.serviceId,appLayer.layerName);
+                var title = appLayer.alias;
                 checkboxes.push({
                     xtype: "checkbox",
                     boxLabel: title,

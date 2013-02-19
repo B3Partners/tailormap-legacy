@@ -910,7 +910,7 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         var appLayerObj = me.appLayers[layerId];
         var service = me.services[appLayerObj.serviceId];
-        var layerTitle = me.viewerController.getLayerTitle(service.id, appLayerObj.layerName);
+        var layerTitle = appLayerObj.alias;
         var treeNodeLayer = me.createNode('l' + appLayerObj.id, layerTitle, service.id, true);
         treeNodeLayer.origData.layerName = appLayerObj.layerName;
         treeNodeLayer.type = 'appLayer';
