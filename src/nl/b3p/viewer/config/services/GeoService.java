@@ -435,6 +435,25 @@ public abstract class GeoService {
     public JSONObject toJSONObject(boolean includeLayerTree) throws JSONException {
         return toJSONObject(includeLayerTree, null);
     }
+    
+    /**
+     * Gets a single layer without loading all layers. If multiple layers exist
+     * with the same name, a random non-virtual layer is returned.
+     */
+    public Layer getSingleLayer(final String layerName) {
+        try {
+            return (Layer)Stripersist.getEntityManager().createQuery(
+                      "from Layer where service = :service "
+                    + "and name = :n order by virtual desc")
+                    .setParameter("service", this)
+                    .setParameter("n", layerName)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+        } catch (NoResultException nre) {
+            return null;
+        }        
+    }
 
     /**
      * Returns the layer with the given name in this server. The first layer in
