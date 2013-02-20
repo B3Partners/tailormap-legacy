@@ -871,7 +871,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         //fix for Esri Configurations. Sometimes users switch max with min. Make 
         //the min the minimal scale and max the maximal scale
-        if (minScale!=undefined && maxScale!=undefined && minScale > maxScale){
+        if (minScale!=undefined && maxScale!=undefined && maxScale != 0 && minScale > maxScale){
             minScale=serviceLayer.maxScale;
             maxScale=serviceLayer.minScale;
         }
