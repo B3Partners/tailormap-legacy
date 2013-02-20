@@ -892,8 +892,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var service=this.app.services[appLayer.serviceId];
         if (service && service.protocol == "arcgis"){            
             //scale * (dpi / ratio dpi to dpm)
-            //scale = scale * (96/0.0254);
-            return true;
+            scale = scale * (96/0.0254);
         }        
         if (minScale && scale < minScale){
             return false;            
