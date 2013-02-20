@@ -40,7 +40,9 @@ public class RemoveEmptyMapValuesUtil {
     public static void removeEmptyMapValues(Map map) {
         List keysToRemove = new ArrayList();
         for(Map.Entry entry: (Set<Map.Entry>)map.entrySet()) {
-            if(entry.getValue() == null || (entry.getValue() instanceof String && StringUtils.isEmpty((String)entry.getValue()))) {
+            if(entry.getValue() == null 
+                || (entry.getValue() instanceof String && StringUtils.isEmpty((String)entry.getValue()))
+                || (entry.getValue() instanceof ClobElement && StringUtils.isEmpty(((ClobElement)entry.getValue()).getValue()))) {
                 keysToRemove.add(entry.getKey());
             }
         }

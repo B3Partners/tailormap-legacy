@@ -82,7 +82,8 @@ public class ArcGISService extends GeoService implements Updatable {
         DETAIL_GEOMETRY_TYPE,
         DETAIL_CAPABILITIES,
         DETAIL_DEFAULT_VISIBILITY,
-        DETAIL_DEFINITION_EXPRESSION
+        DETAIL_DEFINITION_EXPRESSION,
+        DETAIL_CURRENT_VERSION
     }));        
              
     private static JSONObject issueRequest(String url, HTTPClient client) throws Exception {
@@ -364,7 +365,7 @@ public class ArcGISService extends GeoService implements Updatable {
         l.setQueryable(hasFields);
         l.setFilterable(hasFields);
         
-        l.setVirtual(!NON_VIRTUAL_LAYER_TYPES.contains(l.getDetails().get(DETAIL_TYPE)));
+        l.setVirtual(!NON_VIRTUAL_LAYER_TYPES.contains(l.getDetails().get(DETAIL_TYPE).getValue()));
         
         return l;
     }
