@@ -125,7 +125,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </c:when>                        
                             <c:otherwise>
                                 <tr>
-                                    <td>Style/SLD</td>
+                                    <td>Style/SLD:</td>
                                     <td>Geen stijlen beschikbaar</td>
                                 </tr>
                             </c:otherwise>
