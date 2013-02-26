@@ -28,6 +28,7 @@ Ext.define ("viewer.components.TOC",{
     levels : null,
     backgroundLayers: null,
     popup:null,
+    qtips:null,
     config: {
         groupCheck:true,
         layersChecked:true,
@@ -67,6 +68,7 @@ Ext.define ("viewer.components.TOC",{
         this.levels = this.viewerController.app.levels;
         this.services = this.viewerController.app.services;
         Ext.QuickTips.init();
+        this.qtips = new Array();
         var store = Ext.create('Ext.data.TreeStore', {
             root: {
                 text: 'Root',
@@ -125,6 +127,8 @@ Ext.define ("viewer.components.TOC",{
         var map = this.viewerController.mapComponent.getMap();
         var scale = map.getResolution();
         this.checkScaleLayer(this.panel.getRootNode(),scale);
+        
+        this.registerQtips();
         // Apply the scroll fix when all layers are added
         this.applyTreeScrollFix();
     },
@@ -135,9 +139,10 @@ Ext.define ("viewer.components.TOC",{
         if(level.background && !this.showBaselayers){
             return null;
         }
+        var levelId = "level-"+level.id;
         var treeNodeLayer = {
-            text: level.name, 
-            id: "level-"+level.id,
+            text: '<span id="span_'+levelId+'">'+level.name+'</span>', 
+            id: levelId,
             expanded: !level.background,
             expandable: !level.background,
             collapsible: !level.background,
@@ -151,7 +156,7 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.checked=  false;
         }
         if(level.info != undefined){
-            treeNodeLayer.qtip= "Informatie over de kaart";
+            this.addQtip("Informatie over de kaart", 'span_'+levelId);
             treeNodeLayer.layerObj.info = level.info;
         }
         
@@ -208,9 +213,10 @@ Ext.define ("viewer.components.TOC",{
         var service = this.services[appLayerObj.serviceId];
         var serviceLayer = service.layers[appLayerObj.layerName];
         var layerTitle = appLayerObj.alias;
+        var layerId = "layer-"+appLayerObj.id;
         var treeNodeLayer = {
-            text: layerTitle,
-            id: "layer-"+appLayerObj.id,
+            text: '<span id="span_'+ layerId+'">'+layerTitle +'</span>',
+            id: layerId,
             expanded: true,
             leaf: true,
             background: appLayerObj.background,
@@ -222,12 +228,12 @@ Ext.define ("viewer.components.TOC",{
         };
         if(serviceLayer.details != undefined){
             if(serviceLayer.details ["metadata.stylesheet"] != undefined){
-                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
+                this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
                 treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
             }
             
             if(serviceLayer.details ["download.url"] != undefined){
-                treeNodeLayer.qtip= "Metadata voor de kaartlaag";
+                this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
             
@@ -287,6 +293,21 @@ Ext.define ("viewer.components.TOC",{
             nodes.push(background);
         }
     },
+    addQtip : function(text, target){
+        var qtip = new Object();
+        qtip.text = text;
+        qtip.target = target;
+        this.qtips.push(qtip);
+    },
+    registerQtips : function (){
+        for (var i = 0; i < this.qtips.length; i++) {
+            var qtip = this.qtips[i];
+            Ext.tip.QuickTipManager.register({
+                target: qtip.target,
+                text: qtip.text
+            });
+        }
+    },
     // Fix for not expanding backgroundlayers: not expandable nodes don't have expand button, but doubleclick does expand
     beforeExpand : function (node){
         if(node.data.background){
@@ -298,7 +319,7 @@ Ext.define ("viewer.components.TOC",{
     insertLayer : function (config){
         var root = this.panel.getRootNode();
         root.appendChild(config);
-        root.expand()
+        root.expand();
     },
     getAppLayerId : function (name){
         // Not the correct way to get the applayerID TODO: Fix it
@@ -458,7 +479,7 @@ Ext.define ("viewer.components.TOC",{
     // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
         if(e.target.nodeName.toUpperCase() === "INPUT"){
-            return
+            return;
         }
         var node = record.raw;
         if(node ===undefined){
@@ -494,7 +515,7 @@ Ext.define ("viewer.components.TOC",{
                     renderTo : this.popup.getContentId(),
                     frame: false,
                     html: html
-                }
+                };
                 Ext.create ("Ext.panel.Panel",panelConfig);
                 this.popup.show();
             }
@@ -516,7 +537,7 @@ Ext.define ("viewer.components.TOC",{
                 var panelConfig={
                     renderTo : this.popup.getContentId(),
                     html: node.layerObj.info
-                }
+                };
                 var panel = Ext.create ("Ext.panel.Panel",panelConfig);
                 this.popup.show();
             }
