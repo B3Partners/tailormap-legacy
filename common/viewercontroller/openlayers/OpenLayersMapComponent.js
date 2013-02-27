@@ -229,7 +229,11 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         
         // Map
         var mapEl = Ext.get(this.domId);
-        mapEl.setHeight((totalHeight - topMenu.getHeight() - footer.getHeight()) + 'px');
+        var height = totalHeight - topMenu.getHeight();
+        if(footer != null){
+            height -= footer.getHeight();
+        }
+        mapEl.setHeight(height + 'px');
     },
     
     /**

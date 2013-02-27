@@ -470,10 +470,12 @@ Ext.define('viewer.LayoutManager', {
         this.popupWin.hide();
     },
 
-    resizeLayout: function() {
+    resizeLayout: function(continueFunction) {
         var me = this;
         me.mainLayoutContainer.doLayout();
-        viewerController.mapComponent.getMap().updateSize();
+        setTimeout(function(){
+            continueFunction();
+            viewerController.mapComponent.getMap().updateSize();
+        },200);
     }
-    
 });

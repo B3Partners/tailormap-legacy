@@ -1267,18 +1267,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
         
     resizeComponents: function() {
-        this.layoutManager.resizeLayout();
-        // Openlayers needs to be manually resized and has a resize function
-        if(this.mapComponent.doResize) {
-            this.mapComponent.doResize();
-        }
-        // We are execturing the doResize function manually on all components, instead of
-        // firing an event, because all components are required execute this function
-        for(var name in this.components) {
-            var component = this.components[name];
-            component.instance.resizeScreenComponent();
-        }
-        return true;
+        var me = this;
+        me.layoutManager.resizeLayout(function(){
+            // Openlayers needs to be manually resized and has a resize function
+            if(me.mapComponent.doResize) {
+                me.mapComponent.doResize();
+            }
+            // We are execturing the doResize function manually on all components, instead of
+            // firing an event, because all components are required execute this function
+            for(var name in me.components) {
+                var component = me.components[name];
+                component.instance.resizeScreenComponent();
+            }
+            return true;
+        });
     },
     /**
      *Utility functions
