@@ -219,7 +219,8 @@ public class LayerActionBean implements ActionBean {
         layer.getDetails().keySet().removeAll(Arrays.asList(
                 Layer.EXTRA_KEY_METADATA_STYLESHEET_URL,
                 Layer.EXTRA_KEY_DOWNLOAD_URL,
-                Layer.EXTRA_KEY_FILTERABLE
+                Layer.EXTRA_KEY_FILTERABLE,
+                Layer.DETAIL_ALTERNATE_LEGEND_IMAGE_URL
         ));
         for(Map.Entry<String,String> e: details.entrySet()) {
             if(e.getValue() != null) { // Don't insert null value ClobElement 

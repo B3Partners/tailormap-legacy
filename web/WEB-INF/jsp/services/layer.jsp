@@ -47,8 +47,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td><stripes:text name="layer.titleAlias" maxlength="255" size="30"/></td>
                     </tr>
                     <tr>     
-                        <td>Legenda URL:</td> 
-                        <td><stripes:text name="layer.legendImageUrl" maxlength="255" size="80"/></td>
+                        <td valign="top">Alternatieve legenda afbeelding:</td> 
+                        <td>
+                            <stripes:text name="details[alternateLegendImageUrl]" maxlength="255" size="80"/><br>
+                            <c:choose>
+                                <c:when test="${!empty actionBean.layer.legendImageUrl}">
+                                    Legenda afbeelding van server:<br>
+                                    <a href="${actionBean.layer.legendImageUrl}" target="_blank"><img src="${actionBean.layer.legendImageUrl}"/></a>
+                                </c:when>
+                                <c:when test="${actionBean.layer.service.protocol == 'wms'}">
+                                    De service heeft geen legenda URL beschikbaar. 
+                                </c:when>
+                            </c:choose>
+                        </td>
                     </tr>
                     <tr>     
                         <td>Metadata stylesheet:</td> <%-- XXX wordt in TOC niet zo gebruikt, moet metadata.url zijn? --%>
