@@ -56,6 +56,8 @@ public class Layer implements Cloneable {
      */ 
     public static final String DETAIL_ALL_CHILDREN = "all_children";
     
+    public static final String DETAIL_ALTERNATE_LEGEND_IMAGE_URL = "alternateLegendImageUrl";
+    
     private static Set<String> interestingDetails = new HashSet<String>(Arrays.asList(new String[] { 
         EXTRA_KEY_METADATA_URL, 
         EXTRA_KEY_METADATA_STYLESHEET_URL,
@@ -63,7 +65,8 @@ public class Layer implements Cloneable {
         EXTRA_KEY_FILTERABLE,
         EXTRA_IMAGE_EXTENSION,
         DETAIL_ALL_CHILDREN,
-        DETAIL_WMS_STYLES        
+        DETAIL_WMS_STYLES,
+        DETAIL_ALTERNATE_LEGEND_IMAGE_URL
     }));  
     
     private static Set<String> updatableDetails = new HashSet<String>(Arrays.asList(new String[] { 
