@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
@@ -90,7 +91,8 @@ public class WFSFeatureSource extends FeatureSource {
                     sft.setFeatureSource(this);
                     sft.setWriteable(false);
                     if (gtFs.getInfo() != null) {
-                        sft.setDescription(gtFs.getInfo().getDescription());
+                        String title = gtFs.getInfo().getTitle();
+                        sft.setDescription(StringUtils.isBlank(title) ? null : title);
                     }
 
                     org.opengis.feature.simple.SimpleFeatureType gtFt = gtFs.getSchema();
