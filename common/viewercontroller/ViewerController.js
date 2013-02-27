@@ -990,7 +990,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             
             // Check override by service admin
-            if(serviceLayer.legendImageUrl) {
+            if(serviceLayer.details != undefined && serviceLayer.details['alternateLegendImageUrl']) {
+                success(appLayer, { parts: [ {url: serviceLayer.details.alternateLegendImageUrl}] });
+                return;
+            }
+
+            // Use default legend (for WMS, Legend URL from the first, default Style)
+             if(serviceLayer.legendImageUrl) {
                 success(appLayer, { parts: [ {url: serviceLayer.legendImageUrl}] });
                 return;
             }
