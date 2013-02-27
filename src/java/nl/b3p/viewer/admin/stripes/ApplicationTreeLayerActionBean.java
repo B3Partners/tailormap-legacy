@@ -24,6 +24,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
@@ -202,7 +203,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     @DontValidate
     public Resolution edit() throws JSONException {
         if (applicationLayer != null) {
-            details = applicationLayer.getDetails();
+            details = new HashMap();
+            for(Map.Entry<String,ClobElement> e: applicationLayer.getDetails().entrySet()) {
+                details.put(e.getKey(), e.getValue().getValue());
+            }
 
             groupsRead.addAll(applicationLayer.getReaders());
             groupsWrite.addAll(applicationLayer.getWriters());
@@ -272,7 +276,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "editfunction.title",
                 "style"
         ));     
-        applicationLayer.getDetails().putAll(details);
+        for(Map.Entry<String,String> e: details.entrySet()) {
+            if(e.getValue() != null) { // Don't insert null value ClobElement 
+                applicationLayer.getDetails().put(e.getKey(), new ClobElement(e.getValue()));
+            }
+        }
 
         applicationLayer.getReaders().clear();
         for (String groupName : groupsRead) {
