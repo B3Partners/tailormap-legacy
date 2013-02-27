@@ -18,10 +18,10 @@ package nl.b3p.viewer.config.app;
 
 import javax.persistence.*;
 import java.util.*;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +62,9 @@ public class ApplicationLayer {
     private Set<String> writers = new HashSet<String>();
 
     @ElementCollection
-    private Map<String,String> details = new HashMap<String,String>();
+    @JoinTable(joinColumns=@JoinColumn(name="application_layer"))
+    // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11    
+    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
@@ -94,11 +96,11 @@ public class ApplicationLayer {
         this.selectedIndex = selectedIndex;
     }
     
-    public Map<String, String> getDetails() {
+    public Map<String, ClobElement> getDetails() {
         return details;
     }
     
-    public void setDetails(Map<String, String> details) {
+    public void setDetails(Map<String, ClobElement> details) {
         this.details = details;
     }
     
@@ -154,8 +156,8 @@ public class ApplicationLayer {
     }
     
     public String getDisplayName() {
-        if(StringUtils.isNotBlank(getDetails().get("titleAlias"))) {
-            return getDetails().get("titleAlias");
+        if(ClobElement.isNotBlank(getDetails().get("titleAlias"))) {
+            return getDetails().get("titleAlias").getValue();
         } else {
             Layer l = getService() == null ? null : getService().getLayer(getLayerName());
             if(l != null) {
@@ -182,8 +184,8 @@ public class ApplicationLayer {
         if(!getDetails().isEmpty()) {
             JSONObject d = new JSONObject();
             o.put("details", d);
-            for(Map.Entry<String,String> e: getDetails().entrySet()) {
-                d.put(e.getKey(), e.getValue());
+            for(Map.Entry<String,ClobElement> e: getDetails().entrySet()) {
+                d.put(e.getKey(), e.getValue().getValue());
             }
         }
 
@@ -198,7 +200,7 @@ public class ApplicationLayer {
         
         copy.setReaders(new HashSet<String>(readers));
         copy.setWriters(new HashSet<String>(writers));
-        copy.setDetails(new HashMap<String,String>(details));
+        copy.setDetails(new HashMap<String,ClobElement>(details));
         
         copy.setAttributes( new ArrayList<ConfiguredAttribute>());
         for(ConfiguredAttribute a: attributes) {

@@ -18,6 +18,7 @@ package nl.b3p.viewer.config;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -69,5 +70,9 @@ public class ClobElement {
     @Override
     public String toString() {
         return value;
+    }
+    
+    public static boolean isNotBlank(ClobElement e) {
+        return e != null && StringUtils.isNotBlank(e.getValue());
     }
 }
