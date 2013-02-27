@@ -48,7 +48,9 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         Ext.select(".olControlPanPanel").setStyle("top","0px");
         
         var me = this;
-        Ext.EventManager.onWindowResize(function (){me.resizeOnceAfter(100);});
+        Ext.EventManager.onWindowResize(function (){
+            me.resizeOnceAfter(100);
+        });
         this.resize();
     },
     /**
@@ -61,7 +63,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         if (this.timer){
             clearTimeout(this.timer);
         }
-        this.timer=setTimeout(function(){me.resize()},time);
+        this.timer=setTimeout(function(){me.resize();},time);
         return;
     },
     /**

@@ -20,22 +20,26 @@
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define ("viewer.components.BorderNavigation",{
-    extend: "viewer.components.Component",    
-    constructor: function (conf){        
-        viewer.components.BorderNavigation.superclass.constructor.call(this, conf);
+Ext.define("viewer.components.BorderNavigation",{
+    extend : "viewer.components.Component",
+    bordernavigation : null,
+    constructor : function (conf){
+        viewer.components.BorderNavigation.superclass.constructor.call(this,conf);
         this.initConfig(conf);
-        
-        conf.id=conf.name;
-        conf.type=viewer.viewercontroller.controller.Component.BORDER_NAVIGATION;
-        
-        var comp = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(comp);
-        
+
+        conf.id = conf.name;
+        conf.type = viewer.viewercontroller.controller.Component.BORDER_NAVIGATION;
+
+        this.bordernavigation = this.viewerController.mapComponent.createComponent(conf);
+        this.viewerController.mapComponent.addComponent(this.bordernavigation);
+
         return this;
     },
-    getExtComponents: function() {
+    getExtComponents : function (){
         return [];
+    },
+    resizeScreenComponent : function (){
+        this.bordernavigation.resize();
     }
 });
 

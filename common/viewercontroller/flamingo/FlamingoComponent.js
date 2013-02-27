@@ -155,9 +155,9 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
         xml+="  xmlns:fmc='fmc' "+this.getParamsAsXml();        
         xml+=">";
         for (var key in this.strings){
-            xml+="<string id='"+key+"' en='"+this.strings[key]+"'/>"
+            xml+="<string id='"+key+"' en='"+this.strings[key]+"'/>";
         }
-        xml+="</fmc:"+this.getTagName()+">"
+        xml+="</fmc:"+this.getTagName()+">";
         return xml;
     }, 
     getParamsAsXml: function(){
@@ -201,6 +201,10 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoComponent",{
      */
     getString: function(key){
         return this.strings[key];
-    }    
+    },
+    resize : function (){
+        // Stub. Openlayers needs a resize on some framework specific components
+    }
+    
 });
 
