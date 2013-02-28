@@ -36,6 +36,8 @@ Ext.define ("viewer.components.Maptip",{
     enabled: true,
     lastPosition: null,
     worldPosition: null,
+    prevTime:null,
+    threshold:1000,
     /**
      * @constructor
      */
@@ -62,7 +64,10 @@ Ext.define ("viewer.components.Maptip",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
         //listen to the onmaptipcancel
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);        
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);             
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,function(){
+            this.prevTime = new Date().getTime();
+        },this);             
                 
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
@@ -89,7 +94,7 @@ Ext.define ("viewer.components.Maptip",{
                     //let the mapComponent handle the getFeature
                     mapLayer.setMaptips(mapLayer.getLayers().split(","));
                     //listen to the onMaptipData
-                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);       
+                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);         
                 }
             }            
         }
@@ -153,7 +158,7 @@ Ext.define ("viewer.components.Maptip",{
         
         this.featureInfo.layersFeatureInfo(options.coord.x,options.coord.y,radius,inScaleLayers,function(data){
             options.data=data;
-            me.onDataReturned(options);
+            me.onMapData(null,options);
         },this.onFailure);
     },
     /**
@@ -162,7 +167,11 @@ Ext.define ("viewer.components.Maptip",{
      * @param options the options of the event
      */
     onMapData: function(layer,options){
+        var currentTime =  new Date().getTime();
+        var delta = currentTime - this.prevTime;
+        if( delta > this.threshold){
             this.onDataReturned(options);
+        }
     },
     /**
      * Handle the data that is returned.
@@ -715,7 +724,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
 
-    }        
+    }      
     /**
      *Private function. Use setPosition(x,y,true) to reset the position
      *Reset the position to the point. And displays the right Arrow to the point
