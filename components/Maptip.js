@@ -211,6 +211,10 @@ Ext.define ("viewer.components.Maptip",{
                     this.viewerController.logger.error(layer.error);
                 }else{
                     var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
+        
+                    var noHtmlEncode = "true" == appLayer.details['summary.noHtmlEncode'];
+                    var nl2br = "true" == appLayer.details['summary.nl2br'];
+        
                     var layerName= appLayer.layerName;
                     for (var index in layer.features){
                         var feature = layer.features[index];
@@ -224,14 +228,14 @@ Ext.define ("viewer.components.Maptip",{
                             if (appLayer.details && appLayer.details["summary.title"] ){
                                 var titleDiv = new Ext.Element(document.createElement("div"));
                                 titleDiv.addCls("feature_summary_title");
-                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature));
+                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature,noHtmlEncode,nl2br));
                                 leftColumnDiv.appendChild(titleDiv);
                             }
                             //description
                             if (appLayer.details && appLayer.details["summary.description"]){
                                 var descriptionDiv = new Ext.Element(document.createElement("div"));
                                 descriptionDiv.addCls("feature_summary_description");
-                                var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature);
+                                var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature,noHtmlEncode,nl2br);
                                 
                                 descriptionDiv.insertHtml("beforeEnd",desc);
                                 leftColumnDiv.appendChild(descriptionDiv);
@@ -240,7 +244,7 @@ Ext.define ("viewer.components.Maptip",{
                             if (appLayer.details && appLayer.details["summary.link"]){
                                 var linkDiv = new Ext.Element(document.createElement("div"));
                                 linkDiv.addCls("feature_summary_link");
-                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>");
+                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>");
                                 leftColumnDiv.appendChild(linkDiv);
                             }
                             //detail
@@ -268,7 +272,7 @@ Ext.define ("viewer.components.Maptip",{
                             if (appLayer.details && appLayer.details["summary.image"]){
                                 var imageDiv = new Ext.Element(document.createElement("div"));
                                 imageDiv.addCls("feature_summary_image");
-                                imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"'/>");
+                                imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>");
                                 rightColumnDiv.appendChild(imageDiv);
                             }
 
@@ -314,25 +318,29 @@ Ext.define ("viewer.components.Maptip",{
         var featureDiv = new Ext.Element(document.createElement("div"));
         featureDiv.addCls("feature_detail_feature");
         featureDiv.id="f_details_"+appLayer.serviceId+"_"+appLayer.layerName;
+        
+        var noHtmlEncode = "true" == appLayer.details['summary.noHtmlEncode'];
+        var nl2br = "true" == appLayer.details['summary.nl2br'];
+        
         //title
         if (appLayer.details && appLayer.details["summary.title"] ){
             var titleDiv = new Ext.Element(document.createElement("div"));
             titleDiv.addCls("feature_detail_title");
-            titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature));
+            titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature,noHtmlEncode,nl2br));
             featureDiv.appendChild(titleDiv);
         }
         //description
         if (appLayer.details && appLayer.details["summary.description"]){
             var descriptionDiv = new Ext.Element(document.createElement("div"));
             descriptionDiv.addCls("feature_detail_description");
-            descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description"],feature));
+            descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description"],feature,noHtmlEncode,nl2br));
             featureDiv.appendChild(descriptionDiv);
         }
         //image
         if (appLayer.details && appLayer.details["summary.image"]){
             var imageDiv = new Ext.Element(document.createElement("div"));
             imageDiv.addCls("feature_detail_image");
-            var img = "<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature)+"' ";
+            var img = "<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature,noHtmlEncode,nl2br)+"' ";
             if (this.popup.config.details && this.popup.config.details.width){
                 img+="style='max-width: "+(this.popup.config.details.width-40)+"px;'";
             }
@@ -344,14 +352,14 @@ Ext.define ("viewer.components.Maptip",{
         if (appLayer.details && appLayer.details["summary.link"]){
             var linkDiv = new Ext.Element(document.createElement("div"));
             linkDiv.addCls("feature_detail_link");
-            linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature)+"'>link</a>");
+            linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>");
             featureDiv.appendChild(linkDiv);
         }
         //description attribute
         if (appLayer.details && appLayer.details["summary.description_attributes"]){
             var descriptionDiv = new Ext.Element(document.createElement("div"));
             descriptionDiv.addCls("feature_detail_description_attr");
-            descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description_attributes"],feature));
+            descriptionDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.description_attributes"],feature,noHtmlEncode,nl2br));
             featureDiv.appendChild(descriptionDiv);
         }
         //attributes:
@@ -360,7 +368,14 @@ Ext.define ("viewer.components.Maptip",{
             for( var key in feature){
                 html+="<tr>"
                 html+="<td class='feature_detail_attr_key'>"+key+"</td>";
-                html+="<td class='feature_detail_attr_value'>"+feature[key]+"</td>";
+                var value = String(feature[key]);
+                if(!noHtmlEncode) {
+                    value = Ext.String.htmlEncode(value);
+                }
+                if(nl2br) {
+                    value = Ext.util.Format.nl2br(value);
+                }
+                html+="<td class='feature_detail_attr_value'>"+value+"</td>";
                 html+="</tr>"
             }
             html+="</table>";
@@ -387,15 +402,24 @@ Ext.define ("viewer.components.Maptip",{
      * Replaces all [feature names] with the values of the feature.
      * @param text the text that must be search for 'feature names'
      * @param feature a object with object[key]=value 
+     * @param noHtmlEncode allow HTML tags in feature values
+     * @param nl2br Replace newlines in feature values with br tags
      * @return a new text with all [key]'s  replaced
      */
-    replaceByAttributes: function(text,feature){
+    replaceByAttributes: function(text,feature,noHtmlEncode,nl2br){
         if (Ext.isEmpty(text))
             return "";
         var newText=""+text;
         for (var key in feature){
             var regex = new RegExp("\\["+key+"\\]","g");
-            newText=newText.replace(regex,feature[key]);
+            var value = String(feature[key]);
+            if(!noHtmlEncode) {
+                value = Ext.String.htmlEncode(value);
+            }
+            if(nl2br) {
+                value = Ext.util.Format.nl2br(value);
+            }            
+            newText=newText.replace(regex,value);
         }
         //remove all remaining [...]
         var begin=newText.indexOf("[");
