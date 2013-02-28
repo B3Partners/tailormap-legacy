@@ -134,5 +134,6 @@
 }
 .feature_detail_attr_key{
     font-weight: bold;
+    vertical-align: top;
 }
 .feature_detail_attr_value{}
