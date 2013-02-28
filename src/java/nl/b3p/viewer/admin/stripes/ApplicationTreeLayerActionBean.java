@@ -274,7 +274,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "summary.description",
                 "summary.link",
                 "editfunction.title",
-                "style"
+                "style",
+                "summary.noHtmlEncode",
+                "summary.nl2br"
         ));     
         for(Map.Entry<String,String> e: details.entrySet()) {
             if(e.getValue() != null) { // Don't insert null value ClobElement 

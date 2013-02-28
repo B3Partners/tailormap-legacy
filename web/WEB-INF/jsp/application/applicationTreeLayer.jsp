@@ -155,26 +155,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </td>
                         </tr>
                         <tr>
-                            <td>Samenvatting - titel:</td>
-                            <td><stripes:text name="details['summary.title']" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td>Samenvatting - afbeelding:</td>
-                            <td><stripes:text name="details['summary.image']" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td valign="top">Samenvatting - omschrijving:</td>
-                            <td>
-                                <div id="details_summary_description_container" style="width: 475px; height: 150px;"></div>
-                                <stripes:textarea name="details['summary.description']" rows="5" cols="27" style="display: none;" id="details_summary_description" />
+                            <td colspan="2">
+                                <fieldset style="border: 1px gray ridge; width: 100%; padding: 2px;">
+                                    <legend style="margin-left: 5px; padding: 2px">Samenvatting (maptip, featureinfo)</legend>
+                                    <i>Om de waarde van een attribuut te gebruiken, zet de naam van het attribuut in blokhaken, bijvoorbeeld: [naam]. Zie de "Attributen" tab voor de beschikbare attributen.</i>
+                                    <table class="formtable">
+                                        <tr>
+                                            <td>Titel:</td>
+                                            <td><stripes:text name="details['summary.title']" maxlength="255" size="30"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Afbeelding URL:</td>
+                                            <td><stripes:text name="details['summary.image']" maxlength="255" size="30"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top">Omschrijving:</td>
+                                            <td>
+                                                <div id="details_summary_description_container" style="width: 475px; height: 150px;"></div>
+                                                <stripes:textarea name="details['summary.description']" rows="5" cols="27" style="display: none;" id="details_summary_description" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Link:</td>
+                                            <td><stripes:text name="details['summary.link']" maxlength="255" size="30"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top">Opties:</td>
+                                            <td>
+                                                <label><stripes:checkbox name="details['summary.noHtmlEncode']"/>HTML tags in attribuutwaarden toestaan</label><br>
+                                                <label><stripes:checkbox name="details['summary.nl2br']"/>Regeleindes in attribuutwaarden toestaan</label>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </fieldset>
                             </td>
                         </tr>
                         <tr>
-                            <td>Samenvatting - link:</td>
-                            <td><stripes:text name="details['summary.link']" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td>EditFunctionaliteit - titel:</td>
+                            <td>Titel voor editing:</td>
                             <td><stripes:text name="details['editfunction.title']" maxlength="255" size="30"/></td>
                         </tr>
                     </table>
