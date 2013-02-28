@@ -40,6 +40,7 @@ import org.stripesstuff.stripersist.Stripersist;
             @UniqueConstraint(columnNames={"name", "version"})
 )
 public class Application {
+    public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
     
     private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[] { 
         "opmerking" 
