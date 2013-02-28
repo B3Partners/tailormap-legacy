@@ -51,20 +51,21 @@ Ext.define ("viewer.components.Bookmark",{
         this.form = new Ext.form.FormPanel({
             frame: false,
             border: 0,
-            width: '100%',
+            width: '95%',
             margin: '0px 0px 0px 10px',
+            padding: '5px',
             items: [{ 
                 xtype: 'textfield',
                 fieldLabel: 'Bookmark',
                 name: 'bookmark',
-                anchor: '80%',
+                anchor: '100%',
                 id: 'bookmark',
                 value: this.url
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Compact link',
                 name: 'compactlink',
-                anchor: '80%',
+                anchor: '100%',
                 id: 'compactlink'
             },{ 
                 xtype: 'button',
