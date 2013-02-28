@@ -75,4 +75,8 @@ public class ClobElement {
     public static boolean isNotBlank(ClobElement e) {
         return e != null && StringUtils.isNotBlank(e.getValue());
     }
+    
+    public static String nullSafeGet(ClobElement e) {
+        return e == null ? null : e.getValue();
+    }
 }
