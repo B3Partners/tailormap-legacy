@@ -251,7 +251,6 @@ Ext.define('viewer.LayoutManager', {
                 } else {
                     sublayout.flex = 1;
                 }
-                sublayout.width = '100%';
             }
             if(item.regionDefaultConfig.columnOrientation == 'horizontal') {
                 if(item.regionDefaultConfig.subregion != 'center') {
@@ -266,7 +265,6 @@ Ext.define('viewer.LayoutManager', {
                 } else {
                     sublayout.flex = 1;
                 }
-                sublayout.height = '100%';
             }
 
             var extLayout = 'fit';
