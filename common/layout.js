@@ -433,10 +433,23 @@ Ext.define('viewer.LayoutManager', {
             layout: 'border',
             items: viewportItems,
             renderTo: me.wrapperId,
-            height: '100%',
+            height: me.getContainerheight(),
             width: '100%',
             style: containerStyle
         });
+    },
+            
+    getContainerheight: function() {
+        var me = this, containerHeight = '100%';
+        if(Ext.isWebKit) {
+            // There is a bug in webkit which allows the inner div to extend further than the max-height of the wrapper div
+            // Seems to be fixed in future Chrome versions (https://bugs.webkit.org/show_bug.cgi?id=26559) so remove this fix when possible
+            var wrapperHeight = Ext.get(me.wrapperId).getHeight();
+            if(wrapperHeight >= me.maxHeight) {
+                containerHeight = me.maxHeight + 'px';
+            }
+        }
+        return containerHeight;
     },
 
     getMapId: function() {
@@ -470,6 +483,10 @@ Ext.define('viewer.LayoutManager', {
 
     resizeLayout: function(continueFunction) {
         var me = this;
+        if(Ext.isWebKit) {
+            // Webkit bug
+            me.mainLayoutContainer.setHeight(me.getContainerheight());
+        }
         me.mainLayoutContainer.doLayout();
         setTimeout(function(){
             if(continueFunction != undefined){
