@@ -70,11 +70,6 @@ public class DataStoreSpinupActionBean implements ActionBean {
     private ActionBeanContext context;
     
     @Validate
-    private String app;
-
-    @Validate
-    private String version;
-    
     private Application application;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -87,14 +82,6 @@ public class DataStoreSpinupActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
-    public String getApp() {
-        return app;
-    }
-    
-    public void setApp(String app) {
-        this.app = app;
-    }
 
     public Application getApplication() {
         return application;
@@ -103,20 +90,7 @@ public class DataStoreSpinupActionBean implements ActionBean {
     public void setApplication(Application application) {
         this.application = application;
     }
-    
-    public String getVersion() {
-        return version;
-    }
-    
-    public void setVersion(String version) {
-        this.version = version;
-    }
     //</editor-fold>
-    
-    @Before(stages=LifecycleStage.EventHandling)
-    public void load() {
-        application = ApplicationActionBean.findApplication(app, version);
-    }    
     
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Date lastSpinupTime;
@@ -255,7 +229,7 @@ public class DataStoreSpinupActionBean implements ActionBean {
             log.debug("Spinup summary for app " + application.getNameWithVersion() + ": " + summary);
             j.put("message", summary);
         } else {
-            j.put("error", String.format("Application not found: %s v%s", app, version));
+            j.put("error", "Application not found");
         }
         return new StreamingResolution("application/json", new StringReader(j.toString()));
     }    
