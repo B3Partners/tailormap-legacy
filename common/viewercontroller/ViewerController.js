@@ -107,6 +107,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
         }
+        
+        this.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
+            this.spinupDataStores, this);
               
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
@@ -129,6 +132,33 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     isDebug: function() {
         return this.queryParams.hasOwnProperty("debug") && this.queryParams.debug == "true";
+    },
+    
+    spinupDataStores: function() {
+        var lastSpinupTime = this.app.details['lastSpinupTime'];
+        if(lastSpinupTime) {
+            // server and browser timezone may differ but no big deal, time is
+            // also checked server-side
+            lastSpinupTime = Ext.Date.parse(lastSpinupTime, "c", true);
+        }
+        var me = this;
+        if(!lastSpinupTime || Ext.Date.getElapsed(lastSpinupTime) > 1800 * 1000) {
+            Ext.Ajax.request({
+                url: actionBeans["datastorespinup"],
+                params: {application: this.app.id},
+                success: function(result) {
+                    var response = Ext.JSON.decode(result.responseText);
+                    if(response.success) {
+                        me.logger.debug("DataStore spinup result success: " + response.message);
+                    } else {
+                        me.logger.debug("DataStore spinup result error: " + response.error);
+                    }
+                },
+                failure: function(result) {
+                    me.logger.error("DataStore spinup Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            });                 
+        }
     },
     
     /** @private Guard variable to prevent double event execution */
