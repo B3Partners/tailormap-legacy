@@ -43,12 +43,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         var serviceEnvelopeTokens=this.serviceEnvelope.split(",");
         var x=Number(serviceEnvelopeTokens[0]);
         var y=Number(serviceEnvelopeTokens[1]);
+        var opacity = this.config.opacity != undefined ? this.config.opacity : 1;
         var options={
             tileOrigin: new OpenLayers.LonLat(x,y),
             serverResolutions: this.resolutions,
             tileSize: new OpenLayers.Size(this.getTileWidth(),this.getTileHeight()),
             type: this.extension,
-            transitionEffect: "resize",
+            transitionEffect: opacity == 1 ? "resize" : null,
             maxExtent: new OpenLayers.Bounds(Number(serviceEnvelopeTokens[0]),Number(serviceEnvelopeTokens[1]),Number(serviceEnvelopeTokens[2]),Number(serviceEnvelopeTokens[3])),
             maxResolution: this.resolutions[0],
             visibility: this.visible==undefined ? true : this.visible,
@@ -164,6 +165,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
      */
     setAlpha: function (alpha){
+        if(this.frameworkLayer) {
+            this.frameworkLayer.transitionEffect = alpha < 100 ? null : "resize";
+        }
         this.mixins.openLayersLayer.setAlpha.call(this,alpha);
     },
     /**
