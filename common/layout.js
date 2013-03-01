@@ -474,7 +474,9 @@ Ext.define('viewer.LayoutManager', {
         var me = this;
         me.mainLayoutContainer.doLayout();
         setTimeout(function(){
-            continueFunction();
+            if(continueFunction != undefined){
+                continueFunction();
+            }
             viewerController.mapComponent.getMap().updateSize();
         },200);
     }
