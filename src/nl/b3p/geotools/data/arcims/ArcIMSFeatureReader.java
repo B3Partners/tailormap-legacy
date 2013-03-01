@@ -97,6 +97,10 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         }
     }
     
+    /**
+     * @return The amount of features that satisfy the query and max feature limit,
+     *  subtracted with the start index
+     */
     public int getCount() throws IOException {
         if(totalCount != null) {
             return totalCount;
@@ -108,7 +112,7 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
             buildAxlQuery(r);
         } catch(Exception e) {
             throw new IOException("Error processing filter: " + e.toString(), e);
-        }
+        }       
         r.setSkipfeatures(true);
         log.debug(String.format("%s get feature count for layer %s",
                 fs.getDataStore().toString(),
@@ -116,11 +120,29 @@ class ArcIMSFeatureReader implements SimpleFeatureReader {
         try {
             AxlFeatures resp = ((ArcIMSDataStore)fs.getDataStore()).getArcIMSServer().getFeatures(r);
             totalCount = resp.getFeatureCount().getCount();
-            log.debug("feature count for layer " + r.getLayer().getId() + ": " + totalCount);
-            return totalCount;
+            int countMax = totalCount;
+            if(query.getStartIndex() != null) {
+                countMax = Math.max(0, totalCount - query.getStartIndex());
+            }
+            if(maxFeatures != null) {
+                countMax = Math.min(countMax, maxFeatures);
+            }
+            log.debug(String.format("Total feature count for layer %s: %d (with start index and max features: %d)", r.getLayer().getId(), totalCount, countMax));
+            return countMax;
         } catch(Exception e) {
             throw new IOException("Error retrieving feature count from ArcIMS: " + e.toString(), e);
         }        
+    }
+    
+    /**
+     * @return The total amount of features that satisfy the query without 
+     *  applying max feature limit and start index
+     */
+    public int getTotalCount() throws IOException {
+        if(totalCount == null) {
+            getCount();
+        }
+        return totalCount;                
     }
     
     private void buildAxlQuery(AxlGetFeatures gf) throws FilterToSQLException {
