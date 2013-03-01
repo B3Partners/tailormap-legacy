@@ -107,7 +107,7 @@ Ext.define ("viewer.components.Filter",{
 			},
 			items:  [
 				// left = leftwidth - 50 (or/and combobox of attributefilter)
-				{ xtype: 'container', width: (this.leftWidth - 50) },
+				{ xtype: 'container', width: (this.leftWidth - 50) }
 			]
 		});
 		var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
