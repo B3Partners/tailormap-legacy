@@ -152,6 +152,9 @@ public class DataStoreSpinupActionBean implements ActionBean {
 
                         // Can't check feature source detail only layer, but 
                         // usually 1:1...
+                        // Checking GeoService details not appropriate, layers
+                        // from the same service  may have a different feature 
+                        // sources attached to it
                         
                         if(isAlreadySpunup(l.getDetails())) {                    
                             log.debug(String.format("Already spun up layer \"%s\" of %s geo service #%d \"%s\" at %s, skipping",
