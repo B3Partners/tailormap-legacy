@@ -326,6 +326,7 @@ Ext.define ("viewer.components.Maptip",{
         cDiv.update(html);   */
         var featureDiv = new Ext.Element(document.createElement("div"));
         featureDiv.addCls("feature_detail_feature");
+        featureDiv.setStyle("background-color", "white");
         featureDiv.id="f_details_"+appLayer.serviceId+"_"+appLayer.layerName;
         
         var noHtmlEncode = "true" == appLayer.details['summary.noHtmlEncode'];
