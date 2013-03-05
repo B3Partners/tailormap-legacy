@@ -82,19 +82,14 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         ];
         this.frameworkMap=new OpenLayers.Map(config.domId,config);        
         this.frameworkMap.centerLayerContainer();
-        //zoom to start extent.
-        /*
-            this.zoomToExtent(config.options.startExtent);
-        }*/
         /* Zoom to the start extent when the first layer is added
          * because openlayers needs the baselayer to zoom. After zooming, remove the listener.
          */
         if(config.options.startExtent){
             var me = this;
             var handler = function(){
-                //me.maps[0].getFrameworkMap().addControl(tool.getFrameworkTool());
-             /*   me.zoomToExtent(config.options.startExtent);            
-                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);*/
+                me.zoomToExtent(config.options.startExtent);            
+                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             };
             this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
         }
