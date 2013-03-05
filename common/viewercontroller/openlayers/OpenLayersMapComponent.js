@@ -208,6 +208,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             bottomStyle.position = "relative";
             container.parentNode.appendChild(this.contentBottom);
         }
+        this.getMap().updateSize();
     },
     
     /**
