@@ -135,6 +135,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     
     spinupDataStores: function() {
+        if(this.app.details["dataStoreSpinupDisabled"]){
+            return;
+        }
         var lastSpinupTime = this.app.details['lastSpinupTime'];
         if(lastSpinupTime) {
             // server and browser timezone may differ but no big deal, time is
@@ -159,6 +162,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             });                 
         }
+        
     },
     
     /** @private Guard variable to prevent double event execution */
