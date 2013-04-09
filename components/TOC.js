@@ -33,7 +33,8 @@ Ext.define ("viewer.components.TOC",{
         groupCheck:true,
         layersChecked:true,
         showBaselayers:true,
-        title: "Table of Contents"
+        title: "Table of Contents",
+        showLeafIcon: false
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -226,6 +227,9 @@ Ext.define ("viewer.components.TOC",{
                 appLayer: appLayerObj
             }
         };
+        if (!this.showLeafIcon){
+            treeNodeLayer.iconCls='no_treenode_icon';
+        }
         if(serviceLayer.details != undefined){
             if(serviceLayer.details ["metadata.stylesheet"] != undefined){
                 this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);

@@ -63,6 +63,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 checked: config.showBaselayers,
                 value: config.showBaselayers,
                 labelWidth:me.labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Algemeen icoon voor kaartlaag tonen',
+                inputValue: true,
+                name: 'showLeafIcon',
+                checked: config.showLeafIcon,
+                value: config.showLeafIcon,
+                labelWidth:me.labelWidth
             }],
         
             renderTo: parentid//(2)
