@@ -97,7 +97,8 @@ Ext.define("viewer.components.ConfigObject",{
             requestUrl: me.requestPath,
             requestParams: requestParams,
             renderTo: "layerListContainer-body",
-            checked: checkedIds
+            checked: checkedIds,
+            layerFilter: me.configObject.layerFilter
         });   
     }
 });
