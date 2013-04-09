@@ -115,3 +115,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .toc-inscale {
     color: black;
 }
+.no_treenode_icon{
+    background-image: none;
+    width: 0px;
+} 
