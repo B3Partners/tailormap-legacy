@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Custom configuration object for HTML configuration
+ * Custom configuration object for Influence tool configuration
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("viewer.components.CustomConfiguration",{
