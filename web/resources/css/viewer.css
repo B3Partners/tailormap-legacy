@@ -117,5 +117,5 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 }
 .no_treenode_icon{
     background-image: none;
-    width: 0px;
+    width: 1px;
 } 
