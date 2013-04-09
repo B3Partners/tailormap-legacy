@@ -34,7 +34,7 @@ Ext.define ("viewer.components.TOC",{
         layersChecked:true,
         showBaselayers:true,
         title: "Table of Contents",
-        showLeafIcon: false
+        showLeafIcon: true
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);

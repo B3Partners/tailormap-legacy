@@ -44,32 +44,32 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
                 inputValue: true,
                 name: 'groupCheck',
-                checked: config.groupCheck,
-                value: config.groupCheck,
+                checked: config.groupCheck? config.groupCheck : true,
+                value: config.groupCheck? config.groupCheck : true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Kaartlagen krijgen een vinkvak',
                 inputValue: true,
                 name: 'layersChecked',
-                checked: config.layersChecked,
-                value: config.layersChecked,
+                checked: config.layersChecked? config.layersChecked: true,
+                value: config.layersChecked? config.layersChecked: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Achtergrondkaarten tonen',
                 inputValue: true,
                 name: 'showBaselayers',
-                checked: config.showBaselayers,
-                value: config.showBaselayers,
+                checked: config.showBaselayers? config.showBaselayers: true,
+                value: config.showBaselayers? config.showBaselayers: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Algemeen icoon voor kaartlaag tonen',
                 inputValue: true,
                 name: 'showLeafIcon',
-                checked: config.showLeafIcon,
-                value: config.showLeafIcon,
+                checked: config.showLeafIcon? config.showLeafIcon:true,
+                value: config.showLeafIcon? config.showLeafIcon:true,
                 labelWidth:me.labelWidth
             }],
         
