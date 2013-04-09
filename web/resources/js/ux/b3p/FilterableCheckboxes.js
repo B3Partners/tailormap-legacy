@@ -47,7 +47,20 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     valueField: 'id',
     titleField: 'label',
     checked: [],
-
+    //function called when layers are received, must return the same layers or a subset
+    layerFilter: null,
+    /**
+     * Creates a list of layers as filterable checkboxes.
+     * @param config.requestUrl the url that returns the layers
+     * @param config.requestParam a object that has te request params that are sent to the .requestUrl
+     * @param config.renderTo the DOM element that is used to render to
+     * @param config.valueField the field that is used for value in the checkboxes (from the layers)
+     * @param config.titleField the field that is used for title in the checkboxes (from the layers)
+     * @param config.checked a list of values that need to be checked when initialized
+     * @param config.layerFilter a function that is called when the layers are returned by the .requestUrl
+     *            function is called with list of layers as param and needs to return (a subset) list of layer objects
+     *            Components can implement this function to do some extra filtering.
+     */
     constructor: function(config) {
         Ext.apply(this, config || {});
         if(this.requestUrl != '' && this.renderTo != '') {
@@ -114,6 +127,9 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             params: me.requestParams, 
             success: function ( result, request ) {
                 me.itemList = Ext.JSON.decode(result.responseText);
+                if (me.layerFilter){
+                    me.itemList=me.layerFilter.call(this,me.itemList);
+                }
                 for(i in me.itemList) {
                     var applicationLayer = me.itemList[i];
                     applicationLayer.label = applicationLayer.alias || applicationLayer.layerName;
