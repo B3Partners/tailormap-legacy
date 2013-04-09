@@ -24,6 +24,7 @@ Ext.define ("viewer.components.Maptip",{
     balloon: null,
     maptipComponent: null,
     config: {
+        layers: null,
         maptipdelay: null,
         height: null,
         width: null,
@@ -83,6 +84,19 @@ Ext.define ("viewer.components.Maptip",{
         var mapLayer = options.layer;
         if (mapLayer==null)
             return;
+        //if there are layers configured, check if the added layer is in the configured list.
+        if (this.layers){
+            var found=false;
+            for (var i in this.layers){
+                if (this.layers[i] == mapLayer.appLayerId){
+                    found=true;
+                    break;
+                }
+            }
+            if (!found){
+                return;
+            }
+        }
         if(this.isSummaryLayer(mapLayer)){            
             var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
