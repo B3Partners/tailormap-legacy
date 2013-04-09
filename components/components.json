@@ -124,7 +124,7 @@
             source: {tooltip: "Zoom out"}
         }
     },
-    {
+    {        
         className: "viewer.components.Maptip",
         name: "Maptip",
         shortName: "Mt",
@@ -132,24 +132,7 @@
         restrictions: ["content"],
         type : "popup",
         singleton: true,
-        extPropertyGridConfigs: {
-            propertyNames: {
-                maptipdelay: "Maptip Delay",
-                height: 'Samenvatting hoogte',
-                width: 'Samenvatting breedte',
-                title: "Detailscherm titel", 
-                titlebarIcon:"Detailscherm titelbalk icoon",
-                moreLink: 'Link naar meer'
-            },
-            source: {
-                maptipdelay: 500,
-                height: 300,
-                width: 300,                
-                title : "", 
-                titlebarIcon: "",
-                moreLink: 'Meer'
-            }
-        }             
+        configSource: ["SelectionWindowConfig.js","Maptip-config.js"]                   
     },
     {
         className: "viewer.components.FeatureInfo",
