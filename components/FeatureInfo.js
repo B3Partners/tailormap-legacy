@@ -80,6 +80,9 @@ Ext.define ("viewer.components.FeatureInfo",{
         var mapLayer=options.layer;
         if (mapLayer==null)
             return;
+        if (!this.isLayerConfigured(mapLayer)){
+            return;
+        }
         if(this.isSummaryLayer(mapLayer)){            
             var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];

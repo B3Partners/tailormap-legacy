@@ -143,22 +143,7 @@
         type : "popup",
         singleton: true,
         restrictions: ["content"],
-        extPropertyGridConfigs: {
-            propertyNames: {
-                title: "Detailscherm titel", 
-                titlebarIcon:"Detailscherm titelbalk icoon",
-                height: 'Samenvatting hoogte',
-                width: 'Samenvatting breedte',
-                moreLink: 'Link naar meer'
-            },
-            source: {
-                title : "Details", 
-                titlebarIcon: "",
-                height : 300, 
-                width: 300,
-                moreLink: 'Meer'
-            }
-        }
+        configSource: ["SelectionWindowConfig.js","FeatureInfo-config.js"]   
     },
     {
         className: "viewer.components.tools.Identify",

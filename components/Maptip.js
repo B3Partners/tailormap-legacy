@@ -84,18 +84,8 @@ Ext.define ("viewer.components.Maptip",{
         var mapLayer = options.layer;
         if (mapLayer==null)
             return;
-        //if there are layers configured, check if the added layer is in the configured list.
-        if (this.layers){
-            var found=false;
-            for (var i in this.layers){
-                if (this.layers[i] == mapLayer.appLayerId){
-                    found=true;
-                    break;
-                }
-            }
-            if (!found){
-                return;
-            }
+        if (!this.isLayerConfigured(mapLayer)){
+            return;
         }
         if(this.isSummaryLayer(mapLayer)){            
             var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
@@ -478,7 +468,24 @@ Ext.define ("viewer.components.Maptip",{
         }
         return false;
     },
-    
+    /**
+     * Checks if a layer is enabled for this component.
+     * If no layers are configured then true is returned
+     * Otherwise the appLayerId is checked of the given mapLayer in the list 
+     * of configured layers.
+     */
+    isLayerConfigured: function (mapLayer){
+        //if there are layers configured, check if the added layer is in the configured list.
+        if (this.layers){
+            for (var i in this.layers){
+                if (this.layers[i] == mapLayer.appLayerId){
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    },
     /**
      * Over write the getMoreLink function so it always returns a String even when empty
      * @return the configured 'moreLink' or the default when not configured.
