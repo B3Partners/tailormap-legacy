@@ -160,6 +160,19 @@ public class Layer implements Cloneable {
         if(Double.isNaN(maxScale)) {
             maxScale = null;
         }
+        /* if min and max -scale are null, get them from the ScaleHint
+         * Not quite as save as Scale Denominator, because the implementation
+         * various for implementing service products.*/        
+        if (minScale==null && maxScale ==null){
+            minScale = l.getScaleHintMin();
+            if (Double.isNaN(minScale)){
+                minScale=null;
+            }
+            maxScale = l.getScaleHintMax();
+            if (Double.isNaN(maxScale)){
+                maxScale=null;
+            }
+        }
 
         for(CRSEnvelope e: l.getLayerBoundingBoxes()) {
             BoundingBox b = new BoundingBox(e);
