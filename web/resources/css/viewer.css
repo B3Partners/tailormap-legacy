@@ -111,7 +111,15 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .toc-outofscale {
     color : gray;
 }
-
+.toc-zoomtoscale{
+    height: 36px !important;
+}
+.toc-zoomtoscale-text{
+    color: blue;
+    float: right;
+    margin-right: 5px;
+    font-style: italic;
+}
 .toc-inscale {
     color: black;
 }
