@@ -891,12 +891,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
     },
     /**
-     * Check's if this layer is within the current map scale
-     * Not yet working for arcGis services, always return true;
+     * Compare the min/max scale of the layer with the scale
      * @param appLayer the applayer
-     * @return true/false
+     * @param scale (optional) compare with this scale. If ommited, use the current scale of the map
+     * @return 0 if within scale 
+     *        -1 if applayer.maxScale < scale
+     *         1 if appLayer.minScale > scale
      */
-    isWithinScale: function (appLayer,scale){
+    compareToScale: function (appLayer,scale){
         //get the serviceLayer
         var serviceLayer=this.getServiceLayer(appLayer);
         
@@ -915,7 +917,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
          */
         //no min/max scale or 0? Return true;
         if (!minScale && !maxScale){
-            return true;
+            return 0;
         }        
         //if scale empty, get from map
         if (scale==undefined || scale==null){
@@ -929,12 +931,40 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             scale = scale * (96/0.0254);
         }        
         if (minScale && scale < minScale){
-            return false;            
+            return 1;            
         }
         if (maxScale && scale > maxScale){
-            return false;
+            return -1;
         }            
-        return true;        
+        return 0;      
+    },
+    /**
+     * Check's if this layer is within the current map scale
+     * @param appLayer the applayer
+     * @param scale (optional) compare with this scale. If ommited, use the current scale of the map
+     * @return true/false
+     */
+    isWithinScale: function (appLayer,scale){
+        return (0==this.compareToScale(appLayer,scale));
+    },
+    /**
+     *Zoom to the min or max scale of this layer (make it visible)
+     */
+    zoomToLayer: function (appLayer){
+        var compare = this.compareToScale(appLayer);
+        var serviceLayer=this.getServiceLayer(appLayer);
+        var serviceScaleCorrection = 1;        
+        //ArcGis doesn't give the scale in pixel per unit, calculate the 'ArcGis scale'        
+        var service=this.app.services[appLayer.serviceId];
+        if (service && service.protocol == "arcgis"){            
+            //scale * (dpi / ratio dpi to dpm)
+            serviceScaleCorrection= 96/0.0254;
+        } 
+        if (compare==-1){
+            this.mapComponent.getMap().zoomToResolution(serviceLayer.maxScale*serviceScaleCorrection);
+        }else if (compare==1){
+            this.mapComponent.getMap().zoomToResolution(serviceLayer.minScale*serviceScaleCorrection);
+        }
     },
     /**
      * Get the Layer Legend image. Superseded by getLayerLegendInfo()

@@ -34,7 +34,8 @@ Ext.define ("viewer.components.TOC",{
         layersChecked:true,
         showBaselayers:true,
         title: "Table of Contents",
-        showLeafIcon: true
+        showLeafIcon: true,
+        zoomToScaleText: "Zoom to scale"
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -567,12 +568,36 @@ Ext.define ("viewer.components.TOC",{
             if(record != null){
                 var extElement = Ext.fly(record);
                 //if(this.isInScale(scale, layer.minScale, layer.maxScale)){
+                var spanEl = Ext.get("span_"+child.data.id);
                 if (this.viewerController.isWithinScale(layerObj.appLayer,scale)){
                     extElement.removeCls("toc-outofscale");
                     extElement.addCls("toc-inscale");
+                    spanEl.parent().removeCls('toc-zoomtoscale');
                 }else{
                     extElement.removeCls("toc-inscale");
                     extElement.addCls( "toc-outofscale");
+                    if (child.data.checked){
+                        var parent =spanEl.parent();
+                        parent.addCls('toc-zoomtoscale');    
+                        var ztsId="span_"+child.data.id+"_zoomtoscale";
+                        var zts=Ext.get(ztsId);
+                        //if ZoomToScale object !exists create one.
+                        if (!zts){
+                            parent.insertHtml("beforeEnd",'<br/>');
+                            var newSpan = document.createElement("span");
+                            newSpan.id=ztsId;
+                            newSpan.innerHTML=this.zoomToScaleText;
+                            zts = new Ext.Element(newSpan);
+                            zts.addCls("toc-zoomtoscale-text");
+                            var me = this;
+                            zts.addListener("click",
+                                function (evt,el,o){ 
+                                    me.zoomToScale(layerObj.appLayer);
+                                },
+                                this);
+                            parent.appendChild(zts);
+                        }
+                    }
                 }
             }
         }else{
@@ -585,6 +610,9 @@ Ext.define ("viewer.components.TOC",{
     },
     getExtComponents: function() {
         return [ this.panel.getId() ];
+    },
+    zoomToScale: function(layerObj){
+        this.viewerController.zoomToLayer(this.viewerController.getAppLayerById(layerObj.id));
     },
     // Override function so tree-scroll-fix can be applied
     doResize: function() {
