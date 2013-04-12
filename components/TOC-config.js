@@ -71,6 +71,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 checked: config.showLeafIcon? config.showLeafIcon:true,
                 value: config.showLeafIcon? config.showLeafIcon:true,
                 labelWidth:me.labelWidth
+            },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Zoom naar schaal tekst',
+                name: 'zoomToScaleText',
+                value: config.zoomToScaleText,
+                labelWidth:me.labelWidth
             }],
         
             renderTo: parentid//(2)
