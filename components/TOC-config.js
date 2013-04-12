@@ -75,7 +75,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Zoom naar schaal tekst',
                 name: 'zoomToScaleText',
-                value: config.zoomToScaleText,
+                value: config.zoomToScaleText? config.zoomToScaleText:"Zoom to scale",
                 labelWidth:me.labelWidth
             }],
         
