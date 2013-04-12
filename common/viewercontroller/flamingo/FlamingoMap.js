@@ -279,6 +279,23 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoMap",{
         }
         return this.getFrameworkMap().callMethod(this.getId(), "getScale",extent);
     },
+    /**
+     *See @link Map.getResolutions
+     */
+    getResolutions : function(){
+        if(this.options && this.options.resolutions){
+            var rString = (this.options.resolutions).split(",");
+            var resolutions=[];
+            for (var i = 0; i < rString.length; i++){
+                var res=Number(rString[i]);
+                if (!isNaN(res)){
+                    resolutions.push(res);
+                }
+            }
+            return resolutions;
+        }
+        return null;
+    },
     
     /**
      * see @link Map.coordinateToPixel

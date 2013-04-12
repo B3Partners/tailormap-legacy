@@ -326,6 +326,13 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     getResolution : function (){
         Ext.Error.raise({msg: "Map.getResolution() Not implemented! Must be implemented in sub-class"});
     },
+    /**
+     * Gets the resolutions for this map.
+     * @return A array of numbers that represent the resolutions for this map, or null if no resolutions are set.
+     */
+    getResolutions : function(){
+        Ext.Error.raise({msg: "Map.getResolutions() Not implemented! Must be implemented in sub-class"});
+    },
 
     /**
      * calculates the viewport pixel coordinate from the realworld pixel

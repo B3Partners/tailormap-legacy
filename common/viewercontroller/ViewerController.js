@@ -960,10 +960,29 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             //scale * (dpi / ratio dpi to dpm)
             serviceScaleCorrection= 96/0.0254;
         } 
+        var mapResolutions = this.mapComponent.getMap().getResolutions();
         if (compare==-1){
-            this.mapComponent.getMap().zoomToResolution(serviceLayer.maxScale*serviceScaleCorrection);
+            var res =serviceLayer.maxScale*serviceScaleCorrection;
+            if (mapResolutions!=null){
+                for (var i =0 ; i < mapResolutions.length; i++){
+                    if (res > mapResolutions[i]){
+                        res = mapResolutions[i];
+                        break;
+                    }
+                }
+            }
+            this.mapComponent.getMap().zoomToResolution(res);
         }else if (compare==1){
-            this.mapComponent.getMap().zoomToResolution(serviceLayer.minScale*serviceScaleCorrection);
+            var res =serviceLayer.minScale*serviceScaleCorrection;
+            if (mapResolutions!=null){
+                for (var i =0 ; i < mapResolutions.length; i++){
+                    if (res > mapResolutions[i]){
+                        res = mapResolutions[i-1];
+                        break;
+                    }
+                }
+            }
+            this.mapComponent.getMap().zoomToResolution(res);
         }
     },
     /**

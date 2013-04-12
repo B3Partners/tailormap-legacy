@@ -405,7 +405,12 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     getResolution : function(){
         return this.getFrameworkMap().getResolution();
     },
-    
+    /**
+     *See @link Map.getResolutions
+     */
+    getResolutions : function(){
+        return this.getFrameworkMap().resolutions;
+    },
     /**
     *See @link Map.coordinateToPixel
     *@returns a OpenLayers.pixel object (has a .x and a .y)
