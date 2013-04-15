@@ -25,6 +25,8 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(config != null) {
             if(config.sliders != null) sliders = config.sliders;
             if(config.title != null) title = config.title;
+        }else{
+            config={};
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         this.container = Ext.create('Ext.container.Container', {
@@ -46,7 +48,47 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'container',
                 flex: 1,
                 html: '<div id="selectionGridContainer" style="width: 100%; height: 100%;"></div>'
-            }],
+            },{
+                xtype: 'container',
+                layout: {
+                    type: 'hbox'
+                },
+                style: {
+                    marginTop: '5px'
+                },
+                items:[{
+                    xtype: 'checkbox',
+                    name: 'sliderForUserAdded',
+                    id: 'sliderForUserAdded',
+                    checked: config.sliderForUserAdded,
+                    inputValue: true,
+                    boxLabel: 'Voeg slider toe voor door gebruiker toegevoegde kaarten',
+                    listeners:{
+                        change: {                    
+                            fn: function(el,newValue,oldValue,eOpts){
+                                if (newValue){
+                                    Ext.getCmp('userAddedSliderText').setDisabled(false);
+                                }else{
+                                    Ext.getCmp('userAddedSliderText').setDisabled(true);
+                                }
+                            },
+                            scope: this
+                        }
+                    }
+                },{
+                    xtype: 'textfield',
+                    id: 'userAddedSliderText',
+                    style:{
+                        marginLeft: "100px"
+                    },
+                    disabled: config.sliderForUserAdded ? !config.sliderForUserAdded : true,
+                    fieldLabel: 'Tekst',
+                    name: 'userAddedSliderText',
+                    labelWidth: 50,
+                    value: config.userAddedSliderText ? config.userAddedSliderText: "Overige"
+                }]
+            }
+            ],
             renderTo: 'config'
         });
         filterableCheckboxes = Ext.create('Ext.ux.b3p.SelectionGrid', {
@@ -57,11 +99,16 @@ Ext.define("viewer.components.CustomConfiguration",{
             renderTo: 'selectionGridContainer',
             sliders: sliders
         });
+        
     },
     getConfiguration: function(){
         var config = new Object();
         config.title = Ext.getCmp('componentTransparencyTitle').getValue();
         config.sliders = filterableCheckboxes.getSliders();
+        
+        config.sliderForUserAdded = Ext.getCmp('sliderForUserAdded').getValue();
+        config.userAddedSliderText = Ext.getCmp('userAddedSliderText').getValue();
+        
         return config;
     }
 });
