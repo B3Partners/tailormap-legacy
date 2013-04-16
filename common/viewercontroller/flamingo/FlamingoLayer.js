@@ -77,7 +77,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
      * reloads the framework map
      */
     reload: function(){
-        if (this.map.getFrameworkMap()){
+        if (this.map !=null && this.map.getFrameworkMap()){
             return this.map.getFrameworkMap().callMethod(this.getFrameworkId(),"update");
         }
     },
