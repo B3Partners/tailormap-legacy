@@ -67,9 +67,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                         change: {                    
                             fn: function(el,newValue,oldValue,eOpts){
                                 if (newValue){
-                                    Ext.getCmp('userAddedSliderText').setDisabled(false);
+                                    Ext.getCmp('sliderForUserAddedText').setDisabled(false);
                                 }else{
-                                    Ext.getCmp('userAddedSliderText').setDisabled(true);
+                                    Ext.getCmp('sliderForUserAddedText').setDisabled(true);
                                 }
                             },
                             scope: this
@@ -77,15 +77,15 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }
                 },{
                     xtype: 'textfield',
-                    id: 'userAddedSliderText',
+                    id: 'sliderForUserAddedText',
                     style:{
                         marginLeft: "100px"
                     },
                     disabled: config.sliderForUserAdded ? !config.sliderForUserAdded : true,
                     fieldLabel: 'Tekst',
-                    name: 'userAddedSliderText',
+                    name: 'sliderForUserAddedText',
                     labelWidth: 50,
-                    value: config.userAddedSliderText ? config.userAddedSliderText: "Overige"
+                    value: config.sliderForUserAddedText ? config.sliderForUserAddedText: "Overige"
                 }]
             }
             ],
@@ -107,7 +107,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         config.sliders = filterableCheckboxes.getSliders();
         
         config.sliderForUserAdded = Ext.getCmp('sliderForUserAdded').getValue();
-        config.userAddedSliderText = Ext.getCmp('userAddedSliderText').getValue();
+        config.sliderForUserAddedText = Ext.getCmp('sliderForUserAddedText').getValue();
         
         return config;
     }
