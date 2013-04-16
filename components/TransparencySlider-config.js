@@ -49,43 +49,53 @@ Ext.define("viewer.components.CustomConfiguration",{
                 flex: 1,
                 html: '<div id="selectionGridContainer" style="width: 100%; height: 100%;"></div>'
             },{
-                xtype: 'container',
-                layout: {
-                    type: 'hbox'
-                },
-                style: {
-                    marginTop: '5px'
-                },
-                items:[{
                     xtype: 'checkbox',
                     name: 'sliderForUserAdded',
                     id: 'sliderForUserAdded',
                     checked: config.sliderForUserAdded,
                     inputValue: true,
-                    boxLabel: 'Voeg slider toe voor door gebruiker toegevoegde kaarten',
+                    boxLabel: 'Voeg slider toe voor door gebruiker toegevoegde kaarten',                    
                     listeners:{
                         change: {                    
                             fn: function(el,newValue,oldValue,eOpts){
                                 if (newValue){
                                     Ext.getCmp('sliderForUserAddedText').setDisabled(false);
+                                    Ext.getCmp('sliderForUserAddedInitTransparency').setDisabled(false);
                                 }else{
                                     Ext.getCmp('sliderForUserAddedText').setDisabled(true);
+                                    Ext.getCmp('sliderForUserAddedInitTransparency').setDisabled(true);
                                 }
                             },
                             scope: this
                         }
                     }
-                },{
+            },{
+                xtype: 'container',
+                layout: {
+                    type: 'hbox'
+                },
+                items:[{
                     xtype: 'textfield',
                     id: 'sliderForUserAddedText',
                     style:{
                         marginLeft: "100px"
                     },
                     disabled: config.sliderForUserAdded ? !config.sliderForUserAdded : true,
-                    fieldLabel: 'Tekst',
+                    fieldLabel: 'Slidernaam',
                     name: 'sliderForUserAddedText',
-                    labelWidth: 50,
+                    labelWidth: 70,
                     value: config.sliderForUserAddedText ? config.sliderForUserAddedText: "Overige"
+                },{
+                    xtype: 'textfield',
+                    id: 'sliderForUserAddedInitTransparency',
+                    style:{
+                        marginLeft: "10px"
+                    },
+                    disabled: config.sliderForUserAdded ? !config.sliderForUserAdded : true,
+                    fieldLabel: 'Initiele transparantie (%)',
+                    name: 'sliderForUserAddedInitTransparency',
+                    labelWidth: 150,
+                    value: config.sliderForUserAddedInitTransparency ? config.sliderForUserAddedInitTransparency: 0
                 }]
             }
             ],
@@ -108,7 +118,10 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         config.sliderForUserAdded = Ext.getCmp('sliderForUserAdded').getValue();
         config.sliderForUserAddedText = Ext.getCmp('sliderForUserAddedText').getValue();
-        
+        config.sliderForUserAddedInitTransparency = Ext.getCmp('sliderForUserAddedInitTransparency').getValue(true);
+        if(isNaN(config.sliderForUserAddedInitTransparency)){
+            config.sliderForUserAddedInitTransparency=0;
+        }
         return config;
     }
 });
