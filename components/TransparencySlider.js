@@ -23,9 +23,14 @@
 Ext.define ("viewer.components.TransparencySlider",{
     extend: "viewer.components.Component",
     config:{
-        sliders : []
+        sliders : [],
+        sliderForUserAdded: null,
+        sliderForUserAddedText: null,
+        sliderForUserAddedInitTransparency: 0
+        
     },
     sliderObjects : [],
+    
     constructor: function (conf){        
         viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
@@ -46,8 +51,22 @@ Ext.define ("viewer.components.TransparencySlider",{
             var slider =Ext.create("viewer.components.Slider", config);
             this.sliderObjects.push(slider);
         }
+        
+        if(this.sliderForUserAdded){
+            var me =this;
+            var c = {
+                selectedLayers:[],
+                initSelectedContent: this.viewerController.app.selectedContent,
+                title: this.sliderForUserAddedText,
+                initialTransparency: this.sliderForUserAddedInitTransparency
+            }
+            c = Ext.Object.merge(conf, c);
+            var s =Ext.create("viewer.components.NonInitLayerSlider", c);                        
+            this.sliderObjects.push(s);
+        }
         return this;
     },
+        
     getExtComponents: function() {
         var components = [ this.panel.getId() ];
         for(var slider in this.sliderObjects) {
