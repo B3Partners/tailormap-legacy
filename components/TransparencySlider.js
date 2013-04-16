@@ -57,7 +57,7 @@ Ext.define ("viewer.components.TransparencySlider",{
             var c = {
                 selectedLayers:[],
                 initSelectedContent: this.viewerController.app.selectedContent,
-                title: this.sliderForUserAddedText,
+                name: this.sliderForUserAddedText ? this.sliderForUserAddedText :"Overige",
                 initialTransparency: this.sliderForUserAddedInitTransparency
             }
             c = Ext.Object.merge(conf, c);
