@@ -84,6 +84,10 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         var halfwayWidth = Number((width-this.buttonSize)/2);
         this.north.setStyle("top","0px");
         this.north.setStyle("left",halfwayWidth+"px");
+        
+        //set width of top panel if the border nav is added. Otherwise the panel is on top of the north button.
+        Ext.get(this.viewerController.mapComponent.contentTop).setStyle("width",halfwayWidth+"px");
+        
         this.south.setStyle("top",height-this.buttonSize+"px");
         this.south.setStyle("left",halfwayWidth+"px");
         this.west.setStyle("top",halfwayHeight+"px");
