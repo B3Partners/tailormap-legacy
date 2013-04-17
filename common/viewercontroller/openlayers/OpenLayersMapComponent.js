@@ -220,7 +220,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         var totalHeight = container.getHeight();
         
         // Top menu
-        var topMenu = Ext.get(this.contentTop);
+        var topMenuHeight= Number(this.viewerController.getLayout('top_menu').height);
         
         // Footer
         if(this.contentBottom !== null) {
@@ -230,7 +230,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         
         // Map
         var mapEl = Ext.get(this.domId);
-        var height = totalHeight - topMenu.getHeight();
+        var height = totalHeight - topMenuHeight;
         if(footer != null){
             height -= footer.getHeight();
         }
@@ -380,8 +380,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if(type == viewer.viewercontroller.controller.Component.MAPTIP){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersMaptip",config,this.getMap());
         }else if(type == viewer.viewercontroller.controller.Component.NAVIGATIONPANEL){
-            
-            var topMenuHeight = Ext.fly(this.contentTop).getHeight();
+                        
+            var topMenuHeight = Number(this.viewerController.getLayout('top_menu').height);
             var minTop = 40;
             
             // divide by 2 is necessary for some reason?
