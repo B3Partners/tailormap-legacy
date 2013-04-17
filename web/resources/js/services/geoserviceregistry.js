@@ -30,6 +30,7 @@ Ext.onReady(function() {
             {name: 'class', type: 'string'},
             {name: 'parentid', type: 'string'},
             {name: 'isLeaf', type: 'boolean'},
+            {name: 'isVirtual', type: 'boolean'},
             // Text is used by tree, mapped to name
             {name: 'text', type: 'string', mapping: 'name'}
         ],
