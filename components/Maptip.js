@@ -37,8 +37,7 @@ Ext.define ("viewer.components.Maptip",{
     enabled: true,
     lastPosition: null,
     worldPosition: null,
-    prevTime:null,
-    threshold:1000,
+    maptipExtent:null,
     /**
      * @constructor
      */
@@ -66,8 +65,8 @@ Ext.define ("viewer.components.Maptip",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
         //listen to the onmaptipcancel
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);             
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,function(){
-            this.prevTime = new Date().getTime();
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,function(map,options){
+            this.balloon.close();
         },this);             
                 
         //Add the maptip component to the framework
@@ -90,6 +89,11 @@ Ext.define ("viewer.components.Maptip",{
         if(this.isSummaryLayer(mapLayer)){            
             var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+            //Store the current map extent for every maptip request.            
+            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,function(map,options){
+                this.setMaptipExtent(map.getExtent());
+            },this);         
+            
             //do server side getFeature.
             if (layer.hasFeatureType){
                 this.addLayerInServerRequest(appLayer);
@@ -171,11 +175,11 @@ Ext.define ("viewer.components.Maptip",{
      * @param options the options of the event
      */
     onMapData: function(layer,options){
-        var currentTime =  new Date().getTime();
-        var delta = currentTime - this.prevTime;
-        if( delta > this.threshold){
+        var curExtent = this.viewerController.mapComponent.getMap().getExtent();
+        if (curExtent.equals(this.maptipExtent)){
             this.onDataReturned(options);
         }
+        
     },
     /**
      * Handle the data that is returned.
@@ -511,6 +515,12 @@ Ext.define ("viewer.components.Maptip",{
             }
         }
         return null;
+    },
+    
+    /**
+     */
+    setMaptipExtent: function (maptipExtent){
+        this.maptipExtent=maptipExtent;
     },
     /**
      * set visibility

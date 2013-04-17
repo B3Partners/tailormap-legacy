@@ -62,6 +62,21 @@ Ext.define("viewer.viewercontroller.controller.Extent",{
         return wkt;
     },
     /**
+     * Compares the given extent with this extent
+     */
+    equals: function(extent){
+        if (extent==null){
+            return false;
+        }
+        if (this.minx != extent.minx || 
+            this.miny != extent.miny ||
+            this.maxx != extent.maxx ||
+            this.maxy != extent.maxy){
+            return false;
+        }
+        return true;
+    },
+    /**
      * The extent as comma seperated String
      * @return comma seperated String
      */
