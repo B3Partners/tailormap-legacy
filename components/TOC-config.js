@@ -44,32 +44,32 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
                 inputValue: true,
                 name: 'groupCheck',
-                checked: config.groupCheck? config.groupCheck : true,
-                value: config.groupCheck? config.groupCheck : true,
+                checked: config.groupCheck!=undefined? config.groupCheck : true,
+                value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Kaartlagen krijgen een vinkvak',
                 inputValue: true,
                 name: 'layersChecked',
-                checked: config.layersChecked? config.layersChecked: true,
-                value: config.layersChecked? config.layersChecked: true,
+                checked: config.layersChecked!=undefined? config.layersChecked: true,
+                value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Achtergrondkaarten tonen',
                 inputValue: true,
                 name: 'showBaselayers',
-                checked: config.showBaselayers? config.showBaselayers: true,
-                value: config.showBaselayers? config.showBaselayers: true,
+                checked: config.showBaselayers!=undefined? config.showBaselayers: true,
+                value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Algemeen icoon voor kaartlaag tonen',
                 inputValue: true,
                 name: 'showLeafIcon',
-                checked: config.showLeafIcon? config.showLeafIcon:true,
-                value: config.showLeafIcon? config.showLeafIcon:true,
+                checked: config.showLeafIcon!=undefined? config.showLeafIcon:true,
+                value: true,
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
