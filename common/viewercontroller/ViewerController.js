@@ -1080,7 +1080,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
             // Use default legend (for WMS, Legend URL from the first, default Style)
              if(serviceLayer.legendImageUrl) {
-                success(appLayer, { parts: [ {url: serviceLayer.legendImageUrl}] });
+                success(appLayer, { 
+                    parts: [ {
+                        url: serviceLayer.legendImageUrl,
+                        label: appLayer.alias
+                    }],
+                    name: appLayer.alias
+                });
                 return;
             }
             
