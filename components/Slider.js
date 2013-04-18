@@ -39,7 +39,7 @@ Ext.define("viewer.components.Slider",{
         this.currentSliderValue = this.initialTransparency;
 
         this.slider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
-            width: MobileManager.isMobile() ? '100%' : 180,
+            width: MobileManager.isMobile() ? '100%' : 200,
             value: this.initialTransparency,
             increment: 1,
             fieldLabel: this.name,
