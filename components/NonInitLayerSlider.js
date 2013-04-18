@@ -91,7 +91,7 @@ Ext.define("viewer.components.NonInitLayerSlider",{
         }
         if(level.children){
             for (var i =0; i < level.children.length; i++){
-                if (checkInitSelectedLevel(level.children[i],appLayerId)){
+                if (this.checkInitSelectedLevel(level.children[i],appLayerId)){
                     return true;
                 }
             }
