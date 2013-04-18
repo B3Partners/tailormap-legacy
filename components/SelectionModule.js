@@ -1067,6 +1067,7 @@ Ext.define ("viewer.components.SelectionModule",{
             var layerId = 'usl' +  + (++me.addedLayersCount);
             treeNode = me.createNode('l' + layerId, node.title, null, leaf);
             treeNode.origData.layerName = node.name;
+            treeNode.origData.alias = node.title;
             treeNode.type = 'appLayer';
             treeNode.origData.userService = userServiceId;
         }
@@ -1174,6 +1175,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             checked: true,
                             id: recordOrigData.id,
                             layerName: recordOrigData.layerName,
+                            alias: recordOrigData.alias,
                             serviceId: customService.id,
                             status: 'new'
                         });
