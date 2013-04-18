@@ -88,7 +88,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
             //Store the current map extent for every maptip request.            
             this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
-                this.setMaptipExtent(map.getExtent());
+                this.setRequestExtent(map.getExtent());
             },this); 
             //do server side getFeature.
             if (layer.hasFeatureType){

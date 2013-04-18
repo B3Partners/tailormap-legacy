@@ -37,7 +37,7 @@ Ext.define ("viewer.components.Maptip",{
     enabled: true,
     lastPosition: null,
     worldPosition: null,
-    maptipExtent:null,
+    requestExtent:null,
     /**
      * @constructor
      */
@@ -91,7 +91,7 @@ Ext.define ("viewer.components.Maptip",{
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
             //Store the current map extent for every maptip request.            
             this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,function(map,options){
-                this.setMaptipExtent(map.getExtent());
+                this.setRequestExtent(map.getExtent());
             },this);         
             
             //do server side getFeature.
@@ -176,7 +176,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     onMapData: function(layer,options){
         var curExtent = this.viewerController.mapComponent.getMap().getExtent();
-        if (curExtent.equals(this.maptipExtent)){
+        if (curExtent.equals(this.requestExtent)){
             this.onDataReturned(options);
         }
         
@@ -519,8 +519,8 @@ Ext.define ("viewer.components.Maptip",{
     
     /**
      */
-    setMaptipExtent: function (maptipExtent){
-        this.maptipExtent=maptipExtent;
+    setRequestExtent: function (requestExtent){
+        this.requestExtent=requestExtent;
     },
     /**
      * set visibility
