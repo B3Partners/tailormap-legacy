@@ -103,7 +103,14 @@ public class PrintActionBean implements ActionBean {
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
                 ArrayList<Legend> legends= new ArrayList<Legend>();
-                JSONArray jarray=jRequest.getJSONArray("legendUrl");
+                JSONArray jarray=null;
+                Object o = jRequest.get("legendUrl");
+                if (o instanceof JSONArray){
+                    jarray= (JSONArray)o;
+                }else if (o instanceof String){
+                    jarray = new JSONArray();
+                    jarray.put(o);
+                }
                 for (int i=0; i < jarray.length();i++){
                     JSONObject legendJson = new JSONObject(jarray.getString(i));
                     Legend legend = new Legend(legendJson);   
