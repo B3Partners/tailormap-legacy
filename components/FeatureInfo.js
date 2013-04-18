@@ -86,6 +86,10 @@ Ext.define ("viewer.components.FeatureInfo",{
         if(this.isSummaryLayer(mapLayer)){            
             var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+            //Store the current map extent for every maptip request.            
+            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
+                this.setMaptipExtent(map.getExtent());
+            },this); 
             //do server side getFeature.
             if (layer.hasFeatureType){
                 this.addLayerInServerRequest(appLayer);
