@@ -39,7 +39,7 @@ import org.opengis.filter.Filter;
  */
 @Entity
 @DiscriminatorValue(JDBCFeatureSource.PROTOCOL)
-public class JDBCFeatureSource extends FeatureSource implements UpdatableFeatureSource{
+public class JDBCFeatureSource extends UpdatableFeatureSource{
     private static final Log log = LogFactory.getLog(JDBCFeatureSource.class);
     
     public static final String PROTOCOL = "jdbc";
@@ -187,36 +187,7 @@ public class JDBCFeatureSource extends FeatureSource implements UpdatableFeature
         }
         return createdFeatureTypes;
     }
-    
-    @Override
-    public void update() throws Exception{
-        List<SimpleFeatureType> newFeatureTypes = this.createFeatureTypes();
-        //update and add the new featuretypes.
-        for(SimpleFeatureType newFt : newFeatureTypes){
-            MutableBoolean updated = new MutableBoolean();
-            this.addOrUpdateFeatureType(newFt.getTypeName(), newFt, updated);
-            if(updated.isTrue()) {
-                log.info("Feature type: "+newFt.getTypeName()+" updated");
-            }            
-        }
-        //remove featuretypes when not there
-        Iterator<SimpleFeatureType> it = this.getFeatureTypes().iterator();
-        while (it.hasNext()){
-            SimpleFeatureType oldFt = it.next();
-            boolean stillExists=false;
-            for(SimpleFeatureType newFt : newFeatureTypes){
-                if (newFt.getTypeName().equals(oldFt.getTypeName())){
-                    stillExists=true;
-                    break;
-                }
-            }
-            if(!stillExists){
-                it.remove();
-            }
-        }
-        //return new UpdateResult(null);
-    }
-    
+        
     public DataStore createDataStore() throws Exception {
         Map params = new HashMap();
         JSONObject urlObj = new JSONObject(getUrl());

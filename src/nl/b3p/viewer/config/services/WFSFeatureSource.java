@@ -38,7 +38,7 @@ import org.opengis.filter.Filter;
  */
 @Entity
 @DiscriminatorValue(WFSFeatureSource.PROTOCOL)
-public class WFSFeatureSource extends FeatureSource {
+public class WFSFeatureSource extends UpdatableFeatureSource {
 
     private static final Log log = LogFactory.getLog(WFSFeatureSource.class);
     public static final String PROTOCOL = "wfs";
@@ -61,8 +61,21 @@ public class WFSFeatureSource extends FeatureSource {
     }
 
     public void loadFeatureTypes(WaitPageStatus status) throws Exception {
+         this.getFeatureTypes().addAll(createFeatureTypes(status));
+    }
+    
+    /**
+     * Creates list of featuretypes for this FeatureSource
+     * @return list of featuretypes.
+     */
+    public List<SimpleFeatureType> createFeatureTypes() throws Exception{
+        return createFeatureTypes(new WaitPageStatus());
+    }
+    public List<SimpleFeatureType> createFeatureTypes(WaitPageStatus status) throws Exception {
+        
         status.setCurrentAction("Ophalen informatie...");
-
+        List<SimpleFeatureType> createdFeatureTypes = new ArrayList<SimpleFeatureType>();
+        
         DataStore store = null;
         try {
             store = createDataStore();
@@ -151,7 +164,7 @@ public class WFSFeatureSource extends FeatureSource {
 
                         att.setType(type);
                     }
-                    this.getFeatureTypes().add(sft);
+                    createdFeatureTypes.add(sft);
                     progress += progressPerTypeName;
                     status.setProgress((int) progress);
                 }
@@ -164,6 +177,7 @@ public class WFSFeatureSource extends FeatureSource {
                 store.dispose();
             }
         }
+        return createdFeatureTypes;
     }
 
     public DataStore createDataStore() throws Exception {
