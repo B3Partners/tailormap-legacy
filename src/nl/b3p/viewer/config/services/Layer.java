@@ -162,15 +162,23 @@ public class Layer implements Cloneable {
         }
         /* if min and max -scale are null, get them from the ScaleHint
          * Not quite as save as Scale Denominator, because the implementation
-         * various for implementing service products.*/        
+         * various for implementing service products.
+         * Scalehint indicates the diagonal size of a pixel in map units, to calculate
+         * the scale use Pythagorean theorem
+         */        
         if (minScale==null && maxScale ==null){
             minScale = l.getScaleHintMin();
             if (Double.isNaN(minScale)){
                 minScale=null;
+            }else{
+                minScale = Math.sqrt(minScale*minScale/2);
             }
+            
             maxScale = l.getScaleHintMax();
             if (Double.isNaN(maxScale)){
                 maxScale=null;
+            }else{
+                maxScale = Math.sqrt(maxScale*maxScale/2);
             }
         }
 
