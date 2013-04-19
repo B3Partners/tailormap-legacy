@@ -67,6 +67,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </table>
                     <div class="submitbuttons">
                         <stripes:submit name="saveEdit" value="Opslaan"/>
+                        <stripes:submit name="update" value="Update"/>
                         <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                         <stripes:reset class="extlikebutton" name="cancel" value="Annuleren"/>
                     </div>

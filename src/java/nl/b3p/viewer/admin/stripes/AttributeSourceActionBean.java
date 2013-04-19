@@ -191,6 +191,15 @@ public class AttributeSourceActionBean implements ActionBean {
 
         return edit();
     }
+    
+    public Resolution update() throws Exception{
+        if (featureSource instanceof UpdatableFeatureSource){
+            ((UpdatableFeatureSource)featureSource).update();
+        }
+        Stripersist.getEntityManager().persist(featureSource);
+        Stripersist.getEntityManager().getTransaction().commit();
+        return new ForwardResolution(EDITJSP);
+    }
 
     @ValidationMethod(on = {"save", "saveEdit"})
     public void validate(ValidationErrors errors) throws Exception {
