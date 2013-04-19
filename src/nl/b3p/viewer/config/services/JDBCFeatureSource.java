@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
@@ -38,7 +39,7 @@ import org.opengis.filter.Filter;
  */
 @Entity
 @DiscriminatorValue(JDBCFeatureSource.PROTOCOL)
-public class JDBCFeatureSource extends FeatureSource {
+public class JDBCFeatureSource extends FeatureSource implements UpdatableFeatureSource{
     private static final Log log = LogFactory.getLog(JDBCFeatureSource.class);
     
     public static final String PROTOCOL = "jdbc";
@@ -78,8 +79,19 @@ public class JDBCFeatureSource extends FeatureSource {
     }
     
     public void loadFeatureTypes(WaitPageStatus status) throws Exception {
+        this.getFeatureTypes().addAll(createFeatureTypes(status));
+    }
+    
+    /**
+     * Creates list of featuretypes for this FeatureSource
+     * @return list of featuretypes.
+     */
+    public List<SimpleFeatureType> createFeatureTypes() throws Exception{
+        return createFeatureTypes(new WaitPageStatus());
+    }
+    public List<SimpleFeatureType> createFeatureTypes(WaitPageStatus status) throws Exception{
         status.setCurrentAction("Databaseverbinding maken...");
-
+        List<SimpleFeatureType> createdFeatureTypes = new ArrayList<SimpleFeatureType>();
         DataStore store = null;
         try {
             store = createDataStore();
@@ -159,7 +171,8 @@ public class JDBCFeatureSource extends FeatureSource {
 
                         att.setType(type);
                     }
-                    this.getFeatureTypes().add(sft);         
+                    createdFeatureTypes.add(sft);
+                    
                     progress += progressPerTypeName;
                     status.setProgress((int)progress);
                 }
@@ -172,6 +185,36 @@ public class JDBCFeatureSource extends FeatureSource {
                 store.dispose();
             }
         }
+        return createdFeatureTypes;
+    }
+    
+    @Override
+    public void update() throws Exception{
+        List<SimpleFeatureType> newFeatureTypes = this.createFeatureTypes();
+        //update and add the new featuretypes.
+        for(SimpleFeatureType newFt : newFeatureTypes){
+            MutableBoolean updated = new MutableBoolean();
+            this.addOrUpdateFeatureType(newFt.getTypeName(), newFt, updated);
+            if(updated.isTrue()) {
+                log.info("Feature type: "+newFt.getTypeName()+" updated");
+            }            
+        }
+        //remove featuretypes when not there
+        Iterator<SimpleFeatureType> it = this.getFeatureTypes().iterator();
+        while (it.hasNext()){
+            SimpleFeatureType oldFt = it.next();
+            boolean stillExists=false;
+            for(SimpleFeatureType newFt : newFeatureTypes){
+                if (newFt.getTypeName().equals(oldFt.getTypeName())){
+                    stillExists=true;
+                    break;
+                }
+            }
+            if(!stillExists){
+                it.remove();
+            }
+        }
+        //return new UpdateResult(null);
     }
     
     public DataStore createDataStore() throws Exception {
