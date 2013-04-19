@@ -1068,7 +1068,12 @@ Ext.define ("viewer.components.SelectionModule",{
             treeNode = me.createNode('l' + layerId, node.title, null, leaf);
             treeNode.origData.layerName = node.name;
             treeNode.origData.alias = node.title;
-            treeNode.type = 'appLayer';
+            if(node.virtual){
+                treeNode.type = 'level';
+            }else{
+                treeNode.type = 'appLayer';
+            }
+            
             treeNode.origData.userService = userServiceId;
         }
         if(hasChildren && node.children.length > 0) {
@@ -1153,7 +1158,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
     addToSelection: function(record) {
         var me = this;
-        var nodeType = me.getNodeType(record);
+        var nodeType = me.getNodeType(record);        
         if(nodeType == "appLayer" || nodeType == "layer" || (nodeType == "maplevel" && !me.onRootLevel(record, me.activeTree))) {
             var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
             var recordOrigData = me.getOrigData(record);
