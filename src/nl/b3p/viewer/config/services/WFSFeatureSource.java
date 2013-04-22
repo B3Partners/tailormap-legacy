@@ -71,6 +71,7 @@ public class WFSFeatureSource extends UpdatableFeatureSource {
     public List<SimpleFeatureType> createFeatureTypes() throws Exception{
         return createFeatureTypes(new WaitPageStatus());
     }
+    @Override
     public List<SimpleFeatureType> createFeatureTypes(WaitPageStatus status) throws Exception {
         
         status.setCurrentAction("Ophalen informatie...");
