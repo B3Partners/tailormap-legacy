@@ -84,6 +84,8 @@ public class AttributeSourceActionBean implements ActionBean {
     @Validate
     private FeatureSource featureSource;
 
+    private boolean updatable;
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -196,14 +198,14 @@ public class AttributeSourceActionBean implements ActionBean {
         if(!isUpdatable()) {
             getContext().getMessages().add(new SimpleMessage("Attribuutbron van protocol {0} kunnen niet worden geupdate",
                     featureSource.getProtocol()));
-            return new ForwardResolution(JSP);
+            return new ForwardResolution(EDITJSP);
         }
         FeatureSourceUpdateResult result = ((UpdatableFeatureSource)featureSource).update();
-       
+        
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
             Stripersist.getEntityManager().getTransaction().rollback();
-            return new ForwardResolution(JSP);
+            return new ForwardResolution(EDITJSP);
         }
         
         Map<UpdateResult.Status,List<String>> byStatus = result.getLayerNamesByStatus();        
@@ -378,12 +380,11 @@ public class AttributeSourceActionBean implements ActionBean {
         return j;
     }
     
-    private boolean isUpdatable(){
-        if (featureSource!=null && featureSource instanceof UpdatableFeatureSource){
-            return true;
-        }
-        return false;
+    @Before
+    public void setUpdatable() {
+        updatable = featureSource instanceof UpdatableFeatureSource;
     }
+       
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public void setContext(ActionBeanContext context) {
@@ -537,5 +538,14 @@ public class AttributeSourceActionBean implements ActionBean {
     public void setUsername(String username) {
         this.username = username;
     }
+    
+    public boolean isUpdatable() {
+        return updatable;
+    }
+
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
+    }
+    
     //</editor-fold>
 }
