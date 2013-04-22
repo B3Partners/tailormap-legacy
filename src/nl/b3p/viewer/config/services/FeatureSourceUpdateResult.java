@@ -86,6 +86,7 @@ public class FeatureSourceUpdateResult {
         setMessage(msg);        
     }
     
+    //<editor-fold defaultstate="collapsed" desc="Getters setters">
     public void changed() {
         status = UpdateResult.Status.CHANGED;
     }
@@ -93,11 +94,11 @@ public class FeatureSourceUpdateResult {
     public WaitPageStatus getWaitPageStatus() {
         return waitPageStatus;
     }
-
+    
     public FeatureSource getFeatureSource() {
         return featureSource;
     }
-
+    
     public void setFeatureSource(FeatureSource featureSource) {
         this.featureSource = featureSource;
     }
@@ -105,7 +106,7 @@ public class FeatureSourceUpdateResult {
     public Throwable getException() {
         return exception;
     }
-
+    
     public void setException(Throwable exception) {
         this.exception = exception;
     }
@@ -113,24 +114,25 @@ public class FeatureSourceUpdateResult {
     public String getMessage() {
         return message;
     }
-
+    
     public void setMessage(String message) {
         this.message = message;
     }
-
+    
     public UpdateResult.Status getStatus() {
         return status;
     }
-
+    
     public void setStatus(UpdateResult.Status status) {
         this.status = status;
     }
-
+    
     public SortedMap<String, MutablePair<SimpleFeatureType, UpdateResult.Status>> getFeatureTypeStatus() {
         return featureTypeStatus;
     }
-
+    
     public void setFeatureTypeStatus(SortedMap<String, MutablePair<SimpleFeatureType, UpdateResult.Status>> featureTypeStatus) {
         this.featureTypeStatus = featureTypeStatus;
     }
+    //</editor-fold>
 }
