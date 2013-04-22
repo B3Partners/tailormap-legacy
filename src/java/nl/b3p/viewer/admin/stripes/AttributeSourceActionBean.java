@@ -193,11 +193,36 @@ public class AttributeSourceActionBean implements ActionBean {
     }
     
     public Resolution update() throws Exception{
-        if (featureSource instanceof UpdatableFeatureSource){
-            ((UpdatableFeatureSource)featureSource).update();
+        if(!isUpdatable()) {
+            getContext().getMessages().add(new SimpleMessage("Attribuutbron van protocol {0} kunnen niet worden geupdate",
+                    featureSource.getProtocol()));
+            return new ForwardResolution(JSP);
         }
+        FeatureSourceUpdateResult result = ((UpdatableFeatureSource)featureSource).update();
+       
+        if(result.getStatus() == UpdateResult.Status.FAILED) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
+            Stripersist.getEntityManager().getTransaction().rollback();
+            return new ForwardResolution(JSP);
+        }
+        
+        Map<UpdateResult.Status,List<String>> byStatus = result.getLayerNamesByStatus();        
+        log.info(String.format("Update featuretypes stats: unmodified %d, updated %d, new %d, missing %d",
+                byStatus.get(UpdateResult.Status.UNMODIFIED).size(),
+                byStatus.get(UpdateResult.Status.UPDATED).size(),
+                byStatus.get(UpdateResult.Status.NEW).size(),
+                byStatus.get(UpdateResult.Status.MISSING).size()
+        ));
+        log.info("Unmodified featuretypes: " + byStatus.get(UpdateResult.Status.UNMODIFIED));
+        log.info("Updated featuretypes: " + byStatus.get(UpdateResult.Status.UPDATED));
+        log.info("New featuretypes: " + byStatus.get(UpdateResult.Status.NEW));
+        log.info("Missing featuretypes: " + byStatus.get(UpdateResult.Status.MISSING));
+        
+        getContext().getMessages().add(new SimpleMessage("De attribuutbron is geupdate"));
+        
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
+        
         return new ForwardResolution(EDITJSP);
     }
 
@@ -351,6 +376,13 @@ public class AttributeSourceActionBean implements ActionBean {
         j.put("url", url);
         j.put("protocol", type);
         return j;
+    }
+    
+    private boolean isUpdatable(){
+        if (featureSource!=null && featureSource instanceof UpdatableFeatureSource){
+            return true;
+        }
+        return false;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
