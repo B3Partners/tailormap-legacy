@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -36,9 +37,12 @@ public class FeatureTypeRelation {
     private Long id;
     @ManyToOne    
     private SimpleFeatureType featureType;
+    
+    @ManyToOne
+    private SimpleFeatureType foreignFeatureType;
         
     @OneToMany(cascade=CascadeType.ALL, mappedBy="relation")
-    private List<FeatureTypeRelationKey> relationKeys;
+    private List<FeatureTypeRelationKey> relationKeys = new ArrayList<FeatureTypeRelationKey>();
     
     private String type;
     
@@ -74,6 +78,14 @@ public class FeatureTypeRelation {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public SimpleFeatureType getForeignFeatureType() {
+        return foreignFeatureType;
+    }
+
+    public void setForeignFeatureType(SimpleFeatureType foreignFeatureType) {
+        this.foreignFeatureType = foreignFeatureType;
     }
     //</editor-fold>
 }

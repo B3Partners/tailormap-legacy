@@ -2,6 +2,7 @@ create table feature_type_relation (
     id  bigserial not null,
     type varchar(255),
     feature_type int8,
+    foreign_feature_type int8,
     primary key (id)
 );
 
@@ -12,6 +13,11 @@ create table feature_type_relation_key (
     right_side int8,
     primary key (id)
 );
+
+alter table feature_type_relation 
+    add constraint FK1CA203D8C6F0470B 
+    foreign key (foreign_feature_type) 
+    references feature_type;
 
 alter table feature_type_relation 
     add constraint FK1CA203D8B7916580 

@@ -54,6 +54,9 @@ public class SimpleFeatureType {
 
     private String geometryAttribute;
     
+    @OneToMany (cascade=CascadeType.ALL, mappedBy="featureType")
+    private List<FeatureTypeRelation> relations = new ArrayList<FeatureTypeRelation>();
+    
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
     @OrderColumn(name="list_index")
@@ -114,6 +117,14 @@ public class SimpleFeatureType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public List<FeatureTypeRelation> getRelations() {
+        return relations;
+    }
+
+    public void setRelations(List<FeatureTypeRelation> relations) {
+        this.relations = relations;
     }
     //</editor-fold>
     
@@ -227,5 +238,6 @@ public class SimpleFeatureType {
         }
         return o;
     }
+
 }
 
