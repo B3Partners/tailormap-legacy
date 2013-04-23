@@ -79,6 +79,24 @@
         </attributes>
     </entity>
     
+    <entity class="nl.b3p.viewer.config.services.FeatureTypeRelation">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="ft_relation_id_seq"/>
+                <sequence-generator name="ft_relation_id_seq" sequence-name="ft_relation_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.FeatureTypeRelationKey">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="ft_relation_key_id_seq"/>
+                <sequence-generator name="ft_relation_key_id_seq" sequence-name="ft_relation_key_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+    
     <entity class="nl.b3p.viewer.config.services.Document">
         <attributes>
             <id name="id">

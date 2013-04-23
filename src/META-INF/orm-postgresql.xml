@@ -85,6 +85,22 @@
         </attributes>
     </entity>
     
+    <entity class="nl.b3p.viewer.config.services.FeatureTypeRelation">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+    
+    <entity class="nl.b3p.viewer.config.services.FeatureTypeRelationKey">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+    
     <entity class="nl.b3p.viewer.config.services.Document">
         <attributes>
             <id name="id">
