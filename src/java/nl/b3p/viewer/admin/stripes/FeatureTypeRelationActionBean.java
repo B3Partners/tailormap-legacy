@@ -1,0 +1,395 @@
+/*
+ * Copyright (C) 2013 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package nl.b3p.viewer.admin.stripes;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import net.sourceforge.stripes.action.ActionBean;
+import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.DefaultHandler;
+import net.sourceforge.stripes.action.DontBind;
+import net.sourceforge.stripes.action.DontValidate;
+import net.sourceforge.stripes.action.ForwardResolution;
+import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.SimpleMessage;
+import net.sourceforge.stripes.action.StreamingResolution;
+import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
+
+/**
+ *
+ * @author Roy Braam
+ */
+@UrlBinding("/action/featuretyperelation/{$event}")
+public class FeatureTypeRelationActionBean implements ActionBean{
+    private ActionBeanContext context;
+    private static final String JSP = "/WEB-INF/jsp/services/featuretyperelation.jsp";
+    private static final String EDITJSP = "/WEB-INF/jsp/services/editfeaturetyperelation.jsp";
+
+    private List<FeatureTypeRelation> relations = new ArrayList<FeatureTypeRelation>();
+    private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();
+    private List<SimpleFeatureType> foreignFeatureTypes = new ArrayList<SimpleFeatureType>();
+    private List<FeatureSource> featureSources = new ArrayList<FeatureSource>();
+    
+    private Long featureSourceId;
+    private Long featureTypeId;
+    /**
+     * For filling the grid
+     */
+    @Validate
+    private int page;
+    @Validate
+    private int start;
+    @Validate
+    private int limit;
+    @Validate
+    private String sort;
+    @Validate
+    private String dir;
+    @Validate
+    private JSONArray filter;
+    
+    @Validate
+    private FeatureTypeRelation relation;
+    
+    @DefaultHandler
+    public Resolution view() {
+        //relations = Stripersist.getEntityManager().createQuery("from FeatureTypeRelation").getResultList();
+        return new ForwardResolution(JSP);
+    }
+    
+    public Resolution save(){                                        
+        Stripersist.getEntityManager().persist(relation);
+        Stripersist.getEntityManager().getTransaction().commit();
+        
+        getContext().getMessages().add(new SimpleMessage("Join/Relatie is opgeslagen"));
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    public Resolution edit() {                
+        featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
+        if (relation!=null && relation.getFeatureType()!=null){
+            featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType s where s.featureSource = :f").setParameter("f", relation.getFeatureType().getFeatureSource()).getResultList(); 
+        }
+        if (relation!=null && relation.getForeignFeatureType()!=null){
+            foreignFeatureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType s where s.featureSource = :f").setParameter("f", relation.getForeignFeatureType().getFeatureSource()).getResultList(); 
+        }
+        Stripersist.getEntityManager().getTransaction().commit();
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    @DontBind
+    public Resolution cancel() {        
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    public Resolution delete() {
+        Stripersist.getEntityManager().remove(relation);
+        Stripersist.getEntityManager().getTransaction().commit();
+        getContext().getMessages().add(new SimpleMessage("Featuretype relatie is verwijderd"));
+        return new ForwardResolution(EDITJSP);
+    }
+    
+    @DontValidate
+    public Resolution getGridData() throws JSONException { 
+        JSONArray jsonData = new JSONArray();
+        
+        String filterFeaturetype = "";
+        String filterForeignFeaturetype = "";
+        
+        /* 
+         * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
+         * for demo purposes the value is now returned, ofcourse here should the DB
+         * query be built to filter the right records
+         */
+        if(this.getFilter() != null) {
+            for(int k = 0; k < this.getFilter().length(); k++) {
+                JSONObject j = this.getFilter().getJSONObject(k);
+                String property = j.getString("property");
+                String value = j.getString("value");
+                if(property.equals("featuretype")) {
+                    filterFeaturetype = value;
+                }else if(property.equals("foreign featuretype")){
+                    filterForeignFeaturetype=value;                    
+                }
+            }
+        }
+        
+        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
+        Criteria c = sess.createCriteria(FeatureTypeRelation.class);
+        
+        /* Sorting is delivered by the frontend
+         * as two variables: sort which holds the column name and dir which
+         * holds the direction (ASC, DESC).
+         */
+        /*if(sort != null && dir != null){
+            Order order = null;
+            if(dir.equals("ASC")){
+               order = Order.asc(sort);
+            }else{
+                order = Order.desc(sort);
+            }
+            order.ignoreCase();
+            c.addOrder(order);
+        }*/
+        //todo implement filtering
+        /*if(filterFeaturetype != null && filterFeaturetype.length() > 0){
+            Criterion nameCrit = Restrictions.ilike("name", filterFeaturetype, MatchMode.ANYWHERE);
+            c.add(nameCrit);
+        }*/
+        
+        int rowCount = c.list().size();
+        
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
+        
+        List relations = c.list();
+        for(Iterator it = relations.iterator(); it.hasNext();){
+            FeatureTypeRelation relation = (FeatureTypeRelation)it.next();
+            JSONObject j = this.getGridRow(relation.getId().intValue(), relation.getFeatureType().getTypeName(), relation.getForeignFeatureType().getTypeName());
+            jsonData.put(j);
+        }
+        
+        final JSONObject grid = new JSONObject();
+        grid.put("totalCount", rowCount);
+        grid.put("gridrows", jsonData);
+    
+        return new StreamingResolution("application/json") {
+           @Override
+           public void stream(HttpServletResponse response) throws Exception {
+               response.getWriter().print(grid.toString());
+           }
+        };
+    }
+    /**
+     * Get the attribute names for the given FeatureType that are not of type Geometry
+     * @return A JSON object formated as:
+     *  Object {
+     *      attributes [{id,name}{id,name}]
+     *      error
+     *  }
+     */
+    public Resolution getAttributes () throws JSONException{
+        final JSONObject json = new JSONObject();
+        boolean success=false;
+        SimpleFeatureType featureType = Stripersist.getEntityManager().find(SimpleFeatureType.class, featureTypeId);
+        if (featureType!=null){                        
+            JSONArray array = new JSONArray();
+            List<AttributeDescriptor> attributes=featureType.getAttributes();
+            for (AttributeDescriptor attr : attributes){
+                if (!AttributeDescriptor.GEOMETRY_TYPES.contains(attr.getType())){
+                    JSONObject ob = new JSONObject();
+                    ob.put("id", attr.getId());
+                    if (attr.getAlias()!=null){
+                        ob.put("name",attr.getAlias());
+                    }else{
+                        ob.put("name",attr.getName());
+                    }
+                    array.put(ob);
+                }
+            }
+            json.put("attributes", array);
+            success=true;
+        }else{
+            json.put("error", "No featureType found");
+        }
+        json.put("success", success);
+        return new StreamingResolution("application/json") {
+           @Override
+           public void stream(HttpServletResponse response) throws Exception {
+               response.getWriter().print(json.toString());
+           }
+        };
+    }
+    /**
+     * Get the featuretypes of the given feature source id.
+     * @return A JSON object formated as:
+     *  Object {
+     *      featuretypes [{id,name}{id,name}]
+     *      error
+     *  }
+     */
+    public Resolution getFeatureTypesForSource () throws JSONException{
+        final JSONObject json = new JSONObject();
+        boolean success=false;  
+        if (featureSourceId==null){
+            json.put("error", "No featureSourceId found");
+        }else{
+            FeatureSource featureSource = Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
+            if (featureSource!=null){                        
+                JSONArray array = new JSONArray();
+                List<SimpleFeatureType> featureTypes=featureSource.getFeatureTypes();
+                for (SimpleFeatureType ft : featureTypes){
+                    JSONObject ob = new JSONObject();
+                    ob.put("id", ft.getId());
+                    String name = ft.getTypeName();
+                    if (!StringUtils.isBlank(ft.getDescription())){
+                        name+=" ("+ft.getDescription()+")";
+                    }
+                    ob.put("name",name);                
+                    array.put(ob);
+                }
+                json.put("featuretypes", array);            
+                success=true;
+            }else{
+                json.put("error", "No featureType found");
+            }
+        }
+        json.put("success", success);
+        return new StreamingResolution("application/json") {
+           @Override
+           public void stream(HttpServletResponse response) throws Exception {
+               response.getWriter().print(json.toString());
+           }
+        };
+    }
+    
+    private JSONObject getGridRow(int i, String typeName, String foreignTypeName) throws JSONException {
+        JSONObject j = new JSONObject();
+        j.put("id", i);
+        j.put("featuretype", typeName);
+        j.put("foreign featuretype",foreignTypeName);
+        return j;
+    }
+    //<editor-fold defaultstate="collapsed" desc="Getters/setters">
+    public ActionBeanContext getContext() {
+        return context;
+    }
+    
+    public void setContext(ActionBeanContext context) {
+        this.context = context;
+    }
+    //</editor-fold>
+
+    public List<FeatureTypeRelation> getRelations() {
+        return relations;
+    }
+
+    public void setRelations(List<FeatureTypeRelation> relations) {
+        this.relations = relations;
+    }
+
+    public FeatureTypeRelation getRelation() {
+        return relation;
+    }
+
+    public void setRelation(FeatureTypeRelation relation) {
+        this.relation = relation;
+    }
+
+    public void setFeatureTypes(List<SimpleFeatureType> featureTypes) {
+        this.featureTypes = featureTypes;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public String getDir() {
+        return dir;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
+    public JSONArray getFilter() {
+        return filter;
+    }
+
+    public void setFilter(JSONArray filter) {
+        this.filter = filter;
+    }
+
+    public List<SimpleFeatureType> getForeignFeatureTypes() {
+        return foreignFeatureTypes;
+    }
+
+    public void setForeignFeatureTypes(List<SimpleFeatureType> foreignFeatureTypes) {
+        this.foreignFeatureTypes = foreignFeatureTypes;
+    }
+
+    public List<FeatureSource> getFeatureSources() {
+        return featureSources;
+    }
+
+    public void setFeatureSources(List<FeatureSource> featureSources) {
+        this.featureSources = featureSources;
+    }
+
+    public Long getFeatureSourceId() {
+        return featureSourceId;
+    }
+
+    public void setFeatureSourceId(Long featureSourceId) {
+        this.featureSourceId = featureSourceId;
+    }
+
+    public Long getFeatureTypeId() {
+        return featureTypeId;
+    }
+
+    public void setFeatureTypeId(Long featureTypeId) {
+        this.featureTypeId = featureTypeId;
+    }
+
+    public List<SimpleFeatureType> getFeatureTypes() {
+        return featureTypes;
+    }
+
+}
