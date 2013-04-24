@@ -38,3 +38,7 @@ alter table feature_type_relation_key
     add constraint FK31F9257826403964 
     foreign key (right_side) 
     references attribute_descriptor;
+
+create sequence ft_relation_id_seq;
+
+create sequence ft_relation_key_id_seq;
