@@ -24,19 +24,39 @@ featuretypeSelect
 foreignFeaturetypeSelect
 */
 Ext.onReady(function(){
-    var ft = Ext.get('featureSourceSelect');    
-    ft.on('change', function() {
-        featureSourceChanged(ft,Ext.get('featuretypeSelect'));
+    Ext.get('featureSourceSelect').on('change', function() {
+        attributes=[];
+        featureSourceChanged(this,Ext.get('featuretypeSelect'));
     });                
 
-    var fft = Ext.get('foreignFeatureSourceSelect');
-    fft.on('change', function(){
-        featureSourceChanged(fft, Ext.get('foreignFeaturetypeSelect'));
+    Ext.get('foreignFeatureSourceSelect').on('change', function(){
+        foreignAttributes=[];
+        featureSourceChanged(this, Ext.get('foreignFeaturetypeSelect'));
+    });
+    
+    Ext.get('featuretypeSelect').on('change', function(){
+        attributes=[];
+        featureTypeChanged(this, setAttributes);
+    });
+    
+    Ext.get('foreignFeaturetypeSelect').on('change', function(){
+        foreignAttributes=[];
+        featureTypeChanged(this, setForeignAttributes);
     });
     
     // Init with change, because a certain select value can be preselected
     //featureTypeChanged(ft);     
 });
+
+var attributes=[];
+var foreignAttributes=[];
+
+function setAttributes(att){
+    attributes=att;
+}
+function setForeignAttributes(att){
+    foreignAttributes=att;
+}
 
 function featureSourceChanged(el,resultEl){
     var fsId = parseInt(el.getValue());
@@ -44,6 +64,7 @@ function featureSourceChanged(el,resultEl){
     if (fsId < 0 ){
         return;
     }
+    clearAttributeBoxes();
     Ext.Ajax.request({
         url: featureTypeUrl,
         params: {featureSourceId: fsId},
@@ -67,26 +88,75 @@ function featureSourceChanged(el,resultEl){
         }
     });    
 }
-function featureTypeChanged(el){
+function featureTypeChanged(el,setAttFunction){
     var ftId= parseInt(el.getValue());
     if (ftId < 0 ){
         return;
     }
+    clearAttributeBoxes();
     Ext.Ajax.request({
         url: attributesUrl,
         params: {featureTypeId: ftId},
         success: function(result){
             var response = Ext.JSON.decode(result.responseText);
-            var listEl=Ext.get("attributeList");
             if(response.success) {
-                var attr= 
-                listEl.update("<b>Attributen lijst</b><br/>"+response.attributes.join("<br/>"));
+                setAttFunction.call(this,response.attributes);
+                addAttributeBoxes();
             } else {
-                listEl.update(response.error);
+                alert(response.error);
             }
         },
         failure: function(result){            
             failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);            
         }
     });
+}
+
+var attributeBoxes=[];
+function addAttributeBoxes(leftValue,rightValue){
+    if (attributes.length > 0 && foreignAttributes.length > 0){
+        //left box
+        var leftEl=document.createElement("select");
+        leftEl.id="leftSide_"+(attributes.length/2);
+        leftEl.name="leftSide["+(attributes.length/2)+"]";
+        var leftBox = new Ext.Element(leftEl);
+        leftBox.addCls("relation_left_side");
+        var html="<option value=\"-1\">Maak uw keuze.</option>";
+        for (var id in attributes){
+            var at=attributes[id];       
+            html+="<option value=\""+at.id+"\"";
+            if (leftValue==at.id){
+                html+=" selected=\"selected\"";                
+            }
+            html+=">"+at.name+"</option>";        
+        }
+        leftBox.update(html);
+        attributeBoxes.push(leftBox);
+        
+        //right box
+        var rightEl=document.createElement("select");
+        rightEl.id="rightSide_"+(foreignAttributes.length/2);
+        leftEl.name="leftSide["+(attributes.length/2)+"]";
+        var rightBox = new Ext.Element(rightEl);
+        rightBox.addCls("relation_right_side");
+        var html="<option value=\"-1\">Maak uw keuze.</option>";
+        for (var id in foreignAttributes){
+            var at=foreignAttributes[id];       
+            html+="<option value=\""+at.id+"\"";   
+            if (rightValue==at.id){
+                html+=" selected=\"selected\"";                
+            }
+            html+=">"+at.name+"</option>";        
+        }
+        rightBox.update(html);
+        attributeBoxes.push(rightBox);
+        
+        var container=Ext.get("attributeContainer");
+        container.appendChild(leftBox);        
+        container.appendChild(rightBox);        
+    }
+}
+function clearAttributeBoxes(){
+    var container=Ext.get("attributeContainer");
+    container.update("");
 }

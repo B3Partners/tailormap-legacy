@@ -28,13 +28,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
         </p>
-
+            <script type="text/javascript" src="${contextPath}/resources/js/services/editfeaturetyperelation.js"></script>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="relation" value="${actionBean.relation.id}"/>
                         <h1 id="headertext">Relatie bewerken</h1>
-                        <table class="formtable">
+                        <table class="formtable">                            
                             <tr>
                                 <td>Attribuutbron: </td>
                                 <td>
@@ -47,7 +47,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                             </c:if>
                                             <option value="${s.id}"${selected}>${s.name}</option>
                                         </c:forEach>
+                                    </select>                                    
+                                </td>
+                                <td></td>
+                                <td>
+                                    <select id="foreignFeatureSourceSelect">
+                                       <option value="-1">Maak uw keuze..</option>
+                                       <c:forEach var="s" items="${actionBean.featureSources}">
+                                           <c:set var="selected" value="" />
+                                           <c:if test="${actionBean.relation.foreignFeatureType.featureSource.id == s.id}">
+                                               <c:set var="selected" value=" selected=\"selected\"" />
+                                           </c:if>
+                                           <option value="${s.id}"${selected}>${s.name}</option>
+                                       </c:forEach>
                                     </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td> 
+                                <td></td>
+                                <td>Koppelen met</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Featuretype:
+                                </td>
+                                <td>
                                     <stripes:select name="relation.featureType" id="featuretypeSelect">
                                         <option value="-1">Maak uw keuze..</option>
                                         <c:forEach var="f" items="${actionBean.featureTypes}">    
@@ -59,21 +85,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         </c:forEach>
                                     </stripes:select>
                                 </td>
-                            </tr>
-                            <tr><td colspan="2">Koppelen aan</td></tr>
-                            <tr>
-                                <td>Attribuutbron2: </td>
+                                <td></td>
                                 <td>
-                                    <select id="foreignFeatureSourceSelect">
-                                        <option value="-1">Maak uw keuze..</option>
-                                        <c:forEach var="s" items="${actionBean.featureSources}">
-                                            <c:set var="selected" value="" />
-                                            <c:if test="${actionBean.relation.foreignFeatureType.featureSource.id == s.id}">
-                                                <c:set var="selected" value=" selected=\"selected\"" />
-                                            </c:if>
-                                            <option value="${s.id}"${selected}>${s.name}</option>
-                                        </c:forEach>
-                                    </select>
                                     <stripes:select name="relation.foreignFeatureType" id="foreignFeaturetypeSelect">
                                         <option value="-1">Maak uw keuze..</option>
                                         <c:forEach var="f" items="${actionBean.foreignFeatureTypes}">    
@@ -86,12 +99,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </stripes:select>
                                 </td>
                             </tr>
-                        </table>
+                        </table> 
+                        <div style="margin-top: 10px;">Relatie op basis van de volgende attributen:</div>
+                        <div id="attributeContainer"> </div> 
+                        <%-- init attributes --%>                        
+                        <script type="text/javascript">     
+                            <c:forEach var="a" items="${actionBean.relation.featureType.attributes}">
+                                attributes.push({id: ${a.id},name: '${a.name}'});
+                            </c:forEach>
+                            <c:forEach var="a" items="${actionBean.relation.foreignFeatureType.attributes}">
+                                foreignAttributes.push({id: ${a.id},name: '${a.name}'});
+                            </c:forEach>
+                            <c:choose>
+                                <c:when test="${fn:length(actionBean.relation.relationKeys)>0}">
+                                    <c:forEach var="k" items="${actionBean.relation.relationKeys}">
+                                        addAttributeBoxes(k.leftSide.id,k.rightSide.id);
+                                    </c:forEach> 
+                                </c:when>
+                                <c:otherwise>
+                                    addAttributeBoxes();
+                                </c:otherwise>
+                            </c:choose>
+                        </script>
                         <div class="submitbuttons">
                             <stripes:submit name="save" value="Opslaan"/>
                             <stripes:submit name="cancel" value="Annuleren"/>
                         </div>
-                        <script type="text/javascript" src="${contextPath}/resources/js/services/editfeaturetyperelation.js"></script>
+                        
                     </c:when>
                     <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                         <script type="text/javascript">
@@ -109,7 +143,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </stripes:form>
         </div>
         <script type="text/javascript">
-            var attributesUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getAttributes"/>';
+            var attributesUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getAttributesForFeaturetype"/>';
             var featureTypeUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getFeatureTypesForSource"/>';
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent');
