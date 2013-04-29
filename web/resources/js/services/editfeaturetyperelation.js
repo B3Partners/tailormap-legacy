@@ -81,6 +81,7 @@ function featureSourceChanged(el,resultEl){
                 resultEl.update(html);
             } else {
                 alert(response.error);
+                
             }
         },
         failure: function(result){            
@@ -153,8 +154,11 @@ function addAttributeBoxes(leftValue,rightValue){
         attributeBoxes.push(rightBox);
         
         var container=Ext.get("attributeContainer");
+        container.insertHtml('beforeEnd','- ');
         container.appendChild(leftBox);        
+        container.insertHtml('beforeEnd',' = ');
         container.appendChild(rightBox);        
+        container.insertHtml('beforeEnd','<br>');
     }
 }
 function clearAttributeBoxes(){

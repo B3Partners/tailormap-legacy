@@ -113,7 +113,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <c:choose>
                                 <c:when test="${fn:length(actionBean.relation.relationKeys)>0}">
                                     <c:forEach var="k" items="${actionBean.relation.relationKeys}">
-                                        addAttributeBoxes(k.leftSide.id,k.rightSide.id);
+                                        addAttributeBoxes(${k.leftSide.id},${k.rightSide.id});
                                     </c:forEach> 
                                 </c:when>
                                 <c:otherwise>

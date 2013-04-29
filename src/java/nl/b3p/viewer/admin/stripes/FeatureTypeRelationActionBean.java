@@ -93,9 +93,9 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     }
     
     public Resolution save(){                                        
-        List<FeatureTypeRelationKey> keys = new ArrayList<FeatureTypeRelationKey>();
-        
         Iterator<Integer> it=leftSide.keySet().iterator();
+        
+        relation.getRelationKeys().clear();
         while (it.hasNext()){
             Integer i=it.next();
             Long leftId= leftSide.get(i);
