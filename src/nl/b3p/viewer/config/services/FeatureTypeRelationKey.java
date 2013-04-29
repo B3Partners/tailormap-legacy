@@ -39,6 +39,13 @@ public class FeatureTypeRelationKey {
     @ManyToOne
     private AttributeDescriptor rightSide;
 
+    public FeatureTypeRelationKey(){}
+    
+    public FeatureTypeRelationKey(FeatureTypeRelation relation,AttributeDescriptor leftSide,AttributeDescriptor rightSide){
+        this.relation=relation;
+        this.leftSide = leftSide;
+        this.rightSide = rightSide;
+    }
     
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
     public Long getId() {
