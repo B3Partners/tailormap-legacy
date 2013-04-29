@@ -34,6 +34,9 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import net.sourceforge.stripes.validation.ValidationErrors;
+import net.sourceforge.stripes.validation.ValidationMethod;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
@@ -84,6 +87,11 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     private JSONArray filter;
     
     @Validate
+    @ValidateNestedProperties({
+        @Validate(field="featureType", required=true, on="save"),
+        @Validate(field="foreignFeatureType", required=true, on="save"),
+        @Validate(field="type", required=true, on="save")
+    })
     private FeatureTypeRelation relation;
     
     @DefaultHandler
@@ -309,6 +317,17 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         j.put("foreignFeaturetype",foreignTypeName);
         return j;
     }
+    
+    @ValidationMethod(on="save")
+    public void validate(ValidationErrors errors){
+        if (relation!=null){
+            if (leftSide.isEmpty() || rightSide.isEmpty()){
+                getContext().getValidationErrors().addGlobalError(new SimpleError("Minstens 1 relatie moet worden gelegd tussen de attributen van de featuretypen."));
+                return;
+            }
+        }
+    }
+    
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">
     public ActionBeanContext getContext() {
         return context;
@@ -317,7 +336,6 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    //</editor-fold>
 
     public List<FeatureTypeRelation> getRelations() {
         return relations;
@@ -438,4 +456,5 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     public void setRightSide(Map<Integer,Long> rightSide) {
         this.rightSide = rightSide;
     }
+    //</editor-fold>
 }

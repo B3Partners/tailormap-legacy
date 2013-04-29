@@ -99,6 +99,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </stripes:select>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>Type relatie:</td>
+                                <td><stripes:radio name="relation.type" value="join"/>Join<br>
+                                    <stripes:radio name="relation.type" value="relate"/>Relate
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </table> 
                         <div style="margin-top: 10px;">Relatie op basis van de volgende attributen:</div>
                         <div id="attributeContainer"> </div> 
