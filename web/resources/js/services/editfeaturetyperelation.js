@@ -117,8 +117,8 @@ function addAttributeBoxes(leftValue,rightValue){
     if (attributes.length > 0 && foreignAttributes.length > 0){
         //left box
         var leftEl=document.createElement("select");
-        leftEl.id="leftSide_"+(attributes.length/2);
-        leftEl.name="leftSide["+(attributes.length/2)+"]";
+        leftEl.id="leftSide_"+(attributeBoxes.length/2);
+        leftEl.name="leftSide["+(attributeBoxes.length/2)+"]";
         var leftBox = new Ext.Element(leftEl);
         leftBox.addCls("relation_left_side");
         var html="<option value=\"-1\">Maak uw keuze.</option>";
@@ -129,14 +129,13 @@ function addAttributeBoxes(leftValue,rightValue){
                 html+=" selected=\"selected\"";                
             }
             html+=">"+at.name+"</option>";        
-        }
+        }        
         leftBox.update(html);
-        attributeBoxes.push(leftBox);
         
         //right box
         var rightEl=document.createElement("select");
-        rightEl.id="rightSide_"+(foreignAttributes.length/2);
-        leftEl.name="leftSide["+(attributes.length/2)+"]";
+        rightEl.id="rightSide_"+(attributeBoxes.length/2);
+        rightEl.name="rightSide["+(attributeBoxes.length/2)+"]";
         var rightBox = new Ext.Element(rightEl);
         rightBox.addCls("relation_right_side");
         var html="<option value=\"-1\">Maak uw keuze.</option>";
@@ -149,6 +148,8 @@ function addAttributeBoxes(leftValue,rightValue){
             html+=">"+at.name+"</option>";        
         }
         rightBox.update(html);
+        
+        attributeBoxes.push(leftBox);
         attributeBoxes.push(rightBox);
         
         var container=Ext.get("attributeContainer");

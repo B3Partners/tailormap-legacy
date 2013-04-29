@@ -17,8 +17,10 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
@@ -30,10 +32,12 @@ import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
@@ -57,8 +61,12 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();
     private List<SimpleFeatureType> foreignFeatureTypes = new ArrayList<SimpleFeatureType>();
     private List<FeatureSource> featureSources = new ArrayList<FeatureSource>();
+    
     private Long featureSourceId;
     private Long featureTypeId;
+    @Validate
+    private Map<Integer,Long> leftSide = new HashMap<Integer, Long>();
+    private Map<Integer,Long> rightSide = new HashMap<Integer, Long>();
     /**
      * For filling the grid
      */
@@ -85,6 +93,22 @@ public class FeatureTypeRelationActionBean implements ActionBean{
     }
     
     public Resolution save(){                                        
+        List<FeatureTypeRelationKey> keys = new ArrayList<FeatureTypeRelationKey>();
+        
+        Iterator<Integer> it=leftSide.keySet().iterator();
+        while (it.hasNext()){
+            Integer i=it.next();
+            Long leftId= leftSide.get(i);
+            Long rightId= rightSide.get(i);
+            if (leftId==null || rightId==null || leftId ==-1 || rightId ==-1){
+                getContext().getMessages().add(new SimpleError("Niet alle attribuut relaties zijn ingevuld"));
+                return new ForwardResolution(EDITJSP);
+            }
+            AttributeDescriptor left = Stripersist.getEntityManager().find(AttributeDescriptor.class, leftId);
+            AttributeDescriptor right  = Stripersist.getEntityManager().find(AttributeDescriptor.class, rightId);
+            FeatureTypeRelationKey key = new FeatureTypeRelationKey(relation,left,right);
+            relation.getRelationKeys().add(key);
+        }
         Stripersist.getEntityManager().persist(relation);
         Stripersist.getEntityManager().getTransaction().commit();
         
@@ -92,7 +116,7 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         return new ForwardResolution(EDITJSP);
     }
     
-    public Resolution edit() {                
+    public Resolution edit() {
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
         if (relation!=null && relation.getFeatureType()!=null){
             featureTypes = Stripersist.getEntityManager().createQuery("from SimpleFeatureType s where s.featureSource = :f").setParameter("f", relation.getFeatureType().getFeatureSource()).getResultList();                         
@@ -397,5 +421,21 @@ public class FeatureTypeRelationActionBean implements ActionBean{
 
     public List<SimpleFeatureType> getFeatureTypes() {
         return featureTypes;
+    }
+
+    public Map<Integer,Long> getLeftSide() {
+        return leftSide;
+    }
+
+    public void setLeftSide(Map<Integer,Long> leftSide) {
+        this.leftSide = leftSide;
+    }
+
+    public Map<Integer,Long> getRightSide() {
+        return rightSide;
+    }
+
+    public void setRightSide(Map<Integer,Long> rightSide) {
+        this.rightSide = rightSide;
     }
 }
