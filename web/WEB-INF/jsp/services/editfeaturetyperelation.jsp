@@ -101,7 +101,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </tr>
                             <tr>
                                 <td>Type relatie:</td>
-                                <td><stripes:radio name="relation.type" value="join"/>Join<br>
+                                <td><stripes:radio name="relation.type" value="join" checked="checked"/>Join<br>
                                     <stripes:radio name="relation.type" value="relate"/>Relate
                                 </td>
                                 <td></td>

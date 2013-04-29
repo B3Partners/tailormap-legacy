@@ -45,6 +45,9 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -155,6 +158,39 @@ public class FeatureTypeRelationActionBean implements ActionBean{
         String filterFeaturetype = "";
         String filterForeignFeaturetype = "";
         
+        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
+        Criteria c = sess.createCriteria(FeatureTypeRelation.class);
+        
+        /* Sorting is delivered by the frontend
+         * as two variables: sort which holds the column name and dir which
+         * holds the direction (ASC, DESC).
+         */
+        c.createAlias("featureType", "f");
+        c.createAlias("f.featureSource", "fs");
+        c.createAlias("foreignFeatureType", "ff");
+        c.createAlias("ff.featureSource", "ffs");
+        if(sort != null && dir != null){
+            Order order = null;
+            if (sort.equals("featuretype") || sort.equals("foreignFeaturetype")){
+                sort="f";
+                if (sort.equals("foreignFeaturetype")){
+                    sort="ff";
+                }
+                String sort1 = sort+"s.name";
+                String sort2 = sort+".typeName";
+                String sort3 = sort+".description";
+                if(dir.equals("ASC")){
+                    c.addOrder(Order.asc(sort1).ignoreCase());
+                    c.addOrder(Order.asc(sort2).ignoreCase());
+                    c.addOrder(Order.asc(sort3).ignoreCase());
+                }else{
+                    c.addOrder(Order.desc(sort1).ignoreCase());
+                    c.addOrder(Order.desc(sort2).ignoreCase());
+                    c.addOrder(Order.desc(sort3).ignoreCase());
+                }
+            }
+            
+        }
         /* 
          * FILTERING: filter is delivered by frontend as JSON array [{property, value}]
          * for demo purposes the value is now returned, ofcourse here should the DB
@@ -164,37 +200,23 @@ public class FeatureTypeRelationActionBean implements ActionBean{
             for(int k = 0; k < this.getFilter().length(); k++) {
                 JSONObject j = this.getFilter().getJSONObject(k);
                 String property = j.getString("property");
-                String value = j.getString("value");
-                if(property.equals("featuretype")) {
-                    filterFeaturetype = value;
-                }else if(property.equals("foreign featuretype")){
-                    filterForeignFeaturetype=value;                    
+                String value = j.getString("value");                
+                if (property.equals("featuretype") ||property.equals("foreignFeaturetype")){
+                    if(property.equals("featuretype")) {
+                        property= "f";
+                        //filterFeaturetype = value;
+                    }else if(property.equals("foreignFeaturetype")){
+                        property= "ff";                 
+                    }
+                    String filt1 = property+"s.name";
+                    String filt2 = property+".typeName";
+                    String filt3 = property+".description";
+                    c.add(Restrictions.or(Restrictions.ilike(filt1,value,MatchMode.ANYWHERE),
+                            Restrictions.or(Restrictions.ilike(filt2,value,MatchMode.ANYWHERE),
+                            Restrictions.ilike(filt3, value,MatchMode.ANYWHERE))));
                 }
             }
         }
-        
-        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
-        Criteria c = sess.createCriteria(FeatureTypeRelation.class);
-        
-        /* Sorting is delivered by the frontend
-         * as two variables: sort which holds the column name and dir which
-         * holds the direction (ASC, DESC).
-         */
-        /*if(sort != null && dir != null){
-            Order order = null;
-            if(dir.equals("ASC")){
-               order = Order.asc(sort);
-            }else{
-                order = Order.desc(sort);
-            }
-            order.ignoreCase();
-            c.addOrder(order);
-        }*/
-        //todo implement filtering
-        /*if(filterFeaturetype != null && filterFeaturetype.length() > 0){
-            Criterion nameCrit = Restrictions.ilike("name", filterFeaturetype, MatchMode.ANYWHERE);
-            c.add(nameCrit);
-        }*/
         
         int rowCount = c.list().size();
         
