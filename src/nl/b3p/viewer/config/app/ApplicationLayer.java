@@ -145,19 +145,7 @@ public class ApplicationLayer {
     public void setLayerName(String layerName) {
         this.layerName = layerName;
     }
-    //</editor-fold> 
-    /**
-     * use getAttribute(SimpleFeatureType sft,String name) instead
-     */
-    @Deprecated 
-    public ConfiguredAttribute getAttribute(String name) {
-        
-        Layer layer = this.getService().getSingleLayer(this.layerName);
-        if (layer==null){
-            return null;
-        }
-        return getAttribute(layer.getFeatureType(),name);
-    }
+    //</editor-fold>
     
     public ConfiguredAttribute getAttribute(SimpleFeatureType sft,String name){
          for(ConfiguredAttribute att: attributes) {
