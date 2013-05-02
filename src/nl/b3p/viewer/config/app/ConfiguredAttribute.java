@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.app;
 
 import javax.persistence.*;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,12 @@ public class ConfiguredAttribute {
      * Not a direct association but like ApplicationLayer.layerName
      */
     private String attributeName;
-
+    /** 
+     * link with feature type
+     */
+    @ManyToOne
+    private SimpleFeatureType featureType;
+    
     private boolean visible;
     private boolean editable;
     private boolean selectable;
@@ -133,6 +139,14 @@ public class ConfiguredAttribute {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+    
+    public SimpleFeatureType getFeatureType() {
+        return featureType;
+    }
+
+    public void setFeatureType(SimpleFeatureType featureType) {
+        this.featureType = featureType;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -161,4 +175,16 @@ public class ConfiguredAttribute {
         copy.setId(null);
         return copy;
     }
+    /**
+     * Returns full name. That is the id of the featuretype + ":" + attributeName
+     */
+    public String getFullName() {
+        String uniqueName= "";
+        if (this.getFeatureType()!=null){
+            uniqueName = this.getFeatureType().getId()+":"; 
+        }
+        uniqueName+=this.attributeName;
+        return uniqueName;
+    }
+
 }

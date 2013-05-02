@@ -21,6 +21,7 @@ import java.util.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -145,16 +146,28 @@ public class ApplicationLayer {
         this.layerName = layerName;
     }
     //</editor-fold> 
-    
+    /**
+     * use getAttribute(SimpleFeatureType sft,String name) instead
+     */
+    @Deprecated 
     public ConfiguredAttribute getAttribute(String name) {
-        for(ConfiguredAttribute att: attributes) {
-            if(att.getAttributeName().equals(name)) {
+        
+        Layer layer = this.getService().getSingleLayer(this.layerName);
+        if (layer==null){
+            return null;
+        }
+        return getAttribute(layer.getFeatureType(),name);
+    }
+    
+    public ConfiguredAttribute getAttribute(SimpleFeatureType sft,String name){
+         for(ConfiguredAttribute att: attributes) {
+            if(att.getAttributeName().equals(name) && 
+                    (att.getFeatureType()==null || att.getFeatureType().getId().equals(sft.getId()))) {
                 return att;
             }
         }
         return null;
     }
-    
     public String getDisplayName() {
         if(ClobElement.isNotBlank(getDetails().get("titleAlias"))) {
             return getDetails().get("titleAlias").getValue();
