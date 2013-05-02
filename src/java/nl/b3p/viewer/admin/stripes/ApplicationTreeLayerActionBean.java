@@ -19,7 +19,6 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.StringReader;
 import java.util.*;
 import javax.annotation.security.RolesAllowed;
-import javax.persistence.NoResultException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -145,44 +144,27 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             applicationLayer.getAttributes().clear();
         } else {
             List<String> attributesToRetain = new ArrayList();
-
-            SimpleFeatureType sft = layer.getFeatureType();
+            
+            SimpleFeatureType sft = layer.getFeatureType(); 
             editable = sft.isWriteable();
-
             // Rebuild ApplicationLayer.attributes according to Layer FeatureType
             // New attributes are added at the end of the list; the original
             // order is only used when the Application.attributes list is empty
             // So a feature for reordering attributes per applicationLayer is
-            // possible
-
-            for(AttributeDescriptor ad: sft.getAttributes()) {
-                String name = ad.getName();
-
-                attributesToRetain.add(name);
-
-                // Used for display in JSP
-                if(StringUtils.isNotBlank(ad.getAlias())) {
-                    attributeAliases.put(name, ad.getAlias());
-                }
-
-                if(applicationLayer.getAttribute(name) == null) {
-                    ConfiguredAttribute ca = new ConfiguredAttribute();
-                    // default visible if not geometry type
-                    ca.setVisible(! AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType()));
-                    ca.setAttributeName(name);
-                    applicationLayer.getAttributes().add(ca);                        
-                    Stripersist.getEntityManager().persist(ca);
-                    
-                    if(!"save".equals(getContext().getEventName())) {
-                        getContext().getMessages().add(new SimpleMessage("Nieuw attribuut \"{0}\" gevonden in attribuutbron: wordt zichtbaar na opslaan", name));
-                    }
-                }                    
-            }
-
+            // possible.
+            // New Attributes from a join or related featureType are added at the 
+            //end of the list.                                  
+            attributesToRetain = rebuildAttributes(sft);
+            
+            // JSON info about attributed required for editing
+            makeAttributeJSONArray(layer.getFeatureType());  
             // Remove ConfiguredAttributes which are no longer present
             List<ConfiguredAttribute> attributesToRemove = new ArrayList();
             for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
-                if(!attributesToRetain.contains(ca.getAttributeName())) {
+                if (ca.getFeatureType()==null){
+                    ca.setFeatureType(layer.getFeatureType());
+                }
+                if(!attributesToRetain.contains(ca.getFullName())) {
                     // Do not modify list we are iterating over
                     attributesToRemove.add(ca);
                     if(!"save".equals(getContext().getEventName())) {
@@ -194,9 +176,6 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 applicationLayer.getAttributes().remove(ca);
                 Stripersist.getEntityManager().remove(ca);
             }
-
-            // JSON info about attributed required for editing
-            makeAttributeJSONArray(layer.getFeatureType());                
         }        
     }
     
@@ -214,20 +193,63 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             // Fill visible checkboxes
             for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
                 if(ca.isVisible()) {
-                    selectedAttributes.add(ca.getAttributeName());
+                    selectedAttributes.add(ca.getFullName());
                 }
             }            
         }
 
         return new ForwardResolution(JSP);
     }
+    
+    private List<String> rebuildAttributes(SimpleFeatureType sft) {
+        List<String> attributesToRetain = new ArrayList<String>();
+        for(AttributeDescriptor ad: sft.getAttributes()) {
+            String name = ad.getName();
 
-    private void makeAttributeJSONArray(SimpleFeatureType sft) throws JSONException {
+            String fullName=sft.getId()+":"+name;
+            //if attribute already added return.
+            if (attributesToRetain.contains(fullName)){
+                return attributesToRetain;
+            }
+            attributesToRetain.add(fullName);
+
+            // Used for display in JSP
+            if(StringUtils.isNotBlank(ad.getAlias())) {
+                attributeAliases.put(fullName, ad.getAlias());
+            }
+
+            if(applicationLayer.getAttribute(sft,name) == null) {
+                ConfiguredAttribute ca = new ConfiguredAttribute();
+                // default visible if not geometry type
+                ca.setVisible(! AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType()));
+                ca.setAttributeName(name);
+                ca.setFeatureType(sft);
+                applicationLayer.getAttributes().add(ca);                        
+                Stripersist.getEntityManager().persist(ca);
+
+                if(!"save".equals(getContext().getEventName())) {
+                    getContext().getMessages().add(new SimpleMessage("Nieuw attribuut \"{0}\" gevonden in attribuutbron: wordt zichtbaar na opslaan", name));
+                }
+            }                    
+        }
+        if (sft.getRelations()!=null){
+            for (FeatureTypeRelation rel : sft.getRelations()){
+                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType()));
+            }
+        }
+        return attributesToRetain;
+    }
+
+    private void makeAttributeJSONArray(SimpleFeatureType layerSft) throws JSONException {
         
         for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
             JSONObject j = ca.toJSONObject();
             
             // Copy alias over from feature type
+            SimpleFeatureType sft= ca.getFeatureType();
+            if (sft==null){
+                sft=layerSft;
+            }
             AttributeDescriptor ad = sft.getAttribute(ca.getAttributeName());
             j.put("alias", ad.getAlias());
             j.put("featureTypeAttribute", ad.toJSONObject());
@@ -301,7 +323,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             for (Iterator it = appAttributes.iterator(); it.hasNext();) {
                 ConfiguredAttribute appAttribute = (ConfiguredAttribute) it.next();
                 //save visible
-                if (selectedAttributes.contains(appAttribute.getAttributeName())) {
+                if (selectedAttributes.contains(appAttribute.getFullName())) {
                     appAttribute.setVisible(true);
                 } else {
                     appAttribute.setVisible(false);
@@ -456,4 +478,5 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         this.displayName = displayName;
     }
     //</editor-fold>    
+    
 }

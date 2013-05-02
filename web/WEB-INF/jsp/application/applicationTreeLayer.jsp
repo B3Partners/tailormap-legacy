@@ -54,10 +54,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <c:choose>
                         <c:when test="${!empty actionBean.applicationLayer.attributes}">
                             <c:forEach var="attribute" items="${actionBean.applicationLayer.attributes}">
-                                <stripes:checkbox name="selectedAttributes" value="${attribute.attributeName}"/>
+                                <stripes:checkbox name="selectedAttributes" value="${attribute.fullName}"/>
                                 
                                 <c:set var="name" value="${attribute.attributeName}"/>
-                                <c:set var="alias" value="${actionBean.attributeAliases[name]}"/>
+                                <c:set var="alias" value="${actionBean.attributeAliases[attribute.fullName]}"/>
                                 
                                 <c:choose>
                                     <c:when test="${alias == null || alias == name}"><c:out value="${name}"/></c:when>

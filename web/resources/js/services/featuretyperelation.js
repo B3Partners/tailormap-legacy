@@ -115,8 +115,8 @@ Ext.onReady(function(){
         bbar: Ext.create('Ext.PagingToolbar', {
             store: store,
             displayInfo: true,
-            displayMsg: 'Layar service {0} - {1} of {2}',
-            emptyMsg: "Geen layar services weer te geven"
+            displayMsg: 'Relaties {0} - {1} of {2}',
+            emptyMsg: "Geen relaties weer te geven"
         }),
         plugins: [ 
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
