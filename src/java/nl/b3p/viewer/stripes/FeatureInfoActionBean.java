@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -162,15 +163,15 @@ public class FeatureInfoActionBean implements ActionBean {
     }
     //</editor-fold>
     
-    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q, boolean edit, String geomAttribute) {
+    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q, SimpleFeatureType sft,boolean edit, String geomAttribute) {        
         List<String> propertyNames = new ArrayList<String>();
         boolean haveInvisibleProperties = false;
-        for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+        for(ConfiguredAttribute ca: appLayer.getAttributes(sft)) {
             if((!edit && ca.isVisible()) || (edit && ca.isEditable())) {
                 propertyNames.add(ca.getAttributeName());
             } else {
                 haveInvisibleProperties = true;
-            }                    
+            }
         }
         if(haveInvisibleProperties) {
             // By default Query retrieves Query.ALL_NAMES
@@ -255,7 +256,7 @@ public class FeatureInfoActionBean implements ActionBean {
 
                     List<String> propertyNames;
                     if(al != null) {
-                        propertyNames = setPropertyNames(al, q, edit, geomAttribute);
+                        propertyNames = setPropertyNames(al, q, l.getFeatureType(),edit, geomAttribute);
                     } else {
                         propertyNames = new ArrayList<String>();
                         for(AttributeDescriptor ad: l.getFeatureType().getAttributes()) {

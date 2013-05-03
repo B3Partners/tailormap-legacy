@@ -231,9 +231,7 @@ public class AttributesActionBean implements ActionBean {
             if(layer != null) {
                 ft = layer.getFeatureType();
                 if(ft != null) {
-                    for(AttributeDescriptor ad: ft.getAttributes()) {
-                        featureTypeAttributes.put(ad.getName(), ad);
-                    }
+                    featureTypeAttributes = makeAttributeDescriptorList(ft);
                 }
             } 
             
@@ -242,7 +240,7 @@ public class AttributesActionBean implements ActionBean {
             for(ConfiguredAttribute ca: appLayer.getAttributes()) {
                 JSONObject j = ca.toJSONObject();
                 
-                AttributeDescriptor ad = featureTypeAttributes.get(ca.getAttributeName());
+                AttributeDescriptor ad = featureTypeAttributes.get(ca.getFullName());
                 if(ad != null) {
                     j.put("alias", ad.getAlias());
                     j.put("type", ad.getType());
@@ -337,16 +335,20 @@ public class AttributesActionBean implements ActionBean {
             return total;
         }
     }
-    
-    private List<String> setPropertyNames(Query q) {
+    /**
+     * Get a list of visible propertynames from the appLayer where the ConfiguredAttribute
+     * is from the given SimpleFeatureType. If one or more Attributes are configured 
+     * to be not visible, add the list of visible propertynames to the query.
+     */
+    private List<String> setPropertyNames(Query q, SimpleFeatureType sft) {
         List<String> propertyNames = new ArrayList<String>();
         boolean haveInvisibleProperties = false;
-        for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+        for(ConfiguredAttribute ca: appLayer.getAttributes(sft)) {
             if(ca.isVisible()) {
                 propertyNames.add(ca.getAttributeName());
             } else {
                 haveInvisibleProperties = true;
-            }                    
+            }
         }
         if(haveInvisibleProperties) {
             // By default Query retrieves Query.ALL_NAMES
@@ -463,7 +465,7 @@ public class AttributesActionBean implements ActionBean {
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
                 final Query q = new Query(fs.getName().toString());
-                List<String> propertyNames = setPropertyNames(q);
+                List<String> propertyNames = setPropertyNames(q,layer.getFeatureType());
                 setSortBy(q, propertyNames);
                 setFilter(q);
                 
@@ -543,5 +545,26 @@ public class AttributesActionBean implements ActionBean {
         } else {
             return value;
         }
+    }
+    /**
+     * Makes a list of al the attributeDescriptors of the given FeatureType and
+     * all the child FeatureTypes (related by join/relate)
+     */
+    private Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft) {
+        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
+        for(AttributeDescriptor ad: ft.getAttributes()) {
+            String name=ft.getId()+":"+ad.getName();
+            //stop when already added. Stop a infinite configurated loop
+            if (featureTypeAttributes.containsKey(name)){
+                return featureTypeAttributes;
+            }
+            featureTypeAttributes.put(name, ad);
+        }
+        if (ft.getRelations()!=null){
+            for (FeatureTypeRelation rel : ft.getRelations()){
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
+            }
+        }
+        return featureTypeAttributes;
     }
 }
