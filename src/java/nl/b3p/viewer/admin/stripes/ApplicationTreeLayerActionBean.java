@@ -202,6 +202,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
     
     private List<String> rebuildAttributes(SimpleFeatureType sft) {
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
         List<String> attributesToRetain = new ArrayList<String>();
         for(AttributeDescriptor ad: sft.getAttributes()) {
             String name = ad.getName();
@@ -226,9 +227,14 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 ca.setFeatureType(sft);
                 applicationLayer.getAttributes().add(ca);                        
                 Stripersist.getEntityManager().persist(ca);
-
+                
                 if(!"save".equals(getContext().getEventName())) {
-                    getContext().getMessages().add(new SimpleMessage("Nieuw attribuut \"{0}\" gevonden in attribuutbron: wordt zichtbaar na opslaan", name));
+                    String message ="Nieuw attribuut \"{0}\" gevonden in ";
+                    if(layer.getFeatureType().getId()!=sft.getId()){
+                        message+="gekoppelde ";
+                    }
+                    message+="attribuutbron: wordt zichtbaar na opslaan";
+                    getContext().getMessages().add(new SimpleMessage(message, name));
                 }
             }                    
         }
