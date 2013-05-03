@@ -146,7 +146,20 @@ public class ApplicationLayer {
         this.layerName = layerName;
     }
     //</editor-fold>
-    
+    /**
+     * Get all the attributes from this applicationLayer that are from the given 
+     * SimpleFeatureType (or the SimpleFeatureType == null, for configured attributes
+     * that don't have a SimpleFeatureType set yet)
+     */
+    public List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft){
+        List<ConfiguredAttribute> attri = new ArrayList<ConfiguredAttribute>();
+        for(ConfiguredAttribute att: this.attributes) {
+            if(att.getFeatureType()==null || att.getFeatureType().getId().equals(sft.getId())) {
+                attri.add(att);
+            }
+        }
+        return attri;
+    }
     public ConfiguredAttribute getAttribute(SimpleFeatureType sft,String name){
          for(ConfiguredAttribute att: attributes) {
             if(att.getAttributeName().equals(name) && 

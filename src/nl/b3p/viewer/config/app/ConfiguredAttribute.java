@@ -167,6 +167,7 @@ public class ConfiguredAttribute {
             }
         }
         o.put("defaultValue", defaultValue);
+        o.put("featureType",featureType.getId());
         return o;
     }
 
