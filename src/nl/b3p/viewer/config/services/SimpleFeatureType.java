@@ -239,5 +239,8 @@ public class SimpleFeatureType {
         return o;
     }
 
+    public boolean hasRelations() {
+        return this.relations!=null && this.relations.size()>0;
+    }
 }
 
