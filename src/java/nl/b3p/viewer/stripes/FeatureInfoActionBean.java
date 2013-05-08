@@ -391,7 +391,7 @@ public class FeatureInfoActionBean implements ActionBean {
                         foreignIt=foreignFs.getFeatures(foreignQ).features();
                         if (foreignIt.hasNext()){
                             SimpleFeature foreignFeature = foreignIt.next();
-                            j= toJSONFeature(j,feature, propertyNames,attributeAliases);
+                            j= toJSONFeature(j,foreignFeature, propertyNames,attributeAliases);
                             if (rel.getForeignFeatureType().hasRelations()){
                                 j = populateWithRelatedFeatures(j,foreignFeature,rel.getForeignFeatureType(),al);
                             }
