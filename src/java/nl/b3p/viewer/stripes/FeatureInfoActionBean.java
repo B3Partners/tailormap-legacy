@@ -32,6 +32,8 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
+import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
@@ -48,6 +50,7 @@ import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Expression;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -162,8 +165,11 @@ public class FeatureInfoActionBean implements ActionBean {
         this.arrays = arrays;
     }
     //</editor-fold>
-    
-    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q, SimpleFeatureType sft,boolean edit, String geomAttribute) {        
+    /**
+     * Set the query property names in the query.(visible and needed for relations)
+     * @return the propertynames that are visible
+     */
+    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q, SimpleFeatureType sft,boolean edit) {        
         List<String> propertyNames = new ArrayList<String>();
         boolean haveInvisibleProperties = false;
         for(ConfiguredAttribute ca: appLayer.getAttributes(sft)) {
@@ -177,6 +183,22 @@ public class FeatureInfoActionBean implements ActionBean {
             // By default Query retrieves Query.ALL_NAMES
             // Query.NO_NAMES is an empty String array
             q.setPropertyNames(propertyNames);
+            // If any related featuretypes are set, add the leftside names in the query
+            // don't add them to propertynames, maybe they are not visible
+            if (sft.getRelations()!=null){
+                List<String> withRelations= new ArrayList<String>();
+                withRelations.addAll(propertyNames);
+                for (FeatureTypeRelation ftr : sft.getRelations()){
+                    if (ftr.getRelationKeys()!=null){
+                        for (FeatureTypeRelationKey key : ftr.getRelationKeys()){
+                            if (!withRelations.contains(key.getLeftSide().getName())){
+                                withRelations.add(key.getLeftSide().getName());
+                            }
+                        }
+                    }
+                }
+                q.setPropertyNames(withRelations);
+            }
         }
         return propertyNames;
     }    
@@ -256,7 +278,7 @@ public class FeatureInfoActionBean implements ActionBean {
 
                     List<String> propertyNames;
                     if(al != null) {
-                        propertyNames = setPropertyNames(al, q, l.getFeatureType(),edit, geomAttribute);
+                        propertyNames = setPropertyNames(al, q, l.getFeatureType(),edit);
                     } else {
                         propertyNames = new ArrayList<String>();
                         for(AttributeDescriptor ad: l.getFeatureType().getAttributes()) {
@@ -278,7 +300,10 @@ public class FeatureInfoActionBean implements ActionBean {
                     q.setFilter(f);
                     q.setMaxFeatures(limit);
                     
-                    JSONArray features = getJSONFeatures(fs, q, propertyNames, attributeAliases);
+                    /**/
+                    JSONArray features = getJSONFeatures(al,l.getFeatureType(), fs, q, propertyNames, attributeAliases);
+                    //JSONArray features = getJSONFeatures(fs, q, propertyNames, attributeAliases);
+                    
                     response.put("features", features);
                 } while(false);
             } catch(Exception e) {
@@ -296,7 +321,105 @@ public class FeatureInfoActionBean implements ActionBean {
         
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));        
     }    
+    private JSONArray getJSONFeatures(ApplicationLayer al,SimpleFeatureType ft, FeatureSource fs, Query q,List<String> propertyNames,Map<String,String> attributeAliases) throws IOException, JSONException, Exception{
+        FeatureIterator<SimpleFeature> it = null;
+        JSONArray features = new JSONArray();
+        try{                        
+            it=fs.getFeatures(q).features();
+            while(it.hasNext()){
+                SimpleFeature feature = it.next();
+                JSONObject j = toJSONFeature(new JSONObject(),feature,propertyNames,attributeAliases);                            
+                if (ft.hasRelations()){
+                    j = populateWithRelatedFeatures(j,feature,ft,al);
+                }
+                if (j!=null){
+                    features.put(j);
+                }
+            }
+        }finally{
+            it.close();
+            fs.getDataStore().dispose();
+        }
+        return features;
+    }
     
+    private JSONObject populateWithRelatedFeatures(JSONObject j,SimpleFeature feature,SimpleFeatureType ft,ApplicationLayer al) throws Exception{
+        if (ft.hasRelations()){
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();        
+            for (FeatureTypeRelation rel :ft.getRelations()){
+                if (rel.getType().equals(FeatureTypeRelation.JOIN)){                    
+                    FeatureSource foreignFs = rel.getForeignFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    Query foreignQ = new Query(foreignFs.getName().toString());                    
+                    //create filter
+                    List<Filter> filters = new ArrayList<Filter>();
+                    for (FeatureTypeRelationKey key : rel.getRelationKeys()){
+                        AttributeDescriptor rightSide = key.getRightSide();
+                        AttributeDescriptor leftSide = key.getLeftSide();
+                        Object value= feature.getAttribute(leftSide.getName());
+                        //TODO: some type check for other comparisons (geom)
+                        Filter f=ff.equals(ff.property(rightSide.getName()),ff.literal(value));
+                        filters.add(f);
+                    }
+                    if (filters.size()>1){
+                        foreignQ.setFilter(ff.and(filters));
+                    }else if (filters.size()==1){
+                        foreignQ.setFilter(filters.get(0));
+                    }               
+                    foreignQ.setMaxFeatures(1);                   
+                    //set propertynames
+                    List<String> propertyNames;
+                    if (al!=null){
+                        propertyNames=setPropertyNames(al, foreignQ, rel.getForeignFeatureType(), edit);
+                    }else{
+                        propertyNames = new ArrayList<String>();
+                        for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
+                            propertyNames.add(ad.getName());
+                        }
+                    }
+                    //get aliases
+                    Map<String,String> attributeAliases = new HashMap<String,String>();
+                    if(!edit) {
+                        for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
+                            if(ad.getAlias() != null) {
+                                attributeAliases.put(ad.getName(), ad.getAlias());
+                            }
+                        }
+                    }
+                    //Get Feature and populate JSON object with the values.                    
+                    FeatureIterator<SimpleFeature> foreignIt=foreignFs.getFeatures(foreignQ).features();
+                    if (foreignIt.hasNext()){
+                        SimpleFeature foreignFeature = foreignIt.next();
+                        j= toJSONFeature(j,feature, propertyNames,attributeAliases);
+                        if (rel.getForeignFeatureType().hasRelations()){
+                            j = populateWithRelatedFeatures(j,foreignFeature,rel.getForeignFeatureType(),al);
+                        }
+                    }
+                }
+            }
+        }
+        return j;
+    }
+    
+    private JSONObject toJSONFeature(JSONObject j,SimpleFeature f, List<String> propertyNames,Map<String,String> attributeAliases) throws JSONException{
+        if(arrays) {
+            int idx = 0;
+            for(String name: propertyNames) {
+                Object value = f.getAttribute(name);
+                j.put("c" + idx++, formatValue(value));
+            }    
+        } else {
+            for(String name: propertyNames) {
+                String alias = attributeAliases.get(name);
+                j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
+            }                     
+        }
+        //if edit and not yet set
+        if(edit && j.optString(FID,null)==null) {
+            String id = f.getID();
+            j.put(FID, id);
+        }
+        return j;
+    }
     private JSONArray getJSONFeatures(FeatureSource fs, Query q, List<String> propertyNames, Map<String,String> attributeAliases) throws IOException, JSONException {
         FeatureIterator<SimpleFeature> it = fs.getFeatures(q).features();
         JSONArray features = new JSONArray();
