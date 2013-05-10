@@ -347,61 +347,76 @@ public class FeatureInfoActionBean implements ActionBean {
         if (ft.hasRelations()){
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();        
             for (FeatureTypeRelation rel :ft.getRelations()){
-                if (rel.getType().equals(FeatureTypeRelation.JOIN)){                    
-                    FeatureSource foreignFs = rel.getForeignFeatureType().openGeoToolsFeatureSource(TIMEOUT);
-                    FeatureIterator<SimpleFeature> foreignIt=null;
-                    try{
-                        Query foreignQ = new Query(foreignFs.getName().toString());                    
-                        //create filter
-                        List<Filter> filters = new ArrayList<Filter>();
-                        for (FeatureTypeRelationKey key : rel.getRelationKeys()){
-                            AttributeDescriptor rightSide = key.getRightSide();
-                            AttributeDescriptor leftSide = key.getLeftSide();
-                            Object value= feature.getAttribute(leftSide.getName());
-                            //TODO: some type check for other comparisons (geom)
-                            Filter f=ff.equals(ff.property(rightSide.getName()),ff.literal(value));
-                            filters.add(f);
-                        }
-                        if (filters.size()>1){
-                            foreignQ.setFilter(ff.and(filters));
-                        }else if (filters.size()==1){
-                            foreignQ.setFilter(filters.get(0));
-                        }               
+                boolean isJoin=rel.getType().equals(FeatureTypeRelation.JOIN);
+
+                FeatureSource foreignFs = rel.getForeignFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                FeatureIterator<SimpleFeature> foreignIt=null;
+                try{
+                    Query foreignQ = new Query(foreignFs.getName().toString());                    
+                    //create filter
+                    List<Filter> filters = new ArrayList<Filter>();
+                    for (FeatureTypeRelationKey key : rel.getRelationKeys()){
+                        AttributeDescriptor rightSide = key.getRightSide();
+                        AttributeDescriptor leftSide = key.getLeftSide();
+                        Object value= feature.getAttribute(leftSide.getName());
+                        //TODO: some type check for other comparisons (geom)
+                        Filter f=ff.equals(ff.property(rightSide.getName()),ff.literal(value));
+                        filters.add(f);
+                    }
+                    if (filters.size()>1){
+                        foreignQ.setFilter(ff.and(filters));
+                    }else if (filters.size()==1){
+                        foreignQ.setFilter(filters.get(0));
+                    }              
+                    if (isJoin){
+                        //if join only get 1 feature
                         foreignQ.setMaxFeatures(1);                   
-                        //set propertynames
-                        List<String> propertyNames;
-                        if (al!=null){
-                            propertyNames=setPropertyNames(al, foreignQ, rel.getForeignFeatureType(), edit);
-                        }else{
-                            propertyNames = new ArrayList<String>();
-                            for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
-                                propertyNames.add(ad.getName());
+                    }
+                    //set propertynames
+                    List<String> propertyNames;
+                    if (al!=null){
+                        propertyNames=setPropertyNames(al, foreignQ, rel.getForeignFeatureType(), edit);
+                    }else{
+                        propertyNames = new ArrayList<String>();
+                        for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
+                            propertyNames.add(ad.getName());
+                        }
+                    }
+                    //get aliases
+                    Map<String,String> attributeAliases = new HashMap<String,String>();
+                    if(!edit) {
+                        for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
+                            if(ad.getAlias() != null) {
+                                attributeAliases.put(ad.getName(), ad.getAlias());
                             }
                         }
-                        //get aliases
-                        Map<String,String> attributeAliases = new HashMap<String,String>();
-                        if(!edit) {
-                            for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
-                                if(ad.getAlias() != null) {
-                                    attributeAliases.put(ad.getName(), ad.getAlias());
-                                }
-                            }
-                        }
-                        //Get Feature and populate JSON object with the values.                    
-                        foreignIt=foreignFs.getFeatures(foreignQ).features();
-                        if (foreignIt.hasNext()){
-                            SimpleFeature foreignFeature = foreignIt.next();
+                    }
+                    //Get Feature and populate JSON object with the values.                    
+                    foreignIt=foreignFs.getFeatures(foreignQ).features();
+                    JSONArray relatedFeatures = new JSONArray();
+                    while (foreignIt.hasNext()){
+                        SimpleFeature foreignFeature = foreignIt.next();
+                        if(isJoin){
+                            //join it in the same json
                             j= toJSONFeature(j,foreignFeature, propertyNames,attributeAliases);
                             if (rel.getForeignFeatureType().hasRelations()){
                                 j = populateWithRelatedFeatures(j,foreignFeature,rel.getForeignFeatureType(),al);
                             }
+                        }else{
+                            //it's a relate
+                            JSONObject newJson = toJSONFeature(new JSONObject(), foreignFeature, propertyNames, attributeAliases);                                
+                            newJson=populateWithRelatedFeatures(newJson,foreignFeature,rel.getForeignFeatureType(),al);
+                            relatedFeatures.put(newJson);
                         }
-                    }finally{
-                        if (foreignIt!=null){
-                            foreignIt.close();
-                        }
-                        foreignFs.getDataStore().dispose();
                     }
+                    if (!isJoin && relatedFeatures.length()>0){
+                        j.put("related_features",relatedFeatures);
+                    }
+                }finally{
+                    if (foreignIt!=null){
+                        foreignIt.close();
+                    }
+                    foreignFs.getDataStore().dispose();
                 }
             }
         }
