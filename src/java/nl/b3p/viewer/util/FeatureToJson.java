@@ -160,9 +160,14 @@ public class FeatureToJson {
                         if (value==null){
                             continue;
                         }
-                        //TODO: some type check for other comparisons (geom)
-                        Filter f=ff.equals(ff.property(rightSide.getName()),ff.literal(value));
-                        filters.add(f);
+                        if (AttributeDescriptor.GEOMETRY_TYPES.contains(rightSide.getType()) &&
+                                AttributeDescriptor.GEOMETRY_TYPES.contains(leftSide.getType())){
+                            filters.add(ff.not(ff.isNull(ff.property(rightSide.getName()))));                            
+                            filters.add(ff.intersects(ff.property(rightSide.getName()),ff.literal(value)));
+                        }else{
+                            filters.add(ff.equals(ff.property(rightSide.getName()),ff.literal(value)));
+                        }
+                        
                     }
                     if (filters.size()>1){
                         foreignQ.setFilter(ff.and(filters));
