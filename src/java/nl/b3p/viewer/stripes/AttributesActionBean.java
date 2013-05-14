@@ -36,6 +36,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.codehaus.httpcache4j.cache.HTTPCache;
@@ -335,28 +336,6 @@ public class AttributesActionBean implements ActionBean {
             return total;
         }
     }
-    /**
-     * Get a list of visible propertynames from the appLayer where the ConfiguredAttribute
-     * is from the given SimpleFeatureType. If one or more Attributes are configured 
-     * to be not visible, add the list of visible propertynames to the query.
-     */
-    private List<String> setPropertyNames(Query q, SimpleFeatureType sft) {
-        List<String> propertyNames = new ArrayList<String>();
-        boolean haveInvisibleProperties = false;
-        for(ConfiguredAttribute ca: appLayer.getAttributes(sft)) {
-            if(ca.isVisible()) {
-                propertyNames.add(ca.getAttributeName());
-            } else {
-                haveInvisibleProperties = true;
-            }
-        }
-        if(haveInvisibleProperties) {
-            // By default Query retrieves Query.ALL_NAMES
-            // Query.NO_NAMES is an empty String array
-            q.setPropertyNames(propertyNames);
-        }
-        return propertyNames;
-    }
     
     private void setSortBy(Query q, List<String> propertyNames) {
         FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
@@ -435,9 +414,6 @@ public class AttributesActionBean implements ActionBean {
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
         }
         
-        JSONArray features = new JSONArray();
-        json.put("features", features);
-        
         try {
             int total = 0;
             
@@ -465,8 +441,8 @@ public class AttributesActionBean implements ActionBean {
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
                 final Query q = new Query(fs.getName().toString());
-                List<String> propertyNames = setPropertyNames(q,layer.getFeatureType());
-                setSortBy(q, propertyNames);
+                //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,layer.getFeatureType(),false);
+                
                 setFilter(q);
                 
                 final FeatureSource fs2 = fs;
@@ -483,38 +459,10 @@ public class AttributesActionBean implements ActionBean {
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
                 
-                FeatureCollection fc = fs.getFeatures(q);
-
-                FeatureIterator<SimpleFeature> it = fc.features();
-                try {
-                    while(it.hasNext()) {
-                        SimpleFeature f = it.next();
-
-                        if(!startIndexSupported && start > 0) {
-                            start--;
-                            continue;
-                        }
-
-                        if(arrays) {
-                            JSONObject j = new JSONObject();
-                            int idx = 0;
-                            for(String name: propertyNames) {
-                                Object value = f.getAttribute(name);
-                                j.put("c" + idx++, formatValue(value));
-                            }    
-                            features.put(j);                                
-                        } else {
-                            JSONObject j = new JSONObject();
-                            for(String name: propertyNames) {
-                                j.put(name, formatValue(f.getAttribute(name)));
-                            }                     
-                            features.put(j);
-                        }
-                    }
-                } finally {
-                    it.close();
-                    fs.getDataStore().dispose();
-                }
+                FeatureToJson ftoj = new FeatureToJson(arrays,false);
+                
+                JSONArray features = ftoj.getJSONFeatures(appLayer,layer.getFeatureType(), fs, q, sort, dir);                
+                json.put("features", features);
             }
 
             json.put("total", total);
@@ -535,17 +483,6 @@ public class AttributesActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
     }
     
-    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-    
-    private Object formatValue(Object value) {
-        if(value instanceof Date) {
-            // JSON has no date type so format the date as it is used for 
-            // display, not calculation
-            return dateFormat.format((Date)value);
-        } else {
-            return value;
-        }
-    }
     /**
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)
