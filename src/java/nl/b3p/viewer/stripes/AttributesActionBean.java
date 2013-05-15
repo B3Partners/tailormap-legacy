@@ -337,33 +337,6 @@ public class AttributesActionBean implements ActionBean {
         }
     }
     
-    private void setSortBy(Query q, List<String> propertyNames) {
-        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
-        
-        if(sort != null) {
-
-            String sortAttribute = null;
-            if(arrays) {
-                int i = Integer.parseInt(sort.substring(1));
-
-                int j = 0;
-                for(String name: propertyNames) {
-                    if(j == i) {
-                        sortAttribute = name;
-                    }
-                    j++;
-                }
-            } else {
-                sortAttribute = sort;
-            }
-            if(sortAttribute != null) {
-                q.setSortBy(new SortBy[] {
-                    ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
-                });
-            }
-        }                
-    }
-    
     private void setFilter(Query q) throws Exception {
         if(filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);
@@ -499,7 +472,9 @@ public class AttributesActionBean implements ActionBean {
         }
         if (ft.getRelations()!=null){
             for (FeatureTypeRelation rel : ft.getRelations()){
-                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
+                if(rel.getType().equals(FeatureTypeRelation.JOIN)){
+                    featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
+                }
             }
         }
         return featureTypeAttributes;

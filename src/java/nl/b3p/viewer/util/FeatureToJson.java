@@ -167,7 +167,6 @@ public class FeatureToJson {
                         }else{
                             filters.add(ff.equals(ff.property(rightSide.getName()),ff.literal(value)));
                         }
-                        
                     }
                     if (filters.size()>1){
                         foreignQ.setFilter(ff.and(filters));
