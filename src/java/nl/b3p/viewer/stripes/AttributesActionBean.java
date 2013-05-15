@@ -238,7 +238,13 @@ public class AttributesActionBean implements ActionBean {
             
             Integer geometryAttributeIndex = null;
             JSONArray attributes = new JSONArray();
-            for(ConfiguredAttribute ca: appLayer.getAttributes()) {
+            List<ConfiguredAttribute> confAttributes;
+            if (ft!=null){
+                confAttributes=appLayer.getAttributes(ft,true);
+            }else{
+                confAttributes=appLayer.getAttributes();
+            }
+            for(ConfiguredAttribute ca: confAttributes) {
                 JSONObject j = ca.toJSONObject();
                 
                 AttributeDescriptor ad = featureTypeAttributes.get(ca.getFullName());
