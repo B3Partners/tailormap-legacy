@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
@@ -146,16 +147,33 @@ public class ApplicationLayer {
         this.layerName = layerName;
     }
     //</editor-fold>
+    
     /**
      * Get all the attributes from this applicationLayer that are from the given 
      * SimpleFeatureType (or the SimpleFeatureType == null, for configured attributes
      * that don't have a SimpleFeatureType set yet)
+     * Optional the joined SimpleFeatureType attributes that are joined can be added (includeJoined=true)
      */
     public List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft){
-        List<ConfiguredAttribute> attri = new ArrayList<ConfiguredAttribute>();
+        return getAttributes(sft, false, new ArrayList<ConfiguredAttribute>());
+    }
+    public List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft, boolean includeJoined){
+        return getAttributes(sft, includeJoined, new  ArrayList<ConfiguredAttribute>());
+    }
+    private List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft,boolean includeJoined, List<ConfiguredAttribute> attri){
         for(ConfiguredAttribute att: this.attributes) {
             if(att.getFeatureType()==null || att.getFeatureType().getId().equals(sft.getId())) {
+                if (attri.contains(att)){
+                    return attri;
+                }
                 attri.add(att);
+            }
+        }
+        if (includeJoined){
+            for (FeatureTypeRelation rel : sft.getRelations()){
+                if (FeatureTypeRelation.JOIN.equals(rel.getType())){
+                    attri = getAttributes(rel.getForeignFeatureType(),true,attri);                                        
+                }
             }
         }
         return attri;
