@@ -36,6 +36,7 @@ import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -143,85 +144,79 @@ public class FeatureToJson {
      */
     private JSONObject populateWithRelatedFeatures(JSONObject j,SimpleFeature feature,SimpleFeatureType ft,ApplicationLayer al, int index) throws Exception{
         if (ft.hasRelations()){
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();        
+            JSONArray related_featuretypes = new JSONArray();
             for (FeatureTypeRelation rel :ft.getRelations()){
                 boolean isJoin=rel.getType().equals(FeatureTypeRelation.JOIN);
-
-                FeatureSource foreignFs = rel.getForeignFeatureType().openGeoToolsFeatureSource(TIMEOUT);
-                FeatureIterator<SimpleFeature> foreignIt=null;
-                try{
-                    Query foreignQ = new Query(foreignFs.getName().toString());                    
-                    //create filter
-                    List<Filter> filters = new ArrayList<Filter>();
-                    for (FeatureTypeRelationKey key : rel.getRelationKeys()){
-                        AttributeDescriptor rightSide = key.getRightSide();
-                        AttributeDescriptor leftSide = key.getLeftSide();
-                        Object value= feature.getAttribute(leftSide.getName());
-                        if (value==null){
+                if (isJoin){
+                    FeatureSource foreignFs = rel.getForeignFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    FeatureIterator<SimpleFeature> foreignIt=null;
+                    try{
+                        Query foreignQ = new Query(foreignFs.getName().toString());                    
+                        //create filter
+                        Filter filter = createFilter(feature,rel);
+                        if (filter==null){
                             continue;
                         }
-                        if (AttributeDescriptor.GEOMETRY_TYPES.contains(rightSide.getType()) &&
-                                AttributeDescriptor.GEOMETRY_TYPES.contains(leftSide.getType())){
-                            filters.add(ff.not(ff.isNull(ff.property(rightSide.getName()))));                            
-                            filters.add(ff.intersects(ff.property(rightSide.getName()),ff.literal(value)));
+                        if (isJoin){
+                            //if join only get 1 feature
+                            foreignQ.setMaxFeatures(1);                   
+                        }
+                        //set propertynames
+                        List<String> propertyNames;
+                        if (al!=null){
+                            propertyNames=setPropertyNames(al, foreignQ, rel.getForeignFeatureType(), edit);
                         }else{
-                            filters.add(ff.equals(ff.property(rightSide.getName()),ff.literal(value)));
-                        }
-                    }
-                    if (filters.size()>1){
-                        foreignQ.setFilter(ff.and(filters));
-                    }else if (filters.size()==1){
-                        foreignQ.setFilter(filters.get(0));
-                    }else{
-                        continue;
-                    }
-                    if (isJoin){
-                        //if join only get 1 feature
-                        foreignQ.setMaxFeatures(1);                   
-                    }
-                    //set propertynames
-                    List<String> propertyNames;
-                    if (al!=null){
-                        propertyNames=setPropertyNames(al, foreignQ, rel.getForeignFeatureType(), edit);
-                    }else{
-                        propertyNames = new ArrayList<String>();
-                        for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
-                            propertyNames.add(ad.getName());
-                        }
-                    }
-                    //get aliases
-                    Map<String,String> attributeAliases = new HashMap<String,String>();
-                    if(!edit) {
-                        for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
-                            if(ad.getAlias() != null) {
-                                attributeAliases.put(ad.getName(), ad.getAlias());
+                            propertyNames = new ArrayList<String>();
+                            for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
+                                propertyNames.add(ad.getName());
                             }
                         }
-                    }
-                    //Get Feature and populate JSON object with the values.                    
-                    foreignIt=foreignFs.getFeatures(foreignQ).features();
-                    JSONArray relatedFeatures = new JSONArray();
-                    while (foreignIt.hasNext()){
-                        SimpleFeature foreignFeature = foreignIt.next();
-                        if(isJoin){
-                            //join it in the same json
-                            j= toJSONFeature(j,foreignFeature, rel.getForeignFeatureType(), al,propertyNames,attributeAliases,index);
-                            
-                        }else{
-                            //it's a relate
-                            JSONObject newJson = toJSONFeature(new JSONObject(), foreignFeature, rel.getForeignFeatureType(),al,propertyNames, attributeAliases,index);                                
-                            relatedFeatures.put(newJson);
+                        //get aliases
+                        Map<String,String> attributeAliases = new HashMap<String,String>();
+                        if(!edit) {
+                            for(AttributeDescriptor ad: rel.getForeignFeatureType().getAttributes()) {
+                                if(ad.getAlias() != null) {
+                                    attributeAliases.put(ad.getName(), ad.getAlias());
+                                }
+                            }
                         }
+                        //Get Feature and populate JSON object with the values.                    
+                        foreignIt=foreignFs.getFeatures(foreignQ).features();
+                        JSONArray relatedFeatures = new JSONArray();
+                        while (foreignIt.hasNext()){
+                            SimpleFeature foreignFeature = foreignIt.next();
+                            if(isJoin){
+                                //join it in the same json
+                                j= toJSONFeature(j,foreignFeature, rel.getForeignFeatureType(), al,propertyNames,attributeAliases,index);
+
+                            }else{
+                                //it's a relate
+                                JSONObject newJson = toJSONFeature(new JSONObject(), foreignFeature, rel.getForeignFeatureType(),al,propertyNames, attributeAliases,index);                                
+                                relatedFeatures.put(newJson);
+                            }
+                        }
+                        if (!isJoin && relatedFeatures.length()>0){
+                            j.put("related_features",relatedFeatures);
+                        }
+                    }finally{
+                        if (foreignIt!=null){
+                            foreignIt.close();
+                        }
+                        foreignFs.getDataStore().dispose();
                     }
-                    if (!isJoin && relatedFeatures.length()>0){
-                        j.put("related_features",relatedFeatures);
+                }else{
+                    Filter filter = createFilter(feature,rel);
+                    if (filter==null){
+                        continue;
                     }
-                }finally{
-                    if (foreignIt!=null){
-                        foreignIt.close();
-                    }
-                    foreignFs.getDataStore().dispose();
+                    JSONObject related_ft = new JSONObject();
+                    related_ft.put("filter", CQL.toCQL(filter));
+                    related_ft.put("id",rel.getForeignFeatureType().getId());
+                    related_featuretypes.put(related_ft);
                 }
+            }
+            if (related_featuretypes.length()>0){
+                j.put("related_featuretypes",related_featuretypes);
             }
         }
         return j;
@@ -318,6 +313,33 @@ public class FeatureToJson {
             return dateFormat.format((Date)value);
         } else {
             return value;
+        }
+    }
+
+    private Filter createFilter(SimpleFeature feature,FeatureTypeRelation rel) {
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();        
+        List<Filter> filters = new ArrayList<Filter>();
+        for (FeatureTypeRelationKey key : rel.getRelationKeys()){
+            AttributeDescriptor rightSide = key.getRightSide();
+            AttributeDescriptor leftSide = key.getLeftSide();
+            Object value= feature.getAttribute(leftSide.getName());
+            if (value==null){
+                continue;
+            }
+            if (AttributeDescriptor.GEOMETRY_TYPES.contains(rightSide.getType()) &&
+                    AttributeDescriptor.GEOMETRY_TYPES.contains(leftSide.getType())){
+                filters.add(ff.not(ff.isNull(ff.property(rightSide.getName()))));                            
+                filters.add(ff.intersects(ff.property(rightSide.getName()),ff.literal(value)));
+            }else{
+                filters.add(ff.equals(ff.property(rightSide.getName()),ff.literal(value)));
+            }
+        }
+        if (filters.size()>1){
+            return ff.and(filters);
+        }else if (filters.size()==1){
+            return filters.get(0);
+        }else{
+            return null;
         }
     }
 }

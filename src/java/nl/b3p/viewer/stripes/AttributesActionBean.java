@@ -79,6 +79,9 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private ApplicationLayer appLayer;
     
+    @Validate
+    private SimpleFeatureType featureType;
+    
     private Layer layer = null;
     
     @Validate
@@ -199,6 +202,14 @@ public class AttributesActionBean implements ActionBean {
     public void setNoCache(boolean noCache) {
         this.noCache = noCache;
     }
+    
+    public SimpleFeatureType getFeatureType(){
+        return this.featureType;
+    }
+    
+    public void setFeatureType(SimpleFeatureType ft){
+        this.featureType=ft;
+    }
     //</editor-fold>
     
     @After(stages=LifecycleStage.BindingAndValidation)
@@ -239,14 +250,10 @@ public class AttributesActionBean implements ActionBean {
             Integer geometryAttributeIndex = null;
             JSONArray attributes = new JSONArray();
             List<ConfiguredAttribute> confAttributes;
-            if (ft!=null){
-                confAttributes=appLayer.getAttributes(ft,true);
-            }else{
-                confAttributes=appLayer.getAttributes();
-            }
+            confAttributes=appLayer.getAttributes();
+            
             for(ConfiguredAttribute ca: confAttributes) {
                 JSONObject j = ca.toJSONObject();
-                
                 AttributeDescriptor ad = featureTypeAttributes.get(ca.getFullName());
                 if(ad != null) {
                     j.put("alias", ad.getAlias());
@@ -396,14 +403,17 @@ public class AttributesActionBean implements ActionBean {
         try {
             int total = 0;
             
-            if(layer != null && layer.getFeatureType() != null) {
+            if(featureType!=null || (layer != null && layer.getFeatureType() != null)) {
                 FeatureSource fs;
-
-                if(isDebug() && layer.getFeatureType().getFeatureSource() instanceof WFSFeatureSource) {
+                SimpleFeatureType ft = featureType;
+                if (ft==null){
+                    ft=layer.getFeatureType();
+                }
+                if(isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
-                    fs = ((WFSFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
-                } /*else if(layer.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) {
+                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                } /*else if(ft.getFeatureSource() instanceof ArcGISFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     if(isDebug()) {
                         extraDataStoreParams.put(ArcGISDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
@@ -411,16 +421,16 @@ public class AttributesActionBean implements ActionBean {
                     if(!isNoCache()) {
                         extraDataStoreParams.put(ArcGISDataStoreFactory.HTTP_CACHE.key, getHTTPCache());
                     }
-                    fs = ((ArcGISFeatureSource)layer.getFeatureType().getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                    fs = ((ArcGISFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
                 }*/ else {
                     
-                    fs = layer.getFeatureType().openGeoToolsFeatureSource();
+                    fs = ft.openGeoToolsFeatureSource();
                 }
                 
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
                 final Query q = new Query(fs.getName().toString());
-                //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,layer.getFeatureType(),false);
+                //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
                 
                 setFilter(q);
                 
@@ -440,7 +450,7 @@ public class AttributesActionBean implements ActionBean {
                 
                 FeatureToJson ftoj = new FeatureToJson(arrays,false);
                 
-                JSONArray features = ftoj.getJSONFeatures(appLayer,layer.getFeatureType(), fs, q, sort, dir);                
+                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);                
                 json.put("features", features);
             }
 
@@ -478,9 +488,7 @@ public class AttributesActionBean implements ActionBean {
         }
         if (ft.getRelations()!=null){
             for (FeatureTypeRelation rel : ft.getRelations()){
-                if(rel.getType().equals(FeatureTypeRelation.JOIN)){
-                    featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
-                }
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));                
             }
         }
         return featureTypeAttributes;
