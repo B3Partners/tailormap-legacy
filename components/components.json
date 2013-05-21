@@ -566,7 +566,7 @@
         className: "viewer.components.AttributeList",
         name: "Attributen Lijst",
         shortName: "AL",
-        sources: ["AttributeList.js"],
+        sources: ["../common/plugins/RowExpander.js","AttributeList.js"],
         configSource: ["SelectionWindowConfig.js","AttributeList-config.js"],
         restrictions: ["left_menu"] , 
         singleton: true,       

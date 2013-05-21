@@ -1168,7 +1168,29 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         } else {
             return null;
         }
-    },        
+    },   
+    /**
+     * Get the attributes of the appLayer
+     */
+    getAttributesFromAppLayer: function (appLayer, featureTypeId){
+        if (appLayer.attributes == undefined){
+            return appLayer.attributes;
+        }
+        //if no featureTypeId given, get the one of the application layer.
+        if (featureTypeId== undefined || featureTypeId==null){
+            var serviceLayer=this.getServiceLayer(appLayer);
+            featureTypeId=serviceLayer.featureTypeId;
+            //featureTypeId="ble";
+        }
+        var attributes=[];
+        for (var i =0; i < appLayer.attributes.length; i++){
+            var attr = appLayer.attributes[i];
+            if (attr.featureType==undefined || attr.featureType==featureTypeId){
+                attributes.push(attr);
+            }            
+        }
+        return attributes;
+    },
     
     bookmarkValuesFromURL : function(params){
         var layersLoaded = false;

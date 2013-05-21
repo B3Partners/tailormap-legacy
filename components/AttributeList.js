@@ -22,7 +22,8 @@
 Ext.define ("viewer.components.AttributeList",{
     extend: "viewer.components.Component",
     grid: null,
-    pager: null,
+    grids: null,
+    pagers: null,
     config: {
         layers:null,
         title:null,
@@ -39,6 +40,8 @@ Ext.define ("viewer.components.AttributeList",{
         viewer.components.AttributeList.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;
+        this.grids={};
+        this.pagers={};
         this.renderButton({
             handler: function(){
                 me.showWindow();                
@@ -52,15 +55,21 @@ Ext.define ("viewer.components.AttributeList",{
         return this;
     },
     getExtComponents: function() {
-        return [
+        //todo: gridpanels van subgrids toevoegen.
+        var list= [
             this.name + 'Container',
-            this.name + 'LayerSelectorPanel',
-            this.name + 'GridPanel',
-            this.name + 'Grid',
-            this.name + 'PagerPanel',
-            this.name + 'Pager',
+            this.name + 'LayerSelectorPanel',            
             this.name + 'ClosingPanel'
         ];
+        for (var gridId in this.grids){
+            list.push(this.name+gridId+'Grid');
+            list.push(this.name+gridId+'GridPanel');
+        }
+        for (var pagerId in this.pagers){
+            list.push(this.name+pagerId+'Pager');
+            list.push(this.name+pagerId+'PagerPanel');
+        }
+        return list;
     },
     loadWindow : function(){
         var me = this;
@@ -130,11 +139,11 @@ Ext.define ("viewer.components.AttributeList",{
         this.popup.show();
     },
     clear: function() {
-        if(this.grid) {
-            this.grid.destroy();
+        for(var gridId in this.grids) {
+            this.grids[gridId].destroy();
         }
-        if(this.pager) {
-            this.pager.destroy();
+        for(var pagerId in this.pagers) {
+            this.pagers[pagerId].destroy();
         }
         delete this.appLayer;
         delete this.featureService;
@@ -177,8 +186,87 @@ Ext.define ("viewer.components.AttributeList",{
     },
     initGrid: function(appLayer) {
         var me = this;
+        var filter=null;
+        if (appLayer.filter){
+            filter=appLayer.filter.getCQL();
+        }
+        this.createGrid("",document.getElementById(this.name + 'Container'), appLayer, null, filter,true);
+    },
+    onExpandRow: function(rowNode,record,expandRow,eOpts){
+        var store=record.store;
+        var rawData = store.data.items[record.index].raw;        
+        if (rawData.related_featuretypes){
+            var childGridIds=[];
+            for (var i=0; i < rawData.related_featuretypes.length; i++){
+                var ft = rawData.related_featuretypes[i];
+                var newEl =document.createElement("div");
+                var gridId=""+record.index+"_"+ft.id;
+                childGridIds.push(gridId);
+                newEl.id=this.name +gridId+ 'Container';
+                expandRow.children[0].children[0].appendChild(newEl);
+                this.createGrid(gridId,newEl, this.appLayer, ft.id,ft.filter,false);
+            }
+            store.addListener("load",function(){
+                for (var i=0; i < childGridIds.length; i ++){
+                    this.deleteGridWithId(childGridIds[i]);
+                }
+            },this)
+        }
         
-        var attributes = appLayer.attributes;
+    },
+    onCollapseBody: function (rowNode,record,expandRow,eOpts){
+        //alert("boe");
+    },
+            
+    deleteGridWithId: function (gridId){
+        if(this.grids[gridId]){
+            this.grids[gridId].destroy();
+            delete this.grids[gridId];            
+        }if (this.pagers[gridId]){
+            this.pagers[gridId].destroy();
+            delete this.pagers[gridId];
+        }
+        var name=this.name+gridId;
+        if (Ext.get(name + 'GridPanel')){
+            Ext.get(name + 'GridPanel').destroy();
+        }
+        if (Ext.get(name + 'PagerPanel')){
+            Ext.get(name + 'PagerPanel').destroy();
+        }
+    },
+    /**
+     * Create a grid
+     */
+    createGrid: function(gridId,renderToEl, appLayer, featureTypeId, relateFilter, addPager){
+        var me = this;
+        var name=this.name;
+        if (gridId){
+            name+=gridId;
+            if (this.grids[gridId]){
+                return;
+            }
+        }       
+        if (Ext.get(name + 'GridPanel')==null){
+            Ext.create('Ext.container.Container', {
+                id: name + 'GridPanel',
+                autoScroll: true,
+                width: '100%',
+                flex: 1, 
+                renderTo: renderToEl.id
+            });
+            if(addPager){
+                Ext.create('Ext.container.Container', {
+                    id: name +'PagerPanel',
+                    xtype: "container",
+                    width: '100%',
+                    height: 30,
+                    renderTo: renderToEl.id
+                });
+            }
+        }
+
+        //var attributes = appLayer.attributes;
+        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer,featureTypeId);
         var attributeList = new Array();
         var columns = new Array();
         var index = 0;
@@ -204,23 +292,29 @@ Ext.define ("viewer.components.AttributeList",{
                 });
             }
         }
-        Ext.define(this.name + 'Model', {
+        var modelName= name + 'Model';
+        Ext.define(modelName, {
             extend: 'Ext.data.Model',
             fields: attributeList
         });
         var filter = "";
-        if(appLayer.filter){
-            filter = "&filter="+encodeURIComponent(appLayer.filter.getCQL());
+        if(relateFilter){
+            filter = "&filter="+encodeURIComponent(relateFilter);
         }
+        var featureType="";
+        if (featureTypeId){
+            featureType="&featureType="+featureTypeId;
+        }
+        
         var store = Ext.create('Ext.data.Store', {
             pageSize: 10,
-            model: this.name + 'Model',
+            model: modelName,
             remoteSort: true,
             remoteFilter: true,
             proxy: {
                 type: 'ajax',
                 timeout: 40000,
-                url: appLayer.featureService.getStoreUrl() + "&arrays=1"+filter,
+                url: appLayer.featureService.getStoreUrl() + "&arrays=1"+featureType+filter,
                 reader: {
                     type: 'json',
                     root: 'features',
@@ -260,23 +354,47 @@ Ext.define ("viewer.components.AttributeList",{
             },
             autoLoad: true
         });
-
-        this.grid = Ext.create('Ext.grid.Panel',  {
-            id: this.name + 'Grid',
+        var g = Ext.create('Ext.grid.Panel',  {
+            id: name + 'Grid',
             store: store,
             columns: columns,
-            renderTo: this.name + 'GridPanel'
+            plugins: [{
+                ptype: 'rowexpander',
+                rowBodyTpl: [
+                    ""
+                ]           
+            }],
+            viewConfig:{
+                listeners: {
+                    expandbody : {
+                        scope: this,
+                        fn: function(rowNode,record,expandRow,eOpts){
+                            this.onExpandRow(rowNode,record,expandRow,eOpts);
+                        }
+                    },
+                    collapsebody: {
+                        scope: this,
+                        fn: function(rowNode,record,expandRow,eOpts){
+                            this.onCollapseBody(rowNode,record,expandRow,eOpts);
+                        }
+                    }
+                }
+            },
+            renderTo: name + 'GridPanel'
         });
-        
-        this.pager = Ext.create('Ext.PagingToolbar', {
-            id: this.name + 'Pager',
-            store: store,
-            displayInfo: true,
-            displayMsg: 'Feature {0} - {1} van {2}',
-            emptyMsg: "Geen features om weer te geven",
-            renderTo: this.name + 'PagerPanel',
-            height: 30
-        });
+        this.grids[gridId]=g;
+        if(addPager){
+            var p = Ext.create('Ext.PagingToolbar', {
+                id: name + 'Pager',
+                store: store,
+                displayInfo: true,
+                displayMsg: 'Feature {0} - {1} van {2}',
+                emptyMsg: "Geen features om weer te geven",
+                renderTo: name + 'PagerPanel',
+                height: 30
+            });
+            this.pagers[gridId]=p;
+        }
     }
 });
 
