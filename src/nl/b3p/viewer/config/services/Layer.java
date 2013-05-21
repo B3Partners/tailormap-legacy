@@ -390,6 +390,7 @@ public class Layer implements Cloneable {
         o.put("hasFeatureType", featureType != null);
         if(featureType != null) {
             o.put("featureTypeName", featureType.getTypeName());
+            o.put("featureTypeId",featureType.getId());
         }
         
         /* Only include "interesting" details in JSON */
