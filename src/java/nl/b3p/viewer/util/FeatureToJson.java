@@ -157,10 +157,9 @@ public class FeatureToJson {
                         if (filter==null){
                             continue;
                         }
-                        if (isJoin){
-                            //if join only get 1 feature
-                            foreignQ.setMaxFeatures(1);                   
-                        }
+                        //if join only get 1 feature
+                        foreignQ.setMaxFeatures(1);                   
+                        
                         //set propertynames
                         List<String> propertyNames;
                         if (al!=null){
@@ -181,23 +180,12 @@ public class FeatureToJson {
                             }
                         }
                         //Get Feature and populate JSON object with the values.                    
-                        foreignIt=foreignFs.getFeatures(foreignQ).features();
-                        JSONArray relatedFeatures = new JSONArray();
+                        foreignIt=foreignFs.getFeatures(foreignQ).features();                        
                         while (foreignIt.hasNext()){
                             SimpleFeature foreignFeature = foreignIt.next();
-                            if(isJoin){
-                                //join it in the same json
-                                j= toJSONFeature(j,foreignFeature, rel.getForeignFeatureType(), al,propertyNames,attributeAliases,index);
-
-                            }else{
-                                //it's a relate
-                                JSONObject newJson = toJSONFeature(new JSONObject(), foreignFeature, rel.getForeignFeatureType(),al,propertyNames, attributeAliases,index);                                
-                                relatedFeatures.put(newJson);
-                            }
-                        }
-                        if (!isJoin && relatedFeatures.length()>0){
-                            j.put("related_features",relatedFeatures);
-                        }
+                            //join it in the same json
+                            j= toJSONFeature(j,foreignFeature, rel.getForeignFeatureType(), al,propertyNames,attributeAliases,index);
+                        }                        
                     }finally{
                         if (foreignIt!=null){
                             foreignIt.close();
