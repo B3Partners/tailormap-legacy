@@ -21,7 +21,6 @@
  */
 Ext.define ("viewer.components.AttributeList",{
     extend: "viewer.components.Component",
-    grid: null,
     grids: null,
     pagers: null,
     config: {
@@ -92,13 +91,13 @@ Ext.define ("viewer.components.AttributeList",{
                 width: '100%',
                 height: 36
             },{
-                id: this.name + 'GridPanel',
+                id: this.name + 'mainGridPanel',
                 xtype: "container",
                 autoScroll: true,
                 width: '100%',
                 flex: 1
             },{
-                id: this.name + 'PagerPanel',
+                id: this.name + 'mainPagerPanel',
                 xtype: "container",
                 width: '100%',
                 height: 30
@@ -190,7 +189,7 @@ Ext.define ("viewer.components.AttributeList",{
         if (appLayer.filter){
             filter=appLayer.filter.getCQL();
         }
-        this.createGrid("",document.getElementById(this.name + 'Container'), appLayer, null, filter,true);
+        this.createGrid("main",document.getElementById(this.name + 'Container'), appLayer, null, filter,true,true);
     },
     onExpandRow: function(rowNode,record,expandRow,eOpts){
         var store=record.store;
@@ -203,6 +202,7 @@ Ext.define ("viewer.components.AttributeList",{
                 var gridId=""+record.index+"_"+ft.id;
                 childGridIds.push(gridId);
                 newEl.id=this.name +gridId+ 'Container';
+                newEl.style.margin="5px";
                 expandRow.children[0].children[0].appendChild(newEl);
                 this.createGrid(gridId,newEl, this.appLayer, ft.id,ft.filter,false);
             }
@@ -214,8 +214,7 @@ Ext.define ("viewer.components.AttributeList",{
         }
         
     },
-    onCollapseBody: function (rowNode,record,expandRow,eOpts){
-        //alert("boe");
+    onCollapseBody: function (rowNode,record,expandRow,eOpts){        
     },
             
     deleteGridWithId: function (gridId){
@@ -237,7 +236,7 @@ Ext.define ("viewer.components.AttributeList",{
     /**
      * Create a grid
      */
-    createGrid: function(gridId,renderToEl, appLayer, featureTypeId, relateFilter, addPager){
+    createGrid: function(gridId,renderToEl, appLayer, featureTypeId, relateFilter, addPager,addRowExpander){
         var me = this;
         var name=this.name;
         if (gridId){
@@ -245,7 +244,7 @@ Ext.define ("viewer.components.AttributeList",{
             if (this.grids[gridId]){
                 return;
             }
-        }       
+        }
         if (Ext.get(name + 'GridPanel')==null){
             Ext.create('Ext.container.Container', {
                 id: name + 'GridPanel',
@@ -282,8 +281,8 @@ Ext.define ("viewer.components.AttributeList",{
                     type : 'string'
                 });
                 columns.push({
-                    id: "c" +attIndex,
-                    text:colName,
+                    id: "c"+name+ +attIndex,
+                    header:colName,
                     dataIndex: "c" + attIndex,
                     flex: 1,
                     filter: {
@@ -307,6 +306,7 @@ Ext.define ("viewer.components.AttributeList",{
         }
         
         var store = Ext.create('Ext.data.Store', {
+            storeId: name+"Store",
             pageSize: 10,
             model: modelName,
             remoteSort: true,
@@ -354,26 +354,31 @@ Ext.define ("viewer.components.AttributeList",{
             },
             autoLoad: true
         });
-        var g = Ext.create('Ext.grid.Panel',  {
-            id: name + 'Grid',
-            store: store,
-            columns: columns,
-            plugins: [{
+        var plugins = [];
+        if (addRowExpander){
+            plugins.push({
                 ptype: 'rowexpander',
                 rowBodyTpl: [
                     ""
                 ]           
-            }],
-            viewConfig:{
+            });
+        }
+        var g = Ext.create('Ext.grid.Panel',  {
+            id: name + 'Grid',
+            store: store,
+            columns: columns,
+            plugins: plugins,
+            viewConfig:{        
+                trackOver: false,
                 listeners: {
                     expandbody : {
-                        scope: this,
+                        scope: me,
                         fn: function(rowNode,record,expandRow,eOpts){
                             this.onExpandRow(rowNode,record,expandRow,eOpts);
                         }
                     },
                     collapsebody: {
-                        scope: this,
+                        scope: me,
                         fn: function(rowNode,record,expandRow,eOpts){
                             this.onCollapseBody(rowNode,record,expandRow,eOpts);
                         }
