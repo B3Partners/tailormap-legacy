@@ -23,6 +23,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -88,4 +91,24 @@ public class FeatureTypeRelation {
         this.foreignFeatureType = foreignFeatureType;
     }
     //</editor-fold>
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject j = new JSONObject();
+        j.put("type",type); 
+        if (this.featureType!=null){
+            j.put("featureType", this.featureType.getId());
+        }
+        if (this.foreignFeatureType!=null){
+            j.put("foreignFeatureType", this.foreignFeatureType.getId());
+            JSONArray jRel = new JSONArray();
+            if (!this.foreignFeatureType.getRelations().isEmpty()){
+                j.put("relations",jRel);
+                for (FeatureTypeRelation rel : this.foreignFeatureType.getRelations()){
+                    jRel.put(rel.toJSONObject());
+                }
+            }
+        }
+        return j;
+    }
+
 }
