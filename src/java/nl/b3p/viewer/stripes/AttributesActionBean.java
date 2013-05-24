@@ -17,15 +17,10 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import javax.persistence.NoResultException;
 import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
@@ -45,20 +40,11 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.sort.SortBy;
-import org.opengis.filter.sort.SortOrder;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -253,12 +239,12 @@ public class AttributesActionBean implements ActionBean {
             confAttributes=appLayer.getAttributes();
             
             for(ConfiguredAttribute ca: confAttributes) {
-                JSONObject j = ca.toJSONObject();
+                JSONObject j = ca.toJSONObject();                
                 AttributeDescriptor ad = featureTypeAttributes.get(ca.getFullName());
                 if(ad != null) {
                     j.put("alias", ad.getAlias());
                     j.put("type", ad.getType());
-
+                    
                     if(ft != null && ca.getAttributeName().equals(ft.getGeometryAttribute())) {
                         geometryAttributeIndex = attributes.length();
                     }
@@ -272,6 +258,7 @@ public class AttributesActionBean implements ActionBean {
             if(geometryAttributeIndex != null) {
                 json.put("geometryAttributeIndex", geometryAttributeIndex);
             }
+            json.put("relations",relationsToJSON(ft.getRelations()));
             json.put("attributes", attributes);
             json.put("success", Boolean.TRUE);
         }
@@ -492,5 +479,14 @@ public class AttributesActionBean implements ActionBean {
             }
         }
         return featureTypeAttributes;
+    }
+
+    private JSONArray relationsToJSON(List<FeatureTypeRelation> relations) throws JSONException {
+        JSONArray jRelations = new JSONArray();
+        for (FeatureTypeRelation rel : relations){
+            JSONObject jRel = rel.toJSONObject();
+            jRelations.put(jRel);
+        }
+        return jRelations;
     }
 }
