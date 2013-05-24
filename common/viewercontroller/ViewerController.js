@@ -1179,19 +1179,54 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //if no featureTypeId given, get the one of the application layer.
         if (featureTypeId== undefined || featureTypeId==null){
             var serviceLayer=this.getServiceLayer(appLayer);
-            featureTypeId=serviceLayer.featureTypeId;
-            //featureTypeId="ble";
+            featureTypeId=serviceLayer.featureTypeId;            
+        }
+        var joinedFeatureTypes=[];
+        joinedFeatureTypes.push(featureTypeId);
+        if (appLayer.relations){
+             joinedFeatureTypes=joinedFeatureTypes.concat(this.getJoinedFeatureTypes(appLayer.relations,featureTypeId));            
         }
         var attributes=[];
         for (var i =0; i < appLayer.attributes.length; i++){
             var attr = appLayer.attributes[i];
-            if (attr.featureType==undefined || attr.featureType==featureTypeId){
+            if (attr.featureType==undefined || joinedFeatureTypes.indexOf(attr.featureType)!=-1){
                 attributes.push(attr);
             }            
         }
+        
         return attributes;
     },
-    
+    /**
+     * Get a list of featuretypes that are joined with this featuretype.
+     * @param {Array} relations array of relations
+     * @param {Num} featureTypeId The featureType for which the jiones need to be searched.
+     * @return {Array} FeatureTypeIds
+     */
+    getJoinedFeatureTypes : function(relations,featureTypeId){
+        var joinedFeatureTypes=[];
+        for (var i=0; i < relations.length; i++){
+            var relation=relations[i];
+            var newJoined=[]
+            if (relation.featureType==featureTypeId && relation.type =="join"){
+                newJoined.push(relation.foreignFeatureType);
+                if (relation.relations){
+                    newJoined=newJoined.concat(this.getJoinedFeatureTypes(relation.relations,relation.foreignFeatureType));
+                }
+            }else if (relation.relations){
+                newJoined=newJoined.concat(this.getJoinedFeatureTypes(relation.relations,featureTypeId));
+            }
+            //don't add double ft
+            for (var b=0; b < newJoined.length; b++){
+                if (joinedFeatureTypes.indexOf(newJoined[b])>=0){
+                    return joinedFeatureTypes;
+                }else{
+                    joinedFeatureTypes.push(newJoined[b]);
+                }
+            }
+        }
+        return joinedFeatureTypes;
+    },
+            
     bookmarkValuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;

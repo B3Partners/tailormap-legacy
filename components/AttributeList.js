@@ -345,7 +345,7 @@ Ext.define ("viewer.components.AttributeList",{
                             }
                         }
 
-                        Ext.getCmp(me.name + "Grid").getStore().removeAll();
+                        Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
                             
                         Ext.MessageBox.alert("Foutmelding", msg);
                         
