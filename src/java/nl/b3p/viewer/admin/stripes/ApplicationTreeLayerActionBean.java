@@ -246,9 +246,27 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return attributesToRetain;
     }
 
-    private void makeAttributeJSONArray(SimpleFeatureType layerSft) throws JSONException {
-        
-        for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
+    private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
+        List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
+        Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
+            @Override
+            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
+                if (o1.getFeatureType()==null){
+                    return -1;
+                }
+                if (o2.getFeatureType()==null){
+                    return 1;
+                }
+                if (o1.getFeatureType().getId().equals(layerSft.getId())){
+                    return -1;
+                }
+                if (o2.getFeatureType().getId().equals(layerSft.getId())){
+                    return 1;
+                }
+                return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
+            }
+        });
+        for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
             
             // Copy alias over from feature type
