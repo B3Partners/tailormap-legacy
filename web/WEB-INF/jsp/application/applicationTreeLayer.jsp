@@ -52,10 +52,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="attributes-tab" class="x-hide-display"><div>
                     <a href="#Attributen_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
-                        <c:when test="${!empty actionBean.applicationLayer.attributes}">
-                            <c:forEach var="attribute" items="${actionBean.applicationLayer.attributes}">
+                        <c:when test="${!empty actionBean.applicationLayer.attributes}">                                                               
+                            <c:forEach var="attribute" items="${actionBean.applicationLayer.attributes}" varStatus="count">   
+                                <c:if test="${count.index==0 ||(count.index > 0 && actionBean.applicationLayer.attributes[count.index-1].featureType.id != actionBean.applicationLayer.attributes[count.index].featureType.id)}">
+                                    <b><c:out value="${attribute.featureType.featureSource.name}"/> - <c:out value="${attribute.featureType.typeName}"/><br/></b>
+                                </c:if>
                                 <stripes:checkbox name="selectedAttributes" value="${attribute.fullName}"/>
-                                
                                 <c:set var="name" value="${attribute.attributeName}"/>
                                 <c:set var="alias" value="${actionBean.attributeAliases[attribute.fullName]}"/>
                                 

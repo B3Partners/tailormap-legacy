@@ -248,6 +248,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
+        //Sort the attributes, by featuretype and the featuretyp
         Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
