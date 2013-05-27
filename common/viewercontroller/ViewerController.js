@@ -1191,7 +1191,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var attr = appLayer.attributes[i];
             if (attr.featureType==undefined || joinedFeatureTypes.indexOf(attr.featureType)!=-1){
                 attributes.push(attr);
-            }            
+            }
         }
         
         return attributes;
