@@ -454,3 +454,12 @@ function cancelFunction(){
     var url = actionBeans.appTreeLayer + '?edit=t&applicationLayer=' + applicationLayer;
     document.location.href = url;
 }
+
+function attributeGroupClick(el){
+    var id= el.id;
+    var checked = el.checked;
+    var checkboxes = Ext.query("."+id);
+    checkboxes.forEach(function (e){
+        e.checked=checked;
+    });
+}

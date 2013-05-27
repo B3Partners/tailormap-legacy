@@ -55,9 +55,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <c:when test="${!empty actionBean.applicationLayer.attributes}">                                                               
                             <c:forEach var="attribute" items="${actionBean.applicationLayer.attributes}" varStatus="count">   
                                 <c:if test="${count.index==0 ||(count.index > 0 && actionBean.applicationLayer.attributes[count.index-1].featureType.id != actionBean.applicationLayer.attributes[count.index].featureType.id)}">
-                                    <b><c:out value="${attribute.featureType.featureSource.name}"/> - <c:out value="${attribute.featureType.typeName}"/><br/></b>
+                                    <div style="margin-left: -5px;">
+                                        <input type="checkbox" id="featureType_${attribute.featureType.id}" value="featureType_${attribute.featureType.id}" onchange="attributeGroupClick(this)"/>
+                                        <b><c:out value="${attribute.featureType.featureSource.name}"/> - <c:out value="${attribute.featureType.typeName}"/> (alles selecteer/deselecteer)</b>
+                                    </div>
                                 </c:if>
-                                <stripes:checkbox name="selectedAttributes" value="${attribute.fullName}"/>
+                                <stripes:checkbox class="featureType_${attribute.featureType.id}" name="selectedAttributes" value="${attribute.fullName}"/>
                                 <c:set var="name" value="${attribute.attributeName}"/>
                                 <c:set var="alias" value="${actionBean.attributeAliases[attribute.fullName]}"/>
                                 
@@ -67,7 +70,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </c:choose>
                                 <br>
                             </c:forEach>
-                        </c:when>
+                        </c:when> 
                         <c:otherwise>
                             Er zijn geen attributen voor deze kaartlaag geconfigureerd.
                         </c:otherwise>
