@@ -381,10 +381,18 @@ public class Layer implements Cloneable {
             o.put("legendImageUrl", legendImageUrl);
         }
         if(minScale != null) {
-            o.put("minScale", minScale);
+            if (minScale.isNaN()||minScale.isInfinite()){
+                log.error("Can't use minScale: "+minScale+ " of Servicelayer" +this.service.getName() +" - "+this.name );
+            }else{
+                o.put("minScale", minScale);
+            }
         }
         if(maxScale != null) {
-            o.put("maxScale", maxScale);
+            if (maxScale.isNaN()||maxScale.isInfinite()){
+                log.error("Can't use maxScale: "+maxScale+ " of Servicelayer" +this.service.getName() +" - "+this.name );
+            }else{
+                o.put("maxScale", maxScale);
+            }
         }
         
         o.put("hasFeatureType", featureType != null);
