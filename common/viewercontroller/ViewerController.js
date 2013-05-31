@@ -1172,7 +1172,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /**
      * Get the attributes of the appLayer
      */
-    getAttributesFromAppLayer: function (appLayer, featureTypeId){
+    getAttributesFromAppLayer: function (appLayer, featureTypeId, addJoinedAttributes){
         if (appLayer.attributes == undefined){
             return appLayer.attributes;
         }
@@ -1181,9 +1181,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var serviceLayer=this.getServiceLayer(appLayer);
             featureTypeId=serviceLayer.featureTypeId;            
         }
+        if (addJoinedAttributes==undefined || addJoinedAttributes==null ){
+            addJoinedAttributes=true;
+        }
         var joinedFeatureTypes=[];
         joinedFeatureTypes.push(featureTypeId);
-        if (appLayer.relations){
+        if (addJoinedAttributes && appLayer.relations){
              joinedFeatureTypes=joinedFeatureTypes.concat(this.getJoinedFeatureTypes(appLayer.relations,featureTypeId));            
         }
         var attributes=[];

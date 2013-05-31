@@ -557,7 +557,7 @@ Ext.define ("viewer.components.DataSelection",{
     },
     // Change the comboboxes of the attributefilters. Happens when a new layer is chosen.
     changeAttributes : function (appLayer){
-        var attributes = appLayer.attributes;
+        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer,null,true);
         var attributeList = new Array();
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
