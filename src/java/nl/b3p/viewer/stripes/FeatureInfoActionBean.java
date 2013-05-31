@@ -241,6 +241,9 @@ public class FeatureInfoActionBean implements ActionBean {
                     Filter f = currentFilter != null ? ff.and(dwithin, currentFilter) : dwithin;
                     
                     f = (Filter)f.accept(new RemoveDistanceUnit(), null);
+                    
+                    f = FeatureToJson.reformatFilter(f, l.getFeatureType());
+                    
                     q.setFilter(f);
                     q.setMaxFeatures(limit);
                     

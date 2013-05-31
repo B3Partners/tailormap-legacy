@@ -254,11 +254,11 @@ public class AttributesActionBean implements ActionBean {
             
             if(ft != null) {
                 json.put("geometryAttribute", ft.getGeometryAttribute());
+                json.put("relations",relationsToJSON(ft.getRelations()));
             }
             if(geometryAttributeIndex != null) {
                 json.put("geometryAttributeIndex", geometryAttributeIndex);
-            }
-            json.put("relations",relationsToJSON(ft.getRelations()));
+            }            
             json.put("attributes", attributes);
             json.put("success", Boolean.TRUE);
         }
@@ -337,10 +337,11 @@ public class AttributesActionBean implements ActionBean {
         }
     }
     
-    private void setFilter(Query q) throws Exception {
+    private void setFilter(Query q,SimpleFeatureType ft) throws Exception {
         if(filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
+            f = FeatureToJson.reformatFilter(f,ft);
             q.setFilter(f);
         }
     }
@@ -418,9 +419,9 @@ public class AttributesActionBean implements ActionBean {
 
                 final Query q = new Query(fs.getName().toString());
                 //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
-                
-                setFilter(q);
-                
+
+                setFilter(q,ft);
+                                
                 final FeatureSource fs2 = fs;
                 total = lookupTotalCountCache(new Callable<Integer>() {
                     public Integer call() throws Exception {

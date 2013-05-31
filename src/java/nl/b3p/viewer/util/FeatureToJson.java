@@ -37,6 +37,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.visitor.SimplifyingFilterVisitor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,7 +160,7 @@ public class FeatureToJson {
                         }
                         //if join only get 1 feature
                         foreignQ.setMaxFeatures(1);                   
-                        
+                        foreignQ.setFilter(filter);
                         //set propertynames
                         List<String> propertyNames;
                         if (al!=null){
@@ -329,5 +330,20 @@ public class FeatureToJson {
         }else{
             return null;
         }
+    }
+    
+    public static Filter reformatFilter(Filter filter, SimpleFeatureType ft) throws Exception {
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)){
+            return filter;
+        }
+        for (FeatureTypeRelation rel : ft.getRelations()){
+            if (FeatureTypeRelation.JOIN.equals(rel.getType())){ 
+                filter= reformatFilter(filter, rel.getForeignFeatureType());
+                filter = (Filter) filter.accept(new ValidFilterExtractor(rel), filter);
+            }
+        }
+        filter=(Filter) filter.accept(new SimplifyingFilterVisitor(),null);
+        return filter;
     }
 }
