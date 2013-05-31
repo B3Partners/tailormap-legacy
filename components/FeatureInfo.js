@@ -45,12 +45,7 @@ Ext.define ("viewer.components.FeatureInfo",{
         this.balloon.close = function(){            
             me.balloon.setContent("");
             me.balloon.hide();
-            var maptips= me.viewerController.getComponentsByClassName("viewer.components.Maptip");
-            for (var i =0; i < maptips.length;i++){
-                if (typeof maptips[i].setEnabled == 'function'){
-                    maptips[i].setEnabled(true);
-                }
-            }
+            me.setMaptipEnabled(true);
         }
         //if topmenu height is in % then recalc on every resize.        
         var topMenuLayout=this.viewerController.getLayout('top_menu');
@@ -137,12 +132,29 @@ Ext.define ("viewer.components.FeatureInfo",{
     onFeatureInfoStart: function(){
         this.balloon.setContent("");
         this.balloon.hide();
-        var maptips= this.viewerController.getComponentsByClassName("viewer.components.Maptip");
-        for (var i =0; i < maptips.length;i++){
-            if (typeof maptips[i].setEnabled == 'function'){
-                maptips[i].setEnabled(false);
+        this.setMaptipEnabled(false);
+    },
+    /**
+     * 
+     */
+    onDataReturned: function(options){
+        var found=false;
+        var data = options.data;
+        for (var layerIndex in data){            
+            var layer=data[layerIndex];
+            for (var index in layer.features){
+                found=true;
+                break;
+            }
+            if(found){
+                break;
             }
         }
+        if (!found){
+            this.setMaptipEnabled(true);
+        }
+        this.callParent(arguments);        
+        
     },
     /**
      *Called when extent is changed, recalculate the position
@@ -155,6 +167,18 @@ Ext.define ("viewer.components.FeatureInfo",{
                 this.balloon.hide();
             }
         }
-    }
+    },
+    /**
+     * 
+     */
+     setMaptipEnabled: function (enable){        
+        var maptips= this.viewerController.getComponentsByClassName("viewer.components.Maptip");
+        for (var i =0; i < maptips.length;i++){
+            if (typeof maptips[i].setEnabled == 'function'){
+                maptips[i].setEnabled(enable);
+            }
+        } 
+     }
+            
 });
 
