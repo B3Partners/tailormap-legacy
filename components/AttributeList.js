@@ -141,6 +141,8 @@ Ext.define ("viewer.components.AttributeList",{
         for(var gridId in this.grids) {
             this.grids[gridId].destroy();
         }
+        delete this.grids;
+        this.grids={};
         for(var pagerId in this.pagers) {
             this.pagers[pagerId].destroy();
         }
