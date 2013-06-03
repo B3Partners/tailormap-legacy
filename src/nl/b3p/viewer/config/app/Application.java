@@ -395,10 +395,6 @@ public class Application {
     }
     
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request) throws JSONException {
-        if(!Authorizations.isLevelReadAuthorized(this, l, request)) {
-            //System.out.printf("Level %d %s unauthorized\n", l.getId(), l.getName());
-            return;
-        }
         JSONObject o = l.toJSONObject(false, this, request);
         o.put("background", l.isBackground() || parentIsBackground);
         levels.put(l.getId().toString(), o);
@@ -427,8 +423,10 @@ public class Application {
             JSONArray jsonChildren = new JSONArray();
             o.put("children", jsonChildren);
             for(Level child: children) {
-                jsonChildren.put(child.getId().toString());
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request);
+                if (Authorizations.isLevelReadAuthorized(this, child, request)){
+                    jsonChildren.put(child.getId().toString());
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request);
+                }
             }
         }
     }
