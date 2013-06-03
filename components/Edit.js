@@ -30,6 +30,8 @@ Ext.define ("viewer.components.Edit",{
     editingLayer: null,
     currentFID:null,
     geometryEditable:null,
+    deActivatedTools: [],
+    
     config:{
         title: "",
         iconUrl: "",
@@ -76,6 +78,7 @@ Ext.define ("viewer.components.Edit",{
             },
             viewerController: this.viewerController
         });
+        
         this.loadWindow(); 
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
@@ -385,7 +388,7 @@ Ext.define ("viewer.components.Edit",{
         this.inputContainer.getForm().setValues(feature);
     },
     mapClicked : function (toolMapClick,comp){
-        this.toolMapClick.deactivateTool();
+        this.deactivateMapClick();
         Ext.get(this.getContentDiv()).mask("Haalt features op...")
         var coords = comp.coord;
         var x = coords.x;
@@ -444,7 +447,18 @@ Ext.define ("viewer.components.Edit",{
     edit : function(){
         this.vectorLayer.removeAllFeatures();
         this.mode = "edit";
+        this.activateMapClick();
+    },
+    activateMapClick: function(){
+        this.deActivatedTools = this.viewerController.mapComponent.deactivateTools();
         this.toolMapClick.activateTool();
+    },
+    deactivateMapClick: function(){
+        for (var i=0; i < this.deActivatedTools.length; i++){
+            this.deActivatedTools[i].activate();
+        }
+        this.deActivatedTools = [];
+        this.toolMapClick.deactivateTool();
     },
     save : function(){
         var feature =this.inputContainer.getValues();

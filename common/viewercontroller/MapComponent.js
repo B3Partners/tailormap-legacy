@@ -329,6 +329,20 @@ Ext.define("viewer.viewercontroller.MapComponent",{
     activateTool : function (id){
         Ext.Error.raise({msg: "MapComponent.activateTool() Not implemented! Must be implemented in sub-class"});
     },
+    /**
+     * Deactivate all tools
+     * @return list of tools that where active
+     */
+    deactivateTools : function (){
+        var activeTools=[];
+        for (var i=0 ; i < this.tools.length; i++){
+            if (this.tools[i].isActive()){
+                activeTools.push(this.tools[i]);
+            }
+            this.tools[i].deactivate();
+        }
+        return activeTools;
+    },     
     
     /**
      * Get the width of this component
