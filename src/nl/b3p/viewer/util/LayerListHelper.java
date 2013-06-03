@@ -43,6 +43,9 @@ public class LayerListHelper {
         //get all the layers of this level
         for (ApplicationLayer appLayer : level.getLayers()) {
             Layer l = appLayer.getService().getLayer(appLayer.getLayerName());
+            if(l == null){
+                continue;
+            }
             
             if(filterable) {
                 // The value of l.isFilterable() for WMS layers is not meaningful
