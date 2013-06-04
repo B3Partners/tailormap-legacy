@@ -306,59 +306,61 @@ public class ArcGISService extends GeoService implements Updatable {
         
         // XXX implemented in ArcGISDataStore
         // XXX sometimes geometry field not in field list but layer has geometryType
-        JSONArray fields = agsl.getJSONArray("fields");
-        if(fields.length() > 0) {
-            SimpleFeatureType sft = new SimpleFeatureType();
-            sft.setFeatureSource(fs);
-            sft.setTypeName(l.getName());
-            sft.setDescription(l.getTitle());
-            sft.setWriteable(false);
-            
-            for(int i = 0; i < fields.length(); i++) {
-                JSONObject field = fields.getJSONObject(i);
-                
-                AttributeDescriptor att = new AttributeDescriptor();
-                sft.getAttributes().add(att);
-                att.setName(field.getString("name"));
-                att.setAlias(field.getString("alias"));
-                
-                String et = field.getString("type");
-                String type = AttributeDescriptor.TYPE_STRING;
-                if("esriFieldTypeOID".equals(et)) {
-                    type = AttributeDescriptor.TYPE_INTEGER;
-                } else if("esriFieldTypeGeometry".equals(et)) {
-                    if(sft.getGeometryAttribute() == null) {
-                        sft.setGeometryAttribute(att.getName());
+         boolean hasFields = false;
+        if(!agsl.isNull("fields")){
+            JSONArray fields = agsl.getJSONArray("fields");
+            if(fields.length() > 0) {
+                SimpleFeatureType sft = new SimpleFeatureType();
+                sft.setFeatureSource(fs);
+                sft.setTypeName(l.getName());
+                sft.setDescription(l.getTitle());
+                sft.setWriteable(false);
+
+                for(int i = 0; i < fields.length(); i++) {
+                    JSONObject field = fields.getJSONObject(i);
+
+                    AttributeDescriptor att = new AttributeDescriptor();
+                    sft.getAttributes().add(att);
+                    att.setName(field.getString("name"));
+                    att.setAlias(field.getString("alias"));
+
+                    String et = field.getString("type");
+                    String type = AttributeDescriptor.TYPE_STRING;
+                    if("esriFieldTypeOID".equals(et)) {
+                        type = AttributeDescriptor.TYPE_INTEGER;
+                    } else if("esriFieldTypeGeometry".equals(et)) {
+                        if(sft.getGeometryAttribute() == null) {
+                            sft.setGeometryAttribute(att.getName());
+                        }
+                        String gtype = agsl.getString("geometryType");
+                        if("esriGeometryPoint".equals(gtype)) {
+                            type = AttributeDescriptor.TYPE_GEOMETRY_POINT;
+                        } else if("esriGeometryMultipoint".equals(gtype)) {
+                            type = AttributeDescriptor.TYPE_GEOMETRY_MPOINT;
+                        } else if("esriGeometryLine".equals(gtype) || "esriGeometryPolyline".equals(gtype)) {
+                            type = AttributeDescriptor.TYPE_GEOMETRY_LINESTRING;
+                        } else if("esriGeometryPolygon".equals(gtype)) {
+                            type = AttributeDescriptor.TYPE_GEOMETRY_POLYGON;
+                        } else {
+                            // don't bother
+                            type = AttributeDescriptor.TYPE_GEOMETRY;
+                        }
+                    } else if("esriFieldTypeDouble".equals(et)) {
+                        type = AttributeDescriptor.TYPE_DOUBLE;
+                    } else if("esriFieldTypeInteger".equals(et)
+                            ||"esriFieldTypeSmallInteger".equals(et)) {
+                        type = AttributeDescriptor.TYPE_INTEGER;
+                    } else if("esriFieldTypeDate".equals(et)) {
+                        type = AttributeDescriptor.TYPE_DATE;
                     }
-                    String gtype = agsl.getString("geometryType");
-                    if("esriGeometryPoint".equals(gtype)) {
-                        type = AttributeDescriptor.TYPE_GEOMETRY_POINT;
-                    } else if("esriGeometryMultipoint".equals(gtype)) {
-                        type = AttributeDescriptor.TYPE_GEOMETRY_MPOINT;
-                    } else if("esriGeometryLine".equals(gtype) || "esriGeometryPolyline".equals(gtype)) {
-                        type = AttributeDescriptor.TYPE_GEOMETRY_LINESTRING;
-                    } else if("esriGeometryPolygon".equals(gtype)) {
-                        type = AttributeDescriptor.TYPE_GEOMETRY_POLYGON;
-                    } else {
-                        // don't bother
-                        type = AttributeDescriptor.TYPE_GEOMETRY;
-                    }
-                } else if("esriFieldTypeDouble".equals(et)) {
-                    type = AttributeDescriptor.TYPE_DOUBLE;
-                } else if("esriFieldTypeInteger".equals(et)
-                        ||"esriFieldTypeSmallInteger".equals(et)) {
-                    type = AttributeDescriptor.TYPE_INTEGER;
-                } else if("esriFieldTypeDate".equals(et)) {
-                    type = AttributeDescriptor.TYPE_DATE;
+                    att.setType(type);
                 }
-                att.setType(type);
+                fs.getFeatureTypes().add(sft);
+                l.setFeatureType(sft);
+                hasFields = true;
             }
-            fs.getFeatureTypes().add(sft);
-            l.setFeatureType(sft);
         }
-        
-        boolean hasFields = fields.length() > 0;
-        
+       
         /* We could check capabilities field for "Query", but don't bother,
          * group layers have Query in that property but no fields...
          */
