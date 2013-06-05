@@ -18,7 +18,6 @@ package nl.b3p.web.stripes;
 
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.StreamingResolution;
-import org.apache.commons.httpclient.HttpStatus;
 import org.json.JSONObject;
 
 /**
@@ -39,7 +38,7 @@ public class ErrorMessageResolution extends StreamingResolution {
 
     @Override
     protected void stream(HttpServletResponse response) throws Exception {
-        response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         super.stream(response);
     }
 }
