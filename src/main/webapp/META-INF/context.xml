@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/viewer-admin" antiJARLocking="true" disableURLRewriting="true">
+<!-- crossContext="true" is required to enable the viewer-admin to load the 
+  components.json file and component config javascript sources from the viewer -->
+<Context path="/viewer-admin" crossContext="true" antiJARLocking="true" disableURLRewriting="true">
 
     <!-- Customized context parameters; see web.xml -->
     <!--Parameter name="viewer.url" value="/viewer" override="false"/-->
