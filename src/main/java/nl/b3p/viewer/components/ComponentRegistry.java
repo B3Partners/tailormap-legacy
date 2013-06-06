@@ -48,13 +48,33 @@ public class ComponentRegistry implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
 
         String componentPath = sce.getServletContext().getInitParameter("component-path");
-
+        if(componentPath == null) {
+            componentPath = sce.getServletContext().getInitParameter("componentregistry.path");
+        }
+        
+        ServletContext componentPathContext = sce.getServletContext();
+        
+        if(componentPath == null) {
+            /* try to load components from other context from config (viewer) */
+            String crossContextName = sce.getServletContext().getInitParameter("componentregistry.crosscontext");
+            if(crossContextName != null) {
+                ServletContext crossContext = sce.getServletContext().getContext(crossContextName);
+                if(crossContext != null) {
+                    componentPath = crossContext.getInitParameter("component-path");
+                    if(componentPath == null) {
+                        componentPath = COMPONENT_DIR;
+                    }
+                    componentPathContext = crossContext;
+                    
+                }
+            }
+        }
         if(componentPath == null) {
             componentPath = COMPONENT_DIR;
         }
-        registry = new ComponentRegistry(sce.getServletContext(), componentPath);
+        registry = new ComponentRegistry(componentPathContext, componentPath);
     }
-
+    
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         
@@ -68,7 +88,7 @@ public class ComponentRegistry implements ServletContextListener {
 
     public ComponentRegistry(ServletContext sc, String componentPath) {
         for(String p: componentPath.split(File.pathSeparator)) {
-            loadPath(sc, p);
+            loadPath(sc, componentPath);
         }
     }
 
@@ -184,3 +204,4 @@ public class ComponentRegistry implements ServletContextListener {
         return components.get(className);
     }
 }
+
