@@ -1,0 +1,48 @@
+Index: lib/OpenLayers/Format/ArcXML.js
+===================================================================
+--- lib/OpenLayers/Format/ArcXML.js	(revision 3507)
++++ lib/OpenLayers/Format/ArcXML.js	(working copy)
+@@ -313,6 +313,9 @@
+                 imagesz.setArrtibute("printwidth", props.imagesize.printwidth);
+             }
+           
++            // XXX HACK, can not be set any other way!
++            props.background = { color: { r:251, g:251, b:251 }, transcolor: { r:251, g:251, b:251 } };                                
++            
+             if (props.background != null) {
+                 var backgrnd = this.createElementNS("", "BACKGROUND");
+                 propElem.appendChild(backgrnd);
+@@ -329,6 +332,11 @@
+                         props.background.transcolor.b);
+                 }
+             }
++            
++            // XXX HACK
++            var output = this.createElementNS("", "OUTPUT");
++            propElem.appendChild(output);
++            output.setAttribute("type", "png24");
+           
+             if (props.layerlist != null && props.layerlist.length > 0) {
+                 var layerlst = this.createElementNS("", "LAYERLIST");
+Index: OpenLayers.js
+===================================================================
+--- OpenLayers.js	(revision 3507)
++++ OpenLayers.js	(working copy)
+@@ -480,7 +480,17 @@
+ if(!b||"parsererror"===b.firstChild.nodeName){var c,d;try{c=a.firstChild.nodeValue,d=a.firstChild.childNodes[1].firstChild.nodeValue}catch(e){}throw{message:"Error parsing the ArcXML request",error:c,source:d};}return this.parseResponse(b)},write:function(a){a||(a=this.request);var b=this.createElementNS("","ARCXML");b.setAttribute("version","1.1");var c=this.createElementNS("","REQUEST");if(null!=a.get_image){var d=this.createElementNS("","GET_IMAGE");c.appendChild(d);var e=this.createElementNS("",
+ "PROPERTIES");d.appendChild(e);a=a.get_image.properties;null!=a.featurecoordsys&&(d=this.createElementNS("","FEATURECOORDSYS"),e.appendChild(d),0===a.featurecoordsys.id?d.setAttribute("string",a.featurecoordsys.string):d.setAttribute("id",a.featurecoordsys.id));null!=a.filtercoordsys&&(d=this.createElementNS("","FILTERCOORDSYS"),e.appendChild(d),0===a.filtercoordsys.id?d.setAttribute("string",a.filtercoordsys.string):d.setAttribute("id",a.filtercoordsys.id));null!=a.envelope&&(d=this.createElementNS("",
+ "ENVELOPE"),e.appendChild(d),d.setAttribute("minx",a.envelope.minx),d.setAttribute("miny",a.envelope.miny),d.setAttribute("maxx",a.envelope.maxx),d.setAttribute("maxy",a.envelope.maxy));d=this.createElementNS("","IMAGESIZE");e.appendChild(d);d.setAttribute("height",a.imagesize.height);d.setAttribute("width",a.imagesize.width);if(a.imagesize.height!=a.imagesize.printheight||a.imagesize.width!=a.imagesize.printwidth)d.setAttribute("printheight",a.imagesize.printheight),d.setArrtibute("printwidth",a.imagesize.printwidth);
++
++ // XXX HACK, can not be set any other way!
++a.background = { color: { r:251, g:251, b:251 }, transcolor: { r:251, g:251, b:251 } };     
++            
+ null!=a.background&&(d=this.createElementNS("","BACKGROUND"),e.appendChild(d),d.setAttribute("color",a.background.color.r+","+a.background.color.g+","+a.background.color.b),null!==a.background.transcolor&&d.setAttribute("transcolor",a.background.transcolor.r+","+a.background.transcolor.g+","+a.background.transcolor.b));if(null!=a.layerlist&&0<a.layerlist.length){d=this.createElementNS("","LAYERLIST");e.appendChild(d);for(e=0;e<a.layerlist.length;e++){var f=this.createElementNS("","LAYERDEF");d.appendChild(f);
++        
++// XXX HACK
++var output = this.createElementNS("", "OUTPUT");
++c.firstChild.firstChild.appendChild(output);
++output.setAttribute("type", "png24");
++
+ f.setAttribute("id",a.layerlist[e].id);f.setAttribute("visible",a.layerlist[e].visible);if("object"==typeof a.layerlist[e].query){var g=a.layerlist[e].query;if(0>g.where.length)continue;var h=null,h="boolean"==typeof g.spatialfilter&&g.spatialfilter?this.createElementNS("","SPATIALQUERY"):this.createElementNS("","QUERY");h.setAttribute("where",g.where);"number"==typeof g.accuracy&&0<g.accuracy&&h.setAttribute("accuracy",g.accuracy);"number"==typeof g.featurelimit&&2E3>g.featurelimit&&h.setAttribute("featurelimit",
+ g.featurelimit);"string"==typeof g.subfields&&"#ALL#"!=g.subfields&&h.setAttribute("subfields",g.subfields);"string"==typeof g.joinexpression&&0<g.joinexpression.length&&h.setAttribute("joinexpression",g.joinexpression);"string"==typeof g.jointables&&0<g.jointables.length&&h.setAttribute("jointables",g.jointables);f.appendChild(h)}"object"==typeof a.layerlist[e].renderer&&this.addRenderer(f,a.layerlist[e].renderer)}}}else if(null!=a.get_feature&&(d=this.createElementNS("","GET_FEATURES"),d.setAttribute("outputmode",
+ "newxml"),d.setAttribute("checkesc","true"),a.get_feature.geometry?d.setAttribute("geometry",a.get_feature.geometry):d.setAttribute("geometry","false"),a.get_feature.compact&&d.setAttribute("compact",a.get_feature.compact),"number"==a.get_feature.featurelimit&&d.setAttribute("featurelimit",a.get_feature.featurelimit),d.setAttribute("globalenvelope","true"),c.appendChild(d),null!=a.get_feature.layer&&0<a.get_feature.layer.length&&(e=this.createElementNS("","LAYER"),e.setAttribute("id",a.get_feature.layer),
