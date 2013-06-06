@@ -98,6 +98,11 @@ public class ComponentRegistry implements ServletContextListener {
         if(!path.isAbsolute()) {
             path = new File(sc.getRealPath(p));
         }
+        
+        if(!path.exists()) {
+            log.error(String.format("Cannot load component metadata from non-existing path \"%s\", deploy the viewer webapp first", path));
+            return;                    
+        }        
 
         log.info("Loading component metadata from path " + path);
 
