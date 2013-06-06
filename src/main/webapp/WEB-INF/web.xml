@@ -16,6 +16,21 @@
         <param-name>viewer.url</param-name>
         <param-value>/viewer</param-value>
     </context-param>
+    <context-param>
+        <description>
+            To load components from the viewer webapp, specify the context name
+            of the viewer webapp below (usually "/viewer", but if deployed as 
+            root "/"). If not specified specify the path to the directory or 
+            directies with components.json files in the "componentregistry.path" 
+            context parameter.
+            
+            The viewer webapp must be reachable by ServletContext.getContext().
+            For Tomcat, set crossContext="true" on the Context for the viewer
+            and viewr-admin webapp.
+        </description>
+        <param-name>componentregistry.crosscontext</param-name>
+        <param-value>/viewer</param-value>
+    </context-param>
     
     <context-param>
         <description>
