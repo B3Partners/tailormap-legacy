@@ -8,8 +8,27 @@
     <packaging>jar</packaging>
 
     <name>viewer-commons</name>
-    <url>http://maven.apache.org</url>
-
+    <url>http://github.com/flamingo-mc</url>
+    <developers>
+        <developer>
+            <name>Matthijs Laan</name>
+            <email>matthijslaan@b3partners.nl</email>
+            <organization>B3Partners B.V.</organization>
+            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+        </developer>
+        <developer>
+            <name>Meine Toonen</name>
+            <email>meinetoonen@b3partners.nl</email>
+            <organization>B3Partners B.V.</organization>
+            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+        </developer>
+        <developer>
+            <name>Roy Braam</name>
+            <email>roybraam@b3partners.nl</email>
+            <organization>B3Partners B.V.</organization>
+            <organizationUrl>http://www.b3partners.nl</organizationUrl>
+        </developer>
+    </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>9.2</geotools.version>
