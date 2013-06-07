@@ -1,0 +1,142 @@
+<project name="viewer-html" default="minify" basedir=".">
+
+    <!-- http://code.google.com/p/closure-compiler/wiki/BuildingWithAnt -->    
+    
+    <property name="minify.outputdir" value="${basedir}/build/web/viewer-html/"/>
+    
+    <property name="viewerhtml.path" value="${basedir}/web/viewer-html"/>
+	<target name="minify" description="Minify source JavaScript files with Closure Compiler">
+        <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="../libs/GoogleClosureCompiler/compiler.jar"/>
+    
+        <jscomp output="${minify.outputdir}/viewer-min.js"
+                compilationLevel="simple" prettyPrint="true" printInputDelimiter="true" debug="false">
+          <sources dir="${viewerhtml.path}/common/viewercontroller">
+            <file name="ViewerController.js"/>
+            <file name="MapComponent.js"/>
+          </sources>
+          
+          <sources dir="${viewerhtml.path}/components">
+            <file name="Component.js"/>
+            <file name="LogMessage.js"/>
+            <file name="Logger.js"/>
+            <file name="DataSelectionChecker.js"/>
+          </sources>
+
+          <sources dir="${viewerhtml.path}/common">
+            <file name="overrides.js"/>
+            <file name="ScreenPopup.js"/>
+			<file name="CQLFilterWrapper.js"/>
+            <file name="MobileSlider.js"/>
+            <file name="Combobox.js"/>
+            <file name="MobileCombobox.js"/>
+          </sources>
+          
+		  <!-- server-side Ajax wrappers -->
+          <sources dir="${viewerhtml.path}/common/ajax">
+            <file name="ServiceInfo.js"/>
+            <file name="CSWClient.js"/>
+            <file name="FeatureService.js"/>
+            <file name="SLD.js"/>
+            <file name="Bookmark.js"/>
+			<file name="LayerSelector.js"/>
+			<file name="CombineImage.js"/>
+			<file name="FeatureInfo.js"/>
+			<file name="EditFeature.js"/>
+			<file name="ArcQueryUtil.js"/>     
+			<file name="Twitter.js"/>       
+          </sources>          
+          
+		  <!-- abstract MapComponent -->
+          <sources dir="${viewerhtml.path}/common/viewercontroller/controller">
+            <file name="Map.js"/>
+            <file name="Layer.js"/>
+            <file name="TilingLayer.js"/>
+            <file name="WMSLayer.js"/>
+            <file name="ImageLayer.js"/>
+            <file name="VectorLayer.js"/>
+            <file name="ArcLayer.js"/>
+            <file name="Feature.js"/>
+            <file name="MapTip.js"/>
+            <file name="Extent.js"/>
+            <file name="Event.js"/>
+            <file name="Tool.js"/>
+            <file name="Component.js"/>
+            <file name="ToolMapClick.js"/>
+          </sources>
+          
+        </jscomp>
+        
+        <jscomp output="${minify.outputdir}/flamingo-min.js"
+                compilationLevel="simple" prettyPrint="true" printInputDelimiter="true" debug="false" >
+          <sources dir="${viewerhtml.path}/common/viewercontroller/flamingo">
+            <file name="FlamingoLayer.js"/>
+            <file name="FlamingoArcLayer.js"/>
+            <file name="FlamingoArcServerLayer.js"/>
+            <file name="FlamingoArcIMSLayer.js"/>
+            <file name="FlamingoWMSLayer.js"/>
+            <file name="FlamingoVectorLayer.js"/>
+            <file name="FlamingoMap.js"/>
+            <file name="FlamingoTool.js"/>
+            <file name="FlamingoImageLayer.js"/>
+            <file name="FlamingoTilingLayer.js"/>
+            <file name="ToolMapClick.js"/>
+
+            <file name="FlamingoComponent.js"/>
+            
+            <file name="FlamingoMapComponent.js"/>     
+          </sources>   
+		  
+          <sources dir="${viewerhtml.path}/common/viewercontroller/flamingo/components">
+            <file name="Overview.js"/>
+		  </sources> 
+		  
+          <sources dir="${viewerhtml.path}/common/viewercontroller/flamingo/tools">
+            <file name="JSButton.js"/>
+		  </sources>
+        </jscomp>
+        
+        <jscomp output="${minify.outputdir}/openlayers-min.js"
+                compilationLevel="simple" prettyPrint="true" printInputDelimiter="true" debug="false">
+            
+          <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers">
+            <file name="OpenLayersLayer.js"/>
+			<file name="OpenLayersArcLayer.js"/>
+			<file name="OpenLayersArcIMSLayer.js"/>
+			<file name="OpenLayersArcServerLayer.js"/>            
+            <file name="OpenLayersWMSLayer.js"/>
+            <file name="OpenLayersVectorLayer.js"/>
+            <file name="OpenLayersImageLayer.js"/>
+            <file name="OpenLayersTilingLayer.js"/>
+            <file name="OpenLayersTool.js"/>
+            <file name="OpenLayersMap.js"/>
+            <file name="Utils.js"/>
+            <file name="ToolMapClick.js"/>
+
+            <file name="OpenLayersComponent.js"/>
+            
+            <file name="OpenLayersMapComponent.js"/>          
+
+          </sources> 
+
+          <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers/components">
+            <file name="LoadingPanel.js"/>
+            <file name="OpenLayersBorderNavigation.js"/>
+            <file name="OpenLayersLoadMonitor.js"/>
+            <file name="OpenLayersOverview.js"/>
+            <file name="OpenLayersMaptip.js"/>             
+          </sources> 
+          
+          <sources dir="${viewerhtml.path}/common/viewercontroller/openlayers/tools">
+            <file name="OpenLayersIdentifyTool.js"/>
+            <file name="OpenLayersDefaultTool.js"/>
+          </sources> 
+        </jscomp>
+	</target>
+
+	<target name="minify-clean">
+		<delete file="${minify.outputdir}/viewer-min.js"/>
+		<delete file="${minify.outputdir}/flamingo-min.js"/>
+		<delete file="${minify.outputdir}/openlayers-min.js"/>
+	</target>
+</project>
+
