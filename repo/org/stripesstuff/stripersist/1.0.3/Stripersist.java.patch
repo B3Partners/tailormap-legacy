@@ -1,0 +1,76 @@
+--- src/org/stripesstuff/stripersist/Stripersist.java	2010-11-30 13:52:48.000000000 +0100
++++ src-patch/org/stripesstuff/stripersist/Stripersist.java	2012-08-24 13:55:47.865282839 +0200
+@@ -26,6 +26,8 @@
+ import java.util.Iterator;
+ import java.util.Map;
+ import java.util.Set;
++import java.util.SortedMap;
++import java.util.TreeMap;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.jar.JarEntry;
+ import java.util.jar.JarInputStream;
+@@ -95,7 +97,12 @@
+      * StripersistInit classes are also loaded via the Extension.Packages.
+      */
+     public static final String INIT_CLASSES_PARAM_NAME = "StripersistInit.Classes";
+-
++    
++    /**
++     * Paremeter name for specifying InitializeSettings class in web.xml
++     */
++    public static final String INIT_SETTINGS_PARAM_NAME = "Stripersist.InitializeSettingsClass";
++    
+     /**
+      * Boolean initialization parameter that enables or disables automatic starting of transactions
+      * with each request.
+@@ -140,7 +147,7 @@
+         try {
+             // Just in case this is not the first call to this method, release any resources
+             cleanup();
+-
++            
+             // try to get all available resources.
+             Enumeration<URL> allResources = getClass().getClassLoader().getResources("META-INF/persistence.xml");
+             if (allResources != null && allResources.hasMoreElements()) {
+@@ -209,6 +216,18 @@
+             return defaultValue;
+     }
+ 
++    private InitializeSettings getInitializeSettings(SortedMap<String,Node> persistenceUnits, URL xml) throws Exception {
++
++        Class<? extends InitializeSettings> initSettingsClass = configuration
++                .getBootstrapPropertyResolver()
++                .getClassProperty(INIT_SETTINGS_PARAM_NAME, InitializeSettings.class);
++        
++        log.debug("Found InitializeSettings class ", initSettingsClass, " - instantiating and calling init()");
++        InitializeSettings is = initSettingsClass.newInstance();
++        is.init(persistenceUnits, xml, configuration.getServletContext());
++        return is;
++    }
++    
+     /**
+      * Initialize Stripersist, pulling persistent unit names from the specified
+      * URL.
+@@ -222,12 +241,22 @@
+         String firstPersistentUnit = null;
+ 
+         try {
++            SortedMap<String,Node> persistenceUnits = new TreeMap();
++            
+             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xml.openStream());
+             NodeList nodeList = document.getElementsByTagName("persistence-unit");
+             for (int i = 0; i < nodeList.getLength(); i++) {
+                 Node persistenceUnit = nodeList.item(i);
+ 
+                 String name = persistenceUnit.getAttributes().getNamedItem("name").getNodeValue();
++                persistenceUnits.put(name, persistenceUnit);
++            }
++
++            InitializeSettings initSettings = getInitializeSettings(persistenceUnits, xml);
++            
++            for(String name: initSettings.getPersistenceUnitsToCreate()) {
++                Node persistenceUnit = persistenceUnits.get(name);
++                
+                 if (firstPersistentUnit == null)
+                     firstPersistentUnit = name;
+                 log.debug("Creating EntityManagerFactory for persistence unit \"", name, "\"");
