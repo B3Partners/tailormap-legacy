@@ -1,0 +1,13 @@
+img[iu_edit]::selection { background: transparent;color:inherit; } 
+
+img[iu_edit="1"]{
+	background-image:url(../images/arrow-resize.png);
+	cursor:nw-resize;border:1px dashed #999 !important;
+	padding:0px 16px 16px 0px;
+	background-position:bottom right;
+	background-repeat:no-repeat;
+}
+
+img[iu_edit="2"]{
+	border:2px dashed #999 !important;
+}

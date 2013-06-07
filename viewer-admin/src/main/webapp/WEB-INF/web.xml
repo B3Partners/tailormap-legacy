@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+    <!-- Context parameters:
+    
+        Note: for Tomcat, change these values in the Context in the Tomcat
+        conf directory so it does not require modification of the deployment 
+        descriptor (this file) to customize these values.             
+        http://tomcat.apache.org/tomcat-6.0-doc/config/context.html#Context_Parameters
+    -->
+    <context-param>
+        <description>
+            The (relative or absolute) URL to the viewer webapp. Needed for when 
+            the viewer-admin needs to link to it, for example for image uploads.
+        </description>
+        <param-name>viewer.url</param-name>
+        <param-value>/viewer</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            To load components from the viewer webapp, specify the context name
+            of the viewer webapp below (usually "/viewer", but if deployed as 
+            root "/"). If not specified specify the path to the directory or 
+            directies with components.json files in the "componentregistry.path" 
+            context parameter.
+            
+            The viewer webapp must be reachable by ServletContext.getContext().
+            For Tomcat, set crossContext="true" on the Context for the viewer
+            and viewr-admin webapp.
+        </description>
+        <param-name>componentregistry.crosscontext</param-name>
+        <param-value>/viewer</param-value>
+    </context-param>
+    
+    <context-param>
+        <description>
+            The from e-mail address used when sending notification mails. Some
+            mail servers require a valid e-mail address when accepting mail.
+        </description>
+        <param-name>monitoring.mail.from.email</param-name>
+        <param-value>no-reply@b3partners.nl</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            The from name used when sending notification mails. 
+        </description>
+        <param-name>monitoring.mail.from.name</param-name>
+        <param-value>Geo services monitoring</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Configure at which interval in minutes the monitoring job should be run.
+            Comment out this parameter or set to -1 to disable.
+        </description>
+        <param-name>monitoring.schedule.minutes</param-name>
+        <param-value>30</param-value>
+    </context-param>
+    
+    <listener>
+        <listener-class>nl.b3p.viewer.components.ComponentRegistry</listener-class>
+    </listener>
+    <listener>
+        <listener-class>nl.b3p.viewer.admin.monitoring.GeoServiceMonitoringListener</listener-class>
+    </listener>    
+    <listener>
+        <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
+    </listener>    
+    
+    <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+        <param-value>ViewerResources</param-value>
+    </context-param>
+    <!-- Hardcoded NL locale for formatting numbers: 1.234.567,89 -->
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
+        <param-value>nl</param-value>
+    </context-param>
+
+    <filter>
+        <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
+        <filter-name>SetCharacterEncodingFilter</filter-name>
+        <filter-class>nl.b3p.web.filter.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    
+    <filter>
+        <display-name>Stripes Filter</display-name>
+        <filter-name>StripesFilter</filter-name>
+        <filter-class>net.sourceforge.stripes.controller.StripesFilter</filter-class>
+        <init-param>
+            <param-name>ActionResolver.Packages</param-name>
+            <param-value>nl.b3p.viewer.admin.stripes</param-value>
+        </init-param>
+        <init-param>
+            <param-name>Extension.Packages</param-name>
+            <param-value>org.stripesstuff.stripersist,org.stripesstuff.plugin.session,org.stripesstuff.plugin.security</param-value>
+        </init-param>
+        <init-param>
+            <param-name>MultipartWrapper.Class</param-name>
+            <param-value>net.sourceforge.stripes.controller.multipart.CommonsMultipartWrapper</param-value>
+        </init-param>
+        <init-param>
+            <param-name>CoreInterceptor.Classes</param-name>
+            <param-value>
+                org.stripesstuff.plugin.waitpage.WaitPageInterceptor,
+                net.sourceforge.stripes.controller.BeforeAfterMethodInterceptor,
+                net.sourceforge.stripes.controller.HttpCacheInterceptor
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>Stripersist.InitializeSettingsClass</param-name>
+            <param-value>nl.b3p.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
+        </init-param>
+        <init-param>
+            <param-name>LocalePicker.Locales</param-name>
+            <param-value>nl_NL</param-value>
+        </init-param>
+        <init-param>
+            <param-name>LocalizationBundleFactory.ErrorMessageBundle</param-name>
+            <param-value>ViewerResources</param-value>
+        </init-param>
+        <init-param>
+            <param-name>LocalizationBundleFactory.FieldNameBundle</param-name>
+            <param-value>ViewerResources</param-value>
+        </init-param>
+        <init-param>
+            <param-name>SecurityManager.Class</param-name>
+            <param-value>org.stripesstuff.plugin.security.J2EESecurityManager</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>SetCharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>StripesFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>StripesFilter</filter-name>
+        <servlet-name>StripesDispatcher</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>StripesDispatcher</servlet-name>
+        <servlet-class>net.sourceforge.stripes.controller.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StripesDispatcher</servlet-name>
+        <url-pattern>*.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StripesDispatcher</servlet-name>
+        <url-pattern>/action/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StripesDispatcher</servlet-name>
+        <url-pattern>*.wait</url-pattern>
+    </servlet-mapping>
+
+    <!-- Note: No authorization on url-patterns but on Stripes ActionBeans using
+      @Secure (from Stripesstuff), so when the @UrlBinding changes no url-patterns
+      need to be updated
+    -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>all</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Admin</role-name>
+            <role-name>RegistryAdmin</role-name>
+            <role-name>UserAdmin</role-name>
+            <role-name>ApplicationAdmin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>roles</web-resource-name>
+            <url-pattern>/authinfo.jsp</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>roles</web-resource-name>
+            <url-pattern>/logout.jsp</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+    <login-config>
+        <!-- BASIC is useful during development with lots of redeploys, use
+             FORM for production
+        -->
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/loginfail.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-role>
+        <role-name>Admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>RegistryAdmin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>UserAdmin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>ApplicationAdmin</role-name>
+    </security-role>
+
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- Set mime type for .js so it can be used in Tomcat server.xml in the
+         compressableMimeType attribute for the Connector element:
+
+        <Connector ...
+           compression="on"
+           compressableMimeType="text/html,text/plain,text/css,application/javascript"
+        />
+    -->
+    <mime-mapping>
+        <extension>js</extension>
+        <mime-type>application/javascript</mime-type>
+    </mime-mapping>
+</web-app>
