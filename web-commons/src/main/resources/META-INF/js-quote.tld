@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
+    <tlib-version>1.0</tlib-version>
+    <short-name>json</short-name>
+    <uri>http://www.b3partners.nl/taglibs/js-quote</uri>
+  
+    <function>
+        <name>quote</name>
+        <function-class>org.json.JSONObject</function-class>
+        <function-signature>java.lang.String quote(java.lang.String)</function-signature>
+    </function>
+      
+    <tag>
+        <description>Quote a string for use in a JavaScript &lt;script&gt; block</description>
+        <name>quote</name>
+        <tag-class>nl.b3p.taglibs.js.QuoteTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>String expression to be quoted</description>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>
