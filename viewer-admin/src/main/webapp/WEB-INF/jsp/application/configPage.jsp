@@ -82,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">
             <stripes:param name="className" value="${actionBean.className}"/> 
         </stripes:url>
-        <script type="text/javascript" src="${contextPath}/viewer-html/components/ConfigObject.js"></script>       
+        
         <c:if test="${actionBean.loadCustomConfig}">
             <script type="text/javascript" src="${configSource}"></script>
         </c:if>

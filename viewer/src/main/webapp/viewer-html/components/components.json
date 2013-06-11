@@ -132,7 +132,7 @@
         restrictions: ["content"],
         type : "popup",
         singleton: true,
-        configSource: ["SelectionWindowConfig.js","Maptip-config.js"]                   
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Maptip-config.js"]                   
     },
     {
         className: "viewer.components.FeatureInfo",
@@ -143,7 +143,7 @@
         type : "popup",
         singleton: true,
         restrictions: ["content"],
-        configSource: ["SelectionWindowConfig.js","FeatureInfo-config.js"]   
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]   
     },
     {
         className: "viewer.components.tools.Identify",
@@ -340,7 +340,7 @@
         className: "viewer.components.TOC",
         name: "TOC",
         sources: ["TOC.js"],
-        configSource: ["TOC-config.js"],
+        configSource: ["ConfigObject.js","TOC-config.js"],
         singleton: true,
         restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"],
     },
@@ -499,7 +499,7 @@
         name: "HTML",
         shortName: "HTML",
         sources: ["HTML.js"],
-        configSource: ["HTML-config.js"],
+        configSource: ["ConfigObject.js","HTML-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom","header","footer"]
     },
 
@@ -508,7 +508,7 @@
         name: "Transparantie",
         singleton: true,
         sources: ["Slider.js","NonInitLayerSlider.js","TransparencySlider.js"],
-        configSource: ["TransparencySlider-config.js"],
+        configSource: ["ConfigObject.js","TransparencySlider-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"]
         
     },
@@ -517,7 +517,7 @@
         name: "BufferLayer",
         shortName: "BL",
         sources: ["BufferLayer.js"],
-        configSource: ["SelectionWindowConfig.js","BufferLayer-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","BufferLayer-config.js"],
         restrictions: ["left_menu"],            
         type: "popup"
     },
@@ -526,7 +526,7 @@
         name: "BufferObject",
         shortName: "BO",
         sources: ["BufferObject.js"],
-        configSource: ["SelectionWindowConfig.js","BufferObject-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","BufferObject-config.js"],
         restrictions: ["left_menu"],            
         type: "popup"
     },*/
@@ -536,7 +536,7 @@
         shortName: "Bu",
         singleton: true,
         sources: ["../common/ColorField.js","Buffer.js"],
-        configSource: ["SelectionWindowConfig.js","Buffer-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Buffer-config.js"],
         restrictions: ["left_menu"],            
         type: "popup"
     },
@@ -567,7 +567,7 @@
         name: "Attributen Lijst",
         shortName: "AL",
         sources: ["../common/plugins/RowExpander.js","AttributeList.js"],
-        configSource: ["SelectionWindowConfig.js","AttributeList-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","AttributeList-config.js"],
         restrictions: ["left_menu"] , 
         singleton: true,       
         type: "popup"        
@@ -577,7 +577,7 @@
         name: "Edit",
         shortName: "Ed",
         sources: ["Edit.js"],
-        configSource: ["SelectionWindowConfig.js","Edit-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        
@@ -587,7 +587,7 @@
         name: "Tekenen",
         shortName: "Te",
         sources: ["../common/ColorField.js","Drawing.js"],
-        configSource: ["SelectionWindowConfig.js","Drawing-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Drawing-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
         singleton: true,        
@@ -598,7 +598,7 @@
         shortName: "DS",
         singleton: true,
         sources: ["AttributeFilter.js","Filter.js","DataSelection.js"],
-        configSource: ["SelectionWindowConfig.js","DataSelection-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","DataSelection-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
     },
@@ -608,7 +608,7 @@
         singleton: true,
         shortName: "Se",
         sources: ["Search.js"],
-        configSource: ["SelectionWindowConfig.js","Search-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
      },
@@ -625,7 +625,7 @@
         name: "Invloedsgebied met geometry",
         shortName: "Igg",
         sources: ["Search.js","Influence.js"],
-        configSource: ["SelectionWindowConfig.js","Influence-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
     },*/
@@ -635,7 +635,7 @@
         singleton: true,
         shortName: "Igi",
         sources: ["Search.js","Influence.js","InfluenceImage.js"],
-        configSource: ["SelectionWindowConfig.js","Influence-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
     },
@@ -644,7 +644,7 @@
         name: "Overzichtskaart",
         shortName: "Oz",
         sources: ["Overview.js"],
-        configSource: ["Overview-config.js"],
+        configSource: ["ConfigObject.js","Overview-config.js"],
         restrictions: ["content"],
         singleton: true
      },
@@ -654,7 +654,7 @@
         shortName: "Pr",
         singleton: true,
         sources: ["Print.js"],
-        configSource: ["SelectionWindowConfig.js","Print-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Print-config.js"],
         restrictions: ["left_menu"],        
         type: "popup"         
     },
@@ -663,7 +663,7 @@
         name: "LayerSwitch",
         shortName: "LS",
         sources: ["LayerSwitch.js"],
-        configSource: ["LayerSwitch-config.js"],
+        configSource: ["ConfigObject.js","LayerSwitch-config.js"],
         restrictions: ["content"],
         singleton: true
     },
@@ -707,7 +707,7 @@
         shortName: "Pres",
         singleton: true,
         sources: ["Presentation.js"],
-        /*configSource: ["Presentation_config.js"],*/
+        /*configSource: ["ConfigObject.js","Presentation_config.js"],*/
         restrictions: ["footer"],            
         type: "popup"
     }
