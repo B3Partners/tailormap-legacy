@@ -7,6 +7,9 @@
     <listener>
         <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
     </listener>    
+    <listener>
+        <listener-class>nl.b3p.web.geotools.GeotoolsLoggingInit</listener-class>
+    </listener>
 
     <!-- Localization context voor o.a. de <fmt:message> JSTL tag -->
     <context-param>
