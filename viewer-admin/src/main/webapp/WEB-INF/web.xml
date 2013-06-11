@@ -64,7 +64,10 @@
     </listener>    
     <listener>
         <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
-    </listener>    
+    </listener>   
+    <listener>
+        <listener-class>nl.b3p.web.geotools.GeotoolsLoggingInit</listener-class>
+    </listener>
     
     <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>

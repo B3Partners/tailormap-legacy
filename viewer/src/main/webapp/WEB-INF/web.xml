@@ -6,7 +6,7 @@
     </listener>
     <listener>
         <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
-    </listener>    
+    </listener>
     <listener>
         <listener-class>nl.b3p.web.geotools.GeotoolsLoggingInit</listener-class>
     </listener>
