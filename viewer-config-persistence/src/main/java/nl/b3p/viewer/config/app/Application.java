@@ -494,11 +494,35 @@ public class Application {
         return copy;
     }
 
-    public void setMaxWidth(String maxWidth) {
-        this.details.put("maxWidth", new ClobElement(maxWidth));
+    public void removeOldProperties()
+    {
+        // In previous versions maxHeight and maxWidth where assigned to details directly
+        // Now these settings are saved in globalLayout. We are removing these settings from
+        // details (when present) to migrate from old layout to new layout
+        if(this.details.containsKey("maxWidth")) {
+            this.details.remove("maxWidth");
+        }
+        if(this.details.containsKey("maxHeight")) {
+            this.details.remove("maxHeight");
+        }
     }
     
-    public void setMaxHeight(String maxHeight) {
-        this.details.put("maxHeight", new ClobElement(maxHeight));
+    public void setGlobalLayout(String globalLayout) {
+        this.details.put("globalLayout", new ClobElement(globalLayout));
+    }
+    
+    public JSONObject getGlobalLayout() throws JSONException {
+        JSONObject globalLayout = new JSONObject();
+        if(this.getDetails().containsKey("globalLayout")) {
+            globalLayout = new JSONObject(this.getDetails().get("globalLayout").getValue());
+        }
+        // Legacy properties
+        if(!globalLayout.has("maxWidth") && this.getDetails().containsKey("maxWidth")) {
+            globalLayout.put("maxWidth", this.getDetails().get("maxWidth").getValue());
+        }
+        if(!globalLayout.has("maxHeight") && this.getDetails().containsKey("maxHeight")) {
+            globalLayout.put("maxHeight", this.getDetails().get("maxHeight").getValue());
+        }
+        return globalLayout;
     }
 }

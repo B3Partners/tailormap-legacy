@@ -348,6 +348,22 @@ Ext.onReady(function() {
       
     // Initial config. Adds all previously added components to the right regions
     function initConfig(view) {
+        Ext.get('global_layout_switch').on('click', function(e) {
+            e.preventDefault();
+            Ext.get('global_layout').toggle(false);
+        });
+        if(globalLayout) {
+            Ext.get('app_max_width').set({ value: globalLayout.maxWidth || '' });
+            Ext.get('app_max_height').set({ value: globalLayout.maxHeight || ''});
+            Ext.get('app_margin').set({ value: globalLayout.margin || ''});
+            Ext.get('app_background_color').set({ value: globalLayout.backgroundColor || ''});
+            Ext.get('app_background_image').set({ value: globalLayout.backgroundImage || ''});
+            var bgRepeat = Ext.get('app_background_repeat');
+            Ext.each(bgRepeat.dom.options, function(item, index){
+                if(item.value === (globalLayout.backgroundRepeat || '')) bgRepeat.dom.selectedIndex = index;
+            });
+            Ext.get('app_background_position').set({ value: globalLayout.backgroundPosition || ''});
+        }
         if(layoutJson && Ext.isDefined(layoutJson)) {
             layoutRegionsStore.each(function(layoutRegion){
                 var regionId = layoutRegion.get('id');
@@ -686,15 +702,20 @@ Ext.onReady(function() {
         var response = {
             "layout": Ext.JSON.encode(layout)
         };
-        
-        var maxWidth = Ext.fly('app_max_width').getValue() || 0;
-        var maxHeight = Ext.fly('app_max_height').getValue() || 0;
+        var globalLayout = {
+            maxWidth: Ext.get('app_max_width').getValue() || 0,
+            maxHeight: Ext.get('app_max_height').getValue() || 0,
+            margin: Ext.get('app_margin').getValue() || 0,
+            backgroundColor: Ext.get('app_background_color').getValue() || "",
+            backgroundImage: Ext.get('app_background_image').getValue() || "",
+            backgroundRepeat: Ext.get('app_background_repeat').getValue() || "no-repeat",
+            backgroundPosition: Ext.get('app_background_position').getValue() || ""
+        };
         Ext.Ajax.request({ 
             url: layoutSaveUrl, 
             params: { 
                 layout: response,
-                maxWidth: maxWidth,
-                maxHeight: maxHeight
+                globalLayout: Ext.JSON.encode(globalLayout)
             }, 
             success: function ( result, request ) { 
                 if(displaySuccessMessage){

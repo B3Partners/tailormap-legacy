@@ -123,11 +123,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var loadingMsg = 'Loading...';
         if(msg) loadingMsg += ' ' + msg;
         document.getElementById('loader').innerHTML = loadingMsg;
+        document.getElementById('loader').style.display = 'block';
         document.getElementById('loadwrapper').style.zIndex = '900000';
     },
     
     hideLoading: function() {
         document.getElementById('loadwrapper').style.zIndex = '0';
+        document.getElementById('loader').style.display = 'none';
     },
     
     isDebug: function() {

@@ -68,9 +68,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     @Validate(on = "saveApplicationLayout")
     private String layout;
     @Validate(on = "saveApplicationLayout")
-    private String maxWidth;
-    @Validate(on = "saveApplicationLayout")
-    private String maxHeight;
+    private String globalLayout;
     @Validate(on = "saveComponentConfig")
     private String componentLayout;
     private Boolean loadCustomConfig = false;
@@ -149,20 +147,12 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.layout = layout;
     }
     
-    public String getMaxHeight() {
-        return maxHeight;
+    public String getGlobalLayout() {
+        return globalLayout;
     }
 
-    public void setMaxHeight(String maxHeight) {
-        this.maxHeight = maxHeight;
-    }
-
-    public String getMaxWidth() {
-        return maxWidth;
-    }
-
-    public void setMaxWidth(String maxWidth) {
-        this.maxWidth = maxWidth;
+    public void setGlobalLayout(String globalLayout) {
+        this.globalLayout = globalLayout;
     }
 
     public String getComponentLayout() {
@@ -338,8 +328,9 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
             }
 
             application.setLayout(layout);
-            application.setMaxWidth(maxWidth);
-            application.setMaxHeight(maxHeight);
+            application.setGlobalLayout(globalLayout);
+            // Remove legacy properties to clean old apps
+            application.removeOldProperties();
             em.persist(application);
             em.getTransaction().commit();
         } catch (JSONException ex) {
