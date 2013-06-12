@@ -32,7 +32,8 @@ Ext.define ("viewer.components.RelatedDocuments",{
         name: "Related Documents",
         title: "",
         titlebarIcon : "",
-        tooltip : ""
+        tooltip : "",
+        label: ""
     },
     constructor: function (conf){   
         conf.isPopup=true;        
@@ -50,7 +51,8 @@ Ext.define ("viewer.components.RelatedDocuments",{
             },
             text: me.title,
             icon: me.titlebarIcon,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });        
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.reinit,this);
         return this;

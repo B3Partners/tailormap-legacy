@@ -438,61 +438,30 @@
         name: "Gerelateerde documenten",
         shortName: "Rd",
         sources: ["RelatedDocuments.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","RelatedDocuments-config.js"],
         singleton: true,
         type: "popup",
-        restrictions: ["left_menu"],
-        extPropertyGridConfigs: {
-            propertyNames: {tooltip: "Hoover tekst",title: "Titel",titlebarIcon : "Titelbalk icoon"},
-            source: {tooltip: "",title: "",titlebarIcon : ""}
-        }
+        restrictions: ["left_menu"]
     },
     {
         className: "viewer.components.SelectionModule",
         name: "Selectie Module",
         shortName: "Sm",
         sources: ["SelectionModule.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","SelectionModule-config.js"],
         singleton: true,
         restrictions: ["left_menu"],
-        type: "popup",
-        extPropertyGridConfigs: {
-            propertyNames: {
-                tooltip: "Hoover tekst",
-                title: "Titel",
-                titlebarIcon : "Titelbalk icoon",
-                selectGroups: "Kaarten selecteren",
-                selectLayers: "Kaartlagen selecteren",
-                selectOwnServices: "Eigen services selecteren"
-            },
-            source: {
-                tooltip: "",
-                title: "",
-                titlebarIcon : "",
-                selectGroups: true,
-                selectLayers: true,
-                selectOwnServices: true
-            }
-        }
+        type: "popup"
     }    ,
     {
         className: "viewer.components.Bookmark",
         name: "Bookmark",
         shortName: "Bm",
         sources: ["Bookmark.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Bookmark-config.js"],
         singleton: true,
         type: "popup",
-        restrictions: ["left_menu"],
-        extPropertyGridConfigs: {
-            propertyNames: {
-                tooltip: "Hoover tekst",
-                title: "Titel",
-                titlebarIcon : "Titelbalk icoon"
-            },
-            source: {
-                tooltip: "",
-                title: "",
-                titlebarIcon : ""
-            }
-        }
+        restrictions: ["left_menu"]
     },
     {
         className: "viewer.components.HTML",
@@ -710,5 +679,15 @@
         /*configSource: ["ConfigObject.js","Presentation_config.js"],*/
         restrictions: ["footer"],            
         type: "popup"
-    }
+    },
+    {
+        className: "viewer.components.Divider",
+        name: "Divider",
+        shortName: "Dv",
+        sources: ["Divider.js"],
+        configSource: ["ConfigObject.js","Divider-config.js"],
+        closureCompilerSafe: true,
+        singleton: false,
+        restrictions: ["left_menu"]
+    },
 ]

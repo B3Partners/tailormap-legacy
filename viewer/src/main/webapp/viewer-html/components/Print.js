@@ -36,7 +36,8 @@ Ext.define ("viewer.components.Print",{
         default_format: null,
         orientation: null,
         legend: null,
-        max_imagesize: "2048"
+        max_imagesize: "2048",
+        label: ""
     },
     /**
      * @constructor
@@ -59,7 +60,8 @@ Ext.define ("viewer.components.Print",{
             },
             text: me.title,
             icon: me.titlebarIcon,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });
         
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);

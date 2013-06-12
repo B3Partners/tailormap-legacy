@@ -32,7 +32,10 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         //to make this accessible in object
         var me=this;
         var iconurl = config.iconUrl;
+        var label = config.label;
+        var showLabelconfig = config.showLabelconfig || true;
         if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
+        if(Ext.isEmpty(label) || !Ext.isDefined(label)) label = "";
         this.form=new Ext.form.FormPanel({
             frame: false,
             bodyPadding: me.formPadding,
@@ -82,6 +85,16 @@ Ext.define("viewer.components.SelectionWindowConfig",{
             }],
             renderTo: this.parentId//(2)
         });
+        if(showLabelconfig) {
+            this.form.add({ 
+                xtype: 'textfield',
+                fieldLabel: 'Label',
+                name: 'label',
+                value: label,
+                labelWidth: me.labelWidth,
+                width: 500
+            });
+        }
     },
     onIconChange: function(textField,options){
         //Ext.get("#iconImage").el.dom.src = textField.getValue();

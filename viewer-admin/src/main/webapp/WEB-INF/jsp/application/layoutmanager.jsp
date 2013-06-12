@@ -30,17 +30,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <div id="content">
-            <c:set var="maxWidth" value="" />
-            <c:if test="${!empty actionBean.application.details.maxWidth}">
-                <c:set var="maxWidth" value="${actionBean.application.details.maxWidth}" />
-            </c:if>
-            <c:set var="maxHeight" value="" />
-            <c:if test="${!empty actionBean.application.details.maxHeight}">
-                <c:set var="maxHeight" value="${actionBean.application.details.maxHeight}" />
-            </c:if>
             <div id="layoutManagerApplicationSettings">
-                <button id="savebutton">Opslaan</button>            
-                Maximale breedte: <input id="app_max_width" type="text" name="app_max_width" value="${maxWidth}" /> px | Maximale hoogte: <input id="app_max_height" type="text" name="app_max_height" value="${maxHeight}" /> px
+                <button id="savebutton">Opslaan</button> &nbsp; 
+                <a href="#" id="global_layout_switch">Layout instellingen</a>
+                <div id="global_layout" class="globalconfig">
+                    <div class="configrow"><label for="app_max_width">Maximale breedte:</label><input id="app_max_width" type="text" name="app_max_width" value="" /> px</div>
+                    <div class="configrow"><label for="app_max_height">Maximale hoogte:</label><input id="app_max_height" type="text" name="app_max_height" value="" /> px</div>
+                    <div class="configrow"><label for="app_margin">Marge rondom:</label><input id="app_margin" type="text" name="app_margin" value="" /></div>
+                    <div class="configrow"><label for="app_background_color">Achtergrond kleur:</label><input id="app_background_color" type="text" name="app_background_color" value="" class="wide" /></div>
+                    <div class="configrow"><label for="app_background_image">Achtergrond afbeelding:</label><input id="app_background_image" type="text" name="app_background_image" value="" class="wide" /></div>
+                    <div class="configrow">
+                        <label for="app_background_repeat">Achtergrond herhalen:</label>
+                        <select id="app_background_repeat" name="app_background_repeat">
+                            <option value="no-repeat">Niet herhalen</option>
+                            <option value="repeat">Beide kanten op herhalen</option>
+                            <option value="repeat-x">Alleen horizontaal herhalen</option>
+                            <option value="repeat-y">Alleen verticaal herhalen</option>
+                        </select>
+                    </div>
+                    <div class="configrow"><label for="app_background_position">Achtergrond positie:</label><input id="app_background_position" type="text" name="app_background_position" value="" /></div>
+                </div>
                 <a href="#Toevoegen_Componenten_Layout_Help" title="Help" class="helplink"></a>
             </div>
             <div id="component-container">
@@ -93,6 +102,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:when>
                 <c:otherwise>
                     var layoutJson = {};
+                </c:otherwise>
+            </c:choose>
+            <c:choose>    
+                <c:when test="${!empty actionBean.application.globalLayout}">
+                    var globalLayout = ${actionBean.application.globalLayout};
+                </c:when>
+                <c:otherwise>
+                    var globalLayout = {};
                 </c:otherwise>
             </c:choose>
         </script>

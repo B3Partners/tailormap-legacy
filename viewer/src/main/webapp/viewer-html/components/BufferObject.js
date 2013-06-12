@@ -28,7 +28,8 @@ Ext.define ("viewer.components.BufferObject",{
     config: {
         layers:null,
         title:null,
-        iconUrl:null
+        iconUrl:null,
+        label: ""
     },    
     constructor: function (conf){        
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
@@ -50,7 +51,8 @@ Ext.define ("viewer.components.BufferObject",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });
         this.loadWindow();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );

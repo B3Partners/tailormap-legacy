@@ -63,6 +63,7 @@ public class ApplicationActionBean implements ActionBean {
     private JSONObject user;
     
     private String loginUrl;
+    private JSONObject globalLayout;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public String getName() {
@@ -144,6 +145,14 @@ public class ApplicationActionBean implements ActionBean {
     public void setLoginUrl(String loginUrl) {
         this.loginUrl = loginUrl;
     }
+    
+    public JSONObject getGlobalLayout() {
+        return globalLayout;
+    }
+
+    public void setGlobalLayout(JSONObject globalLayout) {
+        this.globalLayout = globalLayout;
+    }
     //</editor-fold>
 
     static Application findApplication(String name, String version) {
@@ -200,6 +209,7 @@ public class ApplicationActionBean implements ActionBean {
         
         appConfigJSON = application.toJSON(context.getRequest());
         this.viewerType = retrieveViewerType();
+        this.globalLayout = application.getGlobalLayout();
         
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }

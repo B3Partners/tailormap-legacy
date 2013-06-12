@@ -41,7 +41,8 @@ Ext.define ("viewer.components.Drawing",{
         title: "",
         iconUrl: "",
         tooltip: "",
-        color: ""
+        color: "",
+        label: ""
     },
     constructor: function (conf){        
         viewer.components.Drawing.superclass.constructor.call(this, conf);
@@ -54,7 +55,8 @@ Ext.define ("viewer.components.Drawing",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });
         
         // Needed to untoggle the buttons when drawing is finished

@@ -27,7 +27,8 @@ Ext.define ("viewer.components.BufferLayer",{
     config: {
         layers:null,
         title:null,
-        iconUrl:null
+        iconUrl:null,
+        label: ""
     },
     constructor: function (conf){        
         viewer.components.BufferLayer.superclass.constructor.call(this, conf);
@@ -39,7 +40,8 @@ Ext.define ("viewer.components.BufferLayer",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });      
         this.loadWindow();
         return this;

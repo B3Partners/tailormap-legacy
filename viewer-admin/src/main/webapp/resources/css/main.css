@@ -293,6 +293,9 @@ input[type="submit"]:hover,
 #layoutManagerApplicationSettings input {
   width: 50px;
 }
+#layoutManagerApplicationSettings input.wide, #layoutManagerApplicationSettings select.wide {
+  width: 150px;
+}
 #component-container {
   width: 250px;
   float: left;
@@ -365,12 +368,31 @@ input[type="submit"]:hover,
 #layout-container .content-container.dropallowed {
   background-color: #EEEEEE;
 }
-#layout-container .content-container .regionconfig {
+#layout-container .content-container .regionconfig, .globalconfig {
   margin: 5px;
   border: 1px solid #1c6ca7;
   background-color: White;
   padding: 5px;
   float: left;
+}
+.globalconfig {
+    position: absolute;
+    display: none;
+    margin-left: 75px;
+    margin-top: 1px;
+    padding: 10px 15px 5px 15px;
+    z-index: 50;
+}
+.globalconfig label {
+    width: 140px;
+    display: inline-block;
+}
+.globalconfig .configrow {
+    margin-bottom: 5px;
+    padding: 3px;
+}
+.globalconfig .configrow:nth-child(odd) {
+    background-color: #f9f9f9;
 }
 #layout-container .content-container .regionconfig .widthconfig,
 #layout-container .content-container .regionconfig .heightconfig,

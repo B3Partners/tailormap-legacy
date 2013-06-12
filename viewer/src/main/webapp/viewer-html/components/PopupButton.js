@@ -25,7 +25,8 @@ Ext.define ("viewer.components.PopupButton",{
     button:null,
     config:{
         name: null,
-        viewerController:null
+        viewerController:null,
+        label: ""
     },
     constructor: function (conf){        
         this.windowClosing = false;
@@ -41,7 +42,8 @@ Ext.define ("viewer.components.PopupButton",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });      
         var state = 'normal';
         if(selected){

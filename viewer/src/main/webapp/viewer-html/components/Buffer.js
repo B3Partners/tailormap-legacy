@@ -32,7 +32,8 @@ Ext.define ("viewer.components.Buffer",{
         title:null,
         maxFeatures:null,
         iconUrl:null,
-        tooltip:null
+        tooltip:null,
+        label: ""
     },
     constructor: function (conf){
         viewer.components.Buffer.superclass.constructor.call(this, conf);
@@ -47,7 +48,8 @@ Ext.define ("viewer.components.Buffer",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });      
         this.imageLayers = new Array();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );

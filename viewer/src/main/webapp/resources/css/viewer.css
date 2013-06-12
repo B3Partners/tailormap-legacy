@@ -20,6 +20,7 @@ div {
 #loader {
     position: absolute;
         
+    display: none;
     text-align: center;    
     padding: 5px;
     font: bold small sans-serif;
