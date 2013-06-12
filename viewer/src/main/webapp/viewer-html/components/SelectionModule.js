@@ -133,7 +133,8 @@ Ext.define ("viewer.components.SelectionModule",{
         name: "Selection Module",
         title: "",
         titlebarIcon : "",
-        tooltip : ""
+        tooltip : "",
+        label: ""
     },
     constructor: function (conf) {        
         //set defaults
@@ -169,6 +170,7 @@ Ext.define ("viewer.components.SelectionModule",{
             text: me.title,
             icon: me.titlebarIcon,
             tooltip: me.tooltip,
+            label: me.label,
             handler: function() {
                 me.openWindow();
             }

@@ -39,6 +39,7 @@ Ext.define ("viewer.components.DataSelection",{
         title:null,
         iconUrl:null,
         tooltip:null,
+        label: "",
         details:{
             width: null,
             height:null
@@ -60,7 +61,8 @@ Ext.define ("viewer.components.DataSelection",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });
         if(!this.layers || this.layers.length == 0){
             this.allLayers = true;

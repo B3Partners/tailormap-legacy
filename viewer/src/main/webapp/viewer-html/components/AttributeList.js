@@ -27,7 +27,8 @@ Ext.define ("viewer.components.AttributeList",{
         layers:null,
         title:null,
         iconUrl:null,
-        tooltip:null
+        tooltip:null,
+        label: ""
     },    
     appLayer: null,
     featureService: null,
@@ -48,7 +49,8 @@ Ext.define ("viewer.components.AttributeList",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         }); 
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
         return this;

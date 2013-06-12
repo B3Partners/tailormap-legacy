@@ -27,7 +27,8 @@ Ext.define ("viewer.components.Bookmark",{
     config:{
         title: null,
         titlebarIcon: null,
-        tooltip: null
+        tooltip: null,
+        label: ""
     },
     constructor: function (conf){        
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
@@ -42,6 +43,7 @@ Ext.define ("viewer.components.Bookmark",{
             text: me.title,
             icon: me.titlebarIcon,
             tooltip: me.tooltip,
+            label: me.label,
             handler: function() {
                 me.showWindow();
             }

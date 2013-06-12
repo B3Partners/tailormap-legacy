@@ -32,7 +32,8 @@ Ext.define ("viewer.components.Search",{
         iconUrl: null,
         tooltip: null,
         searchconfigs: null,
-        formHeight:null
+        formHeight:null,
+        label: ""
     },    
     constructor: function (conf){        
         viewer.components.Search.superclass.constructor.call(this, conf);
@@ -47,6 +48,7 @@ Ext.define ("viewer.components.Search",{
             text: me.title,
             icon: me.iconUrl,
             tooltip: me.tooltip,
+            label: me.label,
             handler: function() {
                 me.popup.show();
             }
