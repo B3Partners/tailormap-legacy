@@ -22,8 +22,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,76 +30,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- *
+ * Registry of available JavaScript viewer components. 
+ * 
  * @author Matthijs Laan
  */
-public class ComponentRegistry implements ServletContextListener {
+public class ComponentRegistry {
     private static final Log log = LogFactory.getLog(ComponentRegistry.class);
 
-    private static final String COMPONENT_DIR = "viewer-html/components";
-
-    private static ComponentRegistry registry;
-
     private Map<String,ViewerComponent> components = new HashMap<String,ViewerComponent>();
-
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-
-        String componentPath = sce.getServletContext().getInitParameter("component-path");
-        if(componentPath == null) {
-            componentPath = sce.getServletContext().getInitParameter("componentregistry.path");
-        }
-        
-        ServletContext componentPathContext = sce.getServletContext();
-        
-        if(componentPath == null) {
-            /* try to load components from other context from config (viewer) */
-            String crossContextName = sce.getServletContext().getInitParameter("componentregistry.crosscontext");
-            if(crossContextName != null) {
-                ServletContext crossContext = sce.getServletContext().getContext(crossContextName);
-                if(crossContext != null) {
-                    componentPath = crossContext.getInitParameter("component-path");
-                    if(componentPath == null) {
-                        componentPath = COMPONENT_DIR;
-                    }
-                    componentPathContext = crossContext;
-                    
-                }
-            }
-        }
-        if(componentPath == null) {
-            componentPath = COMPONENT_DIR;
-        }
-        registry = new ComponentRegistry(componentPathContext, componentPath);
-    }
     
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
+    /* package */ boolean loadFromPath(ServletContext sc, String p) {
+
+        File path = new File(sc.getRealPath(p));
+        log.debug(String.format("Real path for \"%s\": %s", p, path));
         
-    }
-
-    /**
-     * No-arg constructor for ServletContextListener
-     */
-    public ComponentRegistry() {
-    }
-
-    public ComponentRegistry(ServletContext sc, String componentPath) {
-        for(String p: componentPath.split(File.pathSeparator)) {
-            loadPath(sc, componentPath);
-        }
-    }
-
-    private void loadPath(ServletContext sc, String p) {
-
-        File path = new File(p);
-        if(!path.isAbsolute()) {
-            path = new File(sc.getRealPath(p));
-        }
-        
-        if(!path.exists()) {
-            log.error(String.format("Cannot load component metadata from non-existing path \"%s\", deploy the viewer webapp first", path));
-            return;                    
+        if(!path.exists() || !path.canRead()) {
+            log.error(String.format("Cannot load component metadata from non-existing or unreadable path \"%s\"", path));
+            return false;                    
         }        
 
         log.info("Loading component metadata from path " + path);
@@ -112,7 +57,7 @@ public class ComponentRegistry implements ServletContextListener {
                 return name.equalsIgnoreCase("components.json");
             }
         });
-
+        
         for(String file: files) {
             String filename = path + File.separator + file;
             try {
@@ -125,6 +70,9 @@ public class ComponentRegistry implements ServletContextListener {
                 } catch(JSONException e) {
                     /* See if it is an array of components */
                     try {
+                        /* NOTE: org.json version in Maven repo's don't ignore
+                         * comments before '['! Patched version is in local repo.
+                         */
                         JSONArray components = new JSONArray(contents);
                         for(int i = 0; i < components.length(); i++) {
                             loadComponentMetadata(path, components.getJSONObject(i));
@@ -137,6 +85,8 @@ public class ComponentRegistry implements ServletContextListener {
                 log.error("Exception reading file " + file, e);
             }
         }
+        
+        return true;
     }
 
     private void loadComponentMetadata(File path, JSONObject metadata) throws IOException {
@@ -177,10 +127,7 @@ public class ComponentRegistry implements ServletContextListener {
     }
 
     public static ComponentRegistry getInstance() {
-        if(registry == null) {
-            throw new NullPointerException("ComponentRegistry has failed to load, check logs");
-        }
-        return registry;
+        return ComponentRegistryInitializer.getInstance();
     }
 
     public List<String> getSortedComponentClassNameList() {
@@ -209,4 +156,3 @@ public class ComponentRegistry implements ServletContextListener {
         return components.get(className);
     }
 }
-
