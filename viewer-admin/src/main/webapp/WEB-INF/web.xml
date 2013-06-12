@@ -25,8 +25,9 @@
             context parameter.
             
             The viewer webapp must be reachable by ServletContext.getContext().
-            For Tomcat, set crossContext="true" on the Context for the viewer
-            and viewr-admin webapp.
+            For Tomcat, set crossContext="true" on the Context for the 
+            viewer-admin webapp. Other servlet containers may require different
+            configuration.
         </description>
         <param-name>componentregistry.crosscontext</param-name>
         <param-value>/viewer</param-value>
@@ -57,7 +58,7 @@
     </context-param>
     
     <listener>
-        <listener-class>nl.b3p.viewer.components.ComponentRegistry</listener-class>
+        <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
     <listener>
         <listener-class>nl.b3p.viewer.admin.monitoring.GeoServiceMonitoringListener</listener-class>
