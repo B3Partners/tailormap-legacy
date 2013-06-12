@@ -36,7 +36,8 @@ Ext.define ("viewer.components.Edit",{
         title: "",
         iconUrl: "",
         tooltip: "",
-        layers:null
+        layers:null,
+        label: ""
     },
     constructor: function (conf){        
         viewer.components.Edit.superclass.constructor.call(this, conf);
@@ -66,7 +67,8 @@ Ext.define ("viewer.components.Edit",{
             },
             text: me.title,
             icon: me.iconUrl,
-            tooltip: me.tooltip
+            tooltip: me.tooltip,
+            label: me.label
         });
         
         this.toolMapClick =  this.viewerController.mapComponent.createTool({

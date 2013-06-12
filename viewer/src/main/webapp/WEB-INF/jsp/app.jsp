@@ -325,13 +325,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <c:set var="maxWidth" value="none" />
         <c:set var="maxHeight" value="none" />
-        <c:if test="${!empty actionBean.application.details.maxWidth.value && actionBean.application.details.maxWidth.value != 0}">
-            <c:set var="maxWidth" value="${actionBean.application.details.maxWidth.value}px" />
+        <c:set var="margin" value="0" />
+        <c:set var="backgroundColor" value="transparent" />
+        <c:set var="backgroundImage" value="none" />
+        <c:set var="backgroundRepeat" value="no-repeat" />
+        <c:set var="backgroundPosition" value="0 0" />
+        <c:if test="${actionBean.globalLayout.has('maxWidth') && !empty actionBean.globalLayout.getString('maxWidth') && actionBean.globalLayout.getString('maxWidth') != '0'}">
+            <c:set var="maxWidth" value="${actionBean.globalLayout.getString('maxWidth')}px" />
         </c:if>
-        <c:if test="${!empty actionBean.application.details.maxHeight.value && actionBean.application.details.maxHeight.value != 0}">
-            <c:set var="maxHeight" value="${actionBean.application.details.maxHeight.value}px" />
+        <c:if test="${actionBean.globalLayout.has('maxHeight') && !empty actionBean.globalLayout.getString('maxHeight') && actionBean.globalLayout.getString('maxHeight') != '0'}">
+            <c:set var="maxHeight" value="${actionBean.globalLayout.getString('maxHeight')}px" />
         </c:if>
-        <div id="wrapper" style="width: 100%; height: 100%; max-width: ${maxWidth}; max-height: ${maxHeight}; margin-left: auto; margin-right: auto;"></div>
+        <c:if test="${actionBean.globalLayout.has('margin') && !empty actionBean.globalLayout.getString('margin')}">
+            <c:set var="margin" value="${actionBean.globalLayout.getString('margin')}" />
+        </c:if>
+        <c:if test="${actionBean.globalLayout.has('backgroundColor') && !empty actionBean.globalLayout.getString('backgroundColor')}">
+            <c:set var="backgroundColor" value="${actionBean.globalLayout.getString('backgroundColor')}" />
+        </c:if>
+        <c:if test="${actionBean.globalLayout.has('backgroundImage') && !empty actionBean.globalLayout.getString('backgroundImage')}">
+            <c:set var="backgroundImage" value="url(${actionBean.globalLayout.getString('backgroundImage')})" />
+        </c:if>
+        <c:if test="${actionBean.globalLayout.has('backgroundRepeat') && !empty actionBean.globalLayout.getString('backgroundRepeat')}">
+            <c:set var="backgroundRepeat" value="${actionBean.globalLayout.getString('backgroundRepeat')}" />
+        </c:if>
+        <c:if test="${actionBean.globalLayout.has('backgroundPosition') && !empty actionBean.globalLayout.getString('backgroundPosition')}">
+            <c:set var="backgroundPosition" value="${actionBean.globalLayout.getString('backgroundPosition')}" />
+        </c:if>
+        <div id="wrapper" style="width: 100%; height: 100%; max-width: ${maxWidth}; max-height: ${maxHeight}; margin-left: auto; margin-right: auto; padding: ${margin}; background-color: ${backgroundColor}; background-image: ${backgroundImage}; background-repeat: ${backgroundRepeat}; background-position: ${backgroundPosition};"></div>
         
     </body>
 </html>

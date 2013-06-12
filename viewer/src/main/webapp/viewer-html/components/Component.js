@@ -88,7 +88,8 @@ Ext.define("viewer.components.Component",{
             buttonText = "",
             buttonCls = '',
             buttonWidth = me.defaultButtonWidth,
-            baseClass = this.getBaseClass();
+            baseClass = this.getBaseClass(),
+            showLabel = false;
 
         me.options = options;
         if(options.icon) {
@@ -99,11 +100,14 @@ Ext.define("viewer.components.Component",{
             buttonText = (options.text || (me.name || ""));
             buttonWidth = 'autoWidth';
         }
+        
+        // Only show label if there is an icon or a sprite (and a label is set)
+        if((options.icon || me.haveSprite) && options.label) showLabel = true;
 
         me.button = Ext.create('Ext.button.Button', {
             text: buttonText,
             cls: buttonCls,
-            renderTo: me.div,
+            renderTo: (showLabel ? null : me.div),
             scale: "large",
             icon: buttonIcon,
             tooltip: options.tooltip || null,
@@ -136,6 +140,35 @@ Ext.define("viewer.components.Component",{
                 }
             }
         });
+        
+        if(showLabel) {
+            var textDimensions = Ext.util.TextMetrics.measure(me.div, options.label, buttonWidth);
+            Ext.create('Ext.container.Container', {
+                renderTo: me.div,
+                height: me.defaultButtonHeight + textDimensions.height + 3, // Button height + text height + text padding
+                margin: 3,
+                layout: {
+                    type: 'vbox',
+                    align: 'center',
+                    shrinkToFit: false
+                },
+                style: {
+                    display: 'inline-block',
+                    'vertical-align': 'top'
+                },
+                items: [
+                    me.button,
+                    {
+                        xtype: 'container',
+                        html: options.label,
+                        style: {
+                            'padding-top': '3px',
+                            'text-align': 'center'
+                        }
+                    }
+                ]
+            });
+        }
     },
     
     setButtonState: function(state, forceState) {
@@ -190,10 +223,10 @@ Ext.define("viewer.components.Component",{
     
     getPopupIcon: function() {
         var baseClassName = this.getBaseClass();
-        if(this.config.titlebarIcon) {
+        if(this.config.iconUrl) {
             // We need to give a CSS class, so if in image is set, we are creating a new stylesheet... Improve??
             var className = baseClassName + '_popupicon';
-            Ext.util.CSS.createStyleSheet('.' + className + ' { background-image: url(\'' + this.config.titlebarIcon + '\') !important; }', baseClassName + 'iconStyle');
+            Ext.util.CSS.createStyleSheet('.' + className + ' { background-image: url(\'' + this.config.iconUrl + '\') !important; }', baseClassName + 'iconStyle');
             return className;
         }
         return 'applicationSpriteClassPopup ' + baseClassName + '_popup';
