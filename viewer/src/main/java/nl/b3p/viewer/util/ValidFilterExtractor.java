@@ -216,7 +216,7 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
                             } else {
                                 fil = ff.equals(ff.property(key.getLeftSide().getName()), ff.literal(value));
                             }
-                            orFilters.get(key.getRightSide()).add(fil);
+                            orFilters.get(key.getRightSide().getName()).add(fil);
                         }
                     }
                 } finally {
@@ -228,7 +228,7 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
                 //make or filters and add them to a list of and filters.
                 List<Filter> andFilters = new ArrayList<Filter>();
                 for (FeatureTypeRelationKey key : relation.getRelationKeys()) {
-                    ArrayList<Filter> filters = orFilters.get(key.getRightSide());
+                    ArrayList<Filter> filters = orFilters.get(key.getRightSide().getName());
                     if (filters==null){
                         continue;
                     }
