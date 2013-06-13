@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <stripes:layout-render name="/WEB-INF/jsp/templates/ext.jsp">
     <stripes:layout-component name="head">
-        <title>Gegevensregister</title>
+        <title>Layar Source</title>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
