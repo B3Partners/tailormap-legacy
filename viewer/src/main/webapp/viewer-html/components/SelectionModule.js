@@ -1211,6 +1211,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 checked: true,
                                 id: recordid,
                                 layerName: record.raw.layerName,
+                                alias: record.raw.layerName,
                                 serviceId: service.id,
                                 status: 'new'
                             });
