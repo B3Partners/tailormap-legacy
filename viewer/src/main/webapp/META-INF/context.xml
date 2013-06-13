@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- crossContext="true" is required to enable the viewer-admin to load the 
-  components.json file and component config javascript sources from the viewer -->
-<Context path="/viewer" crossContext="false" antiJARLocking="true" disableURLRewriting="true">
+<Context path="/viewer" antiJARLocking="true" disableURLRewriting="true">
     <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>
