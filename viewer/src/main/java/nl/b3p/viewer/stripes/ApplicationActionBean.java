@@ -63,7 +63,7 @@ public class ApplicationActionBean implements ActionBean {
     private JSONObject user;
     
     private String loginUrl;
-    private JSONObject globalLayout;
+    private HashMap<String,Object> globalLayout;
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public String getName() {
@@ -146,11 +146,11 @@ public class ApplicationActionBean implements ActionBean {
         this.loginUrl = loginUrl;
     }
     
-    public JSONObject getGlobalLayout() {
+    public HashMap getGlobalLayout() {
         return globalLayout;
     }
 
-    public void setGlobalLayout(JSONObject globalLayout) {
+    public void setGlobalLayout(HashMap globalLayout) {
         this.globalLayout = globalLayout;
     }
     //</editor-fold>
@@ -209,8 +209,15 @@ public class ApplicationActionBean implements ActionBean {
         
         appConfigJSON = application.toJSON(context.getRequest());
         this.viewerType = retrieveViewerType();
-        this.globalLayout = application.getGlobalLayout();
         
+        //make hashmap for jsonobject.
+        this.globalLayout = new HashMap<String,Object>();
+        JSONObject layout = application.getGlobalLayout();
+        Iterator<String> keys = layout.keys();
+        while (keys.hasNext()){
+            String key = keys.next();
+            this.globalLayout.put(key, layout.get(key));
+        }
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
     

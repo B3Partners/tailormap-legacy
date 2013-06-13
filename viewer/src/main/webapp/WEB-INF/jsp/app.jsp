@@ -330,27 +330,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:set var="backgroundImage" value="none" />
         <c:set var="backgroundRepeat" value="no-repeat" />
         <c:set var="backgroundPosition" value="0 0" />
-        <c:if test="${actionBean.globalLayout.has('maxWidth') && !empty actionBean.globalLayout.getString('maxWidth') && actionBean.globalLayout.getString('maxWidth') != '0'}">
-            <c:set var="maxWidth" value="${actionBean.globalLayout.getString('maxWidth')}px" />
-        </c:if>
-        <c:if test="${actionBean.globalLayout.has('maxHeight') && !empty actionBean.globalLayout.getString('maxHeight') && actionBean.globalLayout.getString('maxHeight') != '0'}">
-            <c:set var="maxHeight" value="${actionBean.globalLayout.getString('maxHeight')}px" />
-        </c:if>
-        <c:if test="${actionBean.globalLayout.has('margin') && !empty actionBean.globalLayout.getString('margin')}">
-            <c:set var="margin" value="${actionBean.globalLayout.getString('margin')}" />
-        </c:if>
-        <c:if test="${actionBean.globalLayout.has('backgroundColor') && !empty actionBean.globalLayout.getString('backgroundColor')}">
-            <c:set var="backgroundColor" value="${actionBean.globalLayout.getString('backgroundColor')}" />
-        </c:if>
-        <c:if test="${actionBean.globalLayout.has('backgroundImage') && !empty actionBean.globalLayout.getString('backgroundImage')}">
-            <c:set var="backgroundImage" value="url(${actionBean.globalLayout.getString('backgroundImage')})" />
-        </c:if>
-        <c:if test="${actionBean.globalLayout.has('backgroundRepeat') && !empty actionBean.globalLayout.getString('backgroundRepeat')}">
-            <c:set var="backgroundRepeat" value="${actionBean.globalLayout.getString('backgroundRepeat')}" />
-        </c:if>
-        <c:if test="${actionBean.globalLayout.has('backgroundPosition') && !empty actionBean.globalLayout.getString('backgroundPosition')}">
-            <c:set var="backgroundPosition" value="${actionBean.globalLayout.getString('backgroundPosition')}" />
-        </c:if>
+        <c:forEach items="${actionBean.globalLayout}" var="globalLayout">
+            <c:if test="${!empty globalLayout.value}">
+                <c:if test="${globalLayout.key=='maxWidth' && globalLayout.value != '0'}">
+                    <c:set var="maxWidth" value="${actionBean.globalLayout.getString('maxWidth')}px" />
+                </c:if>
+                <c:if test="${globalLayout.key=='maxHeight' && globalLayout.value != '0'}">
+                    <c:set var="maxHeight" value="${actionBean.globalLayout.getString('maxHeight')}px" />
+                </c:if>
+                <c:if test="${globalLayout.key=='margin'}">
+                    <c:set var="margin" value="${actionBean.globalLayout.getString('margin')}" />
+                </c:if>
+                <c:if test="${globalLayout.key=='backgroundColor'}">
+                    <c:set var="backgroundColor" value="${actionBean.globalLayout.getString('backgroundColor')}" />
+                </c:if>
+                <c:if test="${globalLayout.key=='backgroundImage'}">
+                    <c:set var="backgroundImage" value="url(${actionBean.globalLayout.getString('backgroundImage')})" />
+                </c:if>
+                <c:if test="${globalLayout.key=='backgroundRepeat'}">
+                    <c:set var="backgroundRepeat" value="${actionBean.globalLayout.getString('backgroundRepeat')}" />
+                </c:if>
+                <c:if test="${globalLayout.key=='backgroundPosition'}">
+                    <c:set var="backgroundPosition" value="${actionBean.globalLayout.getString('backgroundPosition')}" />
+                </c:if>
+            </c:if>
+        </c:forEach>
         <div id="wrapper" style="width: 100%; height: 100%; max-width: ${maxWidth}; max-height: ${maxHeight}; margin-left: auto; margin-right: auto; padding: ${margin}; background-color: ${backgroundColor}; background-image: ${backgroundImage}; background-repeat: ${backgroundRepeat}; background-position: ${backgroundPosition};"></div>
         
     </body>
