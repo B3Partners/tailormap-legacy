@@ -333,25 +333,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:forEach items="${actionBean.globalLayout}" var="globalLayout">
             <c:if test="${!empty globalLayout.value}">
                 <c:if test="${globalLayout.key=='maxWidth' && globalLayout.value != '0'}">
-                    <c:set var="maxWidth" value="${actionBean.globalLayout.getString('maxWidth')}px" />
+                    <c:set var="maxWidth" value="${globalLayout.value}px" />
                 </c:if>
                 <c:if test="${globalLayout.key=='maxHeight' && globalLayout.value != '0'}">
-                    <c:set var="maxHeight" value="${actionBean.globalLayout.getString('maxHeight')}px" />
+                    <c:set var="maxHeight" value="${globalLayout.value}px" />
                 </c:if>
                 <c:if test="${globalLayout.key=='margin'}">
-                    <c:set var="margin" value="${actionBean.globalLayout.getString('margin')}" />
+                    <c:set var="margin" value="${globalLayout.value}" />
                 </c:if>
                 <c:if test="${globalLayout.key=='backgroundColor'}">
-                    <c:set var="backgroundColor" value="${actionBean.globalLayout.getString('backgroundColor')}" />
+                    <c:set var="backgroundColor" value="${globalLayout.value}" />
                 </c:if>
                 <c:if test="${globalLayout.key=='backgroundImage'}">
-                    <c:set var="backgroundImage" value="url(${actionBean.globalLayout.getString('backgroundImage')})" />
+                    <c:set var="backgroundImage" value="url(${globalLayout.value})" />
                 </c:if>
                 <c:if test="${globalLayout.key=='backgroundRepeat'}">
-                    <c:set var="backgroundRepeat" value="${actionBean.globalLayout.getString('backgroundRepeat')}" />
+                    <c:set var="backgroundRepeat" value="${globalLayout.value}" />
                 </c:if>
                 <c:if test="${globalLayout.key=='backgroundPosition'}">
-                    <c:set var="backgroundPosition" value="${actionBean.globalLayout.getString('backgroundPosition')}" />
+                    <c:set var="backgroundPosition" value="${globalLayout.value}" />
                 </c:if>
             </c:if>
         </c:forEach>
