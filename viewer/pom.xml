@@ -50,13 +50,7 @@
             <artifactId>gt-render</artifactId>
             <version>${geotools.version}</version>
             <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>
-            <version>${geotools.version}</version>
-            <type>jar</type>
-        </dependency>        
+        </dependency>       
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
