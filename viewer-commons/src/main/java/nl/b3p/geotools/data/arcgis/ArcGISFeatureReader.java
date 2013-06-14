@@ -112,6 +112,10 @@ public class ArcGISFeatureReader implements SimpleFeatureReader {
             objectIdFieldName = (String)idsResponse.get("objectIdFieldName");
             objectIds = (JSONArray)idsResponse.get("objectIds");
 
+            if(objectIds == null) {
+                return Collections.EMPTY_LIST;
+            }
+            
             // Ensure consistent startIndex by sorting the objectIds
             Collections.sort(objectIds);
             
