@@ -4,7 +4,7 @@
 
     <groupId>org.flamingo-mc.viewer</groupId>
     <artifactId>viewer</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <packaging>war</packaging>
 	
 	<parent>
