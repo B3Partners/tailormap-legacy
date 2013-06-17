@@ -371,8 +371,8 @@ public class ArcIMSService extends GeoService implements Updatable {
     
     //<editor-fold desc="Add serviceName to toJSONObject()">
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags);
         if(serviceName != null) {
             o.put("serviceName", serviceName);
         }
@@ -381,7 +381,7 @@ public class ArcIMSService extends GeoService implements Updatable {
     
     @Override
     public JSONObject toJSONObject(boolean flatten) throws JSONException {
-        return toJSONObject(flatten, null);
+        return toJSONObject(flatten, null,false);
     }
     //</editor-fold>
 }

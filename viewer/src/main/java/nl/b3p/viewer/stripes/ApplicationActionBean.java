@@ -207,7 +207,7 @@ public class ApplicationActionBean implements ActionBean {
         
         buildComponentSourceHTML();
         
-        appConfigJSON = application.toJSON(context.getRequest());
+        appConfigJSON = application.toJSON(context.getRequest(),false, false);
         this.viewerType = retrieveViewerType();
         
         //make hashmap for jsonobject.
