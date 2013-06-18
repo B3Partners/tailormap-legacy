@@ -345,30 +345,33 @@ public abstract class GeoService {
         o.put("url", url);
         o.put("protocol", getProtocol());
         
-        JSONObject jStyleLibraries = new JSONObject();
-        for(StyleLibrary sld: getStyleLibraries()) {
-            JSONObject jsld = new JSONObject();
-            jStyleLibraries.put("sld:" + sld.getId(),jsld);
-            jsld.put("id", sld.getId());
-            jsld.put("title", sld.getTitle());
-            jsld.put("default", sld.isDefaultStyle());
-            if(sld.isDefaultStyle()) {
-                o.put("defaultStyleLibrary", jsld);
+        if (!validXmlTags){
+            JSONObject jStyleLibraries = new JSONObject();
+            for(StyleLibrary sld: getStyleLibraries()) {
+                JSONObject jsld = new JSONObject();
+                String styleName=sld.getId().toString();                
+                jStyleLibraries.put("sld:" +styleName ,jsld);
+                jsld.put("id", sld.getId());
+                jsld.put("title", sld.getTitle());
+                jsld.put("default", sld.isDefaultStyle());
+                if(sld.isDefaultStyle()) {
+                    o.put("defaultStyleLibrary", jsld);
+                }
+                if(sld.getExternalUrl() != null) {
+                    jsld.put("externalUrl", sld.getExternalUrl());
+                } 
+                JSONObject userStylesPerNamedLayer = new JSONObject();
+                if(sld.getNamedLayerUserStylesJson() != null) {
+                    userStylesPerNamedLayer = new JSONObject(sld.getNamedLayerUserStylesJson());
+                }
+                jsld.put("userStylesPerNamedLayer", userStylesPerNamedLayer);
+                if(sld.getExtraLegendParameters() != null) {
+                    jsld.put("extraLegendParameters", sld.getExtraLegendParameters());
+                }
+                jsld.put("hasBody", sld.getExternalUrl() == null);
             }
-            if(sld.getExternalUrl() != null) {
-                jsld.put("externalUrl", sld.getExternalUrl());
-            } 
-            JSONObject userStylesPerNamedLayer = new JSONObject();
-            if(sld.getNamedLayerUserStylesJson() != null) {
-                userStylesPerNamedLayer = new JSONObject(sld.getNamedLayerUserStylesJson());
-            }
-            jsld.put("userStylesPerNamedLayer", userStylesPerNamedLayer);
-            if(sld.getExtraLegendParameters() != null) {
-                jsld.put("extraLegendParameters", sld.getExtraLegendParameters());
-            }
-            jsld.put("hasBody", sld.getExternalUrl() == null);
+            o.put("styleLibraries", jStyleLibraries);
         }
-        o.put("styleLibraries", jStyleLibraries);
         
         if(topLayer != null) {
             

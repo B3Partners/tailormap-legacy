@@ -21,6 +21,8 @@ import javax.persistence.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Function;
@@ -194,5 +196,14 @@ public abstract class FeatureSource {
     public void removeFeatureType(SimpleFeatureType featureType) {
         Stripersist.getEntityManager().remove(featureType);
         getFeatureTypes().remove(featureType);
+    }
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("id", this.getId());
+        json.put("name",this.getName());
+        json.put("protocol",this.getProtocol());
+        json.put("url",this.getUrl());
+        return json;
     }
 }
