@@ -26,7 +26,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             configObject={};
         }
         configObject.layerFilter=this.layerFilter;
-        configObject.showLabelconfig = false;
         
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
        
