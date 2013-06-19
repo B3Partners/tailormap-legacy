@@ -61,6 +61,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </x:if>
             </x:forEach>
         </div>
+        <script type="text/javascript">
+            var activelink = 'menu_serviceusagematrix';
+        </script>
     </stripes:layout-component>
 
 </stripes:layout-render>
