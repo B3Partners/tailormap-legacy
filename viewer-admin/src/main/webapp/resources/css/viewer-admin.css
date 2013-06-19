@@ -96,3 +96,21 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .relation_right_side{
     margin-left: 40px;
 }
+
+.usageMatrixFeatureSource{
+    float: left;
+    clear: both;    
+    width: 100%;
+    margin-bottom: 20px;
+}
+.usageMatrixFeatureSource table{    
+    width: 100%;
+}
+.usageMatrixFeatureSource table td{
+    width: 25%;
+}
+.usageMatrixFeatureSource table th{
+    font-weight: bold;
+    background-color: lightgray;
+    color: black;
+}

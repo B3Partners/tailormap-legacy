@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:template match="/">
         <root>
             <featureSources>
@@ -47,9 +47,12 @@
                     <id>
                         <xsl:value-of select="id"/>
                     </id>
-                    <naam>
+                    <name>
                         <xsl:value-of select="name"/>
-                    </naam>
+                    </name>
+                    <version>
+                        <xsl:value-of select="version"/>
+                    </version>
                     <layers>
                         <xsl:for-each select="services//layers/*[featureTypeId=$featureType/id]">
                             <layer>

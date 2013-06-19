@@ -284,6 +284,7 @@ public class Application {
         if(!onlyServicesAndLayers && layout != null) {
             o.put("layout", new JSONObject(layout));
         }
+        o.put("version",version);
         
         if (!onlyServicesAndLayers){
             JSONObject d = new JSONObject();

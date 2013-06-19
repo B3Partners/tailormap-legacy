@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/xml" prefix="x" %>
 
 <%@taglib prefix="stripes" uri="http://stripes.sourceforge.net/stripes.tld" %>
 <%@taglib prefix="stripes-dynattr" uri="http://stripes.sourceforge.net/stripes-dynattr.tld" %>
