@@ -30,10 +30,13 @@ import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
@@ -59,7 +62,10 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     
     @Validate
     private String xml;
-    
+    @Validate
+    private ApplicationLayer applicationLayer;
+    @Validate
+    private Application application;
     @DefaultHandler
     public Resolution view() throws JSONException, TransformerConfigurationException, TransformerException {
         /*List <FeatureSource> featureSources = Stripersist.getEntityManager().createQuery("FROM FeatureSource").getResultList();
@@ -115,6 +121,35 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         return new ForwardResolution(JSP);
         
     }
+    
+    public Resolution deleteApplicationLayer() throws JSONException{
+        JSONObject json = new JSONObject();
+        try{
+            json.put("success",false);
+            if (this.applicationLayer!=null && this.application!=null){
+                json.put("id",this.applicationLayer.getId());
+                json.put("name",this.applicationLayer.getDisplayName());
+                
+                Level parent=this.application.getRoot().getParentInSubtree(applicationLayer);
+                if (parent==null){
+                    json.put("message", "No parent Level for given application layer: "+this.applicationLayer.getId()+
+                            " in application: "+this.getApplication().getId());
+                }else{
+                    parent.getLayers().remove(this.applicationLayer);
+                    Stripersist.getEntityManager().remove(this.applicationLayer);
+                    Stripersist.getEntityManager().getTransaction().commit();
+                    json.put("success",true);
+                }
+            }else{
+                json.put("message","No applicationlayer found");
+            }
+        }catch (Exception e){
+            log.error("Error while deleting applicationlayer",e);
+            json.put("message",e.getLocalizedMessage());
+        }        
+        return new StreamingResolution("text/html", new StringReader(json.toString()));
+    }
+        
     //<editor-fold defaultstate="collapsed" desc="Getters setters">
     
     @Override
@@ -133,6 +168,22 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     public void setXml(String xml) {
         this.xml = xml;
     }
+    
+    public ApplicationLayer getApplicationLayer() {
+        return applicationLayer;
+    }
+
+    public void setApplicationLayer(ApplicationLayer applicationLayer) {
+        this.applicationLayer = applicationLayer;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
     //</editor-fold>
 
     private String transformXml(String rawXml) throws TransformerConfigurationException, TransformerException {
@@ -149,4 +200,5 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         
         return writer.toString();
     }
+
 }

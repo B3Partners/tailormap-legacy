@@ -28,6 +28,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
 
     <stripes:layout-component name="body">
+        <script type="text/javascript">
+            var activelink = 'menu_serviceusagematrix';
+            var deleteApplicationLayerUrl= <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="deleteApplicationLayer"/></js:quote>
+            
+            function deleteApplicationLayer(applicationId, appLayerId){
+                Ext.Ajax.request({ 
+                    url: deleteApplicationLayerUrl, 
+                    scope:this,
+                    params: { 
+                        applicationLayer: appLayerId,
+                        application: applicationId
+                    }, 
+                    success: function ( result  ) {
+                        result = Ext.JSON.decode(result.responseText);
+                        if (result.success){
+                            Ext.MessageBox.alert("Verwijderd", "De kaart "+result.name+"("+result.id+") is verwijderd.");
+                            Ext.get("trApplicationLayer_"+result.id).remove();
+                        }else{
+                            Ext.MessageBox.alert("Foutmelding", "Het verwijderen is niet gelukt: "+result.message);
+                        }
+                    },
+                    failure: function() {
+                        Ext.MessageBox.alert("Foutmelding", "Er is een fout opgetreden: "+result.message);
+                    }
+                });
+            }
+        </script>
         <div id="content">
             <h1>Service Usage Matrix</h1><br/>            
             <x:parse xml="${actionBean.xml}" var="doc"/>
@@ -46,11 +73,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <x:forEach select="$featureType/applications/application" var="application">
                                     <x:forEach select="$application/layers/layer" var="layer">
                                         <x:forEach select="$layer/applayers/applayer" var="appLayer">
-                                            <tr>
-                                                <td><x:out select="$featureType/id"/>. <x:out select="$featureType/name"/></td>
-                                                <td><x:out select="$application/id"/>. <x:out select="$application/name"/> (<x:out select="$application/version"/>)</td>
+                                            <tr id="trApplicationLayer_<x:out select="$appLayer/id"/>">
+                                                <td><x:out select="$featureType/name"/> (<x:out select="$featureType/id"/>)</td>
+                                                <td><x:out select="$application/name"/>,versie: <x:out select="$application/version"/> (<x:out select="$application/id"/>)</td>
                                                 <td><x:out select="$layer/name"/></td>
-                                                <td><x:out select="$appLayer/id"/>. <x:out select="$appLayer/alias"/></td>
+                                                <td><x:out select="$appLayer/alias"/>(<x:out select="$appLayer/id"/>) <a href="javascript: void(0)" onclick="deleteApplicationLayer(<x:out select="$application/id"/>,<x:out select="$appLayer/id"/>)">Verwijder</a></td>
                                             </tr> 
                                         </x:forEach>
                                     </x:forEach>
@@ -61,9 +88,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </x:if>
             </x:forEach>
         </div>
-        <script type="text/javascript">
-            var activelink = 'menu_serviceusagematrix';
-        </script>
     </stripes:layout-component>
 
 </stripes:layout-render>

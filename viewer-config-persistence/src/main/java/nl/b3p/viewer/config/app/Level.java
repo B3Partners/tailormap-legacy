@@ -233,32 +233,40 @@ public class Level {
         return s;            
     }
     
-    public boolean containsLayerInSubtree(ApplicationLayer appLayer) {
-        
+    public Level getParentInSubtree(ApplicationLayer appLayer){
         for(ApplicationLayer al: layers) {
             if(al.equals(appLayer)) {
-                return true;
+                return this;
             }
         }
-        
         for(Level child: children) {
-            if(child.containsLayerInSubtree(appLayer)) {
-                return true;
+            Level parent = child.getParentInSubtree(appLayer);
+            if(parent!=null) {
+                return parent;
             }
         }
-        return false;
+        return null;
+    }
+    
+    public Level getParentInSubtree(Level level){
+        for(Level child: children) {
+            if(child.equals(level)) {
+                return this;
+            }
+            Level parent = child.getParentInSubtree(level);
+            if(parent !=null) {
+                return parent;
+            }
+        }        
+        return null;
+    }
+    
+    public boolean containsLayerInSubtree(ApplicationLayer appLayer) {
+        return this.getParentInSubtree(appLayer)!=null;
     }
 
     public boolean containsLevelInSubtree(Level level) {
-        for(Level child: children) {
-            if(child.equals(level)) {
-                return true;
-            }
-            if(child.containsLevelInSubtree(level)) {
-                return true;
-            }
-        }        
-        return false;
+        return this.getParentInSubtree(level)!=null;
     }
 
     public boolean isInSubtreeOf(Level level) {
