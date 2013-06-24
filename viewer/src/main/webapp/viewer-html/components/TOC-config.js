@@ -77,6 +77,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'zoomToScaleText',
                 value: config.zoomToScaleText? config.zoomToScaleText:"Zoom to scale",
                 labelWidth:me.labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Bij opstarten boom openklappen',
+                inputValue: true,
+                name: 'expandOnStartup',
+                checked: config.expandOnStartup!=undefined? config.expandOnStartup:true,
+                value: true,
+                labelWidth:me.labelWidth
             }],
         
             renderTo: parentid//(2)
