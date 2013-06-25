@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.xml.transform.Transformer;
@@ -66,6 +67,8 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     private ApplicationLayer applicationLayer;
     @Validate
     private Application application;
+    @Validate
+    private FeatureSource featureSource;
     @DefaultHandler
     public Resolution view() throws JSONException, TransformerConfigurationException, TransformerException {
         /*List <FeatureSource> featureSources = Stripersist.getEntityManager().createQuery("FROM FeatureSource").getResultList();
@@ -78,9 +81,15 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         for (Application app: applications){
             JSONObject json = new JSONObject(app.toJSON(this.context.getRequest(),true,true));
             jsonApps.put(json);
-        }       
+        }
         //add the featureSources to the JSON.
-        List <FeatureSource> featureSources = Stripersist.getEntityManager().createQuery("FROM FeatureSource").getResultList();
+        List <FeatureSource> featureSources;
+        if (this.featureSource==null){
+            featureSources = Stripersist.getEntityManager().createQuery("FROM FeatureSource").getResultList();
+        }else{
+            featureSources = new ArrayList<FeatureSource>();
+            featureSources.add(this.featureSource);
+        }
         JSONArray featureSourcesJson = new JSONArray();
         for (FeatureSource fs : featureSources){
             JSONObject fsJson = fs.toJSONObject();
@@ -184,6 +193,14 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     public void setApplication(Application application) {
         this.application = application;
     }
+
+    public FeatureSource getFeatureSource() {
+        return featureSource;
+    }
+
+    public void setFeatureSource(FeatureSource featureSource) {
+        this.featureSource = featureSource;
+    }
     //</editor-fold>
 
     private String transformXml(String rawXml) throws TransformerConfigurationException, TransformerException {
@@ -200,5 +217,4 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         
         return writer.toString();
     }
-
 }

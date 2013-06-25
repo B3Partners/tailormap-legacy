@@ -59,33 +59,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <h1>Service Usage Matrix</h1><br/>            
             <x:parse xml="${actionBean.xml}" var="doc"/>
             <x:forEach select="$doc/root/featureSources/featureSource" var="featureSource">
-                <x:if select="$featureSource//applayer">
-                    <div class="usageMatrixFeatureSource">
-                        <b>Attribruutbron: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/>) </b>
-                        <table>
-                            <tr>
-                                <th>FeatureType</td>
-                                <th>Applicatie</td>
-                                <th>Layernaam van service</td>
-                                <th>Applicatie layer (kaart)</td>
-                            </tr>
-                            <x:forEach select="$featureSource/featureType" var="featureType">
-                                <x:forEach select="$featureType/applications/application" var="application">
-                                    <x:forEach select="$application/layers/layer" var="layer">
-                                        <x:forEach select="$layer/applayers/applayer" var="appLayer">
-                                            <tr id="trApplicationLayer_<x:out select="$appLayer/id"/>">
-                                                <td><x:out select="$featureType/name"/> (<x:out select="$featureType/id"/>)</td>
-                                                <td><x:out select="$application/name"/>,versie: <x:out select="$application/version"/> (<x:out select="$application/id"/>)</td>
-                                                <td><x:out select="$layer/name"/></td>
-                                                <td><x:out select="$appLayer/alias"/>(<x:out select="$appLayer/id"/>) <a href="javascript: void(0)" onclick="deleteApplicationLayer(<x:out select="$application/id"/>,<x:out select="$appLayer/id"/>)">Verwijder</a></td>
-                                            </tr> 
+                <div class="usageMatrixFeatureSource">
+                    <b>Attribruutbron: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/>) </b>
+                    <x:choose>
+                        <x:when select="$featureSource//applayer">
+                            <table>
+                                <tr>
+                                    <th>FeatureType</td>
+                                    <th>Applicatie</td>
+                                    <th>Layernaam van service</td>
+                                    <th>Applicatie layer (kaart)</td>
+                                </tr>
+                                <x:forEach select="$featureSource/featureType" var="featureType">
+                                    <x:forEach select="$featureType/applications/application" var="application">
+                                        <x:forEach select="$application/layers/layer" var="layer">
+                                            <x:forEach select="$layer/applayers/applayer" var="appLayer">
+                                                <tr id="trApplicationLayer_<x:out select="$appLayer/id"/>">
+                                                    <td><x:out select="$featureType/name"/> (<x:out select="$featureType/id"/>)</td>
+                                                    <td><x:out select="$application/name"/>,versie: <x:out select="$application/version"/> (<x:out select="$application/id"/>)</td>
+                                                    <td><x:out select="$layer/name"/></td>
+                                                    <td><x:out select="$appLayer/alias"/>(<x:out select="$appLayer/id"/>) <a href="javascript: void(0)" onclick="deleteApplicationLayer(<x:out select="$application/id"/>,<x:out select="$appLayer/id"/>)">Verwijder</a></td>
+                                                </tr> 
+                                            </x:forEach>
                                         </x:forEach>
                                     </x:forEach>
                                 </x:forEach>
-                            </x:forEach>
-                        </table>
-                    </div> 
-                </x:if>
+                            </table>
+                        </x:when>
+                        <x:otherwise>
+                            <br>De service wordt niet gebruikt in één van de geconfigureerde applicaties.
+                        </x:otherwise>
+                    </x:choose>
+                </div> 
             </x:forEach>
         </div>
     </stripes:layout-component>

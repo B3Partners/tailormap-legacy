@@ -204,6 +204,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         }
                     </script>
                     <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
+                    <c:if test="${not empty actionBean.changedFeatureTypes}">
+                        <a href="javascript: void(0)" onclick="openServiceUsageMatrix()">Open wijzigingen in Service Gebruiks Matrix</a>
+                    </c:if>
                 </c:otherwise>
             </c:choose>
         </stripes:form>
@@ -212,6 +215,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent');
             });
+            function openServiceUsageMatrix(){
+                var params="";
+                for(var key in changedFeatureTypes){
+                    if (changedFeatureTypes[key].length > 0){
+                        if (params.length ==0){
+                            params+="?";
+                        }else{
+                            params+="&";
+                        }
+                        params+=key+"="+changedFeatureTypes[key].join(",");
+                    }
+                }
+                if (params.length>0){
+                    var url= ""+serviceUsageMatrixUrl+params;
+                    url += "&featureSource="+changedFeatureSource;
+                    window.open(url);
+                }
+            }
+            var serviceUsageMatrixUrl='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/>';
+            var changedFeatureSource = "${actionBean.changedFeatureSourceId}";
+            var changedFeatureTypes={};
+            <c:forEach items="${actionBean.changedFeatureTypes}" var="change">
+                changedFeatureTypes["${change.key}"]= [];
+                <c:forEach items="${change.value}" var="featuretype">
+                    changedFeatureTypes["${change.key}"].push(${featuretype.id});
+                </c:forEach>                
+            </c:forEach>
         </script>
     </stripes:layout-component>
 </stripes:layout-render>
