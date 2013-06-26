@@ -35,7 +35,8 @@ Ext.define ("viewer.components.TOC",{
         showBaselayers:true,
         title: "Table of Contents",
         showLeafIcon: true,
-        zoomToScaleText: "Zoom to scale"
+        zoomToScaleText: "Zoom to scale",
+        expandOnStartup: true
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -69,12 +70,13 @@ Ext.define ("viewer.components.TOC",{
         this.appLayers = this.viewerController.app.appLayers;
         this.levels = this.viewerController.app.levels;
         this.services = this.viewerController.app.services;
+        var me = this;
         Ext.QuickTips.init();
         this.qtips = new Array();
         var store = Ext.create('Ext.data.TreeStore', {
             root: {
                 text: 'Root',
-                expanded: true,
+                expanded: me.expandOnStartup,
                 checked: false,
                 children: []
             }
@@ -142,10 +144,14 @@ Ext.define ("viewer.components.TOC",{
             return null;
         }
         var levelId = "level-"+level.id;
+        var expand = this.expandOnStartup;
+        if (level.background){
+            expand=false;
+        }
         var treeNodeLayer = {
             text: '<span id="span_'+levelId+'">'+level.name+'</span>', 
             id: levelId,
-            expanded: !level.background,
+            expanded: expand,
             expandable: !level.background,
             collapsible: !level.background,
             leaf: false,
@@ -216,10 +222,11 @@ Ext.define ("viewer.components.TOC",{
         var serviceLayer = service.layers[appLayerObj.layerName];
         var layerTitle = appLayerObj.alias;
         var layerId = "layer-"+appLayerObj.id;
+        var me = this;
         var treeNodeLayer = {
             text: '<span id="span_'+ layerId+'">'+layerTitle +'</span>',
             id: layerId,
-            expanded: true,
+            expanded: me.expandOnStartup,
             leaf: true,
             background: appLayerObj.background,
             layerObj: {
@@ -280,7 +287,7 @@ Ext.define ("viewer.components.TOC",{
             var background = {
                 text: "Achtergrond", 
                 id: this.name + "Achtergrond",
-                expanded: true,
+                expanded: this.expandOnStartup,
                 expandable: true,
                 collapsible : true,
                 leaf: false,

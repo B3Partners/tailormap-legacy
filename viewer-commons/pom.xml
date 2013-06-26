@@ -4,7 +4,7 @@
 
     <groupId>org.flamingo-mc.viewer-commons</groupId>
     <artifactId>viewer-commons</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 	
 	<parent>
@@ -52,6 +52,12 @@
             <artifactId>gt-jdbc</artifactId>
             <version>${geotools.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>
+            <version>${geotools.version}</version>
+            <type>jar</type>
+        </dependency>         
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

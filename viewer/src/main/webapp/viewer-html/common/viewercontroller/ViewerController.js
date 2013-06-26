@@ -1027,7 +1027,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         try {
             
             // Check override for appLayer by service admin
-            if(appLayer.details != undefined && appLayer.legendImageUrl != undefined) {
+            if(appLayer.details != undefined && appLayer.details.legendImageUrl != undefined) {
                 success(appLayer, { parts: [ {url: appLayer.details.legendImageUrl}] });
                 return;
             }

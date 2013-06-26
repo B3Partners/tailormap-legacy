@@ -26,6 +26,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             configObject = {};
             configObject.maxFeatures = this.defaultMaxFeatures;
         }
+        configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.createCheckBoxes(this.configObject.layers,{
             bufferable:true

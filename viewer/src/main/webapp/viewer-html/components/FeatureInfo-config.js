@@ -26,7 +26,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             configObject={};
         }
         configObject.layerFilter=this.layerFilter;
-        configObject.showLabelconfig = false;
         
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
        
@@ -51,9 +50,50 @@ Ext.define("viewer.components.CustomConfiguration",{
             /*columnWidth : 0.5,*/
             value: this.configObject.width != undefined ? this.configObject.width : 300,
             labelWidth:this.labelWidth
+        },{
+            xtype: 'label',
+            text: 'Bepaal hieronder wat er wordt getoond in het detail scherm (na klikken op \'link naar meer\')',
+            style: {
+                fontWeight: 'bold'
+            }
+        },{
+            xtype: 'checkbox',
+            fieldLabel: 'Toon samenvatting titel',
+            name: 'detailShowTitle',
+            /*columnWidth : 0.5,*/
+            value: true,
+            inputValue: true,
+            checked: this.configObject.detailShowTitle != undefined ? this.configObject.detailShowTitle : true,
+            labelWidth:this.labelWidth
+        },{
+            xtype: 'checkbox',
+            fieldLabel: 'Toon samenvatting plaatje',
+            name: 'detailShowImage',
+            /*columnWidth : 0.5,*/
+            value: true,
+            inputValue: true,
+            checked: this.configObject.detailShowImage != undefined ? this.configObject.detailShowImage : true,
+            labelWidth:this.labelWidth
+        },{
+            xtype: 'checkbox',
+            fieldLabel: 'Toon samenvatting omschrijving',
+            name: 'detailShowDesc',
+            /*columnWidth : 0.5,*/
+            value: true,
+            inputValue: true,
+            checked: this.configObject.detailShowDesc != undefined ? this.configObject.detailShowDesc : true,
+            labelWidth:this.labelWidth
+        },{
+            xtype: 'checkbox',
+            fieldLabel: 'Toon lijst met attributen',
+            name: 'detailShowAttr',
+            /*columnWidth : 0.5,*/
+            value: true,
+            inputValue: true,
+            checked: this.configObject.detailShowAttr != undefined ? this.configObject.detailShowAttr : true,
+            labelWidth:this.labelWidth
         }
         ]);
-        
         this.createCheckBoxes(this.configObject.layers,{});
         
     },

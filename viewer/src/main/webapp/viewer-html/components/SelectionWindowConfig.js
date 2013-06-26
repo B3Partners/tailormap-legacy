@@ -33,7 +33,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         var me=this;
         var iconurl = config.iconUrl;
         var label = config.label;
-        var showLabelconfig = config.showLabelconfig || true;
+        var showLabelconfig = config.showLabelconfig === true;
         if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
         if(Ext.isEmpty(label) || !Ext.isDefined(label)) label = "";
         this.form=new Ext.form.FormPanel({
