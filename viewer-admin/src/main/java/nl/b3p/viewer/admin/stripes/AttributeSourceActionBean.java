@@ -227,11 +227,8 @@ public class AttributeSourceActionBean implements ActionBean {
         log.info("New featuretypes: " + byStatus.get(UpdateResult.Status.NEW));
         log.info("Missing featuretypes: " + byStatus.get(UpdateResult.Status.MISSING));
         
-             
-        if (byStatus.get(UpdateResult.Status.UPDATED).size() + byStatus.get(UpdateResult.Status.NEW).size() + byStatus.get(UpdateResult.Status.MISSING).size() > 0){
-            this.changedFeatureTypes = result.getFeatureTypeByStatus();
-            this.changedFeatureSourceId = featureSource.getId();
-        }
+        this.changedFeatureTypes = result.getFeatureTypeByStatus();
+        this.changedFeatureSourceId = featureSource.getId();
         
         getContext().getMessages().add(new SimpleMessage(String.format("De attribuutbron is geupdate. Er is/zijn %d featuretypes gewijzigd, %d ongewijzigd, %d nieuw en %d verwijderd",
             byStatus.get(UpdateResult.Status.UPDATED).size(),

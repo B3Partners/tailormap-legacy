@@ -54,13 +54,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                 });
             }
+            var changedFeatureTypes;
+            <c:if test="${not empty actionBean.changedFeatureTypes}">
+                changedFeatureTypes=${actionBean.changedFeatureTypes};
+            </c:if>
+            var translateKey={
+                "FAILED" : "Mislukt",
+                "MISSING" : "Ontbreekt",
+                "NEW" : "Nieuw",
+                "UNMODIFIED" : "Ongewijzigd", 
+                "CHANGED" : "Gewijzigd", 
+                "UPDATED" : "Geupdate"
+            }
+            function checkChanged(){
+                if (changedFeatureTypes){
+                    for (var key in changedFeatureTypes){
+                        if(changedFeatureTypes[key]){
+                            for(var i =0; i < changedFeatureTypes[key].length; i++){
+                                var els = Ext.select(".featureType_"+changedFeatureTypes[key][i]);
+                                els.addCls("featureType-"+key.toLowerCase());
+                                var transKey = translateKey[key];
+                                els.insertHtml("beforeEnd"," ("+transKey+")");
+                            }
+                        }
+                    }
+                }
+            }
+            
+            Ext.onReady(checkChanged);
         </script>
         <div id="content">
             <h1>Service Usage Matrix</h1><br/>            
             <x:parse xml="${actionBean.xml}" var="doc"/>
             <x:forEach select="$doc/root/featureSources/featureSource" var="featureSource">
                 <div class="usageMatrixFeatureSource">
-                    <b>Attribruutbron: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/>) </b>
+                    <b>Attribruutbron: <x:out select="$featureSource/name"/> (<x:out select="$featureSource/protocol"/>:: <x:out select="$featureSource/url"/> id: <x:out select="$featureSource/id"/>) </b>
                     <x:choose>
                         <x:when select="$featureSource//applayer">
                             <table>
@@ -75,7 +103,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <x:forEach select="$application/layers/layer" var="layer">
                                             <x:forEach select="$layer/applayers/applayer" var="appLayer">
                                                 <tr id="trApplicationLayer_<x:out select="$appLayer/id"/>">
-                                                    <td><x:out select="$featureType/name"/> (<x:out select="$featureType/id"/>)</td>
+                                                    <td class="featureType_<x:out select="$featureType/id"/>"><x:out select="$featureType/name"/></td>
                                                     <td><x:out select="$application/name"/>,versie: <x:out select="$application/version"/> (<x:out select="$application/id"/>)</td>
                                                     <td><x:out select="$layer/name"/></td>
                                                     <td><x:out select="$appLayer/alias"/>(<x:out select="$appLayer/id"/>) <a href="javascript: void(0)" onclick="deleteApplicationLayer(<x:out select="$application/id"/>,<x:out select="$appLayer/id"/>)">Verwijder</a></td>

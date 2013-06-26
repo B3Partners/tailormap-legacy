@@ -215,20 +215,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent');
             });
-            function openServiceUsageMatrix(){
-                var params="";
-                for(var key in changedFeatureTypes){
-                    if (changedFeatureTypes[key].length > 0){
-                        if (params.length ==0){
-                            params+="?";
-                        }else{
-                            params+="&";
-                        }
-                        params+=key+"="+changedFeatureTypes[key].join(",");
+            function openServiceUsageMatrix(){                
+                if (changedFeatureTypes){
+                    var url= ""+serviceUsageMatrixUrl;
+                    if (url.indexOf("?")>0){
+                        url+="&";
+                    }else{
+                        url+="?";
                     }
-                }
-                if (params.length>0){
-                    var url= ""+serviceUsageMatrixUrl+params;
+                    url+="changedFeatureTypes="+Ext.JSON.encode(changedFeatureTypes);                
                     url += "&featureSource="+changedFeatureSource;
                     window.open(url);
                 }

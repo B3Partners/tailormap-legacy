@@ -58,7 +58,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public class ServiceUsageMatrixActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(ServiceUsageMatrixActionBean.class);
     private static final String JSP = "/WEB-INF/jsp/services/serviceusagematrix.jsp";
-    private static final String xslPath=File.separator+"WEB-INF"+File.separator+"classes"+File.separator+"xsl"+File.separator+"ServiceUsageMatrix.xsl";
+    private static final String xslPath="/WEB-INF/classes/xsl/ServiceUsageMatrix.xsl";
     private ActionBeanContext context;
     
     @Validate
@@ -68,14 +68,12 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     @Validate
     private Application application;
     @Validate
-    private FeatureSource featureSource;
+    private FeatureSource featureSource;    
+    @Validate
+    private String changedFeatureTypes;
+            
     @DefaultHandler
     public Resolution view() throws JSONException, TransformerConfigurationException, TransformerException {
-        /*List <FeatureSource> featureSources = Stripersist.getEntityManager().createQuery("FROM FeatureSource").getResultList();
-        List<FeatureSourceBean> fsbs = new ArrayList<FeatureSourceBean>();
-        for (FeatureSource fs : featureSources){
-            fsbs.add(new FeatureSourceBean(fs));
-        }*/
         List<Application> applications = Stripersist.getEntityManager().createQuery("FROM Application").getResultList();
         JSONArray jsonApps = new JSONArray();
         for (Application app: applications){
@@ -201,6 +199,14 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
     public void setFeatureSource(FeatureSource featureSource) {
         this.featureSource = featureSource;
     }
+    
+    public String getChangedFeatureTypes() {
+        return changedFeatureTypes;
+    }
+
+    public void setChangedFeatureTypes(String changedFeatureTypes) {
+        this.changedFeatureTypes = changedFeatureTypes;
+    }
     //</editor-fold>
 
     private String transformXml(String rawXml) throws TransformerConfigurationException, TransformerException {
@@ -217,4 +223,5 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         
         return writer.toString();
     }
+
 }

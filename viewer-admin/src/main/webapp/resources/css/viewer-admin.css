@@ -114,3 +114,15 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     background-color: lightgray;
     color: black;
 }
+.featureType-missing{
+    color: red;
+}
+.featureType-new{
+    color: green;
+}
+.featureType-updated{
+    font-weight: bold;
+}
+.featureType-unmodified{
+    
+}
