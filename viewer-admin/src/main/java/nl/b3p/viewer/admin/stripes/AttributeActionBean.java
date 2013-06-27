@@ -222,7 +222,6 @@ public class AttributeActionBean implements ActionBean {
         if(simpleFeatureTypeId != null && simpleFeatureTypeId != -1){
             SimpleFeatureType sft = (SimpleFeatureType)Stripersist.getEntityManager().find(SimpleFeatureType.class, simpleFeatureTypeId);
             if (sft!=null){
-                featureTypes = new ArrayList<SimpleFeatureType>();
                 featureTypes.add(sft);
             }
         }else if(featureSourceId != null && featureSourceId != -1){
