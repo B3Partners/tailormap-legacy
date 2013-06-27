@@ -28,7 +28,12 @@ Ext.define ("viewer.components.Bookmark",{
         title: null,
         titlebarIcon: null,
         tooltip: null,
-        label: ""
+        label: "",
+        shareEmail: false,
+        shareTwitter: false,
+        shareLinkedIn: false,
+        shareGooglePlus: false,
+        shareFacebook: false
     },
     constructor: function (conf){        
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
