@@ -1,4 +1,4 @@
-
+[
 /* JSON metadata describing components for viewer and viewer-admin webapps
  * 
  * Parameters:
@@ -31,7 +31,6 @@
  *
  */
 
-[
     {
         className: "viewer.mapcomponents.FlamingoMap",
         name: "Flamingo Map",
