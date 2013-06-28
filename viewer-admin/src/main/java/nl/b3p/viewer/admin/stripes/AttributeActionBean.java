@@ -217,30 +217,16 @@ public class AttributeActionBean implements ActionBean {
     
     public Resolution getGridData() throws JSONException { 
         JSONArray jsonData = new JSONArray();
-        
-        List<Long> selectedAttributeIds = new ArrayList();
+                
+        List<SimpleFeatureType> featureTypes= new ArrayList();
         if(simpleFeatureTypeId != null && simpleFeatureTypeId != -1){
             SimpleFeatureType sft = (SimpleFeatureType)Stripersist.getEntityManager().find(SimpleFeatureType.class, simpleFeatureTypeId);
-            
-            List<AttributeDescriptor> selectedAttributes = sft.getAttributes();
-            
-            for(Iterator it = selectedAttributes.iterator(); it.hasNext();){
-                AttributeDescriptor ad = (AttributeDescriptor)it.next();
-                selectedAttributeIds.add(ad.getId());
+            if (sft!=null){
+                featureTypes.add(sft);
             }
         }else if(featureSourceId != null && featureSourceId != -1){
-            FeatureSource fc = (FeatureSource)Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
-            
-            List<SimpleFeatureType> sftList = fc.getFeatureTypes();
-            for(Iterator it = sftList.iterator(); it.hasNext();){
-                SimpleFeatureType sft = (SimpleFeatureType)it.next();
-                  List<AttributeDescriptor> selectedAttributes = sft.getAttributes();
-            
-                for(Iterator atIt = selectedAttributes.iterator(); atIt.hasNext();){
-                    AttributeDescriptor ad = (AttributeDescriptor)atIt.next();
-                    selectedAttributeIds.add(ad.getId());
-                }
-            }
+            FeatureSource fc = (FeatureSource)Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);            
+            featureTypes = fc.getFeatureTypes();
         }
         
         String filterAlias = "";
@@ -302,9 +288,20 @@ public class AttributeActionBean implements ActionBean {
             c.add(typeCrit);
         }
         
-        if(selectedAttributeIds != null && selectedAttributeIds.size() > 0){
-            Criterion attrCrit = Restrictions.in("id", selectedAttributeIds);
-            c.add(attrCrit);
+        if(featureTypes != null && featureTypes.size() > 0){
+            /* Criteria for the all attribute descriptor ids of the feature types 
+             * in featureTypes
+             */
+            DetachedCriteria c2 = DetachedCriteria.forClass(SimpleFeatureType.class);
+            Collection ftIds = new ArrayList<Long>();
+            for(SimpleFeatureType sft: featureTypes) {
+                ftIds.add(sft.getId());
+            }
+            c2.add(Restrictions.in("id", ftIds));
+            c2.createAlias("attributes", "attr");
+            c2.setProjection(Projections.property("attr.id"));
+
+            c.add(Property.forName("id").in(c2));
         }
         int rowCount = c.list().size();
         

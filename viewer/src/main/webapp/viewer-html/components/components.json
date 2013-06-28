@@ -31,7 +31,6 @@
  *
  */
 
-
     {
         className: "viewer.mapcomponents.FlamingoMap",
         name: "Flamingo Map",
