@@ -25,6 +25,7 @@ Ext.define ("viewer.components.Bookmark",{
     compUrl: "",
     baseUrl: "",
     shareUrls: null,
+    imagePath: null,    
     config:{
         title: null,
         titlebarIcon: null,
@@ -41,13 +42,13 @@ Ext.define ("viewer.components.Bookmark",{
     constructor: function (conf){        
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        
+        imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/"
         this.shareUrls ={
             email: "mailto:username@example.com?subject=[title]&body=[text]%20[url]",
             twitter: "http://twitter.com/share?url=[url]&text=[text]",
             linkedin: "http://www.linkedin.com/shareArticle?mini=true&url=[url]&summary=[text]&title=[title]",
             googleplus: "https://plus.google.com/share?url=[url]&text=[text]",
-            facebook: "https://www.facebook.com/sharer.php?u=[url]&t=[text]"
+            facebook: "https://www.facebook.com/sharer.php?u=[url]&text=[text]"
         }
         
         this.renderButton();
@@ -73,7 +74,8 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                text: 'Email',
+                //text: 'Email',
+                icon: imagePath + 'email-16.png',
                 listeners: {
                     click:{
                         scope: this,
@@ -87,7 +89,8 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                text: 'Twitter',
+                //text: 'Twitter',
+                icon: imagePath + 'twitter-16.png',
                 listeners: {
                     click:{
                         scope: this,
@@ -101,7 +104,8 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                text: 'LinkedIn',
+                //text: 'LinkedIn',
+                icon: imagePath+"in-16.png",
                 listeners: {
                     click:{
                         scope: this,
@@ -115,7 +119,8 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                text: 'Google+',
+                //text: 'Google+',
+                icon: imagePath + 'gplus-16.png',
                 listeners: {
                     click:{
                         scope: this,
@@ -129,7 +134,8 @@ Ext.define ("viewer.components.Bookmark",{
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
-                text: 'Facebook',
+                //text: 'Facebook',        
+                icon: imagePath + 'fb-16.png',
                 listeners: {
                     click:{
                         scope: this,
