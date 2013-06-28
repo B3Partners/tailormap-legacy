@@ -46,7 +46,7 @@ Ext.define ("viewer.components.Bookmark",{
        
         imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/"
         this.shareUrls ={
-            email: "mailto:username@example.com?subject=[title]&body=[text]%20[url]",
+            email: "mailto:user@domain.com?subject=[title]&body=[text]%20[url]",
             twitter: "http://twitter.com/share?url=[url]&text=[text]",
             linkedin: "http://www.linkedin.com/shareArticle?mini=true&url=[url]&summary=[text]&title=[title]",
             googleplus: "https://plus.google.com/share?url=[url]&text=[text]",
