@@ -73,6 +73,20 @@ public class FeatureSourceUpdateResult {
         return byStatus;
     }
     
+    public Map<UpdateResult.Status,List<SimpleFeatureType>> getFeatureTypeByStatus() {
+        Map<UpdateResult.Status,List<SimpleFeatureType>> byStatus = new HashMap();
+        byStatus.put(UpdateResult.Status.NEW, new ArrayList());
+        byStatus.put(UpdateResult.Status.UNMODIFIED, new ArrayList());
+        byStatus.put(UpdateResult.Status.UPDATED, new ArrayList());
+        byStatus.put(UpdateResult.Status.MISSING, new ArrayList());
+        
+        for(Map.Entry<String,MutablePair<SimpleFeatureType,UpdateResult.Status>> entry: featureTypeStatus.entrySet()) {
+            List<SimpleFeatureType> layers = byStatus.get(entry.getValue().getRight());
+            layers.add(entry.getValue().getLeft());
+        }
+        return byStatus;
+    }
+    
     public void failedWithException(Exception e) {
         this.exception = e;
         setStatus(UpdateResult.Status.FAILED);

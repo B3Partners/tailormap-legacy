@@ -276,28 +276,32 @@ public class Application {
      * Create a JSON representation for use in browser to start this application
      * @return
      */
-    public String toJSON(HttpServletRequest request) throws JSONException {
+    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers) throws JSONException {
         JSONObject o = new JSONObject();
 
         o.put("id", id);
         o.put("name", name);
-        if(layout != null) {
+        if(!onlyServicesAndLayers && layout != null) {
             o.put("layout", new JSONObject(layout));
         }
-
-        JSONObject d = new JSONObject();
-        o.put("details", d);
-        for(Map.Entry<String,ClobElement> e: details.entrySet()) {
-            if(!adminOnlyDetails.contains(e.getKey())) {
-                d.put(e.getKey(), e.getValue());
+        o.put("version",version);
+        
+        if (!onlyServicesAndLayers){
+            JSONObject d = new JSONObject();
+            o.put("details", d);
+            for(Map.Entry<String,ClobElement> e: details.entrySet()) {
+                if(!adminOnlyDetails.contains(e.getKey())) {
+                    d.put(e.getKey(), e.getValue());
+                }
             }
         }
-
-        if(startExtent != null) {
-            o.put("startExtent", startExtent.toJSONObject());
-        }
-        if(maxExtent != null) {
-            o.put("maxExtent", maxExtent.toJSONObject());
+        if (!onlyServicesAndLayers){
+            if(startExtent != null) {
+                o.put("startExtent", startExtent.toJSONObject());
+            }
+            if(maxExtent != null) {
+                o.put("maxExtent", maxExtent.toJSONObject());
+            }
         }
         
         /* TODO check readers */
@@ -331,7 +335,7 @@ public class Application {
             o.put("selectedContent", selectedContent);         
             
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, request);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, request,validXmlTags);
 
             Collections.sort(selectedObjects, new Comparator() {
 
@@ -372,32 +376,41 @@ public class Application {
                 for(Map.Entry<GeoService,Set<String>> entry: usedLayersByService.entrySet()) {
                     GeoService gs = entry.getKey();
                     Set<String> usedLayers = entry.getValue();
-                    services.put(gs.getId().toString(), gs.toJSONObject(false, usedLayers));
+                    String serviceId = gs.getId().toString();
+                    if (validXmlTags){
+                        serviceId="service_"+serviceId;
+                    }
+                    services.put(serviceId, gs.toJSONObject(false, usedLayers,validXmlTags));
                 }
             }           
         }
+        if (!onlyServicesAndLayers){
+            // Prevent n+1 query for ConfiguredComponent.details
+            Stripersist.getEntityManager().createQuery(
+                    "from ConfiguredComponent cc left join fetch cc.details where application = :this")
+                    .setParameter("this", this)
+                    .getResultList();
 
-        // Prevent n+1 query for ConfiguredComponent.details
-        Stripersist.getEntityManager().createQuery(
-                "from ConfiguredComponent cc left join fetch cc.details where application = :this")
-                .setParameter("this", this)
-                .getResultList();
-        
-        JSONObject c = new JSONObject();
-        o.put("components", c);
-        for(ConfiguredComponent comp: components) {
-            if(Authorizations.isConfiguredComponentAuthorized(comp, request)) {
-                c.put(comp.getName(), comp.toJSON());
+            JSONObject c = new JSONObject();
+            o.put("components", c);
+            for(ConfiguredComponent comp: components) {
+                if(Authorizations.isConfiguredComponentAuthorized(comp, request)) {
+                    c.put(comp.getName(), comp.toJSON());
+                }
             }
         }
 
         return o.toString(4);
     }
     
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request) throws JSONException {
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags) throws JSONException {
         JSONObject o = l.toJSONObject(false, this, request);
         o.put("background", l.isBackground() || parentIsBackground);
-        levels.put(l.getId().toString(), o);
+        String levelId= l.getId().toString();
+        if (validXmlTags){
+            levelId="level_"+levelId;
+        }
+        levels.put(levelId, o);
         
         if(l.getSelectedIndex() != null) {
             selectedContent.add(l);
@@ -411,7 +424,11 @@ public class Application {
             JSONObject p = al.toJSONObject();
             p.put("background", l.isBackground() || parentIsBackground);
             p.put("editAuthorized", Authorizations.isAppLayerWriteAuthorized(this, al, request));
-            appLayers.put(al.getId().toString(), p);
+            String alId = al.getId().toString();
+            if (validXmlTags){
+                alId="appLayer_"+alId;
+            }
+            appLayers.put(alId, p);
             
             if(al.getSelectedIndex() != null) {
                 selectedContent.add(al);
@@ -424,8 +441,12 @@ public class Application {
             o.put("children", jsonChildren);
             for(Level child: children) {
                 if (Authorizations.isLevelReadAuthorized(this, child, request)){
-                    jsonChildren.put(child.getId().toString());
-                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request);
+                    String childId = child.getId().toString();
+                    if (validXmlTags){
+                        childId="level_"+childId;
+                    }
+                    jsonChildren.put(childId);
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request,validXmlTags);
                 }
             }
         }

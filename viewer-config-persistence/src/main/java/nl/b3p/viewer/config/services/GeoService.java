@@ -338,37 +338,40 @@ public abstract class GeoService {
         }
     }
     
-    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude) throws JSONException {
+    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("name", name);
         o.put("url", url);
         o.put("protocol", getProtocol());
         
-        JSONObject jStyleLibraries = new JSONObject();
-        for(StyleLibrary sld: getStyleLibraries()) {
-            JSONObject jsld = new JSONObject();
-            jStyleLibraries.put("sld:" + sld.getId(),jsld);
-            jsld.put("id", sld.getId());
-            jsld.put("title", sld.getTitle());
-            jsld.put("default", sld.isDefaultStyle());
-            if(sld.isDefaultStyle()) {
-                o.put("defaultStyleLibrary", jsld);
+        if (!validXmlTags){
+            JSONObject jStyleLibraries = new JSONObject();
+            for(StyleLibrary sld: getStyleLibraries()) {
+                JSONObject jsld = new JSONObject();
+                String styleName=sld.getId().toString();                
+                jStyleLibraries.put("sld:" +styleName ,jsld);
+                jsld.put("id", sld.getId());
+                jsld.put("title", sld.getTitle());
+                jsld.put("default", sld.isDefaultStyle());
+                if(sld.isDefaultStyle()) {
+                    o.put("defaultStyleLibrary", jsld);
+                }
+                if(sld.getExternalUrl() != null) {
+                    jsld.put("externalUrl", sld.getExternalUrl());
+                } 
+                JSONObject userStylesPerNamedLayer = new JSONObject();
+                if(sld.getNamedLayerUserStylesJson() != null) {
+                    userStylesPerNamedLayer = new JSONObject(sld.getNamedLayerUserStylesJson());
+                }
+                jsld.put("userStylesPerNamedLayer", userStylesPerNamedLayer);
+                if(sld.getExtraLegendParameters() != null) {
+                    jsld.put("extraLegendParameters", sld.getExtraLegendParameters());
+                }
+                jsld.put("hasBody", sld.getExternalUrl() == null);
             }
-            if(sld.getExternalUrl() != null) {
-                jsld.put("externalUrl", sld.getExternalUrl());
-            } 
-            JSONObject userStylesPerNamedLayer = new JSONObject();
-            if(sld.getNamedLayerUserStylesJson() != null) {
-                userStylesPerNamedLayer = new JSONObject(sld.getNamedLayerUserStylesJson());
-            }
-            jsld.put("userStylesPerNamedLayer", userStylesPerNamedLayer);
-            if(sld.getExtraLegendParameters() != null) {
-                jsld.put("extraLegendParameters", sld.getExtraLegendParameters());
-            }
-            jsld.put("hasBody", sld.getExternalUrl() == null);
+            o.put("styleLibraries", jStyleLibraries);
         }
-        o.put("styleLibraries", jStyleLibraries);
         
         if(topLayer != null) {
             
@@ -388,7 +391,7 @@ public abstract class GeoService {
 
             JSONObject layers = new JSONObject();
             o.put("layers", layers);
-            walkLayerJSONFlatten(topLayer, layers, layersToInclude);
+            walkLayerJSONFlatten(topLayer, layers, layersToInclude,validXmlTags);
             
             if(includeLayerTree) {
                 o.put("topLayer", walkLayerJSONTree(topLayer));
@@ -398,7 +401,7 @@ public abstract class GeoService {
         return o;
     }
     
-    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude) throws JSONException {
+    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude,boolean validXmlTags) throws JSONException {
 
         /* TODO check readers (and include readers in n+1 prevention query */
         
@@ -409,12 +412,18 @@ public abstract class GeoService {
 
         if(layersToInclude == null || layersToInclude.contains(l.getName())) {
             if(!l.isVirtual() && l.getName() != null && !layers.has(l.getName())) {
-                layers.put(l.getName(), l.toJSONObject());
+                String name = l.getName();
+                if (validXmlTags){
+                    /*name="layer_"+name;
+                    name=name.replaceAll(" ", "_");*/
+                    name="layer"+layers.length();
+                }
+                layers.put(name, l.toJSONObject());
             }
         }
 
         for(Layer child: l.getCachedChildren()) {                
-            walkLayerJSONFlatten(child, layers, layersToInclude);
+            walkLayerJSONFlatten(child, layers, layersToInclude,validXmlTags);
         }
     }
     
@@ -433,7 +442,7 @@ public abstract class GeoService {
     }
     
     public JSONObject toJSONObject(boolean includeLayerTree) throws JSONException {
-        return toJSONObject(includeLayerTree, null);
+        return toJSONObject(includeLayerTree, null,false);
     }
     
     /**

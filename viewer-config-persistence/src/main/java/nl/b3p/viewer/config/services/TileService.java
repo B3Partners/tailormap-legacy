@@ -136,8 +136,8 @@ public class TileService extends GeoService {
     }
     
     @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude);
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags);
         if(tilingProtocol != null) {
             o.put("tilingProtocol", tilingProtocol);
         }

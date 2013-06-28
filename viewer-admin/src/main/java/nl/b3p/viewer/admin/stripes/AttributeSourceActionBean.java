@@ -86,6 +86,13 @@ public class AttributeSourceActionBean implements ActionBean {
 
     private boolean updatable;
     
+    //for updatable reporting
+    @Validate
+    private Map<UpdateResult.Status,List<SimpleFeatureType>> changedFeatureTypes;
+    @Validate
+    private Long changedFeatureSourceId;
+    
+    
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
@@ -220,7 +227,15 @@ public class AttributeSourceActionBean implements ActionBean {
         log.info("New featuretypes: " + byStatus.get(UpdateResult.Status.NEW));
         log.info("Missing featuretypes: " + byStatus.get(UpdateResult.Status.MISSING));
         
-        getContext().getMessages().add(new SimpleMessage("De attribuutbron is geupdate"));
+        this.changedFeatureTypes = result.getFeatureTypeByStatus();
+        this.changedFeatureSourceId = featureSource.getId();
+        
+        getContext().getMessages().add(new SimpleMessage(String.format("De attribuutbron is geupdate. Er is/zijn %d featuretypes gewijzigd, %d ongewijzigd, %d nieuw en %d verwijderd",
+            byStatus.get(UpdateResult.Status.UPDATED).size(),
+            byStatus.get(UpdateResult.Status.UNMODIFIED).size(),
+            byStatus.get(UpdateResult.Status.NEW).size(),
+            byStatus.get(UpdateResult.Status.MISSING).size()
+        )));
         
         Stripersist.getEntityManager().persist(featureSource);
         Stripersist.getEntityManager().getTransaction().commit();
@@ -383,8 +398,7 @@ public class AttributeSourceActionBean implements ActionBean {
     @Before
     public void setUpdatable() {
         updatable = featureSource instanceof UpdatableFeatureSource;
-    }
-       
+    }       
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public void setContext(ActionBeanContext context) {
@@ -547,5 +561,21 @@ public class AttributeSourceActionBean implements ActionBean {
         this.updatable = updatable;
     }
     
+    public Map<UpdateResult.Status,List<SimpleFeatureType>> getChangedFeatureTypes() {
+        return changedFeatureTypes;
+    }
+
+    public void setChangedFeatureTypes(Map<UpdateResult.Status,List<SimpleFeatureType>> changedFeatureTypes) {
+        this.changedFeatureTypes = changedFeatureTypes;
+    }
+    
+    public Long getChangedFeatureSourceId() {
+        return changedFeatureSourceId;
+    }
+
+    public void setChangedFeatureSourceId(Long changedFeatureSourceId) {
+        this.changedFeatureSourceId = changedFeatureSourceId;
+    }
     //</editor-fold>
+
 }
