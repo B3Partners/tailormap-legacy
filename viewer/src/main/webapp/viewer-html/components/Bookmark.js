@@ -39,9 +39,11 @@ Ext.define ("viewer.components.Bookmark",{
         shareText: "I'd like to share this with #FlamingoMC: ",
         shareTitle: "Sharing"
     },
-    constructor: function (conf){        
+    constructor: function (conf){ 
+        if(!Ext.isDefined(conf.details.height)) conf.details.height = 200; 
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+       
         imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/"
         this.shareUrls ={
             email: "mailto:username@example.com?subject=[title]&body=[text]%20[url]",
