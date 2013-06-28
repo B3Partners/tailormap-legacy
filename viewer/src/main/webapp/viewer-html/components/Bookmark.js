@@ -24,6 +24,7 @@ Ext.define ("viewer.components.Bookmark",{
     url: "",
     compUrl: "",
     baseUrl: "",
+    shareUrls: null,
     config:{
         title: null,
         titlebarIcon: null,
@@ -33,13 +34,25 @@ Ext.define ("viewer.components.Bookmark",{
         shareTwitter: false,
         shareLinkedIn: false,
         shareGooglePlus: false,
-        shareFacebook: false
+        shareFacebook: false,
+        shareText: "I'd like to share this with #FlamingoMC: ",
+        shareTitle: "Sharing"
     },
     constructor: function (conf){        
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        
+        this.shareUrls ={
+            email: "mailto:username@example.com?subject=[title]&body=[text]%20[url]",
+            twitter: "http://twitter.com/share?url=[url]&text=[text]",
+            linkedin: "http://www.linkedin.com/shareArticle?mini=true&url=[url]&summary=[text]&title=[title]",
+            googleplus: "https://plus.google.com/share?url=[url]&text=[text]",
+            facebook: "https://www.facebook.com/sharer.php?u=[url]&t=[text]"
+        }
+        
         this.renderButton();
         this.loadWindow();
+        
         return this;
     },
     renderButton: function() {
@@ -55,6 +68,79 @@ Ext.define ("viewer.components.Bookmark",{
         });
     },
     loadWindow : function(){
+        var socialButtons=[];
+        if(this.shareEmail){
+            socialButtons.push({
+                xtype: 'button',                
+                margin: '10px 0px 0px 10px',
+                text: 'Email',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: function(){
+                            this.share(this.shareUrls["email"]);
+                        }
+                    }
+                }            
+            });
+        }if (this.shareTwitter){ 
+            socialButtons.push({
+                xtype: 'button',                
+                margin: '10px 0px 0px 10px',
+                text: 'Twitter',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: function(){
+                            this.share(this.shareUrls["twitter"]);
+                        }
+                    }
+                }            
+            });
+        }if (this.shareLinkedIn){
+            socialButtons.push({
+                xtype: 'button',                
+                margin: '10px 0px 0px 10px',
+                text: 'LinkedIn',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: function(){
+                            this.share(this.shareUrls["linkedin"]);
+                        }
+                    }
+                }            
+            });
+        }if (this.shareGooglePlus){
+            socialButtons.push({
+                xtype: 'button',                
+                margin: '10px 0px 0px 10px',
+                text: 'Google+',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: function(){
+                            this.share(this.shareUrls["googleplus"]);
+                        }
+                    }
+                }            
+            });           
+        }if (this.shareFacebook){
+            socialButtons.push({
+                xtype: 'button',                
+                margin: '10px 0px 0px 10px',
+                text: 'Facebook',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: function(){
+                            this.share(this.shareUrls["facebook"]);
+                        }
+                    }
+                }            
+            });
+        }
+        
         this.form = new Ext.form.FormPanel({
             frame: false,
             border: 0,
@@ -74,6 +160,12 @@ Ext.define ("viewer.components.Bookmark",{
                 name: 'compactlink',
                 anchor: '100%',
                 id: 'compactlink'
+            },{
+                xtype: 'container',
+                layout: {
+                    type: 'hbox'
+                },
+                items: socialButtons
             },{ 
                 xtype: 'button',
                 componentCls: 'mobileLarge',
@@ -161,6 +253,24 @@ Ext.define ("viewer.components.Bookmark",{
         }else if(Ext.safariVersion != 0){
             alert("This browser doesn't support this function.");
         }
+    },
+    share: function (shareUrl){
+        var url = ""+shareUrl;
+        var bookmarkUrl = this.compUrl;
+        if (!bookmarkUrl || bookmarkUrl == ""){
+            bookmarkUrl=this.url;
+        }
+        if (url.indexOf("[url]")!=-1){
+            url=url.replace("[url]",encodeURIComponent(bookmarkUrl));
+        }
+        if (url.indexOf("[text]")!=-1){
+            url = url.replace("[text]",encodeURIComponent(this.shareText));
+        }
+        if (url.indexOf("[title]")!=-1){
+            url = url.replace("[title]",encodeURIComponent(this.shareTitle));
+        }
+        console.log(url);
+        window.open(url);
     },
     getExtComponents: function() {
         return [ this.form.getId() ];
