@@ -86,12 +86,6 @@
             <artifactId>web-commons</artifactId>
             <version>4.2.1-SNAPSHOT</version>
         </dependency>
-        <!-- apache POI -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.9</version>
-        </dependency>
         <!-- nl b3p csw-->
         <dependency>
             <groupId>nl.b3p</groupId>
