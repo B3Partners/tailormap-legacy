@@ -225,7 +225,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                     url+="changedFeatureTypes="+Ext.JSON.encode(changedFeatureTypes);                
                     url += "&featureSource="+changedFeatureSource;
-                    window.open(url);
+                    window.location.href=url;
                 }
             }
             var serviceUsageMatrixUrl='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/>';
