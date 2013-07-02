@@ -57,7 +57,12 @@
             <artifactId>gt-epsg-hsql</artifactId>
             <version>${geotools.version}</version>
             <type>jar</type>
-        </dependency>         
+        </dependency>
+        <dependency>
+            <groupId>com.google.javascript</groupId>
+            <artifactId>closure-compiler</artifactId>
+            <version>rr2079.1</version>
+        </dependency> 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -67,7 +72,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>1.0</version>
+            <version>20090211</version>
             <type>jar</type>
         </dependency>
     </dependencies>
