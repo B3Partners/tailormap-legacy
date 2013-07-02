@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -124,6 +123,7 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         //make xml
         String rawXml = org.json.XML.toString(root);
         
+        
         this.xml = transformXml(rawXml);
         return new ForwardResolution(JSP);
         
@@ -223,5 +223,4 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         
         return writer.toString();
     }
-
 }

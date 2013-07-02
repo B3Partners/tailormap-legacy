@@ -301,7 +301,7 @@ public class AttributeActionBean implements ActionBean {
             c2.createAlias("attributes", "attr");
             c2.setProjection(Projections.property("attr.id"));
 
-            c.add(Property.forName("id").in(c2));
+            c.add(org.hibernate.criterion.Property.forName("id").in(c2));
         }
         int rowCount = c.list().size();
         

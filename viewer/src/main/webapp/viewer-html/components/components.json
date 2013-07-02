@@ -1,4 +1,3 @@
-[
 /* JSON metadata describing components for viewer and viewer-admin webapps
  * 
  * Parameters:
@@ -30,7 +29,7 @@
  *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
  *
  */
-
+[
     {
         className: "viewer.mapcomponents.FlamingoMap",
         name: "Flamingo Map",
@@ -44,7 +43,6 @@
             source: {resolutions: "", movetime: "", movesteps: ""}
         }
     },
-
     {
         className: "viewer.mapcomponents.OpenLayersMap",
         name: "OpenLayers Map",
@@ -60,7 +58,7 @@
             },
             source: {
                 resolutions: "",
-                theme: "flamingo",
+                theme: "flamingo"
             }
         }
     },
@@ -341,7 +339,7 @@
         sources: ["TOC.js"],
         configSource: ["ConfigObject.js","TOC-config.js"],
         singleton: true,
-        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"],
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"]
     },
     {
         className: "viewer.components.tools.GoogleNavigation",
@@ -520,13 +518,13 @@
                 loadingText: "Laad tekst",
                 left: "Positie vanaf links",
                 top: "Positie vanaf boven",
-                timeout: "Timeout in milliseconden (alleen OpenLayers)",
+                timeout: "Timeout in milliseconden (alleen OpenLayers)"
             },
             source: {
                 loadingText: "Bezig met laden...[percentage]%",
                 left: "20",
                 top: "100",
-                timeout: "6000",
+                timeout: "6000"
             }
         }             
     },
@@ -548,7 +546,7 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
-        singleton: true,        
+        singleton: true
     },
     {
         className: "viewer.components.Drawing",
@@ -558,7 +556,7 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Drawing-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
-        singleton: true,        
+        singleton: true
     },
     {
         className: "viewer.components.DataSelection",
@@ -688,5 +686,5 @@
         closureCompilerSafe: true,
         singleton: false,
         restrictions: ["left_menu"]
-    },
+    }
 ]

@@ -16,10 +16,13 @@
  */
 package nl.b3p.viewer.components;
 
+import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 import javax.servlet.ServletContext;
 import org.apache.commons.io.IOUtils;
@@ -61,8 +64,33 @@ public class ComponentRegistry {
         for(String file: files) {
             String filename = path + File.separator + file;
             try {
-                String contents = IOUtils.toString(new FileInputStream(filename), "UTF-8");
+                String contents = "";
+                
+                Compiler compiler = new Compiler();
+                CompilerOptions options = new CompilerOptions();
+                CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
+                options.setOutputCharset("UTF-8");
+                
+                compiler.compile(JSSourceFile.fromCode("dummy.js",""), JSSourceFile.fromFile(filename, Charset.forName("UTF-8")), options);
+                
+                if(compiler.hasErrors()) {
+                    log.warn(compiler.getErrorCount() + " error(s) minifying source file " + filename + "; using original source");
+                    contents = IOUtils.toString(new FileInputStream(filename), "UTF-8");
 
+                    for(int i = 0; i < compiler.getErrorCount(); i++) {
+                        JSError error = compiler.getErrors()[i];
+                        String er = String.format("#%d line %d,%d: %s: %s",
+                                i+1,
+                                error.lineNumber,
+                                error.getCharno(),
+                                error.level.toString(),
+                                error.description);
+                        log.warn(er);
+                    }
+
+                } else {
+                    contents = compiler.toSource();
+                }
                 try {
                     JSONObject componentMetadata = new JSONObject(contents);
 
