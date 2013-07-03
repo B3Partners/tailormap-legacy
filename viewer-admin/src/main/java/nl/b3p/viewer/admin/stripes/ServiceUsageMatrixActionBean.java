@@ -272,8 +272,7 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         
         XSSFWorkbook workbook = new XSSFWorkbook();
         String tempProperty=null;
-        try{
-            Element root = doc.getDocumentElement();
+        try{            Element root = doc.getDocumentElement();
             /* JSTL XML is setting the system property to use the jstl xpath facotry.
              * Remove the setting temporary:
              * see: https://java.net/jira/browse/JSTL-1
@@ -299,15 +298,21 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
             XPathExpression exprProtocol = xpath.compile("protocol/text()");
             XPathExpression exprUrl = xpath.compile("url/text()");
 
-            
             XSSFSheet sheet = workbook.createSheet("Sheet 1");        
-
+            int rowNum=0;
+            
+            Row head = sheet.createRow(rowNum++);
+            String[] headValues = {"Bron","Featuretype","Applicatie","Layernaam van service","Application layer (kaart)"};            
+            for (int c = 0; c < headValues.length; c++){                
+                Cell cell = head.createCell(c);
+                cell.setCellValue(headValues[c]);
+            }
             List<String> columns=  new ArrayList<String>();
-            for (int i=0; i < 5; i++){
+            for (int i=0; i < headValues.length; i++){
                 columns.add("");
             } 
             NodeList featureSources = (NodeList) exprFeatureSource.evaluate(root,XPathConstants.NODESET);
-            int rowNum=0;
+            
             for (int fs=0; fs < featureSources.getLength(); fs++){
                 Node featureSource = featureSources.item(fs);
 
