@@ -80,11 +80,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     }
                 }
             }
-            
+            function exportXsl(){
+                var url=<js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/></js:quote>
+                url+="?output_format=XSL";
+                <c:if test="${not empty actionBean.featureSource}">
+                    url+="&featureSource=${actionBean.featureSource.id}";
+                </c:if>
+                window.open(url);
+            }
             Ext.onReady(checkChanged);
         </script>
         <div id="content">
-            <h1>Service Usage Matrix</h1><br/>            
+            <h1>Service Usage Matrix</h1><br/>   
+            <a href="javascript: void(0)" onclick="exportXsl()">Exporteer als Excel document</a><br>
             <x:parse xml="${actionBean.xml}" var="doc"/>
             <x:forEach select="$doc/root/featureSources/featureSource" var="featureSource">
                 <div class="usageMatrixFeatureSource">
