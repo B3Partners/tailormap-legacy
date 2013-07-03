@@ -97,19 +97,21 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     }
                 ]
-            },,{
+            },{
                 xtype: 'textfield',
                 fieldLabel: 'Default \'deel tekst\' titel',
                 name: 'shareTitle',
                 value: this.configObject.shareTitle != undefined ? this.configObject.shareTitle : "Sharing",
-                labelWidth:this.labelWidth
+                labelWidth:this.labelWidth,
+                width: 700
             },{
                 xtype: 'textareafield',
                 fieldLabel: 'Default \'deel tekst\'',
                 name: 'shareText',
                 grow: true,
                 value: this.configObject.shareText != undefined ? this.configObject.shareText : "I'd like to share this with #FlamingoMC: ",
-                labelWidth:this.labelWidth
+                labelWidth:this.labelWidth,
+                width: 700
             }
         ]);
     }
