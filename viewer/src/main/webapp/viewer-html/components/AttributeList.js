@@ -193,7 +193,17 @@ Ext.define ("viewer.components.AttributeList",{
         if (appLayer.filter){
             filter=appLayer.filter.getCQL();
         }
-        this.createGrid("main",document.getElementById(this.name + 'Container'), appLayer, null, filter,true,true);
+        //check if rowExpander is needed.
+        var showExpand=false;
+        if (appLayer.relations){
+            for (var i =0; i < appLayer.relations.length; i++){
+                if ("relate" === appLayer.relations[0].type.toLowerCase()){
+                    showExpand=true;
+                    break;
+                }
+            }
+        }                
+        this.createGrid("main",document.getElementById(this.name + 'Container'), appLayer, null, filter,true,showExpand);
     },
     onExpandRow: function(rowNode,record,expandRow,eOpts){
         var store=record.store;
