@@ -96,7 +96,7 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
             
     @DefaultHandler
     public Resolution view() throws JSONException, TransformerConfigurationException, TransformerException, Exception {
-        List<Application> applications = Stripersist.getEntityManager().createQuery("FROM Application").getResultList();
+        List<Application> applications = Stripersist.getEntityManager().createQuery("FROM Application order by name,version").getResultList();
         JSONArray jsonApps = new JSONArray();
         for (Application app: applications){
             JSONObject json = new JSONObject(app.toJSON(this.context.getRequest(),true,true));
