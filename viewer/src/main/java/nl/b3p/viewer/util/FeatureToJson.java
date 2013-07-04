@@ -97,6 +97,12 @@ public class FeatureToJson {
         if (sort!=null){
             setSortBy(q, propertyNames, sort, dir);
         }
+        /*use the first property as sort field, otherwise geotools while give a error when quering
+         * a JDBC featureType without a primary key.
+         */
+        else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()){
+            setSortBy(q, propertyNames.get(0),dir);
+        }
         FeatureIterator<SimpleFeature> it = null;
         JSONArray features = new JSONArray();
         try{                        
@@ -109,7 +115,9 @@ public class FeatureToJson {
                 }
             }
         }finally{
-            it.close();
+            if (it!=null){
+                it.close();
+            }
             fs.getDataStore().dispose();
         }
         return features;
@@ -264,11 +272,13 @@ public class FeatureToJson {
         }
     }   
     /**
-     * Set sort order
+     * Set sort in query based on the index of the propertynames list.
+     * @param q the query on which the sort is added
+     * @param propertyNames a list of propertynames for this featuretype
+     * @param sort a Stringified integer. The index of the propertyname
+     * @param dir sorting direction DESC or ASC
      */
     private void setSortBy(Query q, List<String> propertyNames, String sort, String dir) {
-        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
-        
         if(sort != null) {
 
             String sortAttribute = null;
@@ -279,18 +289,31 @@ public class FeatureToJson {
                 for(String name: propertyNames) {
                     if(j == i) {
                         sortAttribute = name;
+                        break;
                     }
                     j++;
                 }
             } else {
                 sortAttribute = sort;
             }
-            if(sortAttribute != null) {
-                q.setSortBy(new SortBy[] {
-                    ff2.sort(sortAttribute, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
-                });
-            }
+            this.setSortBy(q,sortAttribute,dir);
         }                
+    }
+    /**
+     * Set sort on query
+     * @param q the query on which the sort is added
+     * @param sort the name of the sort column
+     * @param dir sorting direction DESC or ASC
+     */
+    private void setSortBy(Query q,String sort, String dir){
+        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
+        
+        if(sort != null) {
+            q.setSortBy(new SortBy[] {
+                ff2.sort(sort, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
+            });
+        }
+        
     }
     
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
