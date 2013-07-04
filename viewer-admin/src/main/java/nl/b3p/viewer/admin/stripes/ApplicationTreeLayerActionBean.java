@@ -154,7 +154,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             // possible.
             // New Attributes from a join or related featureType are added at the 
             //end of the list.                                  
-            attributesToRetain = rebuildAttributes(sft);
+            attributesToRetain = rebuildAttributes(sft,true);
             
             // JSON info about attributed required for editing
             makeAttributeJSONArray(layer.getFeatureType());  
@@ -201,7 +201,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return new ForwardResolution(JSP);
     }
     
-    private List<String> rebuildAttributes(SimpleFeatureType sft) {
+    private List<String> rebuildAttributes(SimpleFeatureType sft, boolean defaultVisible) {
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
         List<String> attributesToRetain = new ArrayList<String>();
         for(AttributeDescriptor ad: sft.getAttributes()) {
@@ -222,7 +222,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             if(applicationLayer.getAttribute(sft,name) == null) {
                 ConfiguredAttribute ca = new ConfiguredAttribute();
                 // default visible if not geometry type
-                ca.setVisible(! AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType()));
+                //boolean = !AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType());
+                if (defaultVisible && AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
+                    defaultVisible=false;
+                }
+                ca.setVisible(defaultVisible);
                 ca.setAttributeName(name);
                 ca.setFeatureType(sft);
                 applicationLayer.getAttributes().add(ca);                        
@@ -240,7 +244,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         }
         if (sft.getRelations()!=null){
             for (FeatureTypeRelation rel : sft.getRelations()){
-                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType()));
+                //related attributes are not default checked.
+                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType(),false));
             }
         }
         return attributesToRetain;
