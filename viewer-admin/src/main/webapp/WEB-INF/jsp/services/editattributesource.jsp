@@ -76,6 +76,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <c:if test="${!actionBean.updatable}">
                         * Attribuutbron kan hier niet worden geupdate. Wegens de directe link tussen service en attribuutbron, dient u voor de ArcGIS en ArcIMS protocollen de bijhorende service te updaten.
                     </c:if>
+                    <c:if test="${actionBean.featureSource.id != null}">
+                        <br> <a href="javascript: void(0)" onclick='openServiceUsageMatrix(<c:out value="${actionBean.featureSource.id}"/>)'>Bekijk in welke applicaties deze service wordt gebruikt</a>
+                    </c:if>
                     <script type="text/javascript">
                         function updateConfirm() {
                             <c:if test="${!actionBean.updatable}">
@@ -205,7 +208,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </script>
                     <stripes:submit name="newAttributeSource" value="Nieuwe attribuutbron"/>
                     <c:if test="${not empty actionBean.changedFeatureTypes}">
-                        <a href="javascript: void(0)" onclick="openServiceUsageMatrix()">Open wijzigingen in Service Gebruiks Matrix</a>
+                        <a href="javascript: void(0)" onclick='openServiceUsageMatrix(<c:out value="${actionBean.changedFeatureSourceId}"/>)'>Open wijzigingen in Service Gebruiks Matrix</a>
                     </c:if>
                 </c:otherwise>
             </c:choose>
@@ -215,21 +218,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent');
             });
-            function openServiceUsageMatrix(){                
-                if (changedFeatureTypes){
-                    var url= ""+serviceUsageMatrixUrl;
+            function openServiceUsageMatrix(featureSourceId){ 
+                var url= ""+serviceUsageMatrixUrl;
+
+                if (changedFeatureTypes.length > 0){
                     if (url.indexOf("?")>0){
                         url+="&";
                     }else{
                         url+="?";
                     }
                     url+="changedFeatureTypes="+Ext.JSON.encode(changedFeatureTypes);                
-                    url += "&featureSource="+changedFeatureSource;
-                    window.location.href=url;
                 }
+                if (featureSourceId){
+                    if (url.indexOf("?")>0){
+                    url+="&";
+                    }else{
+                        url+="?";
+                    }
+                    url += "featureSource="+featureSourceId;
+                }
+                this.parent.window.location.href=url;
             }
             var serviceUsageMatrixUrl='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/>';
-            var changedFeatureSource = "${actionBean.changedFeatureSourceId}";
+            var changedFeatureSource = "";
             var changedFeatureTypes={};
             <c:forEach items="${actionBean.changedFeatureTypes}" var="change">
                 changedFeatureTypes["${change.key}"]= [];
