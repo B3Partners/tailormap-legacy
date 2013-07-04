@@ -154,7 +154,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             // possible.
             // New Attributes from a join or related featureType are added at the 
             //end of the list.                                  
-            attributesToRetain = rebuildAttributes(sft,true);
+            attributesToRetain = rebuildAttributes(sft);
             
             // JSON info about attributed required for editing
             makeAttributeJSONArray(layer.getFeatureType());  
@@ -201,7 +201,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return new ForwardResolution(JSP);
     }
     
-    private List<String> rebuildAttributes(SimpleFeatureType sft, boolean defaultVisible) {
+    private List<String> rebuildAttributes(SimpleFeatureType sft) {
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
         List<String> attributesToRetain = new ArrayList<String>();
         for(AttributeDescriptor ad: sft.getAttributes()) {
@@ -222,8 +222,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             if(applicationLayer.getAttribute(sft,name) == null) {
                 ConfiguredAttribute ca = new ConfiguredAttribute();
                 // default visible if not geometry type
-                //boolean = !AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType());
-                if (defaultVisible && AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
+                // and not a attribute of a related featuretype
+                boolean defaultVisible=true;
+                if (layer.getFeatureType().getId()!=sft.getId() || AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
                     defaultVisible=false;
                 }
                 ca.setVisible(defaultVisible);
@@ -237,15 +238,17 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                     if(layer.getFeatureType().getId()!=sft.getId()){
                         message+="gekoppelde ";
                     }
-                    message+="attribuutbron: wordt zichtbaar na opslaan";
+                    message+="attribuutbron";
+                    if(layer.getFeatureType().getId()==sft.getId()){
+                        message+=": wordt zichtbaar na opslaan";
+                    }
                     getContext().getMessages().add(new SimpleMessage(message, name));
                 }
             }                    
         }
         if (sft.getRelations()!=null){
             for (FeatureTypeRelation rel : sft.getRelations()){
-                //related attributes are not default checked.
-                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType(),false));
+                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType()));
             }
         }
         return attributesToRetain;
