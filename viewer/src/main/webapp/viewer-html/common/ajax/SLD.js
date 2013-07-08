@@ -41,10 +41,23 @@ Ext.define("viewer.SLD", {
      * create("mylayer", "default", null, null, null, f, f);
      */
     create: function(layer, style, cqlFilter, featureTypeName, sldId, successFunction, failureFunction) {
+        var params={
+            layer: layer,
+            format: 'json'
+        };
+        if (style!==null){
+            params.style=style;
+        }if(cqlFilter!==null){
+            params.filter=cqlFilter;
+        }if (featureTypeName!==null){
+            params.featureTypeName=featureTypeName;
+        }if (sldId!==null){
+            params.id=sldId;
+        }
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {layer: layer, style: style, filter: cqlFilter, featureTypeName: featureTypeName, id: sldId, format: 'json'}, 
+            params: params,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
