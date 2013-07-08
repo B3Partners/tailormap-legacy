@@ -79,11 +79,16 @@ Ext.define("viewer.SLD", {
     
     createURL: function(layer, style, cqlFilter, featureTypeName, sldId) {
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
-        url = Ext.urlAppend(url, "layer=" + layer);
-        url = Ext.urlAppend(url, "style=" + style);
-        url = Ext.urlAppend(url, "filter=" + cqlFilter);
-        url = Ext.urlAppend(url, "featureTypeName=" + featureTypeName);
-        url = Ext.urlAppend(url, "id=" + sldId);
+            url = Ext.urlAppend(url, "layer=" + layer);
+        if (style!==null){
+            url = Ext.urlAppend(url, "style=" + style);
+        }if(cqlFilter!==null){
+            url = Ext.urlAppend(url, "filter=" + cqlFilter);
+        }if (featureTypeName!==null){
+            url = Ext.urlAppend(url, "featureTypeName=" + featureTypeName);
+        }if (sldId!==null){
+            url = Ext.urlAppend(url, "id=" + sldId);
+        }
         url = Ext.urlAppend(url, "format=xml");
         return url;
     }
