@@ -168,17 +168,27 @@ public class Layer implements Cloneable {
          */        
         if (minScale==null && maxScale ==null){
             minScale = l.getScaleHintMin();
+            maxScale = l.getScaleHintMax();
             if (Double.isNaN(minScale)){
                 minScale=null;
-            }else{
-                minScale = Math.sqrt(minScale*minScale/2);
             }
-            
-            maxScale = l.getScaleHintMax();
             if (Double.isNaN(maxScale)){
                 maxScale=null;
-            }else{
-                maxScale = Math.sqrt(maxScale*maxScale/2);
+            }
+            if (minScale!=null && maxScale!=null){
+                /*
+                 * In GeoServer 2.2.3 > the scalehint is not the resolution(in units per pixel) but is the
+                 * scaledenominator. So no need to calculate the pixel width/height from the diagonal.
+                 * Dirty fix... Check if minScale < 750(large resolution) or maxScale < 5000 (very large resolution)
+                 */
+                if (minScale < 750 && maxScale < 5000){
+                    /*
+                     * Scalehint indicates the diagonal size of a pixel in map units, to calculate
+                     * the scale use Pythagorean theorem
+                     */
+                    minScale = Math.sqrt(minScale*minScale/2);
+                    maxScale = Math.sqrt(maxScale*maxScale/2);
+                }
             }
         }
 

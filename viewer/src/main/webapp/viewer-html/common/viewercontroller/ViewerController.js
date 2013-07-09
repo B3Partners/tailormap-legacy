@@ -921,17 +921,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if (!minScale && !maxScale){
             return 0;
         }        
+        
         //if scale empty, get from map
         if (scale==undefined || scale==null){
             scale = this.mapComponent.getMap().getScale();
         }
         
-        //ArcGis doesn't give the scale in pixel per unit, calculate the 'ArcGis scale'
+        
         var service=this.app.services[appLayer.serviceId];
-        if (service && service.protocol == "arcgis"){            
-            //scale * (dpi / ratio dpi to dpm)
-            scale = scale * (96/0.0254);
-        }        
+        //fix some things with scale and resolution differences in servers:
+        var scaleCorrection = this.calculateScaleCorrection(service,minScale,maxScale);
+        scale = scale * scaleCorrection;        
+        
         if (minScale && scale < minScale){
             return 1;            
         }
@@ -955,13 +956,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     zoomToLayer: function (appLayer){
         var compare = this.compareToScale(appLayer);
         var serviceLayer=this.getServiceLayer(appLayer);
-        var serviceScaleCorrection = 1;        
-        //ArcGis doesn't give the scale in pixel per unit, calculate the 'ArcGis scale'        
-        var service=this.app.services[appLayer.serviceId];
-        if (service && service.protocol == "arcgis"){            
-            //scale * (dpi / ratio dpi to dpm)
-            serviceScaleCorrection= 96/0.0254;
-        } 
+        var serviceScaleCorrection = 1;                
+        var service=this.app.services[appLayer.serviceId];        
+        
+        //fix some things with scale and resolution differences in servers:
+        serviceScaleCorrection = 1 / this.calculateScaleCorrection(service,serviceLayer.minScale,serviceLayer.maxScale);
         var mapResolutions = this.mapComponent.getMap().getResolutions();
         if (compare==-1){
             var res =serviceLayer.maxScale*serviceScaleCorrection;
@@ -987,6 +986,28 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.getMap().zoomToResolution(res);
         }
     },
+    /**
+     * Fixes the different implementation of scalehint and scaledenominator in services
+     * - ArcGis doesn't give the scale in pixel per unit, calculate the 'ArcGis scale'  
+     * -Geoserver 2.2.3 doesn't return units per pixel (resolution) in the scalehint but the scale.
+        Dirty fix. When min/max scale (resolution) is larger then 750 it's propberly a scaledenominator.
+        Then transform the resolution of the map to a scaledenominator      
+        @return {number} The correction needed to go from resolution to scaledenominator.So:
+            resolution * returnValue = scaledenominator
+     */
+     calculateScaleCorrection: function (service,minScale,maxScale){
+        if (service && service.protocol === "arcgis"){            
+            //scale * (dpi / ratio dpi to dpm)
+            return 96/0.0254;
+        }
+        //return correction for scaledenominator
+        else if (minScale > 1000 || 
+                ((minScale === undefined || minScale ===0 )&& maxScale > 5000)){
+            return 1/0.00028;
+        }
+        //no need for changes
+        return 1;
+     },
     /**
      * Get the Layer Legend image. Superseded by getLayerLegendInfo()
      * @param appLayer the applayer
