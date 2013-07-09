@@ -83,6 +83,7 @@ Ext.define ("viewer.components.TOC",{
         });
         
         store.addListener("beforeexpand",this.beforeExpand, this);
+        store.addListener("expand",this.onExpand,this);
         
         var title = "";
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;        
@@ -312,13 +313,19 @@ Ext.define ("viewer.components.TOC",{
         this.qtips.push(qtip);
     },
     registerQtips : function (){
+        var newQtips = [];
         for (var i = 0; i < this.qtips.length; i++) {
             var qtip = this.qtips[i];
-            Ext.tip.QuickTipManager.register({
-                target: qtip.target,
-                text: qtip.text
-            });
+            if (document.getElementById(qtip.target)){
+                Ext.tip.QuickTipManager.register({
+                    target: qtip.target,
+                    text: qtip.text
+                });
+            }else{
+                newQtips.push(qtip);
+            }
         }
+        this.qtips=newQtips;
     },
     // Fix for not expanding backgroundlayers: not expandable nodes don't have expand button, but doubleclick does expand
     beforeExpand : function (node){
@@ -326,6 +333,19 @@ Ext.define ("viewer.components.TOC",{
             return false;
         }else{
             return true;
+        }
+    },
+    /**
+     * Is called when a node is expanding.
+     * Call register quickTips after a small timeout to make sure the element is 
+     * created in the DOM
+     */
+    onExpand: function(node){
+        if (this.qtips.length > 0){
+            var me = this;
+            setTimeout(function(){
+                me.registerQtips();
+            },500);
         }
     },
     insertLayer : function (config){
