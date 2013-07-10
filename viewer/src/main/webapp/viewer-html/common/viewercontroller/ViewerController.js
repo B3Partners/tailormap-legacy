@@ -978,7 +978,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (mapResolutions!=null){
                 for (var i =0 ; i < mapResolutions.length; i++){
                     if (res > mapResolutions[i]){
-                        res = mapResolutions[i-1];
+                        if (i==0){
+                            res= mapResolutions[i];
+                        }else{
+                            res = mapResolutions[i-1];
+                        }
                         break;
                     }
                 }
@@ -1000,8 +1004,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             //scale * (dpi / ratio dpi to dpm)
             return 96/0.0254;
         }
+        //Chose arbitrary values 750 minscale and 5000 maxscale
         //return correction for scaledenominator
-        else if (minScale > 1000 || 
+        else if (minScale > 750 || 
                 ((minScale === undefined || minScale ===0 )&& maxScale > 5000)){
             return 1/0.00028;
         }
