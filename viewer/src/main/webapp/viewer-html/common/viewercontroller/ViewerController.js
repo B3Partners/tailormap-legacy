@@ -1158,9 +1158,32 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         appLayer.filter.addOrReplace(filter);
         
         var mapLayer = this.getLayer(appLayer);
-        mapLayer.setQuery(appLayer.filter);
         
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+        if (appLayer.relations && appLayer.relations.length > 0){
+            var me = this;
+            var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
+            //alert("do reformat filter!!!");
+            Ext.create("viewer.SLD",{
+                actionbeanUrl : url
+            }).transformFilter(filter.getCQL(),appLayer.id,
+                function(newFilter){
+                    //success
+                    var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper",{
+                        id: "",
+                        cql: newFilter,
+                        operator : ""
+                    });
+                    //cqlBandage.addOrReplace(newFilter);
+                    mapLayer.setQuery(cqlBandage);
+                    me.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,cqlBandage,appLayer);
+                },function(message){
+                    //failure
+                    me.logger.error("Error while transforming SLD for joined/related featuretypes: "+ message);
+                });
+        }else{
+            mapLayer.setQuery(appLayer.filter);
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+        }
     },
     /**
      * Remove a filter from the given applayer

@@ -27,7 +27,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.StyleLibrary;
+import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,6 +78,9 @@ public class SldActionBean implements ActionBean {
     
     @Validate
     private String format;
+    
+    @Validate 
+    private ApplicationLayer applicationLayer;
     
     private byte[] sldXml;
     private StyledLayerDescriptor newSld;
@@ -136,6 +143,14 @@ public class SldActionBean implements ActionBean {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+    
+    public ApplicationLayer getApplicationLayer(){
+        return applicationLayer;
+    }
+    
+    public void setApplicationLayer(ApplicationLayer appLayer){
+        this.applicationLayer=appLayer;
     }
     //</editor-fold>
     
@@ -267,7 +282,7 @@ public class SldActionBean implements ActionBean {
             sldXml = bos.toByteArray();
         }
     }
-    
+    @DefaultHandler
     public Resolution create() throws JSONException, UnsupportedEncodingException {
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
@@ -318,5 +333,37 @@ public class SldActionBean implements ActionBean {
                 return new StreamingResolution("text/xml", new ByteArrayInputStream(sldXml));             
             }
         }
+    }
+    /*
+     * Reformat the filter with the relations of this featureType
+     */
+    public Resolution transformFilter() throws JSONException{
+        JSONObject json = new JSONObject();
+        String error=null;
+        try{
+            json.put("success", Boolean.FALSE);
+            if (filter!=null && applicationLayer!=null){
+                Layer layer = applicationLayer.getService().getLayer(applicationLayer.getLayerName());
+                if (layer==null){
+                    error = "Layer not found";
+                }else{
+                    SimpleFeatureType sft=layer.getFeatureType();
+                    Filter f = CQL.toFilter(filter);
+                    f= FeatureToJson.reformatFilter(f, sft);
+                    json.put("filter",CQL.toCQL(f));                
+                    json.put("success", Boolean.TRUE);
+                }
+                
+            }else{
+                error="No filter to transform or no applicationlayer";
+            }
+        }catch(Exception e){
+            log.error("Error while reformating filter",e);
+            error = e.toString();
+        }
+        if (error!=null){
+            json.put("error",error);
+        }
+        return new StreamingResolution("application/json",new StringReader(json.toString()));
     }
 }
