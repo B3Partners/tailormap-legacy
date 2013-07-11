@@ -54,7 +54,7 @@ import org.opengis.filter.sort.SortOrder;
 
 
 public class FeatureToJson {
-    
+    public static final int MAX_FEATURES = 1000;
     private boolean arrays = false;
     private boolean edit = false;
     private static final int TIMEOUT=5000;
@@ -103,16 +103,30 @@ public class FeatureToJson {
         else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()){
             setSortBy(q, propertyNames.get(0),dir);
         }
+        int start = q.getStartIndex();        
+        boolean offsetSupported = fs.getQueryCapabilities().isOffsetSupported();
+        //if offSet is not supported, get more features (start + the wanted features)
+        if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES){
+            q.setMaxFeatures(q.getMaxFeatures()+start);
+        }
         FeatureIterator<SimpleFeature> it = null;
         JSONArray features = new JSONArray();
         try{                        
             it=fs.getFeatures(q).features();
+            int featureIndex=0;
             while(it.hasNext()){
                 SimpleFeature feature = it.next();
-                JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);                                            
-                if (j!=null){
+                /* if offset not supported and there are more features returned then
+                 * only get the features after index >= start*/  
+                if (offsetSupported || featureIndex >= start){
+                    JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);                                            
+                    if (j!=null){
+                        //make dummy object..
+                        j= new JSONObject();
+                    }
                     features.put(j);
                 }
+                featureIndex++;
             }
         }finally{
             if (it!=null){

@@ -55,8 +55,6 @@ import org.opengis.filter.Filter;
 public class AttributesActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(AttributesActionBean.class);
     
-    private static final int MAX_FEATURES = 1000;
-    
     private ActionBeanContext context;
     
     @Validate
@@ -430,18 +428,24 @@ public class AttributesActionBean implements ActionBean {
                 });
 
                 if(total == -1) {
-                    total = MAX_FEATURES;
+                    total = FeatureToJson.MAX_FEATURES;
                 }
                 
                 q.setStartIndex(start);
-                q.setMaxFeatures(Math.min(limit + (startIndexSupported ? 0 : start),MAX_FEATURES));
+                q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
                 
                 FeatureToJson ftoj = new FeatureToJson(arrays,false);
                 
-                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);                
+                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
+                 
+                if (!startIndexSupported){
+                    if (features.length() < limit){
+                        //the end is reached..... Otherwise there would be a 'limit' number of features
+                        total = start+features.length();
+                    }
+                }
                 json.put("features", features);
             }
-
             json.put("total", total);
         } catch(Exception e) {
             log.error("Error loading features", e);
