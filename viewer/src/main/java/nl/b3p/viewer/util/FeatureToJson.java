@@ -97,13 +97,16 @@ public class FeatureToJson {
         if (sort!=null){
             setSortBy(q, propertyNames, sort, dir);
         }
-        /*use the first property as sort field, otherwise geotools while give a error when quering
+        /* Use the first property as sort field, otherwise geotools while give a error when quering
          * a JDBC featureType without a primary key.
          */
         else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()){
             setSortBy(q, propertyNames.get(0),dir);
         }
-        int start = q.getStartIndex();        
+        Integer start = q.getStartIndex();
+        if (start==null){
+            start=0;
+        }
         boolean offsetSupported = fs.getQueryCapabilities().isOffsetSupported();
         //if offSet is not supported, get more features (start + the wanted features)
         if (!offsetSupported && q.getMaxFeatures() < MAX_FEATURES){
@@ -119,11 +122,7 @@ public class FeatureToJson {
                 /* if offset not supported and there are more features returned then
                  * only get the features after index >= start*/  
                 if (offsetSupported || featureIndex >= start){
-                    JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);                                            
-                    if (j!=null){
-                        //make dummy object..
-                        j= new JSONObject();
-                    }
+                    JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);
                     features.put(j);
                 }
                 featureIndex++;
