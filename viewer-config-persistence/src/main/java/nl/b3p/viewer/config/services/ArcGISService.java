@@ -58,6 +58,9 @@ public class ArcGISService extends GeoService implements Updatable {
     /** GeoService.details map key for ArcGIS currentVersion property */
     public static final String DETAIL_CURRENT_VERSION = "arcgis_currentVersion";    
 
+    /** GeoService.details map key to save assume version to pass on to datastore */
+    public static final String DETAIL_ASSUME_VERSION = "arcgis_assumeVersion";    
+
     /** Layer.details map key for ArcGIS type property */
     public static final String DETAIL_TYPE = "arcgis_type";    
     /** Layer.details map key for ArcGIS description property */
@@ -154,12 +157,14 @@ public class ArcGISService extends GeoService implements Updatable {
     
     private void loadServiceInfo(HTTPClient client, String assumeVersion) throws Exception {
         
-        if("9".equals(assumeVersion)) {
+        if("9.x".equals(assumeVersion)) {
             currentVersion = "9.x";
             currentVersionMajor = 9;
-        } else if("10".equals(assumeVersion)) {
+            getDetails().put(DETAIL_ASSUME_VERSION, new ClobElement("9.x"));
+        } else if("10.x".equals(assumeVersion)) {
             currentVersion = "10.x";
             currentVersionMajor = 10;
+            getDetails().put(DETAIL_ASSUME_VERSION, new ClobElement("10.x"));
         } else {
             // currentVersion not included in MapServer/ JSON in 9.3.1, get it
             // from the root services JSON
@@ -546,21 +551,7 @@ public class ArcGISService extends GeoService implements Updatable {
     }    
     //</editor-fold>
     
-    //<editor-fold desc="Add currentVersion to toJSONObject()">
-    @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags);
-        
-        // Add currentVersion info to service info
-        
-        // Assume 9.x by default
-        
-        JSONObject json = new JSONObject();
-        o.put("arcGISVersion", json);
-        json.put("s", "9.x");    // complete currentVersion string
-        json.put("major", 9L);   // major version, integer
-        json.put("number", 9.0); // version as as Number
-        
+    public String getCurrentVersion() {
         ClobElement ce = getDetails().get(DETAIL_CURRENT_VERSION);
         String cv = ce != null ? ce.getValue() : null;
         
@@ -576,6 +567,25 @@ public class ArcGISService extends GeoService implements Updatable {
                 cv = ce != null ? ce.getValue() : null;
             }
         }
+        return cv;
+    }
+    
+    //<editor-fold desc="Add currentVersion to toJSONObject()">
+    @Override
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags);
+        
+        // Add currentVersion info to service info
+        
+        // Assume 9.x by default
+        
+        JSONObject json = new JSONObject();
+        o.put("arcGISVersion", json);
+        json.put("s", "9.x");    // complete currentVersion string
+        json.put("major", 9L);   // major version, integer
+        json.put("number", 9.0); // version as as Number
+        
+        String cv = getCurrentVersion();
         
         if(cv != null) {
             json.put("s", cv);

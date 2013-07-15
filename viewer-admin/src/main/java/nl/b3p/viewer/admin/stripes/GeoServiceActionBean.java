@@ -366,6 +366,9 @@ public class GeoServiceActionBean implements ActionBean {
             if (protocol.equals(ArcIMSService.PROTOCOL)) {
                 ArcIMSService ser = (ArcIMSService) service;
                 serviceName = ser.getServiceName();
+            } else if(protocol.equals(ArcGISService.PROTOCOL)) {
+                ClobElement assumeVersion = service.getDetails().get(ArcGISService.DETAIL_ASSUME_VERSION);
+                agsVersion = assumeVersion == null ? null : assumeVersion.getValue();
             } else if (protocol.equals(TileService.PROTOCOL)) {
                 TileService ser = (TileService) service;
                 tilingProtocol = ser.getTilingProtocol();

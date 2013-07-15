@@ -38,6 +38,7 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
     public static final DataStoreFactorySpi.Param TIMEOUT = new Param("timeout", Integer.class, "Timeout in ms; default 30000", false);
     public static final DataStoreFactorySpi.Param TRY_GZIP = new Param("try_gzip", Boolean.class, "Request server to use gzip compression", false);
     public static final DataStoreFactorySpi.Param CRS = new Param("crs", CoordinateReferenceSystem.class, "Coordinate reference system", false);
+    public static final DataStoreFactorySpi.Param AGS_ASSUME_VERSION = new Param("ags_assume_version", String.class, "Assume this ArcGIS Server version (e.g. 10.x, 9.x)", false);
     //public static final DataStoreFactorySpi.Param HTTP_CACHE = new Param("http_cache", HTTPCache.class, "HTTPCache instance to enable HTTP caching", false);
     
     // TODO: add CURRENT_VERSION param
@@ -56,7 +57,8 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
                 (Integer)params.get(TIMEOUT.key),
                 (Boolean)params.get(TRY_GZIP.key),
                 (CoordinateReferenceSystem)params.get(CRS.key),
-                null//(HTTPCache)params.get(HTTP_CACHE.key)
+                null,//(HTTPCache)params.get(HTTP_CACHE.key)
+                (String)params.get(AGS_ASSUME_VERSION.key)
         );
     }
 
@@ -67,6 +69,6 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
 
     @Override
     public Param[] getParametersInfo() {
-        return new Param[] { URL, USER, PASSWD, TIMEOUT, TRY_GZIP, CRS/*, HTTP_CACHE*/ };
+        return new Param[] { URL, USER, PASSWD, TIMEOUT, TRY_GZIP, CRS, AGS_ASSUME_VERSION /*, HTTP_CACHE*/ };
     }    
 }

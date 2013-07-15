@@ -104,11 +104,7 @@ public class ArcGISDataStore extends ContentDataStore {
     private Integer currentMajorVersion;
     
     public ArcGISDataStore(URL url) {
-        this(url, null, null, null, null, null, null);
-    }
-
-    public ArcGISDataStore(URL url, String user, String passwd, Integer timeout, Boolean gzip, CoordinateReferenceSystem crs, Object httpCache) {
-        this(url, user, passwd, timeout, gzip, crs, httpCache, null);
+        this(url, null, null, null, null, null, null, null);
     }
     
     public ArcGISDataStore(URL url, String user, String passwd, Integer timeout, Boolean gzip, CoordinateReferenceSystem crs, Object httpCache, String currentVersion) {

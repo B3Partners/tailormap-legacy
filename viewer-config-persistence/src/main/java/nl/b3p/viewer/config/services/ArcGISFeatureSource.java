@@ -22,6 +22,7 @@ import javax.persistence.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import nl.b3p.geotools.data.arcgis.ArcGISDataStoreFactory;
+import nl.b3p.viewer.config.ClobElement;
 import org.geotools.data.DataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.referencing.CRS;
@@ -46,9 +47,31 @@ public class ArcGISFeatureSource extends FeatureSource {
     public DataStore createDataStore(Map extraDataStoreParams) throws Exception {
         Map params = new HashMap();
 
+        if(getLinkedService() != null) {
+            Map<String,ClobElement> serviceDetails = getLinkedService().getDetails();
+            ClobElement assumeVersion = serviceDetails.get(ArcGISService.DETAIL_ASSUME_VERSION);
+            if(assumeVersion != null && assumeVersion.getValue() != null) {
+                log.debug("Linked service details specify user assumed version " + assumeVersion + ", passing on to datastore");
+                params.put(ArcGISDataStoreFactory.AGS_ASSUME_VERSION.key, assumeVersion.getValue());
+            } else {
+                String version = ((ArcGISService)getLinkedService()).getCurrentVersion();
+                if(version != null) {
+                    log.debug("Linked service details has current version " + version + ", passing on to datastore");
+                    params.put(ArcGISDataStoreFactory.AGS_ASSUME_VERSION.key, version);
+                }
+            }
+            if(!params.containsKey(ArcGISDataStoreFactory.AGS_ASSUME_VERSION.key)) {
+                log.debug("No ArcGIS Server version to pass on to datastore, extra version request will be performed!");
+            }
+        }
+        
         // Params which can be overridden
         if (extraDataStoreParams != null) {
             params.putAll(extraDataStoreParams);
+            
+            if(extraDataStoreParams.containsKey(ArcGISDataStoreFactory.AGS_ASSUME_VERSION.key)) {
+                log.debug("NOTE: version parameter as determined above overridden to " + params.get(ArcGISDataStoreFactory.AGS_ASSUME_VERSION.key));
+            }
         }
 
         // Params which can not be overridden below        

@@ -107,9 +107,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </td>
             <td>
                 <stripes:select name="agsVersion" disabled="${edit}" onchange="checkProtocol()" onkeyup="checkProtocol()">
-                    <stripes:option value="auto">Automatisch</stripes:option>
-                    <stripes:option value="10">10.x</stripes:option>
-                    <stripes:option value="9">9.x</stripes:option>
+                    <stripes:option value="">Automatisch</stripes:option>
+                    <stripes:option value="10.x">10.x</stripes:option>
+                    <stripes:option value="9.x">9.x</stripes:option>
                 </stripes:select>
                 Selecteer een versie indien <i>http://server/ArcGIS/rest/services?f=json</i> is afgeschermd maar de service zelf niet.
             </td>
