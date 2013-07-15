@@ -24,7 +24,8 @@ Ext.define ("viewer.components.HTML",{
     container: null,
     config: {
         html: "",
-        title: ""
+        title: "",
+        loadScripts: false
     },
     constructor: function (conf){        
         viewer.components.HTML.superclass.constructor.call(this, conf);
@@ -39,10 +40,12 @@ Ext.define ("viewer.components.HTML",{
         this.container = Ext.create('Ext.container.Container', {
             width: '100%',
             height: '100%',
-            html: this.html,
+         //   html: this.html,
             renderTo: this.div,
             autoScroll: true
         });
+        
+        this.container.update(this.html, this.loadScripts);
     },
     getExtComponents: function() {
         return [ this.container.getId() ];

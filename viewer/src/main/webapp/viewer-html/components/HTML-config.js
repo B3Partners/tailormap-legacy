@@ -40,6 +40,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: 500,
             renderTo: Ext.get(parentid)
         });
+        this.loadScriptsField = Ext.create('Ext.form.field.Checkbox', {
+            fieldLabel: 'JavaScript in HTML bron uitvoeren',
+            name: 'loadScripts',
+            checked: config.loadScripts != undefined ? config.loadScripts : false,
+            inputValue: true,
+            labelWidth: 275,
+            width: 500,
+            renderTo: Ext.get(parentid)
+        });        
         this.htmlEditor=Ext.create('Ext.form.HtmlEditor', {
             width: 750,
             height: 460,
@@ -60,6 +69,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var config = new Object();
         config.html= this.htmlEditor.getValue();
         config.title= this.titleField.getValue();
+        config.loadScripts = this.loadScriptsField.getValue();
         return config;
     },
     windowHide: function() {
