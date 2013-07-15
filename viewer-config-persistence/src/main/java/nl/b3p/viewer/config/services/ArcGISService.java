@@ -47,6 +47,13 @@ public class ArcGISService extends GeoService implements Updatable {
 
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";    
+    
+    /** Parameter to avoid the call to /ArcGIS/rest/services?f=json to determine
+     * the version (10 or 9). Some sites have this URL hidden but the service
+     * itself is available. String with "9" or "10", null or any other value 
+     * means get it from /ArcGIS/rest/services?f=json.
+     */
+    public static final String PARAM_ASSUME_VERSION = "assumeVersion";    
 
     /** GeoService.details map key for ArcGIS currentVersion property */
     public static final String DETAIL_CURRENT_VERSION = "arcgis_currentVersion";    
@@ -120,7 +127,7 @@ public class ArcGISService extends GeoService implements Updatable {
             
             ArcGISService s = new ArcGISService();
             s.setUrl(url);
-            s.loadServiceInfo(client);
+            s.loadServiceInfo(client, (String)params.get(PARAM_ASSUME_VERSION));
             
             if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
                 return null;
@@ -145,14 +152,23 @@ public class ArcGISService extends GeoService implements Updatable {
         }
     }
     
-    private void loadServiceInfo(HTTPClient client) throws Exception {
-        // currentVersion not included in MapServer/ JSON in 9.3.1, get it
-        // from the root services JSON
-        int i = getUrl().indexOf("/rest/services");
-        String servicesUrl = getUrl().substring(0, i) + "/rest/services";
-        serviceInfo = issueRequest(servicesUrl + "?f=json", client);
-        currentVersion = serviceInfo.getString("currentVersion");
-        currentVersionMajor = Integer.parseInt(currentVersion.split("\\.")[0]);
+    private void loadServiceInfo(HTTPClient client, String assumeVersion) throws Exception {
+        
+        if("9".equals(assumeVersion)) {
+            currentVersion = "9.x";
+            currentVersionMajor = 9;
+        } else if("10".equals(assumeVersion)) {
+            currentVersion = "10.x";
+            currentVersionMajor = 10;
+        } else {
+            // currentVersion not included in MapServer/ JSON in 9.3.1, get it
+            // from the root services JSON
+            int i = getUrl().indexOf("/rest/services");
+            String servicesUrl = getUrl().substring(0, i) + "/rest/services";
+            serviceInfo = issueRequest(servicesUrl + "?f=json", client);
+            currentVersion = serviceInfo.getString("currentVersion");
+            currentVersionMajor = Integer.parseInt(currentVersion.split("\\.")[0]);
+        }
         
         if(currentVersionMajor >= 10) {
             // In version 10, get full layers info immediately

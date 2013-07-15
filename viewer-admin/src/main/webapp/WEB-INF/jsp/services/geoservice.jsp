@@ -71,6 +71,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <script type="text/javascript">
         function checkProtocol() {
             var protocol = Ext.query("select[name='protocol']")[0].value;
+            Ext.fly('agsVersion').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "arcgis");
             Ext.fly('useUrlTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "wms");
             Ext.fly('serviceNameTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "arcims" || protocol == "tiled");
             Ext.fly('tileSizeTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol == "tiled");
@@ -98,6 +99,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:option value="arcims">ArcIMS</stripes:option>
                     <stripes:option value="tiled">Tiled</stripes:option>
                 </stripes:select>
+            </td>
+        </tr>
+        <tr id="agsVersion">
+            <td>
+                ArcGIS server versie:
+            </td>
+            <td>
+                <stripes:select name="agsVersion" disabled="${edit}" onchange="checkProtocol()" onkeyup="checkProtocol()">
+                    <stripes:option value="auto">Automatisch</stripes:option>
+                    <stripes:option value="10">10.x</stripes:option>
+                    <stripes:option value="9">9.x</stripes:option>
+                </stripes:select>
+                Selecteer een versie indien <i>http://server/ArcGIS/rest/services?f=json</i> is afgeschermd maar de service zelf niet.
             </td>
         </tr>
         <tr id="useUrlTr">

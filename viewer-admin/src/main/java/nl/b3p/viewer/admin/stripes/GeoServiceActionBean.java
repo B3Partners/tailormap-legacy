@@ -110,6 +110,8 @@ public class GeoServiceActionBean implements ActionBean {
     @Validate
     private String serviceName;
     @Validate
+    private String agsVersion;
+    @Validate
     private Integer tileSize;
     @Validate
     private String tilingProtocol;
@@ -232,6 +234,14 @@ public class GeoServiceActionBean implements ActionBean {
 
     public void setOverrideUrl(boolean overrideUrl) {
         this.overrideUrl = overrideUrl;
+    }
+
+    public String getAgsVersion() {
+        return agsVersion;
+    }
+
+    public void setAgsVersion(String agsVersion) {
+        this.agsVersion = agsVersion;
     }
 
     public JSONObject getNewService() {
@@ -580,6 +590,7 @@ public class GeoServiceActionBean implements ActionBean {
             } else if (protocol.equals(ArcGISService.PROTOCOL)) {
                 params.put(ArcGISService.PARAM_USERNAME, username);
                 params.put(ArcGISService.PARAM_PASSWORD, password);
+                params.put(ArcGISService.PARAM_ASSUME_VERSION, agsVersion);
                 service = new ArcGISService().loadFromUrl(url, params, status);
             } else if (protocol.equals(ArcIMSService.PROTOCOL)) {
                 params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
