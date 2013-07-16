@@ -176,5 +176,14 @@
                 <sequence-generator name="style_library_id_seq" sequence-name="style_library_id_seq"/>
             </id>
         </attributes>
+    </entity>
+    
+    <entity class="nl.b3p.viewer.config.metadata.Metadata">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="metadata_id_seq"/>
+                <sequence-generator name="metadata_id_seq" sequence-name="metadata_id_seq"/>
+            </id>
+        </attributes>
     </entity>    
 </entity-mappings>

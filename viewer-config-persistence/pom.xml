@@ -25,7 +25,7 @@
                         <id>schema-export</id>
                         <phase>process-classes</phase>
                         <configuration>
-                            <hibernatetool destdir="target">
+                            <hibernatetool destdir="${project.build.outputDirectory}/scripts">
                                 <classpath>
                                     <path location="target"/>                                    
                                 </classpath>
@@ -34,7 +34,7 @@
                                     export="false"
                                     drop="false"
                                     create="true"
-                                    outputfilename="schema-export-oracle.sql"
+                                    outputfilename="oracle-schema-export.sql"
                                     format="true">
                                     <jpaconfiguration persistenceUnit="viewer-config-oracle"/>
                                 </hbm2ddl> 
@@ -43,7 +43,7 @@
                                     export="false"
                                     drop="false"
                                     create="true"
-                                    outputfilename="schema-export-postgresql.sql"
+                                    outputfilename="postgresql-schema-export.sql"
                                     format="true">
                                     <jpaconfiguration persistenceUnit="viewer-config-postgresql"/>
                                 </hbm2ddl>                                                                                             

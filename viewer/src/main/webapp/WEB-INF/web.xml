@@ -89,6 +89,11 @@
         <servlet-class>net.sourceforge.stripes.controller.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>DatabaseSynchronizer</servlet-name>
+        <servlet-class>nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
     <servlet-mapping>
         <servlet-name>StripesDispatcher</servlet-name>
         <url-pattern>*.action</url-pattern>

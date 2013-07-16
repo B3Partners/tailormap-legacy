@@ -4,7 +4,7 @@ insert into category (id,name) values(0,'Categoriën');
 -- pwgen -1Bc 10 | tr -d '\n' | tee /tmp/pw | sha1sum; cat /tmp/pw; rm /tmp/pw; echo
 -- Om een voorgedefinieerd wachtwoord te hashen:
 -- echo -n mijn_wachtwoord | sha1sum
-insert into user_(username, password) values ('admin', '<digest>');
+insert into user_(username, password) values ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');
 insert into group_(name,description) values ('Admin','Groep met toegang tot beheerapplicatie viewer');
 insert into group_(name,description) values ('RegistryAdmin','Beheer van het gegevensregister');
 insert into group_(name,description) values ('UserAdmin','Beheer van gebruikers en groepen');
