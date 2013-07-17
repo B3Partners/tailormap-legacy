@@ -26,6 +26,35 @@ import org.hibernate.jdbc.Work;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
+ * Class for Synchronizing the database with the application entitymodel.
+ * The class contains a static script holder. With versions and the scripts that 
+ * are needed for upgrading to that version (from the previous defined version).
+ * The version of the database model is stored in the database metadata table.
+ * First the class checks if there is a 'metadata' table. If not, we assume the 
+ * database is empty or without Flamingo tables. All scripts that are defined for 
+ * version '0' are called: 
+ * - the (at build) auto generated schema-export
+ * - the init script with data that is needed to start.
+ * The database is at the latest defined version (fully up to date) so the latest
+ * defined version is set in the metadata tabel. >> Update done.
+ * 
+ * If there is a metadata table and a record with the key Metadata.DATABASE_VERSION_KEY
+ * then that is the current version of the database model.
+ * All scripts that are defined after that version are loaded and called; updating the
+ * database to the entity model.
+ * 
+ * The scripts are stored in: 'src/main/resources/scripts'
+ * When adding a new script in that folder just define the script name 
+ * (without database product name) in the 'updates' param with a new version number.
+ * When loading the scripts, the loader is first looking for the script with the defined
+ * name. For example 'newscript.sql'. If the script is not found the loader is searching
+ * for the script with the name '<database product name in lower case>-<script name>' for example:
+ * 'postgresql-newscript.sql'.
+ * So when a script is the same for all database products (for example simple inserts) you only
+ * need to make 1 script '<script name>'. If there are specific database products statements make multiple
+ * scripts and name them '<database product name in lower case>-<script name>' in the scripts
+ * folder. Add the <script name> in the updates var of this class.
+ *
  *
  * @author Roy Braam
  */
@@ -35,15 +64,21 @@ public class DatabaseSynchronizer implements Servlet {
     private static final LinkedHashMap<String, List<String>> updates = new LinkedHashMap<String, List<String>>();
     private static final String SCRIPT_PATH="/scripts";
     private String databaseProductName="postgresql";
+    private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql","oracle"};
     private ServletConfig sc;
-    
+    //The updates definition
     static {
+        //don't edit the 'init' one.
         updates.put("init", new ArrayList<String>());
+        //init scripts:
         updates.put("0", new ArrayList<String>());
         updates.get("0").add("schema-export.sql");
         updates.get("0").add("initialize_database.sql");
     }
-
+    /**
+     * Function is called in init() of servlet.
+     * Starts the updating process.
+     */
     public void doInit(){
         
         try {            
@@ -59,7 +94,7 @@ public class DatabaseSynchronizer implements Servlet {
                 Metadata mdVersion = null;
                 //check if any db exists
                 try {
-                    List<Metadata> metadata = em.createQuery("From Metadata where configKey = :v").setParameter("v", Metadata.VERSION_KEY).getResultList();
+                    List<Metadata> metadata = em.createQuery("From Metadata where configKey = :v").setParameter("v", Metadata.DATABASE_VERSION_KEY).getResultList();
                     String version = "init";
                     if (!metadata.isEmpty()) {
                         mdVersion = metadata.get(0);
@@ -77,15 +112,17 @@ public class DatabaseSynchronizer implements Servlet {
                 }else{
                     LinkedHashMap<String, List<File>> scriptFiles = getScriptFiles(scripts);
                     ScriptWorker w = new ScriptWorker(scriptFiles);
+                    //do the work, execute the scripts.
                     session.doWork(w);
                     if (w.isErrored()){
                         log.info("Database updates returned a error.");
                     }
+                    //update the version of the database in the metadata.
                     String updatedVersion = w.getLatestSuccesVersion();
                     if (updatedVersion!=null){
                         if (mdVersion==null){
                             mdVersion = new Metadata();
-                            mdVersion.setConfigKey(Metadata.VERSION_KEY);
+                            mdVersion.setConfigKey(Metadata.DATABASE_VERSION_KEY);
                         }
                         if(updatedVersion.equals("0")){
                             //if version == 0 the database is created with the schema, version is latest one.
@@ -100,6 +137,7 @@ public class DatabaseSynchronizer implements Servlet {
                     }else{
                         log.info("No updates done on database, maybe a error occured");
                     }
+                    //check the version with the needed version.
                     String neededVersion=(String) updates.keySet().toArray()[updates.size()-1];
                     String version ="-1";
                     if (mdVersion!=null){
@@ -119,7 +157,12 @@ public class DatabaseSynchronizer implements Servlet {
             Stripersist.requestComplete();
         }
     }
-    
+    /**
+     * Get the updates that need to be done to update the database with version :version:
+     * to the latest version.
+     * @param version
+     * @return List of updates needed categorized by the version
+     */
     private LinkedHashMap<String, List<String>> getUpdates(String version) {
         LinkedHashMap<String, List<String>> scripts = new LinkedHashMap<String, List<String>>();
 
@@ -136,13 +179,30 @@ public class DatabaseSynchronizer implements Servlet {
         }
         return scripts;
     }
-
+    /**
+     * Checks for scripts that are not yet defined as updates in this class.
+     * Gives a warning when found one (properly forgotten to add it to this class)
+     */
     private void checkScriptDir() {
         File scriptDir = new File(DatabaseSynchronizer.class.getResource(SCRIPT_PATH).getFile());
         File[] scripts=scriptDir.listFiles();
         for (File script : scripts){
-            if (script.getName().startsWith(this.databaseProductName.toLowerCase())){
-                String scriptName = script.getName().substring(this.databaseProductName.length()+1);
+            String scriptName= null;
+            if (script.getName().startsWith(this.databaseProductName.toLowerCase()+"-")){
+                scriptName = script.getName().substring(this.databaseProductName.length()+1);
+            }else{
+                boolean forOtherProduct=false;
+                for (String supProd : SUPPORTED_DATABASE_PRODUCTS){
+                    if (script.getName().startsWith(supProd+"-")){
+                        forOtherProduct = true;
+                    }
+                }
+                //if not for other product then this is a common script.
+                if (!forOtherProduct){
+                    scriptName = script.getName();
+                }
+            }                    
+            if (scriptName!=null){                
                 boolean found=false;
                 for (Entry<String, List<String>> entry : this.updates.entrySet()) {
                     for (String registeredScript : entry.getValue()){

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 public class Metadata {
     @Id
     private Long id;    
-    public static final String VERSION_KEY = "version";
+    public static final String DATABASE_VERSION_KEY = "database_version";
     private String configKey;
     private String configValue;
 
