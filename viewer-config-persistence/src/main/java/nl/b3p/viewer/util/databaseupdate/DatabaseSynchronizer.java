@@ -27,13 +27,13 @@ import org.stripesstuff.stripersist.Stripersist;
 
 /**
  * Class for Synchronizing the database with the application entitymodel.
- * The class contains a static script holder. With versions and the scripts that 
+ * The class contains a static script holder ('updates'). With versions and the scripts that 
  * are needed for upgrading to that version (from the previous defined version).
  * The version of the database model is stored in the database metadata table.
  * First the class checks if there is a 'metadata' table. If not, we assume the 
  * database is empty or without Flamingo tables. All scripts that are defined for 
  * version '0' are called: 
- * - the (at build) auto generated schema-export
+ * - the (at build) auto generated schema-export script
  * - the init script with data that is needed to start.
  * The database is at the latest defined version (fully up to date) so the latest
  * defined version is set in the metadata tabel. >> Update done.
