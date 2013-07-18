@@ -36,7 +36,9 @@ Ext.define ("viewer.components.LayerSwitch",{
         left:null
     },
     
-    constructor: function (conf){        
+    constructor: function (conf){
+        conf.top = conf.top === undefined ? 5 : conf.top;
+        conf.left = conf.left === undefined ? 5 : conf.left;
         viewer.components.LayerSwitch.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.loadComponent();

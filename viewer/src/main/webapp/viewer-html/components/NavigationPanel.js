@@ -22,7 +22,14 @@
  */
 Ext.define ("viewer.components.NavigationPanel",{
     extend: "viewer.components.Component",    
-    constructor: function (conf){        
+    
+    config: {
+        top:null,
+        left:null
+    },
+    constructor: function (conf){ 
+        conf.top = conf.top === undefined ? 20 : conf.top;
+        conf.left = conf.left === undefined ? 0 : conf.left;
         viewer.components.NavigationPanel.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         

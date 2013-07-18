@@ -36,14 +36,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'textfield',
                 fieldLabel: 'Toppositie',
                 name: 'top',
-                value: (config != null && config.top != undefined) ? config.top : '',
+                value: (config != null && config.top != undefined) ? config.top : '5',
                 labelWidth:me.labelWidth
             },
             {
                 xtype: 'textfield',
                 fieldLabel: 'Linkerpositie',
                 name: 'left',
-                value: (config != null && config.left != undefined) ? config.left : '',
+                value: (config != null && config.left != undefined) ? config.left : '5',
                 labelWidth:me.labelWidth
             }],
             renderTo: parentid

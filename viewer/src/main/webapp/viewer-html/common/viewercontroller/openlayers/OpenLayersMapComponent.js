@@ -386,8 +386,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             
             // divide by 2 is necessary for some reason?
             var y = topMenuHeight > minTop ? 4 : (minTop - topMenuHeight) / 2 + 2;
+            var x=6;
+            if (config.top){
+                y+=Number(config.top);
+            }if (config.left){
+                x = Number(config.left);
+            }
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
-                new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(6,y), zoomWorldIcon: true}));
+                new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(x,y), zoomWorldIcon: true}));
         }else if (type == viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);                
         }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
