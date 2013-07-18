@@ -25,7 +25,7 @@ Ext.define ("viewer.components.LoadMonitor",{
     constructor: function (conf){
         //default values:
         conf.left = conf.left === undefined ? 20 : conf.left;
-        conf.top = conf.top === undefined ? 100 : conf.top;
+        conf.top = conf.top === undefined ? 50 : conf.top;
         viewer.components.LoadMonitor.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
         
