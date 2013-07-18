@@ -29,9 +29,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
         </p>
-            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform">
-                <stripes:hidden name="level" value="${actionBean.level.id}"/>
-
+        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform">
+            <stripes:hidden name="level" value="${actionBean.level.id}"/>
+            <c:if test="${actionBean.context.eventName!='delete'}">
                 <h1>Bewerken: <c:out value="${actionBean.level.name}"/></h1>
                 <br>
                 <stripes:submit name="save" value="Opslaan" />
@@ -81,16 +81,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
 
                 </div>
-            <c:if test="${actionBean.context.eventName == 'save'}">
+            </c:if>
+            <c:if test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
                 <script type="text/javascript">
                     var frameParent = getParent();
-                    if(frameParent && frameParent.renameNode && '${actionBean.level.name}' != '') {
-                        frameParent.renameNode('n${actionBean.level.id}','${actionBean.level.name}');
-                        frameParent.refreshNode('n${actionBean.level.id}');
+                    if(frameParent && frameParent.renameNode) {
+                        if ("${actionBean.context.eventName}" == "save" && '${actionBean.level.name}' != ''){
+                            frameParent.renameNode('n${actionBean.level.id}','${actionBean.level.name}');
+                            frameParent.refreshNode('n${actionBean.level.id}');
+                        }else if ("${actionBean.context.eventName}" == "delete"){
+                            frameParent.refreshNode('n${actionBean.level.parent.id}');
+                        }
+                        
                     }
                 </script>
             </c:if>
         </stripes:form>
+        
         <script type="text/javascript">
             // Definition of URLS and icons... how are we going to do this?
             var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="tree"/>';
