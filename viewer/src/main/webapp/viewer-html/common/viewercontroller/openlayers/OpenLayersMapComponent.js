@@ -386,7 +386,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             
             // divide by 2 is necessary for some reason?
             var y = topMenuHeight > minTop ? 4 : (minTop - topMenuHeight) / 2 + 2;
-            var x=6;
+            var x=0;
             if (config.top){
                 y+=Number(config.top);
             }if (config.left){
