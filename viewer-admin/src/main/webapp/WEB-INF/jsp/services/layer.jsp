@@ -73,7 +73,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>Attribuutbron:</td>
                         <td>
                             <stripes:select name="featureSourceId" id="featureSourceId">
-                                <stripes:option value="1">Kies..</stripes:option>
+                                <stripes:option value="-1">Kies..</stripes:option>
                                 <c:forEach var="source" items="${actionBean.featureSources}">
                                     <stripes:option value="${source.id}">${source.protocol} #${source.id} <c:out value="${source.name}"/></stripes:option>
                                 </c:forEach>
@@ -84,7 +84,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>Attribuutlijst:</td>
                         <td>
                             <select name="simpleFeatureType" id="simpleFeatureTypeId">
-                                <option value="1">Maak uw keuze..</option>
+                                <option value="-1">Maak uw keuze..</option>
                             </select>
                         </td>
                     </tr>
@@ -159,7 +159,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         removeChilds(simpleFeatureTypeId);
                         simpleFeatureTypeId.appendChild(getOption(-1, 'Kies...', false));
 
-                            if(selectedValue != 1) {
+                            if(selectedValue != -1) {
                             Ext.Ajax.request({ 
                                 url: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>', 
                                 params: { 
