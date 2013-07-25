@@ -1,4 +1,4 @@
-flamingo
+Flamingo
 ========
 
 The Repository of Flamingo.
