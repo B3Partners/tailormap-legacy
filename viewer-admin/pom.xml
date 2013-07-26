@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.3</version>
+        <version>4.3-SNAPSHOT</version>
     </parent>
     <name>viewer-admin</name>
     
@@ -78,13 +78,13 @@
         <dependency>
             <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
             <artifactId>viewer-config-persistence</artifactId>
-            <version>4.3</version>
+            <version>${project.parent.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc.web-commons</groupId>
             <artifactId>web-commons</artifactId>
-            <version>4.3</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <!-- nl b3p csw-->
         <dependency>
