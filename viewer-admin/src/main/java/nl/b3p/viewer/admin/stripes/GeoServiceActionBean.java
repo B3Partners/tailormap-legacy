@@ -123,6 +123,9 @@ public class GeoServiceActionBean implements ActionBean {
     private String imageExtension;
     @Validate
     private String crs;
+    @Validate
+    private Boolean useIntersect;
+    
     private WaitPageStatus status;
     private JSONObject newService;
     private JSONObject updatedService;
@@ -355,6 +358,14 @@ public class GeoServiceActionBean implements ActionBean {
     public void setCql(String cql) {
         this.cql = cql;
     }
+    
+    public boolean isUseIntersect() {
+        return useIntersect;
+    }
+
+    public void setUseIntersect(boolean useIntersect) {
+        this.useIntersect = useIntersect;
+    }
     //</editor-fold>
    
     
@@ -410,6 +421,11 @@ public class GeoServiceActionBean implements ActionBean {
                 }
 
             }
+            
+            if(service.getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
+                ClobElement ce =service.getDetails().get(GeoService.DETAIL_USE_INTERSECT);
+                useIntersect = Boolean.parseBoolean(ce.getValue());
+            }
             name = service.getName();
             username = service.getUsername();
             password = service.getPassword();
@@ -448,6 +464,10 @@ public class GeoServiceActionBean implements ActionBean {
                 l.getDetails().put("image_extension", new ClobElement(imageExtension));
             }
 
+        }
+        
+        if (useIntersect!=null){
+            service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(useIntersect.toString()));
         }
 
         service.setUsername(username);
@@ -924,4 +944,5 @@ public class GeoServiceActionBean implements ActionBean {
         getContext().getMessages().add(new SimpleMessage("SLD opgeslagen"));
         return edit();
     }
+
 }
