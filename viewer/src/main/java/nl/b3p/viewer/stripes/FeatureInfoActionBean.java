@@ -19,39 +19,35 @@ package nl.b3p.viewer.stripes;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
-import nl.b3p.viewer.config.services.FeatureTypeRelation;
-import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.factory.GeoTools;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -232,15 +228,36 @@ public class FeatureInfoActionBean implements ActionBean {
 
                     FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
                     
-                    Point point = new GeometryFactory().createPoint(new Coordinate(
+                    Filter spatialFilter=null;
+                    
+                    boolean useIntersect = false;
+                    if (l.getService().getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
+                        ClobElement ce = l.getService().getDetails().get(GeoService.DETAIL_USE_INTERSECT);
+                        useIntersect = Boolean.parseBoolean(ce.getValue());
+                    }
+                    if (!useIntersect){
+                        Point point = new GeometryFactory().createPoint(new Coordinate(
                             Double.parseDouble(x),
                             Double.parseDouble(y)));
-                    Filter dwithin = ff.dwithin(ff.property(geomAttribute), ff.literal(point), Double.parseDouble(distance), "meters");
+                    
+                        spatialFilter = ff.dwithin(ff.property(geomAttribute), ff.literal(point), Double.parseDouble(distance), "meters");
+                    }else{
+                        GeometricShapeFactory shapeFact = new GeometricShapeFactory();
+                        shapeFact.setNumPoints(32);
+                        shapeFact.setCentre(new Coordinate(
+                                Double.parseDouble(x),Double.parseDouble(y)));
+                        shapeFact.setSize(Double.parseDouble(distance)*2);
+                        Polygon p=shapeFact.createCircle();
+                        spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
+                    }
 
                     Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
-                    Filter f = currentFilter != null ? ff.and(dwithin, currentFilter) : dwithin;
+                    Filter f = currentFilter != null ? ff.and(spatialFilter, currentFilter) : spatialFilter;
                     
-                    f = (Filter)f.accept(new RemoveDistanceUnit(), null);
+                    //only remove unit if it is a JDBC datastore
+                    if (JDBCFeatureSource.PROTOCOL.equals(l.getService().getProtocol())){
+                        f = (Filter)f.accept(new RemoveDistanceUnit(), null);
+                    }
                     
                     f = FeatureToJson.reformatFilter(f, l.getFeatureType());
                     
@@ -266,5 +283,26 @@ public class FeatureInfoActionBean implements ActionBean {
         }
         
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));        
+    }
+    
+    public static void main(String[] args) throws IOException{
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        org.geotools.xml.Configuration configuration2 = new org.geotools.filter.v1_1.OGCConfiguration();
+        org.geotools.xml.Encoder encoder = new org.geotools.xml.Encoder(configuration2);
+        
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
+    
+        Coordinate coord = new Coordinate(1, 1);
+        Point point = geometryFactory.createPoint(coord);
+
+         //make dwithin filter
+        Filter f = ff.dwithin(ff.property("msGeometry"), ff.literal(point), 200, "m");
+        //encode
+        encoder.encode(f, org.geotools.filter.v1_1.OGC.Filter, baos);
+        String s = baos.toString();
+        System.out.println("Propertyislike matchcase=false filter: /n" + s);
+
+
     }
 }

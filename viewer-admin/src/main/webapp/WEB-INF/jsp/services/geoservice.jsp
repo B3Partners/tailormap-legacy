@@ -194,6 +194,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>Wachtwoord:</td>
             <td><stripes-dynattr:password name="password" autocomplete="off" maxlength="255" size="30"/></td>
         </tr>
+        <tr>
+            <td colspan="2">
+                <stripes:checkbox name="useIntersect"/> Gebruik 'intersect' filter (in plaats van 'DWithin') om data op te halen.
+            </td>
+        </tr>
         <c:if test="${!edit}">
             <tr>
                 <td colspan="2"><i>De weergavenaam wordt bij het inladen van de service

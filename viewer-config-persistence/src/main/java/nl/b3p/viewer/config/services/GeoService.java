@@ -39,6 +39,8 @@ public abstract class GeoService {
     public static final String DETAIL_OVERRIDDEN_URL = "overridenUrl";
     public static final String DETAIL_ORIGINAL_NAME = "originalName";
     
+    public static final String DETAIL_USE_INTERSECT = "useIntersect";
+    
     @Id
     private Long id;
 
