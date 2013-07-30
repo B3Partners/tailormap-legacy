@@ -54,29 +54,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         
         //create a click control that handles only single click     
         var me=this;
-        var singleClickControl = new OpenLayers.Control.Click({
-            handlerOptions: {
-                single: true,
-                "double": false
-            },
-            autoActivate: true,
-            click: function(event){
-                var opx = this.map.getLonLatFromPixel(event.xy)
-                var options = {            
-                    x: event.xy.x,
-                    y: event.xy.y,
-                    coord: {
-                        x: opx.lon,
-                        y: opx.lat
-                    }
-                };
-                me.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
-            }
-        });  
+        
         //Overwrite default OpenLayers tools,don't set any mouse controls
         config.controls=[
             new OpenLayers.Control.Attribution(),            
-            singleClickControl,
             new OpenLayers.Control.Navigation()
         ];
         this.frameworkMap=new OpenLayers.Map(config.domId,config);        
