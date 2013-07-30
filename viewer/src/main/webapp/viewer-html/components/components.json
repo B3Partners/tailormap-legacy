@@ -532,7 +532,7 @@
                 loadingText: "Bezig met laden...[percentage]%",
                 left: "5",
                 top: "50",
-                timeout: "6000"
+                timeout: "60000"
             }
         }             
     },
