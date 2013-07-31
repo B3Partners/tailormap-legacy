@@ -7,7 +7,7 @@
     <version>${project.parent.version}</version>
     <packaging>war</packaging>
 	
-	<parent>
+    <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
         <version>4.3-SNAPSHOT</version>
@@ -18,8 +18,8 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <minify.outputdir>${project.build.directory}/${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
+        <display.version>${project.parent.version}</display.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -167,7 +167,16 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1.1</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>      
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>about.jsp</include>
+                            </includes>
+                        </resource>
+                    </webResources>              
                 </configuration>
             </plugin>
             <plugin>
@@ -325,6 +334,37 @@
                     </compilations>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                         </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <prefix>builddetails</prefix>
+                    <dateFormat>dd.MM.yyyy '@' HH:mm:ss z</dateFormat>
+                    <verbose>true</verbose>
+                    <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+                    <skipPoms>true</skipPoms>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <gitDescribe>
+                        <skip>true</skip>
+                        <always>true</always>
+                        <abbrev>7</abbrev>
+                        <dirty>-dirty</dirty>
+                        <forceLongFormat>false</forceLongFormat>
+                    </gitDescribe>
+                </configuration>
+            </plugin>
+            <!-- END OF GIT COMMIT ID PLUGIN CONFIGURATION -->
         </plugins>
     </build>
 
