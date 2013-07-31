@@ -4,3 +4,6 @@ create table metadata (
     config_value varchar2(255 char),
     primary key (id)
 );
+
+insert into metadata(config_key,config_value)
+values('database_version','0');
