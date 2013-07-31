@@ -40,7 +40,6 @@ Ext.define ("viewer.components.HTML",{
         this.container = Ext.create('Ext.container.Container', {
             width: '100%',
             height: '100%',
-         //   html: this.html,
             renderTo: this.div,
             autoScroll: true
         });
