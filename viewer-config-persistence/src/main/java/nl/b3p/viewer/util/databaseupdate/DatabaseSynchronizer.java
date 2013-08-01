@@ -105,6 +105,7 @@ public class DatabaseSynchronizer implements Servlet {
                     scripts = getUpdates(version);
                 } catch (Exception e) {
                     log.info("No correct database, run init scripts");
+                    log.debug("Cause: ",e);
                     scripts.put("0",updates.get("0"));
                 }
                 if (scripts.isEmpty()){
