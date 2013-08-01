@@ -18,7 +18,6 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <minify.outputdir>${project.build.directory}/${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
-        <display.version>${project.parent.version}</display.version>
     </properties>
     <dependencies>
         <dependency>
@@ -167,7 +166,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1.1</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>      
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                     <webResources>
                         <resource>
                             <directory>src/main/webapp</directory>
@@ -176,7 +175,7 @@
                                 <include>about.jsp</include>
                             </includes>
                         </resource>
-                    </webResources>              
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>
@@ -364,7 +363,6 @@
                     </gitDescribe>
                 </configuration>
             </plugin>
-            <!-- END OF GIT COMMIT ID PLUGIN CONFIGURATION -->
         </plugins>
     </build>
 
