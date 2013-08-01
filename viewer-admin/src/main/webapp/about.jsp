@@ -26,11 +26,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
     <body>
         <h1>Flamingo viewer-admin</h1>
+        <c:set var="version" value="${project.version}"/>
         <table>
             
             <tr>
                 <td><b>Version:</b></td>
-                <td>${project.version}</td>                
+                <td>
+                    <c:choose>
+                        <c:when test="${fn:contains(version,'SNAPSHOT')}">
+                            ${project.version}-${builddetails.commit.id.abbrev}
+                        </c:when>
+                        <c:otherwise>
+                            ${project.version}
+                        </c:otherwise>
+                    </c:choose>
+                </td>
             </tr>
             <tr>
                 <td><b>Build time:</b></td>
