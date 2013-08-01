@@ -23,6 +23,8 @@ import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.search.ArcGisRestSearchClient;
+import nl.b3p.viewer.search.SearchClient;
 import org.apache.commons.io.IOUtils;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
@@ -115,14 +117,13 @@ public class SearchActionBean implements ActionBean {
         }
         
         if(url != null && !url.equals("")){
-            url = url.replace("[ZOEKWOORD]", searchText);
-            
-            JSONObject info = issueRequest(url);
+            SearchClient client;
             if(url.toLowerCase().contains("arcgis")){
-                jsonArray = (JSONArray)info.get("candidates");
+                client = new ArcGisRestSearchClient(url);                
             }else{
-                // not arcGis services
+                client = new OpenLSSearchClient(url);
             }
+            jsonArray = client.search(searchText);
             
         }
         
