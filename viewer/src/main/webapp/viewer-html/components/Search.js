@@ -230,7 +230,7 @@ Ext.define ("viewer.components.Search",{
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];
             buttonList.push({
-                text: result.address,
+                text: result.label,
                 xtype: 'button',
                 margin: '10px 10px 0px 10px',
                 componentCls: 'mobileLarge',
