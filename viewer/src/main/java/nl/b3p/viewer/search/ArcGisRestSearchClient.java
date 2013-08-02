@@ -6,6 +6,7 @@ package nl.b3p.viewer.search;
 
 import java.io.IOException;
 import java.net.URL;
+import static nl.b3p.viewer.search.SearchClient.SEARCHTERM_HOLDER;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,8 +26,13 @@ public class ArcGisRestSearchClient implements SearchClient{
         this.url = url;
     }
     @Override
-    public JSONArray search(String query){        
-        String queryUrl = url.replace("[ZOEKWOORD]", query);
+    public JSONArray search(String query){      
+        String queryUrl;
+        if (this.url.contains(SEARCHTERM_HOLDER)){
+            queryUrl= this.url.replace(SEARCHTERM_HOLDER, query);
+        }else{
+            queryUrl = this.url + query;
+        }
         JSONArray returnValue= new JSONArray();
         try{            
             JSONObject obj= new JSONObject(IOUtils.toString(new URL(url).openStream(), "UTF-8"));

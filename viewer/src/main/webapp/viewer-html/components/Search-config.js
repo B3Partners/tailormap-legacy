@@ -52,7 +52,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
             ]
 		});
-    
+        
+        var extraText = document.createElement('div')
+        extraText.innerHTML="* De ingevulde zoekwaarden wordt achter deze url geplaatst. \n\
+            Als de ingevulde zoekwaarde ergens anders moet komen in de url dan kan op die plek '[ZOEKWOORD]' worden opgegeven.\n\
+            Voorbeeld(OpenLS): 'http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm='";
+        Ext.get("config").appendChild(new Ext.Element(extraText));
+        
         if(config != null) {
             if(config.nextSearchConfigId != null) {
                 me.nextId = config.nextSearchConfigId;
@@ -70,7 +76,8 @@ Ext.define("viewer.components.CustomConfiguration",{
         var newconfig = config || {
             id: 'search' + nextId,
             name: 'Zoekingang ' + nextId,
-            url: ''
+            url: '',
+            type: 'openls'
         };
         me.searchconfigs.push(newconfig);
         var collapsed = true;
@@ -105,7 +112,25 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [
                         { fieldLabel: 'Naam', name: 'name', value: config.name, id: 'name'+config.id },
-                        { fieldLabel: 'URL', name: 'url', value: config.url, id: 'url'+config.id },
+                        { fieldLabel: 'URL *', name: 'url', value: config.url, id: 'url'+config.id, width: 720 },
+                        {                           
+                            xtype: 'radiogroup',
+                            id: 'type'+config.id,
+                            fieldLabel: 'Type',
+                            vertical: true,
+                            name: "type",
+                            items: [{
+                                boxLabel: 'OpenLS', 
+                                name: 'type', 
+                                inputValue: 'openls',
+                                checked: config.type=="openls" || config.type==undefined
+                            },{
+                                boxLabel: 'ArcGISRest', 
+                                name: 'type', 
+                                inputValue: 'arcgisrest',
+                                checked: config.type=="arcgisrest"
+                            }]
+                        },
                         {
                             xtype:'button',
                             iconCls: 'savebutton-icon',
@@ -143,12 +168,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         var panel = Ext.getCmp(configid);
         var newname = Ext.getCmp('name' + configid).getValue();
         var newurl = Ext.getCmp('url' + configid).getValue();
+        var newtype = Ext.getCmp('type' + configid).getValue().type;
         panel.setTitle(newname);
         var newSearchconfigs = [];
         Ext.Array.each(me.searchconfigs, function(searchconfig) {
             if(searchconfig.id == configid) {
                 searchconfig.name = newname;
                 searchconfig.url = newurl;
+                searchconfig.type= newtype;
             }
             newSearchconfigs.push(searchconfig);
         });
