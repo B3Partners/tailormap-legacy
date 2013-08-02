@@ -101,6 +101,7 @@ public class SearchActionBean implements ActionBean {
         result.put("request",request);
         String error="";
         String url = "";
+        String type = null;
         if (appId != null) {
             Application app = em.find(Application.class, appId);
             Set components = app.getComponents();
@@ -113,7 +114,10 @@ public class SearchActionBean implements ActionBean {
                         for(int i = 0; i < searchConfig.length(); i++){
                             JSONObject search = (JSONObject)searchConfig.get(i);
                             if(search.get("id").equals(searchName)){
-                                url = search.get("url").toString();
+                                url = search.getString("url");
+                                if (search.has("type")){
+                                    type=search.getString("type");
+                                }
                             }
                         }
                     }else if (config.has("searchUrl")){
@@ -127,13 +131,15 @@ public class SearchActionBean implements ActionBean {
         
         JSONArray results = new JSONArray();
         if(url != null && !url.equals("")){
-            SearchClient client;
-            if(url.toLowerCase().contains("arcgis")){
+            SearchClient client=null;
+            if(type==null || "arcgisrest".equalsIgnoreCase(type)){
                 client = new ArcGisRestSearchClient(url);                
-            }else{
+            }else if (type.equalsIgnoreCase("openls")){
                 client = new OpenLSSearchClient(url,"GET");
             }
-            results = client.search(searchText);
+            if (client!=null){            
+                results = client.search(searchText);
+            }
              
         }
         result.put("results",results);
