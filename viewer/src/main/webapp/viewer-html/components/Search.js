@@ -206,11 +206,16 @@ Ext.define ("viewer.components.Search",{
                 url: requestPath, 
                 params: requestParams, 
                 success: function ( result, request ) {
-                    me.searchResult = Ext.JSON.decode(result.responseText);
+                    var response = Ext.JSON.decode(result.responseText);
+                    me.searchResult = response.results;
+                    if (response.error){
+                        Ext.MessageBox.alert("Foutmelding", response.error);
+                    }
                     me.showSearchResults();
                 },
-                failure: function(a,b,c) {
-                    Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden");
+                failure: function(result, request) {
+                    var response = Ext.JSON.decode(result.responseText);
+                    Ext.MessageBox.alert("Foutmelding", response.error);
                 }
             });
             this.form.getChildByElement("cancel"+ this.name).setVisible(true);

@@ -92,9 +92,15 @@ public class SearchActionBean implements ActionBean {
     
     public Resolution source() throws Exception {
         EntityManager em = Stripersist.getEntityManager();
-        JSONArray jsonArray = new JSONArray();
+        JSONObject result = new JSONObject();        
+        JSONObject request = new JSONObject();
+        request.put("appId",appId);
+        request.put("componentName",componentName);
+        request.put("searchName", searchName);
+        request.put("searchText", searchText);
+        result.put("request",request);
+        String error="";
         String url = "";
-
         if (appId != null) {
             Application app = em.find(Application.class, appId);
             Set components = app.getComponents();
@@ -115,8 +121,11 @@ public class SearchActionBean implements ActionBean {
                     }
                 }
             }
+        }else{
+            error="No application id";
         }
         
+        JSONArray results = new JSONArray();
         if(url != null && !url.equals("")){
             SearchClient client;
             if(url.toLowerCase().contains("arcgis")){
@@ -124,11 +133,12 @@ public class SearchActionBean implements ActionBean {
             }else{
                 client = new OpenLSSearchClient(url,"GET");
             }
-            jsonArray = client.search(searchText);
+            results = client.search(searchText);
              
         }
-        
-        return new StreamingResolution("application/json", new StringReader(jsonArray.toString())); 
+        result.put("results",results);
+        result.put("error",error);
+        return new StreamingResolution("application/json", new StringReader(result.toString())); 
     }
     
     private static JSONObject issueRequest(String url) throws Exception {
