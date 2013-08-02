@@ -24,6 +24,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.search.ArcGisRestSearchClient;
+import nl.b3p.viewer.search.OpenLSSearchClient;
 import nl.b3p.viewer.search.SearchClient;
 import org.apache.commons.io.IOUtils;
 import org.json.*;
@@ -121,10 +122,10 @@ public class SearchActionBean implements ActionBean {
             if(url.toLowerCase().contains("arcgis")){
                 client = new ArcGisRestSearchClient(url);                
             }else{
-                client = new OpenLSSearchClient(url);
+                client = new OpenLSSearchClient(url,"GET");
             }
             jsonArray = client.search(searchText);
-            
+             
         }
         
         return new StreamingResolution("application/json", new StringReader(jsonArray.toString())); 
