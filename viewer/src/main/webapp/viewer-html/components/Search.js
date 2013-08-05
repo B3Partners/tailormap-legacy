@@ -240,10 +240,15 @@ Ext.define ("viewer.components.Search",{
                 margin: '10px 10px 0px 10px',
                 componentCls: 'mobileLarge',
                 tooltip: 'Zoom naar locatie',
+                id: "searchButton_"+i,
                 listeners: {
                     click:{
                         scope: me,
-                        fn: function(){me.handleSearchResult(result.location);}
+                        fn: function(button,e,eOpts){
+                            //get index
+                            var loc = this.searchResult[button.id.split("_")[1]].location;
+                            me.handleSearchResult(loc);
+                        }
                     }
                 }
             });
