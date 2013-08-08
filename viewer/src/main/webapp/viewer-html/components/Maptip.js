@@ -272,18 +272,20 @@ Ext.define ("viewer.components.Maptip",{
                             var detailDiv = new Ext.Element(document.createElement("div"));
                             detailDiv.addCls("feature_summary_detail");
                             //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                            var detailElem=document.createElement("a");
-                            detailElem.href='javascript: void(0)';
-                            detailElem.feature=feature;
-                            detailElem.appLayer=appLayer;
-                            var detailLink = new Ext.Element(detailElem);
-                            detailLink.addListener("click",
-                                function (evt,el,o){ 
-                                    me.showDetails(el.appLayer,el.feature);
-                                },
-                                this);
-                            detailLink.insertHtml("beforeEnd",this.getMoreLink());
-                            detailDiv.appendChild(detailLink);
+                            if (this.getMoreLink()!=null){ 
+                                var detailElem=document.createElement("a");
+                                detailElem.href='javascript: void(0)';
+                                detailElem.feature=feature;
+                                detailElem.appLayer=appLayer;
+                                var detailLink = new Ext.Element(detailElem);
+                                detailLink.addListener("click",
+                                    function (evt,el,o){ 
+                                        me.showDetails(el.appLayer,el.feature);
+                                    },
+                                    this);
+                                detailLink.insertHtml("beforeEnd",this.getMoreLink());
+                                detailDiv.appendChild(detailLink);
+                            }                            
                             leftColumnDiv.appendChild(detailDiv);
 
                         featureDiv.appendChild(leftColumnDiv);
@@ -504,7 +506,7 @@ Ext.define ("viewer.components.Maptip",{
      */
     getMoreLink: function(){
         if (Ext.isEmpty(this.moreLink)){
-            return "Meer";
+            return null;
         }
         return this.moreLink;
     },
