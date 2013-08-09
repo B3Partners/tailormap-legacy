@@ -460,8 +460,10 @@ public class GeoServiceActionBean implements ActionBean {
                 l.getBoundingBoxes().clear();
                 l.getBoundingBoxes().put(bb.getCrs(), bb);
             }
-            if (imageExtension != null) {
+            if (StringUtils.isNotBlank(imageExtension)) {
                 l.getDetails().put("image_extension", new ClobElement(imageExtension));
+            }else if (l.getDetails().containsKey("image_extension")){
+                l.getDetails().remove("image_extension");
             }
 
         }
