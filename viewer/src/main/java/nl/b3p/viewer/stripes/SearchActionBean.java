@@ -47,6 +47,8 @@ public class SearchActionBean implements ActionBean {
     private Long appId;
     @Validate
     private String componentName;
+    @Validate
+    private String searchRequestId;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -88,6 +90,14 @@ public class SearchActionBean implements ActionBean {
     public void setSearchText(String searchText) {
         this.searchText = searchText;
     }
+    
+    public String getSearchRequestId() {
+        return searchRequestId;
+    }
+
+    public void setSearchRequestId(String searchRequestId) {
+        this.searchRequestId = searchRequestId;
+    }
     //</editor-fold>
     
     public Resolution source() throws Exception {
@@ -98,6 +108,7 @@ public class SearchActionBean implements ActionBean {
         request.put("componentName",componentName);
         request.put("searchName", searchName);
         request.put("searchText", searchText);
+        request.put("searchRequestId",searchRequestId);
         result.put("request",request);
         String error="";
         String url = "";
@@ -150,4 +161,5 @@ public class SearchActionBean implements ActionBean {
     private static JSONObject issueRequest(String url) throws Exception {
         return new JSONObject(IOUtils.toString(new URL(url).openStream(), "UTF-8"));
     }
+
 }
