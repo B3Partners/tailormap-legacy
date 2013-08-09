@@ -54,7 +54,7 @@ Ext.define("viewer.components.Legend", {
     orderedElements: null,
     
     config: {
-        title: "Legend",
+        title: "Legenda",
         titlebarIcon: "",
         tooltip: "",
         margin: "0px",
