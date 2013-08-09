@@ -27,6 +27,7 @@ Ext.define ("viewer.components.Search",{
     margin: "0 5 0 0",
     resultPanelId: '',
     defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
+    searchRequestId: 0,
     config:{
         title: null,
         iconUrl: null,
@@ -182,6 +183,7 @@ Ext.define ("viewer.components.Search",{
         this.popup.hide();
     },
     search : function(){
+        this.searchRequestId++;
         if(this.results != null){
             this.results.destroy();
         }
@@ -201,6 +203,7 @@ Ext.define ("viewer.components.Search",{
             requestParams["searchName"]= searchName;
             requestParams["appId"]= appId;
             requestParams["componentName"]= this.name;
+            requestParams["searchRequestId"]= this.searchRequestId;
             var me = this;
             Ext.Ajax.request({ 
                 url: requestPath, 
@@ -211,7 +214,9 @@ Ext.define ("viewer.components.Search",{
                     if (response.error){
                         Ext.MessageBox.alert("Foutmelding", response.error);
                     }
-                    me.showSearchResults();
+                    if (me.searchRequestId==response.request.searchRequestId){
+                        me.showSearchResults();
+                    }
                 },
                 failure: function(result, request) {
                     var response = Ext.JSON.decode(result.responseText);

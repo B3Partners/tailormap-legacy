@@ -20,6 +20,7 @@ import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -107,7 +108,9 @@ public class TileService extends GeoService {
                 tilingLayer.getBoundingBoxes().put(bb.getCrs(), bb);
             }
             
-            if (params.containsKey(PARAM_IMAGEEXTENSION)){
+            if (params.containsKey(PARAM_IMAGEEXTENSION) && 
+                    params.get(PARAM_IMAGEEXTENSION)!=null &&
+                    StringUtils.isNotBlank((String)params.get(PARAM_IMAGEEXTENSION))){
                 tilingLayer.getDetails().put("image_extension", new ClobElement((String)params.get(PARAM_IMAGEEXTENSION)));
             }
             //set tiling layer as child of top layer
