@@ -43,7 +43,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.loadScriptsField = Ext.create('Ext.form.field.Checkbox', {
             fieldLabel: 'JavaScript in HTML bron uitvoeren',
             name: 'loadScripts',
-            checked: config.loadScripts != undefined ? config.loadScripts : false,
+            checked: config && config.loadScripts != undefined ? config.loadScripts : false,
             inputValue: true,
             labelWidth: 275,
             width: 500,
