@@ -441,7 +441,8 @@ Ext.define('viewer.LayoutManager', {
             
     getContainerheight: function() {
         var me = this, containerHeight = '100%';        
-        if(Ext.isWebKit && Ext.webKitVersion < 537.22) {            
+        if(Ext.isWebKit && Ext.webKitVersion < 530) {
+            alert("Fucking webkit: "+Ext.webKitVersion);
             // There is a bug in webkit which allows the inner div to extend further than the max-height of the wrapper div
             // Seems to be fixed in future Chrome versions (https://bugs.webkit.org/show_bug.cgi?id=26559) so remove this fix when possible
             // solved in versions > 537.22
