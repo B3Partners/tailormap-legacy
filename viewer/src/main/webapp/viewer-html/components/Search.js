@@ -34,9 +34,20 @@ Ext.define ("viewer.components.Search",{
         tooltip: null,
         searchconfigs: null,
         formHeight:null,
-        label: ""
+        label: "",
+        //not yet configurable:
+        zoomBoxSize: 200,
+        typeZoomBoxSize: null
     },    
-    constructor: function (conf){        
+    constructor: function (conf){                    
+        if (conf.typeZoomBoxSize==undefined){
+            conf.typeZoomBoxSize={
+                Street: 200,
+                MunicipalitySubdivision: 2000,
+                Municipality: 5000,
+                CountrySubdivision: 25000,
+            }
+        }
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.renderButton(); 
@@ -252,7 +263,8 @@ Ext.define ("viewer.components.Search",{
                         fn: function(button,e,eOpts){
                             //get index
                             var loc = this.searchResult[button.id.split("_")[1]].location;
-                            me.handleSearchResult(loc);
+                            var type = this.searchResult[button.id.split("_")[1]].type;
+                            me.handleSearchResult(loc,type);
                         }
                     }
                 }
@@ -278,12 +290,16 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
     },
-    handleSearchResult : function(location){
+    handleSearchResult : function(location,type){
         var newExtent = new Object();
-        newExtent.minx=location.x-100;
-        newExtent.miny=location.y-100;
-        newExtent.maxx=location.x+100;
-        newExtent.maxy=location.y+100;
+        var zoomBoxSize=this.getZoomBoxSize()/2;
+        if (this.typeZoomBoxSize && this.typeZoomBoxSize[type]){
+            zoomBoxSize=this.typeZoomBoxSize[type];
+        }
+        newExtent.minx=location.x-zoomBoxSize;
+        newExtent.miny=location.y-zoomBoxSize;
+        newExtent.maxx=location.x+zoomBoxSize;
+        newExtent.maxy=location.y+zoomBoxSize;
         this.viewerController.mapComponent.getMap().zoomToExtent(newExtent);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",location.x,location.y,"marker");
