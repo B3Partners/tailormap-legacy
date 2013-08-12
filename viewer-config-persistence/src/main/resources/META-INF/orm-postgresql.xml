@@ -31,7 +31,7 @@
                     union all
                     select l.id from level_tree, level_ l where l.parent = level_tree.id
                 )
-                select * from level_tree)
+                select * from level_tree) order by id
         ]]></query>    
     </named-native-query>    
     
