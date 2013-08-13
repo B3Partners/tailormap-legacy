@@ -123,7 +123,11 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         //delete layer.getFrameworkLayer().id;
         var map = this.getFrameworkMap()
         var l = layer.getFrameworkLayer();
-        map.addLayer(l);
+        try{
+            map.addLayer(l);
+        }catch(exception){
+            this.viewerController.logger.error(exception);
+        }
     },
     
     /**
