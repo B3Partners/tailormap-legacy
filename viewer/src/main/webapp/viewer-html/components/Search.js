@@ -37,7 +37,8 @@ Ext.define ("viewer.components.Search",{
         label: "",
         //not yet configurable:
         zoomBoxSize: 200,
-        typeZoomBoxSize: null
+        typeZoomBoxSize: null,
+        typeLabel:null
     },    
     constructor: function (conf){                    
         if (conf.typeZoomBoxSize==undefined){
@@ -46,6 +47,14 @@ Ext.define ("viewer.components.Search",{
                 MunicipalitySubdivision: 2000,
                 Municipality: 5000,
                 CountrySubdivision: 25000,
+            }
+        }
+        if (conf.typeLabel==undefined){
+            conf.typeLabel={
+                Street: 'Straat',
+                MunicipalitySubdivision: 'Plaats',
+                Municipality: 'Gemeente',
+                CountrySubdivision: 'Provincie',
             }
         }
         viewer.components.Search.superclass.constructor.call(this, conf);
@@ -250,8 +259,10 @@ Ext.define ("viewer.components.Search",{
         var buttonList = new Array();
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];
+            var typeLabel = this.typeLabel[result.type];
+            
             buttonList.push({
-                text: result.label,
+                text: result.label + (typeLabel!==undefined ? " ("+typeLabel+")" : ""),
                 xtype: 'button',
                 margin: '10px 10px 0px 10px',
                 componentCls: 'mobileLarge',
