@@ -43,6 +43,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         var serviceEnvelopeTokens=this.serviceEnvelope.split(",");
         var x=Number(serviceEnvelopeTokens[0]);
         var y=Number(serviceEnvelopeTokens[1]);
+        //if arcgisrest the origin y is top left. (maxy)
+        if (this.getProtocol()=="ArcGisRest"){
+            y=Number(serviceEnvelopeTokens[3]);
+        }
         var opacity = this.config.opacity != undefined ? this.config.opacity : 1;
         var options={
             tileOrigin: new OpenLayers.LonLat(x,y),
@@ -73,34 +77,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             
             this.frameworkLayer = new OpenLayers.Layer.TMS(layerName,this.url,options);
         }else if(this.getProtocol()=="ArcGisRest"){  
-            
-            // Let ArcGISCache calculate some stuff by creating the JSON from ArcGIS Server
-            // with the stuff ArcGISCache uses and setting that in options.layerInfo
-            
-            options = {
-                opacity: options.opacity
-            };
-            options.layerInfo = {
-                spatialReference: { "wkid": 28992 },
-                tileInfo: {
-                    height: this.getTileHeight(),
-                    width: this.getTileWidth(),
-                    origin: {
-                        x: Number(serviceEnvelopeTokens[0]),
-                        y: Number(serviceEnvelopeTokens[3])
-                    },
-                    lods: Ext.Array.map(this.resolutions, function(res) {
-                        return { resolution: res };
-                    })                    
-                },
-                fullExtent: {
-                    xmin: Number(serviceEnvelopeTokens[0]),
-                    ymin: Number(serviceEnvelopeTokens[1]),
-                    xmax: Number(serviceEnvelopeTokens[2]),
-                    ymax: Number(serviceEnvelopeTokens[3])
-                }
-            };    
-
+            options.resolutions = this.resolutions;
+            options.projection =  'EPSG:28992';
             this.frameworkLayer = new OpenLayers.Layer.ArcGISCache(this.name,this.url,options);
         }
     },
