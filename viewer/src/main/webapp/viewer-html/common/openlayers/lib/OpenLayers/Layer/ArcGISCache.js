@@ -379,8 +379,11 @@ OpenLayers.Layer.ArcGISCache = OpenLayers.Class(OpenLayers.Layer.XYZ, {
      * {<OpenLayers.LonLat>} The tile origin.
      */
     getTileOrigin: function() {
+        if (this.tileOrigin){
+            return this.tileOrigin;
+        }
         var extent = this.getMaxExtent();
-        return new OpenLayers.LonLat(extent.left, extent.bottom);
+        return new OpenLayers.LonLat(extent.left, extent.top);
     },
 
    /**
@@ -399,7 +402,7 @@ OpenLayers.Layer.ArcGISCache = OpenLayers.Class(OpenLayers.Layer.XYZ, {
     * {String} The URL for a tile based on given bounds.
     */
     getURL: function (bounds) {
-        var res = this.getResolution(); 
+        var res = this.getServerResolution();
 
         // tile center
         var originTileX = (this.tileOrigin.lon + (res * this.tileSize.w/2)); 
@@ -409,7 +412,7 @@ OpenLayers.Layer.ArcGISCache = OpenLayers.Class(OpenLayers.Layer.XYZ, {
         var point = { x: center.lon, y: center.lat };
         var x = (Math.round(Math.abs((center.lon - originTileX) / (res * this.tileSize.w)))); 
         var y = (Math.round(Math.abs((originTileY - center.lat) / (res * this.tileSize.h)))); 
-        var z = this.map.getZoom();
+        var z = this.getServerZoom();
 
         // this prevents us from getting pink tiles (non-existant tiles)
         if (this.lods) {        
