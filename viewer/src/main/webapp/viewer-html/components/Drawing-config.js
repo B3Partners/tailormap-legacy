@@ -22,6 +22,9 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
     constructor: function (parentId,configObject){
+        if (configObject === null){
+            configObject = {};
+        }
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.form.add({ 
