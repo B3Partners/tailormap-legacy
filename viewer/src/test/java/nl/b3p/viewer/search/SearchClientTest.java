@@ -44,7 +44,7 @@ public class SearchClientTest {
     
     @Test
     public void search(){        
-        JSONArray result = ols.search("doorn");
+        JSONArray result = ols.search("grote+markt+groningen");
         assertTrue(result.length()==1);
     }    
 }
