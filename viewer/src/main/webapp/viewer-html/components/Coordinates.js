@@ -22,8 +22,13 @@
  */
 Ext.define ("viewer.components.Coordinates",{
     extend: "viewer.components.Component",    
-    constructor: function (conf){        
-        viewer.components.Coordinates.superclass.constructor.call(this, conf);
+    constructor: function (conf){
+        if (!conf){
+            conf={};            
+        }if (!conf.decimals){
+            conf.decimals=2;
+        }
+        viewer.components.Coordinates.superclass.constructor.call(this, conf);        
         this.initConfig(conf);
         
         conf.id=conf.name;
