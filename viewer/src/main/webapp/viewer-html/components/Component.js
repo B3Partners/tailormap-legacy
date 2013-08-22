@@ -301,7 +301,8 @@ Ext.define("viewer.components.Component",{
             menuIconPosition: {
                 x: 561
             },
-            paddingCorrection: 3
+            paddingCorrection: 3,
+            xOffset: 350
         };
         var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
             styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';
@@ -314,7 +315,7 @@ Ext.define("viewer.components.Component",{
             Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
             // Button style
             styleContent += ' .' + compClassName + '_' + state + ' button { ' +
-                            'background-position: -' + (((col - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px -' + (((row - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px !important; ' +
+                            'background-position: -' + (((col - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection + spriteConfig.xOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px !important; ' +
                             '}';
             });
             // Popupwindow style
