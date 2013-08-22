@@ -10,64 +10,64 @@
     height: 28px;
 }
 .olControlPanel .olControlZoomBoxItemInactive {
-    background: url("img/sprite.png") 595px 390px;    
+    background: url("img/sprite.png") 514px 394px;    
 }
 .olControlPanel .olControlZoomBoxItemActive {    
-    background: url("img/sprite.png") 0 390px;
+    background: url("img/sprite.png") 0 394px;
 }
 
 .olControlPanel .olControlDragPanItemActive {
-    background: url("img/sprite.png") 0 418px;    
+    background: url("img/sprite.png") 0 422px;    
 }
 .olControlPanel .olControlDragPanItemInactive {
-    background: url("img/sprite.png") 595px 418px;    
+    background: url("img/sprite.png") 514px 422px;    
 }
 
 .olControlPanel .olControlZoomOutItemActive {    
-    background: url("img/sprite.png") 0 362px;
+    background: url("img/sprite.png") 0 366px;
 }
 .olControlPanel .olControlZoomOutItemInactive {
-    background: url("img/sprite.png") 595px 362px;
+    background: url("img/sprite.png") 514px 366px;
 }
 .olControlPanel .olControlIdentifyItemActive{
-    background: url("img/sprite.png") 0 474px;
+    background: url("img/sprite.png") 0 478px;
 }
 .olControlPanel .olControlIdentifyItemInactive{    
-    background: url("img/sprite.png") 595px 474px;
+    background: url("img/sprite.png") 514px 474px;
 }
 
 .olControlPanel .olControlZoomToMaxExtentItemInactive {
-    background: url("img/sprite.png") 595px 586px;
+    background: url("img/sprite.png") 514px 590px;
     width: 28px;
     height: 28px;
 }
 
 .olControlPanel .olControlMeasureItemActive{
-    background: url("img/sprite.png") 0 446px;
+    background: url("img/sprite.png") 0 450px;
 }
 .olControlPanel .olControlMeasureItemInactive{
-    background: url("img/sprite.png") 595px 446px;
+    background: url("img/sprite.png") 514px 450px;
 }
 
 .olControlPanel .olControlDefaultItemActive{
-    background: url("img/sprite.png") 0 334px;
+    background: url("img/sprite.png") 0 338px;
 }
 .olControlPanel .olControlDefaultItemInactive{
-    background: url("img/sprite.png") 595px 334px;
+    background: url("img/sprite.png") 514px 338px;
 }
 
 .olControlPanel .olControlNavigationHistoryPreviousItemActive{
-    background: url("img/sprite.png") 0 530px;
+    background: url("img/sprite.png") 0 534px;
 }
 .olControlPanel .olControlNavigationHistoryPreviousItemInactive{
-    background: url("img/sprite.png") 595px 530px;
+    background: url("img/sprite.png") 514px 534px;
 }
 
 .olControlPanel .olControlNavigationHistoryNextItemActive{
-    background: url("img/sprite.png") 0 558px;
+    background: url("img/sprite.png") 0 562px;
 }
 .olControlPanel .olControlNavigationHistoryNextItemInactive{
-    background: url("img/sprite.png") 595px 558px;
+    background: url("img/sprite.png") 514px 562px;
 }
 
 /*Border nav*/
@@ -77,17 +77,17 @@
 }
 
 .olControlPanPanel .olControlPanNorthItemInactive{
-    background: url("img/sprite.png") 595px 782px !important;
+    background: url("img/sprite.png") 514px 786px !important;
 }
 
 .olControlPanPanel .olControlPanSouthItemInactive{
-    background: url("img/sprite.png") 595px 698px !important;
+    background: url("img/sprite.png") 514px 702px !important;
 }
 
 .olControlPanPanel .olControlPanEastItemInactive{
-    background: url("img/sprite.png") 595px 0 !important;
+    background: url("img/sprite.png") 514px 0 !important;
 }
 
 .olControlPanPanel .olControlPanWestItemInactive{
-    background: url("img/sprite.png") 595px 614px !important;
+    background: url("img/sprite.png") 514px 618px !important;
 }
