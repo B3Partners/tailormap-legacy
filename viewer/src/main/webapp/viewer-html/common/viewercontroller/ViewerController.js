@@ -1285,6 +1285,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layersLoaded = false;
         var bookmark = false;
         var appLayers = this.app.appLayers;
+        var selectedContent = this.app.selectedContent;
 
         for( var key in params){
             var value = params[key];
@@ -1318,12 +1319,30 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
                 };
                 this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);   
+            }else if (key == "levelOrder"){
+               selectedContent=[];
+               if(!Ext.isArray(value)){
+                    value = value.split(",");
+                }
+                for (var v=0; v < value.length; v++){
+                    for (var s=0; s < this.app.selectedContent.length; s++){
+                        if (this.app.selectedContent[s].id === value[v]){
+                            selectedContent.push(this.app.selectedContent[s]);
+                            break;
+                        }
+                    }
+                }
+                for (var s=0; s < this.app.selectedContent.length; s++){
+                    if (!Ext.Array.contains(selectedContent,this.app.selectedContent[s])){
+                        selectedContent.push(this.app.selectedContent[s]);
+                    }
+                }
             }
         }
 
         if(layersLoaded && !bookmark){
             this.app.appLayers = appLayers;
-            this.setSelectedContent(this.app.selectedContent);
+            this.setSelectedContent(selectedContent);
         }
 
         return layersLoaded;
@@ -1392,12 +1411,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var index2 = parameter.indexOf("=");
                 var type = parameter.substring(0,index2);
                 var value = parameter.substring(index2 +1);
-                if(type != "layers" && type != "extent" && type != "bookmark"){
-                    var otherParam = {
+                if(type != "layers" && type != "extent" && type != "bookmark" && type != "levelOrder"){
+                    paramJSON.params.push({
                         name: type, 
                         value: value
-                    };
-                    paramJSON.params.push(otherParam);
+                    });
                 }
             }
         }
@@ -1411,19 +1429,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         if(visLayers.length != 0 ){
-            var layerParam = {
+            paramJSON.params.push({
                 name: "layers", 
                 value: visLayers
-            };
-            paramJSON.params.push(layerParam);
+            });
         }
         
-        var extent = this.mapComponent.getMap().getExtent();
-        var extentParam = {
+        var extent = this.mapComponent.getMap().getExtent();       
+        paramJSON.params.push({
             name: "extent", 
             value: extent
-        };
-        paramJSON.params.push(extentParam);
+        });
+        
+        var levelOrder = [];
+        for (var i=0; i < this.app.selectedContent.length; i++){
+            levelOrder.push(this.app.selectedContent[i].id);
+        }
+        paramJSON.params.push({
+            name: "levelOrder",
+            value: levelOrder
+        });
         return paramJSON;
     },
     getApplicationSprite: function() {
