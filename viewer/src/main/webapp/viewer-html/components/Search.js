@@ -46,7 +46,7 @@ Ext.define ("viewer.components.Search",{
                 Street: 200,
                 MunicipalitySubdivision: 2000,
                 Municipality: 5000,
-                CountrySubdivision: 25000,
+                CountrySubdivision: 25000
             }
         }
         if (conf.typeLabel==undefined){
@@ -54,7 +54,7 @@ Ext.define ("viewer.components.Search",{
                 Street: 'Straat',
                 MunicipalitySubdivision: 'Plaats',
                 Municipality: 'Gemeente',
-                CountrySubdivision: 'Provincie',
+                CountrySubdivision: 'Provincie'
             }
         }
         viewer.components.Search.superclass.constructor.call(this, conf);

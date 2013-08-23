@@ -15,6 +15,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     bottomContainerId: null,
     toolMargin: 30,
     enabledEvents: new Object(),
+    spriteIsSet: false,
     config: {
         movetime: null,
         movesteps: null,
@@ -29,10 +30,23 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         if (this.swfPath==null){
             this.swfPath="flamingo/flamingo.swf";            
         }
+        var me = this;
+        this.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,function (){
+            if (!me.spriteIsSet){
+                me.spriteIsSet=true;
+                var spriteUrl=viewerController.getApplicationSprite();
+                //if not absolute then make it relative for the flamingo.swf
+                if (spriteUrl.toLowerCase().indexOf("http")!==0){
+                    spriteUrl=".."+spriteUrl;
+                }
+                me.viewerObject.callMethod("flamingo",'setSprite',spriteUrl);
+            }
+        },this);
         var so = new SWFObject(this.swfPath+"?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);
         this.viewerObject = document.getElementById("flamingo");
+        
         return this;
     },
     /**
