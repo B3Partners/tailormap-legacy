@@ -675,6 +675,8 @@
             source: {search: "B3Partners"}
         }
     },
+    /**
+    Needs more work... Not reusable
     {
         className: "viewer.components.Presentation",
         name: "Presentation",
@@ -684,7 +686,7 @@
         /*configSource: ["ConfigObject.js","Presentation_config.js"],*/
         restrictions: ["footer"],            
         type: "popup"
-    },
+    },*/
     {
         className: "viewer.components.Divider",
         name: "Divider",
