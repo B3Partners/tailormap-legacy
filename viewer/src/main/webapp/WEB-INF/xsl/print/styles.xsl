@@ -6,7 +6,7 @@
 	<!-- styles -->
 	<xsl:attribute-set name="title-font">
 		<xsl:attribute name="font-size">15pt</xsl:attribute>
-		<xsl:attribute name="color">#ffffff</xsl:attribute>
+		<xsl:attribute name="color">#000000</xsl:attribute>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="default-font">
