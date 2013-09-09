@@ -683,7 +683,7 @@
         shortName: "Pres",
         singleton: true,
         sources: ["Presentation.js"],
-        /*configSource: ["ConfigObject.js","Presentation_config.js"],*/
+        configSource: ["ConfigObject.js","Presentation_config.js"],
         restrictions: ["footer"],            
         type: "popup"
     },*/
