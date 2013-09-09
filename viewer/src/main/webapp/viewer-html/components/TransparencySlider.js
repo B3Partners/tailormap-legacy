@@ -23,6 +23,7 @@
 Ext.define ("viewer.components.TransparencySlider",{
     extend: "viewer.components.Component",
     config:{
+        title:null,
         sliders : [],
         sliderForUserAdded: null,
         sliderForUserAddedText: null,
