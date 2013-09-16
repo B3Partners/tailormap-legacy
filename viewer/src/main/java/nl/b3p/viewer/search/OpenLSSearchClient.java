@@ -16,8 +16,10 @@ import nl.geozet.openls.parser.OpenLSResponseParser;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,7 +57,13 @@ public class OpenLSSearchClient implements SearchClient {
         }
         HttpMethod method;
         if ("GET".equalsIgnoreCase(this.method)) {
-            method = new GetMethod(queryUrl);
+            try{
+                String encodedQuery = URIUtil.encodeQuery(queryUrl, "UTF-8");
+                method = new GetMethod(encodedQuery);
+            }catch(URIException uriEx){
+                log.debug("Could not encode query, trying to sent unencoded: ",uriEx);
+                method = new GetMethod(queryUrl);
+           }
         } else {
             method = new PostMethod(queryUrl);
         }
