@@ -909,7 +909,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         //fix for Esri Configurations. Sometimes users switch max with min. Make 
         //the min the minimal scale and max the maximal scale
-        if (minScale!=undefined && maxScale!=undefined  && minScale > maxScale){
+        if (this.isMinMaxSwitched(minScale, maxScale)){
             minScale=serviceLayer.maxScale;
             maxScale=serviceLayer.minScale;
         }
@@ -941,6 +941,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }            
         return 0;      
     },
+            
+    /**
+     *  Checks if the min/max scale are switched. Sometimes (esri)users switch max with min.
+     *  @param minScale The minimum scale as given in the layer
+     *  @param maxScale The maximum scale as given in the layer
+     */
+    isMinMaxSwitched: function(minScale, maxScale){
+        if (minScale!==undefined && maxScale!==undefined  && minScale > maxScale){
+            return true;
+        }else{
+            return false;
+        }
+    },
     /**
      * Check's if this layer is within the current map scale
      * @param appLayer the applayer
@@ -962,9 +975,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //fix some things with scale and resolution differences in servers:
         serviceScaleCorrection = 1 / this.calculateScaleCorrection(service,serviceLayer.minScale,serviceLayer.maxScale);
         var mapResolutions = this.mapComponent.getMap().getResolutions();
-        if (compare==-1){
+        if (compare===-1){
             var res =serviceLayer.maxScale*serviceScaleCorrection;
-            if (mapResolutions!=null){
+            if(this.isMinMaxSwitched(serviceLayer.minScale,serviceLayer.maxScale)){
+                res =serviceLayer.minScale*serviceScaleCorrection;
+            }
+            if (mapResolutions!==null){
                 for (var i =0 ; i < mapResolutions.length; i++){
                     if (res > mapResolutions[i]){
                         res = mapResolutions[i];
