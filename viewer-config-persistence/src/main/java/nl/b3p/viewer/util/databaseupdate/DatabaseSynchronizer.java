@@ -1,8 +1,9 @@
 package nl.b3p.viewer.util.databaseupdate;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -111,8 +112,7 @@ public class DatabaseSynchronizer implements Servlet {
                 if (scripts.isEmpty()){
                     log.info("Database is up to date. No need for running update scripts");
                 }else{
-                    LinkedHashMap<String, List<File>> scriptFiles = getScriptFiles(scripts);
-                    ScriptWorker w = new ScriptWorker(scriptFiles);
+                    ScriptWorker w = new ScriptWorker(scripts);
                     //do the work, execute the scripts.
                     session.doWork(w);
                     if (w.isErrored()){
@@ -186,93 +186,89 @@ public class DatabaseSynchronizer implements Servlet {
      */
     private void checkScriptDir() {
         File scriptDir = new File(DatabaseSynchronizer.class.getResource(SCRIPT_PATH).getFile());
-        File[] scripts=scriptDir.listFiles();
-        for (File script : scripts){
-            String scriptName= null;
-            if (script.getName().startsWith(this.databaseProductName.toLowerCase()+"-")){
-                scriptName = script.getName().substring(this.databaseProductName.length()+1);
-            }else{
-                boolean forOtherProduct=false;
-                for (String supProd : SUPPORTED_DATABASE_PRODUCTS){
-                    if (script.getName().startsWith(supProd+"-")){
-                        forOtherProduct = true;
-                    }
-                }
-                //if not for other product then this is a common script.
-                if (!forOtherProduct){
-                    scriptName = script.getName();
-                }
-            }                    
-            if (scriptName!=null){                
-                boolean found=false;
-                for (Entry<String, List<String>> entry : this.updates.entrySet()) {
-                    for (String registeredScript : entry.getValue()){
-                        if (scriptName.equals(registeredScript)){
-                            found=true;
-                            break;
+        if (scriptDir!=null){
+            File[] scripts=scriptDir.listFiles();
+            if (scripts!=null){
+                for (File script : scripts){
+                    String scriptName= null;
+                    if (script.getName().startsWith(this.databaseProductName.toLowerCase()+"-")){
+                        scriptName = script.getName().substring(this.databaseProductName.length()+1);
+                    }else{
+                        boolean forOtherProduct=false;
+                        for (String supProd : SUPPORTED_DATABASE_PRODUCTS){
+                            if (script.getName().startsWith(supProd+"-")){
+                                forOtherProduct = true;
+                            }
+                        }
+                        //if not for other product then this is a common script.
+                        if (!forOtherProduct){
+                            scriptName = script.getName();
+                        }
+                    }                    
+                    if (scriptName!=null){                
+                        boolean found=false;
+                        for (Entry<String, List<String>> entry : this.updates.entrySet()) {
+                            for (String registeredScript : entry.getValue()){
+                                if (scriptName.equals(registeredScript)){
+                                    found=true;
+                                    break;
+                                }
+                            }
+                            if (found){
+                                break;
+                            }
+                        }
+                        if (!found){
+                            log.warn("The sql script "+script.getAbsolutePath()+" is not registered in a update. "
+                                    + "The script is not used to updated the database. Is this correct? "
+                                    + "Otherwise add the script to the var DatabaseSynchronizer.updates.");
                         }
                     }
-                    if (found){
-                        break;
-                    }
-                }
-                if (!found){
-                    log.warn("The sql script "+script.getAbsolutePath()+" is not registered in a update. "
-                            + "The script is not used to updated the database. Is this correct? "
-                            + "Otherwise add the script to the var DatabaseSynchronizer.updates.");
                 }
             }
         }
-    }
-
-    private LinkedHashMap<String, List<File>> getScriptFiles(LinkedHashMap<String, List<String>> scripts) throws Exception {
-        LinkedHashMap<String, List<File>> scriptFiles = new LinkedHashMap<String, List<File>>();
-        for (Entry<String, List<String>> entry : scripts.entrySet()) {
-            List<File> scriptList = new ArrayList<File>();
-            for (String script : entry.getValue()){
-                //check if there is a common script
-                URL fileUrl = DatabaseSynchronizer.class.getResource(SCRIPT_PATH+"/"+script);
-                File f = null;
-                if (fileUrl!=null){
-                    f = new File(fileUrl.getFile());
-                }else{
-                    fileUrl = DatabaseSynchronizer.class.getResource(SCRIPT_PATH+"/"+this.databaseProductName.toLowerCase()+"-"+script);
-                    if (fileUrl!=null){
-                        f = new File(fileUrl.getFile());
-                    }
-                }
-                if (f == null){
-                    throw new Exception("Update script '"+script+"' nor '"+this.databaseProductName.toLowerCase()+"-"+script+"' can be found");
-                }
-                scriptList.add(f);
-            }
-            scriptFiles.put(entry.getKey(), scriptList);
-        }
-        return scriptFiles;
     }
     
     public class ScriptWorker implements Work{
-        LinkedHashMap<String, List<File>> updateScripts;
+        LinkedHashMap<String, List<String>> updateScripts;
         private String successVersion=null;
         private boolean errored=false;
         
-        public ScriptWorker(LinkedHashMap<String, List<File>> scripts){
+        
+        public ScriptWorker(LinkedHashMap<String, List<String>> scripts){
             this.updateScripts=scripts;
         }
         @Override
         public void execute(Connection cnctn) throws SQLException {                
             ScriptRunner runner = new ScriptRunner(cnctn, true, true);
-            for (Entry<String, List<File>> entry : this.updateScripts.entrySet()) {
-                List<File> scripts = entry.getValue();
-                for (File script : scripts){
+            for (Entry<String, List<String>> entry : this.updateScripts.entrySet()) {
+                List<String> scripts = entry.getValue();
+                for (String script : scripts){
+                    InputStream is = null;
                     try {
-                        log.info("Run database script: "+script.getPath());
-                        runner.runScript(new FileReader(script));
+                        String scriptName=SCRIPT_PATH+"/"+script;
+                        is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
+                        if (is==null){
+                            scriptName= SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script;
+                            is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
+                        }
+                        if (is==null){
+                            throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
+                        }
+                        log.info("Run database script: "+scriptName);
+                        runner.runScript(new InputStreamReader(is));
                         if (!this.errored){
                             this.successVersion = entry.getKey();
                         }
                     } catch (Exception ex) {
-                        log.error("Error while executing script: " + script.getAbsolutePath(), ex);
+                        try{
+                            if (is!=null){
+                                is.close();
+                            }
+                        }catch(IOException ioe){
+                            log.error("Exception while closing InputStream",ex);
+                        }
+                        log.error("Error while executing script: " + script, ex);
                         this.errored = true;
                         break;
                     }
