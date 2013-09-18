@@ -187,39 +187,41 @@ public class DatabaseSynchronizer implements Servlet {
         File scriptDir = new File(DatabaseSynchronizer.class.getResource(SCRIPT_PATH).getFile());
         if (scriptDir!=null){
             File[] scripts=scriptDir.listFiles();
-            for (File script : scripts){
-                String scriptName= null;
-                if (script.getName().startsWith(this.databaseProductName.toLowerCase()+"-")){
-                    scriptName = script.getName().substring(this.databaseProductName.length()+1);
-                }else{
-                    boolean forOtherProduct=false;
-                    for (String supProd : SUPPORTED_DATABASE_PRODUCTS){
-                        if (script.getName().startsWith(supProd+"-")){
-                            forOtherProduct = true;
+            if (scripts!=null){
+                for (File script : scripts){
+                    String scriptName= null;
+                    if (script.getName().startsWith(this.databaseProductName.toLowerCase()+"-")){
+                        scriptName = script.getName().substring(this.databaseProductName.length()+1);
+                    }else{
+                        boolean forOtherProduct=false;
+                        for (String supProd : SUPPORTED_DATABASE_PRODUCTS){
+                            if (script.getName().startsWith(supProd+"-")){
+                                forOtherProduct = true;
+                            }
                         }
-                    }
-                    //if not for other product then this is a common script.
-                    if (!forOtherProduct){
-                        scriptName = script.getName();
-                    }
-                }                    
-                if (scriptName!=null){                
-                    boolean found=false;
-                    for (Entry<String, List<String>> entry : this.updates.entrySet()) {
-                        for (String registeredScript : entry.getValue()){
-                            if (scriptName.equals(registeredScript)){
-                                found=true;
+                        //if not for other product then this is a common script.
+                        if (!forOtherProduct){
+                            scriptName = script.getName();
+                        }
+                    }                    
+                    if (scriptName!=null){                
+                        boolean found=false;
+                        for (Entry<String, List<String>> entry : this.updates.entrySet()) {
+                            for (String registeredScript : entry.getValue()){
+                                if (scriptName.equals(registeredScript)){
+                                    found=true;
+                                    break;
+                                }
+                            }
+                            if (found){
                                 break;
                             }
                         }
-                        if (found){
-                            break;
+                        if (!found){
+                            log.warn("The sql script "+script.getAbsolutePath()+" is not registered in a update. "
+                                    + "The script is not used to updated the database. Is this correct? "
+                                    + "Otherwise add the script to the var DatabaseSynchronizer.updates.");
                         }
-                    }
-                    if (!found){
-                        log.warn("The sql script "+script.getAbsolutePath()+" is not registered in a update. "
-                                + "The script is not used to updated the database. Is this correct? "
-                                + "Otherwise add the script to the var DatabaseSynchronizer.updates.");
                     }
                 }
             }
