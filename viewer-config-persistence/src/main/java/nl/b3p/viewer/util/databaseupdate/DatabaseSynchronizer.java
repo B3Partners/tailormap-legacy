@@ -243,24 +243,27 @@ public class DatabaseSynchronizer implements Servlet {
                 for (String script : scripts){
                     InputStream is = null;
                     try {
-                        log.info("Run database script: "+script);
-                        is= DatabaseSynchronizer.class.getResourceAsStream(SCRIPT_PATH+"/"+script);
+                        String scriptName=SCRIPT_PATH+"/"+script;
+                        is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
                         if (is==null){
-                            is= DatabaseSynchronizer.class.getResourceAsStream(SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script);
+                            scriptName= SCRIPT_PATH+"/"+ databaseProductName.toLowerCase()+"-"+script;
+                            is= DatabaseSynchronizer.class.getResourceAsStream(scriptName);
                         }
                         if (is==null){
                             throw new Exception("Update script '"+script+"' nor '"+databaseProductName.toLowerCase()+"-"+script+"' can be found");
                         }
+                        log.info("Run database script: "+scriptName);
                         runner.runScript(new InputStreamReader(is));
                         if (!this.errored){
                             this.successVersion = entry.getKey();
                         }
                     } catch (Exception ex) {
                         try{
-                        if (is!=null){
-                            is.close();
-                        }
+                            if (is!=null){
+                                is.close();
+                            }
                         }catch(IOException ioe){
+                            log.error("Exception while closing InputStream",ex);
                         }
                         log.error("Error while executing script: " + script, ex);
                         this.errored = true;
