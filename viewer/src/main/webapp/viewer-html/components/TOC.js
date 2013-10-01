@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.TOC",{
     extend: "viewer.components.Component",
     panel: null,
+    buttonBar: null,
     selectedContent : null,
     appLayers :  null,
     service : null,
@@ -29,6 +30,7 @@ Ext.define ("viewer.components.TOC",{
     backgroundLayers: null,
     popup:null,
     qtips:null,
+    toggleAllLayers:true,
     config: {
         groupCheck:true,
         layersChecked:true,
@@ -36,7 +38,10 @@ Ext.define ("viewer.components.TOC",{
         title: "Table of Contents",
         showLeafIcon: true,
         zoomToScaleText: "Zoom to scale",
-        expandOnStartup: true
+        expandOnStartup: true,
+        toggleAllLayersOnText: 'All layers on',
+        toggleAllLayersOffText: 'All layers off',
+        showToggleAllLayers: false
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -86,7 +91,27 @@ Ext.define ("viewer.components.TOC",{
         store.addListener("expand",this.onExpand,this);
         
         var title = "";
-        if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;        
+        if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;
+        if(this.showToggleAllLayers){
+            this.buttonBar = Ext.create('Ext.container.Container', {
+                id: 'ButtonBar_'+this.id,
+                renderTo: this.getContentDiv(),
+                items: [
+                    {
+                        xtype: 'label',
+                        id: 'toggleAllLayersButton',
+                        text: me.toggleAllLayers ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
+                        listeners: {
+                            click: {
+                                fn: function(){me.toggleAllLayers();},
+                                element: 'el'
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+        
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
@@ -326,6 +351,20 @@ Ext.define ("viewer.components.TOC",{
             }
         }
         this.qtips=newQtips;
+    },
+    /**
+     * Toggle All layers in the TOC
+     */
+    toggleAllLayers: function (){
+        this.updateTreeNodes = [];
+        this.checkChildNodes(this.panel.getRootNode(),this.toggleAllLayers);
+        for(var i = 0; i < this.updateTreeNodes.length; i++) {
+            this.updateMap(this.updateTreeNodes[i], this.toggleAllLayers);
+        }
+        this.toggleAllLayers = !this.toggleAllLayers;
+        if (Ext.get("toggleAllLayersButton")){
+            Ext.get("toggleAllLayersButton").update(this.toggleAllLayers ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
+        }
     },
     // Fix for not expanding backgroundlayers: not expandable nodes don't have expand button, but doubleclick does expand
     beforeExpand : function (node){
