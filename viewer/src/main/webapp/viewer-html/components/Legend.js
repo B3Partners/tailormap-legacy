@@ -185,7 +185,7 @@ Ext.define("viewer.components.Legend", {
                     order: index++,
                     waitingForInfo: false,
                     element: null
-                }
+                };
                 
                 me.createLegendForAppLayer(appLayer);
             }
@@ -291,7 +291,7 @@ Ext.define("viewer.components.Legend", {
                 divImage.className = "image";
                 divImage.appendChild(img);
                 divLayer.appendChild(divImage);
-                if (part.label){
+                if (part.label && legendInfo.parts.length > 1){
                     divLabel.className = "label";
                     divLabel.innerHTML = Ext.htmlEncode(part.label);
                     divLayer.appendChild(divLabel);                        
@@ -312,7 +312,7 @@ Ext.define("viewer.components.Legend", {
         if(!(a instanceof Array)) {
             throw "findElementAfter only works on arrays";
         }        
-        if(a.length == 0) {
+        if(a.length === 0) {
             return null;
         }
        
