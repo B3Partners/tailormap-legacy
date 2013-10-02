@@ -44,7 +44,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
                 inputValue: true,
                 name: 'groupCheck',
-                checked: config.groupCheck!=undefined? config.groupCheck : true,
+                checked: config.groupCheck!==undefined? config.groupCheck : true,
                 value: true,
                 labelWidth:me.labelWidth
             },{
@@ -52,7 +52,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Kaartlagen krijgen een vinkvak',
                 inputValue: true,
                 name: 'layersChecked',
-                checked: config.layersChecked!=undefined? config.layersChecked: true,
+                checked: config.layersChecked!==undefined? config.layersChecked: true,
                 value: true,
                 labelWidth:me.labelWidth
             },{
@@ -60,7 +60,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Achtergrondkaarten tonen',
                 inputValue: true,
                 name: 'showBaselayers',
-                checked: config.showBaselayers!=undefined? config.showBaselayers: true,
+                checked: config.showBaselayers!==undefined? config.showBaselayers: true,
                 value: true,
                 labelWidth:me.labelWidth
             },{
@@ -68,7 +68,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Algemeen icoon voor kaartlaag tonen',
                 inputValue: true,
                 name: 'showLeafIcon',
-                checked: config.showLeafIcon!=undefined? config.showLeafIcon:true,
+                checked: config.showLeafIcon!==undefined? config.showLeafIcon:true,
                 value: true,
                 labelWidth:me.labelWidth
             },{ 
@@ -82,19 +82,48 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Bij opstarten boom openklappen',
                 inputValue: true,
                 name: 'expandOnStartup',
-                checked: config.expandOnStartup!=undefined? config.expandOnStartup:true,
+                checked: config.expandOnStartup!==undefined? config.expandOnStartup:true,
                 value: true,
                 labelWidth:me.labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Toon knop voor aan/uit zetten van alle layers in de TOC',
+                name: 'showToggleAllLayers',
+                inputValue: true,
+                checked: config.showToggleAllLayers!==undefined? config.showToggleAllLayers:false,
+                value: true,
+                labelWidth: me.labelWidth
+            },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Tekst voor knop om alle layers aan te zetten',
+                name: 'toggleAllLayersOnText',
+                value: config.toggleAllLayersOnText? config.toggleAllLayersOnText:"All layers on",
+                labelWidth:me.labelWidth
+            },{ 
+                xtype: 'textfield',
+                fieldLabel: 'Tekst voor knop om alle layers uit te zetten',
+                name: 'toggleAllLayersOffText',
+                value: config.toggleAllLayersOffText? config.toggleAllLayersOffText:"All layers off",
+                labelWidth:me.labelWidth
+            },{                           
+                xtype: 'radiogroup',
+                vertical: true,
+                fieldLabel: 'Na het opstarten moet de eerste keer klikken er voor zorgen dat de kaartlagen',
+                name: "initToggleAllLayers",
+                items: [{
+                    boxLabel: 'Aan gaan', 
+                    name: 'initToggleAllLayers', 
+                    inputValue: true, 
+                    checked: me.configObject.initToggleAllLayers
+                },{
+                    boxLabel: 'Uit gaan', 
+                    name: 'initToggleAllLayers', 
+                    inputValue: false, 
+                    checked: !me.configObject.initToggleAllLayers
+                }]
             }],
         
             renderTo: parentid//(2)
         });      
-    },
-    getConfiguration: function(){
-        var config = new Object();
-        for( var i = 0 ; i < this.form.items.length ; i++){
-            config[this.form.items.get(i).name] = this.form.items.get(i).value;
-        }
-        return config;
     }
 });

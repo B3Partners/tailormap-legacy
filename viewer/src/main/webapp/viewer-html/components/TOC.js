@@ -30,7 +30,7 @@ Ext.define ("viewer.components.TOC",{
     backgroundLayers: null,
     popup:null,
     qtips:null,
-    toggleAllLayers:true,
+    toggleAllLayersState:true,
     config: {
         groupCheck:true,
         layersChecked:true,
@@ -41,11 +41,13 @@ Ext.define ("viewer.components.TOC",{
         expandOnStartup: true,
         toggleAllLayersOnText: 'All layers on',
         toggleAllLayersOffText: 'All layers off',
+        initToggleAllLayers: true,
         showToggleAllLayers: false
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.initConfig(config);
+        this.toggleAllLayersState = this.initToggleAllLayers;
         this.loadTree();
         this.loadInitLayers();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
@@ -100,7 +102,7 @@ Ext.define ("viewer.components.TOC",{
                     {
                         xtype: 'label',
                         id: 'toggleAllLayersButton',
-                        text: me.toggleAllLayers ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
+                        text: me.toggleAllLayersState ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
                         listeners: {
                             click: {
                                 fn: function(){me.toggleAllLayers();},
@@ -357,13 +359,13 @@ Ext.define ("viewer.components.TOC",{
      */
     toggleAllLayers: function (){
         this.updateTreeNodes = [];
-        this.checkChildNodes(this.panel.getRootNode(),this.toggleAllLayers);
+        this.checkChildNodes(this.panel.getRootNode(),this.toggleAllLayersState);
         for(var i = 0; i < this.updateTreeNodes.length; i++) {
-            this.updateMap(this.updateTreeNodes[i], this.toggleAllLayers);
+            this.updateMap(this.updateTreeNodes[i], this.toggleAllLayersState);
         }
-        this.toggleAllLayers = !this.toggleAllLayers;
+        this.toggleAllLayersState = !this.toggleAllLayersState;
         if (Ext.get("toggleAllLayersButton")){
-            Ext.get("toggleAllLayersButton").update(this.toggleAllLayers ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
+            Ext.get("toggleAllLayersButton").update(this.toggleAllLayersState ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
         }
     },
     // Fix for not expanding backgroundlayers: not expandable nodes don't have expand button, but doubleclick does expand
