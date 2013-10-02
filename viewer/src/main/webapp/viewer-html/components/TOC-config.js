@@ -110,6 +110,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 vertical: true,
                 fieldLabel: 'Na het opstarten moet de eerste keer klikken er voor zorgen dat de kaartlagen',
                 name: "initToggleAllLayers",
+                labelWidth: me.labelWidth,
                 items: [{
                     boxLabel: 'Aan gaan', 
                     name: 'initToggleAllLayers', 
@@ -122,8 +123,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     checked: !me.configObject.initToggleAllLayers
                 }]
             }],
-        
-            renderTo: parentid//(2)
+            renderTo: parentid
         });      
     }
 });
