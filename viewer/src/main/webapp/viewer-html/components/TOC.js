@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Overview component
- * Creates a overview map
+ * TOC component
+ * Creates a Table of comtents Component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.TOC",{
@@ -142,12 +142,12 @@ Ext.define ("viewer.components.TOC",{
         var nodes = new Array();
         for ( var i = 0 ; i < this.selectedContent.length ; i ++){
             var contentItem = this.selectedContent[i];
-            if(contentItem.type ==  "level"){
+            if(contentItem.type ===  "level"){
                 var level = this.addLevel(contentItem.id);
                 if(level != null){
                     nodes.push(level.node);
                 }
-            }else if(contentItem.type == "appLayer"){
+            }else if(contentItem.type === "appLayer"){
                 var layer = this.addLayer(contentItem.id);
                 nodes.push(layer.node);
             }
@@ -267,7 +267,7 @@ Ext.define ("viewer.components.TOC",{
             treeNodeLayer.iconCls='no_treenode_icon';
         }
         if(serviceLayer.details != undefined){
-            if(serviceLayer.details ["metadata.stylesheet"] != undefined){
+            if(serviceLayer.details ["metadata.stylesheet"] !== undefined){
                 this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
                 treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
             }
@@ -398,7 +398,7 @@ Ext.define ("viewer.components.TOC",{
         // Not the correct way to get the applayerID TODO: Fix it
         for ( var i in this.appLayers){
             var appLayer = this.appLayers[i];
-            if(appLayer.layerName== name){
+            if(appLayer.layerName=== name){
                 return "layer-"+appLayer.id;
             }
         }
@@ -456,17 +456,17 @@ Ext.define ("viewer.components.TOC",{
     updateTriStateClass: function(node, totalChecked, totalNodes) {
         var tristate = 0;
         if(!this.groupCheck) return tristate;
-        if(totalChecked == 0) {
+        if(totalChecked === 0) {
             tristate = -1;
-        } else if(totalChecked == totalNodes) {
+        } else if(totalChecked === totalNodes) {
             tristate = 1;
         }
         if(node != null) {
-            if(tristate == -1) {
+            if(tristate === -1) {
                 node.data.tristate = -1;
                 node.set('cls', '');
                 node.set('checked', false);
-            } else if(tristate == 1) {
+            } else if(tristate === 1) {
                 node.data.tristate = 1;
                 node.set('cls', '');
                 node.set('checked', true);
