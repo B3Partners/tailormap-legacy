@@ -29,7 +29,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add({
             xtype: "combo",
             fields: ['value', 'text'],
-            value: configObject.selectGroups || true,
+            value: configObject.selectGroups !== undefined ? configObject.selectGroups : true,
             name: "selectGroups",
             fieldLabel: "Kaarten selecteren",
             store: [
@@ -40,7 +40,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add({
             xtype: "combo",
             fields: ['value', 'text'],
-            value: configObject.selectLayers || true,
+            value: configObject.selectLayers !== undefined ? configObject.selectLayers : true,
             name: "selectLayers",
             fieldLabel: "Kaartlagen selecteren",
             store: [
@@ -51,7 +51,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add({
             xtype: "combo",
             fields: ['value', 'text'],
-            value: configObject.selectOwnServices || true,
+            value: configObject.selectOwnServices !== undefined ? configObject.selectOwnServices : true,
             name: "selectOwnServices",
             fieldLabel: "Eigen services selecteren",
             store: [
