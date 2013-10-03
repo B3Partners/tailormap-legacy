@@ -375,5 +375,13 @@ Ext.define("viewer.components.Component",{
      */
     getBookmarkState: function(shortUrl){
         return null;
+    },
+    /**
+     * Implement to load the state (created with 'getBookmarkState') from the bookmark in the component
+     * @param {Object} state an object that is created with 'getBookmarkState'
+     */
+    loadBookmarkState: function(state){
+        return;
     }
+    
 });

@@ -1373,6 +1373,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         selectedContent.push(this.app.selectedContent[s]);
                     }
                 }
+            }else{
+                var component=this.getComponentByName(key);
+                if (component){
+                    component.loadBookmarkState(Ext.decode(value));
+                }
             }
         }
 
