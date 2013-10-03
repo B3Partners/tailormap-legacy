@@ -368,12 +368,12 @@ Ext.define("viewer.components.Component",{
         }
     },
     /**
-     * Implement when there are settings for this component that must me included in the bookmark url
-     * @param {Boolean} shortUrl true if the settings are used for the short url. If false the settings are used
+     * Implement when there is a state for this component that must me included in the bookmark url
+     * @param {Boolean} shortUrl true if the settings are used for the short url. If false, the state is used
      * in the plain url.
-     * @return must return a object with key value pairs. Return null if the component has no settings for the bookmark
+     * @return must return a object with key value pairs. Return null if the component has no state for the bookmark
      */
-    getSettingsForBookmark: function(shortUrl){
+    getBookmarkState: function(shortUrl){
         return null;
     }
 });
