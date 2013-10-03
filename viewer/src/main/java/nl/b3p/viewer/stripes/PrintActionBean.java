@@ -18,6 +18,8 @@ package nl.b3p.viewer.stripes;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +37,8 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.print.Legend;
 import nl.b3p.viewer.print.PrintInfo;
 import org.apache.commons.httpclient.HttpClient;
@@ -51,6 +55,7 @@ import org.apache.xmlgraphics.util.MimeConstants;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -61,10 +66,11 @@ import org.json.JSONObject;
 public class PrintActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
-    public static String xsl_A4_Landscape = "/WEB-INF/xsl/print/A4_Landscape.xsl";
-    public static String xsl_A4_Portrait = "/WEB-INF/xsl/print/A4_Portrait.xsl";
-    public static String xsl_A3_Landscape = "/WEB-INF/xsl/print/A3_Landscape.xsl";
-    public static String xsl_A3_Portrait = "/WEB-INF/xsl/print/A3_Portrait.xsl";
+    public static final String A4_Landscape = "A4_Landscape.xsl";
+    public static final String A4_Portrait = "A4_Portrait.xsl";
+    public static final String A3_Landscape = "A3_Landscape.xsl";
+    public static final String A3_Portrait = "A3_Portrait.xsl";
+    public static final String DEFAULT_TEMPLATE_PATH = "/WEB-INF/xsl/print/";
     public static final String A4 = "a4";
     public static final String A3 = "a3";
     public static final String LANDSCAPE = "landscape";
@@ -77,6 +83,10 @@ public class PrintActionBean implements ActionBean {
     
     public Resolution print() throws JSONException, Exception {
         JSONObject jRequest = new JSONObject(params);
+        
+        //get the appId:
+        Long appId = jRequest.optLong("appId");
+        Application app = Stripersist.getEntityManager().find(Application.class, appId);
         
         //get the image url:
         String imageUrl= getImageUrl(params);
@@ -137,28 +147,72 @@ public class PrintActionBean implements ActionBean {
         //determine the correct template
         String pageFormat = jRequest.has("pageformat") ? jRequest.getString("pageformat") : A4;
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PORTRAIT;
-        final String templateUrl = getTemplateUrl(pageFormat,orientation);
+        final String templateName= getTemplateName(pageFormat,orientation);
+        
+        
+        final String templateUrl;
+        if (app!=null && app.getDetails()!=null && app.getDetails().get("stylesheetPrint")!=null){            
+            //templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
+            ClobElement ce = app.getDetails().get("stylesheetPrint");
+            templateUrl=ce.getValue()+templateName;
+        }else{
+            templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
+        }
         
         StreamingResolution res = new StreamingResolution(mimeType) {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
-                createOutput(info,mimeType, templateUrl,true,response);         
+                if (templateUrl.toLowerCase().startsWith("http://") || templateUrl.toLowerCase().startsWith("ftp://")){
+                    createOutput(info,mimeType, new URL(templateUrl),true,response);
+                }else{
+                    File f = new File(templateUrl);
+                    if (!f.exists()){
+                        f = new File(context.getServletContext().getRealPath(templateUrl));
+                    }
+                    if (!f.exists()){
+                        log.error("Can't find template: "+f.getAbsolutePath()+". Using the default templates");
+                        f= new File(context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName));
+                    }
+                    createOutput(info,mimeType, f,true,response);
+                }
+                
             }
         };
         return res;
         
-    }
-    public void createOutput(PrintInfo info, String mimeType, String template,
+    }    
+    
+    private void createOutput(PrintInfo info, String mimeType, File xslFile,
             boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
 
-        File xslFile = new File(template);
         String path = new File(xslFile.getParent()).toURI().toString();
+        createOutput(info, mimeType, new FileInputStream(xslFile), path, addJavascript, response);
+    }
+    private void createOutput(PrintInfo info, String mimeType, URL xslUrl,
+            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
+
+        String path = xslUrl.toString().substring(0, xslUrl.toString().lastIndexOf("/")+1);
+        createOutput(info, mimeType, xslUrl.openStream(), path, addJavascript, response);
+    }
+    /**
+     * Create the output pdf.
+     * @param info the print info
+     * @param mimeType mimeType of the result
+     * @param xslIs inputstream for xsl sheet
+     * @param basePath the base path of that sheet
+     * @param addJavascript addJavascript?
+     * @param response the response for the outputstream
+     * @throws MalformedURLException
+     * @throws IOException 
+     */
+    private void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath,
+            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
 
         /* Setup fopfactory */
         FopFactory fopFactory = FopFactory.newInstance();
 
         /* Set BaseUrl so that fop knows paths to images etc... */
-        fopFactory.setBaseURL(path);
+        fopFactory.setBaseURL(basePath);
 
         /* Setup output stream */
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -166,8 +220,8 @@ public class PrintActionBean implements ActionBean {
         try {
             /* Construct fop */
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            foUserAgent.setCreator("Gisviewer webapplicatie");
-            foUserAgent.setProducer("B3Partners");
+            foUserAgent.setCreator("Flamingo");
+            foUserAgent.setProducer("Flamingo");
 
             Date now = new Date();
             foUserAgent.setCreationDate(now);
@@ -185,8 +239,8 @@ public class PrintActionBean implements ActionBean {
             jaxbContext.createMarshaller().marshal(info, sw);
             String s = sw.toString();
             /* Setup xslt */
-            Source xsltSrc = new StreamSource(xslFile);
-            //xsltSrc.setSystemId(path);
+            Source xsltSrc = new StreamSource(xslIs);
+            xsltSrc.setSystemId(basePath);
 
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer(xsltSrc);
@@ -262,18 +316,16 @@ public class PrintActionBean implements ActionBean {
         }
     }
     
-    private String getTemplateUrl(String pageFormat, String orientation) {
-        if (A4.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
-            return context.getServletContext().getRealPath(xsl_A4_Portrait);
-        }else if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
-            return context.getServletContext().getRealPath(xsl_A4_Landscape);
+    private String getTemplateName(String pageFormat, String orientation) {
+        if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A4_Landscape;
         }else if (A3.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
-            return context.getServletContext().getRealPath(xsl_A3_Portrait);
+            return A3_Portrait;
         }else if (A3.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
-            return context.getServletContext().getRealPath(xsl_A3_Landscape);
+            return A3_Landscape;
         }else{
-            return context.getServletContext().getRealPath(xsl_A4_Portrait);
-        }        
+            return A4_Portrait;
+        }       
     }
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ActionBeanContext getContext() {
