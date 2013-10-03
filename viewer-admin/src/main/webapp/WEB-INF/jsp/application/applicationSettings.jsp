@@ -71,11 +71,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <td><stripes:text name="details['iconSprite']" maxlength="255" size="60"/></td>
                         </tr>
                         <tr>
-                            <td>Stylesheet metadata:</td>
+                            <td>Metadata link:</td>
                             <td><stripes:text name="details['stylesheetMetadata']" maxlength="255" size="60"/></td>
                         </tr>
                         <tr>
-                            <td>Stylesheet printen:</td>
+                            <td>Locatie print stylesheets</td>
                             <td><stripes:text name="details['stylesheetPrint']" maxlength="255" size="60"/></td>
                         </tr>
                         <tr>
