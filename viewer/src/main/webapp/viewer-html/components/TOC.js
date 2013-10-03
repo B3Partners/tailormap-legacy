@@ -48,6 +48,7 @@ Ext.define ("viewer.components.TOC",{
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.initConfig(config);
         this.toggleAllLayersState = this.initToggleAllLayers;
+        this.buildButtonBar();
         this.loadTree();
         this.loadInitLayers();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
@@ -68,6 +69,31 @@ Ext.define ("viewer.components.TOC",{
         // Seems to recalculate body and applies correct heights so scrollbars can be shown
         view.panel.doComponentLayout();
         view.panel.getLayout().layout();
+    },
+    /**
+     * Create button bar on top of toc. 
+     */
+    buildButtonBar: function(){
+        var me = this;
+        if(this.showToggleAllLayers){
+            this.buttonBar = Ext.create('Ext.container.Container', {
+                id: 'ButtonBar_'+this.id,
+                renderTo: this.getContentDiv(),
+                items: [
+                    {
+                        xtype: 'label',
+                        id: 'toggleAllLayersButton',
+                        text: me.toggleAllLayersState ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
+                        listeners: {
+                            click: {
+                                fn: function(){me.toggleAllLayers();},
+                                element: 'el'
+                            }
+                        }
+                    }
+                ]
+            });
+        }
     },
     // Build the tree
     loadTree : function(){        
@@ -94,25 +120,6 @@ Ext.define ("viewer.components.TOC",{
         
         var title = "";
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;
-        if(this.showToggleAllLayers){
-            this.buttonBar = Ext.create('Ext.container.Container', {
-                id: 'ButtonBar_'+this.id,
-                renderTo: this.getContentDiv(),
-                items: [
-                    {
-                        xtype: 'label',
-                        id: 'toggleAllLayersButton',
-                        text: me.toggleAllLayersState ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
-                        listeners: {
-                            click: {
-                                fn: function(){me.toggleAllLayers();},
-                                element: 'el'
-                            }
-                        }
-                    }
-                ]
-            });
-        }
         
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
