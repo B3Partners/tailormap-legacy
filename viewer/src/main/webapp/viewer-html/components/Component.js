@@ -366,5 +366,14 @@ Ext.define("viewer.components.Component",{
         } else {
             // if(!this.isTool()) console.log('Component ' + this.$className + ' should implement the getExtComponents function to be able to resize contents', this);
         }
+    },
+    /**
+     * Implement when there are settings for this component that must me included in the bookmark url
+     * @param {Boolean} shortUrl true if the settings are used for the short url. If false the settings are used
+     * in the plain url.
+     * @return must return a object with key value pairs. Return null if the component has no settings for the bookmark
+     */
+    getSettingsForBookmark: function(shortUrl){
+        return null;
     }
 });
