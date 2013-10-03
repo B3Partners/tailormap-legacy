@@ -1375,7 +1375,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             }else{
                 var component=this.getComponentByName(key);
-                if (component){
+                if (component && !Ext.isEmpty(value)){
                     component.loadBookmarkState(Ext.decode(value));
                 }
             }
