@@ -231,8 +231,31 @@ Ext.define ("viewer.components.Bookmark",{
                 parameters += param.name +"="+ param.value +"&";
             }
         }
+        
+        var componentParams="";
+        //get all the params from components that need to be added to the bookmark
+        var components = this.viewerController.getComponents();
+        for (var i=0; i < components.length; i++){
+            var state = components[i].getBookmarkState(false);
+            if (!Ext.isEmpty(state)){
+                componentParams+=encodeURIComponent(components[i].getName());
+                componentParams+="=";
+                componentParams+=encodeURIComponent(Ext.encode(state));                
+                componentParams+="&";
+            }            
+        }
         this.url += parameters;
-
+        if (componentParams.length!=0){
+            this.url+=componentParams;
+        }
+        //get all the states of the components
+        for (var i=0; i < components.length; i++){
+            var state = components[i].getBookmarkState(true);
+            if (!Ext.isEmpty(state)){
+                paramJSON.params[components[i].getName()]=state;
+            }
+        }
+        
         var me = this;
         Ext.create("viewer.Bookmark").createBookmark(
             Ext.JSON.encode(paramJSON),
