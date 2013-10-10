@@ -132,56 +132,58 @@ Ext.define ("viewer.components.Search",{
     },
     getFormItems: function(){
         var me = this;
-        var itemList = new Array();        
-        if(this.searchconfigs.length == 1){
-            itemList.push({
-                xtype: 'label',
-                text: 'Zoek op: '+ this.searchconfigs[0].name
-            });
-        }else if (this.searchconfigs.length > 1 ){
-            var configs = Ext.create('Ext.data.Store', {
-                fields: ['id', 'name', 'url'],
-                data : this.searchconfigs
-            });
-            itemList.push({
-                xtype: "flamingocombobox",
-                fieldLabel: 'Zoek op',
-                store: configs,
-                queryMode: 'local',
-                displayField: 'name',
-                valueField: 'id',
-                anchor: '100%',
-                emptyText:'Maak uw keuze',
-                id: 'searchName' + this.name
-            });
-        }
-        if (this.searchconfigs.length> 0){
-            itemList.push({ 
-                xtype: 'textfield',
-                name: 'searchfield',
-                anchor: '100%',
-                id: 'searchfield' + this.name,
-                listeners: {
-                    specialkey: function(field, e){
-                        if (e.getKey() == e.ENTER) {
-                            me.search();
+        var itemList = new Array();     
+        if(this.searchconfigs ){
+            if(this.searchconfigs.length == 1){
+                itemList.push({
+                    xtype: 'label',
+                    text: 'Zoek op: '+ this.searchconfigs[0].name
+                });
+            }else if (this.searchconfigs.length > 1 ){
+                var configs = Ext.create('Ext.data.Store', {
+                    fields: ['id', 'name', 'url'],
+                    data : this.searchconfigs
+                });
+                itemList.push({
+                    xtype: "flamingocombobox",
+                    fieldLabel: 'Zoek op',
+                    store: configs,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    anchor: '100%',
+                    emptyText:'Maak uw keuze',
+                    id: 'searchName' + this.name
+                });
+            }
+            if (this.searchconfigs.length> 0){
+                itemList.push({ 
+                    xtype: 'textfield',
+                    name: 'searchfield',
+                    anchor: '100%',
+                    id: 'searchfield' + this.name,
+                    listeners: {
+                        specialkey: function(field, e){
+                            if (e.getKey() == e.ENTER) {
+                                me.search();
+                            }
                         }
                     }
-                }
-            });
-        
-            itemList.push({ 
-                xtype: 'button',
-                text: 'Zoeken',
-                componentCls: 'mobileLarge',
-                margin: this.margin,
-                listeners: {
-                    click:{
-                        scope: this,
-                        fn: this.search
+                });
+
+                itemList.push({ 
+                    xtype: 'button',
+                    text: 'Zoeken',
+                    componentCls: 'mobileLarge',
+                    margin: this.margin,
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: this.search
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         itemList.push({ 
             xtype: 'button',
