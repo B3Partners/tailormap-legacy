@@ -146,7 +146,7 @@ public class SearchActionBean implements ActionBean {
             if(type==null || "arcgisrest".equalsIgnoreCase(type)){
                 client = new ArcGisRestSearchClient(url);                
             }else if (type.equalsIgnoreCase("openls")){
-                client = new OpenLSSearchClient(url,"GET");
+                client = new OpenLSSearchClient(url);
             }
             if (client!=null){            
                 results = client.search(searchText);
