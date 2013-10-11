@@ -97,8 +97,8 @@ Ext.onReady(function(){
         bbar: Ext.create('Ext.PagingToolbar', {
             store: store,
             displayInfo: true,
-            displayMsg: 'Layar service {0} - {1} of {2}',
-            emptyMsg: "Geen layar services weer te geven"
+            displayMsg: 'Zoekbronnen {0} - {1} of {2}',
+            emptyMsg: "Geen zoekbronnen weer te geven"
         }),
         plugins: [ 
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
@@ -115,3 +115,10 @@ Ext.onReady(function(){
     }));
     
 });
+
+function editObject(id){
+    Ext.get('editFrame').dom.src = editurl + '?id=' + id;
+    var gridCmp = Ext.getCmp('editGrid')
+    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', id));
+    return false;
+}

@@ -35,6 +35,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="grid-container" class="attributesources">
                 
             </div>
+            
+            <div id="form-container" class="attributesources">
+                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+            </div>
         </div>
           <script type="text/javascript">
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="getGridData"/>';

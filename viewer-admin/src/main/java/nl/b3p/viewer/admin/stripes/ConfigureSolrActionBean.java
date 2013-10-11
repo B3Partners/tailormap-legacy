@@ -25,7 +25,9 @@ import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.SolrConfiguration;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,16 +35,18 @@ import org.json.JSONObject;
  *
  * @author Meine Toonen
  */
-
 @UrlBinding("/action/configuresolr")
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
-public class ConfigureSolrActionBean  implements ActionBean{
-    
+@RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
+public class ConfigureSolrActionBean implements ActionBean {
+
     private static final String JSP = "/WEB-INF/jsp/services/solrconfig.jsp";
+    private static final String EDIT_JSP = "/WEB-INF/jsp/services/editsolrsource.jsp";
     private ActionBeanContext context;
-    
-     //<editor-fold defaultstate="collapsed" desc="getters & setters">
+    @Validate
+    private SolrConfiguration solrConfiguration;
+
+    //<editor-fold defaultstate="collapsed" desc="getters & setters">
     @Override
     public ActionBeanContext getContext() {
         return context;
@@ -53,26 +57,46 @@ public class ConfigureSolrActionBean  implements ActionBean{
         this.context = context;
     }
 
+    public SolrConfiguration getSolrConfiguration() {
+        return solrConfiguration;
+    }
+
+    public void setSolrConfiguration(SolrConfiguration solrConfiguration) {
+        this.solrConfiguration = solrConfiguration;
+    }
+
     //</editor-fold>
-    
     
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
     }
-    
+
     public Resolution edit() {
+        solrConfiguration = new SolrConfiguration();
+        return new ForwardResolution(EDIT_JSP);
+    }
+
+    public Resolution cancel() {
+        return new ForwardResolution(EDIT_JSP);
+    }
+
+    public Resolution save() {
         return new ForwardResolution(JSP);
     }
-    
+
+    public Resolution newSearchConfig() {
+        solrConfiguration = null;
+        return new ForwardResolution(EDIT_JSP);
+    }
+
     public Resolution delete() {
         return new ForwardResolution(JSP);
     }
-    
+
     public Resolution getGridData() throws JSONException {
         JSONObject json = new JSONObject("{\"totalCount\":3,\"gridrows\":[{\"id\":1, \"lastprocessed\": \"1-2-2012\"},{\"id\":2, \"lastprocessed\": \"1-2-2012\"},{\"id\":3, \"lastprocessed\": \"1-2-2012\"}]}");
-        
+
         return new StreamingResolution("application/json", json.toString(4));
     }
-
 }
