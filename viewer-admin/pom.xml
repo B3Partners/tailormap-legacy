@@ -19,7 +19,7 @@
     </properties>
 
     <dependencies>
-        <!-- logging dependencies -->
+        <!-- logging dependencies --> 
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -109,6 +109,18 @@
             <artifactId>poi</artifactId>
             <version>3.9</version>
             <type>jar</type>
+        </dependency>
+        <!-- Solr dependencies for indexing and searching -->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
+            <version>4.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsp-api</artifactId>
+                    <groupId>javax.servlet.jsp</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <repositories>
