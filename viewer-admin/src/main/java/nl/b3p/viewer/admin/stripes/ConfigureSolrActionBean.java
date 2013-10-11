@@ -16,18 +16,18 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
-import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Group;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -59,6 +59,20 @@ public class ConfigureSolrActionBean  implements ActionBean{
     @DefaultHandler
     public Resolution view() {
         return new ForwardResolution(JSP);
+    }
+    
+    public Resolution edit() {
+        return new ForwardResolution(JSP);
+    }
+    
+    public Resolution delete() {
+        return new ForwardResolution(JSP);
+    }
+    
+    public Resolution getGridData() throws JSONException {
+        JSONObject json = new JSONObject("{\"totalCount\":3,\"gridrows\":[{\"id\":1, \"lastprocessed\": \"1-2-2012\"},{\"id\":2, \"lastprocessed\": \"1-2-2012\"},{\"id\":3, \"lastprocessed\": \"1-2-2012\"}]}");
+        
+        return new StreamingResolution("application/json", json.toString(4));
     }
 
 }
