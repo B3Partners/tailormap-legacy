@@ -32,6 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <ul class="dropdownmenu">
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" id="menu_attribuutbronnen">Attribuutbronnen</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" id="menu_attributen">Attributen</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" id="menu_attributen">Zoekbronnen</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" id="menu_relation">Join/Relate</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean" id="menu_layarservices">Layar services</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" id="menu_layarsource">Layar bronnen</stripes:link></li>
