@@ -305,7 +305,9 @@ public class AttributeActionBean implements ActionBean {
         }
         int rowCount = c.list().size();
         
-        c.setMaxResults(limit);
+        if(limit > 0){
+            c.setMaxResults(limit);
+        }
         c.setFirstResult(start);
         
         List attributes = c.list();

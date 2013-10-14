@@ -32,8 +32,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <c:choose>
                 <c:when test="${empty actionBean.context.validationErrors && actionBean.context.eventName == 'newSearchConfig' || (actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save')}">
 
+                    <stripes:submit name="cancel" value="Annuleren"/>
+                    <stripes:submit name="save" value="Opslaan"/>
                     <c:choose>
-                        <c:when test="${actionBean.solrConfiguration != null}">
+                        <c:when test="${actionBean.solrConfiguration.id != null}">
                             <h1 id="headertext">Zoekbron bewerken</h1>
                         </c:when>
                         <c:otherwise>
@@ -41,16 +43,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </c:otherwise>
                     </c:choose>
                     Attribuutbron: 
-                    <stripes:select name="featureSource" onchange="featureSourceChanged(this)">
+                    <stripes:select name="solrConfiguration.simpleFeatureType.featureSource" onchange="featureSourceChanged(this)">
                         <stripes:option value="-1">Kies een attribuutbron</stripes:option>
                         <stripes:options-collection collection="${actionBean.featureSources}" label="name"/>
                     </stripes:select><br/>
                     
                     Featuretype:
-                    <stripes:select id="featureType" name="featureType" onchange="featureTypeChanged(this)">
+                    <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this)">
                         <stripes:option value="-1">Kies een featuretype</stripes:option>
-                    </stripes:select><br/>
-                    <stripes:submit name="cancel" value="Annuleren"/>
+                    </stripes:select>
+                    <div id="attributes" style="width:300px;">
+                    </div>
                 </c:when>
                 <c:otherwise>
                     <script type="text/javascript">
@@ -70,6 +73,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="edit"/>';
             var featureType ='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>';
+            var attributesUrl ='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
             var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="delete"/>';
             var editSolrConfiguration = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="view"/>';
             var activelink = 'menu_solrconfig';

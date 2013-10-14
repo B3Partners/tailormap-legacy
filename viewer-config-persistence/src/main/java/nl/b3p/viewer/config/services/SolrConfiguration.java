@@ -16,9 +16,15 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 /**
@@ -32,7 +38,12 @@ public class SolrConfiguration {
     private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    private FeatureSource featureSource;
+    private SimpleFeatureType simpleFeatureType;
+    
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
+    private List<AttributeDescriptor> attributes = new ArrayList();
+    
 
     public Long getId() {
         return id;
@@ -42,12 +53,20 @@ public class SolrConfiguration {
         this.id = id;
     }
 
-    public FeatureSource getFeatureSource() {
-        return featureSource;
+    public SimpleFeatureType getSimpleFeatureType() {
+        return simpleFeatureType;
     }
 
-    public void setFeatureSource(FeatureSource featureSource) {
-        this.featureSource = featureSource;
+    public void setSimpleFeatureType(SimpleFeatureType simpleFeatureType) {
+        this.simpleFeatureType = simpleFeatureType;
     }
-    
+
+
+    public List<AttributeDescriptor> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<AttributeDescriptor> attributes) {
+        this.attributes = attributes;
+    }
 }

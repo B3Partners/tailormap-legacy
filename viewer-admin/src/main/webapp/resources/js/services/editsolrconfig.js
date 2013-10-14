@@ -53,7 +53,43 @@ function featureSourceChanged(select){
                 }
             },
             failure : function (response){
-                alert("Attribuutbronnen ophalen mislukt")
+                alert("Attribuutbronnen ophalen mislukt");
+            }
+        });
+    }else{
+        var html = "<option value=\"-1\">Maak uw keuze.</option>";
+        resultEl.update(html);
+    }
+}
+
+function featureTypeChanged(select){
+    var featureType = Ext.get("featureType");
+    var featuretypeId = featureType.getValue();
+    var featureSourceId = select.value;
+    if(featureSourceId && featureSourceId != "-1"){
+        Ext.Ajax.request({
+            url: attributesUrl,
+            params: {
+                simpleFeatureTypeId: featuretypeId,
+                featureSourceId: featureSourceId
+            },
+            success: function(response){
+                var text = response.responseText;
+                // process server response here
+                var data = Ext.JSON.decode(text);
+                var resultEl = Ext.get("attributes");
+                if(data) {
+                    var rows = data.gridrows;
+                    var html="<h1>Attributen</h1><br/>";
+                    for (var id in rows){
+                        var ft=rows[id];       
+                        html += "<input type='checkbox' name='attributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'>" + ft.attribute + "</checkbox><br/>";
+                    } 
+                    resultEl.update(html);
+                }
+            },
+            failure : function (response){
+                alert("Attribuutbronnen ophalen mislukt");
             }
         });
     }else{

@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.Before;
@@ -32,6 +33,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SolrConfiguration;
 import org.json.JSONException;
@@ -53,11 +55,13 @@ public class ConfigureSolrActionBean implements ActionBean {
     private List<FeatureSource> featureSources = new ArrayList();
     private ActionBeanContext context;
     @ValidateNestedProperties({
-            @Validate(field = "featureSource")
+            @Validate(field= "simpleFeatureType")
     })
     private SolrConfiguration solrConfiguration;
     
-
+    @Validate
+    private Long[] attributes;
+    
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     @Override
     public ActionBeanContext getContext() {
@@ -84,9 +88,14 @@ public class ConfigureSolrActionBean implements ActionBean {
     public void setFeatureSources(List<FeatureSource> featureSources) {
         this.featureSources = featureSources;
     }
-    
-    
 
+    public Long[] getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Long[] attributes) {
+        this.attributes = attributes;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -96,6 +105,7 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     public Resolution edit() {
         solrConfiguration = new SolrConfiguration();
+        solrConfiguration.setId(16L);
         return new ForwardResolution(EDIT_JSP);
     }
 
@@ -104,11 +114,21 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution save() {
-        return new ForwardResolution(JSP);
+        EntityManager em =Stripersist.getEntityManager();
+        solrConfiguration.getAttributes().clear();
+        for (int i = 0; i < attributes.length; i++) {
+            Long attributeId = attributes[i];
+            AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
+            solrConfiguration.getAttributes().add(attribute);
+        }
+        em.persist(solrConfiguration);
+        em.getTransaction().commit();
+        
+        return new ForwardResolution(EDIT_JSP);
     }
 
     public Resolution newSearchConfig() {
-        solrConfiguration = null;
+        solrConfiguration = new SolrConfiguration();
         return new ForwardResolution(EDIT_JSP);
     }
     
