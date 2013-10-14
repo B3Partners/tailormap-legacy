@@ -16,20 +16,27 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SolrConfiguration;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -42,9 +49,14 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/solrconfig.jsp";
     private static final String EDIT_JSP = "/WEB-INF/jsp/services/editsolrsource.jsp";
+    
+    private List<FeatureSource> featureSources = new ArrayList();
     private ActionBeanContext context;
-    @Validate
+    @ValidateNestedProperties({
+            @Validate(field = "featureSource")
+    })
     private SolrConfiguration solrConfiguration;
+    
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     @Override
@@ -64,6 +76,16 @@ public class ConfigureSolrActionBean implements ActionBean {
     public void setSolrConfiguration(SolrConfiguration solrConfiguration) {
         this.solrConfiguration = solrConfiguration;
     }
+
+    public List<FeatureSource> getFeatureSources() {
+        return featureSources;
+    }
+
+    public void setFeatureSources(List<FeatureSource> featureSources) {
+        this.featureSources = featureSources;
+    }
+    
+    
 
     //</editor-fold>
     
@@ -88,6 +110,12 @@ public class ConfigureSolrActionBean implements ActionBean {
     public Resolution newSearchConfig() {
         solrConfiguration = null;
         return new ForwardResolution(EDIT_JSP);
+    }
+    
+    @Before(on = {"edit", "save", "newSearchConfig"}, stages = LifecycleStage.BindingAndValidation)
+    public void loadLists(){
+        
+        featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
     }
 
     public Resolution delete() {

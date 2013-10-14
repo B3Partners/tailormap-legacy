@@ -26,7 +26,7 @@ Ext.require([
 
 Ext.onReady(function(){
 
-    Ext.define('TableRow', {
+    Ext.define('SearchConfigTableRow', {
         extend: 'Ext.data.Model',
         fields: [
             {name: 'id', type: 'int' },
@@ -35,9 +35,9 @@ Ext.onReady(function(){
         ]
     });
 
-    var store = Ext.create('Ext.data.Store', {
+    var searchConfigStore = Ext.create('Ext.data.Store', {
         pageSize: 10,
-        model: 'TableRow',
+        model: 'SearchConfigTableRow',
         remoteSort: true,
         remoteFilter: true,
         proxy: {
@@ -60,7 +60,7 @@ Ext.onReady(function(){
 
     var grid = Ext.create('Ext.grid.Panel', Ext.merge(defaultGridConfig, {
         id: 'editGrid',
-        store: store,
+        store: searchConfigStore,
         columns: [
             {
                 id: 'name',
@@ -95,7 +95,7 @@ Ext.onReady(function(){
             }
         ],
         bbar: Ext.create('Ext.PagingToolbar', {
-            store: store,
+            store: searchConfigStore,
             displayInfo: true,
             displayMsg: 'Zoekbronnen {0} - {1} of {2}',
             emptyMsg: "Geen zoekbronnen weer te geven"
