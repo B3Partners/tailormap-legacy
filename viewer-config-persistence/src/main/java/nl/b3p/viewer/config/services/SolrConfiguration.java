@@ -26,6 +26,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -68,5 +70,14 @@ public class SolrConfiguration {
 
     public void setAttributes(List<AttributeDescriptor> attributes) {
         this.attributes = attributes;
+    }
+    
+    public JSONObject toJSON(boolean includeAttributes) throws JSONException{
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("featureTypeId", simpleFeatureType.getId());
+        json.put("featureTypeName", simpleFeatureType.getDescription());
+        json.put("featureSourceName", simpleFeatureType.getFeatureSource().getName());
+        return json;
     }
 }
