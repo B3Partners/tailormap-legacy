@@ -31,7 +31,10 @@ Ext.onReady(function(){
         fields: [
             {name: 'id', type: 'int' },
             {name: 'name', type: 'string'},
-            {name: 'lastprocessed', type: 'string'}
+            {name: 'lastprocessed', type: 'string'},
+            {name: 'featureSourceName', type: 'string'},
+            {name: 'featureTypeName', type: 'string'}
+            
         ]
     });
 
@@ -71,6 +74,14 @@ Ext.onReady(function(){
                     xtype: 'textfield'
                 }
             },{
+                id: 'featureSourceName',
+                text: "Bronnaam",
+                dataIndex: 'featureSourceName',
+                flex: 1,
+                filter: {
+                    xtype: 'textfield'
+                }
+            },{
                 id: 'lastprocessed',
                 text: "Laatst ingeladen",
                 dataIndex: 'lastprocessed',
@@ -83,7 +94,6 @@ Ext.onReady(function(){
                 header: '',
                 dataIndex: 'id',
                 flex: 1,
-                sortable: false,
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {

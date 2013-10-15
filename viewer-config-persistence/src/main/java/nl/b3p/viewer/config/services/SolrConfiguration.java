@@ -72,11 +72,11 @@ public class SolrConfiguration {
         this.attributes = attributes;
     }
     
-    public JSONObject toJSON(boolean includeAttributes) throws JSONException{
+    public JSONObject toJSON() throws JSONException{
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("featureTypeId", simpleFeatureType.getId());
-        json.put("featureTypeName", simpleFeatureType.getDescription());
+        json.put("featureTypeName", simpleFeatureType.getTypeName());
         json.put("featureSourceName", simpleFeatureType.getFeatureSource().getName());
         return json;
     }

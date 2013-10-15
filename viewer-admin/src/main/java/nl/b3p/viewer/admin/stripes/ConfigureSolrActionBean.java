@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2013 B3Partners B.V.
+ * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SolrConfiguration;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -143,8 +144,19 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution getGridData() throws JSONException {
-        JSONObject json = new JSONObject("{\"totalCount\":3,\"gridrows\":[{\"id\":1, \"lastprocessed\": \"1-2-2012\"},{\"id\":2, \"lastprocessed\": \"1-2-2012\"},{\"id\":3, \"lastprocessed\": \"1-2-2012\"}]}");
-
+        EntityManager em =Stripersist.getEntityManager();
+        List<SolrConfiguration> configs = em.createQuery("FROM SolrConfiguration").getResultList();
+        JSONArray gridRows = new JSONArray();
+        for (SolrConfiguration solrConfig : configs) {
+            JSONObject config= solrConfig.toJSON();
+            config.put("lastprocessed", "1-2-2012");
+            config.put("name", "stub");
+            gridRows.put(config);
+        }
+        
+        JSONObject json = new JSONObject();
+        json.put("totalCount", configs.size());
+        json.put("gridrows", gridRows);
         return new StreamingResolution("application/json", json.toString(4));
     }
 }
