@@ -132,3 +132,7 @@ function editObject(id){
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', id));
     return false;
 }
+
+function reloadGrid(){
+    Ext.getCmp('editGrid').getStore().load();
+}

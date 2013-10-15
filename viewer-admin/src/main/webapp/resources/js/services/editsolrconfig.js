@@ -66,7 +66,8 @@ function featureTypeChanged(featuretypeId){
         Ext.Ajax.request({
             url: attributesUrl,
             params: {
-                simpleFeatureTypeId: featuretypeId
+                simpleFeatureTypeId: featuretypeId,
+                solrConfiguration:configId
             },
             success: function(response){
                 var text = response.responseText;
@@ -78,7 +79,11 @@ function featureTypeChanged(featuretypeId){
                     var html="<h1>Attributen</h1><br/>";
                     for (var id in rows){
                         var ft=rows[id];       
-                        html += "<input type='checkbox' name='attributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'>" + ft.attribute + "</checkbox><br/>";
+                        html += "<input type='checkbox' name='attributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'";
+                        if(ft.checked){
+                            html+= " checked='true'";
+                        }
+                        html +=">" + ft.attribute + "</checkbox><br/>";
                     } 
                     resultEl.update(html);
                 }

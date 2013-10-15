@@ -17,9 +17,12 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
@@ -37,6 +40,14 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConfiguration;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +76,8 @@ public class ConfigureSolrActionBean implements ActionBean {
     })
     private SolrConfiguration solrConfiguration;
     
-    
+    @Validate
+    private Long simpleFeatureTypeId;
     
     @Validate
     private Long[] attributes;
@@ -112,6 +124,15 @@ public class ConfigureSolrActionBean implements ActionBean {
     public void setFeatureTypes(List<SimpleFeatureType> featureTypes) {
         this.featureTypes = featureTypes;
     }
+
+    public Long getSimpleFeatureTypeId() {
+        return simpleFeatureTypeId;
+    }
+
+    public void setSimpleFeatureTypeId(Long simpleFeatureTypeId) {
+        this.simpleFeatureTypeId = simpleFeatureTypeId;
+    }
+     
     
     //</editor-fold>
     
@@ -175,4 +196,72 @@ public class ConfigureSolrActionBean implements ActionBean {
         json.put("gridrows", gridRows);
         return new StreamingResolution("application/json", json.toString(4));
     }
+    
+    
+    public Resolution getAttributesList() throws JSONException { 
+        JSONArray jsonData = new JSONArray();
+                
+        List<SimpleFeatureType> featureTypes= new ArrayList();
+        if(simpleFeatureTypeId != null && simpleFeatureTypeId != -1){
+            SimpleFeatureType sft = (SimpleFeatureType)Stripersist.getEntityManager().find(SimpleFeatureType.class, simpleFeatureTypeId);
+            if (sft!=null){
+                featureTypes.add(sft);
+            }
+        }else{
+            throw new IllegalArgumentException ("No simpleFeatureType id provided");
+        }
+        
+        Session sess = (Session)Stripersist.getEntityManager().getDelegate();
+        Criteria c = sess.createCriteria(AttributeDescriptor.class);
+        
+ 
+        /* Criteria for the all attribute descriptor ids of the feature types 
+         * in featureTypes
+         */
+        DetachedCriteria c2 = DetachedCriteria.forClass(SimpleFeatureType.class);
+        Collection ftIds = new ArrayList<Long>();
+        for (SimpleFeatureType sft : featureTypes) {
+            ftIds.add(sft.getId());
+        }
+        c2.add(Restrictions.in("id", ftIds));
+        c2.createAlias("attributes", "attr");
+        c2.setProjection(Projections.property("attr.id"));
+
+        c.add(org.hibernate.criterion.Property.forName("id").in(c2));
+        int rowCount = c.list().size();
+ 
+        
+        List<AttributeDescriptor> attrs = c.list();
+
+        for(Iterator<AttributeDescriptor> it = attrs.iterator(); it.hasNext();){
+            AttributeDescriptor attr = it.next();
+            boolean checked = false;
+            if(solrConfiguration != null){
+                for (AttributeDescriptor configAttribuut : solrConfiguration.getAttributes()) {
+                    if(configAttribuut.getId() == attr.getId()){
+                        checked=  true;
+                        break;
+                    }
+                }
+            }
+            JSONObject j = new JSONObject();
+            j.put("id", attr.getId().intValue());
+            j.put("alias", attr.getAlias());
+            j.put("attribute", attr.getName());
+            j.put("checked", checked);
+            jsonData.put(j);
+        }
+        
+        final JSONObject grid = new JSONObject();
+        grid.put("totalCount", rowCount);
+        grid.put("gridrows", jsonData);
+    
+        return new StreamingResolution("application/json") {
+           @Override
+           public void stream(HttpServletResponse response) throws Exception {
+               response.getWriter().print(grid.toString());
+           }
+        };
+    }
+
 }

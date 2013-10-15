@@ -40,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </p>
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean">
             <c:choose>
-                <c:when test="${empty actionBean.context.validationErrors && actionBean.context.eventName == 'newSearchConfig' || (actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save')}">
+                <c:when test="${empty actionBean.context.validationErrors && actionBean.context.eventName == 'newSearchConfig' || actionBean.context.eventName == 'edit' }">
 
                     <stripes:submit name="cancel" value="Annuleren"/>
                     <stripes:submit name="save" value="Opslaan"/>
@@ -52,7 +52,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <h1 id="headertext">Nieuwe zoekbron toevoegen</h1>           
                         </c:otherwise>
                     </c:choose>
-                            Naam: <stripes:text name="solrConfiguration.name"/><br/>
+                        <stripes:hidden name="solrConfiguration" value="${actionBean.solrConfiguration.id}" />
+                    Naam: <stripes:text name="solrConfiguration.name"/><br/>
                     Attribuutbron: 
                     <stripes:select name="solrConfiguration.simpleFeatureType.featureSource" onchange="featureSourceChanged(this)">
                         <stripes:option value="-1">Kies een attribuutbron</stripes:option>
@@ -92,10 +93,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="edit"/>';
             var featureType ='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>';
-            var attributesUrl ='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>';
+            var attributesUrl ='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="getAttributesList"/>';
             var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="delete"/>';
             var editSolrConfiguration = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="view"/>';
             var activelink = 'menu_solrconfig';
+            var configId = "${actionBean.solrConfiguration.id}";
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/services/editsolrconfig.js"></script>
     </stripes:layout-component>
