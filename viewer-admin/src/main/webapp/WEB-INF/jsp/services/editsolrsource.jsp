@@ -51,6 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     Featuretype:
                     <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this)">
                         <stripes:option value="-1">Kies een featuretype</stripes:option>
+                        <stripes:options-collection collection="${actionBean.featureTypes}" label="typeName"/>
                     </stripes:select>
                     <div id="attributes" style="width:300px;">
                     </div>

@@ -127,7 +127,7 @@ Ext.onReady(function(){
 });
 
 function editObject(id){
-    Ext.get('editFrame').dom.src = editurl + '?id=' + id;
+    Ext.get('editFrame').dom.src = editurl + '&solrConfiguration=' + id;
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', id));
     return false;

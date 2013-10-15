@@ -22,7 +22,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.Before;
+import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -35,6 +35,7 @@ import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConfiguration;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,11 +55,17 @@ public class ConfigureSolrActionBean implements ActionBean {
     private static final String EDIT_JSP = "/WEB-INF/jsp/services/editsolrsource.jsp";
     
     private List<FeatureSource> featureSources = new ArrayList();
+    private List<SimpleFeatureType> featureTypes = new ArrayList();
     private ActionBeanContext context;
+    
+    @Validate
     @ValidateNestedProperties({
-            @Validate(field= "simpleFeatureType")
+            @Validate(field= "simpleFeatureType"),
+            @Validate(field= "name")
     })
     private SolrConfiguration solrConfiguration;
+    
+    
     
     @Validate
     private Long[] attributes;
@@ -97,6 +104,15 @@ public class ConfigureSolrActionBean implements ActionBean {
     public void setAttributes(Long[] attributes) {
         this.attributes = attributes;
     }
+
+    public List<SimpleFeatureType> getFeatureTypes() {
+        return featureTypes;
+    }
+
+    public void setFeatureTypes(List<SimpleFeatureType> featureTypes) {
+        this.featureTypes = featureTypes;
+    }
+    
     //</editor-fold>
     
     @DefaultHandler
@@ -105,8 +121,6 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution edit() {
-        solrConfiguration = new SolrConfiguration();
-        solrConfiguration.setId(16L);
         return new ForwardResolution(EDIT_JSP);
     }
 
@@ -133,10 +147,13 @@ public class ConfigureSolrActionBean implements ActionBean {
         return new ForwardResolution(EDIT_JSP);
     }
     
-    @Before(on = {"edit", "save", "newSearchConfig"}, stages = LifecycleStage.BindingAndValidation)
+    @After(on = {"edit", "save", "newSearchConfig"}, stages = LifecycleStage.BindingAndValidation)
     public void loadLists(){
         
         featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
+        if(solrConfiguration != null && solrConfiguration.getSimpleFeatureType() != null){
+            featureTypes = solrConfiguration.getSimpleFeatureType().getFeatureSource().getFeatureTypes();
+        }
     }
 
     public Resolution delete() {
@@ -150,7 +167,6 @@ public class ConfigureSolrActionBean implements ActionBean {
         for (SolrConfiguration solrConfig : configs) {
             JSONObject config= solrConfig.toJSON();
             config.put("lastprocessed", "1-2-2012");
-            config.put("name", "stub");
             gridRows.put(config);
         }
         
