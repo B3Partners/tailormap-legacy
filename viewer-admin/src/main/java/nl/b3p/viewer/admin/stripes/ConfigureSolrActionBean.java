@@ -178,7 +178,11 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution delete() {
-        return new ForwardResolution(JSP);
+        EntityManager em = Stripersist.getEntityManager();
+        solrConfiguration.getAttributes().clear();
+        em.remove(solrConfiguration);
+        em.getTransaction().commit();
+        return new ForwardResolution(EDIT_JSP);
     }
 
     public Resolution getGridData() throws JSONException {

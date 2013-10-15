@@ -133,6 +133,20 @@ function editObject(id){
     return false;
 }
 
+
+function removeObject(objId) {
+    if(deleteConfirm()){
+        Ext.get('editFrame').dom.src = deleteurl + '&solrConfiguration=' + objId;
+        var gridCmp = Ext.getCmp('editGrid')
+        gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
+        return false;
+    }
+}
+
+function deleteConfirm() {
+    return confirm('Weet u zeker dat u deze configuratie wilt verwijderen?');
+}
+
 function reloadGrid(){
     Ext.getCmp('editGrid').getStore().load();
 }
