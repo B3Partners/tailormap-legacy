@@ -23,6 +23,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>Bewerk zoekbron</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
+        <c:set var="isNew">
+            <c:choose>
+                <c:when test="${actionBean.solrConfiguration.id != null}">
+                    <c:out value="false"/>
+                </c:when>
+                <c:otherwise>
+                    <c:out value="true"/>
+                </c:otherwise>
+            </c:choose>
+        </c:set>
         <div id="formcontent">
         <p>
             <stripes:errors/>
@@ -35,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:submit name="cancel" value="Annuleren"/>
                     <stripes:submit name="save" value="Opslaan"/>
                     <c:choose>
-                        <c:when test="${actionBean.solrConfiguration.id != null}">
+                        <c:when test="${!isNew}">
                             <h1 id="headertext">Zoekbron bewerken</h1>
                         </c:when>
                         <c:otherwise>
@@ -50,12 +60,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </stripes:select><br/>
                     
                     Featuretype:
-                    <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this)">
+                    <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this.value)">
                         <stripes:option value="-1">Kies een featuretype</stripes:option>
                         <stripes:options-collection collection="${actionBean.featureTypes}" label="typeName"/>
                     </stripes:select>
                     <div id="attributes" style="width:300px;">
                     </div>
+                        <c:if test="${!isNew}">
+                            <script>
+                                Ext.onReady(function(){
+                                    featureTypeChanged("${actionBean.solrConfiguration.simpleFeatureType.id}");
+                                });
+                            </script>
+                        </c:if>
                 </c:when>
                 <c:otherwise>
                     <script type="text/javascript">

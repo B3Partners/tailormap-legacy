@@ -26,7 +26,6 @@ Ext.require([
 
 Ext.onReady(function(){
 
-    
 });
 
 function featureSourceChanged(select){
@@ -62,16 +61,12 @@ function featureSourceChanged(select){
     }
 }
 
-function featureTypeChanged(select){
-    var featureType = Ext.get("featureType");
-    var featuretypeId = featureType.getValue();
-    var featureSourceId = select.value;
-    if(featureSourceId && featureSourceId != "-1"){
+function featureTypeChanged(featuretypeId){
+    if(featuretypeId && featuretypeId != "-1"){
         Ext.Ajax.request({
             url: attributesUrl,
             params: {
-                simpleFeatureTypeId: featuretypeId,
-                featureSourceId: featureSourceId
+                simpleFeatureTypeId: featuretypeId
             },
             success: function(response){
                 var text = response.responseText;
