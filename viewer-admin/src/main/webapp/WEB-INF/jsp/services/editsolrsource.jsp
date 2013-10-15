@@ -42,6 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <h1 id="headertext">Nieuwe zoekbron toevoegen</h1>           
                         </c:otherwise>
                     </c:choose>
+                            Naam: <stripes:text name="solrConfiguration.name"/><br/>
                     Attribuutbron: 
                     <stripes:select name="solrConfiguration.simpleFeatureType.featureSource" onchange="featureSourceChanged(this)">
                         <stripes:option value="-1">Kies een attribuutbron</stripes:option>

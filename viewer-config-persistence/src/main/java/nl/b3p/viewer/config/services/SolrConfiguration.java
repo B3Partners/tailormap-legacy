@@ -46,6 +46,8 @@ public class SolrConfiguration {
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
     private List<AttributeDescriptor> attributes = new ArrayList();
     
+    private String name;
+    
 
     public Long getId() {
         return id;
@@ -63,6 +65,13 @@ public class SolrConfiguration {
         this.simpleFeatureType = simpleFeatureType;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public List<AttributeDescriptor> getAttributes() {
         return attributes;
@@ -75,6 +84,7 @@ public class SolrConfiguration {
     public JSONObject toJSON() throws JSONException{
         JSONObject json = new JSONObject();
         json.put("id", id);
+        json.put("name", name);
         json.put("featureTypeId", simpleFeatureType.getId());
         json.put("featureTypeName", simpleFeatureType.getTypeName());
         json.put("featureSourceName", simpleFeatureType.getFeatureSource().getName());
