@@ -76,12 +76,14 @@ Ext.define ("viewer.components.TOC",{
     buildButtonBar: function(){
         var me = this;
         if(this.showToggleAllLayers){
-            this.buttonBar = Ext.create('Ext.container.Container', {
+            this.buttonBar = Ext.create('Ext.toolbar.Toolbar', {
                 id: 'ButtonBar_'+this.id,
                 renderTo: this.getContentDiv(),
+                layout: {
+                    pack: 'end'
+                },
                 items: [
                     {
-                        xtype: 'label',
                         id: 'toggleAllLayersButton',
                         text: me.toggleAllLayersState ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
                         listeners: {
