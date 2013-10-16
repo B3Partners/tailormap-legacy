@@ -57,6 +57,11 @@
         <param-value>30</param-value>
     </context-param>
     
+    <context-param>
+        <param-name>flamingo.data.dir</param-name>
+        <param-value>/opt/flamingo_data</param-value>
+    </context-param>
+
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
@@ -69,6 +74,9 @@
     <listener>
         <listener-class>nl.b3p.web.geotools.GeotoolsLoggingInit</listener-class>
     </listener>
+    <listener>
+        <listener-class>nl.b3p.viewer.admin.SolrInitializer</listener-class>
+    </listener>    
     
     <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>
@@ -207,7 +215,7 @@
         <!-- BASIC is useful during development with lots of redeploys, use
              FORM for production
         -->
-        <auth-method>FORM</auth-method>
+        <auth-method>BASIC</auth-method>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
             <form-error-page>/loginfail.jsp</form-error-page>
