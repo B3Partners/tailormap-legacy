@@ -94,6 +94,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          */
         ON_LAYER_REMOVED                        : "ON_LAYER_REMOVED",
         /**
+         * @field
+         * Occures when a layer is clicked (for example in the TOC).
+         * @param layerObj the layer object 
+         */
+        ON_LAYER_CLICKED                        : "ON_LAYER_CLICKED",
+        /**
          *@field
          *occures when a mouse is moved and the maptip must be cancelled
          *@param map the map object that called this event.
