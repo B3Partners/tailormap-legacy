@@ -633,6 +633,16 @@
         type: "popup"         
     },
     {
+        className: "viewer.components.LayerContext",
+        name: "LayerContext",
+        shortName: "LC",
+        singleton: true,
+        sources: ["LayerContext.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","LayerContext-config.js"],
+        restrictions: ["content"],        
+        type: "popup"         
+    },
+    {
         className: "viewer.components.LayerSwitch",
         name: "LayerSwitch",
         shortName: "LS",

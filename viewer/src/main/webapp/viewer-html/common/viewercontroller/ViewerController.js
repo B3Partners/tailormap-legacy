@@ -1218,6 +1218,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
     },
     /**
+     * Layer is clicked
+     * @param layerObj the layer object
+     */
+    layerClicked: function(layerObj) {
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED, layerObj);
+    },
+    /**
      * Get all the registered components.
      * @return {Array} A array of the registered components.
      */
