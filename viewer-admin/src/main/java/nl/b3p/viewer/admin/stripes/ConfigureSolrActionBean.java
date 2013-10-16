@@ -35,17 +35,20 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.viewer.admin.SolrInitializer;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConfiguration;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
@@ -137,7 +140,14 @@ public class ConfigureSolrActionBean implements ActionBean {
     //</editor-fold>
     
     @DefaultHandler
-    public Resolution view() {
+    public Resolution view() throws SolrServerException {
+        SolrServer server=  SolrInitializer.getServerInstance();
+        
+       SolrQuery query = new SolrQuery();
+        query.setQuery("*:*");
+        query.addSort("textsuggest", SolrQuery.ORDER.asc);
+        QueryResponse rsp = server.query(query);
+        SolrDocumentList docs = rsp.getResults();
         return new ForwardResolution(JSP);
     }
 
