@@ -227,6 +227,9 @@ Ext.define ("viewer.components.Search",{
             requestParams["componentName"]= this.name;
             requestParams["searchRequestId"]= this.searchRequestId;
             var me = this;
+            me.mainContainer.setLoading({
+                msg: 'Bezig met zoeken'
+            });
             Ext.Ajax.request({ 
                 url: requestPath, 
                 params: requestParams, 
@@ -239,10 +242,12 @@ Ext.define ("viewer.components.Search",{
                     if (me.searchRequestId==response.request.searchRequestId){
                         me.showSearchResults();
                     }
+                    me.mainContainer.setLoading(false);
                 },
                 failure: function(result, request) {
                     var response = Ext.JSON.decode(result.responseText);
                     Ext.MessageBox.alert("Foutmelding", response.error);
+                    me.mainContainer.setLoading(false);
                 }
             });
             this.form.getChildByElement("cancel"+ this.name).setVisible(true);
