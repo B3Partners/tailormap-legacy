@@ -570,38 +570,7 @@ Ext.define ("viewer.components.TOC",{
         }
         var layerName = node.text;
         if(node.leaf){
-            if(node.layerObj.metadata!= undefined || node.layerObj.download!= undefined ){
-                var config = {
-                    details:{
-                        width : 700,
-                        height: 500
-                    },
-                    title: "Metadata"
-                };
-                
-                if(this.popup != null){
-                    this.popup.hide();
-                }
-                
-                var html = "";
-                if(node.layerObj.metadata != undefined){
-                    html += "<a target='_BLANK' href='" +node.layerObj.metadata + "'>Metadata</a>";
-                }
-                if(node.layerObj.download != undefined){
-                    if(html != ""){
-                        html += "<br/>";
-                    }
-                    html += "<a target='_BLANK' href='" +node.layerObj.download+ "'>Downloadlink</a>";
-                }
-                this.popup = Ext.create("viewer.components.ScreenPopup",config);
-                var panelConfig={
-                    renderTo : this.popup.getContentId(),
-                    frame: false,
-                    html: html
-                };
-                Ext.create ("Ext.panel.Panel",panelConfig);
-                this.popup.show();
-            }
+            this.viewerController.layerClicked(node.layerObj);
         }else if(!node.leaf){
             if(node.layerObj.info!= undefined){
                 if(this.popup != null){
