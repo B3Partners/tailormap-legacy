@@ -294,7 +294,12 @@ Ext.onReady(function() {
             title: 'Filter / Selectie'
         });
     }
+    tabconfig.push({
+        contentEl:'context-tab', 
+        title: 'Context'
+    });
 
+    var htmlEditorRendered = false;
     Ext.create('Ext.tab.Panel', {
         renderTo: 'tabs',
         width: '100%',
@@ -303,7 +308,31 @@ Ext.onReady(function() {
             bodyPadding: 10
         },
         layoutOnTabChange: false,
-        items: tabconfig
+        items: tabconfig,
+        listeners: {
+            tabchange: function(panel, activetab, previoustab) {
+                if(activetab.contentEl && activetab.contentEl === 'context-tab' && !htmlEditorRendered) {
+                    // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
+                    Ext.create('Ext.form.field.HtmlEditor', {
+                        id: 'extContextHtmlEditor',
+                        width: 475,
+                        maxWidth: 475,
+                        height: 400,
+                        maxHeight: 400,
+                        value: Ext.get('context_textarea').dom.value,
+                        plugins: [
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                                submitUrl: actionBeans['imageupload'],
+                                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                            })),
+                            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                        ],
+                        renderTo: 'contextHtmlEditorContainer'
+                    });
+                    htmlEditorRendered = true;
+                }
+            }
+        }
     });
     
     Ext.create('Ext.form.field.HtmlEditor', {
@@ -341,6 +370,10 @@ Ext.onReady(function() {
         Ext.get('attributesJSON').dom.value = getJson();
         if( Ext.getCmp('extSettingsHtmlEditor')){
             Ext.get('details_summary_description').dom.value = Ext.getCmp('extSettingsHtmlEditor').getValue();
+        }
+        var htmlEditor = Ext.getCmp('extContextHtmlEditor');
+        if(htmlEditor) {
+            Ext.get('context_textarea').dom.value = htmlEditor.getValue();
         }
     });
     
