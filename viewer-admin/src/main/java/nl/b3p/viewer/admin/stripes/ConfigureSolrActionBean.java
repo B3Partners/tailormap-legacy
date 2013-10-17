@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -50,8 +48,13 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrInputDocument;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
@@ -59,6 +62,8 @@ import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -173,18 +178,67 @@ public class ConfigureSolrActionBean implements ActionBean {
     
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution addToIndex() throws InterruptedException {
+        org.geotools.data.FeatureSource fs = null;
         try {
+            SolrServer server = SolrInitializer.getServerInstance();
+            if(server == null){
+                throw new Exception("No solr server initialized.");
+            }
+            EntityManager em = Stripersist.getEntityManager();
+            solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
             status = new WaitPageStatus();
+            status.setCurrentAction("Features ophalen");
             
-            status.setProgress(40);
-            status.setCurrentAction("Inladen in index...");
+            status.setProgress(10);
             
             SimpleFeatureType sft = solrConfiguration.getSimpleFeatureType();
+            fs = sft.openGeoToolsFeatureSource();
+            FeatureCollection fc = fs.getFeatures();
+            List<AttributeDescriptor> attributesToIndex =  solrConfiguration.getAttributes();
+            List<SolrInputDocument> docs = new ArrayList();
             
-     
-
+            FeatureIterator<SimpleFeature>  iterator = fc.features();
+            double size = fc.size();
+            double percentagesForAdding = 50;
+            double intervalPerDoc = percentagesForAdding/size;
+            Double total = (double)status.getProgress();
+            try {
+                while (iterator.hasNext()) {
+                    SimpleFeature feature = iterator.next();
+                    SolrInputDocument doc = new SolrInputDocument();
+                    boolean first= true;
+                    for (AttributeDescriptor attr : attributesToIndex) {
+                        String attributeName = attr.getName();
+                        Object col = feature.getAttribute( attributeName);
+                        String field = "extrasearch";
+                        if(first){
+                            field = "textsuggest";
+                            first=false;
+                        }
+                        doc.addField(field, col);
+                    }
+                    doc.addField("id", feature.getID());
+                    docs.add(doc);
+                    total += intervalPerDoc;
+                    status.setProgress(total.intValue());
+                }
+            } finally {
+                iterator.close();
+            }
+            status.setCurrentAction("Features toevoegen aan solr index");
+            
+            status.setProgress(60);
+            server.add(docs);
+            server.commit();
+            status.setProgress(100);
+            status.setFinished(true);
         } catch (Exception ex) {
             log.error("Cannot add configuration to index", ex);
+            status.setCurrentAction("Mislukt.");
+        }finally{
+            if(fs != null && fs.getDataStore() != null){
+                fs.getDataStore().dispose();
+            }
         }
         return new ForwardResolution(EDIT_JSP);
     }
