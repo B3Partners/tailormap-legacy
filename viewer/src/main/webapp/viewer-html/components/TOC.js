@@ -123,6 +123,16 @@ Ext.define ("viewer.components.TOC",{
         var title = "";
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;
         
+        var tools = [];
+        if(true) { // TODO: is this going to be a config option or do we always show help button?
+            tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    me.viewerController.showHelp(me.config);
+                }
+            }];
+        }
+        
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
@@ -143,7 +153,8 @@ Ext.define ("viewer.components.TOC",{
                     scope: this
                 }
             },
-            store: store
+            store: store,
+            tools: tools
         });
     },
     // Start the treetraversal

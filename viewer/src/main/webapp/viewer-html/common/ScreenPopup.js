@@ -80,6 +80,15 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.contentEl = con;
         }
         
+        if(true) { // TODO: is this going to be a config option or do we always show help button?
+            config.tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    conf.viewerController.showHelp(conf);
+                }
+            }];
+        }
+        
         this.popupWin = Ext.create('Ext.window.Window', config);
         if(this.showOnStartup){
             this.popupWin.show();

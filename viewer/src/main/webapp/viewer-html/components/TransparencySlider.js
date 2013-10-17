@@ -35,14 +35,24 @@ Ext.define ("viewer.components.TransparencySlider",{
     constructor: function (conf){        
         viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
-        
+        var me = this;
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        var tools = [];
+        if(true) { // TODO: is this going to be a config option or do we always show help button?
+            tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    me.viewerController.showHelp(me.config);
+                }
+            }];
+        }
         this.panel = Ext.create('Ext.panel.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>'
+            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>',
+            tools: tools
         });
         conf.sliderContainer = this.name + 'slidersContainer';
         
