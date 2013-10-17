@@ -17,9 +17,14 @@
 package nl.b3p.viewer.admin;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServer;
@@ -37,12 +42,17 @@ import org.apache.solr.core.SolrResourceLoader;
 public class SolrInitializer implements ServletContextListener {
 
     public static final String DATA_DIR = "flamingo.data.dir";
-    private static final String SOLR_DIR = ".solr";
+    private static final String SOLR_DIR = ".solr/";
     private static final String SOLR_CORE_NAME = "autosuggest";
     private static SolrServer server;
+    private static CoreContainer coreContainer;
     private static final Log log = LogFactory.getLog(SolrInitializer.class);
     private ServletContext context;
     private String datadirectory;
+    
+    //private static final String SCHEMA="/WEB-INF/classes/xml/schema.xml";
+    //private static final String SOLRCONFIG="/WEB-INF/classes/xml/solrconfig.xml";
+    private static final String SOLR_CONF_DIR="/WEB-INF/classes/solr/autosuggest";
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -50,6 +60,8 @@ public class SolrInitializer implements ServletContextListener {
         this.context = sce.getServletContext();
 
         datadirectory = context.getInitParameter(DATA_DIR);
+        
+        System.setProperty("solr.solr.home", datadirectory + File.separator + SOLR_DIR);
         File dataDirectory = new File(datadirectory);
         if (!isCorrectDir(dataDirectory)) {
             log.error("Cannot read/write data dir " + datadirectory + ". Solr searching not possible.");
@@ -60,24 +72,26 @@ public class SolrInitializer implements ServletContextListener {
         if (!solrDir.exists()) {
             setupSolr(solrDir);
         }
-        
+
         inializeSolr(solrDir);
     }
 
     private void setupSolr(File solrdir) {
         log.debug("Setup the solr directory");
 
+        copyConf(solrdir);
+        coreContainer = new CoreContainer(solrdir.getPath());
     }
 
-    private void inializeSolr(File f) {
+    private void inializeSolr(File solrDir) {
         log.debug("Initialize the Solr Server instance");
-
-        String path = f.getPath();
+        String path = solrDir.getPath();
         SolrResourceLoader loader = new SolrResourceLoader(path);
-        CoreContainer coreContainer = new CoreContainer(loader);
+        if(coreContainer == null){
+            coreContainer = new CoreContainer(loader);
+        }
         coreContainer.load();
         server = new EmbeddedSolrServer(coreContainer, SOLR_CORE_NAME);
-
     }
 
     public static SolrServer getServerInstance() {
@@ -86,11 +100,29 @@ public class SolrInitializer implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        coreContainer.shutdown();
         server.shutdown();
         log.debug("SolrInitializer destroyed");
     }
 
     private boolean isCorrectDir(File f) {
         return f.isDirectory() && f.canRead() && f.canWrite();
+    }
+    
+    private void copyConf(File solrDir){
+        try {
+            File conf = new File( this.context.getRealPath("/WEB-INF/classes/solr/solr.xml"));
+            boolean solrDirCreated = solrDir.mkdir();
+            FileUtils.copyFile(conf, new File(solrDir, "solr.xml"));
+            
+            File coreConfiguration = new File(context.getRealPath(SOLR_CONF_DIR));
+            
+            File coreDir = new File(solrDir, SOLR_CORE_NAME);
+            FileUtils.copyDirectory(coreConfiguration, coreDir);
+        
+        } catch (Exception ex) {
+            log.error("Setup of the solr directory failed: ",ex);
+        }
+        
     }
 }
