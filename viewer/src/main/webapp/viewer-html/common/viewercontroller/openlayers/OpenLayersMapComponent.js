@@ -721,7 +721,18 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return m.getHeight();
         }
         return null;
+    },
+    /**
+     * @see viewer.viewercontroller.MapComponent#setWaitingCursor
+     */
+    setWaitingCursor: function(showWaitingCursor) {
+        if(showWaitingCursor) {
+            OpenLayers.Element.addClass(this.getMap().getFrameworkMap().viewPortDiv, "olCursorWait");
+        } else {
+            OpenLayers.Element.removeClass(this.getMap().getFrameworkMap().viewPortDiv, "olCursorWait");
+        }
     }
+    
     /****************************************************************Event handling***********************************************************/
 
 });
