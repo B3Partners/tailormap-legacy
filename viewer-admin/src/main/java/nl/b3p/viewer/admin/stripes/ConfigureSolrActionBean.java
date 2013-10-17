@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +43,9 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConfiguration;
+import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -54,6 +59,7 @@ import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -64,6 +70,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
 public class ConfigureSolrActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(ConfigureSolrActionBean.class);
 
     private static final String JSP = "/WEB-INF/jsp/services/solrconfig.jsp";
     private static final String EDIT_JSP = "/WEB-INF/jsp/services/editsolrsource.jsp";
@@ -84,6 +91,8 @@ public class ConfigureSolrActionBean implements ActionBean {
     
     @Validate
     private Long[] attributes;
+    
+    private WaitPageStatus status;
     
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     @Override
@@ -135,8 +144,14 @@ public class ConfigureSolrActionBean implements ActionBean {
     public void setSimpleFeatureTypeId(Long simpleFeatureTypeId) {
         this.simpleFeatureTypeId = simpleFeatureTypeId;
     }
-     
-    
+
+    public WaitPageStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(WaitPageStatus status) {
+        this.status = status;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -152,6 +167,25 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution edit() {
+        return new ForwardResolution(EDIT_JSP);
+    }
+    
+    
+    @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
+    public Resolution addToIndex() throws InterruptedException {
+        try {
+            status = new WaitPageStatus();
+            
+            status.setProgress(40);
+            status.setCurrentAction("Inladen in index...");
+            
+            SimpleFeatureType sft = solrConfiguration.getSimpleFeatureType();
+            
+     
+
+        } catch (Exception ex) {
+            log.error("Cannot add configuration to index", ex);
+        }
         return new ForwardResolution(EDIT_JSP);
     }
 

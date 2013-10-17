@@ -99,7 +99,9 @@ Ext.onReady(function(){
                 renderer: function(value) {
                     return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
-                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value) +
+                           ' | ' +
+                           Ext.String.format('<a href="#" onclick="return addToIndex(\'{0}\');">Voeg toe aan index</a>', value);;
                 },
                 sortable: false
             }
@@ -149,4 +151,12 @@ function deleteConfirm() {
 
 function reloadGrid(){
     Ext.getCmp('editGrid').getStore().load();
+}
+
+function addToIndex(objId){
+    Ext.get('editFrame').dom.src = addToIndexUrl + '&solrConfiguration=' + objId;
+    var gridCmp = Ext.getCmp('editGrid')
+    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
+    return false;
+    
 }
