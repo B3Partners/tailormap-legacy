@@ -17,8 +17,12 @@
 package nl.b3p.viewer.config.services;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.geotools.data.DataStore;
+import org.geotools.data.Transaction;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.json.JSONException;
@@ -124,45 +128,70 @@ public abstract class FeatureSource {
     }    
     
     List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception{
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-        Function unique = ff.function("Collection_Unique", ff.property(attributeName));
-        Filter notNull = ff.not( ff.isNull( ff.property(attributeName) ));
-        FeatureCollection f = this.getFeatures(sft,notNull, maxFeatures);
-        Object o = unique.evaluate( f);
-        sft.openGeoToolsFeatureSource().getDataStore().dispose();
-        Set<String> uniqueValues  = (Set<String>)o;
-        if(uniqueValues == null){
-            uniqueValues = new HashSet<String>();
+        org.geotools.data.FeatureSource fs = null;
+        try {
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+            Function unique = ff.function("Collection_Unique", ff.property(attributeName));
+            Filter notNull = ff.not( ff.isNull( ff.property(attributeName) ));
+            
+            org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), notNull);
+            fs = sft.openGeoToolsFeatureSource();
+            FeatureCollection fc = fs.getFeatures(q);
+            
+            Object o = unique.evaluate( fc);
+            Set<String> uniqueValues  = (Set<String>)o;
+            if(uniqueValues == null){
+                uniqueValues = new HashSet<String>();
+            }
+            List<String> l = new ArrayList<String>(uniqueValues);
+            Collections.sort(l);
+            return l;
+        } catch (Exception ex) {
+            throw ex;
+        }finally{
+            if(fs != null && fs.getDataStore() != null){
+                fs.getDataStore().dispose();
+            }
         }
-        List<String> l = new ArrayList<String>(uniqueValues);
-        Collections.sort(l);
-        return l;
     }
-    
-    public Object getMaxValue(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception{
-      FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-        /*  Function unique = ff.function("Collection_Max", ff.property(attributeName));
-        */
-        FeatureCollection f = this.getFeatures(sft,null, maxFeatures);
-        
-        Function max = ff.function("Collection_Max", ff.property(attributeName));
 
-        Object value = max.evaluate( f );
-        sft.openGeoToolsFeatureSource().getDataStore().dispose();
-   
-        return value;
+    public Object getMaxValue(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception {
+        org.geotools.data.FeatureSource fs = null;
+        try {
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+            Function max = ff.function("Collection_Max", ff.property(attributeName));
+
+            fs = sft.openGeoToolsFeatureSource();
+            FeatureCollection fc = fs.getFeatures();
+            Object value = max.evaluate(fc);
+            return value;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (fs != null && fs.getDataStore() != null) {
+                fs.getDataStore().dispose();
+            }
+        }
     }
-    
-    public Object getMinValue(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception{
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-        Function minFunction = ff.function("Collection_Min", ff.property(attributeName));
-        
-        FeatureCollection f = this.getFeatures(sft,null, maxFeatures);
-        
-        Object o = minFunction.evaluate( f );
-        sft.openGeoToolsFeatureSource().getDataStore().dispose();
-       
-        return o;
+
+    public Object getMinValue(SimpleFeatureType sft, String attributeName, int maxFeatures) throws Exception {
+        org.geotools.data.FeatureSource fs = null;
+        try {
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+            Function minFunction = ff.function("Collection_Min", ff.property(attributeName));
+            fs = sft.openGeoToolsFeatureSource();
+            
+            FeatureCollection f = fs.getFeatures();
+
+            Object o = minFunction.evaluate(f);
+            return o;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (fs != null && fs.getDataStore() != null) {
+                fs.getDataStore().dispose();
+            }
+        }
     }
     
     /* package */ abstract org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft) throws Exception;
