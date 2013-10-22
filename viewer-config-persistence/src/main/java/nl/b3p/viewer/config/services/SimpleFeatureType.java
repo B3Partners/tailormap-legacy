@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,11 +58,14 @@ public class SimpleFeatureType {
     @OneToMany (cascade=CascadeType.ALL, mappedBy="featureType")
     private List<FeatureTypeRelation> relations = new ArrayList<FeatureTypeRelation>();
     
-    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268 
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
     @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
 
+    @OneToMany (cascade=CascadeType.ALL, mappedBy="featureType")
+    private List<ConfiguredAttribute> configuredAttributes = new ArrayList<ConfiguredAttribute>();
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public List<AttributeDescriptor> getAttributes() {
         return attributes;
@@ -125,6 +129,14 @@ public class SimpleFeatureType {
 
     public void setRelations(List<FeatureTypeRelation> relations) {
         this.relations = relations;
+    }
+
+    public List<ConfiguredAttribute> getConfiguredAttributes() {
+        return configuredAttributes;
+    }
+
+    public void setConfiguredAttributes(List<ConfiguredAttribute> configuredAttributes) {
+        this.configuredAttributes = configuredAttributes;
     }
     //</editor-fold>
     
