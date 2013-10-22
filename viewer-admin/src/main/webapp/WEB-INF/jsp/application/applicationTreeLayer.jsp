@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2011 B3Partners B.V.
+Copyright (C) 2011-2013 B3Partners B.V.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -215,6 +215,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="filter-tab" class="x-hide-display">
                     <a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     Er zijn geen attributen voor deze kaartlaag geconfigureerd.
+                </div>
+                <div id="context-tab" class="x-hide-display">
+                    <a href="#Context_Info_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
+                    <stripes:textarea cols="150" rows="5" name="details['context']" id="context_textarea" style="display: none;" />
+                    <div id="contextHtmlEditorContainer" style="width: 475px; height: 400px;"></div>
                 </div>
             </div>
             <script type="text/javascript">

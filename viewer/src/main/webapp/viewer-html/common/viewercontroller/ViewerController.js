@@ -1217,6 +1217,29 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,layer.filter,layer);
         }
     },
+    /**
+     * Layer is clicked
+     * @param layerObj the layer object
+     */
+    layerClicked: function(layerObj) {
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED, layerObj);
+    },
+    /**
+     * Get all the registered components.
+     * @return {Array} A array of the registered components.
+     */
+    getComponents: function (){
+        var results=[];
+        for(var name in this.components) {
+            results.push(this.components[name].instance);
+        }
+        return results;
+    },
+    /**
+     * Get the components by classname
+     * @param {String} classname the full name of the class
+     * @return {Array} of found components.
+     */
     getComponentsByClassName : function(className) {
         var result = [];
         for(var name in this.components) {
@@ -1227,7 +1250,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return result;
     },
-    
+    /**
+     * Get Component by name
+     * @param {String} name the name of the component
+     * @return the component with the given name or null if not found.
+     */
     getComponentByName : function (name){
         var component = this.components[name];
         if(component != undefined) {
@@ -1352,6 +1379,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     if (!Ext.Array.contains(selectedContent,this.app.selectedContent[s])){
                         selectedContent.push(this.app.selectedContent[s]);
                     }
+                }
+            }else{
+                var component=this.getComponentByName(key);
+                if (component && !Ext.isEmpty(value)){
+                    component.loadBookmarkState(Ext.decode(value));
                 }
             }
         }

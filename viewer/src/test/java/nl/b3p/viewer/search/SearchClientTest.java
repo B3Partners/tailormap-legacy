@@ -7,10 +7,8 @@ package nl.b3p.viewer.search;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import nl.b3p.viewer.HttpTestSupport;
 import org.json.JSONArray;
 import org.junit.After;
@@ -51,7 +49,7 @@ public class SearchClientTest extends HttpTestSupport{
     
     @Before
     public void setUp() {
-        ols = new OpenLSSearchClient("http://localhost:8888/geocoder/Geocoder?zoekterm=","GET");        
+        ols = new OpenLSSearchClient("http://localhost:8888/geocoder/Geocoder?zoekterm=");        
     }
     
     @After

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -366,5 +366,22 @@ Ext.define("viewer.components.Component",{
         } else {
             // if(!this.isTool()) console.log('Component ' + this.$className + ' should implement the getExtComponents function to be able to resize contents', this);
         }
+    },
+    /**
+     * Implement when there is a state for this component that must me included in the bookmark url
+     * @param {Boolean} shortUrl true if the settings are used for the short url. If false, the state is used
+     * in the plain url.
+     * @return must return a object with key value pairs. Return null if the component has no state for the bookmark
+     */
+    getBookmarkState: function(shortUrl){
+        return null;
+    },
+    /**
+     * Implement to load the state (created with 'getBookmarkState') from the bookmark in the component
+     * @param {Object} state an object that is created with 'getBookmarkState'
+     */
+    loadBookmarkState: function(state){
+        return;
     }
+    
 });

@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,56 +132,58 @@ Ext.define ("viewer.components.Search",{
     },
     getFormItems: function(){
         var me = this;
-        var itemList = new Array();        
-        if(this.searchconfigs.length == 1){
-            itemList.push({
-                xtype: 'label',
-                text: 'Zoek op: '+ this.searchconfigs[0].name
-            });
-        }else if (this.searchconfigs.length > 1 ){
-            var configs = Ext.create('Ext.data.Store', {
-                fields: ['id', 'name', 'url'],
-                data : this.searchconfigs
-            });
-            itemList.push({
-                xtype: "flamingocombobox",
-                fieldLabel: 'Zoek op',
-                store: configs,
-                queryMode: 'local',
-                displayField: 'name',
-                valueField: 'id',
-                anchor: '100%',
-                emptyText:'Maak uw keuze',
-                id: 'searchName' + this.name
-            });
-        }
-        if (this.searchconfigs.length> 0){
-            itemList.push({ 
-                xtype: 'textfield',
-                name: 'searchfield',
-                anchor: '100%',
-                id: 'searchfield' + this.name,
-                listeners: {
-                    specialkey: function(field, e){
-                        if (e.getKey() == e.ENTER) {
-                            me.search();
+        var itemList = new Array();     
+        if(this.searchconfigs ){
+            if(this.searchconfigs.length == 1){
+                itemList.push({
+                    xtype: 'label',
+                    text: 'Zoek op: '+ this.searchconfigs[0].name
+                });
+            }else if (this.searchconfigs.length > 1 ){
+                var configs = Ext.create('Ext.data.Store', {
+                    fields: ['id', 'name', 'url'],
+                    data : this.searchconfigs
+                });
+                itemList.push({
+                    xtype: "flamingocombobox",
+                    fieldLabel: 'Zoek op',
+                    store: configs,
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    anchor: '100%',
+                    emptyText:'Maak uw keuze',
+                    id: 'searchName' + this.name
+                });
+            }
+            if (this.searchconfigs.length> 0){
+                itemList.push({ 
+                    xtype: 'textfield',
+                    name: 'searchfield',
+                    anchor: '100%',
+                    id: 'searchfield' + this.name,
+                    listeners: {
+                        specialkey: function(field, e){
+                            if (e.getKey() == e.ENTER) {
+                                me.search();
+                            }
                         }
                     }
-                }
-            });
-        
-            itemList.push({ 
-                xtype: 'button',
-                text: 'Zoeken',
-                componentCls: 'mobileLarge',
-                margin: this.margin,
-                listeners: {
-                    click:{
-                        scope: this,
-                        fn: this.search
+                });
+
+                itemList.push({ 
+                    xtype: 'button',
+                    text: 'Zoeken',
+                    componentCls: 'mobileLarge',
+                    margin: this.margin,
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: this.search
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         itemList.push({ 
             xtype: 'button',
@@ -225,6 +227,9 @@ Ext.define ("viewer.components.Search",{
             requestParams["componentName"]= this.name;
             requestParams["searchRequestId"]= this.searchRequestId;
             var me = this;
+            me.mainContainer.setLoading({
+                msg: 'Bezig met zoeken'
+            });
             Ext.Ajax.request({ 
                 url: requestPath, 
                 params: requestParams, 
@@ -237,10 +242,12 @@ Ext.define ("viewer.components.Search",{
                     if (me.searchRequestId==response.request.searchRequestId){
                         me.showSearchResults();
                     }
+                    me.mainContainer.setLoading(false);
                 },
                 failure: function(result, request) {
                     var response = Ext.JSON.decode(result.responseText);
                     Ext.MessageBox.alert("Foutmelding", response.error);
+                    me.mainContainer.setLoading(false);
                 }
             });
             this.form.getChildByElement("cancel"+ this.name).setVisible(true);

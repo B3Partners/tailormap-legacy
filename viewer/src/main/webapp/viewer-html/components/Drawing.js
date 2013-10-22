@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -537,19 +537,7 @@ Ext.define ("viewer.components.Drawing",{
                     this.title.setValue( json.title);
                     this.description.setValue(json.description);
                     var features = Ext.JSON.decode(json.features);
-                    for ( var i = 0 ; i < features.length;i++){
-                        var feature = features[i];
-                        var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
-                        this.vectorLayer.style.fillcolor = featureObject.color;
-                        //this.color = featureObject.color;
-                        this.vectorLayer.adjustStyle();
-                        this.vectorLayer.addFeature(featureObject);
-                    }
-                    if(features.length > 0){
-                        var extent = o.result.extent;
-                        this.viewerController.mapComponent.getMap().zoomToExtent(extent);
-                    }
-        
+                    this.loadFeatures(features);
                 },
                 failure: function (){
                     Ext.Msg.alert('Mislukt', 'Uw bestand kon niet gelezen worden.');
@@ -557,6 +545,41 @@ Ext.define ("viewer.components.Drawing",{
             });
         }
     },
+    
+    loadFeatures: function(features){
+        for ( var i = 0 ; i < features.length;i++){
+            var feature = features[i];
+            var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
+            this.vectorLayer.style.fillcolor = featureObject.color;
+            //this.color = featureObject.color;
+            this.vectorLayer.adjustStyle();
+            this.vectorLayer.addFeature(featureObject);
+        }
+        if(features.length > 0){
+            var extent = o.result.extent;
+            this.viewerController.mapComponent.getMap().zoomToExtent(extent);
+        }
+    },
+    
+    getBookmarkState: function(shortUrl){
+        var features = new Array();
+        for (var featurekey in this.features){
+            var feature = this.features[featurekey];
+            features.push(feature.toJsonObject());
+        }
+        var obj={};
+        if (features.length > 0){
+            obj.features= features;
+        }
+        return obj;
+    },
+            
+    loadBookmarkState: function (state){
+        if (state.features){
+            this.loadFeatures(state.features);
+        }
+    },
+    
     getExtComponents: function() {
         var compIds = [
             this.mainContainer.getId(),

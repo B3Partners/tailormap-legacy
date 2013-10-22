@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,20 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 /**
- * Custom configuration object for AttributeList configuration
- * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ * Custom configuration object for LayerContext configuration
+ * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
+    constructor: function (parentId,configObject){        
         if (configObject === null){
             configObject = {};
         }
-        configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        this.createCheckBoxes(this.configObject.layers,{filterable:true});
+        configObject.showLabelconfig = false;
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
     }
 });
 

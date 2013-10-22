@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,12 +76,14 @@ Ext.define ("viewer.components.TOC",{
     buildButtonBar: function(){
         var me = this;
         if(this.showToggleAllLayers){
-            this.buttonBar = Ext.create('Ext.container.Container', {
+            this.buttonBar = Ext.create('Ext.toolbar.Toolbar', {
                 id: 'ButtonBar_'+this.id,
                 renderTo: this.getContentDiv(),
+                layout: {
+                    pack: 'end'
+                },
                 items: [
                     {
-                        xtype: 'label',
                         id: 'toggleAllLayersButton',
                         text: me.toggleAllLayersState ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
                         listeners: {
@@ -568,38 +570,7 @@ Ext.define ("viewer.components.TOC",{
         }
         var layerName = node.text;
         if(node.leaf){
-            if(node.layerObj.metadata!= undefined || node.layerObj.download!= undefined ){
-                var config = {
-                    details:{
-                        width : 700,
-                        height: 500
-                    },
-                    title: "Metadata"
-                };
-                
-                if(this.popup != null){
-                    this.popup.hide();
-                }
-                
-                var html = "";
-                if(node.layerObj.metadata != undefined){
-                    html += "<a target='_BLANK' href='" +node.layerObj.metadata + "'>Metadata</a>";
-                }
-                if(node.layerObj.download != undefined){
-                    if(html != ""){
-                        html += "<br/>";
-                    }
-                    html += "<a target='_BLANK' href='" +node.layerObj.download+ "'>Downloadlink</a>";
-                }
-                this.popup = Ext.create("viewer.components.ScreenPopup",config);
-                var panelConfig={
-                    renderTo : this.popup.getContentId(),
-                    frame: false,
-                    html: html
-                };
-                Ext.create ("Ext.panel.Panel",panelConfig);
-                this.popup.show();
-            }
+            this.viewerController.layerClicked(node.layerObj);
         }else if(!node.leaf){
             if(node.layerObj.info!= undefined){
                 if(this.popup != null){

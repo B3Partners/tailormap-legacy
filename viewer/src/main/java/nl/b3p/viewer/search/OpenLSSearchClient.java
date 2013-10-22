@@ -6,6 +6,7 @@ package nl.b3p.viewer.search;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URL;
 import nl.geozet.openls.databinding.gml.Point;
 import nl.geozet.openls.databinding.openls.Address;
 import nl.geozet.openls.databinding.openls.GeocodeResponse;
@@ -35,14 +36,10 @@ public class OpenLSSearchClient implements SearchClient {
 
     private static final Log log = LogFactory.getLog(OpenLSSearchClient.class);
     private String url;
-    private String method;
-    private HttpClient client;
     private OpenLSResponseParser parser;
 
-    public OpenLSSearchClient(String url, String method) {
+    public OpenLSSearchClient(String url) {
         this.url = url;
-        this.method = method;
-        this.client = new HttpClient();
         this.parser = new OpenLSResponseParser();
 
     }
@@ -55,40 +52,21 @@ public class OpenLSSearchClient implements SearchClient {
         } else {
             queryUrl = this.url + query;
         }
-        HttpMethod method;
-        if ("GET".equalsIgnoreCase(this.method)) {
-            try{
-                String encodedQuery = URIUtil.encodeQuery(queryUrl, "UTF-8");
-                method = new GetMethod(encodedQuery);
-            }catch(URIException uriEx){
-                log.debug("Could not encode query, trying to sent unencoded: ",uriEx);
-                method = new GetMethod(queryUrl);
-           }
-        } else {
-            method = new PostMethod(queryUrl);
-        }
-        StringWriter sw = new StringWriter();
-        try {
-            int status = this.client.executeMethod(method);
 
-            if (status == HttpStatus.SC_OK) {
-                IOUtils.copy(method.getResponseBodyAsStream(), sw);
-            } else {
-                log.error("OpenLS server response with error: " + method.getResponseBodyAsString());
+        JSONArray result = new JSONArray();
+        String response = null;
+        try {
+            String encodedQuery = URIUtil.encodeQuery(queryUrl, "UTF-8");
+            response = IOUtils.toString(new URL(encodedQuery).openStream(), "UTF-8");
+            GeocodeResponse gecoderResponse = parser.parseOpenLSResponse(response);
+
+            try {
+                result = responseToResult(gecoderResponse);
+            } catch (JSONException ex) {
+                log.error("Error while converting OpenLS result to JSON result", ex);
             }
         } catch (IOException ex) {
             log.error("Error while getting OpenLS response", ex);
-        } finally {
-            method.releaseConnection();
-        }
-
-        GeocodeResponse response = parser.parseOpenLSResponse(sw.toString());
-
-        JSONArray result = new JSONArray();
-        try {
-            result = responseToResult(response);
-        } catch (JSONException ex) {
-            log.error("Error while converting OpenLS result to JSON result", ex);
         }
         return result;
     }
