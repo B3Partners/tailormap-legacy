@@ -62,9 +62,6 @@ public class SimpleFeatureType {
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
     @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
-
-    @OneToMany (cascade=CascadeType.ALL, mappedBy="featureType")
-    private List<ConfiguredAttribute> configuredAttributes = new ArrayList<ConfiguredAttribute>();
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public List<AttributeDescriptor> getAttributes() {
@@ -130,14 +127,6 @@ public class SimpleFeatureType {
     public void setRelations(List<FeatureTypeRelation> relations) {
         this.relations = relations;
     }
-
-    public List<ConfiguredAttribute> getConfiguredAttributes() {
-        return configuredAttributes;
-    }
-
-    public void setConfiguredAttributes(List<ConfiguredAttribute> configuredAttributes) {
-        this.configuredAttributes = configuredAttributes;
-    }
     //</editor-fold>
     
     public Object getMaxValue ( String attributeName )throws Exception {
@@ -199,13 +188,12 @@ public class SimpleFeatureType {
             attributes.clear();
             attributes.addAll(update.attributes);
             changed = true;
-        }                
-        
+        }               
         for(AttributeDescriptor ad: attributes) {
             String alias = aliasesByAttributeName.get(ad.getName());
             if(alias != null) {
                 ad.setAlias(alias);
-            }
+            }            
         }
         return changed;
     }
