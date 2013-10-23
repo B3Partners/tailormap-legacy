@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -48,13 +50,13 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
@@ -62,7 +64,6 @@ import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
@@ -79,6 +80,8 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     private static final String JSP = "/WEB-INF/jsp/services/solrconfig.jsp";
     private static final String EDIT_JSP = "/WEB-INF/jsp/services/editsolrsource.jsp";
+    
+    private static final String PROTOTYPE_JSP = "/WEB-INF/jsp/services/searchPrototype.jsp";
     
     private List<FeatureSource> featureSources = new ArrayList();
     private List<SimpleFeatureType> featureTypes = new ArrayList();
@@ -98,6 +101,9 @@ public class ConfigureSolrActionBean implements ActionBean {
     private Long[] attributes;
     
     private WaitPageStatus status;
+    
+    @Validate
+    private String term;
     
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     @Override
@@ -157,22 +163,102 @@ public class ConfigureSolrActionBean implements ActionBean {
     public void setStatus(WaitPageStatus status) {
         this.status = status;
     }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+    
     //</editor-fold>
     
     @DefaultHandler
     public Resolution view() throws SolrServerException {
         SolrServer server=  SolrInitializer.getServerInstance();
         
-       SolrQuery query = new SolrQuery();
+      /* SolrQuery query = new SolrQuery();
         query.setQuery("*:*");
         query.addSort("textsuggest", SolrQuery.ORDER.asc);
         QueryResponse rsp = server.query(query);
-        SolrDocumentList docs = rsp.getResults();
+        SolrDocumentList docs = rsp.getResults();*/
         return new ForwardResolution(JSP);
     }
 
     public Resolution edit() {
         return new ForwardResolution(EDIT_JSP);
+    }
+    
+    
+    public Resolution prototype() {
+        return new ForwardResolution(PROTOTYPE_JSP);
+    }
+    
+    public Resolution autosuggest() throws JSONException, SolrServerException {
+        SolrServer server = SolrInitializer.getServerInstance();
+        
+        JSONObject obj = new JSONObject();
+        JSONObject response = new JSONObject();
+        JSONArray respDocs = new JSONArray();
+        response.put("docs", respDocs);
+        obj.put("response", response);
+
+
+        SolrQuery query = new SolrQuery();
+        query.setQuery(term);
+        query.setRequestHandler("/suggest");
+        //query.addSort("values", SolrQuery.ORDER.asc);
+        QueryResponse rsp = server.query(query);
+        SpellCheckResponse sc = rsp.getSpellCheckResponse();
+        List<SpellCheckResponse.Suggestion> suggestions = sc.getSuggestions();
+        for (SpellCheckResponse.Suggestion suggestion : suggestions) {
+            List<String> alternatives = suggestion.getAlternatives();
+            for (String alt : alternatives) {
+                JSONObject sug = new JSONObject();
+                sug.put("suggestion", alt);
+                respDocs.put(sug);
+            }
+        }
+        response.put("docs", respDocs);
+
+        return new StreamingResolution("application/json", obj.toString(4));
+    }
+    
+    public Resolution search() throws IOException, JSONException, SolrServerException {
+       /* JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
+        String url = "http://webkaart.b3p.nl/solr/autosuggest/ac?wt=json&q=";
+        URLConnection c = new URL(url + URLEncoder.encode(term, "UTF-8")).openConnection();
+        c.connect();*/
+
+        SolrServer server = SolrInitializer.getServerInstance();
+
+        JSONObject obj = new JSONObject();
+        JSONObject response = new JSONObject();
+        obj.put("response", response);
+
+        SolrQuery query = new SolrQuery();
+        query.setQuery(term);
+        //query.setParam("qt", "/suggest");
+        query.setRequestHandler("/select");
+        QueryResponse rsp = server.query(query);
+        SolrDocumentList list = rsp.getResults();
+        JSONArray respDocs = new JSONArray();
+        for (SolrDocument solrDocument : list) {
+            JSONObject doc = new JSONObject();
+            for (String key : solrDocument.keySet()) {
+                doc.put(key, solrDocument.get(key));
+            }
+            respDocs.put(doc);
+        }
+        
+        response.put("docs", respDocs);
+        obj.put("success", Boolean.TRUE);
+        /*String result = IOUtils.toString(c.getInputStream(), c.getContentEncoding());
+        json.put("result", new JSONObject(result));
+        json.put("success", Boolean.TRUE);*/
+        return new StreamingResolution("application/json", new StringReader(obj.toString(4)));
     }
     
     
@@ -210,14 +296,12 @@ public class ConfigureSolrActionBean implements ActionBean {
                     for (AttributeDescriptor attr : attributesToIndex) {
                         String attributeName = attr.getName();
                         Object col = feature.getAttribute( attributeName);
-                        String field = "extrasearch";
-                        if(first){
-                            field = "textsuggest";
-                            first=false;
-                        }
+                        String field = "values";
+                        doc.addField("columns", col);
                         doc.addField(field, col);
                     }
                     doc.addField("id", feature.getID());
+                    doc.addField("feature_source_id",sft.getId());
                     docs.add(doc);
                     total += intervalPerDoc;
                     status.setProgress(total.intValue());

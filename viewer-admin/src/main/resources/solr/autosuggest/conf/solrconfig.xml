@@ -106,6 +106,7 @@
     </queryResponseWriter>
 
     <searchComponent class="solr.SpellCheckComponent" name="suggest">
+        <str name="queryAnalyzerFieldType">text_general</str>
         <lst name="spellchecker">
             <str name="name">suggest</str>
             <str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
@@ -116,7 +117,7 @@
                  org.apache.solr.spelling.suggest.jaspell.JaspellLookup [default, jaspell-based]
                  org.apache.solr.spelling.suggest.tst.TSTLookup   [ternary trees]
             -->
-            <str name="field">values</str>  <!-- the indexed field to derive suggestions from -->
+            <str name="field">autosuggestValues</str>  <!-- the indexed field to derive suggestions from -->
             <!--float name="threshold">0.005</float-->
             <str name="buildOnCommit">true</str>
             <!--
