@@ -299,6 +299,18 @@ public class ConfigureSolrActionBean implements ActionBean {
         return new StreamingResolution("application/json", json.toString(4));
     }
     
+    public Resolution getSearchconfigData() throws JSONException {
+        EntityManager em =Stripersist.getEntityManager();
+        List<SolrConfiguration> configs = em.createQuery("FROM SolrConfiguration").getResultList();
+        JSONArray searchconfigs = new JSONArray();
+        for (SolrConfiguration solrConfig : configs) {
+            JSONObject config = new JSONObject();
+            config.put("id", solrConfig.getId());
+            config.put("name", solrConfig.getName());
+            searchconfigs.put(config);
+        }
+        return new StreamingResolution("application/json", searchconfigs.toString(4));
+    }
     
     public Resolution getAttributesList() throws JSONException { 
         JSONArray jsonData = new JSONArray();

@@ -35,7 +35,8 @@ renderTo (required): HTML ID of container to which component can be rendered
 valueField (optional): Fieldname in JSON object in JSON array which holds the "value" field of the checkbox (default = id)
 titleField (optional): Fieldname in JSON object in JSON array which holds the "label" field of the checkbox (default = title)
 checked (optional): Array with values of the checkboxes which need to be pre-selected
-
+renderLabel (optional): Function to render label. Must return text which renders as label. Arguments for the function are id, name
+labelClick (optional): Function to catch clicking on the label to execute custom function
  * 
  */
 
@@ -47,6 +48,10 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     valueField: 'id',
     titleField: 'label',
     checked: [],
+    // optional function which should return text to render the label
+    renderLabel: null,
+    // optional function which is called when a label is clicked
+    labelClick: null,
     //function called when layers are received, must return the same layers or a subset
     layerFilter: null,
     /**
@@ -75,6 +80,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             item['htmlId'] = Ext.id();
             checkboxes += (me.createCheckbox(item['htmlId'], item[me.valueField], item[me.titleField]));
         });
+        var containerId = Ext.id();
         var fields = [{
             xtype:'container',
             width: '100%',
@@ -100,6 +106,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             }]
         }, {
             xtype:'container',
+            id: containerId,
             autoScroll: true,
             html: checkboxes,
             border: 0,
@@ -116,6 +123,11 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             width: '100%',
             layout: 'vbox'
         });
+        if(me.labelClick !== null) {
+            Ext.get(containerId).addListener('click', function(evt, target) {
+                me.labelClick(evt, target);
+            });
+        }
         me.setChecked();
     },
     
@@ -144,7 +156,11 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     
     createCheckbox: function(id, value, name) {
         // Using ordinairy HTML checkboxes, Ext checkboxes are too slow when having large numbers
-        return '<div id="' + id + '"><input type="checkbox" id="checkbox-' + id + '" value="' + value + '" /> <label for="checkbox-' + id + '">' + name + '</label></div>';
+        var label = name;
+        if(this.renderLabel !== null) {
+            label = this.renderLabel(id, name);
+        }
+        return '<div id="' + id + '"><input type="checkbox" id="checkbox-' + id + '" value="' + value + '" /> <label for="checkbox-' + id + '">' + label + '</label></div>';
     },
     
     setCheckBoxesVisible: function(checkboxes, visible) {
@@ -158,6 +174,11 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     
     setCheckboxVisible: function(checkboxid, visibletxt) {
         document.getElementById(checkboxid).style.display = visibletxt;
+    },
+            
+    resetChecked: function(checked) {
+        this.checked = checked;
+        this.setChecked();
     },
     
     setChecked: function() {
