@@ -38,7 +38,8 @@ Ext.define ("viewer.components.Search",{
         //not yet configurable:
         zoomBoxSize: 200,
         typeZoomBoxSize: null,
-        typeLabel:null
+        typeLabel:null,
+        showRemovePin: true
     },    
     constructor: function (conf){                    
         if (conf.typeZoomBoxSize==undefined){
@@ -343,7 +344,10 @@ Ext.define ("viewer.components.Search",{
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",location.x,location.y,"marker");
         this.popup.hide();
-        this.form.getChildByElement("removePin"+ this.name).setVisible(true);
+        
+        if (this.showRemovePin){
+            this.form.getChildByElement("removePin"+ this.name).setVisible(true);
+        }
     },
     getExtComponents: function() {
         var c = [ this.mainContainer.getId(), this.form.getId() ];
