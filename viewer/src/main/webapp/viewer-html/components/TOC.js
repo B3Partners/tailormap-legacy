@@ -124,7 +124,8 @@ Ext.define ("viewer.components.TOC",{
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;
         
         var tools = [];
-        if(true) { // TODO: is this going to be a config option or do we always show help button?
+        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
+        if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
             tools = [{
                 type:'help',
                 handler: function(event, toolEl, panel){

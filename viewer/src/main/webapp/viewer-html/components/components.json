@@ -17,6 +17,8 @@
  * notInCombinationWith: Array with the classNames of other components. If a component from that array has
  *                   already been added to a region, this component cannot be added to that region
  * 
+ * showHelp: boolean value to show help configuration tab for component (default false)
+ *
  * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
  *   
  * extPropertyGridConfigs.source: Set the object that must be configurable with defaults 
@@ -667,7 +669,7 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Help-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","content"],        
         type: "popup",
-        showHelp: false        
+        showHelp: true        
     },
     {
         className: "viewer.components.LayerSwitch",

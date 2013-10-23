@@ -80,7 +80,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             config.contentEl = con;
         }
         
-        if(true) { // TODO: is this going to be a config option or do we always show help button?
+        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
+        if(conf && (!conf.hasOwnProperty('showHelpButton') || conf.showHelpButton !== "false")) {
             config.tools = [{
                 type:'help',
                 handler: function(event, toolEl, panel){

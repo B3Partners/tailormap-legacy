@@ -66,7 +66,11 @@ Ext.onReady(function(){
     }
 });
 function createHelpTab() {
-    helpForm = new Ext.form.FormPanel({
+    var showHelpButton = "true"; // Default is to show help button
+    if(configObject && configObject.showHelpButton) {
+        showHelpButton = configObject.showHelpButton;
+    }
+    var helpForm = new Ext.form.FormPanel({
         frame: false,
         border: 0,
         items: [{
@@ -80,6 +84,15 @@ function createHelpTab() {
                 width: 400
             },  
             items:[
+            {
+                xtype: 'checkbox',
+                fieldLabel: 'Help knop tonen',
+                id: "showHelpButton",
+                name: 'showHelpButton',
+                value: "true" == showHelpButton,
+                checked: "true" == showHelpButton,
+                labelWidth:100
+            },
             {
                 xtype: 'textfield',
                 fieldLabel: 'Help URL',
@@ -268,12 +281,15 @@ function continueSave(config){
         config.isPopup = false;
     }
     if(showHelp()) {
-        var helpUrl = Ext.getCmp('helpUrl'), helpText = Ext.getCmp('helpText');
+        var helpUrl = Ext.getCmp('helpUrl'), helpText = Ext.getCmp('helpText'), showHelpButton = Ext.getCmp('showHelpButton');
         if(helpUrl && helpUrl.getValue() !== '') {
             config['helpUrl'] = helpUrl.getValue();
         }
         if(helpText && helpText.getValue() !== '') {
             config['helpText'] = helpText.getValue();
+        }
+        if(showHelpButton) {
+            config['showHelpButton'] = showHelpButton.getValue() ? "true" : "false";
         }
     }
     var configFormObject = Ext.get("configObject");
