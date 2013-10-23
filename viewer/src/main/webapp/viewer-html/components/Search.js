@@ -198,7 +198,24 @@ Ext.define ("viewer.components.Search",{
                     fn: this.cancel
                 }
             }
-        });        
+        });
+        //remove pin button
+        itemList.push({
+            xtype: 'button',
+            text: 'Verwijder marker',
+            margin: this.margin,
+            componentCls: 'mobileLarge',
+            name: 'removePin',
+            id: 'removePin'+ this.name,
+            hidden: true,
+            listeners: {
+                click: {
+                    scope: this,
+                    fn: this.removePin
+                }
+            }
+            
+        });
         return itemList;
     },
     hideWindow : function(){
@@ -308,6 +325,10 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
     },
+    removePin: function(){
+        this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
+        this.form.getChildByElement("removePin"+ this.name).setVisible(false);
+    },
     handleSearchResult : function(location,type){
         var newExtent = new Object();
         var zoomBoxSize=this.getZoomBoxSize()/2;
@@ -322,6 +343,7 @@ Ext.define ("viewer.components.Search",{
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",location.x,location.y,"marker");
         this.popup.hide();
+        this.form.getChildByElement("removePin"+ this.name).setVisible(true);
     },
     getExtComponents: function() {
         var c = [ this.mainContainer.getId(), this.form.getId() ];
