@@ -123,6 +123,17 @@ Ext.define ("viewer.components.TOC",{
         var title = "";
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;
         
+        var tools = [];
+        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
+        if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
+            tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    me.viewerController.showHelp(me.config);
+                }
+            }];
+        }
+        
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
@@ -143,7 +154,8 @@ Ext.define ("viewer.components.TOC",{
                     scope: this
                 }
             },
-            store: store
+            store: store,
+            tools: tools
         });
     },
     // Start the treetraversal

@@ -119,43 +119,7 @@ Ext.define ("viewer.components.LayerContext",{
         }
     },
     getExtComponents: function() {
-        return [ (this.panel !== null) ? this.panel.getId() : '' ];
+        return [ (this.container !== null) ? this.container.getId() : '' ];
     }
-    /*
-     * 
-        console.log(node);
-        if(node.layerObj.metadata!= undefined || node.layerObj.download!= undefined ){
-            var config = {
-                details:{
-                    width : 700,
-                    height: 500
-                },
-                title: "Metadata"
-            };
-
-            if(this.popup != null){
-                this.popup.hide();
-            }
-
-            var html = "";
-            if(node.layerObj.metadata != undefined){
-                html += "<a target='_BLANK' href='" +node.layerObj.metadata + "'>Metadata</a>";
-            }
-            if(node.layerObj.download != undefined){
-                if(html != ""){
-                    html += "<br/>";
-                }
-                html += "<a target='_BLANK' href='" +node.layerObj.download+ "'>Downloadlink</a>";
-            }
-            this.popup = Ext.create("viewer.components.ScreenPopup",config);
-            var panelConfig={
-                renderTo : this.popup.getContentId(),
-                frame: false,
-                html: html
-            };
-            Ext.create ("Ext.panel.Panel",panelConfig);
-            this.popup.show();
-        }
-     */
 });
 

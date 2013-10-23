@@ -19,6 +19,9 @@ var customConfiguration;
 var layoutForm;
 Ext.onReady(function(){
     createLayoutTab();
+    if(showHelp()){
+        createHelpTab();
+    }
     if(metadata.configSource != undefined) {
         customConfiguration= new Ext.create("viewer.components.CustomConfiguration","config", configObject);
     } else {
@@ -62,6 +65,50 @@ Ext.onReady(function(){
     
     }
 });
+function createHelpTab() {
+    var showHelpButton = "true"; // Default is to show help button
+    if(configObject && configObject.showHelpButton) {
+        showHelpButton = configObject.showHelpButton;
+    }
+    var helpForm = new Ext.form.FormPanel({
+        frame: false,
+        border: 0,
+        items: [{
+            xtype:'fieldset',
+            columnWidth: 0.5,
+            title: 'Help',
+            collapsible: false,
+            defaultType: 'textfield',
+            layout: 'anchor',
+            defaults: {
+                width: 400
+            },  
+            items:[
+            {
+                xtype: 'checkbox',
+                fieldLabel: 'Help knop tonen',
+                id: "showHelpButton",
+                name: 'showHelpButton',
+                value: "true" == showHelpButton,
+                checked: "true" == showHelpButton,
+                labelWidth:100
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: 'Help URL',
+                id: "helpUrl",
+                name: 'helpUrl',
+                value: configObject && configObject.helpUrl ? configObject.helpUrl : '',
+                labelWidth:100
+            },
+            {
+                xtype: 'container',
+                html: '<div id="helpHtmlEditorContainer" style="width: 700px; height: 500px;"></div>'
+            }]
+        }],
+        renderTo: "help"
+    }); 
+}
 function createLayoutTab(){
     if(details == undefined || details == null){
         details = {
@@ -233,15 +280,33 @@ function continueSave(config){
     }else{
         config.isPopup = false;
     }
-                    
+    if(showHelp()) {
+        var helpUrl = Ext.getCmp('helpUrl'), helpText = Ext.getCmp('helpText'), showHelpButton = Ext.getCmp('showHelpButton');
+        if(helpUrl && helpUrl.getValue() !== '') {
+            config['helpUrl'] = helpUrl.getValue();
+        }
+        if(helpText && helpText.getValue() !== '') {
+            config['helpText'] = helpText.getValue();
+        }
+        if(showHelpButton) {
+            config['showHelpButton'] = showHelpButton.getValue() ? "true" : "false";
+        }
+    }
     var configFormObject = Ext.get("configObject");
     configFormObject.dom.value = JSON.stringify(config);
     document.getElementById('configForm').submit();
 }
 
+function showHelp() {
+    if(typeof metadata.showHelp !== 'undefined' && metadata.showHelp) {
+        return true;
+    }
+    return false;
+}
+
 Ext.onReady(function() {
     Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-display');   
-    var tabs = [];
+    var tabs = [], htmlEditorRendered = false;
     tabs = [{
         contentEl:'config', 
         title: 'Configuratie'
@@ -255,6 +320,12 @@ Ext.onReady(function() {
             title: 'Layout'
         });
     }
+    if(showHelp()){
+        tabs.push({
+            contentEl:'help', 
+            title: 'Help'
+        });
+    }
     Ext.widget('tabpanel', {
         renderTo: 'tabs',
         width: '100%',
@@ -265,6 +336,33 @@ Ext.onReady(function() {
         },
         layoutOnTabChange: true,
         items: tabs,
+        listeners: {
+            tabchange: function(panel, activetab, previoustab) {
+                if(activetab.contentEl && activetab.contentEl === 'help' && !htmlEditorRendered) {
+                    // HTML editor is rendered when the tab is first opened. This prevents a bug where the contents could not be edited
+                    Ext.create('Ext.form.field.HtmlEditor', {
+                        id: 'helpText',
+                        name: 'helpText',
+                        width: 600,
+                        maxWidth: 600,
+                        height: 400,
+                        maxHeight: 400,
+                        value: configObject && configObject.helpText ? configObject.helpText : '',
+                        fieldLabel: 'Help Tekst',
+                        labelWidth: 100,
+                        plugins: [
+                            new Ext.create('Ext.ux.form.HtmlEditor.imageUpload', Ext.apply(defaultImageUploadConfig, {
+                                submitUrl: actionBeans['imageupload'],
+                                managerUrl: Ext.urlAppend(actionBeans['imageupload'], "manage=t")
+                            })),
+                            new Ext.ux.form.HtmlEditor.Table(defaultHtmleditorTableConfig)
+                        ],
+                        renderTo: 'helpHtmlEditorContainer'
+                    });
+                    htmlEditorRendered = true;
+                }
+            }
+        },
         bbar: ["->", {
             xtype: 'button',
             text: 'Annuleren',
