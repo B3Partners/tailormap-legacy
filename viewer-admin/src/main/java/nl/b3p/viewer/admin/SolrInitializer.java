@@ -17,10 +17,6 @@
 package nl.b3p.viewer.admin;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
