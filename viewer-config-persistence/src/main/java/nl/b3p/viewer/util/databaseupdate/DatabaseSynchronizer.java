@@ -75,6 +75,8 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("0", new ArrayList<String>());
         updates.get("0").add("schema-export.sql");
         updates.get("0").add("initialize_database.sql");
+        
+        updates.get("1").add("add_solr_config.sql");
     }
     /**
      * Function is called in init() of servlet.
