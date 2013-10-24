@@ -249,6 +249,14 @@ Ext.define ("viewer.components.DataSelection",{
             }
         }
         this.dataTab.removeAll();
+        if (dataSelectieAttributes.length==0){
+            this.dataTab.hide();
+            this.dataTab.tab.hide();
+            this.tabPanel.setActiveTab(this.filterTab);
+        }else{
+            this.dataTab.show();
+            this.dataTab.tab.show();
+        }
         var defaultText = 'Kaart wordt pas zichtbaar na het toepassen van een dataselectie';
         if(this.uniqueValuesAttributes.length == 0){
             defaultText = '';
