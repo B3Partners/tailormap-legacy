@@ -88,7 +88,7 @@ Ext.onReady(function() {
                 border: false,
                 id: "searchResults",
                     height: 300,
-                    width: 100,
+                    width: 500,
                 layout: {
                     type: "vbox"
                 },
@@ -148,7 +148,7 @@ function createResult(doc) {
     var result = Ext.create(Ext.panel.Panel, {
         id:doc.id+ "-" + Ext.id(),
         border: false,
-        width:200,
+        width:500,
        // height:50,
         layout: {
             type: "hbox"
