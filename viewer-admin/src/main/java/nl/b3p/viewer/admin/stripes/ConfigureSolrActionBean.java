@@ -43,6 +43,7 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConfiguration;
+import nl.b3p.viewer.config.services.WFSFeatureSource;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +55,7 @@ import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.hibernate.Criteria;
@@ -244,6 +246,7 @@ public class ConfigureSolrActionBean implements ActionBean {
         query.setRequestHandler("/select");
         QueryResponse rsp = server.query(query);
         SolrDocumentList list = rsp.getResults();
+        
         JSONArray respDocs = new JSONArray();
         for (SolrDocument solrDocument : list) {
             JSONObject doc = new JSONObject();
@@ -276,10 +279,14 @@ public class ConfigureSolrActionBean implements ActionBean {
             status.setCurrentAction("Features ophalen");
             
             status.setProgress(10);
-            
             SimpleFeatureType sft = solrConfiguration.getSimpleFeatureType();
             fs = sft.openGeoToolsFeatureSource();
-            FeatureCollection fc = fs.getFeatures();
+            
+            Query q = new Query();
+            if(sft.getFeatureSource() instanceof WFSFeatureSource){
+                q.setMaxFeatures(5000);
+            }
+            FeatureCollection fc = fs.getFeatures(q);
             List<AttributeDescriptor> attributesToIndex =  solrConfiguration.getAttributes();
             List<SolrInputDocument> docs = new ArrayList();
             
@@ -292,16 +299,15 @@ public class ConfigureSolrActionBean implements ActionBean {
                 while (iterator.hasNext()) {
                     SimpleFeature feature = iterator.next();
                     SolrInputDocument doc = new SolrInputDocument();
-                    boolean first= true;
                     for (AttributeDescriptor attr : attributesToIndex) {
                         String attributeName = attr.getName();
                         Object col = feature.getAttribute( attributeName);
                         String field = "values";
-                        doc.addField("columns", col);
+                        doc.addField("columns", attributeName);
                         doc.addField(field, col);
                     }
                     doc.addField("id", feature.getID());
-                    doc.addField("feature_source_id",sft.getId());
+                    doc.addField("searchConfig",solrConfiguration.getId());
                     docs.add(doc);
                     total += intervalPerDoc;
                     status.setProgress(total.intValue());

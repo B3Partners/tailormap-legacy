@@ -2,7 +2,7 @@
 
 <config>
 
-    <luceneMatchVersion>4.4</luceneMatchVersion>
+    <luceneMatchVersion>4.5</luceneMatchVersion>
 
     <lib dir="../../../contrib/extraction/lib" regex=".*\.jar" />
     <lib dir="../../../dist/" regex="solr-cell-\d.*\.jar" />
@@ -154,8 +154,9 @@
       -->
      <lst name="defaults">
        <str name="echoParams">explicit</str>
-       <int name="rows">10</int>
+       <int name="rows">100</int>
        <str name="df">values</str>
+       <str name="fl">*,score</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
