@@ -445,7 +445,8 @@ Ext.define ("viewer.components.DataSelection",{
         var filter = Ext.create("viewer.components.Filter", {
             attributes: this.attributes,
             logicOperator: logicOperator,
-            parentMainContainer: this.filterTab
+            parentMainContainer: this.filterTab,
+            parentComponent: this
         });
         this.filters.push(filter);
         rightContainer.add(filter.getUI());

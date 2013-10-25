@@ -30,6 +30,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     numericOperators: ["<", ">", "=", "<=", ">=", "<>"],
     operator: null,
     value:null,
+    valueStore:null,
     logicOperator:null,
     container:null,
     attribute:null,
@@ -37,7 +38,9 @@ Ext.define ("viewer.components.AttributeFilter",{
     config :{
         first:null,
         id:null,
-        number:null
+        number:null,
+        isUniqueList:false,
+        initData: null
     },
     constructor: function(config){
         this.initConfig(config);
@@ -48,12 +51,29 @@ Ext.define ("viewer.components.AttributeFilter",{
             displayField: 'id',
             value:'=',
             width:50,
-            valueField: 'id'
+            valueField: 'id',
+            data: this.initData
         });
-        this.value = Ext.create("Ext.form.field.Text",{
-            width: 100,
-            id: "value" + this.id + "-" + this.number
+        //if (this.isUniqueList){
+            this.valueStore = Ext.create('Ext.data.ArrayStore', {
+                fields: ['value']
+            });
+            this.value= Ext.create('viewer.components.FlamingoCombobox', {
+                fieldLabel: '',
+                store: this.valueStore,
+                queryMode: 'local',
+                displayField: 'value',
+                width:150,
+                valueField: 'value',
+                forceSelection: false,
+                editable: true
         });
+       /* }else{
+            this.value = Ext.create("Ext.form.field.Text",{
+                width: 100,
+                id: "value" + this.id + "-" + this.number
+            });
+        }*/
         return this;
     },
     getUI : function (){
@@ -89,7 +109,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 				layout: {
 					type: 'hbox'
 				},
-				width: 220,
+				width: 320,
 				items:  items,
 				height: MobileManager.isMobile() ? 30 : 25
 			});
@@ -112,6 +132,13 @@ Ext.define ("viewer.components.AttributeFilter",{
             cql += "\'";
         }      
         return cql;
+    },
+    /**
+     * Set the unique list of values.
+     */
+    setUniqueList: function(list){        
+        this.valueStore.removeAll();
+        this.valueStore.add(list);
     },
 	// We have to remove all items from the attribute filter due to some weird Ext bug
 	removeItems: function() {
