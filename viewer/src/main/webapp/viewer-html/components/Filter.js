@@ -107,12 +107,28 @@ Ext.define ("viewer.components.Filter",{
     },
     attributeComboboxChanged: function(el,val,prevVal){
         this.uniqueList=[];
-        //TODO: Check of unique list heeft        
-        this.getAttributeUniques(val);
-        //alert(el);
+        this.setUniqueListOnAttributeFilters([]);
+        if (val!=null){
+            var applayerAttribute = this.getAppLayerAttributeByName(val);
+            if (applayerAttribute && applayerAttribute.defaultValue==="filterList"){
+                this.getAttributeUniques(val);
+            }
+        }
     },
-    handleUniqueListClick: function (){
-        this.getAttributeUniques(this.attributeCombobox.getValue());
+    /**
+     * Get the attribute from the selected AppLayer by name.
+     */
+    getAppLayerAttributeByName: function (name){
+        var appLayer = this.parentComponent.appLayer;
+        if(appLayer && appLayer.attributes){
+            for (var i=0; i < appLayer.attributes.length; i++){
+                var attribute = appLayer.attributes[i]
+                if (attribute.name===name){
+                    return attribute;
+                }
+            }
+        }
+        return null;
     },
     getAttributeUniques : function (attributeName){
         var appLayer = this.parentComponent.layerSelector.getValue();
