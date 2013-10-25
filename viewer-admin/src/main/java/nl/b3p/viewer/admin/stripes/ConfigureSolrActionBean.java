@@ -100,7 +100,10 @@ public class ConfigureSolrActionBean implements ActionBean {
     private Long simpleFeatureTypeId;
     
     @Validate
-    private Long[] attributes;
+    private Long[] indexAttributes;
+    
+    @Validate
+    private Long[] resultAttributes;
     
     private WaitPageStatus status;
     
@@ -134,12 +137,20 @@ public class ConfigureSolrActionBean implements ActionBean {
         this.featureSources = featureSources;
     }
 
-    public Long[] getAttributes() {
-        return attributes;
+    public Long[] getIndexAttributes() {
+        return indexAttributes;
     }
 
-    public void setAttributes(Long[] attributes) {
-        this.attributes = attributes;
+    public void setIndexAttributes(Long[] indexAttributes) {
+        this.indexAttributes = indexAttributes;
+    }
+
+    public Long[] getResultAttributes() {
+        return resultAttributes;
+    }
+
+    public void setResultAttributes(Long[] resultAttributes) {
+        this.resultAttributes = resultAttributes;
     }
 
     public List<SimpleFeatureType> getFeatureTypes() {
@@ -178,13 +189,6 @@ public class ConfigureSolrActionBean implements ActionBean {
     
     @DefaultHandler
     public Resolution view() throws SolrServerException {
-        SolrServer server=  SolrInitializer.getServerInstance();
-        
-      /* SolrQuery query = new SolrQuery();
-        query.setQuery("*:*");
-        query.addSort("textsuggest", SolrQuery.ORDER.asc);
-        QueryResponse rsp = server.query(query);
-        SolrDocumentList docs = rsp.getResults();*/
         return new ForwardResolution(JSP);
     }
 
@@ -228,12 +232,6 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
     
     public Resolution search() throws IOException, JSONException, SolrServerException {
-       /* JSONObject json = new JSONObject();
-        json.put("success", Boolean.FALSE);
-        String url = "http://webkaart.b3p.nl/solr/autosuggest/ac?wt=json&q=";
-        URLConnection c = new URL(url + URLEncoder.encode(term, "UTF-8")).openConnection();
-        c.connect();*/
-
         SolrServer server = SolrInitializer.getServerInstance();
 
         JSONObject obj = new JSONObject();
@@ -242,7 +240,6 @@ public class ConfigureSolrActionBean implements ActionBean {
 
         SolrQuery query = new SolrQuery();
         query.setQuery(term);
-        //query.setParam("qt", "/suggest");
         query.setRequestHandler("/select");
         QueryResponse rsp = server.query(query);
         SolrDocumentList list = rsp.getResults();
@@ -258,9 +255,6 @@ public class ConfigureSolrActionBean implements ActionBean {
         
         response.put("docs", respDocs);
         obj.put("success", Boolean.TRUE);
-        /*String result = IOUtils.toString(c.getInputStream(), c.getContentEncoding());
-        json.put("result", new JSONObject(result));
-        json.put("success", Boolean.TRUE);*/
         return new StreamingResolution("application/json", new StringReader(obj.toString(4)));
     }
     
@@ -287,7 +281,9 @@ public class ConfigureSolrActionBean implements ActionBean {
                 q.setMaxFeatures(5000);
             }
             FeatureCollection fc = fs.getFeatures(q);
-            List<AttributeDescriptor> attributesToIndex =  solrConfiguration.getAttributes();
+            List<AttributeDescriptor> indexAttributesConfig =  solrConfiguration.getIndexAttributes();
+            List<AttributeDescriptor> resultAttributesConfig =  solrConfiguration.getResultAttributes();
+            
             List<SolrInputDocument> docs = new ArrayList();
             
             FeatureIterator<SimpleFeature>  iterator = fc.features();
@@ -299,13 +295,21 @@ public class ConfigureSolrActionBean implements ActionBean {
                 while (iterator.hasNext()) {
                     SimpleFeature feature = iterator.next();
                     SolrInputDocument doc = new SolrInputDocument();
-                    for (AttributeDescriptor attr : attributesToIndex) {
+                    for (AttributeDescriptor attr : indexAttributesConfig) {
                         String attributeName = attr.getName();
                         Object col = feature.getAttribute( attributeName);
                         String field = "values";
                         doc.addField("columns", attributeName);
                         doc.addField(field, col);
                     }
+                    for (AttributeDescriptor attributeDescriptor : resultAttributesConfig) {
+                        String attributeName = attributeDescriptor.getName();
+                        Object col = feature.getAttribute( attributeName);
+                        String field = "resultValues";
+                        doc.addField("resultColumns", attributeName);
+                        doc.addField(field, col);
+                    }
+                    
                     doc.addField("id", feature.getID());
                     doc.addField("searchConfig",solrConfiguration.getId());
                     docs.add(doc);
@@ -339,11 +343,17 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     public Resolution save() {
         EntityManager em =Stripersist.getEntityManager();
-        solrConfiguration.getAttributes().clear();
-        for (int i = 0; i < attributes.length; i++) {
-            Long attributeId = attributes[i];
+        solrConfiguration.getIndexAttributes().clear();
+        for (int i = 0; i < indexAttributes.length; i++) {
+            Long attributeId = indexAttributes[i];
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
-            solrConfiguration.getAttributes().add(attribute);
+            solrConfiguration.getIndexAttributes().add(attribute);
+        }
+        
+        for (int i = 0; i < resultAttributes.length; i++) {
+            Long attributeId = resultAttributes[i];
+            AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
+            solrConfiguration.getResultAttributes().add(attribute);
         }
         em.persist(solrConfiguration);
         em.getTransaction().commit();
@@ -367,7 +377,8 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
-        solrConfiguration.getAttributes().clear();
+        solrConfiguration.getIndexAttributes().clear();
+        solrConfiguration.getResultAttributes().clear();
         em.remove(solrConfiguration);
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
@@ -439,11 +450,18 @@ public class ConfigureSolrActionBean implements ActionBean {
 
         for(Iterator<AttributeDescriptor> it = attrs.iterator(); it.hasNext();){
             AttributeDescriptor attr = it.next();
-            boolean checked = false;
+            boolean indexChecked = false;
+            boolean resultChecked = false;
             if(solrConfiguration != null){
-                for (AttributeDescriptor configAttribuut : solrConfiguration.getAttributes()) {
-                    if(configAttribuut.getId() == attr.getId()){
-                        checked=  true;
+                for (AttributeDescriptor configAttribute : solrConfiguration.getIndexAttributes()) {
+                    if(configAttribute.getId() == attr.getId()){
+                        indexChecked=  true;
+                        break;
+                    }
+                }
+                for (AttributeDescriptor resultAttribute : solrConfiguration.getResultAttributes()) {
+                    if(resultAttribute.getId() == attr.getId()){
+                        resultChecked =  true;
                         break;
                     }
                 }
@@ -452,7 +470,8 @@ public class ConfigureSolrActionBean implements ActionBean {
             j.put("id", attr.getId().intValue());
             j.put("alias", attr.getAlias());
             j.put("attribute", attr.getName());
-            j.put("checked", checked);
+            j.put("indexChecked", indexChecked);
+            j.put("resultChecked", resultChecked);
             jsonData.put(j);
         }
         

@@ -77,14 +77,26 @@ function featureTypeChanged(featuretypeId){
                 if(data) {
                     var rows = data.gridrows;
                     var html="<h1>Attributen</h1><br/>";
+                    html += "<table border=1>"
+                    html += "<tr><th>Doorzoekbaar</th><th>Resultaat</th><th>Attribuutnaam</th></tr>";
                     for (var id in rows){
-                        var ft=rows[id];       
-                        html += "<input type='checkbox' name='attributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'";
-                        if(ft.checked){
+                        var ft=rows[id];
+                        html += "<tr><td>";
+                        html += "<input type='checkbox' name='indexAttributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'";
+                        if(ft.indexChecked){
                             html+= " checked='true'";
                         }
-                        html +=">" + ft.attribute + "</checkbox><br/>";
+                        html +="/>";
+                        html += "</td><td>";
+                        html += "<input type='checkbox' name='resultAttributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'";
+                        if(ft.resultChecked){
+                            html+= " checked='true'";
+                        }
+                        html +="/>";
+                        html += "<td>" +  ft.attribute + "</td>";
+                        html +="</td></tr>";
                     } 
+                    html += "</table>"
                     resultEl.update(html);
                 }
             },

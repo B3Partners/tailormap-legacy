@@ -14,6 +14,9 @@
         http://lucene.472066.n3.nabble.com/quot-order-quot-question-on-solr-multi-value-field-td4027695.html -->
         <field name="columns" type="string" indexed="false" stored="true" multiValued="true" required="true"/>
         
+        <field name="resultColumns" type="string" indexed="false" stored="true" multiValued="true" required="false"/>
+        <field name="resultValues" type="string" indexed="false" stored="true" multiValued="true" required="false"/>
+        
         <field name="searchConfig" type="int" indexed="true" stored="true" required="true"/>
         
         <field name="phonetic" type="text_phonetic_do" indexed="true" stored="false" omitNorms="true" />

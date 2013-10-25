@@ -44,7 +44,11 @@ public class SolrConfiguration {
     
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
-    private List<AttributeDescriptor> attributes = new ArrayList();
+    private List<AttributeDescriptor> indexAttributes = new ArrayList();
+    
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
+    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
+    private List<AttributeDescriptor> resultAttributes = new ArrayList();
     
     private String name;
     
@@ -73,14 +77,22 @@ public class SolrConfiguration {
         this.name = name;
     }
 
-    public List<AttributeDescriptor> getAttributes() {
-        return attributes;
+    public List<AttributeDescriptor> getIndexAttributes() {
+        return indexAttributes;
     }
 
-    public void setAttributes(List<AttributeDescriptor> attributes) {
-        this.attributes = attributes;
+    public void setIndexAttributes(List<AttributeDescriptor> indexAttributes) {
+        this.indexAttributes = indexAttributes;
     }
-    
+
+    public List<AttributeDescriptor> getResultAttributes() {
+        return resultAttributes;
+    }
+
+    public void setResultAttributes(List<AttributeDescriptor> resultAttributes) {
+        this.resultAttributes = resultAttributes;
+    }
+
     public JSONObject toJSON() throws JSONException{
         JSONObject json = new JSONObject();
         json.put("id", id);
