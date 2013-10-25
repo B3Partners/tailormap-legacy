@@ -35,7 +35,7 @@ public class ArcGisRestSearchClient implements SearchClient{
         }
         JSONArray returnValue= new JSONArray();
         try{            
-            JSONObject obj= new JSONObject(IOUtils.toString(new URL(url).openStream(), "UTF-8"));
+            JSONObject obj= new JSONObject(IOUtils.toString(new URL(queryUrl).openStream(), "UTF-8"));
             JSONArray candidates = (JSONArray)obj.get("candidates");            
             returnValue = candidateToResult(candidates);
         }catch(JSONException je){

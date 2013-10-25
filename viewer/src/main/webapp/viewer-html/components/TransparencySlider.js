@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,14 +35,25 @@ Ext.define ("viewer.components.TransparencySlider",{
     constructor: function (conf){        
         viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
-        
+        var me = this;
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        var tools = [];
+        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
+        if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
+            tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    me.viewerController.showHelp(me.config);
+                }
+            }];
+        }
         this.panel = Ext.create('Ext.panel.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>'
+            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>',
+            tools: tools
         });
         conf.sliderContainer = this.name + 'slidersContainer';
         

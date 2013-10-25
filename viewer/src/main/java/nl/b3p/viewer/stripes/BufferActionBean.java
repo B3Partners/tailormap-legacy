@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import nl.b3p.viewer.image.Bbox;
 import nl.b3p.viewer.image.CombineImageSettings;
 import nl.b3p.viewer.image.CombineImageWkt;
 import nl.b3p.viewer.image.ImageTool;
+import nl.b3p.viewer.util.ChangeMatchCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -228,6 +229,8 @@ public class BufferActionBean implements ActionBean {
 
         if(filter != null){
             Filter attributeFilter = CQL.toFilter(filter);
+            attributeFilter = (Filter)attributeFilter.accept(new ChangeMatchCase(false), null);
+            
             if(filter.indexOf("POINT") == -1){
                 Filter and = ff.and(featureFilter, attributeFilter);
                 featureFilter = and;

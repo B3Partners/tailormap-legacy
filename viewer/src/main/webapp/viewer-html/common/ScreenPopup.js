@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,6 +78,16 @@ Ext.define ("viewer.components.ScreenPopup",{
             con.style["background"] = "#FFFFFF";
             con.style.width=  "100%";
             config.contentEl = con;
+        }
+        
+        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
+        if(conf && (!conf.hasOwnProperty('showHelpButton') || conf.showHelpButton !== "false")) {
+            config.tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    conf.viewerController.showHelp(conf);
+                }
+            }];
         }
         
         this.popupWin = Ext.create('Ext.window.Window', config);

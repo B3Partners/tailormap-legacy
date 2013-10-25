@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,21 @@ Ext.define("viewer.components.CustomConfiguration",{
     searchconfigs: [],
     nextId: 1,
     constructor: function (parentId,configObject){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        if (configObject === null){
+            configObject = {};
+        }
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        this.form.add({
+            xtype: 'checkbox',
+            boxLabel: 'Toon knop voor het verwijderen van marker',
+            name: 'showRemovePin',
+            value: true,
+            inputValue: true,
+            checked: this.configObject.showRemovePin !== undefined ? this.configObject.showRemovePin : true,
+            style: {
+                marginRight: "90px"
+            }
+        });
         this.initSearchconfigs(configObject);
     },
     initSearchconfigs: function(config) {

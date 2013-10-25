@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,8 +156,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             //end of the list.                                  
             attributesToRetain = rebuildAttributes(sft);
             
-            // JSON info about attributed required for editing
-            makeAttributeJSONArray(layer.getFeatureType());  
+             
             // Remove ConfiguredAttributes which are no longer present
             List<ConfiguredAttribute> attributesToRemove = new ArrayList();
             for(ConfiguredAttribute ca: applicationLayer.getAttributes()) {
@@ -176,6 +175,9 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 applicationLayer.getAttributes().remove(ca);
                 Stripersist.getEntityManager().remove(ca);
             }
+            
+            // JSON info about attributed required for editing
+            makeAttributeJSONArray(layer.getFeatureType()); 
         }        
     }
     

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.StyleLibrary;
+import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -199,6 +200,8 @@ public class SldActionBean implements ActionBean {
     private void addFilterToSld() throws Exception {
         Filter f = CQL.toFilter(filter);
         
+        f = (Filter) f.accept(new ChangeMatchCase(false),null);
+        
         if(featureTypeName == null) {
             featureTypeName = layer;
         }
@@ -349,7 +352,8 @@ public class SldActionBean implements ActionBean {
                 }else{
                     SimpleFeatureType sft=layer.getFeatureType();
                     Filter f = CQL.toFilter(filter);
-                    f= FeatureToJson.reformatFilter(f, sft);
+                    f = (Filter) f.accept(new ChangeMatchCase(false), null);
+                    f = FeatureToJson.reformatFilter(f, sft);
                     json.put("filter",CQL.toCQL(f));                
                     json.put("success", Boolean.TRUE);
                 }

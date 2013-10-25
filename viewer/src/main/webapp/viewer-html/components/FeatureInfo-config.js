@@ -40,14 +40,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: 'Samenvatting hoogte',
+            fieldLabel: 'Hoogte ballon',
             name: 'height',
             /*columnWidth : 0.5,*/
             value: this.configObject.height != undefined ? this.configObject.height : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: 'Samenvatting breedte',
+            fieldLabel: 'Breedte ballon',
             name: 'width',
             /*columnWidth : 0.5,*/
             value: this.configObject.width != undefined ? this.configObject.width : 300,

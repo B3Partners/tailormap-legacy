@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ public class SearchActionBean implements ActionBean {
             if(type==null || "arcgisrest".equalsIgnoreCase(type)){
                 client = new ArcGisRestSearchClient(url);                
             }else if (type.equalsIgnoreCase("openls")){
-                client = new OpenLSSearchClient(url,"GET");
+                client = new OpenLSSearchClient(url);
             }
             if (client!=null){            
                 results = client.search(searchText);

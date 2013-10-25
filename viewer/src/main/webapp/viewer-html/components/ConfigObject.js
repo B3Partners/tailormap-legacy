@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012 B3Partners B.V.
+ * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@ Ext.define("viewer.components.ConfigObject",{
             //if its a radiogroup get the values with the function and apply the values to the config.
             if ("radiogroup"==container.items.get(i).xtype){
                 Ext.apply(config, container.items.get(i).getValue());       
+            }else if("htmleditor"==container.items.get(i).xtype) {
+                config[container.items.get(i).getName()] = container.items.get(i).getValue();
             }else if ("container"==container.items.get(i).xtype){
                 Ext.apply(config,this.getValuesFromContainer(container.items.get(i)));
             }else if (container.items.get(i).name!=undefined)

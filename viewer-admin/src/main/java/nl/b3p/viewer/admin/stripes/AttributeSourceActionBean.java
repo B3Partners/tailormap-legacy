@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 B3Partners B.V.
+ * Copyright (C) 2011-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,6 +122,7 @@ public class AttributeSourceActionBean implements ActionBean {
 
         if (!featureSource.getFeatureTypes().isEmpty()) {
             em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", featureSource.getFeatureTypes()).executeUpdate();
+            em.createQuery("update ConfiguredAttribute set featureType=null where featureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
         }
 
         em.remove(featureSource);

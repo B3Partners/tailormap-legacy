@@ -35,28 +35,28 @@ Ext.define("viewer.components.CustomConfiguration",{
             fieldLabel: 'Maptip Delay',
             name: 'maptipdelay',
             /*columnWidth : 0.5,*/
-            value: this.configObject.maptipdelay != undefined ? this.configObject.maptipdelay : 500,
+            value: this.configObject.maptipdelay !== undefined ? this.configObject.maptipdelay : 500,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
             fieldLabel: 'Link naar meer',
             name: 'moreLink',
             /*columnWidth : 0.5,*/
-            value: this.configObject.moreLink != undefined ? this.configObject.moreLink : 'Meer',
+            value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : 'Meer',
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: 'Samenvatting hoogte',
+            fieldLabel: 'Hoogte ballon',
             name: 'height',
             /*columnWidth : 0.5,*/
-            value: this.configObject.height != undefined ? this.configObject.height : 300,
+            value: this.configObject.height !== undefined ? this.configObject.height : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'textfield',
-            fieldLabel: 'Samenvatting breedte',
+            fieldLabel: 'Breedte ballon',
             name: 'width',
             /*columnWidth : 0.5,*/
-            value: this.configObject.width != undefined ? this.configObject.width : 300,
+            value: this.configObject.width !== undefined ? this.configObject.width : 300,
             labelWidth:this.labelWidth
         },{
             xtype: 'label',

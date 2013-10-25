@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2011 B3Partners B.V.
+Copyright (C) 2011-2013 B3Partners B.V.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -52,6 +52,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 <div id="layout" class="tabdiv">
                     <a href="#Component_Layout_Tab_Help" title="Help" class="helplink"></a>
+                </div>
+                <div id="help" class="tabdiv">
+                    <a href="#Component_Help_Tab_Help" title="Help" class="helplink"></a>
                 </div>
             </div>
         </stripes:form>
