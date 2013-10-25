@@ -32,10 +32,14 @@ Ext.define ("viewer.components.Filter",{
     id: null,
     container : null,
 	leftWidth: 150,
+    uniqueList: null,
     config: {
         attributes:null,
         logicOperator:null,
-		parentMainContainer:null
+		parentMainContainer:null,
+        showList:true,
+        parentComponent: null,
+        
     },
     constructor: function(config){
         this.initConfig(config);
@@ -51,7 +55,13 @@ Ext.define ("viewer.components.Filter",{
             queryMode: 'local',
             displayField: 'title',
             valueField: 'value',
-			width: this.leftWidth
+			width: this.leftWidth,
+            listeners: {
+                change:{
+                    scope: this,
+                    fn: this.attributeComboboxChanged
+                }
+            }
         });
 		var attribuutFilter = Ext.create("viewer.components.AttributeFilter",{
             first: true,
@@ -95,6 +105,93 @@ Ext.define ("viewer.components.Filter",{
         this.attributeCombobox.clearValue();
         this.attributes = list;
     },
+    attributeComboboxChanged: function(el,val,prevVal){
+        this.uniqueList=[];
+        this.setUniqueListOnAttributeFilters([]);
+        if (val!=null){
+            var applayerAttribute = this.getAppLayerAttributeByName(val);
+            if (applayerAttribute && applayerAttribute.defaultValue==="filterList"){
+                this.getAttributeUniques(val);
+            }
+        }
+    },
+    /**
+     * Get the attribute from the selected AppLayer by name.
+     */
+    getAppLayerAttributeByName: function (name){
+        var appLayer = this.parentComponent.appLayer;
+        if(appLayer && appLayer.attributes){
+            for (var i=0; i < appLayer.attributes.length; i++){
+                var attribute = appLayer.attributes[i]
+                if (attribute.name===name){
+                    return attribute;
+                }
+            }
+        }
+        return null;
+    },
+    getAttributeUniques : function (attributeName){
+        var appLayer = this.parentComponent.layerSelector.getValue();
+        if(attributeName){
+            this.parentMainContainer.setLoading("Laad unieke waardes...");
+            Ext.Ajax.request({ 
+                url: actionBeans.unique, 
+                timeout: 240000,
+                scope:this,
+                params: { 
+                    attributes: [attributeName],
+                    applicationLayer: appLayer.id
+                }, 
+                success: function ( result, request ) { 
+                    var res = Ext.JSON.decode(result.responseText);
+                    if(res.success){
+                        var values = res.uniqueValues;
+                        if(res.msg){
+                            Ext.MessageBox.alert('Info', res.msg);
+                        }
+                        this.handleUniqueValues(values);
+                    }else{
+                        Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);
+                    }
+                }, 
+                failure: function ( result, request) {
+                    Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);
+                } 
+            });
+        }
+    },
+    /**
+     * Handle the response of the Uniguevalues request.
+     */
+    handleUniqueValues : function (values){   
+        values =  this.transformUniqueValuesToStore(values);    
+        this.uniqueList=values;
+        this.setUniqueListOnAttributeFilters(values);        
+        this.parentMainContainer.setLoading(false);
+    },
+    /**
+     * 
+     */
+    setUniqueListOnAttributeFilters: function(values){
+        for (var i=0; i < this.attributeFilters.length; i++){
+            this.attributeFilters[i].setUniqueList(values);
+        }
+    },
+     
+    /**
+     * Transform the uniquelist response of a object with arrays of strings 
+     * that points to the string. So it will work for Ext Stores (and comboboxes)
+     * @param valueArray A array of values
+     */
+    transformUniqueValuesToStore : function(values){        
+        var newValues=[];
+        for (var attribute in values){            
+            for (var i =0; i < values[attribute].length; i++){
+                newValues.push({value: values[attribute][i]});
+            }
+        }
+        return newValues;
+    },
     //Add a new attributefilter (to expand this filter)
     addAttributeFilter : function (){
         var me = this;
@@ -130,7 +227,8 @@ Ext.define ("viewer.components.Filter",{
 		filterContainer.doLayout();
         this.container.add(filterContainer);
         this.attributeFilters.push(attributeFilter);
-		if(this.parentMainContainer) this.parentMainContainer.doLayout();
+        attributeFilter.setUniqueList(this.uniqueList);
+        if(this.parentMainContainer) this.parentMainContainer.doLayout();
     },
     removeAttributeFilter : function (attributeFilter, filterContainer){
         for ( var i = 0 ; i < this.attributeFilters.length;i++){
