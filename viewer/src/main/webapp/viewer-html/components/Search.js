@@ -25,6 +25,8 @@ Ext.define ("viewer.components.Search",{
     searchResult: null,
     results: null,
     margin: "0 5 0 0",
+    autosuggestStore:null,
+    searchField:null,
     resultPanelId: '',
     defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
     searchRequestId: 0,
@@ -41,7 +43,7 @@ Ext.define ("viewer.components.Search",{
         typeLabel:null
     },    
     constructor: function (conf){                    
-        if (conf.typeZoomBoxSize==undefined){
+        if (conf.typeZoomBoxSize===undefined){
             conf.typeZoomBoxSize={
                 Street: 200,
                 MunicipalitySubdivision: 2000,
@@ -49,7 +51,7 @@ Ext.define ("viewer.components.Search",{
                 CountrySubdivision: 25000
             }
         }
-        if (conf.typeLabel==undefined){
+        if (conf.typeLabel===undefined){
             conf.typeLabel={
                 Street: 'Straat',
                 MunicipalitySubdivision: 'Plaats',
@@ -134,7 +136,7 @@ Ext.define ("viewer.components.Search",{
         var me = this;
         var itemList = new Array();     
         if(this.searchconfigs ){
-            if(this.searchconfigs.length == 1){
+            if(this.searchconfigs.length === 1){
                 itemList.push({
                     xtype: 'label',
                     text: 'Zoek op: '+ this.searchconfigs[0].name
@@ -153,23 +155,50 @@ Ext.define ("viewer.components.Search",{
                     valueField: 'id',
                     anchor: '100%',
                     emptyText:'Maak uw keuze',
-                    id: 'searchName' + this.name
-                });
-            }
-            if (this.searchconfigs.length> 0){
-                itemList.push({ 
-                    xtype: 'textfield',
-                    name: 'searchfield',
-                    anchor: '100%',
-                    id: 'searchfield' + this.name,
-                    listeners: {
-                        specialkey: function(field, e){
-                            if (e.getKey() == e.ENTER) {
-                                me.search();
-                            }
+                    id: 'searchName' + this.name,
+                    listeners:{
+                        change:{
+                            fn: function(combo, newValue){
+                                this.searchConfigChanged(newValue);
+                            },
+                            scope:this
                         }
                     }
                 });
+            }
+            if (this.searchconfigs.length> 0){
+                this.autosuggestStore = Ext.create(Ext.data.Store,  {
+                    autoLoad: false,
+                    model: 'Doc',
+                    proxy: {
+                        type: 'ajax',
+                        url: actionBeans["autosuggest"],
+                        reader: {
+                            type: 'json',
+                            root: 'response.docs'
+                        }
+                    }
+                });
+                this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
+                    name: 'searchfield',
+                    hideTrigger: true,
+                    anchor: '100%',
+                    triggerAction: 'query',
+                    queryParam: "searchText",
+                    displayField: "suggestion",
+                    queryMode: this.searchconfigs.length === 1 && this.searchconfigs[0].type === "solr" ? "remote" : "local",
+                    id: 'searchfield' + this.name,
+                    minChars: 2,
+                    listeners: {
+                        specialkey: function(field, e){
+                            if (e.getKey() === e.ENTER) {
+                                me.search();
+                            }
+                        }
+                    },
+                    store:this.autosuggestStore
+                });
+                itemList.push(this.searchField);
 
                 itemList.push({ 
                     xtype: 'button',
@@ -206,20 +235,20 @@ Ext.define ("viewer.components.Search",{
     },
     search : function(){
         this.searchRequestId++;
-        if(this.results != null){
+        if(this.results !== null){
             this.results.destroy();
         }
         var searchText = this.form.getChildByElement("searchfield" + this.name).getValue();
         var searchName = '';
-        if(this.searchconfigs.length == 1){
+        if(this.searchconfigs.length === 1){
             searchName = this.searchconfigs[0].id;
         }else{
             searchName = this.form.getChildByElement("searchName" + this.name).getValue();
         }
         
-        if(searchName != null && searchText != ""){
-            var requestPath=  contextPath+"/action/search";
-            var requestParams = {};
+        if(searchName !== null && searchText !== ""){
+            var requestPath=  contextPath+"/action/search"; 
+           var requestParams = {};
 
             requestParams["searchText"]= searchText;
             requestParams["searchName"]= searchName;
@@ -239,7 +268,7 @@ Ext.define ("viewer.components.Search",{
                     if (response.error){
                         Ext.MessageBox.alert("Foutmelding", response.error);
                     }
-                    if (me.searchRequestId==response.request.searchRequestId){
+                    if (me.searchRequestId===response.request.searchRequestId){
                         me.showSearchResults();
                     }
                     me.mainContainer.setLoading(false);
@@ -327,6 +356,35 @@ Ext.define ("viewer.components.Search",{
         var c = [ this.mainContainer.getId(), this.form.getId() ];
         if(this.results) c.push(this.results.getId());
         return c;
+    },
+    searchConfigChanged: function(searchConfig){
+        for(var i = 0 ; i < this.searchconfigs.length ;i++){
+            var config = this.searchconfigs[i];
+            if(config.id === searchConfig){
+                if(config.type === "solr"){
+                    this.searchField.queryMode = "remote";
+                }else{
+                    this.searchField.queryMode = "local";
+                    this.searchField.getStore().removeAll();
+                }
+                break;
+            }
+        }
     }
 });
 
+ Ext.define('Doc', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'suggestion', type: 'string'}
+        ]
+    });
+    Ext.define('Response', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'numFound', type: 'int'},
+            {name: 'start', type: 'int'},
+            {name: 'maxScore', type: 'float'},
+            {name: 'docs', type: 'Doc'}
+        ]
+    });

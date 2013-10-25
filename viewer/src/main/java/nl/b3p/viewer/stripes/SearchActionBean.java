@@ -27,6 +27,11 @@ import nl.b3p.viewer.search.ArcGisRestSearchClient;
 import nl.b3p.viewer.search.OpenLSSearchClient;
 import nl.b3p.viewer.search.SearchClient;
 import org.apache.commons.io.IOUtils;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -156,6 +161,37 @@ public class SearchActionBean implements ActionBean {
         result.put("results",results);
         result.put("error",error);
         return new StreamingResolution("application/json", new StringReader(result.toString())); 
+    }
+    
+    public Resolution autosuggest() throws JSONException, SolrServerException {
+       /* SolrServer server = SolrInitializer.getServerInstance();
+        
+        JSONObject obj = new JSONObject();
+        JSONObject response = new JSONObject();
+        JSONArray respDocs = new JSONArray();
+        response.put("docs", respDocs);
+        obj.put("response", response);
+
+
+        SolrQuery query = new SolrQuery();
+        query.setQuery(searchText);
+        query.setRequestHandler("/suggest");
+        //query.addSort("values", SolrQuery.ORDER.asc);
+        QueryResponse rsp = server.query(query);
+        SpellCheckResponse sc = rsp.getSpellCheckResponse();
+        List<SpellCheckResponse.Suggestion> suggestions = sc.getSuggestions();
+        for (SpellCheckResponse.Suggestion suggestion : suggestions) {
+            List<String> alternatives = suggestion.getAlternatives();
+            for (String alt : alternatives) {
+                JSONObject sug = new JSONObject();
+                sug.put("suggestion", alt);
+                respDocs.put(sug);
+            }
+        }
+        response.put("docs", respDocs);
+*/
+        JSONObject obj = new JSONObject("{\"response\": {\"docs\": [    {\"suggestion\": \"vaarsloot 26, leersum\"},    {\"suggestion\": \"vaarsloot 22, leersum\"},    {\"suggestion\": \"vaarsloot 24, leersum\"},    {\"suggestion\": \"vaardehoogtweg 4, soest\"},    {\"suggestion\": \"vaardehoogtweg 8, soest\"},    {\"suggestion\": \"vaarsloot 28, leersum\"}]}}");
+        return new StreamingResolution("application/json", obj.toString(4));
     }
     
     private static JSONObject issueRequest(String url) throws Exception {
