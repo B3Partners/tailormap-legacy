@@ -39,7 +39,6 @@ Ext.define ("viewer.components.AttributeFilter",{
         first:null,
         id:null,
         number:null,
-        isUniqueList:false,
         initData: null
     },
     constructor: function(config){
@@ -54,26 +53,19 @@ Ext.define ("viewer.components.AttributeFilter",{
             valueField: 'id',
             data: this.initData
         });
-        //if (this.isUniqueList){
-            this.valueStore = Ext.create('Ext.data.ArrayStore', {
-                fields: ['value']
-            });
-            this.value= Ext.create('viewer.components.FlamingoCombobox', {
-                fieldLabel: '',
-                store: this.valueStore,
-                queryMode: 'local',
-                displayField: 'value',
-                width:150,
-                valueField: 'value',
-                forceSelection: false,
-                editable: true
+        this.valueStore = Ext.create('Ext.data.ArrayStore', {
+            fields: ['value']
         });
-       /* }else{
-            this.value = Ext.create("Ext.form.field.Text",{
-                width: 100,
-                id: "value" + this.id + "-" + this.number
-            });
-        }*/
+        this.value= Ext.create('viewer.components.FlamingoCombobox', {
+            fieldLabel: '',
+            store: this.valueStore,
+            queryMode: 'local',
+            displayField: 'value',
+            width:150,
+            valueField: 'value',
+            forceSelection: false,
+            editable: true
+        });
         return this;
     },
     getUI : function (){
@@ -136,9 +128,15 @@ Ext.define ("viewer.components.AttributeFilter",{
     /**
      * Set the unique list of values.
      */
-    setUniqueList: function(list){        
+    setUniqueList: function(list){  
+        if (list.length>0){
+            this.value.setHideTrigger(false);
+        }else{
+            this.value.setHideTrigger(true);
+        }
         this.valueStore.removeAll();
-        this.valueStore.add(list);
+        this.valueStore.loadData(list);
+        
     },
 	// We have to remove all items from the attribute filter due to some weird Ext bug
 	removeItems: function() {

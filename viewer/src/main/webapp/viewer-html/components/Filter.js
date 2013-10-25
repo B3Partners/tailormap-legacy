@@ -169,7 +169,9 @@ Ext.define ("viewer.components.Filter",{
         this.setUniqueListOnAttributeFilters(values);        
         this.parentMainContainer.setLoading(false);
     },
-    /**/
+    /**
+     * 
+     */
     setUniqueListOnAttributeFilters: function(values){
         for (var i=0; i < this.attributeFilters.length; i++){
             this.attributeFilters[i].setUniqueList(values);
@@ -208,8 +210,7 @@ Ext.define ("viewer.components.Filter",{
 		var attributeFilter = Ext.create("viewer.components.AttributeFilter",{
             first: false,
             id: this.id,
-            number: this.attributeFilters.length + 1,
-            initData: this.uniqueList
+            number: this.attributeFilters.length + 1
         });
         var attributeFilterUI = attributeFilter.getUI();
         attributeFilterUI.add({ 
@@ -226,6 +227,7 @@ Ext.define ("viewer.components.Filter",{
 		filterContainer.doLayout();
         this.container.add(filterContainer);
         this.attributeFilters.push(attributeFilter);
+        attributeFilter.setUniqueList(this.uniqueList);
         if(this.parentMainContainer) this.parentMainContainer.doLayout();
     },
     removeAttributeFilter : function (attributeFilter, filterContainer){
