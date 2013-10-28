@@ -10,6 +10,10 @@
     <listener>
         <listener-class>nl.b3p.web.geotools.GeotoolsLoggingInit</listener-class>
     </listener>
+    <listener>
+        <description>The class which initializes (and if configured sets up) the solr instance.</description>
+        <listener-class>nl.b3p.viewer.SolrInitializer</listener-class>
+    </listener>
 
     <!-- Localization context voor o.a. de <fmt:message> JSTL tag -->
     <context-param>
@@ -20,6 +24,23 @@
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
         <param-value>nl</param-value>
+    </context-param>
+    
+    <context-param>
+        <description>
+            Configure the directory at which the flamingo data directory is located. This application must have permissions to write/read to that directory. In this directory
+            the solr configuration and index will be located.
+        </description>
+        <param-name>flamingo.data.dir</param-name>
+        <param-value>/opt/flamingo_data</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Configure whether or not this web application had to create the directory structure for solr. Default is false. Set to true for the viewer-admin, because the 
+            viewer-admin has the resources for a new server/core istance to be created.
+        </description>
+        <param-name>flamingo.solr.setup</param-name>
+        <param-value>false</param-value>
     </context-param>
 
     <filter>

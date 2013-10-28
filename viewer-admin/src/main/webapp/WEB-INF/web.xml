@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-
     <!-- Context parameters:
     
         Note: for Tomcat, change these values in the Context in the Tomcat
@@ -32,7 +31,6 @@
         <param-name>componentregistry.crosscontext</param-name>
         <param-value>/viewer</param-value>
     </context-param>
-    
     <context-param>
         <description>
             The from e-mail address used when sending notification mails. Some
@@ -56,28 +54,38 @@
         <param-name>monitoring.schedule.minutes</param-name>
         <param-value>30</param-value>
     </context-param>
-    
     <context-param>
+        <description>
+            Configure the directory at which the flamingo data directory is located. This application must have permissions to write/read to that directory. In this directory
+            the solr configuration and index will be located.
+        </description>
         <param-name>flamingo.data.dir</param-name>
         <param-value>/opt/flamingo_data</param-value>
     </context-param>
-
+    <context-param>
+        <description>
+            Configure whether or not this web application had to create the directory structure for solr. Default is false. Set to true for the viewer-admin, because the 
+            viewer-admin has the resources for a new server/core istance to be created.
+        </description>
+        <param-name>flamingo.solr.setup</param-name>
+        <param-value>true</param-value>
+    </context-param>
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
     <listener>
         <listener-class>nl.b3p.viewer.admin.monitoring.GeoServiceMonitoringListener</listener-class>
-    </listener>    
+    </listener>
     <listener>
         <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
-    </listener>   
+    </listener>
     <listener>
         <listener-class>nl.b3p.web.geotools.GeotoolsLoggingInit</listener-class>
     </listener>
     <listener>
-        <listener-class>nl.b3p.viewer.admin.SolrInitializer</listener-class>
-    </listener>    
-    
+        <description>The class which initializes (and if configured sets up) the solr instance.</description>
+        <listener-class>nl.b3p.viewer.SolrInitializer</listener-class>
+    </listener>
     <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
@@ -88,7 +96,6 @@
         <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
         <param-value>nl</param-value>
     </context-param>
-
     <filter>
         <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
         <filter-name>SetCharacterEncodingFilter</filter-name>
@@ -98,7 +105,6 @@
             <param-value>UTF-8</param-value>
         </init-param>
     </filter>
-    
     <filter>
         <display-name>Stripes Filter</display-name>
         <filter-name>StripesFilter</filter-name>
@@ -144,12 +150,10 @@
             <param-value>org.stripesstuff.plugin.security.J2EESecurityManager</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>SetCharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
     <filter-mapping>
         <filter-name>StripesFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
@@ -162,7 +166,6 @@
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
-
     <servlet>
         <servlet-name>StripesDispatcher</servlet-name>
         <servlet-class>net.sourceforge.stripes.controller.DispatcherServlet</servlet-class>
@@ -180,7 +183,6 @@
         <servlet-name>StripesDispatcher</servlet-name>
         <url-pattern>*.wait</url-pattern>
     </servlet-mapping>
-
     <!-- Note: No authorization on url-patterns but on Stripes ActionBeans using
       @Secure (from Stripesstuff), so when the @UrlBinding changes no url-patterns
       need to be updated
@@ -197,7 +199,6 @@
             <role-name>ApplicationAdmin</role-name>
         </auth-constraint>
     </security-constraint>
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>roles</web-resource-name>
@@ -210,7 +211,6 @@
             <url-pattern>/logout.jsp</url-pattern>
         </web-resource-collection>
     </security-constraint>
-
     <login-config>
         <!-- BASIC is useful during development with lots of redeploys, use
              FORM for production
@@ -221,7 +221,6 @@
             <form-error-page>/loginfail.jsp</form-error-page>
         </form-login-config>
     </login-config>
-
     <security-role>
         <role-name>Admin</role-name>
     </security-role>
@@ -234,7 +233,6 @@
     <security-role>
         <role-name>ApplicationAdmin</role-name>
     </security-role>
-
     <session-config>
         <session-timeout>
             30
@@ -243,7 +241,6 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-
     <!-- Set mime type for .js so it can be used in Tomcat server.xml in the
          compressableMimeType attribute for the Connector element:
 
