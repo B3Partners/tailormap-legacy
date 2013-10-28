@@ -25,6 +25,8 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SpellCheckResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,19 +35,43 @@ import org.json.JSONObject;
  *
  * @author Meine Toonen
  */
-public class SolrSearchClient implements SearchClient {
+public class SolrSearchClient extends SearchClient {
 
     @Override
-    public JSONArray search(String query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public JSONArray search(String term) {
+        JSONArray respDocs = new JSONArray();
+        try {
+            SolrServer server = SolrInitializer.getServerInstance();
+
+
+            SolrQuery query = new SolrQuery();
+            query.setQuery(term);
+            query.setRequestHandler("/select");
+            QueryResponse rsp = server.query(query);
+            SolrDocumentList list = rsp.getResults();
+
+            for (SolrDocument solrDocument : list) {
+                JSONObject doc = new JSONObject();
+                for (String key : solrDocument.keySet()) {
+                    doc.put(key, solrDocument.get(key));
+                }
+                respDocs.put(doc);
+            }
+
+        } catch (SolrServerException ex) {
+            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return respDocs;
     }
 
     @Override
     public JSONObject autosuggest(String term) throws JSONException {
+        JSONObject obj = new JSONObject();
         try {
             SolrServer server = SolrInitializer.getServerInstance();
 
-            JSONObject obj = new JSONObject();
             JSONObject response = new JSONObject();
             JSONArray respDocs = new JSONArray();
             response.put("docs", respDocs);
@@ -70,6 +96,6 @@ public class SolrSearchClient implements SearchClient {
         } catch (SolrServerException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return obj;
     }
 }

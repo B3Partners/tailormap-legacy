@@ -37,7 +37,7 @@ import org.json.JSONObject;
  *
  * @author Roy Braam
  */
-public class OpenLSSearchClient implements SearchClient {
+public class OpenLSSearchClient extends SearchClient {
 
     private static final Log log = LogFactory.getLog(OpenLSSearchClient.class);
     private String url;

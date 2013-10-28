@@ -24,10 +24,32 @@ import org.json.JSONObject;
  *
  * @author Roy Braam
  */
-public interface SearchClient {
+public abstract class SearchClient {
     public static final String SEARCHTERM_HOLDER="[ZOEKWOORD]";
     
-    public JSONArray search(String query);
+    /**
+     *  
+     * @param query The term which must be found
+     * @return An JSONArray with the answer. This must be in the following format:
+     * 
+     *<pre>
+     * [
+     *      { 
+     *          location :{ 
+     *              x: <double> 
+     *              y: <double>
+     *          }, 
+     *          type: <string>, // This must be one of: Street, MunicipalitySubdivision, Municipality,CountrySubdivision
+     *          label: <string>
+     *      }
+     * ]
+     * </pre>
+     */
+    public abstract JSONArray search(String query);
     
-    public JSONObject autosuggest(String query) throws JSONException;
+    public abstract JSONObject autosuggest(String query) throws JSONException;
+    
+    public String locationToBBOX(){
+        return "";
+    }
 }

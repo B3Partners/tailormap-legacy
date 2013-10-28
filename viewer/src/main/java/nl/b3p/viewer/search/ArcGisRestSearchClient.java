@@ -30,7 +30,7 @@ import org.json.JSONObject;
  *
  * @author Roy Braam
  */
-public class ArcGisRestSearchClient implements SearchClient{
+public class ArcGisRestSearchClient extends SearchClient{
     private static final Log log = LogFactory.getLog(ArcGisRestSearchClient.class);
     private String url;
     
@@ -86,7 +86,6 @@ public class ArcGisRestSearchClient implements SearchClient{
         this.url = url;
     }
 
-    @Override
     public JSONObject autosuggest(String query) {
         throw new UnsupportedOperationException("Not supported.");
     }
