@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.search;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,19 +52,38 @@ public class SolrSearchClient extends SearchClient {
             SolrDocumentList list = rsp.getResults();
 
             for (SolrDocument solrDocument : list) {
-                JSONObject doc = new JSONObject();
-                for (String key : solrDocument.keySet()) {
-                    doc.put(key, solrDocument.get(key));
-                }
+                JSONObject doc = solrDocumentToResult(solrDocument);
                 respDocs.put(doc);
             }
 
         } catch (SolrServerException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        return respDocs;
+    }
+
+    private JSONObject solrDocumentToResult(SolrDocument doc){
+        JSONObject result = new JSONObject();
+       try {
+            List<String> labels = new ArrayList( doc.getFieldValues("resultValues"));
+            String resultLabel = "";
+            for (String label : labels) {
+                if(!resultLabel.isEmpty()){
+                    resultLabel += ", ";
+                }
+                resultLabel += label;
+            }
+
+            result.put("label", resultLabel);
+            
+            result.put("minx", doc.getFieldValue("minx"));
+            result.put("miny", doc.getFieldValue("miny"));
+            result.put("maxx", doc.getFieldValue("maxx"));
+            result.put("maxy", doc.getFieldValue("maxy"));
         } catch (JSONException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return respDocs;
+        return result;
     }
 
     @Override
