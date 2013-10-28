@@ -85,5 +85,10 @@ public class ArcGisRestSearchClient implements SearchClient{
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public JSONObject autosuggest(String query) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
     
 }

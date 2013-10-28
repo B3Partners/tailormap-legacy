@@ -17,6 +17,8 @@
 package nl.b3p.viewer.search;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -26,4 +28,6 @@ public interface SearchClient {
     public static final String SEARCHTERM_HOLDER="[ZOEKWOORD]";
     
     public JSONArray search(String query);
+    
+    public JSONObject autosuggest(String query) throws JSONException;
 }

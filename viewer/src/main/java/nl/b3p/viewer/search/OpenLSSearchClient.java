@@ -140,4 +140,9 @@ public class OpenLSSearchClient implements SearchClient {
         }
         return results;
     }
+
+    @Override
+    public JSONObject autosuggest(String query) {
+        throw new UnsupportedOperationException("Not supported."); 
+    }
 }

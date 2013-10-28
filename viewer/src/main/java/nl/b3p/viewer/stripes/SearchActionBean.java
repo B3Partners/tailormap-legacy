@@ -26,6 +26,7 @@ import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.search.ArcGisRestSearchClient;
 import nl.b3p.viewer.search.OpenLSSearchClient;
 import nl.b3p.viewer.search.SearchClient;
+import nl.b3p.viewer.search.SolrSearchClient;
 import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -105,6 +106,7 @@ public class SearchActionBean implements ActionBean {
     }
     //</editor-fold>
     
+    @DefaultHandler
     public Resolution source() throws Exception {
         EntityManager em = Stripersist.getEntityManager();
         JSONObject result = new JSONObject();        
@@ -116,9 +118,36 @@ public class SearchActionBean implements ActionBean {
         request.put("searchRequestId",searchRequestId);
         result.put("request",request);
         String error="";
-        String url = "";
-        String type = null;
-        if (appId != null) {
+        JSONObject search =  getSearchConfig();
+        if(search == null){
+            error += "No searchconfig found";
+        }else{
+            JSONArray results = new JSONArray();
+            SearchClient client = getSearchClient(search);
+
+            if (client != null) {
+                results = client.search(searchText);
+            }
+
+            result.put("results",results);
+            result.put("error",error);
+        }
+        return new StreamingResolution("application/json", new StringReader(result.toString())); 
+    }
+    
+    public Resolution autosuggest() throws JSONException, SolrServerException {
+        JSONObject config = getSearchConfig();
+        SearchClient client = getSearchClient(config);
+        
+        JSONObject result = client.autosuggest(searchText);
+        return new StreamingResolution("application/json", new StringReader(result.toString())); 
+        
+    }
+    
+    private JSONObject getSearchConfig() throws JSONException{
+        JSONObject obj = new JSONObject();
+         if (appId != null) {
+            EntityManager em = Stripersist.getEntityManager();
             Application app = em.find(Application.class, appId);
             Set components = app.getComponents();
             for(Iterator it = components.iterator(); it.hasNext();){
@@ -130,70 +159,40 @@ public class SearchActionBean implements ActionBean {
                         for(int i = 0; i < searchConfig.length(); i++){
                             JSONObject search = (JSONObject)searchConfig.get(i);
                             if(search.get("id").equals(searchName)){
-                                url = search.getString("url");
-                                if (search.has("type")){
-                                    type=search.getString("type");
-                                }
+                              obj = search;
                             }
                         }
                     }else if (config.has("searchUrl")){
-                        url=config.getString("searchUrl");
+                        obj.put("url", config.get("searchUrl"));
                     }
                 }
             }
         }else{
-            error="No application id";
+            return null;
         }
-        
-        JSONArray results = new JSONArray();
-        if(url != null && !url.equals("")){
-            SearchClient client=null;
-            if(type==null || "arcgisrest".equalsIgnoreCase(type)){
-                client = new ArcGisRestSearchClient(url);                
-            }else if (type.equalsIgnoreCase("openls")){
+        return obj;
+    }
+
+    private SearchClient getSearchClient(JSONObject config) throws JSONException {
+        SearchClient client;
+        if(config == null){
+            client = null;
+        }else{
+            String type = config.getString("type");
+            String url = config.has("searchUrl") ? config.getString("searchUrl") : config.getString("url");
+            if (type == null || "arcgisrest".equalsIgnoreCase(type)) {
+                client = new ArcGisRestSearchClient(url);
+            } else if (type.equalsIgnoreCase("openls")) {
                 client = new OpenLSSearchClient(url);
-            }
-            if (client!=null){            
-                results = client.search(searchText);
-            }
-             
-        }
-        result.put("results",results);
-        result.put("error",error);
-        return new StreamingResolution("application/json", new StringReader(result.toString())); 
-    }
-    
-    public Resolution autosuggest() throws JSONException, SolrServerException {
-       /* SolrServer server = SolrInitializer.getServerInstance();
-        
-        JSONObject obj = new JSONObject();
-        JSONObject response = new JSONObject();
-        JSONArray respDocs = new JSONArray();
-        response.put("docs", respDocs);
-        obj.put("response", response);
-
-
-        SolrQuery query = new SolrQuery();
-        query.setQuery(searchText);
-        query.setRequestHandler("/suggest");
-        //query.addSort("values", SolrQuery.ORDER.asc);
-        QueryResponse rsp = server.query(query);
-        SpellCheckResponse sc = rsp.getSpellCheckResponse();
-        List<SpellCheckResponse.Suggestion> suggestions = sc.getSuggestions();
-        for (SpellCheckResponse.Suggestion suggestion : suggestions) {
-            List<String> alternatives = suggestion.getAlternatives();
-            for (String alt : alternatives) {
-                JSONObject sug = new JSONObject();
-                sug.put("suggestion", alt);
-                respDocs.put(sug);
+            } else if(type.equalsIgnoreCase("solr")){
+                client = new SolrSearchClient();
+            }else{
+                client = null;
             }
         }
-        response.put("docs", respDocs);
-*/
-        JSONObject obj = new JSONObject("{\"response\": {\"docs\": [    {\"suggestion\": \"vaarsloot 26, leersum\"},    {\"suggestion\": \"vaarsloot 22, leersum\"},    {\"suggestion\": \"vaarsloot 24, leersum\"},    {\"suggestion\": \"vaardehoogtweg 4, soest\"},    {\"suggestion\": \"vaardehoogtweg 8, soest\"},    {\"suggestion\": \"vaarsloot 28, leersum\"}]}}");
-        return new StreamingResolution("application/json", obj.toString(4));
+        return client;
     }
-    
+
     private static JSONObject issueRequest(String url) throws Exception {
         return new JSONObject(IOUtils.toString(new URL(url).openStream(), "UTF-8"));
     }
