@@ -16,6 +16,15 @@
  */
 package nl.b3p.viewer.search;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import nl.b3p.viewer.SolrInitializer;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +33,7 @@ import org.json.JSONObject;
  *
  * @author Meine Toonen
  */
-public class SolrSearchClient implements SearchClient{
+public class SolrSearchClient implements SearchClient {
 
     @Override
     public JSONArray search(String query) {
@@ -32,35 +41,35 @@ public class SolrSearchClient implements SearchClient{
     }
 
     @Override
-    public JSONObject autosuggest(String query) throws JSONException{
-          /* SolrServer server = SolrInitializer.getServerInstance();
-        
-        JSONObject obj = new JSONObject();
-        JSONObject response = new JSONObject();
-        JSONArray respDocs = new JSONArray();
-        response.put("docs", respDocs);
-        obj.put("response", response);
+    public JSONObject autosuggest(String term) throws JSONException {
+        try {
+            SolrServer server = SolrInitializer.getServerInstance();
+
+            JSONObject obj = new JSONObject();
+            JSONObject response = new JSONObject();
+            JSONArray respDocs = new JSONArray();
+            response.put("docs", respDocs);
+            obj.put("response", response);
 
 
-        SolrQuery query = new SolrQuery();
-        query.setQuery(searchText);
-        query.setRequestHandler("/suggest");
-        //query.addSort("values", SolrQuery.ORDER.asc);
-        QueryResponse rsp = server.query(query);
-        SpellCheckResponse sc = rsp.getSpellCheckResponse();
-        List<SpellCheckResponse.Suggestion> suggestions = sc.getSuggestions();
-        for (SpellCheckResponse.Suggestion suggestion : suggestions) {
-            List<String> alternatives = suggestion.getAlternatives();
-            for (String alt : alternatives) {
-                JSONObject sug = new JSONObject();
-                sug.put("suggestion", alt);
-                respDocs.put(sug);
+            SolrQuery query = new SolrQuery();
+            query.setQuery(term);
+            query.setRequestHandler("/suggest");
+            QueryResponse rsp = server.query(query);
+            SpellCheckResponse sc = rsp.getSpellCheckResponse();
+            List<SpellCheckResponse.Suggestion> suggestions = sc.getSuggestions();
+            for (SpellCheckResponse.Suggestion suggestion : suggestions) {
+                List<String> alternatives = suggestion.getAlternatives();
+                for (String alt : alternatives) {
+                    JSONObject sug = new JSONObject();
+                    sug.put("suggestion", alt);
+                    respDocs.put(sug);
+                }
             }
+            response.put("docs", respDocs);
+        } catch (SolrServerException ex) {
+            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        response.put("docs", respDocs);
-*/
-        JSONObject obj = new JSONObject("{\"response\": {\"docs\": [    {\"suggestion\": \"vaarsloot 26, leersum\"},    {\"suggestion\": \"vaarsloot 22, leersum\"},    {\"suggestion\": \"vaarsloot 24, leersum\"},    {\"suggestion\": \"vaardehoogtweg 4, soest\"},    {\"suggestion\": \"vaardehoogtweg 8, soest\"},    {\"suggestion\": \"vaarsloot 28, leersum\"}]}}");
-        return obj;
+        return null;
     }
-    
 }

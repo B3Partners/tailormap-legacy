@@ -28,11 +28,6 @@ import nl.b3p.viewer.search.OpenLSSearchClient;
 import nl.b3p.viewer.search.SearchClient;
 import nl.b3p.viewer.search.SolrSearchClient;
 import org.apache.commons.io.IOUtils;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -135,13 +130,12 @@ public class SearchActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(result.toString())); 
     }
     
-    public Resolution autosuggest() throws JSONException, SolrServerException {
+    public Resolution autosuggest() throws JSONException {
         JSONObject config = getSearchConfig();
         SearchClient client = getSearchClient(config);
         
         JSONObject result = client.autosuggest(searchText);
         return new StreamingResolution("application/json", new StringReader(result.toString())); 
-        
     }
     
     private JSONObject getSearchConfig() throws JSONException{
