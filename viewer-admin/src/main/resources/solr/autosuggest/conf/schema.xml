@@ -18,6 +18,10 @@
         <field name="resultValues" type="string" indexed="false" stored="true" multiValued="true" required="false"/>
         
         <field name="searchConfig" type="int" indexed="true" stored="true" required="true"/>
+        <dynamicField name="minx"  type="double" indexed="false"  stored="true"/>
+        <dynamicField name="miny"  type="double" indexed="false"  stored="true"/>
+        <dynamicField name="maxx"  type="double" indexed="false"  stored="true"/>
+        <dynamicField name="maxy"  type="double" indexed="false"  stored="true"/>
         
         <field name="phonetic" type="text_phonetic_do" indexed="true" stored="false" omitNorms="true" />
 
