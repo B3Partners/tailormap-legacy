@@ -168,6 +168,7 @@ Ext.define ("viewer.components.Search",{
             }
             if (this.searchconfigs.length> 0){
                 this.autosuggestStore = Ext.create(Ext.data.Store,  {
+                    
                     autoLoad: false,
                     model: 'Doc',
                     proxy: {
@@ -235,7 +236,7 @@ Ext.define ("viewer.components.Search",{
     },
     search : function(){
         this.searchRequestId++;
-        if(this.results !== null){
+        if(this.results != null){
             this.results.destroy();
         }
         var searchText = this.form.getChildByElement("searchfield" + this.name).getValue();
@@ -268,7 +269,7 @@ Ext.define ("viewer.components.Search",{
                     if (response.error){
                         Ext.MessageBox.alert("Foutmelding", response.error);
                     }
-                    if (me.searchRequestId===response.request.searchRequestId){
+                    if (me.searchRequestId==response.request.searchRequestId){
                         me.showSearchResults();
                     }
                     me.mainContainer.setLoading(false);
@@ -363,6 +364,12 @@ Ext.define ("viewer.components.Search",{
             if(config.id === searchConfig){
                 if(config.type === "solr"){
                     this.searchField.queryMode = "remote";
+                    var proxy = this.searchField.getStore().getProxy();
+                    var params = proxy.extraParams;
+                    params["searchName"]=searchConfig;
+                     params["appId"]=appId;
+                     params["componentName"]=this.name;
+
                 }else{
                     this.searchField.queryMode = "local";
                     this.searchField.getStore().removeAll();
