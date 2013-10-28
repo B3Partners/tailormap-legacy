@@ -33,6 +33,7 @@ import org.json.JSONObject;
 public class ArcGisRestSearchClient extends SearchClient{
     private static final Log log = LogFactory.getLog(ArcGisRestSearchClient.class);
     private String url;
+    private static final int DEFAULT_ZOOMBOX_SIZE = 200;
     
     public ArcGisRestSearchClient(String url){
         this.url = url;
@@ -72,9 +73,8 @@ public class ArcGisRestSearchClient extends SearchClient{
         JSONObject result = new JSONObject();
         result.put("label", candidate.optString("address"));
         JSONObject loc= candidate.getJSONObject("location");
-        JSONObject location = new JSONObject();
-        location.put("x",loc.getDouble("x"));
-        location.put("y",loc.getDouble("y"));
+        JSONObject location = locationToBBOX(DEFAULT_ZOOMBOX_SIZE, loc.getDouble("x"), loc.getDouble("y"));
+        result.put("location", location);
         return result;
     }
 

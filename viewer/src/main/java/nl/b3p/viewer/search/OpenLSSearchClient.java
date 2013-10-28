@@ -18,6 +18,8 @@ package nl.b3p.viewer.search;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import nl.geozet.openls.databinding.gml.Point;
 import nl.geozet.openls.databinding.openls.Address;
 import nl.geozet.openls.databinding.openls.GeocodeResponse;
@@ -42,11 +44,15 @@ public class OpenLSSearchClient extends SearchClient {
     private static final Log log = LogFactory.getLog(OpenLSSearchClient.class);
     private String url;
     private OpenLSResponseParser parser;
+    private Map<String, Integer> zoomboxSizes = new HashMap();
 
     public OpenLSSearchClient(String url) {
         this.url = url;
         this.parser = new OpenLSResponseParser();
-
+        this.zoomboxSizes.put("Street", 200);
+        this.zoomboxSizes.put("MunicipalitySubdivision", 2000);
+        this.zoomboxSizes.put("Municipality", 5000);
+        this.zoomboxSizes.put("CountrySubdivision", 25000);
     }
 
     @Override
@@ -84,12 +90,6 @@ public class OpenLSSearchClient extends SearchClient {
                 GeocodedAddress geoAdress = list.getGeocodedAddressAt(g);
                 if (geoAdress.hasPoint() && geoAdress.getPoint().getPosSize() > 0 && geoAdress.hasAddress()) {
                     JSONObject result = new JSONObject();
-                    Point p = geoAdress.getPoint();
-
-                    JSONObject point = new JSONObject();
-                    point.put("x", p.getPosAt(0).getX());
-                    point.put("y", p.getPosAt(0).getY());
-                    result.put("location", point);
 
                     String type = null;
                     Address adr = geoAdress.getAddress();
@@ -133,9 +133,13 @@ public class OpenLSSearchClient extends SearchClient {
                     if (type != null) {
                         result.put("type", type);
                     }
+                    
+                    Point p = geoAdress.getPoint();
+                    int zoomboxSize = getZoomBoxSize(type);
+                    JSONObject bbox = locationToBBOX(zoomboxSize,p.getPosAt(0).getX(), p.getPosAt(0).getY());
+                    result.put("location", bbox);
                     results.put(result);
                 }
-
             }
         }
         return results;
@@ -144,5 +148,9 @@ public class OpenLSSearchClient extends SearchClient {
     @Override
     public JSONObject autosuggest(String query) {
         throw new UnsupportedOperationException("Not supported."); 
+    }
+    
+    public int getZoomBoxSize(String type){
+        return this.zoomboxSizes.get(type);
     }
 }

@@ -37,27 +37,16 @@ Ext.define ("viewer.components.Search",{
         searchconfigs: null,
         formHeight:null,
         label: "",
-        //not yet configurable:
-        zoomBoxSize: 200,
-        typeZoomBoxSize: null,
         typeLabel:null
     },    
-    constructor: function (conf){                    
-        if (conf.typeZoomBoxSize===undefined){
-            conf.typeZoomBoxSize={
-                Street: 200,
-                MunicipalitySubdivision: 2000,
-                Municipality: 5000,
-                CountrySubdivision: 25000
-            }
-        }
+    constructor: function (conf){            
         if (conf.typeLabel===undefined){
             conf.typeLabel={
                 Street: 'Straat',
                 MunicipalitySubdivision: 'Plaats',
                 Municipality: 'Gemeente',
                 CountrySubdivision: 'Provincie'
-            }
+            };
         }
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
@@ -309,10 +298,8 @@ Ext.define ("viewer.components.Search",{
                     click:{
                         scope: me,
                         fn: function(button,e,eOpts){
-                            //get index
                             var loc = this.searchResult[button.id.split("_")[1]].location;
-                            var type = this.searchResult[button.id.split("_")[1]].type;
-                            me.handleSearchResult(loc,type);
+                            me.handleSearchResult(loc);
                         }
                     }
                 }
@@ -338,17 +325,8 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
     },
-    handleSearchResult : function(location,type){
-        var newExtent = new Object();
-        var zoomBoxSize=this.getZoomBoxSize()/2;
-        if (this.typeZoomBoxSize && this.typeZoomBoxSize[type]){
-            zoomBoxSize=this.typeZoomBoxSize[type];
-        }
-        newExtent.minx=location.x-zoomBoxSize;
-        newExtent.miny=location.y-zoomBoxSize;
-        newExtent.maxx=location.x+zoomBoxSize;
-        newExtent.maxy=location.y+zoomBoxSize;
-        this.viewerController.mapComponent.getMap().zoomToExtent(newExtent);
+    handleSearchResult : function(location){
+        this.viewerController.mapComponent.getMap().zoomToExtent(location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",location.x,location.y,"marker");
         this.popup.hide();
@@ -367,8 +345,8 @@ Ext.define ("viewer.components.Search",{
                     var proxy = this.searchField.getStore().getProxy();
                     var params = proxy.extraParams;
                     params["searchName"]=searchConfig;
-                     params["appId"]=appId;
-                     params["componentName"]=this.name;
+                    params["appId"]=appId;
+                    params["componentName"]=this.name;
 
                 }else{
                     this.searchField.queryMode = "local";
@@ -389,9 +367,6 @@ Ext.define ("viewer.components.Search",{
     Ext.define('Response', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'numFound', type: 'int'},
-            {name: 'start', type: 'int'},
-            {name: 'maxScore', type: 'float'},
             {name: 'docs', type: 'Doc'}
         ]
     });

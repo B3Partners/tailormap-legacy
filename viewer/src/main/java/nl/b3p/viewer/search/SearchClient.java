@@ -36,8 +36,10 @@ public abstract class SearchClient {
      * [
      *      { 
      *          location :{ 
-     *              x: <double> 
-     *              y: <double>
+     *              minx: <double>,
+     *              miny: <double>,
+     *              maxx: <double>,
+     *              maxy: <double>
      *          }, 
      *          type: <string>, // This must be one of: Street, MunicipalitySubdivision, Municipality,CountrySubdivision
      *          label: <string>
@@ -49,7 +51,13 @@ public abstract class SearchClient {
     
     public abstract JSONObject autosuggest(String query) throws JSONException;
     
-    public String locationToBBOX(){
-        return "";
+    public JSONObject locationToBBOX(int zoomboxSize, double x, double y) throws JSONException{
+        JSONObject extent = new JSONObject();
+        double zoomBoxSize = zoomboxSize / 2;
+        extent.put("minx", x - zoomBoxSize);
+        extent.put("miny", y - zoomBoxSize);
+        extent.put("maxx", x + zoomBoxSize);
+        extent.put("maxy", y + zoomBoxSize);
+        return extent;
     }
 }
