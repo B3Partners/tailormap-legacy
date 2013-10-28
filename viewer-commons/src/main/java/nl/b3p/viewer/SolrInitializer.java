@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.admin;
+
+package nl.b3p.viewer;
 
 import java.io.File;
 import javax.servlet.ServletContext;
@@ -46,15 +47,15 @@ public class SolrInitializer implements ServletContextListener {
     private ServletContext context;
     private String datadirectory;
     
-    //private static final String SCHEMA="/WEB-INF/classes/xml/schema.xml";
-    //private static final String SOLRCONFIG="/WEB-INF/classes/xml/solrconfig.xml";
+    private final String SETUP_SOLR = "flamingo.solr.setup";
+    private boolean setupSolr = false;
+    
     private static final String SOLR_CONF_DIR="/WEB-INF/classes/solr/autosuggest";
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.debug("SolrInitializer initializing");
         this.context = sce.getServletContext();
-
         datadirectory = context.getInitParameter(DATA_DIR);
         
         System.setProperty("solr.solr.home", datadirectory + File.separator + SOLR_DIR);
@@ -65,7 +66,7 @@ public class SolrInitializer implements ServletContextListener {
         }
         log.info("Data dir set " + datadirectory);
         File solrDir = new File(dataDirectory, SOLR_DIR);
-        if (!solrDir.exists()) {
+        if (setupSolr && !solrDir.exists()) {
             setupSolr(solrDir);
         }
 
@@ -75,7 +76,7 @@ public class SolrInitializer implements ServletContextListener {
     private void setupSolr(File solrdir) {
         log.debug("Setup the solr directory");
 
-        copyConf(solrdir);
+        copyConf(solrdir);  
         coreContainer = new CoreContainer(solrdir.getPath());
     }
 
@@ -120,5 +121,12 @@ public class SolrInitializer implements ServletContextListener {
             log.error("Setup of the solr directory failed: ",ex);
         }
         
+    }
+    
+    private void init(){
+        String setupSolrParam  = context.getInitParameter(SETUP_SOLR);
+        if(setupSolrParam != null){
+            this.setupSolr = Boolean.parseBoolean(setupSolrParam);
+        }
     }
 }
