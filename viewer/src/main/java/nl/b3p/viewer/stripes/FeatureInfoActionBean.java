@@ -254,7 +254,9 @@ public class FeatureInfoActionBean implements ActionBean {
 
                     Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
                     
-                    currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
+                    if (currentFilter!=null){
+                        currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
+                    }
                     
                     Filter f = currentFilter != null ? ff.and(spatialFilter, currentFilter) : spatialFilter;
                     
