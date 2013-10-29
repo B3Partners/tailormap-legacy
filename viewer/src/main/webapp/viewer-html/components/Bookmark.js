@@ -252,7 +252,9 @@ Ext.define ("viewer.components.Bookmark",{
         for (var i=0; i < components.length; i++){
             var state = components[i].getBookmarkState(true);
             if (!Ext.isEmpty(state)){
-                paramJSON.params[components[i].getName()]=state;
+                var param = {name: components[i].getName(),
+                        value: Ext.JSON.encode(state)};
+                paramJSON.params.push(param);
             }
         }
         
