@@ -53,6 +53,12 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: this.configObject.width != undefined ? this.configObject.width : 300,
             labelWidth:this.labelWidth
         },{
+            xtype: 'textfield',
+            fieldLabel: 'Vaste hoogte omschrijving',
+            name: 'heightDescription',
+            value: this.configObject.heightDescription != undefined ? this.configObject.heightDescription : "",
+            labelWidth: this.labelWidth
+        },{
             xtype: 'label',
             text: 'Bepaal hieronder wat er wordt getoond in het detail scherm (na klikken op \'link naar meer\')',
             style: {
