@@ -37,7 +37,9 @@ Ext.define ("viewer.components.Bookmark",{
         shareGooglePlus: false,
         shareFacebook: false,
         shareText: "I'd like to share this with #FlamingoMC: ",
-        shareTitle: "Sharing"
+        shareTitle: "Sharing",
+        showShortUrl: true,
+        showFullUrl: true
     },
     constructor: function (conf){ 
         if(!Ext.isDefined(conf.details.height)) conf.details.height = 200; 
@@ -148,55 +150,65 @@ Ext.define ("viewer.components.Bookmark",{
                 }            
             });
         }
+        var formItems=[];
         
-        this.form = new Ext.form.FormPanel({
-            frame: false,
-            border: 0,
-            width: '95%',
-            margin: '0px 0px 0px 10px',
-            padding: '5px',
-            items: [{ 
+        if (this.showFullUrl){
+            formItems.push({ 
                 xtype: 'textfield',
                 fieldLabel: 'Bookmark',
                 name: 'bookmark',
                 anchor: '100%',
                 id: 'bookmark',
                 value: this.url
-            },{ 
+            });
+        }
+        if (this.showShortUrl){
+            formItems.push({ 
                 xtype: 'textfield',
                 fieldLabel: 'Compact link',
                 name: 'compactlink',
                 anchor: '100%',
                 id: 'compactlink'
-            },{
-                xtype: 'container',
-                layout: {
-                    type: 'hbox'
-                },
-                items: socialButtons
-            },{ 
-                xtype: 'button',
-                componentCls: 'mobileLarge',
-                margin: '10px 0px 0px 0px',
-                text: 'Toevoegen aan favorieten',
-                listeners: {
-                    click:{
-                        scope: this,
-                        fn: this.addToFavorites
-                    }
+            });
+        }
+        formItems.push({
+            xtype: 'container',
+            layout: {
+                type: 'hbox'
+            },
+            items: socialButtons
+        });
+        formItems.push({ 
+            xtype: 'button',
+            componentCls: 'mobileLarge',
+            margin: '10px 0px 0px 0px',
+            text: 'Toevoegen aan favorieten',
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.addToFavorites
                 }
-            },{ 
-                xtype: 'button',
-                componentCls: 'mobileLarge',
-                margin: '10px 0px 0px 10px',
-                text: 'Sluiten',
-                listeners: {
-                    click:{
-                        scope: this,
-                        fn: this.hideWindow
-                    }
+            }
+        });
+        formItems.push({ 
+            xtype: 'button',
+            componentCls: 'mobileLarge',
+            margin: '10px 0px 0px 10px',
+            text: 'Sluiten',
+            listeners: {
+                click:{
+                    scope: this,
+                    fn: this.hideWindow
                 }
-            }],
+            }
+        });
+        this.form = new Ext.form.FormPanel({
+            frame: false,
+            border: 0,
+            width: '95%',
+            margin: '0px 0px 0px 10px',
+            padding: '5px',
+            items: formItems,
             renderTo: this.getContentDiv()
         });
     },
@@ -248,27 +260,36 @@ Ext.define ("viewer.components.Bookmark",{
         if (componentParams.length!=0){
             this.url+=componentParams;
         }
-        //get all the states of the components
-        for (var i=0; i < components.length; i++){
-            var state = components[i].getBookmarkState(true);
-            if (!Ext.isEmpty(state)){
-                var param = {name: components[i].getName(),
-                        value: Ext.JSON.encode(state)};
-                paramJSON.params.push(param);
+        if (this.showShortUrl){
+            //get all the states of the components for the short url
+            for (var i=0; i < components.length; i++){
+                var state = components[i].getBookmarkState(true);
+                if (!Ext.isEmpty(state)){
+                    var param = {name: components[i].getName(),
+                            value: Ext.JSON.encode(state)};
+                    paramJSON.params.push(param);
+                }
             }
+
+            var me = this;
+            Ext.create("viewer.Bookmark").createBookmark(
+                Ext.JSON.encode(paramJSON),
+                function(code){me.succesCompactUrl(code);},
+                function(code){me.failureCompactUrl(code);}
+            );
+        }else if (this.showFullUrl){
+            this.form.getChildByElement("bookmark").setValue(this.url);
+            this.popup.show();
         }
-        
-        var me = this;
-        Ext.create("viewer.Bookmark").createBookmark(
-            Ext.JSON.encode(paramJSON),
-            function(code){me.succesCompactUrl(code);},
-            function(code){me.failureCompactUrl(code);}
-        );
     },
     succesCompactUrl : function(code){
         this.compUrl = this.baseUrl+"bookmark="+code;
-        this.form.getChildByElement("compactlink").setValue(this.compUrl);
-        this.form.getChildByElement("bookmark").setValue(this.url);
+        if(this.showShortUrl){
+            this.form.getChildByElement("compactlink").setValue(this.compUrl);
+        }
+        if(this.showFullUrl){
+            this.form.getChildByElement("bookmark").setValue(this.url);
+        }
         this.popup.show();
     },
     failureCompactUrl : function(code){
