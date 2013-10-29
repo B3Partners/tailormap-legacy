@@ -135,6 +135,7 @@ public abstract class FeatureSource {
             Filter notNull = ff.not( ff.isNull( ff.property(attributeName) ));
             
             org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), notNull);
+            q.setMaxFeatures(maxFeatures);
             fs = sft.openGeoToolsFeatureSource();
             FeatureCollection fc = fs.getFeatures(q);
             
