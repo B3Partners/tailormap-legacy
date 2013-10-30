@@ -16,12 +16,17 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -309,6 +314,16 @@ public class ConfigureSolrActionBean implements ActionBean {
                         doc.addField("resultColumns", attributeName);
                         doc.addField(field, col);
                     }
+                    Object obj = feature.getDefaultGeometry();
+                    Geometry g = (Geometry)obj;
+                    if(g != null){
+                        Envelope env = featureToEnvelope(g);
+
+                        doc.addField("minx", env.getMinX());
+                        doc.addField("miny", env.getMinY());
+                        doc.addField("maxx", env.getMaxX());
+                        doc.addField("maxy", env.getMaxY());
+                    }
                     
                     doc.addField("id", feature.getID());
                     doc.addField("searchConfig",solrConfiguration.getId());
@@ -335,6 +350,19 @@ public class ConfigureSolrActionBean implements ActionBean {
             }
         }
         return new ForwardResolution(EDIT_JSP);
+    }
+    
+    private Envelope featureToEnvelope(Geometry g){
+        Map<String, Double> bbox = new HashMap();
+        Envelope env;
+        if(g instanceof Point){
+            Point p = (Point)g;
+            Geometry buffer = p.buffer(200);
+            env =buffer.getEnvelopeInternal();
+        }else {
+            env = g.getEnvelopeInternal();
+        }
+        return env;
     }
 
     public Resolution cancel() {
