@@ -25,9 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.core.CoreContainer;
-import org.apache.solr.core.SolrResourceLoader;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
 /**
  * This class will initialize the solr server: the setup of the index and the
@@ -38,17 +36,22 @@ import org.apache.solr.core.SolrResourceLoader;
  */
 public class SolrInitializer implements ServletContextListener {
 
-    public static final String DATA_DIR = "flamingo.data.dir";
+    private static SolrServer server;
+    private static final Log log = LogFactory.getLog(SolrInitializer.class);
+    
+    private ServletContext context;
+    
+    // Defaults
     private static final String SOLR_DIR = ".solr/";
     private static final String SOLR_CORE_NAME = "autosuggest";
-    private static SolrServer server;
-    private static CoreContainer coreContainer;
-    private static final Log log = LogFactory.getLog(SolrInitializer.class);
-    private ServletContext context;
-    private String datadirectory;
     
+    // Configuration names
+    public static final String DATA_DIR = "flamingo.data.dir";
     private final String SETUP_SOLR = "flamingo.solr.setup";
+    
+    // Context parameters
     private boolean setupSolr = false;
+    private String datadirectory;
     
     private static final String SOLR_CONF_DIR="/WEB-INF/classes/solr/autosuggest";
 
@@ -56,7 +59,7 @@ public class SolrInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         log.debug("SolrInitializer initializing");
         this.context = sce.getServletContext();
-        datadirectory = context.getInitParameter(DATA_DIR);
+        init();
         
         System.setProperty("solr.solr.home", datadirectory + File.separator + SOLR_DIR);
         File dataDirectory = new File(datadirectory);
@@ -71,24 +74,19 @@ public class SolrInitializer implements ServletContextListener {
         }
 
         inializeSolr(solrDir);
+        
     }
 
     private void setupSolr(File solrdir) {
         log.debug("Setup the solr directory");
 
         copyConf(solrdir);  
-        coreContainer = new CoreContainer(solrdir.getPath());
     }
 
     private void inializeSolr(File solrDir) {
         log.debug("Initialize the Solr Server instance");
         String path = solrDir.getPath();
-        SolrResourceLoader loader = new SolrResourceLoader(path);
-        if(coreContainer == null){
-            coreContainer = new CoreContainer(loader);
-        }
-        coreContainer.load();
-        server = new EmbeddedSolrServer(coreContainer, SOLR_CORE_NAME);
+        server = new HttpSolrServer("http://localhost:8084/solr/" +SOLR_CORE_NAME);// new EmbeddedSolrServer(coreContainer, SOLR_CORE_NAME);
     }
 
     public static SolrServer getServerInstance() {
@@ -97,7 +95,6 @@ public class SolrInitializer implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        coreContainer.shutdown();
         server.shutdown();
         log.debug("SolrInitializer destroyed");
     }
@@ -128,5 +125,6 @@ public class SolrInitializer implements ServletContextListener {
         if(setupSolrParam != null){
             this.setupSolr = Boolean.parseBoolean(setupSolrParam);
         }
+        datadirectory = context.getInitParameter(DATA_DIR);
     }
 }
