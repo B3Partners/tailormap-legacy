@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.*;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.OneToManyTypeConverter;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.search.ArcGisRestSearchClient;
@@ -52,6 +53,8 @@ public class SearchActionBean implements ActionBean {
     private String componentName;
     @Validate
     private String searchRequestId;
+    @Validate(converter = OneToManyTypeConverter.class)
+    private List<Long> visibleLayers;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -101,6 +104,15 @@ public class SearchActionBean implements ActionBean {
     public void setSearchRequestId(String searchRequestId) {
         this.searchRequestId = searchRequestId;
     }
+
+    public List<Long> getVisibleLayers() {
+        return visibleLayers;
+    }
+
+    public void setVisibleLayers(List<Long> visibleLayers) {
+        this.visibleLayers = visibleLayers;
+    }
+
     //</editor-fold>
     
     @DefaultHandler

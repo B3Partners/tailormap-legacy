@@ -17,13 +17,12 @@
 package nl.b3p.viewer.search;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
 import nl.b3p.viewer.SolrInitializer;
-import nl.b3p.viewer.config.services.SolrConfiguration;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -34,7 +33,6 @@ import org.apache.solr.common.SolrDocumentList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -61,7 +59,9 @@ public class SolrSearchClient extends SearchClient {
 
             for (SolrDocument solrDocument : list) {
                 JSONObject doc = solrDocumentToResult(solrDocument);
-                respDocs.put(doc);
+                if(doc != null){
+                    respDocs.put(doc);
+                }
             }
 
         } catch (SolrServerException ex) {
@@ -87,23 +87,26 @@ public class SolrSearchClient extends SearchClient {
     }
     
     private JSONObject solrDocumentToResult(SolrDocument doc){
-        JSONObject result = new JSONObject();
-       try {
-            List<String> labels = new ArrayList( doc.getFieldValues("resultValues"));
-            String resultLabel = "";
-            for (String label : labels) {
-                if(!resultLabel.isEmpty()){
-                    resultLabel += ", ";
+        JSONObject result = null;
+        try {
+            Collection<Object> resultValues = doc.getFieldValues("resultValues");
+            if (resultValues != null) {
+                result = new JSONObject();
+                String resultLabel = "";
+                List<String> labels = new ArrayList(resultValues);
+                for (String label : labels) {
+                    if (!resultLabel.isEmpty()) {
+                        resultLabel += ", ";
+                    }
+                    resultLabel += label;
                 }
-                resultLabel += label;
-            }
+                result.put("label", resultLabel);
 
-            result.put("label", resultLabel);
-            
-            result.put("minx", doc.getFieldValue("minx"));
-            result.put("miny", doc.getFieldValue("miny"));
-            result.put("maxx", doc.getFieldValue("maxx"));
-            result.put("maxy", doc.getFieldValue("maxy"));
+                result.put("minx", doc.getFieldValue("minx"));
+                result.put("miny", doc.getFieldValue("miny"));
+                result.put("maxx", doc.getFieldValue("maxx"));
+                result.put("maxy", doc.getFieldValue("maxy"));
+            }
         } catch (JSONException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         }

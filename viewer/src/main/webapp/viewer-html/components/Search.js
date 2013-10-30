@@ -248,13 +248,14 @@ Ext.define ("viewer.components.Search",{
         
         if(searchName !== null && searchText !== ""){
             var requestPath=  contextPath+"/action/search"; 
-           var requestParams = {};
+            var requestParams = {};
 
             requestParams["searchText"]= searchText;
             requestParams["searchName"]= searchName;
             requestParams["appId"]= appId;
             requestParams["componentName"]= this.name;
             requestParams["searchRequestId"]= this.searchRequestId;
+            this.getExtraRequestParams(requestParams,searchName);
             var me = this;
             me.mainContainer.setLoading({
                 msg: 'Bezig met zoeken'
@@ -364,6 +365,23 @@ Ext.define ("viewer.components.Search",{
                 }
                 break;
             }
+        }
+    },
+    getExtraRequestParams:function(params, type){
+        var searchConfig = new Object();
+        for(var i = 0 ; i <this.searchconfigs.length; i++){
+            if(this.searchconfigs[i].id === type){
+                searchConfig = this.searchconfigs[i];
+                break;
+            }
+        }
+        if(!searchConfig ){
+            return;
+        }else if(searchConfig.type === "solr"){
+            var appLayers = this.viewerController.getVisibleLayers();
+            params["visibleLayers"] = appLayers.join(", ");
+        }else{
+            // Nothing to do here
         }
     }
 });
