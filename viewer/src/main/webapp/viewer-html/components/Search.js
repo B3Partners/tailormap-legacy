@@ -343,7 +343,22 @@ Ext.define ("viewer.components.Search",{
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",config.x,config.y,"marker");
         
-        //var se
+        var type = this.getCurrentSearchType();
+        if(type === "solr"){
+            
+            var searchconfig = this.getCurrentSearchconfig();
+            if(searchconfig ){
+                var solrConfig = searchconfig.solrConfig[config.searchConfig];
+                var switchOnLayers = solrConfig.switchOnLayers;
+                if(switchOnLayers){
+                    for(var i = 0 ; i <switchOnLayers.length ;i++){
+                        var appLayerId = switchOnLayers[i];
+                        var applayer = this.viewerController.getAppLayerById(appLayerId);
+                        this.viewerController.setLayerVisible(applayer,true);
+                    }
+                }
+            }
+        }
         
         this.popup.hide();
     },
@@ -378,13 +393,26 @@ Ext.define ("viewer.components.Search",{
             return this.searchconfigs[0].type;
         }else{
             var value = Ext.getCmp('searchName' + this.name).getValue();
-            for(var i = 0 ; i < this.searchconfigs.length ; i++){
-                if(this.searchconfigs[i].id === value){
-                    return this.searchconfigs[i].type;
-                }
+            var config = this.getSearchconfigById(value);
+            if(config){
+                return config.type;
+            }else{
+                return null;
             }
-            return null;
         }
+    },
+    getCurrentSearchconfig :function(){
+        var value = Ext.getCmp('searchName' + this.name).getValue();
+        var config = this.getSearchconfigById(value);
+        return config;
+    },
+    getSearchconfigById:function(id){
+        for (var i = 0; i < this.searchconfigs.length; i++) {
+            if (this.searchconfigs[i].id ===  id) {
+                return this.searchconfigs[i];
+            }
+        }
+        return null;
     },
     getExtraRequestParams:function(params, type){
         if(this.getCurrentSearchType() === "solr"){
