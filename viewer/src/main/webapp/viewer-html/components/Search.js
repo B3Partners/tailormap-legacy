@@ -156,19 +156,29 @@ Ext.define ("viewer.components.Search",{
                 });
             }
             if (this.searchconfigs.length> 0){
-                this.autosuggestStore = Ext.create(Ext.data.Store,  {
+                var queryMode = 'local';
+                var extraParams = {};
+                if(this.searchconfigs.length === 1 && this.searchconfigs[0].type === "solr" ){
+                    queryMode = "remote";
                     
+                    extraParams["searchName"]=this.searchconfigs[0].id;
+                    extraParams["appId"]=appId;
+                    extraParams["componentName"]=this.name;
+                }
+                this.autosuggestStore = Ext.create(Ext.data.Store,  {
                     autoLoad: false,
                     model: 'Doc',
                     proxy: {
                         type: 'ajax',
                         url: actionBeans["autosuggest"],
+                        extraParams: extraParams,
                         reader: {
                             type: 'json',
                             root: 'response.docs'
                         }
                     }
                 });
+                
                 this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
                     name: 'searchfield',
                     hideTrigger: true,
@@ -176,7 +186,7 @@ Ext.define ("viewer.components.Search",{
                     triggerAction: 'query',
                     queryParam: "searchText",
                     displayField: "suggestion",
-                    queryMode: this.searchconfigs.length === 1 && this.searchconfigs[0].type === "solr" ? "remote" : "local",
+                    queryMode: queryMode,
                     id: 'searchfield' + this.name,
                     minChars: 2,
                     listeners: {
@@ -358,15 +368,15 @@ Ext.define ("viewer.components.Search",{
     }
 });
 
- Ext.define('Doc', {
-        extend: 'Ext.data.Model',
+Ext.define('Doc', {
+    extend: 'Ext.data.Model',
         fields: [
             {name: 'suggestion', type: 'string'}
         ]
-    });
-    Ext.define('Response', {
-        extend: 'Ext.data.Model',
-        fields: [
-            {name: 'docs', type: 'Doc'}
-        ]
-    });
+});
+Ext.define('Response', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'docs', type: 'Doc'}
+    ]
+});
