@@ -37,6 +37,8 @@ Ext.define ("viewer.components.Help",{
         if(conf.regionName === 'content') {
             conf.isPopup = true;
             this.showAsPopup = true;
+            //never show helpbutton for help window
+            conf.showHelpButton=false;
         }
         viewer.components.Help.superclass.constructor.call(this, conf);
         this.initConfig(conf);

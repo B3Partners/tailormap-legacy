@@ -668,8 +668,7 @@
         sources: ["Help.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Help-config.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","content"],        
-        type: "popup",
-        showHelp: true        
+        type: "popup"
     },
     {
         className: "viewer.components.LayerSwitch",
