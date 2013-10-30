@@ -38,7 +38,7 @@ Ext.define ("viewer.components.Help",{
             conf.isPopup = true;
             this.showAsPopup = true;
         }
-        viewer.components.LayerContext.superclass.constructor.call(this, conf);
+        viewer.components.Help.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_HELP, this.showHelp, this);
         this.renderWindow(null);
@@ -90,6 +90,14 @@ Ext.define ("viewer.components.Help",{
                 margin: 5,
                 html: this.config.defaultText
             });
+        }
+        //if popup: hide scrollbars when external url, if no url: autoScroll
+        if (this.popup && this.popup.popupWin){    
+            if( componentConfig !== null && typeof componentConfig.helpUrl !== 'undefined') {            
+                this.popup.popupWin.setAutoScroll(false);
+            }else{
+                this.popup.popupWin.setAutoScroll(false);
+            }
         }
     },
     getExtComponents: function() {
