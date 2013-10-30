@@ -304,15 +304,19 @@ public class ConfigureSolrActionBean implements ActionBean {
                         String attributeName = attr.getName();
                         Object col = feature.getAttribute( attributeName);
                         String field = "values";
-                        doc.addField("columns", attributeName);
-                        doc.addField(field, col);
+                        if(col != null){
+                            doc.addField("columns", attributeName);
+                            doc.addField(field, col);
+                        }
                     }
                     for (AttributeDescriptor attributeDescriptor : resultAttributesConfig) {
                         String attributeName = attributeDescriptor.getName();
                         Object col = feature.getAttribute( attributeName);
                         String field = "resultValues";
-                        doc.addField("resultColumns", attributeName);
-                        doc.addField(field, col);
+                        if(col != null){
+                            doc.addField("resultColumns", attributeName);
+                            doc.addField(field, col);
+                        }
                     }
                     Object obj = feature.getDefaultGeometry();
                     Geometry g = (Geometry)obj;
@@ -372,6 +376,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     public Resolution save() {
         EntityManager em =Stripersist.getEntityManager();
         solrConfiguration.getIndexAttributes().clear();
+        solrConfiguration.getResultAttributes().clear();
         for (int i = 0; i < indexAttributes.length; i++) {
             Long attributeId = indexAttributes[i];
             AttributeDescriptor attribute = em.find(AttributeDescriptor.class, attributeId);
