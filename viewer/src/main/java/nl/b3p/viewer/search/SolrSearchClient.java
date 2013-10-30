@@ -17,10 +17,13 @@
 package nl.b3p.viewer.search;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import nl.b3p.viewer.SolrInitializer;
+import nl.b3p.viewer.config.services.SolrConfiguration;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -31,6 +34,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -38,13 +42,17 @@ import org.json.JSONObject;
  */
 public class SolrSearchClient extends SearchClient {
 
+    private JSONObject config;
+    
     @Override
     public JSONArray search(String term) {
         JSONArray respDocs = new JSONArray();
         try {
             SolrServer server = SolrInitializer.getServerInstance();
-
-
+            String extraQuery = createAttributeSourceQuery();
+            if(!extraQuery.isEmpty()){
+                term  += " AND (" + extraQuery + ")";
+            }
             SolrQuery query = new SolrQuery();
             query.setQuery(term);
             query.setRequestHandler("/select");
@@ -58,10 +66,26 @@ public class SolrSearchClient extends SearchClient {
 
         } catch (SolrServerException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         } 
         return respDocs;
     }
-
+    
+    private String createAttributeSourceQuery() throws JSONException{
+        String extraQuery = "";
+        JSONObject solrConfigsJson = config.getJSONObject("solrConfig");
+        Iterator<String> it = solrConfigsJson.keys();
+        while (it.hasNext()){
+            String key = it.next();
+            if(!extraQuery.isEmpty()){
+                extraQuery += " OR ";
+            }
+            extraQuery += "searchConfig:" + key;
+        }
+        return extraQuery;
+    }
+    
     private JSONObject solrDocumentToResult(SolrDocument doc){
         JSONObject result = new JSONObject();
        try {
@@ -118,4 +142,13 @@ public class SolrSearchClient extends SearchClient {
         }
         return obj;
     }
+
+    public JSONObject getConfig() {
+        return config;
+    }
+
+    public void setConfig(JSONObject config) {
+        this.config = config;
+    }
+
 }

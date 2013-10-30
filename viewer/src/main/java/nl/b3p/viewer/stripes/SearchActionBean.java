@@ -34,6 +34,8 @@ import org.stripesstuff.stripersist.Stripersist;
 /**
  *
  * @author Jytte Schaeffer
+ * @author Roy Braam
+ * @author Meine Toonen
  */
 @UrlBinding("/action/search")
 @StrictBinding
@@ -180,6 +182,7 @@ public class SearchActionBean implements ActionBean {
                 client = new OpenLSSearchClient(url);
             } else if(type.equalsIgnoreCase("solr")){
                 client = new SolrSearchClient();
+                ((SolrSearchClient)client).setConfig(config);
             }else{
                 client = null;
             }
