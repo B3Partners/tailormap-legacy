@@ -48,10 +48,12 @@ public class SolrInitializer implements ServletContextListener {
     // Configuration names
     public static final String DATA_DIR = "flamingo.data.dir";
     private final String SETUP_SOLR = "flamingo.solr.setup";
+    private final String SOLR_URL = "flamingo.solr.url";
     
     // Context parameters
     private boolean setupSolr = false;
     private String datadirectory;
+    private String solrUrl;
     
     private static final String SOLR_CONF_DIR="/WEB-INF/classes/solr/autosuggest";
 
@@ -72,9 +74,7 @@ public class SolrInitializer implements ServletContextListener {
         if (setupSolr && !solrDir.exists()) {
             setupSolr(solrDir);
         }
-
         inializeSolr(solrDir);
-        
     }
 
     private void setupSolr(File solrdir) {
@@ -85,8 +85,7 @@ public class SolrInitializer implements ServletContextListener {
 
     private void inializeSolr(File solrDir) {
         log.debug("Initialize the Solr Server instance");
-        String path = solrDir.getPath();
-        server = new HttpSolrServer("http://localhost:8084/solr/" +SOLR_CORE_NAME);// new EmbeddedSolrServer(coreContainer, SOLR_CORE_NAME);
+        server = new HttpSolrServer(solrUrl +SOLR_CORE_NAME);
     }
 
     public static SolrServer getServerInstance() {
@@ -106,18 +105,15 @@ public class SolrInitializer implements ServletContextListener {
     private void copyConf(File solrDir){
         try {
             File conf = new File( this.context.getRealPath("/WEB-INF/classes/solr/solr.xml"));
-            boolean solrDirCreated = solrDir.mkdir();
             FileUtils.copyFile(conf, new File(solrDir, "solr.xml"));
             
             File coreConfiguration = new File(context.getRealPath(SOLR_CONF_DIR));
             
             File coreDir = new File(solrDir, SOLR_CORE_NAME);
             FileUtils.copyDirectory(coreConfiguration, coreDir);
-        
         } catch (Exception ex) {
             log.error("Setup of the solr directory failed: ",ex);
         }
-        
     }
     
     private void init(){
@@ -126,5 +122,6 @@ public class SolrInitializer implements ServletContextListener {
             this.setupSolr = Boolean.parseBoolean(setupSolrParam);
         }
         datadirectory = context.getInitParameter(DATA_DIR);
+        solrUrl = context.getInitParameter(SOLR_URL);
     }
 }

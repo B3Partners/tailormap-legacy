@@ -42,6 +42,13 @@
         <param-name>flamingo.solr.setup</param-name>
         <param-value>false</param-value>
     </context-param>
+     <context-param>
+        <description>
+            The url on where the solr server is to be found.
+        </description>
+        <param-name>flamingo.solr.url</param-name>
+        <param-value>http://localhost:8084/solr/</param-value>
+    </context-param>
 
     <filter>
         <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
