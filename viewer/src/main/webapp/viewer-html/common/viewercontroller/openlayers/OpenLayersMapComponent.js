@@ -625,7 +625,20 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
 
         if(!(tool instanceof Array) ){
             this.superclass.addTool.call(this,tool);
+            //check if this is the first tool, activate it.
+            if (tool.getVisible()){
+                var toolsVisible=0;
+                for (var i=0; i < this.tools.length; i++){                    
+                    if (this.tools[i].getVisible()){
+                        toolsVisible++;
+                    }
+                }
+                if (toolsVisible ==1){
+                    this.activateTool(tool.getId());
+                }
+            }
         }
+        
     },
     removeToolById : function (id){
         var tool = this.getTool(id);
