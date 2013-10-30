@@ -54,7 +54,7 @@ public class SearchActionBean implements ActionBean {
     @Validate
     private String searchRequestId;
     @Validate(converter = OneToManyTypeConverter.class)
-    private List<Long> visibleLayers;
+    private List<Long> visibleLayers = new ArrayList();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -117,7 +117,6 @@ public class SearchActionBean implements ActionBean {
     
     @DefaultHandler
     public Resolution source() throws Exception {
-        EntityManager em = Stripersist.getEntityManager();
         JSONObject result = new JSONObject();        
         JSONObject request = new JSONObject();
         request.put("appId",appId);
@@ -195,6 +194,7 @@ public class SearchActionBean implements ActionBean {
             } else if(type.equalsIgnoreCase("solr")){
                 client = new SolrSearchClient();
                 ((SolrSearchClient)client).setConfig(config);
+                ((SolrSearchClient)client).setVisibleLayers(visibleLayers);
             }else{
                 client = null;
             }

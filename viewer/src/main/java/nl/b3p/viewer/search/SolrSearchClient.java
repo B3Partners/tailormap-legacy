@@ -41,6 +41,7 @@ import org.json.JSONObject;
 public class SolrSearchClient extends SearchClient {
 
     private JSONObject config;
+    private List<Long> visibleLayers;
     
     @Override
     public JSONArray search(String term) {
@@ -48,8 +49,11 @@ public class SolrSearchClient extends SearchClient {
         try {
             SolrServer server = SolrInitializer.getServerInstance();
             String extraQuery = createAttributeSourceQuery();
+            term  += " AND (";
             if(!extraQuery.isEmpty()){
-                term  += " AND (" + extraQuery + ")";
+                 term += extraQuery + ")";
+            }else{
+                term += "searchConfig:\\-1)"; // Dummy expression to always evaluate to false and return no results
             }
             SolrQuery query = new SolrQuery();
             query.setQuery(term);
@@ -78,12 +82,37 @@ public class SolrSearchClient extends SearchClient {
         Iterator<String> it = solrConfigsJson.keys();
         while (it.hasNext()){
             String key = it.next();
-            if(!extraQuery.isEmpty()){
-                extraQuery += " OR ";
+            if(canBeSearched(key)){
+                if(!extraQuery.isEmpty()){
+                    extraQuery += " OR ";
+                }
+                extraQuery += "searchConfig:" + key;
             }
-            extraQuery += "searchConfig:" + key;
         }
         return extraQuery;
+    }
+    
+    private boolean canBeSearched(String key) throws JSONException{
+        JSONObject solrConfigsJson = config.getJSONObject("solrConfig");
+        JSONObject solrConfig = solrConfigsJson.getJSONObject(key);
+        JSONArray requiredLayers = solrConfig.getJSONArray("requiredLayers");
+        boolean allVisible = true;
+        for( int i = 0; i < requiredLayers.length() ;i ++){
+            long reqLayerId = requiredLayers.getInt(i);
+            boolean visible = false;
+            for (Long visibleId : visibleLayers) {
+                if(visibleId == reqLayerId){
+                    visible = true;
+                    break;
+                }
+            }
+            if(!visible){
+                allVisible = false;
+                break;
+            }
+        }
+        return allVisible;
+      
     }
     
     private JSONObject solrDocumentToResult(SolrDocument doc){
@@ -152,6 +181,10 @@ public class SolrSearchClient extends SearchClient {
 
     public void setConfig(JSONObject config) {
         this.config = config;
+    }
+
+    public void setVisibleLayers(List<Long> visibleLayers) {
+        this.visibleLayers = visibleLayers;
     }
 
 }
