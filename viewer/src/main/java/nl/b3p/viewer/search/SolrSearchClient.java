@@ -18,8 +18,10 @@ package nl.b3p.viewer.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.b3p.viewer.SolrInitializer;
@@ -130,11 +132,13 @@ public class SolrSearchClient extends SearchClient {
                     resultLabel += label;
                 }
                 result.put("label", resultLabel);
-
-                result.put("minx", doc.getFieldValue("minx"));
-                result.put("miny", doc.getFieldValue("miny"));
-                result.put("maxx", doc.getFieldValue("maxx"));
-                result.put("maxy", doc.getFieldValue("maxy"));
+                Map bbox = new HashMap();
+                bbox.put("minx", doc.getFieldValue("minx"));
+                bbox.put("miny", doc.getFieldValue("miny"));
+                bbox.put("maxx", doc.getFieldValue("maxx"));
+                bbox.put("maxy", doc.getFieldValue("maxy"));
+                result.put("location", bbox);
+                result.put("searchConfig", doc.getFieldValue("searchConfig"));
             }
         } catch (JSONException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);

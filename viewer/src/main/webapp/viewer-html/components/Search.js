@@ -309,8 +309,10 @@ Ext.define ("viewer.components.Search",{
                     click:{
                         scope: me,
                         fn: function(button,e,eOpts){
-                            var loc = this.searchResult[button.id.split("_")[1]].location;
-                            me.handleSearchResult(loc);
+                            var config =this.searchResult[button.id.split("_")[1]];
+                            config.x = (config.maxx +config.minx)/2;
+                            config.y = (config.maxy +config.miny)/2;
+                            me.handleSearchResult(config);
                         }
                     }
                 }
@@ -336,10 +338,13 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
     },
-    handleSearchResult : function(location){
-        this.viewerController.mapComponent.getMap().zoomToExtent(location);
+    handleSearchResult : function(config){
+        this.viewerController.mapComponent.getMap().zoomToExtent(config.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
-        this.viewerController.mapComponent.getMap().setMarker("searchmarker",location.x,location.y,"marker");
+        this.viewerController.mapComponent.getMap().setMarker("searchmarker",config.x,config.y,"marker");
+        
+        //var se
+        
         this.popup.hide();
     },
     getExtComponents: function() {
@@ -347,6 +352,7 @@ Ext.define ("viewer.components.Search",{
         if(this.results) c.push(this.results.getId());
         return c;
     },
+    
     searchConfigChanged: function(searchConfig){
         for(var i = 0 ; i < this.searchconfigs.length ;i++){
             var config = this.searchconfigs[i];
@@ -367,17 +373,21 @@ Ext.define ("viewer.components.Search",{
             }
         }
     },
-    getExtraRequestParams:function(params, type){
-        var searchConfig = new Object();
-        for(var i = 0 ; i <this.searchconfigs.length; i++){
-            if(this.searchconfigs[i].id === type){
-                searchConfig = this.searchconfigs[i];
-                break;
+    getCurrentSearchType : function(){
+        if(this.searchconfigs.length === 1){
+            return this.searchconfigs[0].type;
+        }else{
+            var value = Ext.getCmp('searchName' + this.name).getValue();
+            for(var i = 0 ; i < this.searchconfigs.length ; i++){
+                if(this.searchconfigs[i].id === value){
+                    return this.searchconfigs[i].type;
+                }
             }
+            return null;
         }
-        if(!searchConfig ){
-            return;
-        }else if(searchConfig.type === "solr"){
+    },
+    getExtraRequestParams:function(params, type){
+        if(this.getCurrentSearchType() === "solr"){
             var appLayers = this.viewerController.getVisibleLayers();
             params["visibleLayers"] = appLayers.join(", ");
         }else{
