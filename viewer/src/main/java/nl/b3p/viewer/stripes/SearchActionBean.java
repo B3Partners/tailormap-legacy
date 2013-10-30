@@ -201,9 +201,4 @@ public class SearchActionBean implements ActionBean {
         }
         return client;
     }
-
-    private static JSONObject issueRequest(String url) throws Exception {
-        return new JSONObject(IOUtils.toString(new URL(url).openStream(), "UTF-8"));
-    }
-
 }
