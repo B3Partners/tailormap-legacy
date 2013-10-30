@@ -51,6 +51,9 @@ Ext.onReady(function() {
                         queryMode: "remote",
                         id: 'searchTerm',
                         displayField: "suggestion",
+                        listConfig: {
+                            loadingMask: false
+                        },
                         queryParam: "term",
                         listeners: {
                             afterRender: function(thisForm, options) {
@@ -71,6 +74,7 @@ Ext.onReady(function() {
                                     root: 'response.docs'
                                 }
                             }
+
                         }
                     }, {
                         xtype: "button",
@@ -87,8 +91,8 @@ Ext.onReady(function() {
                 xtype: "panel",
                 border: false,
                 id: "searchResults",
-                    height: 300,
-                    width: 500,
+                height: 300,
+                width: 500,
                 layout: {
                     type: "vbox"
                 },
@@ -99,14 +103,14 @@ Ext.onReady(function() {
     });
 });
 
-function search(){
+function search() {
     var me = this;
     var results = Ext.getCmp("searchResults");
     typePanel = {};
     results.removeAll();
     results.setLoading("Laden...");
     var term = Ext.getCmp("searchTerm").getValue();
-    var url = contextpath +"/action/configuresolr";
+    var url = contextpath + "/action/configuresolr";
     Ext.Ajax.request({
         url: url,
         method: 'GET',
@@ -146,16 +150,16 @@ function createResult(doc) {
     var type = getTypePanel(doc.type);
     var typeResults = getTypePanel(doc.type);//Ext.getCmp(doc.type + "results");
     var result = Ext.create(Ext.panel.Panel, {
-        id:doc.id+ "-" + Ext.id(),
+        id: doc.id + "-" + Ext.id(),
         border: false,
-        width:500,
-       // height:50,
+        width: 500,
+        // height:50,
         layout: {
             type: "hbox"
         },
         items: [
             {
-                id:  Ext.id(),
+                id: Ext.id(),
                 xtype: 'button',
                 text: doc.values
             }
@@ -166,33 +170,33 @@ function createResult(doc) {
 
 var typePanel = {};
 function getTypePanel(type) {
-   /* if (!typePanel.hasOwnProperty(type)) {
-        var searchResults = Ext.getCmp("searchResults");
-        var panel = Ext.create(Ext.panel.Panel, {
-            id: type + Ext.id(),
-            border: false,
-            layout: {
-                type: 'vbox'
-            },
-            items: [
-                {
-                    xtype: "label",
-                    text: type
-                },
-                {
-                    xtype: "panel",
-                    width: 400,
-                    border: true,
-                    layout: {
-                        type: 'vbox'
-                    },
-                    id: type + "results"
-                }
-            ]
-        });
-        searchResults.add(panel);
-        typePanel[type] = panel;
-    }*/
+    /* if (!typePanel.hasOwnProperty(type)) {
+     var searchResults = Ext.getCmp("searchResults");
+     var panel = Ext.create(Ext.panel.Panel, {
+     id: type + Ext.id(),
+     border: false,
+     layout: {
+     type: 'vbox'
+     },
+     items: [
+     {
+     xtype: "label",
+     text: type
+     },
+     {
+     xtype: "panel",
+     width: 400,
+     border: true,
+     layout: {
+     type: 'vbox'
+     },
+     id: type + "results"
+     }
+     ]
+     });
+     searchResults.add(panel);
+     typePanel[type] = panel;
+     }*/
     var searchResults = Ext.getCmp("searchResults");
     return searchResults;
 }

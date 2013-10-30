@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/viewer" antiJARLocking="true" disableURLRewriting="true">
-    <!-- For Tomcat: define datasource in server.xml, for example:
+<Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
+  <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>
         ...
@@ -22,25 +22,17 @@
         ...
     </Server>
     -->
-
-    <!-- Tomcat resource link -->
-    <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
-    
-    <!-- Optional: use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
-    <Realm className="org.apache.catalina.realm.CombinedRealm">
-        <Realm
-            className="org.apache.catalina.realm.DataSourceRealm"
-            dataSourceName="jdbc/geo_viewer"
-            allRolesMode="authOnly"
-            userTable="user_" userNameCol="username" userCredCol="password" digest="SHA-1"
-            userRoleTable="user_groups" roleNameCol="group_"
-        />
-        <!-- Use JNDIRealm for authenticating against a LDAP server (such as
+  <!-- Tomcat resource link -->
+  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
+  <!-- Optional: use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
+  <Realm className="org.apache.catalina.realm.CombinedRealm">
+    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>
+    <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
              http://tomcat.apache.org/tomcat-6.0-doc/config/realm.html
              http://tomcat.apache.org/tomcat-6.0-doc/realm-howto.html#JNDIRealm
         -->
-        <!--Realm className="org.apache.catalina.realm.JNDIRealm"
+    <!--Realm className="org.apache.catalina.realm.JNDIRealm"
             allRolesMode="authOnly"
             connectionURL="ldap://ldap:389"
             connectionName="cn=ServiceUser,ou=Services,o=MyOrg"
@@ -50,5 +42,5 @@
             userSearch="cn={0}"
             commonRole="ExtendedUser"
         /-->
-    </Realm>    
+  </Realm>
 </Context>

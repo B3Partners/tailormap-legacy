@@ -43,7 +43,7 @@ public class SolrInitializer implements ServletContextListener {
     
     // Defaults
     private static final String SOLR_DIR = ".solr/";
-    private static final String SOLR_CORE_NAME = "autosuggest";
+    private static final String SOLR_CORE_NAME = "flamingo";
     
     // Configuration names
     public static final String DATA_DIR = "flamingo.data.dir";
@@ -55,7 +55,7 @@ public class SolrInitializer implements ServletContextListener {
     private String datadirectory;
     private String solrUrl;
     
-    private static final String SOLR_CONF_DIR="/WEB-INF/classes/solr/autosuggest";
+    private static final String SOLR_CONF_DIR="/WEB-INF/classes/solr/flamingo";
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
