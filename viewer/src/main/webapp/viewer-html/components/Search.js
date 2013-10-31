@@ -174,7 +174,7 @@ Ext.define ("viewer.components.Search",{
                         extraParams: extraParams,
                         reader: {
                             type: 'json',
-                            root: 'response.docs'
+                            root: 'results'
                         }
                     }
                 });
@@ -185,7 +185,7 @@ Ext.define ("viewer.components.Search",{
                     anchor: '100%',
                     triggerAction: 'query',
                     queryParam: "searchText",
-                    displayField: "suggestion",
+                    displayField: "label",
                     queryMode: queryMode,
                     id: 'searchfield' + this.name,
                     minChars: 2,
@@ -376,6 +376,9 @@ Ext.define ("viewer.components.Search",{
                     this.searchField.queryMode = "remote";
                     var proxy = this.searchField.getStore().getProxy();
                     var params = proxy.extraParams;
+                    
+                    var appLayers = this.viewerController.getVisibleLayers();
+                    params["visibleLayers"] = appLayers.join(", ");
                     params["searchName"]=searchConfig;
                     params["appId"]=appId;
                     params["componentName"]=this.name;
@@ -427,7 +430,8 @@ Ext.define ("viewer.components.Search",{
 Ext.define('Doc', {
     extend: 'Ext.data.Model',
         fields: [
-            {name: 'suggestion', type: 'string'}
+            {name: 'label', type: 'string'},
+            {name: 'searchConfig', type: 'integer'}
         ]
 });
 Ext.define('Response', {
