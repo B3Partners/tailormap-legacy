@@ -27,23 +27,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
-    
-    <stripes:layout-component name="body">
-        <div id="content">
-            <h1>Indexen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1><br />
-            
-            <div id="grid-container" class="attributesources">
-                
+
+        <stripes:layout-component name="body">
+            <div id="content">
+                <p>
+                    <stripes:errors/>
+                    <stripes:messages/>
+                </p>
+                <h1>Indexen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1><br />
+
+                <div id="grid-container" class="attributesources">
+
+                </div>
+
+                <div id="form-container" class="attributesources">
+                    <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                </div>
             </div>
-            
-            <div id="form-container" class="attributesources">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
-            </div>
-        </div>
           <script type="text/javascript">
+            var solrInitialized = ${actionBean.solrInitialized};
             var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="getGridData"/>';
             var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="edit"/>';
             var addToIndexUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="addToIndex"/>';
+            var removeFromIndexUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="removeFromIndex"/>';
             var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="delete"/>';
             var editSolrConfiguration = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="view"/>';
             var activelink = 'menu_solrconfig';

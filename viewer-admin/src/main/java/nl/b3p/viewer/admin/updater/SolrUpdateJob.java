@@ -95,10 +95,11 @@ public class SolrUpdateJob implements Job {
         }
     }
 
-    public void removeSolrConfigurationFromIndex(SolrConfiguration config, EntityManager em, SolrServer solrServer) {
+    public static void removeSolrConfigurationFromIndex(SolrConfiguration config, EntityManager em, SolrServer solrServer) {
         log.info("Remove documents from SolrConfiguration " + config.getName() + " from index.");
         try {
-            server.deleteByQuery("searchConfig:"+config.getId());
+            solrServer.deleteByQuery("searchConfig:"+config.getId());
+            solrServer.commit();
         } catch (SolrServerException ex) {
             log.error("Could not delete documents for solr configuration: " + config.getName() + " - id: " + config.getId(),ex);
         } catch (IOException ex) {

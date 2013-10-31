@@ -97,11 +97,20 @@ Ext.onReady(function(){
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
+                    if(solrInitialized){
+                        return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value) +
                            ' | ' +
-                           Ext.String.format('<a href="#" onclick="return addToIndex(\'{0}\');">Voeg toe aan index</a>', value);;
+                           Ext.String.format('<a href="#" onclick="return addToIndex(\'{0}\');">Voeg toe aan index</a>', value)+
+                           ' | ' +
+                           Ext.String.format('<a href="#" onclick="return removeFromIndex(\'{0}\');">Verwijder uit index</a>', value);
+                    }else{
+                        
+                        return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
+                           ' | ' +
+                           Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
+                    }
                 },
                 sortable: false
             }
@@ -155,6 +164,14 @@ function reloadGrid(){
 
 function addToIndex(objId){
     Ext.get('editFrame').dom.src = addToIndexUrl + '&solrConfiguration=' + objId;
+    var gridCmp = Ext.getCmp('editGrid')
+    gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
+    return false;
+    
+}
+
+function removeFromIndex(objId){
+    Ext.get('editFrame').dom.src = removeFromIndexUrl + '&solrConfiguration=' + objId;
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
     return false;

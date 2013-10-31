@@ -33,10 +33,12 @@ import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.SolrInitializer;
@@ -107,6 +109,8 @@ public class ConfigureSolrActionBean implements ActionBean {
     
     @Validate
     private String term;
+    
+    private Boolean solrInitialized = true;
     
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     @Override
@@ -182,18 +186,31 @@ public class ConfigureSolrActionBean implements ActionBean {
     public void setTerm(String term) {
         this.term = term;
     }
-    
+
+    public Boolean getSolrInitialized() {
+        return solrInitialized;
+    }
+
+    public void setSolrInitialized(Boolean solrInitialized) {
+        this.solrInitialized = solrInitialized;
+    }
     //</editor-fold>
     
     @DefaultHandler
     public Resolution view() throws SolrServerException {
+        SolrServer server = SolrInitializer.getServerInstance();
+        try{
+            SolrPingResponse resp = server.ping();
+        }catch(Exception e){
+            this.context.getValidationErrors().addGlobalError(new SimpleError("Solr server niet correct geïnitialiseerd. Neem contact op met de systeembeheerder."));
+            solrInitialized = false;
+        }
         return new ForwardResolution(JSP);
     }
 
     public Resolution edit() {
         return new ForwardResolution(EDIT_JSP);
     }
-    
     
     public Resolution prototype() {
         return new ForwardResolution(PROTOTYPE_JSP);
@@ -261,17 +278,18 @@ public class ConfigureSolrActionBean implements ActionBean {
         status = new WaitPageStatus();
         EntityManager em = Stripersist.getEntityManager();
         SolrServer server = SolrInitializer.getServerInstance();
-        try {
-            SolrPingResponse resp = server.ping();
-            int a = 0;
-        } catch (SolrServerException ex) {
-            Logger.getLogger(ConfigureSolrActionBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ConfigureSolrActionBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
         solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
         SolrUpdateJob.insertSolrConfigurationIntoIndex(solrConfiguration, em, status, server);
         return new ForwardResolution(EDIT_JSP);
+    }
+    
+    public Resolution removeFromIndex(){
+        EntityManager em = Stripersist.getEntityManager();
+        SolrServer server = SolrInitializer.getServerInstance();
+        solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
+        SolrUpdateJob.removeSolrConfigurationFromIndex(solrConfiguration, em, server);
+        return new ForwardResolution(EDIT_JSP);
+        
     }
 
     public Resolution cancel() {

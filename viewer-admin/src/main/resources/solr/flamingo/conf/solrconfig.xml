@@ -217,7 +217,12 @@
     <requestHandler name="/update/csv" class="solr.CSVRequestHandler" startup="lazy" />
     <requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler"/>
     <requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
-
+    <requestHandler name="/admin/ping" class="solr.PingRequestHandler">
+        <lst name="invariants">
+            <str name="qt">/select</str><!-- handler to delegate to -->
+            <str name="q">*:*</str>
+        </lst>
+    </requestHandler>
     <!-- Legacy config for the admin interface -->
     <admin>
         <defaultQuery>*:*</defaultQuery>
