@@ -130,6 +130,7 @@ Ext.define ("viewer.components.FeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
+        this.viewerController.mapComponent.setWaitingCursor(true);
         this.balloon.setContent("");
         this.balloon.hide();
         this.setMaptipEnabled(false);
@@ -154,7 +155,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             this.setMaptipEnabled(true);
         }
         this.callParent(arguments);        
-        
+        this.viewerController.mapComponent.setWaitingCursor(false);
     },
     /**
      *Called when extent is changed, recalculate the position
