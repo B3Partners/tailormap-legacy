@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +45,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.SolrInitializer;
+import nl.b3p.viewer.admin.updater.SolrUpdateJob;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
@@ -56,10 +59,12 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.handler.PingRequestHandler;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -262,111 +267,23 @@ public class ConfigureSolrActionBean implements ActionBean {
         obj.put("success", Boolean.TRUE);
         return new StreamingResolution("application/json", new StringReader(obj.toString(4)));
     }
-    
-    
+
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution addToIndex() throws InterruptedException {
-        org.geotools.data.FeatureSource fs = null;
+        status = new WaitPageStatus();
+        EntityManager em = Stripersist.getEntityManager();
+        SolrServer server = SolrInitializer.getServerInstance();
         try {
-            SolrServer server = SolrInitializer.getServerInstance();
-            if(server == null){
-                throw new Exception("No solr server initialized.");
-            }
-            EntityManager em = Stripersist.getEntityManager();
-            solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
-            status = new WaitPageStatus();
-            status.setCurrentAction("Features ophalen");
-            
-            status.setProgress(10);
-            SimpleFeatureType sft = solrConfiguration.getSimpleFeatureType();
-            fs = sft.openGeoToolsFeatureSource();
-            
-            Query q = new Query();
-            if(sft.getFeatureSource() instanceof WFSFeatureSource){
-                q.setMaxFeatures(5000);
-            }
-            FeatureCollection fc = fs.getFeatures(q);
-            List<AttributeDescriptor> indexAttributesConfig =  solrConfiguration.getIndexAttributes();
-            List<AttributeDescriptor> resultAttributesConfig =  solrConfiguration.getResultAttributes();
-            
-            List<SolrInputDocument> docs = new ArrayList();
-            
-            FeatureIterator<SimpleFeature>  iterator = fc.features();
-            double size = fc.size();
-            double percentagesForAdding = 50;
-            double intervalPerDoc = percentagesForAdding/size;
-            Double total = (double)status.getProgress();
-            try {
-                while (iterator.hasNext()) {
-                    SimpleFeature feature = iterator.next();
-                    SolrInputDocument doc = new SolrInputDocument();
-                    for (AttributeDescriptor attr : indexAttributesConfig) {
-                        String attributeName = attr.getName();
-                        Object col = feature.getAttribute( attributeName);
-                        String field = "values";
-                        if(col != null){
-                            doc.addField("columns", attributeName);
-                            doc.addField(field, col);
-                        }
-                    }
-                    for (AttributeDescriptor attributeDescriptor : resultAttributesConfig) {
-                        String attributeName = attributeDescriptor.getName();
-                        Object col = feature.getAttribute( attributeName);
-                        String field = "resultValues";
-                        if(col != null){
-                            doc.addField("resultColumns", attributeName);
-                            doc.addField(field, col);
-                        }
-                    }
-                    Object obj = feature.getDefaultGeometry();
-                    Geometry g = (Geometry)obj;
-                    if(g != null){
-                        Envelope env = featureToEnvelope(g);
-
-                        doc.addField("minx", env.getMinX());
-                        doc.addField("miny", env.getMinY());
-                        doc.addField("maxx", env.getMaxX());
-                        doc.addField("maxy", env.getMaxY());
-                    }
-                    
-                    doc.addField("id", feature.getID());
-                    doc.addField("searchConfig",solrConfiguration.getId());
-                    docs.add(doc);
-                    total += intervalPerDoc;
-                    status.setProgress(total.intValue());
-                }
-            } finally {
-                iterator.close();
-            }
-            status.setCurrentAction("Features toevoegen aan solr index");
-            
-            status.setProgress(60);
-            server.add(docs);
-            server.commit();
-            status.setProgress(100);
-            status.setFinished(true);
-        } catch (Exception ex) {
-            log.error("Cannot add configuration to index", ex);
-            status.setCurrentAction("Mislukt.");
-        }finally{
-            if(fs != null && fs.getDataStore() != null){
-                fs.getDataStore().dispose();
-            }
+            SolrPingResponse resp = server.ping();
+            int a = 0;
+        } catch (SolrServerException ex) {
+            Logger.getLogger(ConfigureSolrActionBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ConfigureSolrActionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
+        SolrUpdateJob.insertSolrConfigurationIntoIndex(solrConfiguration, em, status, server);
         return new ForwardResolution(EDIT_JSP);
-    }
-    
-    private Envelope featureToEnvelope(Geometry g){
-        Map<String, Double> bbox = new HashMap();
-        Envelope env;
-        if(g instanceof Point){
-            Point p = (Point)g;
-            Geometry buffer = p.buffer(200);
-            env =buffer.getEnvelopeInternal();
-        }else {
-            env = g.getEnvelopeInternal();
-        }
-        return env;
     }
 
     public Resolution cancel() {
