@@ -140,11 +140,14 @@ Ext.define ("viewer.components.TOC",{
                 }
             }];
         }
-        
+        var panelHeight = "100%";
+        if(this.showAllLayersOn || this.showAllLayersOff){
+            panelHeight="93%";
+        }
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
-            height: "100%",
+            height: panelHeight,
             scroll: false,
             useArrows: true,
             rootVisible: false,
