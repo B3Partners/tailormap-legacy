@@ -194,7 +194,19 @@ Ext.define ("viewer.components.Search",{
                             if (e.getKey() === e.ENTER) {
                                 me.search();
                             }
-                        }
+                        },
+                        beforeQuery : function(request){
+                            if(this.getCurrentSearchType() !== "solr"){
+                                    return false;
+                            }
+                            var q = request.query;
+                            var combo = request.combo;
+                            var minChars = combo.minChars;
+                            if(q.length >= minChars){
+                                this.setVisibleLayers();
+                            }
+                        },
+                        scope:this
                     },
                     store:this.autosuggestStore
                 });
@@ -377,12 +389,9 @@ Ext.define ("viewer.components.Search",{
                     var proxy = this.searchField.getStore().getProxy();
                     var params = proxy.extraParams;
                     
-                    var appLayers = this.viewerController.getVisibleLayers();
-                    params["visibleLayers"] = appLayers.join(", ");
                     params["searchName"]=searchConfig;
                     params["appId"]=appId;
                     params["componentName"]=this.name;
-
                 }else{
                     this.searchField.queryMode = "local";
                     this.searchField.getStore().removeAll();
@@ -416,6 +425,12 @@ Ext.define ("viewer.components.Search",{
             }
         }
         return null;
+    },
+    setVisibleLayers: function() {
+        var proxy = this.searchField.getStore().getProxy();
+        var params = proxy.extraParams;
+        var appLayers = this.viewerController.getVisibleLayers();
+        params["visibleLayers"] = appLayers.join(", ");
     },
     getExtraRequestParams:function(params, type){
         if(this.getCurrentSearchType() === "solr"){

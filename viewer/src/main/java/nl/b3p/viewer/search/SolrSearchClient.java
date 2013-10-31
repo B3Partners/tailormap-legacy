@@ -88,7 +88,13 @@ public class SolrSearchClient extends SearchClient {
             JSONObject response = new JSONObject();
             response.put("docs", respDocs);
             obj.put("response", response);
-
+            String extraQuery = createAttributeSourceQuery();
+            term += " AND (";
+            if (!extraQuery.isEmpty()) {
+                term += extraQuery + ")";
+            } else {
+                term += "searchConfig:\\-1)"; // Dummy expression to always evaluate to false and return no results
+            }
             SolrQuery query = new SolrQuery();
             query.setQuery(term);
             query.setRequestHandler("/select");
