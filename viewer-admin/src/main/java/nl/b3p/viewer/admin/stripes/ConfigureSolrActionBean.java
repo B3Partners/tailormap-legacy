@@ -16,17 +16,12 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
@@ -51,7 +46,6 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConfiguration;
-import nl.b3p.viewer.config.services.WFSFeatureSource;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,11 +57,6 @@ import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.handler.PingRequestHandler;
-import org.geotools.data.Query;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -76,7 +65,6 @@ import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
 import org.stripesstuff.plugin.waitpage.WaitPage;
 import org.stripesstuff.stripersist.Stripersist;
 
