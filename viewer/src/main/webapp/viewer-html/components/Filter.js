@@ -111,7 +111,7 @@ Ext.define ("viewer.components.Filter",{
         if (val!=null){
             var applayerAttribute = this.getAppLayerAttributeByName(val);
             if (applayerAttribute && applayerAttribute.defaultValue==="filterList"){
-                this.getAttributeUniques(val);
+                this.getAttributeUniques(val,applayerAttribute.featureType);
             }
         }
     },
@@ -130,7 +130,7 @@ Ext.define ("viewer.components.Filter",{
         }
         return null;
     },
-    getAttributeUniques : function (attributeName){
+    getAttributeUniques : function (attributeName,ft){
         var appLayer = this.parentComponent.layerSelector.getValue();
         if(attributeName){
             this.parentMainContainer.setLoading("Laad unieke waardes...");
@@ -140,7 +140,8 @@ Ext.define ("viewer.components.Filter",{
                 scope:this,
                 params: { 
                     attributes: [attributeName],
-                    applicationLayer: appLayer.id
+                    applicationLayer: appLayer.id,
+                    featureType: ft
                 }, 
                 success: function ( result, request ) { 
                     var res = Ext.JSON.decode(result.responseText);
