@@ -72,6 +72,14 @@
     </context-param>
     <context-param>
         <description>
+            Configure at which interval in minutes the solr indexing job should be run.
+            Comment out this parameter or set to -1 to disable.
+        </description>
+        <param-name>flamingo.solr.schedule</param-name>
+        <param-value>0 10 * ? * *</param-value>
+    </context-param>
+    <context-param>
+        <description>
             The url on where the solr server is to be found.
         </description>
         <param-name>flamingo.solr.url</param-name>
@@ -92,6 +100,10 @@
     <listener>
         <description>The class which initializes (and if configured sets up) the solr instance.</description>
         <listener-class>nl.b3p.viewer.SolrInitializer</listener-class>
+    </listener>
+    <listener>
+        <description>The class which initializes (and if configured sets up) the solr instance.</description>
+        <listener-class>nl.b3p.viewer.admin.updater.SolrUpdaterListener</listener-class>
     </listener>
     <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>
