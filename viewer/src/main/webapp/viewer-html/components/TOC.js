@@ -367,6 +367,22 @@ Ext.define ("viewer.components.TOC",{
         qtip.target = target;
         this.qtips.push(qtip);
     },
+    setLayerQtip: function (text,layerId){
+        this.setQtip(text,"span_layer-"+layerId);
+    },            
+    setLevelQtip: function (text,levelid){
+        this.setQtip(text,"span_level-"+levelid);
+    },
+    setQtip: function (text,target){
+        if (document.getElementById(target)){
+            Ext.tip.QuickTipManager.register({
+                target: target,
+                text: text
+            });
+        }else{
+            this.qtips.push({target:target,text:text});
+        }
+    },
     registerQtips : function (){
         var newQtips = [];
         for (var i = 0; i < this.qtips.length; i++) {
