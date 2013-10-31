@@ -21,6 +21,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,7 @@ public class SolrUpdateJob implements Job {
                 removeSolrConfigurationFromIndex(solrConfiguration, em, server);
                 insertSolrConfigurationIntoIndex(solrConfiguration, em, status,server);
             }
+            em.getTransaction().commit();
 
             log.info("Updating index complete.");
         } catch (Exception e) {
@@ -100,6 +102,9 @@ public class SolrUpdateJob implements Job {
         try {
             solrServer.deleteByQuery("searchConfig:"+config.getId());
             solrServer.commit();
+            
+            Date now = new Date();
+            config.setLastUpdated(now);
         } catch (SolrServerException ex) {
             log.error("Could not delete documents for solr configuration: " + config.getName() + " - id: " + config.getId(),ex);
         } catch (IOException ex) {
@@ -182,6 +187,9 @@ public class SolrUpdateJob implements Job {
             status.setProgress(60);
             solrServer.add(docs);
             solrServer.commit();
+            Date now = new Date();
+            config.setLastUpdated(now);
+            em.persist(config);
             status.setProgress(100);
             status.setFinished(true);
         } catch (Exception ex) {

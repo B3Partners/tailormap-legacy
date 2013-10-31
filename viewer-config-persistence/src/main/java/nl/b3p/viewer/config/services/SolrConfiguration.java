@@ -16,7 +16,9 @@
  */
 package nl.b3p.viewer.config.services;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -26,6 +28,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,6 +56,9 @@ public class SolrConfiguration {
     
     private String name;
     
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastUpdated = new Date();
 
     public Long getId() {
         return id;
@@ -93,10 +100,25 @@ public class SolrConfiguration {
         this.resultAttributes = resultAttributes;
     }
 
-    public JSONObject toJSON() throws JSONException{
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("id", id);
         json.put("name", name);
+        String last = "Niet ingelezen";
+        if (lastUpdated != null) {
+            SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+            sdf.applyPattern("HH-mm_dd-MM-yyyy");
+            last = sdf.format(lastUpdated);
+        }
+        json.put("lastUpdated", last);
         json.put("featureTypeId", simpleFeatureType.getId());
         json.put("featureTypeName", simpleFeatureType.getTypeName());
         json.put("featureSourceName", simpleFeatureType.getFeatureSource().getName());

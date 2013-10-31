@@ -31,7 +31,7 @@ Ext.onReady(function(){
         fields: [
             {name: 'id', type: 'int' },
             {name: 'name', type: 'string'},
-            {name: 'lastprocessed', type: 'string'},
+            {name: 'lastUpdated', type: 'string'},
             {name: 'featureSourceName', type: 'string'},
             {name: 'featureTypeName', type: 'string'}
             
@@ -82,9 +82,9 @@ Ext.onReady(function(){
                     xtype: 'textfield'
                 }
             },{
-                id: 'lastprocessed',
-                text: "Laatst ingeladen",
-                dataIndex: 'lastprocessed',
+                id: 'lastUpdated',
+                text: "Laatst geüpdatet",
+                dataIndex: 'lastUpdated',
                 flex: 1,
                 filter: {
                     xtype: 'textfield'

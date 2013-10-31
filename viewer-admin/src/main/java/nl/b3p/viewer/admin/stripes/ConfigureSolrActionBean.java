@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +31,6 @@ import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
@@ -280,6 +277,7 @@ public class ConfigureSolrActionBean implements ActionBean {
         SolrServer server = SolrInitializer.getServerInstance();
         solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
         SolrUpdateJob.insertSolrConfigurationIntoIndex(solrConfiguration, em, status, server);
+        em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
     }
     
@@ -288,6 +286,7 @@ public class ConfigureSolrActionBean implements ActionBean {
         SolrServer server = SolrInitializer.getServerInstance();
         solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
         SolrUpdateJob.removeSolrConfigurationFromIndex(solrConfiguration, em, server);
+        em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
         
     }
@@ -346,7 +345,6 @@ public class ConfigureSolrActionBean implements ActionBean {
         JSONArray gridRows = new JSONArray();
         for (SolrConfiguration solrConfig : configs) {
             JSONObject config= solrConfig.toJSON();
-            config.put("lastprocessed", "1-2-2012");
             gridRows.put(config);
         }
         
