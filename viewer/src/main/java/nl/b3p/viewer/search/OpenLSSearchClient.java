@@ -146,7 +146,7 @@ public class OpenLSSearchClient extends SearchClient {
     }
 
     @Override
-    public JSONObject autosuggest(String query) {
+    public JSONArray autosuggest(String query) {
         throw new UnsupportedOperationException("Not supported."); 
     }
     

@@ -49,7 +49,7 @@ public abstract class SearchClient {
      */
     public abstract JSONArray search(String query);
     
-    public abstract JSONObject autosuggest(String query) throws JSONException;
+    public abstract JSONArray autosuggest(String query) throws JSONException;
     
     public JSONObject locationToBBOX(int zoomboxSize, double x, double y) throws JSONException{
         JSONObject extent = new JSONObject();

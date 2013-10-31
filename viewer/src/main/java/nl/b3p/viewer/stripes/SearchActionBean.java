@@ -144,10 +144,30 @@ public class SearchActionBean implements ActionBean {
     }
     
     public Resolution autosuggest() throws JSONException {
-        JSONObject config = getSearchConfig();
-        SearchClient client = getSearchClient(config);
         
-        JSONObject result = client.autosuggest(searchText);
+         JSONObject result = new JSONObject();        
+        JSONObject request = new JSONObject();
+        request.put("appId",appId);
+        request.put("componentName",componentName);
+        request.put("searchName", searchName);
+        request.put("searchText", searchText);
+        request.put("searchRequestId",searchRequestId);
+        result.put("request",request);
+        String error="";
+        JSONObject search =  getSearchConfig();
+        if(search == null){
+            error += "No suggestions found";
+        }else{
+            JSONArray results = new JSONArray();
+            SearchClient client = getSearchClient(search);
+
+            if (client != null) {
+                results = client.autosuggest(searchText);
+            }
+
+            result.put("results",results);
+            result.put("error",error);
+        }
         return new StreamingResolution("application/json", new StringReader(result.toString())); 
     }
     

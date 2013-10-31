@@ -64,7 +64,7 @@ public class SolrSearchClient extends SearchClient {
             SolrDocumentList list = rsp.getResults();
 
             for (SolrDocument solrDocument : list) {
-                JSONObject doc = solrDocumentToResult(solrDocument);
+                JSONObject doc = solrDocumentToResult(solrDocument,false);
                 if(doc != null){
                     respDocs.put(doc);
                 }
@@ -75,6 +75,37 @@ public class SolrSearchClient extends SearchClient {
         } catch (JSONException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         } 
+        return respDocs;
+    }
+    
+    @Override
+    public JSONArray autosuggest(String term) throws JSONException {
+       JSONObject obj = new JSONObject();
+            JSONArray respDocs = new JSONArray();
+        try {
+            SolrServer server = SolrInitializer.getServerInstance();
+
+            JSONObject response = new JSONObject();
+            response.put("docs", respDocs);
+            obj.put("response", response);
+
+            SolrQuery query = new SolrQuery();
+            query.setQuery(term);
+            query.setRequestHandler("/select");
+            QueryResponse rsp = server.query(query);
+            SolrDocumentList list = rsp.getResults();
+
+            for (SolrDocument solrDocument : list) {
+                JSONObject doc = solrDocumentToResult(solrDocument,true);
+                if(doc != null){
+                    respDocs.put(doc);
+                }
+            }
+            response.put("docs", respDocs);
+            return respDocs;
+        } catch (SolrServerException ex) {
+            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return respDocs;
     }
     
@@ -117,7 +148,7 @@ public class SolrSearchClient extends SearchClient {
       
     }
     
-    private JSONObject solrDocumentToResult(SolrDocument doc){
+    private JSONObject solrDocumentToResult(SolrDocument doc, boolean onlyLabel){
         JSONObject result = null;
         try {
             Collection<Object> resultValues = doc.getFieldValues("resultValues");
@@ -132,51 +163,20 @@ public class SolrSearchClient extends SearchClient {
                     resultLabel += label;
                 }
                 result.put("label", resultLabel);
-                Map bbox = new HashMap();
-                bbox.put("minx", doc.getFieldValue("minx"));
-                bbox.put("miny", doc.getFieldValue("miny"));
-                bbox.put("maxx", doc.getFieldValue("maxx"));
-                bbox.put("maxy", doc.getFieldValue("maxy"));
-                result.put("location", bbox);
+                    if(!onlyLabel){
+                    Map bbox = new HashMap();
+                    bbox.put("minx", doc.getFieldValue("minx"));
+                    bbox.put("miny", doc.getFieldValue("miny"));
+                    bbox.put("maxx", doc.getFieldValue("maxx"));
+                    bbox.put("maxy", doc.getFieldValue("maxy"));
+                    result.put("location", bbox);
+                }
                 result.put("searchConfig", doc.getFieldValue("searchConfig"));
             }
         } catch (JSONException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
-    }
-
-    @Override
-    public JSONObject autosuggest(String term) throws JSONException {
-        JSONObject obj = new JSONObject();
-        try {
-            SolrServer server = SolrInitializer.getServerInstance();
-
-            JSONObject response = new JSONObject();
-            JSONArray respDocs = new JSONArray();
-            response.put("docs", respDocs);
-            obj.put("response", response);
-
-
-            SolrQuery query = new SolrQuery();
-            query.setQuery(term);
-            query.setRequestHandler("/suggest");
-            QueryResponse rsp = server.query(query);
-            SpellCheckResponse sc = rsp.getSpellCheckResponse();
-            List<SpellCheckResponse.Suggestion> suggestions = sc.getSuggestions();
-            for (SpellCheckResponse.Suggestion suggestion : suggestions) {
-                List<String> alternatives = suggestion.getAlternatives();
-                for (String alt : alternatives) {
-                    JSONObject sug = new JSONObject();
-                    sug.put("suggestion", alt);
-                    respDocs.put(sug);
-                }
-            }
-            response.put("docs", respDocs);
-        } catch (SolrServerException ex) {
-            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return obj;
     }
 
     public JSONObject getConfig() {
