@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <stripes:errors/>
                     <stripes:messages/>
                 </p>
-                <h1>Indexen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1><br />
+                <h1>Zoekbronnen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1><br />
 
                 <div id="grid-container" class="attributesources">
 
