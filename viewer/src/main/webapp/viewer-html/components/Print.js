@@ -54,15 +54,17 @@ Ext.define ("viewer.components.Print",{
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
         var me = this;
-        this.renderButton({
-            handler: function(){
-                me.buttonClick();
-            },
-            text: me.title,
-            icon: me.titlebarIcon,
-            tooltip: me.tooltip,
-            label: me.label
-        });
+        if(this.hasButton == null || this.hasButton){
+            this.renderButton({
+                handler: function(){
+                    me.buttonClick();
+                },
+                text: me.title,
+                icon: me.titlebarIcon,
+                tooltip: me.tooltip,
+                label: me.label
+            });
+        }
         
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
@@ -689,7 +691,7 @@ Ext.define ("viewer.components.Print",{
         }
     },
     /**
-     *Called when the imageUrl is succesfully returned
+     *Called when the imageUrl is unsuccesfully returned
      *@param error the error message
      */
     imageFailure: function(error){
