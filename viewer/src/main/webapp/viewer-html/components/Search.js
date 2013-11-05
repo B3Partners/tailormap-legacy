@@ -30,6 +30,7 @@ Ext.define ("viewer.components.Search",{
     resultPanelId: '',
     defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
     searchRequestId: 0,
+    defaultSearchConfig:null,
     config:{
         title: null,
         iconUrl: null,
@@ -50,6 +51,13 @@ Ext.define ("viewer.components.Search",{
         }
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        for(var i = 0 ; i < this.searchconfigs.length;i++){
+            var config = this.searchconfigs[i];
+            if(config.isForUrl && config.isForUrl == "true"){
+                this.defaultSearchConfig = config;
+                break;
+            }
+        }
         this.renderButton(); 
         this.loadWindow();
         return this;
@@ -326,8 +334,6 @@ Ext.define ("viewer.components.Search",{
                         scope: me,
                         fn: function(button,e,eOpts){
                             var config =this.searchResult[button.id.split("_")[1]];
-                            config.x = (config.location.maxx +config.location.minx)/2;
-                            config.y = (config.location.maxy +config.location.miny)/2;
                             me.handleSearchResult(config);
                         }
                     }
@@ -346,6 +352,11 @@ Ext.define ("viewer.components.Search",{
             },
             items: buttonList
         });
+        if(this.searchResult.length === 1){
+            this.handleSearchResult(this.searchResult[0]);
+        }else{
+            this.popup.show();
+        }
         
     },
     cancel : function(){
@@ -355,6 +366,9 @@ Ext.define ("viewer.components.Search",{
         this.results.destroy();
     },
     handleSearchResult : function(config){
+
+        config.x = (config.location.maxx + config.location.minx) / 2;
+        config.y = (config.location.maxy + config.location.miny) / 2;
         this.viewerController.mapComponent.getMap().zoomToExtent(config.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",config.x,config.y,"marker");
@@ -465,6 +479,14 @@ Ext.define ("viewer.components.Search",{
         this.searchResult = results;
         this.showSearchResults();
         this.mainContainer.setLoading(false);
+    },
+    loadVariables: function(term){
+        this.form.getChildByElement("searchName" + this.name).setValue(this.defaultSearchConfig.id);
+        
+        this.form.getChildByElement("searchfield" + this.name).setValue(term);
+        this.search();
+        console.log("Search for ", term);
+        return;
     }
 });
 
