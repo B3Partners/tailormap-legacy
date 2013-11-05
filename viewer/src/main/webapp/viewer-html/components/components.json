@@ -223,7 +223,6 @@
 
         singleton: true,
         restrictions: ["top_menu"],
-
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Full extent"}
@@ -734,5 +733,17 @@
         closureCompilerSafe: true,
         singleton: false,
         restrictions: ["left_menu"]
+    },
+    {
+        className: "viewer.components.tools.DownloadMap",
+        name: "Download Map",
+        shortName: "DM",
+        restrictions: ["top_menu"],
+        sources: ["DownloadMap.js", "Print.js"],
+        singleton: true,
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: ""}
+        }
     }
 ]
