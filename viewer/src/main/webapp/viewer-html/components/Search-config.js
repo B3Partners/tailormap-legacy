@@ -37,7 +37,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         me.panel = Ext.create('Ext.panel.Panel', {
 		    width: me.formWidth,
             margin: '15 0 0 0',
-		    height: 250,
+		    height: 350,
 		    layout: 'auto',
             autoScroll: true,
 		    items: [],
@@ -81,8 +81,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             id: 'search' + nextId,
             name: 'Zoekingang ' + nextId,
             url: '',
-            type: 'openls',
-            isForUrl: false
+            type: 'openls'
         };
         me.searchconfigs.push(newconfig);
         var collapsed = true;
@@ -117,20 +116,8 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [
                         { fieldLabel: 'Naam', name: 'name', value: config.name, id: 'name'+config.id },
+                        { fieldLabel: 'Id', name: 'idField', value: config.id,disabled:true, disabledCls:'disabledTextField', tooltip:'sdfasdfasdf'},
                         { fieldLabel: 'URL *', name: 'url', value: config.url, id: 'url'+config.id, width: 720 },
-                        { fieldLabel: 'Gebruik voor URL', name: 'isForUrl', value: config.isForUrl, id: 'isForUrl'+config.id, width: 720, xtype:'radiogroup',items:[
-                           {
-                                boxLabel: 'Ja', 
-                                name: 'isForUrl', 
-                                inputValue: 'true',
-                                checked: config.isForUrl=="true" 
-                            },{
-                                boxLabel: 'Nee', 
-                                name: 'isForUrl', 
-                                inputValue: 'false',
-                                checked: config.isForUrl=="openls" || config.isForUrl==undefined
-                            }     
-                        ] },
                         {                           
                             xtype: 'radiogroup',
                             id: 'type'+config.id,
@@ -208,7 +195,6 @@ Ext.define("viewer.components.CustomConfiguration",{
         var newname = Ext.getCmp('name' + configid).getValue();
         var newurl = Ext.getCmp('url' + configid).getValue();
         var newtype = Ext.getCmp('type' + configid).getValue().type;
-        var isForUrl = Ext.getCmp('isForUrl' + configid).getValue().isForUrl;
         panel.setTitle(newname);
         var newSearchconfigs = [];
         Ext.Array.each(me.searchconfigs, function(searchconfig) {
@@ -216,7 +202,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 searchconfig.name = newname;
                 searchconfig.url = newurl;
                 searchconfig.type= newtype;
-                searchconfig.isForUrl= isForUrl;
             }
             newSearchconfigs.push(searchconfig);
         });

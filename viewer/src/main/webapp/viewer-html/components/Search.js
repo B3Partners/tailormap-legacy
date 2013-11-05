@@ -30,7 +30,6 @@ Ext.define ("viewer.components.Search",{
     resultPanelId: '',
     defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
     searchRequestId: 0,
-    defaultSearchConfig:null,
     config:{
         title: null,
         iconUrl: null,
@@ -51,13 +50,6 @@ Ext.define ("viewer.components.Search",{
         }
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        for(var i = 0 ; i < this.searchconfigs.length;i++){
-            var config = this.searchconfigs[i];
-            if(config.isForUrl && config.isForUrl == "true"){
-                this.defaultSearchConfig = config;
-                break;
-            }
-        }
         this.renderButton(); 
         this.loadWindow();
         return this;
@@ -480,12 +472,16 @@ Ext.define ("viewer.components.Search",{
         this.showSearchResults();
         this.mainContainer.setLoading(false);
     },
-    loadVariables: function(term){
-        this.form.getChildByElement("searchName" + this.name).setValue(this.defaultSearchConfig.id);
+    loadVariables: function(param){
+        var searchConfig = param.substring(0,param.indexOf(":"));
+        var term = param.substring(param.indexOf(":") +1, param.length);
+        this.form.getChildByElement("searchName" + this.name).setValue(searchConfig);
         
         this.form.getChildByElement("searchfield" + this.name).setValue(term);
-        this.search();
-        console.log("Search for ", term);
+        var me = this;
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function() {
+            me.search();
+        }, this);
         return;
     }
 });

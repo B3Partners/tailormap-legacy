@@ -126,3 +126,9 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .featureType-unmodified{
     
 }
+
+.disabledTextField input{
+    opacity: .3;
+    -moz-opacity: .3;
+    filter: alpha(opacity=30);
+}
