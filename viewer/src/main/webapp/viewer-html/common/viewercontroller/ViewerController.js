@@ -1332,18 +1332,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         for( var key in params){
             var value = params[key];
-            if(key == "bookmark"){
+            if(key === "bookmark"){
                 var me = this;
                 Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
                 layersLoaded = true;
                 bookmark = true;
-            }else if(key == "layers"){
+            }else if(key === "layers"){
                 if(!Ext.isArray(value)){
                     value = value.split(",");
                 }
                 appLayers = this.loadBookmarkLayers(value);
                 layersLoaded = true;
-            }else if(key == "extent"){
+            }else if(key === "extent"){
                 var coords = value;
                 var newExtent = new Object();
                 if(!Ext.isObject(value)){
@@ -1362,7 +1362,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
                 };
                 this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);   
-            }else if (key == "levelOrder"){
+            }else if (key === "levelOrder"){
                selectedContent=[];
                if(!Ext.isArray(value)){
                     value = value.split(",");
