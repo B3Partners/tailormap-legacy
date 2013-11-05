@@ -1380,6 +1380,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         selectedContent.push(this.app.selectedContent[s]);
                     }
                 }
+            }else if(key === "search"){
+                if(!Ext.isEmpty(value)){
+                    var components = this.getComponentsByClassName("viewer.components.Search");
+                    for (var i = 0 ; i < components.length ;i++){
+                        var comp = components[i];
+                        comp.loadVariables(value);
+                    }
+                }
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
