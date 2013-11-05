@@ -377,10 +377,11 @@ Ext.define("viewer.components.Component",{
         return null;
     },
     /**
-     * Implement to load the state (created with 'getBookmarkState') from the bookmark in the component
-     * @param {Object} state an object that is created with 'getBookmarkState'
+     * Implement to load the variables (created with 'getBookmarkState' or entered in the url) from the bookmark or via the url in the component
+     * @param {Object} state an object that is created with 'getBookmarkState' or a value from the url. This is an unprocessed object. The implementation should know what to 
+     * expect (ie. should it be decoded).
      */
-    loadBookmarkState: function(state){
+    loadVariables: function(state){
         return;
     }
     

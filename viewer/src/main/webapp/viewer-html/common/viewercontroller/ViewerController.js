@@ -221,7 +221,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.addMap(map);
             
             this.initializeConfiguredComponents();
-            var layersloaded = this.bookmarkValuesFromURL(this.queryParams);
+            var layersloaded = this.valuesFromURL(this.queryParams);
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();                
@@ -1324,7 +1324,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return joinedFeatureTypes;
     },
             
-    bookmarkValuesFromURL : function(params){
+    valuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
         var appLayers = this.app.appLayers;
@@ -1383,7 +1383,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
-                    component.loadBookmarkState(Ext.decode(value));
+                    component.loadVariables(value);
                 }
             }
         }
@@ -1428,7 +1428,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var value = parameter.value;
             params[key] = value;
         }
-        this.bookmarkValuesFromURL(params);
+        this.valuesFromURL(params);
     },
     failureReadUrl : function(code){
     },

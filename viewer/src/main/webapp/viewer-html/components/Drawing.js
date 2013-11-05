@@ -574,7 +574,8 @@ Ext.define ("viewer.components.Drawing",{
         return obj;
     },
             
-    loadBookmarkState: function (state){
+    loadVariables: function (state){
+        state= Ext.decode(state);
         if (state.features){
             this.loadFeatures(state.features);
         }
