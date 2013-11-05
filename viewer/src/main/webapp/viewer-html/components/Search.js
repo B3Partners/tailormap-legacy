@@ -447,10 +447,12 @@ Ext.define ("viewer.components.Search",{
    simpleListSearch:function(term){
         var config = this.getCurrentSearchconfig();
         var values = config.values;
+        term = term.toLowerCase();
         var results = new Array();
         for(var i = 0 ; i < values.length; i++){
             var entry = values[i];
             var value = entry.value;
+            value = value.toLowerCase();
             if(value.indexOf(term) !== -1){
                 var result = {
                     label : entry.value,
