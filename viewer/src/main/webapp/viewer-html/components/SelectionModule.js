@@ -877,7 +877,7 @@ Ext.define ("viewer.components.SelectionModule",{
         if(level.background && !showBackgroundLayers) {
             return null;
         }
-        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, false);
+        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, !Ext.isDefined(level.children));
         treeNodeLayer.type = 'level';
         // Create a leaf node when a level has layers (even if it has children)
         if(Ext.isDefined(level.layers)) {
@@ -920,12 +920,13 @@ Ext.define ("viewer.components.SelectionModule",{
     },
     
     createNode: function (nodeid, nodetext, serviceid, leaf, expanded) {
-        if(typeof expanded === "undefined") expanded = true;
+        if(typeof expanded === "undefined") expanded = false;
         return {
             text: nodetext,
             name: nodetext,
             id: nodeid,
             expanded: expanded,
+            expandable:!leaf,
             leaf: leaf,
             origData: {
                 id: nodeid.substring(0,2) === 'rl' ? nodeid : nodeid.substring(1),
