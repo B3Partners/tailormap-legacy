@@ -59,6 +59,17 @@ Ext.define("viewer.components.CustomConfiguration",{
                 [false, "Nee"]
             ]
         });
+        this.form.add({
+            xtype: "combo",
+            fields: ['value', 'text'],
+            value: configObject.selectCsw !== undefined ? configObject.selectCsw : true,
+            name: "selectCsw",
+            fieldLabel: "CSW service doorzoeken",
+            store: [
+                [true, "Ja"],
+                [false, "Nee"]
+            ]
+        });
     }
 });
 

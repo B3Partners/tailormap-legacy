@@ -146,7 +146,9 @@ Ext.define ("viewer.components.SelectionModule",{
             conf.selectLayers=true;
         }if (Ext.isEmpty(conf.selectOwnServices)){
             conf.selectOwnServices=true;
-        } 
+        } if(Ext.isEmpty(conf.selectCsw)){
+            conf.selectCsw = true;
+        }
         // call constructor and init config
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
         this.initConfig(conf);        
@@ -376,6 +378,8 @@ Ext.define ("viewer.components.SelectionModule",{
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
         if(me.config.selectOwnServices) {
             radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+        }
+        if(me.config.selectCsw){
             radioControls.push({id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
         }
         
@@ -410,7 +414,7 @@ Ext.define ("viewer.components.SelectionModule",{
         // when there is one tree configured show radio buttons and form buttons above
         if(me.hasLeftTrees())
         {
-            if(me.config.selectOwnServices) {
+            if(me.config.selectOwnServices || me.config.selectCsw) {
                 items.unshift({
                         // Form above the trees with radiobuttons and textfields
                         xtype: 'form',
@@ -691,7 +695,7 @@ Ext.define ("viewer.components.SelectionModule",{
             }));
         }
         
-        if(me.config.selectOwnServices) {
+        if(me.config.selectOwnServices || me.config.selectCsw) {
             me.treePanels.customServiceTree.treeStore = Ext.create('Ext.data.TreeStore', Ext.apply({}, defaultStoreConfig));
             me.treePanels.customServiceTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply(defaultTreeConfig, {
                 treePanelType: 'customServiceTree',
@@ -794,7 +798,7 @@ Ext.define ("viewer.components.SelectionModule",{
     },
     
     hasLeftTrees: function() {
-        return (this.config.selectGroups || this.config.selectLayers || this.config.selectOwnServices);
+        return (this.config.selectGroups || this.config.selectLayers || this.config.selectOwnServices || this.config.selectCsw);
     },
 
     setAllNodesVisible: function(visible, treePanelName, visibleParents) {
@@ -956,7 +960,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var cswServiceUrlButton = Ext.getCmp('cswServiceUrlButton');
         
         if(newval && me.hasLeftTrees()) {
-            if(me.config.selectOwnServices) {
+            if(me.config.selectOwnServices || me.config.selectCsw) {
                 customServiceUrlTextfield.setVisible(false);
                 customServiceUrlSelect.setVisible(false);
                 customServiceUrlButton.setVisible(false);
