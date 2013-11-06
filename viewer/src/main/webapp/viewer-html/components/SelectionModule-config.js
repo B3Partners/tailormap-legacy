@@ -24,6 +24,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         if (configObject === null){
             configObject = {};
         }
+        this.labelWidth=200;
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.form.add({
@@ -32,6 +33,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             value: configObject.selectGroups !== undefined ? configObject.selectGroups : true,
             name: "selectGroups",
             fieldLabel: "Kaarten selecteren",
+            labelWidth: this.labelWidth,
             store: [
                 [true, "Ja"],
                 [false, "Nee"]
@@ -42,6 +44,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ['value', 'text'],
             value: configObject.selectLayers !== undefined ? configObject.selectLayers : true,
             name: "selectLayers",
+            labelWidth: this.labelWidth,
             fieldLabel: "Kaartlagen selecteren",
             store: [
                 [true, "Ja"],
@@ -53,6 +56,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ['value', 'text'],
             value: configObject.selectOwnServices !== undefined ? configObject.selectOwnServices : true,
             name: "selectOwnServices",
+            labelWidth: this.labelWidth,
             fieldLabel: "Eigen services selecteren",
             store: [
                 [true, "Ja"],
@@ -64,6 +68,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ['value', 'text'],
             value: configObject.selectCsw !== undefined ? configObject.selectCsw : true,
             name: "selectCsw",
+            labelWidth: this.labelWidth,
             fieldLabel: "CSW service doorzoeken",
             store: [
                 [true, "Ja"],
