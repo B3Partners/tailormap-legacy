@@ -739,7 +739,7 @@
         name: "Download Map",
         shortName: "DM",
         restrictions: ["top_menu"],
-        sources: ["DownloadMap.js", "Print.js"],
+        sources: [ "Print.js","DownloadMap.js"],
         singleton: true,
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
