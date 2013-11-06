@@ -134,7 +134,8 @@ Ext.define ("viewer.components.SelectionModule",{
         title: "",
         titlebarIcon : "",
         tooltip : "",
-        label: ""
+        label: "",
+        defaultCswUrl:null
     },
     constructor: function (conf) {        
         //set defaults

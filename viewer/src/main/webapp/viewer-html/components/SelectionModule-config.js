@@ -75,6 +75,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 [false, "Nee"]
             ]
         });
+        
+        this.form.add({
+            xtype: "textfield",
+            value: configObject.defaultCswUrl !== undefined ? configObject.defaultCswUrl : "",
+            name: "defaultCswUrl",
+            labelWidth: this.labelWidth,
+            fieldLabel: "Standaard CSW Url",
+            width: 500
+        });
+        
     }
 });
 
