@@ -422,7 +422,10 @@ Ext.define ("viewer.components.SelectionModule",{
                         items: [{
                             xtype: 'fieldcontainer',
                             id: 'selectionModuleCustomFormFieldContainer',
-                            layout: 'hbox',
+                            layout:{
+                                type: 'vbox',
+                                align:"stretch"
+                            },
                             border: 0,
                             defaults: {
                                 xtype: 'textfield',
@@ -430,23 +433,56 @@ Ext.define ("viewer.components.SelectionModule",{
                                     marginRight: '5px'
                                 }
                             },
-                            width: '100%',
                             height: '100%',
                             defaultType: 'textfield',
-                            items: [
-                                {hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
-                                {xtype: "flamingocombobox", store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Maak uw keuze'},
-                                {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
-                                        me.loadCustomService();
-                                }},
-                                {hidden: true, id: 'cswServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in', value : this.defaultCswUrl !== undefined ? this.defaultCswUrl : "" },
-                                {hidden: true, id: 'cswSearchTextfield', flex: 1, emptyText:'Zoekterm'},
-                                {xtype: 'button', text: 'CSW doorzoeken', hidden: true, id: 'cswServiceUrlButton', handler: function() {
-                                        me.loadCustomService();
-                                }}
-                            ]
-                        }],
-                        height: MobileManager.isMobile() ? 40 : 35,
+                            items: [{
+                                xtype: 'fieldcontainer',
+                                id: 'customServicesTextfields',
+                                layout: 'hbox',
+                                border: 0,
+                                defaults: {
+                                    xtype: 'textfield',
+                                    style: {
+                                        marginRight: '5px'
+                                    }
+                                },
+                              //  flex: 1,
+                                width: '100%',
+                                defaultType: 'textfield',
+                                items: [
+                                    {hidden: true, id: 'customServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in'},
+                                    {xtype: "flamingocombobox", store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, id: 'customServiceUrlSelect', width: 75, emptyText:'Maak uw keuze'},
+                                    {xtype: 'button', text: 'Service ophalen', hidden: true, id: 'customServiceUrlButton', handler: function() {
+                                            me.loadCustomService();
+                                    }},
+                                    {hidden: true, id: 'cswServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in', value : this.defaultCswUrl !== undefined ? this.defaultCswUrl : "" },
+                                    {hidden: true, id: 'cswSearchTextfield', flex: 1, emptyText:'Zoekterm'},
+                                    {xtype: 'button', text: 'CSW doorzoeken', hidden: true, id: 'cswServiceUrlButton', handler: function() {
+                                            me.loadCustomService();
+                                    }}
+                                ]
+                            },
+                            {
+                                xtype:'fieldset',
+                                id: 'cswAdvancedSearchField',
+                                columnWidth: 0.5,
+                                title: 'Geavanceerd zoeken',
+                                collapsible: true,
+                                collapsed:true,
+                                height: '100%',
+                                hidden:true,
+                                defaultType: 'textfield',
+                                defaults: {anchor: '100%'},
+                                layout: 'anchor',
+                                items :[{
+                                    fieldLabel: 'Field 1',
+                                    name: 'field1'
+                                }]
+                            }
+                        ]
+                        }
+                        ],
+                        height: MobileManager.isMobile() ? 50 : 60,
                         padding: '5px',
                         border: 0,
                         id: 'selectionModuleCustomFormContainer'
@@ -959,6 +995,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var cswServiceUrlTextfield = Ext.getCmp('cswServiceUrlTextfield');
         var cswSearchTextfield = Ext.getCmp('cswSearchTextfield');
         var cswServiceUrlButton = Ext.getCmp('cswServiceUrlButton');
+        var cswAdvancedSearchField = Ext.getCmp('cswAdvancedSearchField');
         
         if(newval && me.hasLeftTrees()) {
             if(me.config.selectOwnServices || me.config.selectCsw) {
@@ -968,6 +1005,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswServiceUrlTextfield.setVisible(false);
                 cswSearchTextfield.setVisible(false);
                 cswServiceUrlButton.setVisible(false);
+                cswAdvancedSearchField.setVisible(false);
             }
             applicationTreeContainer.setStyle('visibility', 'hidden');
             registryTreeContainer.setStyle('visibility', 'hidden');
@@ -995,6 +1033,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswServiceUrlTextfield.setVisible(true);
                 cswSearchTextfield.setVisible(true);
                 cswServiceUrlButton.setVisible(true);
+                cswAdvancedSearchField.setVisible(true);
             }
         }
         
