@@ -85,6 +85,161 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: 500
         });
         
+        this.form.add({
+            xtype: "checkbox",
+            checked: configObject.advancedFilter !== undefined ? configObject.advancedFilter : false,
+            name: "advancedFilter",
+            labelWidth: this.labelWidth,
+            fieldLabel: "Gebruik een geavanceerd filter",
+            width: 500,
+            listeners:{
+                change:{
+                    fn:function(obj, val){
+                        Ext.getCmp("advancedFilterFieldset").setVisible(val);
+                    },
+                    scope:this
+                }
+            }
+        });
+        
+        var waardeItems = new Array();
+        var configWaardes = configObject.advancedValueConfigs;
+        for (var i = 0 ; i < configWaardes.length ;i++){
+            var waarde = configWaardes[i];
+            var item = {
+                xtype: "container",
+                layout: {
+                    type: "hbox",
+                border:false,
+                    align: "stretch"
+                },
+                height: 25,
+                border:false,
+                width: "500px",
+                defaults: {
+                    xtype: 'textfield',
+                    labelWidth: 80,
+                    width: 120,
+                    height: 30,
+                    flex: 1
+                },
+                items: [{
+                        name: "label",
+                        fieldLabel: "Label",
+                        value: waarde.label
+                    }, {
+                        name: "comboValue",
+                        fieldLabel: "Waarde",
+                        value: waarde.value
+                    }]
+            };
+            waardeItems.push(item);
+        }
+        this.form.add({
+            xtype: "fieldset",
+            name: "advancedFilterFieldset",
+            id: "advancedFilterFieldset",
+            hidden: configObject.advancedFilter !== undefined ? !configObject.advancedFilter : true ,
+            labelWidth: this.labelWidth,
+            fieldLabel: "Gebruik een geavanceerd filter",
+            width: "100%",
+            layout:{
+                align: "stretch"
+            },
+            height: 200,
+            border:false,
+            items:[
+                {
+                    xtype: "textfield",
+                    name: "advancedLabel",
+                    id: "advancedLabel",
+                    labelWidth: this.labelWidth,
+                    fieldLabel: "Label voor het filterattribuut",
+                    value: configObject.advancedLabel !== null ? configObject.advancedLabel : ""
+                }, {
+                    xtype: "textfield",
+                    name: "advancedValue",
+                    id: "advancedValue",
+                    labelWidth: this.labelWidth,
+                    fieldLabel: "Waarde voor het filterattribuut",
+                    value: configObject.advancedValue !== null ? configObject.advancedValue : ""
+                },{
+                    xtype:"button",
+                    name: "addValue",
+                    text: "Voeg waarde toe",
+                    listeners:{
+                        click:{
+                            fn:function(){
+                            var value = Ext.create(Ext.container.Container, {
+                                layout: {
+                                    type:"hbox",
+                                    align: "stretch"
+                                },
+                                height:25,
+                                width: "500px",
+                                defaults: {
+                                    xtype: 'textfield',
+                                    labelWidth: 80,
+                                    width: 120,
+                                    height: 30,
+                                    flex: 1
+                                },
+                                items: [{
+                                         name: "label",
+                                         fieldLabel : "Label"
+                                    },{
+                                         name: "comboValue",
+                                         fieldLabel: "Waarde"
+                                    }]
+                                });
+                                var valueSet = Ext.getCmp("advancedFilterValues");
+                                valueSet.add(value);
+                            },
+                            scope:this
+                        }
+                    }
+                },
+                {
+                    xtype: "fieldset",
+                    name: "advancedFilterValues",
+                    id: "advancedFilterValues",
+                    labelWidth: 60,
+                    layout:'vbox',
+                    height: 140,
+                    title: "Waardes",
+                    border:false,
+                    autoScroll:true,
+                    items:waardeItems
+                }
+            ]
+        });
+        
+    },
+    getConfiguration: function() {
+        var config = this.callParent(arguments);
+        var advancedLabel = Ext.getCmp("advancedLabel");
+        var advancedValue = Ext.getCmp("advancedValue");
+        var values =  Ext.getCmp("advancedFilterValues");
+        config.advancedLabel = advancedLabel !== null ? advancedLabel.getValue() : "";
+        config.advancedValue = advancedValue !== null ? advancedValue.getValue() : "";
+        
+        var items = values.items.items;
+        
+        var valueConfig = [];
+        for (var i = 0 ; i< items.length ; i++){
+            var item = items[i];
+            var vals = item.items.items;
+            var entry = {
+                label : vals[0].getValue(),
+                value : vals[1].getValue()
+            };
+            if(entry.label && entry.value && entry.label !=="" && entry.value !==""){
+                valueConfig.push(entry);
+            }
+        }
+        config.advancedValueConfigs = valueConfig;
+        
+        return config;
     }
 });
 
