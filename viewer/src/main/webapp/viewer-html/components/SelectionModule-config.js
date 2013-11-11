@@ -110,11 +110,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: "container",
                 layout: {
                     type: "hbox",
-                border:false,
                     align: "stretch"
                 },
                 height: 25,
-                border:false,
                 width: "500px",
                 defaults: {
                     xtype: 'textfield',
