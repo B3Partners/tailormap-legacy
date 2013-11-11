@@ -128,7 +128,7 @@ public class CatalogSearchActionBean implements ActionBean {
             json.put("error", error);
         }
         
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));          
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));               
     }
         
 }
