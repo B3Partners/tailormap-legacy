@@ -145,7 +145,7 @@ public class CatalogSearchActionBean implements ActionBean {
             InputBySearch input = new InputBySearch(q);
             OutputBySearch output = client.search(input);            
 
-            Map<URI, List<OnlineResource>> map = output.getResourcesMap();
+            List<OnlineResource> map = output.getResourcesFlattened();
             JSONArray results = getResults(map, output);
 
             json.put("results", results);                
@@ -177,8 +177,8 @@ public class CatalogSearchActionBean implements ActionBean {
               OutputBySearch output = client.search(new InputBySearch(
                       createAdvancedCswRequest(//url, url, url, BigInteger.ZERO, BigInteger.ZERO, null
                       q, advancedString, advancedProperty, null, maxRecords, null)));
-            Map<URI, List<OnlineResource>> map = output.getResourcesMap();
-            JSONArray results = getResults(map, output);
+            List<OnlineResource> list = output.getResourcesFlattened();
+            JSONArray results = getResults(list, output);
               
             json.put("results", results);                
 
@@ -196,24 +196,22 @@ public class CatalogSearchActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
     
-    private JSONArray getResults(Map<URI, List<OnlineResource>> map, OutputBySearch output ) throws JDOMException, JSONException{
+    private JSONArray getResults(List<OnlineResource> resourceList, OutputBySearch output) throws JDOMException, JSONException {
         JSONArray results = new JSONArray();
-        for (List<OnlineResource> resourceList : map.values()) {
-            for (OnlineResource resource : resourceList) {
+        for (OnlineResource resource : resourceList) {
 
-                String title = output.getTitle(resource.getMetadata());
-                String rurl = resource.getUrl() != null ? resource.getUrl().toString() : null;
-                String layer = resource.getName();
-                String protocol = resource.getProtocol() != null ? resource.getProtocol().getName() : null;
+            String title = output.getTitle(resource.getMetadata());
+            String rurl = resource.getUrl() != null ? resource.getUrl().toString() : null;
+            String layer = resource.getName();
+            String protocol = resource.getProtocol() != null ? resource.getProtocol().getName() : null;
 
-                if (title != null && rurl != null && protocol != null) {
-                    if (protocol.toLowerCase().indexOf("wms") != -1) {
-                        JSONObject result = new JSONObject();
-                        result.put("label", title + (layer != null ? " (laag: " + layer + ")" : ""));
-                        result.put("url", rurl);
-                        result.put("protocol", "wms");
-                        results.put(result);
-                    }
+            if (title != null && rurl != null && protocol != null) {
+                if (protocol.toLowerCase().indexOf("wms") != -1) {
+                    JSONObject result = new JSONObject();
+                    result.put("label", title + (layer != null ? " (laag: " + layer + ")" : ""));
+                    result.put("url", rurl);
+                    result.put("protocol", "wms");
+                    results.put(result);
                 }
             }
         }
