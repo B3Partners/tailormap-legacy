@@ -135,7 +135,11 @@ Ext.define ("viewer.components.SelectionModule",{
         titlebarIcon : "",
         tooltip : "",
         label: "",
-        defaultCswUrl:null
+        advancedValueConfigs:null,
+        advancedFilter:null,
+        defaultCswUrl:null,
+        advancedLabel:null,
+        advancedValue:null
     },
     constructor: function (conf) {        
         //set defaults
@@ -343,14 +347,30 @@ Ext.define ("viewer.components.SelectionModule",{
                 url: url,
                 q: q
             });
-            csw.loadInfo(
-                function(results) {
-                    me.populateCSWTree(results);
-                },
-                function(msg) {
-                    Ext.MessageBox.alert("Foutmelding", msg);
-                }
-            );
+                var advancedSearch = Ext.getCmp('advancedSearchQuery').getValue();
+            if(this.advancedFilter && advancedSearch != null){
+                csw.setActionbeanUrl(actionBeans["advancedcsw"]);
+                csw.config["advancedString"] = advancedSearch;
+                csw.config["advancedProperty"] = this.advancedValue;
+                csw.loadInfo(
+                    function(results) {
+                        me.populateCSWTree(results);
+                    },
+                    function(msg) {
+                        Ext.MessageBox.alert("Foutmelding", msg);
+                    }
+                );
+            }else{
+
+                csw.loadInfo(
+                    function(results) {
+                        me.populateCSWTree(results);
+                    },
+                    function(msg) {
+                        Ext.MessageBox.alert("Foutmelding", msg);
+                    }
+                );
+            }
         } else {
             protocol = Ext.getCmp('customServiceUrlSelect').getValue();
             url = Ext.getCmp('customServiceUrlTextfield').getValue();
@@ -416,6 +436,18 @@ Ext.define ("viewer.components.SelectionModule",{
         if(me.hasLeftTrees())
         {
             if(me.config.selectOwnServices || me.config.selectCsw) {
+                var store = Ext.create('Ext.data.Store', {
+                    fields: ['label', 'value'],
+                    data : this.advancedValueConfigs
+                });
+                var combo = Ext.create(Ext.form.field.ComboBox,{
+                    store:store,
+                    queryMode: "local",
+                    displayField: 'label',
+                    id:"advancedSearchQuery",
+                    valueField: 'value',
+                    fieldLabel: this.advancedLabel !== null ? this.advancedLabel: ""
+                });
                 items.unshift({
                         // Form above the trees with radiobuttons and textfields
                         xtype: 'form',
@@ -474,15 +506,12 @@ Ext.define ("viewer.components.SelectionModule",{
                                 defaultType: 'textfield',
                                 defaults: {anchor: '100%'},
                                 layout: 'anchor',
-                                items :[{
-                                    fieldLabel: 'Field 1',
-                                    name: 'field1'
-                                }]
+                                items :[combo]
                             }
                         ]
                         }
                         ],
-                        height: MobileManager.isMobile() ? 50 : 60,
+                        height: MobileManager.isMobile() ? 50 : 160,
                         padding: '5px',
                         border: 0,
                         id: 'selectionModuleCustomFormContainer'
