@@ -232,7 +232,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var selectionModuleFormField = Ext.getCmp('selectionModuleFormFieldContainer');
         if(selectionModuleFormField) {
             selectionModuleFormField.items.each(function(item){
-                if(item.checked) me.handleSourceChange(item, item.checked);
+                if(item.checked) me.handleSourceChange(item.id, item.checked);
             });
         }
         // apply a scroll fix
@@ -418,15 +418,15 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var radioControls = [];
         // Add only if config option is set to true
-        if(me.config.selectGroups) radioControls.push({id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+        if(me.config.selectGroups) radioControls.push({id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
-        if(me.config.selectLayers) radioControls.push({id: 'radioRegistry', checked: (radioControls.length === 0), name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+        if(me.config.selectLayers) radioControls.push({id: 'radioRegistry', checked: (radioControls.length === 0), name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
         if(me.config.selectOwnServices) {
-            radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+            radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         }
         if(me.config.selectCsw){
-            radioControls.push({id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field, newval)}}});
+            radioControls.push({id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         }
         
         // minimal interface, just tree container and save/cancel buttons
@@ -520,29 +520,38 @@ Ext.define ("viewer.components.SelectionModule",{
                                 ]
                             },
                             {
-                                xtype:'fieldset',
+                                xtype:'panel',
                                 id: 'cswAdvancedSearchField',
                                 columnWidth: 0.5,
                                 title: 'Geavanceerd zoeken',
                                 collapsible: true,
                                 collapsed:true,
-                                height: '100%',
+                                height: 65,
+                                bodyPadding: 5,
                                 hidden:true,
                                 defaultType: 'textfield',
                                 defaults: {anchor: '100%'},
                                 layout: 'anchor',
-                                items :[combo]
+                                items :[combo],
+                                listeners: {
+                                    beforecollapse: function() {
+                                        me.handleSourceChange('radioCSW', true);
+                                    },
+                                    beforeexpand: function() {
+                                        me.handleSourceChange('radioCSW', true, 120);
+                                    }
+                                }
                             }
                         ]
                         }
                         ],
-                        height: MobileManager.isMobile() ? 50 : 160,
+                        height: MobileManager.isMobile() ? 50 : 0,
                         padding: '5px',
                         border: 0,
                         id: 'selectionModuleCustomFormContainer'
-                });
-            }
-            items.unshift({
+                    });
+                }
+                items.unshift({
                     // Form above the trees with radiobuttons and textfields
                     xtype: 'form',
                     items: [{
@@ -1035,7 +1044,8 @@ Ext.define ("viewer.components.SelectionModule",{
         return addedNode;
     },
     
-    handleSourceChange: function(field, newval) {
+    handleSourceChange: function(field, newval, height) {
+        console.log('handleSourceChange', field, newval, height);
         var me = this;
         var customServiceUrlTextfield = Ext.getCmp('customServiceUrlTextfield');
         var customServiceUrlSelect = Ext.getCmp('customServiceUrlSelect');
@@ -1057,27 +1067,29 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswSearchTextfield.setVisible(false);
                 cswServiceUrlButton.setVisible(false);
                 cswAdvancedSearchField.setVisible(false);
+                this.setTopHeight(0);
             }
             applicationTreeContainer.setStyle('visibility', 'hidden');
             registryTreeContainer.setStyle('visibility', 'hidden');
             customTreeContainer.setStyle('visibility', 'hidden');
-            if(field.id == 'radioApplication') {
+            if(field == 'radioApplication') {
                 applicationTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.applicationTree.treePanel;
             }
-            if(field.id == 'radioRegistry') {
+            if(field == 'radioRegistry') {
                 registryTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.registryTree.treePanel;
             }
-            if(field.id == 'radioCustom') {
+            if(field == 'radioCustom') {
                 me.customServiceType = 'custom';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
                 customServiceUrlTextfield.setVisible(true);
                 customServiceUrlSelect.setVisible(true);
                 customServiceUrlButton.setVisible(true);
+                this.setTopHeight(60);
             }
-            if(field.id == 'radioCSW') {
+            if(field == 'radioCSW') {
                 me.customServiceType = 'csw';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
@@ -1085,10 +1097,16 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswSearchTextfield.setVisible(true);
                 cswServiceUrlButton.setVisible(true);
                 cswAdvancedSearchField.setVisible(true);
+                this.setTopHeight(height || 80);
             }
         }
         
         me.applyTreeScrollFix();
+    },
+            
+    setTopHeight: function(height) {
+        Ext.getCmp('selectionModuleCustomFormContainer').setHeight(height);
+        Ext.getCmp('selectionModuleTreesContainer').doLayout();
     },
     
     populateCustomServiceTree: function(userService, node, autoExpand) {

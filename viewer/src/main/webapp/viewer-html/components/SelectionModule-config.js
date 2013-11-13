@@ -104,34 +104,12 @@ Ext.define("viewer.components.CustomConfiguration",{
         
         var waardeItems = new Array();
         var configWaardes = configObject.advancedValueConfigs;
-        for (var i = 0 ; i < configWaardes.length ;i++){
-            var waarde = configWaardes[i];
-            var item = {
-                xtype: "container",
-                layout: {
-                    type: "hbox",
-                    align: "stretch"
-                },
-                height: 25,
-                width: "500px",
-                defaults: {
-                    xtype: 'textfield',
-                    labelWidth: 80,
-                    width: 120,
-                    height: 30,
-                    flex: 1
-                },
-                items: [{
-                        name: "label",
-                        fieldLabel: "Label",
-                        value: waarde.label
-                    }, {
-                        name: "comboValue",
-                        fieldLabel: "Waarde",
-                        value: waarde.value
-                    }]
-            };
-            waardeItems.push(item);
+        if(typeof configWaardes !== "undefined") {
+            for (var i = 0 ; i < configWaardes.length ;i++){
+                var waarde = configWaardes[i];
+                var item = this.createRow(waarde.label, waarde.value);
+                waardeItems.push(item);
+            }
         }
         this.form.add({
             xtype: "fieldset",
@@ -141,11 +119,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth,
             fieldLabel: "Gebruik een geavanceerd filter",
             width: "100%",
-            layout:{
-                align: "stretch"
+            layout: {
+                type: 'vbox'
             },
-            height: 200,
-            border:false,
+            height: 220,
+            padding: '5 5 0 5',
             items:[
                 {
                     xtype: "textfield",
@@ -168,30 +146,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                     listeners:{
                         click:{
                             fn:function(){
-                            var value = Ext.create(Ext.container.Container, {
-                                layout: {
-                                    type:"hbox",
-                                    align: "stretch"
-                                },
-                                height:25,
-                                width: "500px",
-                                defaults: {
-                                    xtype: 'textfield',
-                                    labelWidth: 80,
-                                    width: 120,
-                                    height: 30,
-                                    flex: 1
-                                },
-                                items: [{
-                                         name: "label",
-                                         fieldLabel : "Label"
-                                    },{
-                                         name: "comboValue",
-                                         fieldLabel: "Waarde"
-                                    }]
-                                });
                                 var valueSet = Ext.getCmp("advancedFilterValues");
-                                valueSet.add(value);
+                                valueSet.add(this.createRow('', ''));
+                                valueSet.doLayout();
                             },
                             scope:this
                         }
@@ -199,19 +156,46 @@ Ext.define("viewer.components.CustomConfiguration",{
                 },
                 {
                     xtype: "fieldset",
-                    name: "advancedFilterValues",
-                    id: "advancedFilterValues",
-                    labelWidth: 60,
-                    layout:'vbox',
-                    height: 140,
+                    height: 130,
+                    width: '100%',
                     title: "Waardes",
-                    border:false,
-                    autoScroll:true,
-                    items:waardeItems
+                    items: [{
+                        xtype: 'container',
+                        name: "advancedFilterValues",
+                        id: "advancedFilterValues",
+                        items: waardeItems,
+                        autoScroll: true,
+                        height: 110 // Weird ExtJS behaviour (bug?) does not take fieldset height into account when calculating layout
+                    }]
                 }
             ]
         });
         
+    },
+    createRow: function(labelValue, comboValue) {
+        return {
+            xtype: "container",
+            layout: {
+                type: "hbox",
+                align: "stretch"
+            },
+            height: 27,
+            defaults: {
+                xtype: 'textfield',
+                labelWidth: 50,
+                width: 160,
+                margin: '0 5 2 0'
+            },
+            items: [{
+                    name: "label",
+                    fieldLabel: "Label",
+                    value: labelValue
+                }, {
+                    name: "comboValue",
+                    fieldLabel: "Waarde",
+                    value: comboValue
+                }]
+        };
     },
     getConfiguration: function() {
         var config = this.callParent(arguments);
