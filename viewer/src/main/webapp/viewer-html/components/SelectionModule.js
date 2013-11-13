@@ -307,6 +307,21 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         return panelIds;
     },
+            
+    /**
+     * Returns the type of the activeTree ([applicationTree, registeryTree, customServiceTree];
+     * returns string The type of the active tree;
+     */
+    getActiveTreeType: function() {
+        var panels= this.treePanels;
+        for(var key in panels){
+            var p = panels[key];
+            if(p.treePanel.getId() === this.activeTree.getId()){
+                return key;
+            }
+        }
+        return null;
+    },
     
     /**
      *  Apply fixes to the trees for ExtJS scrolling issues
@@ -347,8 +362,8 @@ Ext.define ("viewer.components.SelectionModule",{
                 url: url,
                 q: q
             });
-                var advancedSearch = Ext.getCmp('advancedSearchQuery').getValue();
-            if(this.advancedFilter && advancedSearch != null){
+            var advancedSearch = Ext.getCmp('advancedSearchQuery').getValue();
+            if(this.advancedFilter && advancedSearch !== null){
                 csw.setActionbeanUrl(actionBeans["advancedcsw"]);
                 csw.config["advancedString"] = advancedSearch;
                 csw.config["advancedProperty"] = this.advancedValue;
@@ -1243,7 +1258,7 @@ Ext.define ("viewer.components.SelectionModule",{
     addToSelection: function(record) {
         var me = this;
         var nodeType = me.getNodeType(record);        
-        if(nodeType == "appLayer" || nodeType == "layer" || (nodeType == "maplevel" && !me.onRootLevel(record, me.activeTree))) {
+        if(nodeType == "appLayer" || nodeType == "layer" || (nodeType == "maplevel" && (!me.onRootLevel(record, me.activeTree)) || me.getActiveTreeType() === "customServiceTree")) {
             var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
             var recordOrigData = me.getOrigData(record);
             var recordid = record.get('id');
@@ -1252,8 +1267,8 @@ Ext.define ("viewer.components.SelectionModule",{
             }
             var searchNode = rootNode.findChild('id', recordid, false);
             if(searchNode == null) {
-                var objData = record.raw;
-                if(rootNode !== null) {
+                var objData = record.raw ? record.raw : record.data;
+                if(rootNode != null) {
                     if(nodeType == "appLayer") {
                         // Own service
                         var customService = Ext.clone(me.userServices[recordOrigData.userService]);
