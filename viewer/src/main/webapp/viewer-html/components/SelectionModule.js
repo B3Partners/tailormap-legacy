@@ -363,7 +363,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 q: q
             });
             var advancedSearch = Ext.getCmp('advancedSearchQuery').getValue();
-            if(this.advancedFilter && advancedSearch !== null){
+            if(this.advancedFilter &&  !Ext.getCmp("cswAdvancedSearchField").collapsed){
                 csw.setActionbeanUrl(actionBeans["advancedcsw"]);
                 csw.config["advancedString"] = advancedSearch;
                 csw.config["advancedProperty"] = this.advancedValue;
@@ -461,6 +461,7 @@ Ext.define ("viewer.components.SelectionModule",{
         if(me.hasLeftTrees())
         {
             if(me.config.selectOwnServices || me.config.selectCsw) {
+                this.advancedValueConfigs.unshift({label: "", value: ""});
                 var store = Ext.create('Ext.data.Store', {
                     fields: ['label', 'value'],
                     data : this.advancedValueConfigs
