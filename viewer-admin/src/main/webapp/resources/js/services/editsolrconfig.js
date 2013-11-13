@@ -25,7 +25,7 @@ Ext.require([
 ]);
 
 Ext.onReady(function(){
-
+    
 });
 
 function featureSourceChanged(select){
@@ -76,28 +76,35 @@ function featureTypeChanged(featuretypeId){
                 var resultEl = Ext.get("attributes");
                 if(data) {
                     var rows = data.gridrows;
-                    var html="<h1>Attributen</h1><br/>";
-                    html += "<table border=1>"
-                    html += "<tr><th>Doorzoekbaar</th><th>Resultaat</th><th>Attribuutnaam</th></tr>";
+                    html  = '<table class=\'formtable striped-table checkbox-table\'>';
+                    html += '<tr><td>Doorzoekbaar</td><td>Resultaat</td><td>Attribuutnaam</td></tr>';
                     for (var id in rows){
                         var ft=rows[id];
-                        html += "<tr><td>";
-                        html += "<input type='checkbox' name='indexAttributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'";
+                        html += '<tr><td>';
+                        html += '<input type="checkbox" name="indexAttributes" id="' + ft.id + '" value="' + ft.id + '"';
                         if(ft.indexChecked){
-                            html+= " checked='true'";
+                            html += ' checked="true"';
                         }
-                        html +="/>";
-                        html += "</td><td>";
-                        html += "<input type='checkbox' name='resultAttributes' id=\'" + ft.id + "\' value=\'"+ft.id+"\'";
+                        html += ' />';
+                        html += '</td><td>';
+                        html += '<input type="checkbox" name="resultAttributes" id="' + ft.id + '" value="' + ft.id + '"';
                         if(ft.resultChecked){
-                            html+= " checked='true'";
+                            html += ' checked="true"';
                         }
-                        html +="/>";
-                        html += "<td>" +  ft.attribute + "</td>";
-                        html +="</td></tr>";
+                        html += ' />';
+                        html += '<td>' +  ft.attribute + '</td>';
+                        html += '</td></tr>';
                     } 
-                    html += "</table>"
-                    resultEl.update(html);
+                    html += '</table>';
+                    Ext.create('Ext.panel.Panel', {
+                        title: 'Attributen',
+                        width: '100%',
+                        height: '100%',
+                        bodyPadding: '0 5 5 5',
+                        autoScroll: true,
+                        html: html,
+                        renderTo: resultEl
+                    });
                 }
             },
             failure : function (response){

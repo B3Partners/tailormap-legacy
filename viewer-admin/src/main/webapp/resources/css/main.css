@@ -562,3 +562,12 @@ input[type="submit"]:hover,
 .flamingoLogo{
     margin: 20px;
 }
+.striped-table tr:nth-child(even) {
+    background-color: #EEEEEE;
+}
+.checkbox-table {
+    width: 100%;
+}
+.checkbox-table input[type=checkbox] {
+    margin-left: 8px;
+}

@@ -41,9 +41,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean">
             <c:choose>
                 <c:when test="${empty actionBean.context.validationErrors && actionBean.context.eventName == 'newSearchConfig' || actionBean.context.eventName == 'edit' }">
-
-                    <stripes:submit name="cancel" value="Annuleren"/>
-                    <stripes:submit name="save" value="Opslaan"/>
                     <c:choose>
                         <c:when test="${!isNew}">
                             <h1 id="headertext">Zoekbron bewerken</h1>
@@ -52,28 +49,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <h1 id="headertext">Nieuwe zoekbron toevoegen</h1>           
                         </c:otherwise>
                     </c:choose>
-                        <stripes:hidden name="solrConfiguration" value="${actionBean.solrConfiguration.id}" />
-                    Naam: <stripes:text name="solrConfiguration.name"/><br/>
-                    Attribuutbron: 
-                    <stripes:select name="solrConfiguration.simpleFeatureType.featureSource" onchange="featureSourceChanged(this)">
-                        <stripes:option value="-1">Kies een attribuutbron</stripes:option>
-                        <stripes:options-collection collection="${actionBean.featureSources}" label="name"/>
-                    </stripes:select><br/>
-                    
-                    Featuretype:
-                    <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this.value)">
-                        <stripes:option value="-1">Kies een featuretype</stripes:option>
-                        <stripes:options-collection collection="${actionBean.featureTypes}" label="typeName"/>
-                    </stripes:select>
-                    <div id="attributes" style="width:300px;">
+                    <stripes:hidden name="solrConfiguration" value="${actionBean.solrConfiguration.id}" />
+                    <div style="float: left;">
+                        <table class="formtable">
+                            <tr>
+                                <td>
+                                    Naam:
+                                </td>
+                                <td>
+                                    <stripes:text name="solrConfiguration.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Attribuutbron:</td>
+                                <td>
+                                    <stripes:select name="solrConfiguration.simpleFeatureType.featureSource" onchange="featureSourceChanged(this)">
+                                        <stripes:option value="-1">Kies een attribuutbron</stripes:option>
+                                        <stripes:options-collection collection="${actionBean.featureSources}" label="name"/>
+                                    </stripes:select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Featuretype:</td>
+                                <td>
+                                    <stripes:select id="featureType" name="solrConfiguration.simpleFeatureType" onchange="featureTypeChanged(this.value)">
+                                        <stripes:option value="-1">Kies een featuretype</stripes:option>
+                                        <stripes:options-collection collection="${actionBean.featureTypes}" label="typeName"/>
+                                    </stripes:select>
+                                </td>
+                            </tr>                        
+                        </table>
                     </div>
-                        <c:if test="${!isNew}">
-                            <script>
-                                Ext.onReady(function(){
-                                    featureTypeChanged("${actionBean.solrConfiguration.simpleFeatureType.id}");
-                                });
-                            </script>
-                        </c:if>
+                    <div id="attributes" style="width: 300px; height: 250px; float: left; margin-left: 25px; margin-top: 5px;"></div>
+                    <div style="clear: both;"></div>
+                    <div class="submitbuttons">
+                        <stripes:submit name="cancel" value="Annuleren"/>
+                        <stripes:submit name="save" value="Opslaan"/>
+                    </div>
+                    <c:if test="${!isNew}">
+                        <script>
+                            Ext.onReady(function(){
+                                featureTypeChanged("${actionBean.solrConfiguration.simpleFeatureType.id}");
+                            });
+                        </script>
+                    </c:if>
                 </c:when>
                 <c:otherwise>
                     <script type="text/javascript">
@@ -98,6 +117,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var editSolrConfiguration = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="view"/>';
             var activelink = 'menu_solrconfig';
             var configId = "${actionBean.solrConfiguration.id}";
+            Ext.onReady(function() {
+                appendPanel('headertext', 'formcontent');
+            });
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/services/editsolrconfig.js"></script>
     </stripes:layout-component>
