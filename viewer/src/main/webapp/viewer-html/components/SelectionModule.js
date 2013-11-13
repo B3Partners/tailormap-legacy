@@ -352,9 +352,17 @@ Ext.define ("viewer.components.SelectionModule",{
                 csw.setActionbeanUrl(actionBeans["advancedcsw"]);
                 csw.config["advancedString"] = advancedSearch;
                 csw.config["advancedProperty"] = this.advancedValue;
+                csw.config["application"] = appId;
                 csw.loadInfo(
                     function(results) {
-                        me.populateCSWTree(results);
+                        var levels = new Array();
+                        for(var i = 0 ; i < results.length; i++){
+                            var  result = results[i];
+                            
+                            var l = me.addLevel(result.id, true, false, false);
+                            levels.push(l);
+                        }
+                        me.insertTreeNode(levels, me.treePanels.customServiceTree.treePanel.getRootNode());
                     },
                     function(msg) {
                         Ext.MessageBox.alert("Foutmelding", msg);
