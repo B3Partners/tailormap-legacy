@@ -370,6 +370,8 @@ Ext.define ("viewer.components.SelectionModule",{
                 csw.config["application"] = appId;
                 csw.loadInfo(
                     function(results) {
+                        var rootNode = me.treePanels.customServiceTree.treePanel.getRootNode();
+                        me.clearTree(rootNode);
                         var levels = new Array();
                         for(var i = 0 ; i < results.length; i++){
                             var  result = results[i];
@@ -377,7 +379,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             var l = me.addLevel(result.id, true, false, false);
                             levels.push(l);
                         }
-                        me.insertTreeNode(levels, me.treePanels.customServiceTree.treePanel.getRootNode());
+                        me.insertTreeNode(levels, rootNode);
                     },
                     function(msg) {
                         Ext.MessageBox.alert("Foutmelding", msg);
@@ -941,10 +943,7 @@ Ext.define ("viewer.components.SelectionModule",{
         
         var rootNode = me.treePanels.selectionTree.treePanel.getRootNode();
         // First remove all current children, could be a reload of the screen
-        var delNode;
-        while (delNode = rootNode.childNodes[0]) {
-            rootNode.removeChild(delNode);
-        }
+        me.clearTree(rootNode);
         
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
@@ -1097,10 +1096,7 @@ Ext.define ("viewer.components.SelectionModule",{
         if(typeof node === "undefined") {
             node = me.treePanels.customServiceTree.treePanel.getRootNode();
             // First remove all current children
-            var delNode;
-            while (delNode = node.childNodes[0]) {
-                node.removeChild(delNode);
-            }
+            this.clearTree(node);
         }
         if(typeof autoExpand === "undefined") autoExpand = true;
         // Create service node
@@ -1114,14 +1110,18 @@ Ext.define ("viewer.components.SelectionModule",{
         me.insertTreeNode(serviceNode, node, autoExpand);
     },
     
-    populateCSWTree: function(results) {
-        var me = this;
-        var rootNode = me.treePanels.customServiceTree.treePanel.getRootNode();
-        // First remove all current children
+    clearTree : function(rootNode){
         var delNode;
         while (delNode = rootNode.childNodes[0]) {
             rootNode.removeChild(delNode);
         }
+    },
+    
+    populateCSWTree: function(results) {
+        var me = this;
+        var rootNode = me.treePanels.customServiceTree.treePanel.getRootNode();
+        // First remove all current children
+        this.clearTree(rootNode);
         // Create service node
         for(var i in results) {
             me.addCSWResult(results[i], rootNode);
