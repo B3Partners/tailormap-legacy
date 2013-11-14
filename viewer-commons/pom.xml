@@ -85,6 +85,14 @@
                     <artifactId>jsp-api</artifactId>
                     <groupId>javax.servlet.jsp</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-analyzers</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

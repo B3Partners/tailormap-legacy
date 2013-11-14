@@ -56,6 +56,9 @@ import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.nl.DutchAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.util.Version;
 import org.jdom.JDOMException;
 
 import org.json.*;
@@ -291,7 +294,7 @@ public class CatalogSearchActionBean implements ActionBean {
         return results;
     }
 
-    private static GetRecords createAdvancedCswRequest(String queryString, String advancedValue,String propertyName,BigInteger startPosition,BigInteger maxRecords,SortBy sortBy) {
+    private static GetRecords createAdvancedCswRequest(String queryString, String advancedValue,String propertyName,BigInteger startPosition,BigInteger maxRecords,SortBy sortBy) throws IOException {
 
         FilterType filterType = new FilterType();
         boolean emptySearchStrings = true;
@@ -333,7 +336,7 @@ public class CatalogSearchActionBean implements ActionBean {
         return createCswRequest(filterType, startPosition, maxRecords, sortBy);
     }
     
-    private static Or createOrFilter(String queryString, String propertyName){
+    private static Or createOrFilter(String queryString, String propertyName) {
         List orList = new ArrayList();
         queryString = createQueryString(queryString, false);
         if (queryString != null && !queryString.trim().equals(defaultWildCard)) {
@@ -342,18 +345,24 @@ public class CatalogSearchActionBean implements ActionBean {
 
             PropertyIsEqualTo propertyIsEqualTo = FilterCreator.createPropertyIsEqualTo(queryString, propertyName);
 
-            StandardAnalyzer standardAnalyzer = new StandardAnalyzer(DutchAnalyzer.DUTCH_STOP_WORDS);
-            TokenStream tokenStream = standardAnalyzer.tokenStream("", new StringReader(queryString));
+            StandardAnalyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_45,DutchAnalyzer.getDefaultStopSet());
 
             orList.add(propertyIsEqualTo);
             try {
-                Token token = null;
-                while ((token = tokenStream.next()) != null) {
-                    String tokenString = new String(token.termBuffer()).trim();
-                    log.debug("term: " + tokenString);
-                    PropertyIsLike propertyIsLike = FilterCreator.createPropertyIsLike(tokenString, propertyName);
+                
+                TokenStream tokenStream = standardAnalyzer.tokenStream("", queryString);
+                OffsetAttribute offsetAttribute = tokenStream.addAttribute(OffsetAttribute.class);
+                CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
+
+                tokenStream.reset();
+                while (tokenStream.incrementToken()) {
+                    int startOffset = offsetAttribute.startOffset();
+                    int endOffset = offsetAttribute.endOffset();
+                    String term = charTermAttribute.toString();
+                    PropertyIsLike propertyIsLike = FilterCreator.createPropertyIsLike(term, propertyName);
                     orList.add(propertyIsLike);
                 }
+                tokenStream.close();
             } catch (IOException e) {
                 PropertyIsLike propertyIsLike = FilterCreator.createPropertyIsLike(queryString, propertyName);
                 orList.add(propertyIsLike);
