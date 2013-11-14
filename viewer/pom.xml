@@ -98,6 +98,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
             <version>rr2079.1</version>
@@ -124,25 +129,6 @@
             <groupId>nl.geozet</groupId>
             <artifactId>openls-databinding</artifactId>
             <version>0.3</version>
-        </dependency>
-         <!-- Solr dependencies for indexing and searching -->
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-core</artifactId>
-            <version>4.5.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jsp-api</artifactId>
-                    <groupId>javax.servlet.jsp</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-               <artifactId>solr-solrj</artifactId>
-               <groupId>org.apache.solr</groupId>
-               <version>4.5.0</version>
-               <type>jar</type>
-               <scope>compile</scope>
         </dependency>
     </dependencies>
     

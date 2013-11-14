@@ -16,35 +16,81 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.io.IOException;
 import java.io.StringReader;
-import java.net.URI;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.xml.bind.JAXBException;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.csw.client.CswClient;
+import static nl.b3p.csw.client.CswRequestCreator.createCswRequest;
+import static nl.b3p.csw.client.CswRequestCreator.createPropertyName;
+import static nl.b3p.csw.client.CswRequestCreator.createQueryString;
+import nl.b3p.csw.client.FilterCreator;
 import nl.b3p.csw.client.InputBySearch;
 import nl.b3p.csw.client.OutputBySearch;
+import nl.b3p.csw.client.OwsException;
+import nl.b3p.csw.jaxb.csw.GetRecords;
+import nl.b3p.csw.jaxb.filter.And;
+import nl.b3p.csw.jaxb.filter.BinaryLogicOpType;
+import nl.b3p.csw.jaxb.filter.FilterType;
+import nl.b3p.csw.jaxb.filter.Or;
+import nl.b3p.csw.jaxb.filter.PropertyIsEqualTo;
+import nl.b3p.csw.jaxb.filter.PropertyIsLike;
+import nl.b3p.csw.jaxb.filter.SortBy;
 import nl.b3p.csw.server.CswServable;
 import nl.b3p.csw.server.GeoNetworkCswServer;
 import nl.b3p.csw.util.OnlineResource;
+import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.config.services.Layer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.nl.DutchAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.jdom.JDOMException;
+
 import org.json.*;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
  * @author Matthijs Laan
+ * @author Meine Toonen
  */
 @UrlBinding("/action/csw/search")
 @StrictBinding
 public class CatalogSearchActionBean implements ActionBean {
     
     private ActionBeanContext context;
+    private static final Log log = LogFactory.getLog(CatalogSearchActionBean.class);
+    private static final String defaultWildCard = "*";
+    
+    private BigInteger maxRecords = new BigInteger("1000");
     
     @Validate
     private String url;
     
     @Validate
     private String q;
+    
+    @Validate
+    private String advancedString;
+    
+    @Validate
+    private String advancedProperty;
+    
+    @Validate
+    private Application application;
+    
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -70,6 +116,31 @@ public class CatalogSearchActionBean implements ActionBean {
     public void setQ(String q) {
         this.q = q;
     }
+
+    public String getAdvancedString() {
+        return advancedString;
+    }
+
+    public void setAdvancedString(String advancedString) {
+        this.advancedString = advancedString;
+    }
+
+    public String getAdvancedProperty() {
+        return advancedProperty;
+    }
+
+    public void setAdvancedProperty(String advancedProperty) {
+        this.advancedProperty = advancedProperty;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+    
     //</editor-fold>        
     
     @DefaultHandler
@@ -79,8 +150,6 @@ public class CatalogSearchActionBean implements ActionBean {
         String error = null;
     
         try {
-            JSONArray results = new JSONArray();
-        
             CswServable server = new GeoNetworkCswServer(null,
                     url,
                     null, 
@@ -91,27 +160,8 @@ public class CatalogSearchActionBean implements ActionBean {
             InputBySearch input = new InputBySearch(q);
             OutputBySearch output = client.search(input);            
 
-            Map<URI, List<OnlineResource>> map = output.getResourcesMap();
-            for (List<OnlineResource> resourceList : map.values()) {
-                for (OnlineResource resource : resourceList) {
-
-                    
-                    String title = output.getTitle(resource.getMetadata());
-                    String rurl = resource.getUrl() != null ? resource.getUrl().toString() : null;
-                    String layer = resource.getName();
-                    String protocol = resource.getProtocol() != null ? resource.getProtocol().getName() : null;
-                    
-                    if(title != null && rurl != null && protocol != null) {
-                        if(protocol.toLowerCase().indexOf("wms") != -1) {
-                            JSONObject result = new JSONObject();
-                            result.put("label", title + (layer != null ? " (laag: " + layer + ")" : ""));
-                            result.put("url", rurl);
-                            result.put("protocol", "wms");
-                            results.put(result);
-                        }
-                    }
-                }
-            }
+            List<OnlineResource> map = output.getResourcesFlattened();
+            JSONArray results = getResults(map, output);
 
             json.put("results", results);                
 
@@ -119,6 +169,7 @@ public class CatalogSearchActionBean implements ActionBean {
         } catch(Exception e) {
 
             error = "Fout bij zoeken in CSW: " + e.toString();
+            log.error("Fout bij zoeken in csw:",e);
             if(e.getCause() != null) {
                 error += "; oorzaak: " + e.getCause().toString();
             }
@@ -128,7 +179,189 @@ public class CatalogSearchActionBean implements ActionBean {
             json.put("error", error);
         }
         
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));          
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));               
     }
+
+    public Resolution advancedSearch() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
+        CswServable server = new GeoNetworkCswServer(null, url, null, null);
+        CswClient client = new CswClient(server);
+        try {
+            OutputBySearch output = client.search(new InputBySearch(createAdvancedCswRequest(q, advancedString, advancedProperty, null, maxRecords, null)));
+            List<OnlineResource> list = output.getResourcesFlattened();
+            List<Layer> layers = getLayers(list);
+            List<ApplicationLayer> appLayers = getAppLayers(layers);
+            List<Level> levels = getLevels(appLayers);
+            JSONArray results = new JSONArray();
+            for (Level level : levels) {
+                JSONObject obj = level.toJSONObject(false, application, context.getRequest());
+                results.put(obj);
+            }
+            json.put("results", results);                
+
+            json.put("success", Boolean.TRUE);
+        } catch (IOException ex) {
+            log.error("Fout bij zoeken in csw:",ex);
+        } catch (JDOMException ex) {
+            log.error("Fout bij zoeken in csw:",ex);
+        } catch (JAXBException ex) {
+            log.error("Fout bij zoeken in csw:",ex);
+        } catch (OwsException ex) {
+            log.error("Fout bij zoeken in csw:",ex);
+        }
+           
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+    }
+    
+    private List<Level> getLevels(List<ApplicationLayer> appLayers){
+        List<Level> foundLevels = new ArrayList();
+        Level root = application.getRoot();
+        for (ApplicationLayer applicationLayer : appLayers) {
+            Level l =root.getParentInSubtree(applicationLayer);
+            if(l != null){
+                foundLevels.add(l);
+            }
+        }
+        return foundLevels;
+    }
+    
+    private List<ApplicationLayer> getAppLayers(List<Layer> layers){
+        EntityManager em = Stripersist.getEntityManager();
+        List<ApplicationLayer> foundAppLayers = new ArrayList();
+        Level root = application.getRoot();
+        for (Layer layer : layers) {
+            List<ApplicationLayer> appLayers = em.createQuery("FROM ApplicationLayer WHERE service = :geoservice and layerName = :name", ApplicationLayer.class).setParameter("geoservice", layer.getService()).setParameter("name", layer.getName()).getResultList();
+            for (ApplicationLayer applicationLayer : appLayers) {
+                if(root.containsLayerInSubtree(applicationLayer)){
+                    foundAppLayers.add(applicationLayer);
+                }
+                
+            }
+        }
+        return foundAppLayers;
+    }
+    
+    private List<Layer> getLayers(List<OnlineResource> lijst){
+        EntityManager em = Stripersist.getEntityManager();
+        List<Layer> foundLayers = new ArrayList();
+        for (OnlineResource resource : lijst) {
+            String rurl = resource.getUrl() != null ? resource.getUrl().toString() : null;
+            String layerName = resource.getName();
+            String protocol = resource.getProtocol() != null ? resource.getProtocol().getName() : null;
+            
+            if (rurl != null && protocol != null) {
+                if (protocol.toLowerCase().indexOf("wms") != -1) {
+                    List<GeoService> foundServices = em.createQuery("FROM GeoService WHERE url = :url",GeoService.class).setParameter("url", rurl).getResultList();
+                    for (GeoService geoService : foundServices) {
+                        List<Layer> layers = geoService.loadLayerTree();
+                        for (Layer layer : layers) {
+                            if(!layer.isVirtual()){
+                                if (layer.getName().equalsIgnoreCase(layerName)) {
+                                    foundLayers.add(layer);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return foundLayers;
+    }
+    
+    private JSONArray getResults(List<OnlineResource> resourceList, OutputBySearch output) throws JDOMException, JSONException {
+        JSONArray results = new JSONArray();
+        for (OnlineResource resource : resourceList) {
+
+            String title = output.getTitle(resource.getMetadata());
+            String rurl = resource.getUrl() != null ? resource.getUrl().toString() : null;
+            String layer = resource.getName();
+            String protocol = resource.getProtocol() != null ? resource.getProtocol().getName() : null;
+
+            if (title != null && rurl != null && protocol != null) {
+                if (protocol.toLowerCase().indexOf("wms") != -1) {
+                    JSONObject result = new JSONObject();
+                    result.put("label", title + (layer != null ? " (laag: " + layer + ")" : ""));
+                    result.put("url", rurl);
+                    result.put("protocol", "wms");
+                    results.put(result);
+                }
+            }
+        }
+        return results;
+    }
+
+    private static GetRecords createAdvancedCswRequest(String queryString, String advancedValue,String propertyName,BigInteger startPosition,BigInteger maxRecords,SortBy sortBy) {
+
+        FilterType filterType = new FilterType();
+        boolean emptySearchStrings = true;
         
+        List andList = new ArrayList();
+        Or queryOr = null;
+        Or typeringOr = null;
+        
+        if(queryString != null){
+            emptySearchStrings = false;
+            queryOr = createOrFilter(queryString, null);
+            andList.add(queryOr);
+        }
+        if(advancedValue != null){
+            emptySearchStrings = false;
+            
+            PropertyIsEqualTo propertyIsEqualTo = FilterCreator.createPropertyIsEqualTo(advancedValue, propertyName);
+            List orList = new ArrayList();
+            orList.add(propertyIsEqualTo);          
+            typeringOr = new Or(new BinaryLogicOpType(orList));
+            
+            andList.add(propertyIsEqualTo);
+        }
+
+        if (emptySearchStrings) {
+            return createCswRequest("*", propertyName, startPosition, maxRecords, sortBy, null, null, null);
+        }
+
+        And and = new And(new BinaryLogicOpType(andList));
+
+        if(queryOr != null && typeringOr != null){
+            filterType.setLogicOps(and);
+        }else if(queryOr != null){
+            filterType.setLogicOps(queryOr);
+        }else if(typeringOr != null){
+            filterType.setLogicOps(typeringOr);
+        }
+
+        return createCswRequest(filterType, startPosition, maxRecords, sortBy);
+    }
+    
+    private static Or createOrFilter(String queryString, String propertyName){
+        List orList = new ArrayList();
+        queryString = createQueryString(queryString, false);
+        if (queryString != null && !queryString.trim().equals(defaultWildCard)) {
+
+            propertyName = createPropertyName(propertyName);
+
+            PropertyIsEqualTo propertyIsEqualTo = FilterCreator.createPropertyIsEqualTo(queryString, propertyName);
+
+            StandardAnalyzer standardAnalyzer = new StandardAnalyzer(DutchAnalyzer.DUTCH_STOP_WORDS);
+            TokenStream tokenStream = standardAnalyzer.tokenStream("", new StringReader(queryString));
+
+            orList.add(propertyIsEqualTo);
+            try {
+                Token token = null;
+                while ((token = tokenStream.next()) != null) {
+                    String tokenString = new String(token.termBuffer()).trim();
+                    log.debug("term: " + tokenString);
+                    PropertyIsLike propertyIsLike = FilterCreator.createPropertyIsLike(tokenString, propertyName);
+                    orList.add(propertyIsLike);
+                }
+            } catch (IOException e) {
+                PropertyIsLike propertyIsLike = FilterCreator.createPropertyIsLike(queryString, propertyName);
+                orList.add(propertyIsLike);
+            }
+        }
+        
+        Or or = new Or(new BinaryLogicOpType(orList));
+                
+        return or;
+    }
 }
