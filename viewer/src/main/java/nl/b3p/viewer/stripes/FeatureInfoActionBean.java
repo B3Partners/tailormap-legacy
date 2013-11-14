@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -252,6 +253,11 @@ public class FeatureInfoActionBean implements ActionBean {
                     }
 
                     Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
+                    
+                    if (currentFilter!=null){
+                        currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
+                    }
+                    
                     Filter f = currentFilter != null ? ff.and(spatialFilter, currentFilter) : spatialFilter;
                     
                     //only remove unit if it is a JDBC datastore

@@ -153,6 +153,10 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_EVENT_OVER                           : "ON_EVENT_OVER ",
         /** @field */
         ON_CLICK                              : "ON_CLICK",
+        /** @field
+         *  Occurs when help icon is clicked
+         */
+        ON_HELP                              : "ON_HELP",
         /** @field */
         ON_MEASURE                            : "ON_MEASURE",
 

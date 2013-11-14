@@ -31,6 +31,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -339,6 +340,7 @@ public class AttributesActionBean implements ActionBean {
         if(filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
+            f = (Filter)f.accept(new ChangeMatchCase(false), null);
             f = FeatureToJson.reformatFilter(f,ft);
             q.setFilter(f);
         }

@@ -43,7 +43,9 @@ public class UniqueValuesActionBean implements ActionBean {
 
     private ActionBeanContext context;
     @Validate
-    private ApplicationLayer applicationLayer;
+    private ApplicationLayer applicationLayer;    
+    @Validate
+    private SimpleFeatureType featureType;
     @Validate
     private String[] attributes;
     @Validate
@@ -99,19 +101,23 @@ public class UniqueValuesActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
 
         try {
-            Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
-            if(layer != null && layer.getFeatureType() != null) {
-                SimpleFeatureType sft = layer.getFeatureType();
-                JSONObject uniqueValues = new JSONObject();
-                for (int i = 0; i < attributes.length; i++) {
-                    String attribute = attributes[i];
-                    List<String> beh = sft.calculateUniqueValues(attribute);
-
-                    uniqueValues.put(attribute, new JSONArray(beh));
-                    json.put("success", Boolean.TRUE);
+            if (this.featureType==null){
+                Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+                if(layer != null && layer.getFeatureType() != null) {
+                    this.featureType=layer.getFeatureType();
                 }
-                json.put("uniqueValues", uniqueValues);
             }
+                //SimpleFeatureType sft = layer.getFeatureType();
+            JSONObject uniqueValues = new JSONObject();
+            for (int i = 0; i < attributes.length; i++) {
+                String attribute = attributes[i];
+                List<String> beh = this.featureType.calculateUniqueValues(attribute);
+
+                uniqueValues.put(attribute, new JSONArray(beh));
+                json.put("success", Boolean.TRUE);
+            }
+            json.put("uniqueValues", uniqueValues);
+            
         } catch (Exception e) {
             log.error("getUniqueValues() failed", e);
             json.put("msg", "Unieke waardes ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());
@@ -142,5 +148,13 @@ public class UniqueValuesActionBean implements ActionBean {
             json.put("msg", "Minmax waardes bepalen mislukt voor attribuut " + attribute + ": " + e.toString());
         }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+
+    public SimpleFeatureType getFeatureType() {
+        return featureType;
+    }
+
+    public void setFeatureType(SimpleFeatureType featureType) {
+        this.featureType = featureType;
     }
 }

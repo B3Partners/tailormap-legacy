@@ -27,7 +27,41 @@ Ext.define("viewer.components.CustomConfiguration", {
         configObject.showLabelconfig = true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
         var checkboxLabelWidth= 55;
-        this.form.add([{
+        this.form.add([
+            {
+                xtype: 'label',
+                text: 'Toon de links',
+                style: { 
+                    fontWeight: 'bold'
+                }
+            },{
+                xtype: 'container',
+                layout : {
+                    type: 'table',
+                    columns: 3
+                },
+                items: [{
+                        xtype: 'checkbox',
+                        boxLabel: 'Volledige link',
+                        name: 'showFullUrl',
+                        value: true,
+                        inputValue: true,
+                        checked: this.configObject.showFullUrl !== undefined ? this.configObject.showFullUrl : true,
+                        style: {
+                            marginRight: "90px"
+                        }
+                },{
+                        xtype: 'checkbox',
+                        boxLabel: 'Compacte link',
+                        name: 'showShortUrl',
+                        value: true,
+                        inputValue: true,
+                        checked: this.configObject.showShortUrl !== undefined ? this.configObject.showShortUrl : true,
+                        style: {
+                            marginRight: "90px"
+                        }
+                }]
+            },{
                 xtype: 'label',
                 text: 'Toon \'deel\' knoppen in venster',
                 style: {

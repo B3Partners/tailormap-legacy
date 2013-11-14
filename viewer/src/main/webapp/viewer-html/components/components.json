@@ -17,6 +17,8 @@
  * notInCombinationWith: Array with the classNames of other components. If a component from that array has
  *                   already been added to a region, this component cannot be added to that region
  * 
+ * showHelp: boolean value to show help configuration tab for component (default false)
+ *
  * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
  *   
  * extPropertyGridConfigs.source: Set the object that must be configurable with defaults 
@@ -221,7 +223,6 @@
 
         singleton: true,
         restrictions: ["top_menu"],
-
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Full extent"}
@@ -339,7 +340,8 @@
         sources: ["TOC.js"],
         configSource: ["ConfigObject.js","TOC-config.js"],
         singleton: true,
-        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"]
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow"],
+        showHelp: true
     },
     {
         className: "viewer.components.tools.GoogleNavigation",
@@ -436,7 +438,8 @@
             }
         },
         singleton: true,
-        restrictions: ["leftmargin_top", "rightmargin_top","leftmargin_bottom", "rightmargin_bottom","popupwindow"]        
+        restrictions: ["leftmargin_top", "rightmargin_top","leftmargin_bottom", "rightmargin_bottom","popupwindow"],
+        showHelp: true
     },
     {
         className: "viewer.components.RelatedDocuments",
@@ -446,7 +449,8 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","RelatedDocuments-config.js"],
         singleton: true,
         type: "popup",
-        restrictions: ["left_menu"]
+        restrictions: ["left_menu"],
+        showHelp: true
     },
     {
         className: "viewer.components.SelectionModule",
@@ -456,7 +460,8 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","SelectionModule-config.js"],
         singleton: true,
         restrictions: ["left_menu"],
-        type: "popup"
+        type: "popup",
+        showHelp: true
     }    ,
     {
         className: "viewer.components.Bookmark",
@@ -466,7 +471,8 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Bookmark-config.js"],
         singleton: true,
         type: "popup",
-        restrictions: ["left_menu"]
+        restrictions: ["left_menu"],
+        showHelp: true
     },
     {
         className: "viewer.components.HTML",
@@ -483,7 +489,8 @@
         singleton: true,
         sources: ["Slider.js","NonInitLayerSlider.js","TransparencySlider.js"],
         configSource: ["ConfigObject.js","TransparencySlider-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"]
+        restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"],
+        showHelp: true
         
     },
     /*{
@@ -512,7 +519,8 @@
         sources: ["../common/ColorField.js","Buffer.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Buffer-config.js"],
         restrictions: ["left_menu"],            
-        type: "popup"
+        type: "popup",
+        showHelp: true
     },
     {
         className: "viewer.components.LoadMonitor",
@@ -544,7 +552,8 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","AttributeList-config.js"],
         restrictions: ["left_menu"] , 
         singleton: true,       
-        type: "popup"        
+        type: "popup",
+        showHelp: true
     },
     {
         className: "viewer.components.Edit",
@@ -554,7 +563,8 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
-        singleton: true
+        singleton: true,
+        showHelp: true
     },
     {
         className: "viewer.components.Drawing",
@@ -564,7 +574,8 @@
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Drawing-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
-        singleton: true
+        singleton: true,
+        showHelp: true
     },
     {
         className: "viewer.components.DataSelection",
@@ -574,7 +585,8 @@
         sources: ["AttributeFilter.js","Filter.js","DataSelection.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","DataSelection-config.js"],
         restrictions: ["left_menu"],        
-        type: "popup"         
+        type: "popup",
+        showHelp: true
     },
      {
         className: "viewer.components.Search",
@@ -584,7 +596,8 @@
         sources: ["Search.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js"],
         restrictions: ["left_menu"],        
-        type: "popup"         
+        type: "popup",
+        showHelp: true        
      },
    /*  {
         className: "viewer.components.fmc.Window",
@@ -611,7 +624,8 @@
         sources: ["Search.js","Influence.js","InfluenceImage.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
         restrictions: ["left_menu"],        
-        type: "popup"         
+        type: "popup",
+        showHelp: true
     },
     {
         className: "viewer.components.Overview",
@@ -620,7 +634,8 @@
         sources: ["Overview.js"],
         configSource: ["ConfigObject.js","Overview-config.js"],
         restrictions: ["content"],
-        singleton: true
+        singleton: true,
+        showHelp: true
      },
     {
         className: "viewer.components.Print",
@@ -630,7 +645,8 @@
         sources: ["Print.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Print-config.js"],
         restrictions: ["left_menu"],        
-        type: "popup"         
+        type: "popup",
+        showHelp: true
     },
     {
         className: "viewer.components.LayerContext",
@@ -640,7 +656,18 @@
         sources: ["LayerContext.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","LayerContext-config.js"],
         restrictions: ["content"],        
-        type: "popup"         
+        type: "popup",
+        showHelp: true        
+    },
+    {
+        className: "viewer.components.Help",
+        name: "Help",
+        shortName: "LC",
+        singleton: true,
+        sources: ["Help.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Help-config.js"],
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","content"],        
+        type: "popup"
     },
     {
         className: "viewer.components.LayerSwitch",
@@ -706,5 +733,17 @@
         closureCompilerSafe: true,
         singleton: false,
         restrictions: ["left_menu"]
+    },
+    {
+        className: "viewer.components.tools.DownloadMap",
+        name: "Download Map",
+        shortName: "DM",
+        restrictions: ["top_menu"],
+        sources: [ "Print.js","DownloadMap.js"],
+        singleton: true,
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: ""}
+        }
     }
 ]

@@ -63,6 +63,7 @@ Ext.define("viewer.components.Legend", {
     constructor: function (conf){
         viewer.components.Legend.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        var me = this;
         
         var css = "\
 /* Styling for legends, see for example:\
@@ -99,11 +100,22 @@ Ext.define("viewer.components.Legend", {
         
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        var tools = [];
+        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
+        if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
+            tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    me.viewerController.showHelp(me.config);
+                }
+            }];
+        }
         this.panel = Ext.create('Ext.panel.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'legendContainer" class="legend"></div>'
+            html: '<div id="' + this.name + 'legendContainer" class="legend"></div>',
+            tools: tools
         });
         
         this.legendContainer = document.getElementById(this.name + 'legendContainer');

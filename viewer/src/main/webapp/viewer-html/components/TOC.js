@@ -42,11 +42,18 @@ Ext.define ("viewer.components.TOC",{
         toggleAllLayersOnText: 'All layers on',
         toggleAllLayersOffText: 'All layers off',
         initToggleAllLayers: true,
-        showToggleAllLayers: false
+        showAllLayersOff: false,
+        showAllLayersOn: false
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
         this.initConfig(config);
+        /*backwards compatible, if 'showToggleAllLayers' is configured in the past
+        both toggle all layers buttons must be shown*/
+        if (config.showToggleAllLayers!==undefined){
+            this.showAllLayersOff=config.showToggleAllLayers;
+            this.showAllLayersOn=config.showToggleAllLayers;
+        }   
         this.toggleAllLayersState = this.initToggleAllLayers;
         this.buildButtonBar();
         this.loadTree();
@@ -75,7 +82,7 @@ Ext.define ("viewer.components.TOC",{
      */
     buildButtonBar: function(){
         var me = this;
-        if(this.showToggleAllLayers){
+        if(this.showAllLayersOn || this.showAllLayersOff){
             this.buttonBar = Ext.create('Ext.toolbar.Toolbar', {
                 id: 'ButtonBar_'+this.id,
                 renderTo: this.getContentDiv(),
@@ -123,10 +130,24 @@ Ext.define ("viewer.components.TOC",{
         var title = "";
         if(this.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.title;
         
+        var tools = [];
+        // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
+        if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
+            tools = [{
+                type:'help',
+                handler: function(event, toolEl, panel){
+                    me.viewerController.showHelp(me.config);
+                }
+            }];
+        }
+        var panelHeight = "100%";
+        if(this.showAllLayersOn || this.showAllLayersOff){
+            panelHeight="93%";
+        }
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
-            height: "100%",
+            height: panelHeight,
             scroll: false,
             useArrows: true,
             rootVisible: false,
@@ -143,7 +164,8 @@ Ext.define ("viewer.components.TOC",{
                     scope: this
                 }
             },
-            store: store
+            store: store,
+            tools: tools
         });
     },
     // Start the treetraversal
@@ -348,6 +370,22 @@ Ext.define ("viewer.components.TOC",{
         qtip.target = target;
         this.qtips.push(qtip);
     },
+    setLayerQtip: function (text,layerId){
+        this.setQtip(text,"span_layer-"+layerId);
+    },            
+    setLevelQtip: function (text,levelid){
+        this.setQtip(text,"span_level-"+levelid);
+    },
+    setQtip: function (text,target){
+        if (document.getElementById(target)){
+            Ext.tip.QuickTipManager.register({
+                target: target,
+                text: text
+            });
+        }else{
+            this.qtips.push({target:target,text:text});
+        }
+    },
     registerQtips : function (){
         var newQtips = [];
         for (var i = 0; i < this.qtips.length; i++) {
@@ -372,9 +410,14 @@ Ext.define ("viewer.components.TOC",{
         for(var i = 0; i < this.updateTreeNodes.length; i++) {
             this.updateMap(this.updateTreeNodes[i], this.toggleAllLayersState);
         }
-        this.toggleAllLayersState = !this.toggleAllLayersState;
-        if (Ext.get("toggleAllLayersButton")){
-            Ext.get("toggleAllLayersButton").update(this.toggleAllLayersState ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
+        //only toggle when the new state button must be shown
+        if (this.toggleAllLayersState && this.showAllLayersOff ||
+            !this.toggleAllLayersState && this.showAllLayersOn){
+            this.toggleAllLayersState = !this.toggleAllLayersState;
+            
+            if (Ext.get("toggleAllLayersButton")){
+                Ext.get("toggleAllLayersButton").update(this.toggleAllLayersState ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
+            }
         }
     },
     // Fix for not expanding backgroundlayers: not expandable nodes don't have expand button, but doubleclick does expand

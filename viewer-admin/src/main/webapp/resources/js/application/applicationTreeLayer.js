@@ -157,10 +157,44 @@ Ext.onReady(function() {
                         layout: 'hbox',
                         items: [
                             { xtype: 'displayfield', fieldLabel: 'Attribuut gebruiken bij' },
-                            { id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right' },
+                            { 
+                                id: 'filterable' + attribute.id, fieldLabel: 'Filteren', name: 'filterable' + attribute.id, inputValue: 'filter', checked: attribute.filterable, disabled: !isEnabled, xtype: 'radio', labelAlign: 'right', 
+                                listeners:{
+                                    change: function(field,newval){
+                                        var comp = Ext.getCmp('default_filter' + attribute.id);
+                                        comp.setVisible(false); 
+                                        if(newval){ 
+                                            comp.setVisible(true);
+                                        }
+                                        Ext.getCmp('filter' + attribute.id).doLayout(); 
+                                    }
+                                }
+                            },
                             { 
                                 id: 'selectable' + attribute.id, fieldLabel: ' &nbsp;Dataselectie', name: 'filterable' + attribute.id, inputValue: 'select', checked: attribute.selectable, disabled: !isEnabled, xtype: 'radio',  labelAlign: 'right',
                                 listeners: {change: function(field, newval) {var comp = Ext.getCmp('default' + attribute.id);comp.setVisible(false); if(newval){ comp.setVisible(true);}Ext.getCmp('filter' + attribute.id).doLayout();}}
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'container',
+                        name: 'default_filter' + attribute.id,
+                        id: 'default_filter' + attribute.id,
+                        hidden: !(attribute.filterable || false),
+                        hideMode: 'display',
+                        items: [
+                            {
+                                id: 'filter_list' + attribute.id,
+                                fieldLabel: 'Lijst*', 
+                                name: 'minmaxlist' + attribute.id, 
+                                inputValue: 'defaultList', 
+                                checked: attribute.defaultValue == "filterList",
+                                xtype: 'checkbox', 
+                            },{
+                                text: "* Als 'Lijst' is aangevinkt dan zal er voor \n\
+                                        het waarde veld van dit attribuut een lijst met alle mogelijke waarden worden gemaakt.",
+                                xtype: 'label',
+                                hideMode: 'display'
                             }
                         ]
                     },
@@ -412,6 +446,13 @@ function getJson() {
                 }else{
                     newAttribute.defaultValue = "#MIN#";
                 }
+            }
+        }else if (newAttribute.filterable){
+            var checkbox=Ext.getCmp("filter_list"+attribute.id);
+            if (checkbox.getValue()){          
+                attribute.defaultValue = "filterList";
+            }else{
+                attribute.defaultValue = "";
             }
         }else{
             attribute.defaultValue = "";

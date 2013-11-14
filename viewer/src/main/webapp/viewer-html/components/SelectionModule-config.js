@@ -33,8 +33,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: "selectGroups",
             fieldLabel: "Kaarten selecteren",
             store: [
-                [true, "true"],
-                [false, "false"]
+                [true, "Ja"],
+                [false, "Nee"]
             ]
         });
         this.form.add({
@@ -44,8 +44,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: "selectLayers",
             fieldLabel: "Kaartlagen selecteren",
             store: [
-                [true, "true"],
-                [false, "false"]
+                [true, "Ja"],
+                [false, "Nee"]
             ]
         });
         this.form.add({
@@ -55,8 +55,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: "selectOwnServices",
             fieldLabel: "Eigen services selecteren",
             store: [
-                [true, "true"],
-                [false, "false"]
+                [true, "Ja"],
+                [false, "Nee"]
             ]
         });
     }

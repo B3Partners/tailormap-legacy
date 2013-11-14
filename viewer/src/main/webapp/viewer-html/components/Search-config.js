@@ -29,7 +29,21 @@ Ext.define("viewer.components.CustomConfiguration",{
     requiredLayersOn: null,
     switchLayersOn: null,
     constructor: function (parentId,configObject){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        if (configObject === null){
+            configObject = {};
+        }
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
+        this.form.add({
+            xtype: 'checkbox',
+            boxLabel: 'Toon knop voor het verwijderen van marker',
+            name: 'showRemovePin',
+            value: true,
+            inputValue: true,
+            checked: this.configObject.showRemovePin !== undefined ? this.configObject.showRemovePin : true,
+            style: {
+                marginRight: "90px"
+            }
+        });
         this.initSearchconfigs(configObject);
     },
     initSearchconfigs: function(config) {

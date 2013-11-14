@@ -30,6 +30,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     numericOperators: ["<", ">", "=", "<=", ">=", "<>"],
     operator: null,
     value:null,
+    valueStore:null,
     logicOperator:null,
     container:null,
     attribute:null,
@@ -37,7 +38,8 @@ Ext.define ("viewer.components.AttributeFilter",{
     config :{
         first:null,
         id:null,
-        number:null
+        number:null,
+        initData: null
     },
     constructor: function(config){
         this.initConfig(config);
@@ -48,11 +50,21 @@ Ext.define ("viewer.components.AttributeFilter",{
             displayField: 'id',
             value:'=',
             width:50,
-            valueField: 'id'
+            valueField: 'id',
+            data: this.initData
         });
-        this.value = Ext.create("Ext.form.field.Text",{
-            width: 100,
-            id: "value" + this.id + "-" + this.number
+        this.valueStore = Ext.create('Ext.data.ArrayStore', {
+            fields: ['value']
+        });
+        this.value= Ext.create('viewer.components.FlamingoCombobox', {
+            fieldLabel: '',
+            store: this.valueStore,
+            queryMode: 'local',
+            displayField: 'value',
+            width:150,
+            valueField: 'value',
+            forceSelection: false,
+            editable: true
         });
         return this;
     },
@@ -89,7 +101,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 				layout: {
 					type: 'hbox'
 				},
-				width: 220,
+				width: 320,
 				items:  items,
 				height: MobileManager.isMobile() ? 30 : 25
 			});
@@ -112,6 +124,19 @@ Ext.define ("viewer.components.AttributeFilter",{
             cql += "\'";
         }      
         return cql;
+    },
+    /**
+     * Set the unique list of values.
+     */
+    setUniqueList: function(list){  
+        if (list.length>0){
+            this.value.setHideTrigger(false);
+        }else{
+            this.value.setHideTrigger(true);
+        }
+        this.valueStore.removeAll();
+        this.valueStore.loadData(list);
+        
     },
 	// We have to remove all items from the attribute filter due to some weird Ext bug
 	removeItems: function() {

@@ -357,6 +357,12 @@ Ext.define("viewer.viewercontroller.MapComponent",{
      */    
     getHeight: function (){
         Ext.Error.raise({msg: "MapComponent.getHeight() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Set cursor to waiting on map
+     * @param boolean setWaitingCursor
+     */
+    setWaitingCursor: function (setWaitingCursor) {
+        Ext.Error.raise({msg: "MapComponent.setCursor() Not implemented! Must be implemented in sub-class"});
     }
-
 });

@@ -37,7 +37,8 @@ Ext.define ("viewer.components.Search",{
         searchconfigs: null,
         formHeight:null,
         label: "",
-        typeLabel:null
+        //not yet configurable:
+        showRemovePin: true
     },    
     constructor: function (conf){            
         if (conf.typeLabel===undefined){
@@ -239,7 +240,24 @@ Ext.define ("viewer.components.Search",{
                     fn: this.cancel
                 }
             }
-        });        
+        });
+        //remove pin button
+        itemList.push({
+            xtype: 'button',
+            text: 'Verwijder marker',
+            margin: this.margin,
+            componentCls: 'mobileLarge',
+            name: 'removePin',
+            id: 'removePin'+ this.name,
+            hidden: true,
+            listeners: {
+                click: {
+                    scope: this,
+                    fn: this.removePin
+                }
+            }
+            
+        });
         return itemList;
     },
     hideWindow : function(){
@@ -350,6 +368,10 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
     },
+    removePin: function(){
+        this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
+        this.form.getChildByElement("removePin"+ this.name).setVisible(false);
+    },
     handleSearchResult : function(config){
         this.viewerController.mapComponent.getMap().zoomToExtent(config.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
@@ -373,6 +395,9 @@ Ext.define ("viewer.components.Search",{
         }
         
         this.popup.hide();
+        if (this.showRemovePin){
+            this.form.getChildByElement("removePin"+ this.name).setVisible(true);
+        }
     },
     getExtComponents: function() {
         var c = [ this.mainContainer.getId(), this.form.getId() ];

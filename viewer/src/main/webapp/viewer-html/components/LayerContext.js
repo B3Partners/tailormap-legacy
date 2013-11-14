@@ -27,7 +27,8 @@ Ext.define ("viewer.components.LayerContext",{
     config:{
         name: "Informatie kaartlaag",
         title: "",
-        titlebarIcon : ""
+        titlebarIcon : "",
+        tooltip: null
     },
     /**
      * @constructor
@@ -38,6 +39,13 @@ Ext.define ("viewer.components.LayerContext",{
         viewer.components.LayerContext.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED,this.layerClicked,this);
+        
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
+        
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
+            this.selectedContentChanged();
+        },this);
+        
         return this;
     },
     layerClicked: function(layerObj) {
@@ -61,6 +69,7 @@ Ext.define ("viewer.components.LayerContext",{
                 padding: '0 0 5 0',
                 margin: '0 0 5 0',
                 border: '0 0 1 0',
+                autoScroll: true,
                 style: {
                     borderColor: '#E0E0E0',
                     borderStyle: 'solid',
@@ -118,44 +127,27 @@ Ext.define ("viewer.components.LayerContext",{
             this.popup.show();
         }
     },
-    getExtComponents: function() {
-        return [ (this.panel !== null) ? this.panel.getId() : '' ];
-    }
-    /*
-     * 
-        console.log(node);
-        if(node.layerObj.metadata!= undefined || node.layerObj.download!= undefined ){
-            var config = {
-                details:{
-                    width : 700,
-                    height: 500
-                },
-                title: "Metadata"
-            };
-
-            if(this.popup != null){
-                this.popup.hide();
-            }
-
-            var html = "";
-            if(node.layerObj.metadata != undefined){
-                html += "<a target='_BLANK' href='" +node.layerObj.metadata + "'>Metadata</a>";
-            }
-            if(node.layerObj.download != undefined){
-                if(html != ""){
-                    html += "<br/>";
+    selectedContentChanged: function(){
+        var me = this;
+        if (this.tooltip){
+            var tocs= this.viewerController.getComponentsByClassName("viewer.components.TOC");
+            this.viewerController.traverseSelectedContent(function(){},function(layer){
+                var serviceLayer=me.viewerController.getServiceLayer(layer);
+                if( (   serviceLayer.details && 
+                        (serviceLayer.details ["metadata.stylesheet"] || serviceLayer.details ["download.url"])) ||  
+                    (   typeof layer.details !== 'undefined' &&
+                        typeof layer.details.context !== 'undefined'
+                    )
+                ){
+                    for (var i = 0; i < tocs.length; i++){
+                        tocs[i].setLayerQtip(me.tooltip,layer.id);
+                    }
                 }
-                html += "<a target='_BLANK' href='" +node.layerObj.download+ "'>Downloadlink</a>";
-            }
-            this.popup = Ext.create("viewer.components.ScreenPopup",config);
-            var panelConfig={
-                renderTo : this.popup.getContentId(),
-                frame: false,
-                html: html
-            };
-            Ext.create ("Ext.panel.Panel",panelConfig);
-            this.popup.show();
+            });
         }
-     */
+    },
+    getExtComponents: function() {
+        return [ (this.container !== null) ? this.container.getId() : '' ];
+    }
 });
 
