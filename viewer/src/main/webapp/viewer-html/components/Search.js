@@ -344,8 +344,6 @@ Ext.define ("viewer.components.Search",{
                         scope: me,
                         fn: function(button,e,eOpts){
                             var config =this.searchResult[button.id.split("_")[1]];
-                            config.x = (config.location.maxx +config.location.minx)/2;
-                            config.y = (config.location.maxy +config.location.miny)/2;
                             me.handleSearchResult(config);
                         }
                     }
@@ -364,6 +362,11 @@ Ext.define ("viewer.components.Search",{
             },
             items: buttonList
         });
+        if(this.searchResult.length === 1){
+            this.handleSearchResult(this.searchResult[0]);
+        }else{
+            this.popup.show();
+        }
         
     },
     cancel : function(){
@@ -377,6 +380,9 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("removePin"+ this.name).setVisible(false);
     },
     handleSearchResult : function(config){
+
+        config.x = (config.location.maxx + config.location.minx) / 2;
+        config.y = (config.location.maxy + config.location.miny) / 2;
         this.viewerController.mapComponent.getMap().zoomToExtent(config.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",config.x,config.y,"marker");
@@ -490,6 +496,18 @@ Ext.define ("viewer.components.Search",{
         this.searchResult = results;
         this.showSearchResults();
         this.mainContainer.setLoading(false);
+    },
+    loadVariables: function(param){
+        var searchConfig = param.substring(0,param.indexOf(":"));
+        var term = param.substring(param.indexOf(":") +1, param.length);
+        this.form.getChildByElement("searchName" + this.name).setValue(searchConfig);
+        
+        this.form.getChildByElement("searchfield" + this.name).setValue(term);
+        var me = this;
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function() {
+            me.search();
+        }, this);
+        return;
     }
 });
 

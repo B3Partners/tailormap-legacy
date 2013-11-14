@@ -51,7 +51,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         me.panel = Ext.create('Ext.panel.Panel', {
 		    width: me.formWidth,
             margin: '15 0 0 0',
-		    height: 250,
+		    height: 350,
 		    layout: 'auto',
             autoScroll: true,
 		    items: [],
@@ -130,6 +130,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [
                         { fieldLabel: 'Naam', name: 'name', value: config.name, id: 'name'+config.id },
+                        { fieldLabel: 'Id', name: 'idField', value: config.id,disabled:true, disabledCls:'disabledTextField', tooltip:'sdfasdfasdf'},
                         { fieldLabel: 'URL *', name: 'url', value: config.url, id: 'url'+config.id, width: 720 },
                         {                           
                             xtype: 'radiogroup',

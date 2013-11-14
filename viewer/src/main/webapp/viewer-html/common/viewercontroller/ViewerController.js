@@ -221,7 +221,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.addMap(map);
             
             this.initializeConfiguredComponents();
-            var layersloaded = this.bookmarkValuesFromURL(this.queryParams);
+            var layersloaded = this.valuesFromURL(this.queryParams);
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();                
@@ -1331,7 +1331,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return joinedFeatureTypes;
     },
             
-    bookmarkValuesFromURL : function(params){
+    valuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
         var appLayers = this.app.appLayers;
@@ -1339,18 +1339,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         for( var key in params){
             var value = params[key];
-            if(key == "bookmark"){
+            if(key === "bookmark"){
                 var me = this;
                 Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
                 layersLoaded = true;
                 bookmark = true;
-            }else if(key == "layers"){
+            }else if(key === "layers"){
                 if(!Ext.isArray(value)){
                     value = value.split(",");
                 }
                 appLayers = this.loadBookmarkLayers(value);
                 layersLoaded = true;
-            }else if(key == "extent"){
+            }else if(key === "extent"){
                 var coords = value;
                 var newExtent = new Object();
                 if(!Ext.isObject(value)){
@@ -1369,7 +1369,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
                 };
                 this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);   
-            }else if (key == "levelOrder"){
+            }else if (key === "levelOrder"){
                selectedContent=[];
                if(!Ext.isArray(value)){
                     value = value.split(",");
@@ -1387,10 +1387,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         selectedContent.push(this.app.selectedContent[s]);
                     }
                 }
+            }else if(key === "search"){
+                if(!Ext.isEmpty(value)){
+                    var components = this.getComponentsByClassName("viewer.components.Search");
+                    for (var i = 0 ; i < components.length ;i++){
+                        var comp = components[i];
+                        comp.loadVariables(value);
+                    }
+                }
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
-                    component.loadBookmarkState(Ext.decode(value));
+                    component.loadVariables(value);
                 }
             }
         }
@@ -1435,7 +1443,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var value = parameter.value;
             params[key] = value;
         }
-        this.bookmarkValuesFromURL(params);
+        this.valuesFromURL(params);
     },
     failureReadUrl : function(code){
     },
