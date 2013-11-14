@@ -461,6 +461,9 @@ Ext.define ("viewer.components.SelectionModule",{
         if(me.hasLeftTrees())
         {
             if(me.config.selectOwnServices || me.config.selectCsw) {
+                if(!this.advancedValueConfigs){
+                    this.advancedValueConfigs= new Array();
+                }
                 this.advancedValueConfigs.unshift({label: "", value: ""});
                 var store = Ext.create('Ext.data.Store', {
                     fields: ['label', 'value'],
