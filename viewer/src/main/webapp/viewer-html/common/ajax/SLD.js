@@ -77,19 +77,21 @@ Ext.define("viewer.SLD", {
         });
     },
     
-    createURL: function(layer, style, cqlFilter, featureTypeName, sldId) {
+    createURL: function(layer, style, cqlFilter, featureTypeName, sldId, commonAndFilter) {
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
-            url = Ext.urlAppend(url, "layer=" + layer);
+            url = Ext.String.urlAppend(url, "layer=" + layer);
         if (style!==null){
-            url = Ext.urlAppend(url, "style=" + style);
+            url = Ext.String.urlAppend(url, "style=" + style);
         }if(cqlFilter!==null){
-            url = Ext.urlAppend(url, "filter=" + cqlFilter);
+            url = Ext.String.urlAppend(url, "filter=" + cqlFilter);
         }if (featureTypeName!==null){
-            url = Ext.urlAppend(url, "featureTypeName=" + featureTypeName);
+            url = Ext.String.urlAppend(url, "featureTypeName=" + featureTypeName);
         }if (sldId!==null){
-            url = Ext.urlAppend(url, "id=" + sldId);
+            url = Ext.String.urlAppend(url, "id=" + sldId);
+        }if (commonAndFilter){
+            url = Ext.String.urlAppend(url, "commonAndFilter="+commonAndFilter);
         }
-        url = Ext.urlAppend(url, "format=xml");
+        url = Ext.String.urlAppend(url, "format=xml");
         return url;
     },
     
