@@ -330,7 +330,7 @@ Ext.define ("viewer.components.Search",{
         var buttonList = new Array();
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];
-            var typeLabel = this.typeLabel[result.type];
+            var typeLabel = result.type !== undefined ? this.typeLabel[result.type] : undefined;
             
             buttonList.push({
                 text: result.label + (typeLabel!==undefined ? " ("+typeLabel+")" : ""),
