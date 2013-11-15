@@ -354,6 +354,7 @@ Ext.define ("viewer.components.SelectionModule",{
 
     loadCustomService: function() {
         var me = this;
+        Ext.getCmp("selectionModuleTreeContentContainer").setLoading("Zoeken...");
         
         var protocol = '', url = '', q = '';
         if(me.customServiceType == 'csw') {
@@ -381,9 +382,11 @@ Ext.define ("viewer.components.SelectionModule",{
                             levels.push(l);
                         }
                         me.insertTreeNode(levels, rootNode);
+                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
                     },
                     function(msg) {
                         Ext.MessageBox.alert("Foutmelding", msg);
+                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
                     }
                 );
             }else{
@@ -391,9 +394,11 @@ Ext.define ("viewer.components.SelectionModule",{
                 csw.loadInfo(
                     function(results) {
                         me.populateCSWTree(results);
+                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
                     },
                     function(msg) {
                         Ext.MessageBox.alert("Foutmelding", msg);
+                        Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
                     }
                 );
             }
@@ -408,9 +413,11 @@ Ext.define ("viewer.components.SelectionModule",{
             si.loadInfo(
                 function(info) {
                     me.populateCustomServiceTree(info);
+                    Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
                 },
                 function(msg) {
                     Ext.MessageBox.alert("Foutmelding", msg);
+                    Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
                 }
             );
         }        
