@@ -126,6 +126,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             padding: '5 5 0 5',
             items:[
                 {
+                    xtype: "checkbox",
+                    checked: configObject.alwaysMatch !== undefined ? configObject.alwaysMatch : false,
+                    name: "alwaysMatch",
+                    id: "alwaysMatch",
+                    labelWidth: this.labelWidth,
+                    fieldLabel: "Match altijd met gegevensregister",
+                    width: 500,
+                },
+                {
                     xtype: "textfield",
                     name: "advancedLabel",
                     id: "advancedLabel",
@@ -201,9 +210,11 @@ Ext.define("viewer.components.CustomConfiguration",{
         var config = this.callParent(arguments);
         var advancedLabel = Ext.getCmp("advancedLabel");
         var advancedValue = Ext.getCmp("advancedValue");
+        var alwaysMatch = Ext.getCmp("alwaysMatch");
         var values =  Ext.getCmp("advancedFilterValues");
         config.advancedLabel = advancedLabel !== null ? advancedLabel.getValue() : "";
         config.advancedValue = advancedValue !== null ? advancedValue.getValue() : "";
+        config.alwaysMatch = alwaysMatch !== null ? alwaysMatch.getValue() : "";
         
         var items = values.items.items;
         

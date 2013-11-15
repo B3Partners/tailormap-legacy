@@ -139,7 +139,8 @@ Ext.define ("viewer.components.SelectionModule",{
         advancedFilter:null,
         defaultCswUrl:null,
         advancedLabel:null,
-        advancedValue:null
+        advancedValue:null,
+        alwaysMatch:null
     },
     constructor: function (conf) {        
         //set defaults
@@ -363,7 +364,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 q: q
             });
             var advancedSearch = Ext.getCmp('advancedSearchQuery').getValue();
-            if(this.advancedFilter &&  !Ext.getCmp("cswAdvancedSearchField").collapsed){
+            if(this.advancedFilter && ( !Ext.getCmp("cswAdvancedSearchField").collapsed || this.alwaysMatch)){
                 csw.setActionbeanUrl(actionBeans["advancedcsw"]);
                 csw.config["advancedString"] = advancedSearch;
                 csw.config["advancedProperty"] = this.advancedValue;
