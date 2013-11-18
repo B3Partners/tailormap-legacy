@@ -120,7 +120,7 @@ Ext.define ("viewer.components.Maptip",{
         if(this.isSummaryLayer(mapLayer)){            
             var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
             var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-            if (layer.hasFeatureType){
+            if (layer.hasFeatureType && this.serverRequestLayers){
                 Ext.Array.remove(this.serverRequestLayers, appLayer);
             }
         }
