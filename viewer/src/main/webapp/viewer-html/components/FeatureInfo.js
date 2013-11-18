@@ -22,6 +22,7 @@
 Ext.define ("viewer.components.FeatureInfo",{
     extend: "viewer.components.Maptip",   
     progressElement: null,
+    numRequestLayers:0,
     /**
      * Overwrite constructor to set some other settings then maptip.
      */
@@ -93,6 +94,7 @@ Ext.define ("viewer.components.FeatureInfo",{
                 //listen to the onMaptipData
                 mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
             }            
+            this.numRequestLayers++;
         }
     },
     
@@ -106,6 +108,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             if (layer.hasFeatureType && this.serverRequestLayers){
                 Ext.Array.remove(this.serverRequestLayers, appLayer);
             }
+            this.numRequestLayers--;
         }
 
     },
@@ -130,10 +133,12 @@ Ext.define ("viewer.components.FeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
-        this.viewerController.mapComponent.setWaitingCursor(true);
-        this.balloon.setContent("");
-        this.balloon.hide();
-        this.setMaptipEnabled(false);
+        if(this.numRequestLayers > 0){
+            this.viewerController.mapComponent.setWaitingCursor(true);
+            this.balloon.setContent("");
+            this.balloon.hide();
+            this.setMaptipEnabled(false);
+        }
     },
     /**
      * 
