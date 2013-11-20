@@ -85,7 +85,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         };
         me.searchconfigs.push(newconfig);
         var collapsed = true;
-        if(nextId == 1) collapsed = false;
+        if(nextId === 1) collapsed = false;
         me.panel.add(me.newSearchField(newconfig, collapsed));
         me.nextId++;
     },
@@ -119,29 +119,29 @@ Ext.define("viewer.components.CustomConfiguration",{
                         { fieldLabel: 'URL *', name: 'url', value: config.url, id: 'url'+config.id, width: 720 },
                         {                           
                             xtype: 'radiogroup',
-                            id: 'type'+config.id,
+                            id: 'type' + config.id,
                             fieldLabel: 'Type',
                             vertical: true,
-                            name: "type",
+                            name: "type" + config.id,
                             items: [{
                                 boxLabel: 'OpenLS', 
-                                name: 'type', 
+                                name: 'type' + config.id, 
                                 inputValue: 'openls',
                                 checked: config.type=="openls" || config.type==undefined
                             },{
                                 boxLabel: 'ArcGISRest', 
-                                name: 'type', 
+                                name: 'type' + config.id, 
                                 inputValue: 'arcgisrest',
                                 checked: config.type=="arcgisrest"
                             },{
                                 boxLabel: 'Solr', 
-                                name: 'type', 
+                                name: 'type' + config.id, 
                                 inputValue: 'solr',
                                 checked: config.type=="solr"
                             }],
                             listeners: {
                                 change: function(radio) {
-                                    if(radio.getValue().type === 'solr') {
+                                    if(radio.getValue()[radio.getName()] === 'solr') {
                                         // Show additional Solr configuration
                                         me.addSolrconfig(config.id);
                                     } else {
@@ -157,7 +157,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             text: 'Zoekingang opslaan',
                             listeners: {
                                 click: function(button) {
-                                    me.saveConfig(config.id);
+                                    me.saveConfig();
                                 }
                             }
                         }
@@ -181,33 +181,31 @@ Ext.define("viewer.components.CustomConfiguration",{
                     });
                 },
                 expand: function() {
-                    if(Ext.getCmp('type' + config.id).getValue().type === 'solr') {
+                    if(Ext.getCmp('type' + config.id).getValue()['type' + config.id] === 'solr') {
                         me.addSolrconfig(config.id);
                     }
                 }
             }
         };
     },
-    saveConfig: function(configid) {
+    saveConfig: function() {
         var me = this;
-        var panel = Ext.getCmp(configid);
-        var newname = Ext.getCmp('name' + configid).getValue();
-        var newurl = Ext.getCmp('url' + configid).getValue();
-        var newtype = Ext.getCmp('type' + configid).getValue().type;
-        panel.setTitle(newname);
         var newSearchconfigs = [];
         Ext.Array.each(me.searchconfigs, function(searchconfig) {
-            if(searchconfig.id == configid) {
-                searchconfig.name = newname;
-                searchconfig.url = newurl;
-                searchconfig.type= newtype;
+            var configid = searchconfig.id,
+                name = Ext.getCmp('name' + configid).getValue(),
+                type = Ext.getCmp('type' + configid).getValue()['type' + configid],
+                url = Ext.getCmp('url' + configid).getValue();
+            Ext.getCmp(configid).setTitle(name);
+            searchconfig.name = name;
+            searchconfig.url = url;
+            searchconfig.type= type;
+            if(type === 'solr') {
+                me.saveSolrconfig(configid);
             }
             newSearchconfigs.push(searchconfig);
         });
         me.searchconfigs = newSearchconfigs;
-        if(newtype === 'solr') {
-            me.saveSolrconfig(configid);
-        }
     },
     removeConfig: function(configid) {
         var me = this;
@@ -223,6 +221,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     getConfiguration: function(){
         var me = this;
         var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
+        me.saveConfig();
         config['searchconfigs'] = me.searchconfigs;
         config['nextSearchConfigId'] = me.nextId;
         return config;
@@ -291,15 +290,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 bodyStyle: 'background-color: White;',
                 bbar: [
                     { xtype: 'tbfill' },
-                    { xtype: 'button', text: 'Opslaan', handler: function() {
-                        var requiredOn = me.requiredLayersOn.getChecked();
-                        var switchOn = me.switchLayersOn.getChecked();
-                        if(requiredOn.length > 0 || switchOn.length > 0) {
-                            // If any layers are selected, enable checkbox
-                            checkbox.checked = true;
-                        }
-                        me.saveSolrconfig(searchconfigId, requiredOn, switchOn);
-                    }}
+                    { xtype: 'button', text: 'Opslaan', id: 'configureLayersButton' }
                 ],
                 items: [
                     {
@@ -354,6 +345,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 switchOnLayersChecked = searchConfig.solrConfig[solrConfigId].switchOnLayers;
             }
         }
+        Ext.getCmp('configureLayersButton').setHandler(function() {
+            var requiredOn = me.requiredLayersOn.getChecked();
+            var switchOn = me.switchLayersOn.getChecked();
+            if(requiredOn.length > 0 || switchOn.length > 0) {
+                // If any layers are selected, enable checkbox
+                checkbox.checked = true;
+            }
+            me.saveSolrconfig(searchconfigId, requiredOn, switchOn);
+            me.layerSelectionWindow.hide();
+        });
         me.requiredLayersOn.resetChecked(requiredLayersChecked);
         me.switchLayersOn.resetChecked(switchOnLayersChecked);
         // Show the window
@@ -372,14 +373,28 @@ Ext.define("viewer.components.CustomConfiguration",{
             var checkedSolrconfigs = this.solrSearchconfigs[searchconfigId].getChecked();
             // For each of the checked solr configs we will create a config object
             Ext.Array.each(checkedSolrconfigs, function(solrConfigId) {
+                // Set required Layers
+                var requiredLayers = [];
+                if(typeof requiredOn !== "undefined") {
+                    requiredLayers = requiredOn;
+                } else if(solrConfig.hasOwnProperty(solrConfigId) && solrConfig[solrConfigId].requiredLayers) {
+                    requiredLayers = solrConfig[solrConfigId].requiredLayers;
+                }
+                // Set layers that sould be switched on
+                var switchOnLayers = [];
+                if(typeof switchOn !== "undefined") {
+                    switchOnLayers = switchOn;
+                } else if(solrConfig.hasOwnProperty(solrConfigId) && solrConfig[solrConfigId].switchOnLayers) {
+                    switchOnLayers = solrConfig[solrConfigId].switchOnLayers;
+                }
                 // Replace previous config object
                 solrConfig[solrConfigId] = {
                     // Config id
                     'solrConfigid': solrConfigId,
                     // Layers that are required to be on
-                    'requiredLayers': requiredOn || solrConfig.requiredLayers || [],
+                    'requiredLayers': requiredLayers,
                     // Layers that should be switched on
-                    'switchOnLayers': switchOn || solrConfig.switchOnLayers || []
+                    'switchOnLayers': switchOnLayers
                 };
             });
         }

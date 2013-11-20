@@ -186,6 +186,8 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         Ext.Array.each(me.itemList, function(item) {
             if(Ext.Array.contains(me.checked, item[me.valueField])) {
                 document.getElementById('checkbox-' + item.htmlId).checked = true;
+            } else {
+                document.getElementById('checkbox-' + item.htmlId).checked = false;
             }
         });
     },
