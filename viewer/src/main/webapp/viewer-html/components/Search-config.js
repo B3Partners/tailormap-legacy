@@ -211,6 +211,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name = Ext.getCmp('name' + configid).getValue(),
                 type = Ext.getCmp('type' + configid).getValue()['type' + configid],
                 url = Ext.getCmp('url' + configid).getValue();
+            if(name === '') {
+                name = configid;
+            }
             Ext.getCmp(configid).setTitle(name);
             searchconfig.name = name;
             searchconfig.url = url;
