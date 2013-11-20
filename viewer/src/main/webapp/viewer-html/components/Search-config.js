@@ -25,6 +25,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     searchconfigs: [],
     nextId: 1,
     solrSearchconfigs: {},
+    simpleListConfigs: {},
     layerSelectionWindow: null,
     requiredLayersOn: null,
     switchLayersOn: null,
@@ -131,7 +132,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                     items: [
                         { fieldLabel: 'Naam', name: 'name', value: config.name, id: 'name'+config.id },
                         { fieldLabel: 'Id', name: 'idField', value: config.id,disabled:true, disabledCls:'disabledTextField', tooltip:'sdfasdfasdf'},
-                        { fieldLabel: 'URL *', name: 'url', value: config.url, id: 'url'+config.id, width: 720 },
                         {                           
                             xtype: 'radiogroup',
                             id: 'type' + config.id,
@@ -153,19 +153,21 @@ Ext.define("viewer.components.CustomConfiguration",{
                                 name: 'type' + config.id, 
                                 inputValue: 'solr',
                                 checked: config.type=="solr"
+                            },{
+                                boxLabel: 'Eenvoudig', 
+                                name: 'type' + config.id, 
+                                inputValue: 'simplelist',
+                                checked: config.type=="simplelist"
                             }],
                             listeners: {
                                 change: function(radio) {
-                                    if(radio.getValue()[radio.getName()] === 'solr') {
-                                        // Show additional Solr configuration
-                                        me.addSolrconfig(config.id);
-                                    } else {
-                                        me.hideSolrconfig(config.id);
-                                    }
+                                    me.showExtraconfig(radio.getValue()[radio.getName()], config.id);
                                 }
                             }
                         },
+                        { fieldLabel: 'URL *', name: 'url', value: config.url, id: 'url'+config.id, width: 720 },
                         { xtype: 'container', id: 'solrConfig' + config.id, hidden: true, height: 130, html: 'Selecteer Solr zoekconfiguraties' },
+                        { xtype: 'container', id: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', html: '', layout: { type: 'vbox', align: 'stretch' } },
                         {
                             xtype:'button',
                             iconCls: 'savebutton-icon',
@@ -196,12 +198,36 @@ Ext.define("viewer.components.CustomConfiguration",{
                     });
                 },
                 expand: function() {
-                    if(Ext.getCmp('type' + config.id).getValue()['type' + config.id] === 'solr') {
-                        me.addSolrconfig(config.id);
-                    }
+                    me.showExtraconfig(me.getType(config.id), config.id);
                 }
             }
         };
+    },
+    getType: function(configid) {
+        return Ext.getCmp('type' + configid).getValue()['type' + configid];
+    },
+    showExtraconfig: function(type, configid) {
+        // When switching radio input type is an array
+        if(typeof type !== 'string') return;
+        this.hideExtraConfig(configid);
+        if(type === 'solr' || type === 'simplelist') {
+            if(type === 'solr') {
+                // Show additional Solr configuration
+                this.addSolrconfig(configid);
+            }
+            if(type === 'simplelist') {
+                this.addSimplelistConfig(configid);
+            }
+            this.hideUrl(configid);
+        } else {
+            this.showUrl(configid);
+        }
+    },
+    hideUrl: function(configid) {
+        Ext.getCmp('url' + configid).setVisible(false);
+    },
+    showUrl: function(configid) {
+        Ext.getCmp('url' + configid).setVisible(true);
     },
     saveConfig: function() {
         var me = this;
@@ -220,6 +246,9 @@ Ext.define("viewer.components.CustomConfiguration",{
             searchconfig.type= type;
             if(type === 'solr') {
                 me.saveSolrconfig(configid);
+            }
+            if(type === 'simplelist') {
+                me.saveSimpleListConfig(configid);
             }
             newSearchconfigs.push(searchconfig);
         });
@@ -243,6 +272,79 @@ Ext.define("viewer.components.CustomConfiguration",{
         config['searchconfigs'] = me.searchconfigs;
         config['nextSearchConfigId'] = me.nextId;
         return config;
+    },
+    addSimplelistConfig: function(configid) {
+        var containerId = 'simpleListConfig' + configid,
+            searchConfig = this.getConfig(configid),
+            me = this,
+            container = Ext.getCmp(containerId);
+        if(!me.simpleListConfigs.hasOwnProperty(configid)) {
+            me.simpleListConfigs[configid] = Ext.create('Ext.container.Container', {
+                flex: 1,
+                autoScroll: true
+            });
+            container.add({ xtype: 'container', items: [{ xtype: 'button', text: 'Optie toevoegen', handler: function() {
+               me.simpleListConfigs[configid].add(me.getSimpleListFields({}, configid));
+            }}]});
+            container.add(me.simpleListConfigs[configid]);
+            if(searchConfig.hasOwnProperty('simpleSearchConfig')) {
+                Ext.Array.each(searchConfig.simpleSearchConfig, function(value) {
+                    me.simpleListConfigs[configid].add(me.getSimpleListFields(value, configid));
+                });
+            }
+        }
+        container.show();
+    },
+    getSimpleListFields: function(config, configid) {
+        return {
+            xtype: 'container',
+            layout: 'hbox',
+            width: '100%',
+            defaults: {
+                xtype: 'textfield',
+                labelAlign: 'top',
+                margin: '0 5 0 0'
+            },
+            items: [
+                { fieldLabel: 'Label', name: 'label', value: config.label || '' },
+                { fieldLabel: 'Waarde', name: 'value', value: config.value || '' },
+                { fieldLabel: 'lo-x', name: 'minX', size: 8, value: config.bbox && config.bbox.minx || '' },
+                { fieldLabel: 'lo-y', name: 'minY', size: 8, value: config.bbox && config.bbox.miny || '' },
+                { fieldLabel: 'rb-x', name: 'maxX', size: 8, value: config.bbox && config.bbox.maxx || '' },
+                { fieldLabel: 'rb-y', name: 'maxY', size: 8, value: config.bbox && config.bbox.maxy || '' }
+            ]
+        };
+    },
+    saveSimpleListConfig: function(configid) {
+        var searchConfig = this.getConfig(configid),
+            simpleSearchConfig = searchConfig.simpleSearchConfig || [];
+        if(this.simpleListConfigs.hasOwnProperty(configid)) {
+            var simpleListContainer = this.simpleListConfigs[configid];
+            simpleSearchConfig = [];
+            // Get all field containers (all rows)
+            simpleListContainer.query('.container').forEach(function(fieldContainer) {
+                var simpleConfig = {};
+                // Get all fields (all columns)
+                fieldContainer.query('.textfield').forEach(function(field) {
+                    // Set name of field as key and its value as value
+                    simpleConfig[field.getName()] = field.getValue();
+                });
+                // Check if config is valid (are all required fields filled in)
+                if(simpleConfig.label && simpleConfig.minX && simpleConfig.minY && simpleConfig.maxX && simpleConfig.maxY) {
+                    simpleSearchConfig.push({
+                        label: simpleConfig.label,
+                        value: simpleConfig.value,
+                        bbox: {
+                            minx: simpleConfig.minX,
+                            miny: simpleConfig.minY,
+                            maxx: simpleConfig.maxX,
+                            maxy: simpleConfig.maxY
+                        }
+                    });
+                }
+            });
+        }
+        searchConfig.simpleSearchConfig = simpleSearchConfig;
     },
     /**
      * Show Solr configuration options for searchConfig
@@ -420,10 +522,11 @@ Ext.define("viewer.components.CustomConfiguration",{
         searchConfig.solrConfig = solrConfig;
     },
     /**
-     * Function to hide Solr config options
+     * Function to hide extra config options
      */
-    hideSolrconfig: function(searchconfigId) {
+    hideExtraConfig: function(searchconfigId) {
         Ext.getCmp('solrConfig' + searchconfigId).setVisible(false);
+        Ext.getCmp('simpleListConfig' + searchconfigId).setVisible(false);
         this.panel.doLayout();
     },
     /**
