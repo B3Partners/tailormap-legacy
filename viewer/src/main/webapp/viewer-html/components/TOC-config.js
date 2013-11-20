@@ -23,6 +23,11 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(config == undefined || config == null){
             config = new Object();
         }
+        /* backwards compatible of the toggle layers button configuration*/
+        if (config.showToggleAllLayers!==undefined){
+            config.showAllLayersOn=config.showToggleAllLayers;
+            config.showAllLayersOff=config.showToggleAllLayers;
+        }
         var me=this;
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
@@ -86,14 +91,34 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: true,
                 labelWidth:me.labelWidth
             },{
-                xtype: 'checkbox',
-                fieldLabel: 'Toon knop voor aan/uit zetten van alle layers in de TOC',
-                name: 'showToggleAllLayers',
-                inputValue: true,
-                checked: config.showToggleAllLayers!==undefined? config.showToggleAllLayers:false,
-                value: true,
-                labelWidth: me.labelWidth
-            },{ 
+                xtype: 'container',
+                layout: {
+                    type : 'hbox'
+                },
+                items: [
+                    {
+                        xtype: 'checkbox',
+                        fieldLabel: 'Toon knop voor aan/uit zetten van alle layers',
+                        name: 'showAllLayersOn',
+                        inputValue: true,
+                        checked: config.showAllLayersOn!==undefined? config.showAllLayersOn:false,
+                        value: true,
+                        labelWidth: me.labelWidth,
+                        boxLabel: 'Toon \'alles aan\' knop'
+                    },{
+                        xtype: 'checkbox',
+                        name: 'showAllLayersOff',
+                        inputValue: true,
+                        checked: config.showAllLayersOff!==undefined? config.showAllLayersOff:false,
+                        value: true,
+                        boxLabel: 'Toon \'alles uit\' knop',
+                        style: {
+                            marginLeft: "20px"
+                        }
+                    }
+                ]
+            },
+            { 
                 xtype: 'textfield',
                 fieldLabel: 'Tekst voor knop om alle layers aan te zetten',
                 name: 'toggleAllLayersOnText',

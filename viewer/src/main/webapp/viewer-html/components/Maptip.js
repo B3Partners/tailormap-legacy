@@ -33,7 +33,8 @@ Ext.define ("viewer.components.Maptip",{
         detailShowAttr: true,
         detailShowTitle: true,
         detailShowDesc: true,
-        detailShowImage: true
+        detailShowImage: true,
+        heightDescription: null
     },
     serverRequestEnabled: false,
     serverRequestLayers: null,
@@ -256,6 +257,9 @@ Ext.define ("viewer.components.Maptip",{
                             if (appLayer.details && appLayer.details["summary.description"]){
                                 var descriptionDiv = new Ext.Element(document.createElement("div"));
                                 descriptionDiv.addCls("feature_summary_description");
+                                if (this.heightDescription){
+                                    descriptionDiv.setHeight(Number(this.heightDescription));
+                                }
                                 var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature,noHtmlEncode,nl2br);
                                 
                                 descriptionDiv.insertHtml("beforeEnd",desc);

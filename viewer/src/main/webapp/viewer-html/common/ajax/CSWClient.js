@@ -36,16 +36,16 @@ Ext.define("viewer.CSWClient", {
         url : null
     },
     url: null,
-    constructor: function(config) {        
-        this.initConfig(config);
+    constructor: function(config) {  
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["csw"];
-        }        
+        }              
+        this.initConfig(config);
     },
     loadInfo: function(successFunction, failureFunction) {
         
         Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
+            url: this.actionbeanUrl,
             params: this.config, // XXX also posts actionbeanUrl, but is harmless
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);

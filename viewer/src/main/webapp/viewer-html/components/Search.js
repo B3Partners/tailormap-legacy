@@ -37,7 +37,8 @@ Ext.define ("viewer.components.Search",{
         searchconfigs: null,
         formHeight:null,
         label: "",
-        typeLabel:null
+        //not yet configurable:
+        showRemovePin: true
     },    
     constructor: function (conf){            
         if (conf.typeLabel===undefined){
@@ -239,7 +240,24 @@ Ext.define ("viewer.components.Search",{
                     fn: this.cancel
                 }
             }
-        });        
+        });
+        //remove pin button
+        itemList.push({
+            xtype: 'button',
+            text: 'Verwijder marker',
+            margin: this.margin,
+            componentCls: 'mobileLarge',
+            name: 'removePin',
+            id: 'removePin'+ this.name,
+            hidden: true,
+            listeners: {
+                click: {
+                    scope: this,
+                    fn: this.removePin
+                }
+            }
+            
+        });
         return itemList;
     },
     hideWindow : function(){
@@ -268,30 +286,34 @@ Ext.define ("viewer.components.Search",{
             requestParams["componentName"]= this.name;
             requestParams["searchRequestId"]= this.searchRequestId;
             this.getExtraRequestParams(requestParams,searchName);
-            var me = this;
-            me.mainContainer.setLoading({
-                msg: 'Bezig met zoeken'
-            });
-            Ext.Ajax.request({ 
-                url: requestPath, 
-                params: requestParams, 
-                success: function ( result, request ) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    me.searchResult = response.results;
-                    if (response.error){
+            if( this.getCurrentSearchType() === "simplelist"){
+                this.simpleListSearch(searchText);
+            }else{
+                var me = this;
+                me.mainContainer.setLoading({
+                    msg: 'Bezig met zoeken'
+                });
+                Ext.Ajax.request({ 
+                    url: requestPath, 
+                    params: requestParams, 
+                    success: function ( result, request ) {
+                        var response = Ext.JSON.decode(result.responseText);
+                        me.searchResult = response.results;
+                        if (response.error){
+                            Ext.MessageBox.alert("Foutmelding", response.error);
+                        }
+                        if (me.searchRequestId==response.request.searchRequestId){
+                            me.showSearchResults();
+                        }
+                        me.mainContainer.setLoading(false);
+                    },
+                    failure: function(result, request) {
+                        var response = Ext.JSON.decode(result.responseText);
                         Ext.MessageBox.alert("Foutmelding", response.error);
+                        me.mainContainer.setLoading(false);
                     }
-                    if (me.searchRequestId==response.request.searchRequestId){
-                        me.showSearchResults();
-                    }
-                    me.mainContainer.setLoading(false);
-                },
-                failure: function(result, request) {
-                    var response = Ext.JSON.decode(result.responseText);
-                    Ext.MessageBox.alert("Foutmelding", response.error);
-                    me.mainContainer.setLoading(false);
-                }
-            });
+                });
+            }
             this.form.getChildByElement("cancel"+ this.name).setVisible(true);
         } else {
             Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevult te worden.");
@@ -308,7 +330,7 @@ Ext.define ("viewer.components.Search",{
         var buttonList = new Array();
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];
-            var typeLabel = this.typeLabel[result.type];
+            var typeLabel = result.type !== undefined ? this.typeLabel[result.type] : undefined;
             
             buttonList.push({
                 text: result.label + (typeLabel!==undefined ? " ("+typeLabel+")" : ""),
@@ -322,8 +344,6 @@ Ext.define ("viewer.components.Search",{
                         scope: me,
                         fn: function(button,e,eOpts){
                             var config =this.searchResult[button.id.split("_")[1]];
-                            config.x = (config.maxx +config.minx)/2;
-                            config.y = (config.maxy +config.miny)/2;
                             me.handleSearchResult(config);
                         }
                     }
@@ -342,6 +362,11 @@ Ext.define ("viewer.components.Search",{
             },
             items: buttonList
         });
+        if(this.searchResult.length === 1){
+            this.handleSearchResult(this.searchResult[0]);
+        }else{
+            this.popup.show();
+        }
         
     },
     cancel : function(){
@@ -350,7 +375,14 @@ Ext.define ("viewer.components.Search",{
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
     },
+    removePin: function(){
+        this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
+        this.form.getChildByElement("removePin"+ this.name).setVisible(false);
+    },
     handleSearchResult : function(config){
+
+        config.x = (config.location.maxx + config.location.minx) / 2;
+        config.y = (config.location.maxy + config.location.miny) / 2;
         this.viewerController.mapComponent.getMap().zoomToExtent(config.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.viewerController.mapComponent.getMap().setMarker("searchmarker",config.x,config.y,"marker");
@@ -373,6 +405,9 @@ Ext.define ("viewer.components.Search",{
         }
         
         this.popup.hide();
+        if (this.showRemovePin){
+            this.form.getChildByElement("removePin"+ this.name).setVisible(true);
+        }
     },
     getExtComponents: function() {
         var c = [ this.mainContainer.getId(), this.form.getId() ];
@@ -439,6 +474,40 @@ Ext.define ("viewer.components.Search",{
         }else{
             // Nothing to do here
         }
+    }, 
+   simpleListSearch:function(term){
+        var config = this.getCurrentSearchconfig();
+        var values = config.values;
+        term = term.toLowerCase();
+        var results = new Array();
+        for(var i = 0 ; i < values.length; i++){
+            var entry = values[i];
+            var value = entry.value;
+            value = value.toLowerCase();
+            if(value.indexOf(term) !== -1){
+                var result = {
+                    label : entry.value,
+                    location:entry.location
+                };
+                results.push(result);
+            }
+        }
+
+        this.searchResult = results;
+        this.showSearchResults();
+        this.mainContainer.setLoading(false);
+    },
+    loadVariables: function(param){
+        var searchConfig = param.substring(0,param.indexOf(":"));
+        var term = param.substring(param.indexOf(":") +1, param.length);
+        this.form.getChildByElement("searchName" + this.name).setValue(searchConfig);
+        
+        this.form.getChildByElement("searchfield" + this.name).setValue(term);
+        var me = this;
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function() {
+            me.search();
+        }, this);
+        return;
     }
 });
 

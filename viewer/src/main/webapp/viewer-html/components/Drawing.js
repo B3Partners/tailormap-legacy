@@ -538,6 +538,10 @@ Ext.define ("viewer.components.Drawing",{
                     this.description.setValue(json.description);
                     var features = Ext.JSON.decode(json.features);
                     this.loadFeatures(features);
+                    if(features.length > 0){
+                        var extent = o.result.extent;
+                        this.viewerController.mapComponent.getMap().zoomToExtent(extent);
+                    }
                 },
                 failure: function (){
                     Ext.Msg.alert('Mislukt', 'Uw bestand kon niet gelezen worden.');
@@ -547,6 +551,13 @@ Ext.define ("viewer.components.Drawing",{
     },
     
     loadFeatures: function(features){
+        //make the vectorLayer if not created yet.
+        if (features.length > 0){
+            if(this.vectorLayer == null){
+              this.createVectorLayer();
+            }
+        }
+        
         for ( var i = 0 ; i < features.length;i++){
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
@@ -555,10 +566,7 @@ Ext.define ("viewer.components.Drawing",{
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
         }
-        if(features.length > 0){
-            var extent = o.result.extent;
-            this.viewerController.mapComponent.getMap().zoomToExtent(extent);
-        }
+        
     },
     
     getBookmarkState: function(shortUrl){
@@ -574,9 +582,13 @@ Ext.define ("viewer.components.Drawing",{
         return obj;
     },
             
-    loadBookmarkState: function (state){
+    loadVariables: function (state){
+        state= Ext.decode(state);
         if (state.features){
             this.loadFeatures(state.features);
+        }
+        if (state.extent){
+            this.viewerController.mapComponent.getMap().zoomToExtent(state.extent);
         }
     },
     

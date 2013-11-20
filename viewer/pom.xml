@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.3-SNAPSHOT</version>
+        <version>4.3.2-SNAPSHOT</version>
     </parent>
     <name>viewer</name>
 
@@ -98,6 +98,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
             <version>rr2079.1</version>
@@ -125,7 +130,13 @@
             <artifactId>openls-databinding</artifactId>
             <version>0.3</version>
         </dependency>
-         <!-- Solr dependencies for indexing and searching -->
+                <!-- lucene for csw advanced searching -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+        <!-- Solr dependencies for indexing and searching -->
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
@@ -135,9 +146,17 @@
                     <artifactId>jsp-api</artifactId>
                     <groupId>javax.servlet.jsp</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-analyzers</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
+                <dependency>
                <artifactId>solr-solrj</artifactId>
                <groupId>org.apache.solr</groupId>
                <version>4.5.0</version>

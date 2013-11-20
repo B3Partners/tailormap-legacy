@@ -53,6 +53,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="layout" class="tabdiv">
                     <a href="#Component_Layout_Tab_Help" title="Help" class="helplink"></a>
                 </div>
+                <div id="help" class="tabdiv">
+                    <a href="#Component_Help_Tab_Help" title="Help" class="helplink"></a>
+                </div>
             </div>
         </stripes:form>
         <script>

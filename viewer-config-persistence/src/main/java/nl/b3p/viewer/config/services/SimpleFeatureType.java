@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.services;
 import java.io.IOException;
 import java.util.*;
 import javax.persistence.*;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,11 +58,11 @@ public class SimpleFeatureType {
     @OneToMany (cascade=CascadeType.ALL, mappedBy="featureType")
     private List<FeatureTypeRelation> relations = new ArrayList<FeatureTypeRelation>();
     
-    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268 
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
     @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
-
+    
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public List<AttributeDescriptor> getAttributes() {
         return attributes;
@@ -187,13 +188,12 @@ public class SimpleFeatureType {
             attributes.clear();
             attributes.addAll(update.attributes);
             changed = true;
-        }                
-        
+        }               
         for(AttributeDescriptor ad: attributes) {
             String alias = aliasesByAttributeName.get(ad.getName());
             if(alias != null) {
                 ad.setAlias(alias);
-            }
+            }            
         }
         return changed;
     }

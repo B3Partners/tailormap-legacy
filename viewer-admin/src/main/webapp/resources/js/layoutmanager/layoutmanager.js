@@ -644,7 +644,13 @@ Ext.onReady(function() {
         if(iframe.dom.contentDocument && iframe.dom.contentDocument.body && iframe.dom.contentDocument.body.innerHTML) {
             iframe.dom.contentDocument.body.innerHTML = '';
         }
-        var url = configPageLink + "?name="+componentData.componentName+"&className="+componentData.componentClass;
+        var url = configPageLink;
+        if(url.contains("?")){
+            url += "&";
+        }else{
+            url += "?";
+        }
+        url += "name="+componentData.componentName+"&className="+componentData.componentClass;
         iframe.dom.src = url;
         iframe.setStyle('display', 'block');
         popupWin.setTitle('Configuratie ' + componentData.componentPrettyName);
