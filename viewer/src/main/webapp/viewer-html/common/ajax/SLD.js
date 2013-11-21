@@ -76,14 +76,35 @@ Ext.define("viewer.SLD", {
             }
         });
     },
-    
+    /**
+     * Creates a SLD url. Length of layer,style and cqlfilter must be the same or null
+     * @param {String/Array} layer a array of layers or a comma sperated list of layers
+     * @param {String/Array} style a array of styles or acomma seperated list of styles
+     * @param {Array} cqlFilter a array of cql filters
+     * @param {String} featureTypeName featuretypename
+     * @param {String} sldId the id of the predefined sld
+     * @param {String} commonAndFilter a common and filter (filter for all layers)
+     * 
+     */
     createURL: function(layer, style, cqlFilter, featureTypeName, sldId, commonAndFilter) {
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
+        if (layer instanceof Array){    
+            url = Ext.String.urlAppend(url, "layer=" + layer.join(","));
+        }else{
             url = Ext.String.urlAppend(url, "layer=" + layer);
+        }
         if (style!==null){
-            url = Ext.String.urlAppend(url, "style=" + style);
+            if (style instanceof Array){
+                url = Ext.String.urlAppend(url, "style=" + style.join(","));
+            }else{
+                url = Ext.String.urlAppend(url, "style=" + style);
+            }
         }if(cqlFilter!==null){
-            url = Ext.String.urlAppend(url, "filter=" + cqlFilter);
+            if (cqlFilter instanceof Array){
+                url = Ext.String.urlAppend(url, "filter=" + JSON.stringify(cqlFilter));
+            }else{
+                url = Ext.String.urlAppend(url, "filter=" + cqlFilter);
+            }
         }if (featureTypeName!==null){
             url = Ext.String.urlAppend(url, "featureTypeName=" + featureTypeName);
         }if (sldId!==null){
