@@ -41,6 +41,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.styling.*;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
@@ -231,7 +232,17 @@ public class SldActionBean implements ActionBean {
             if (layer!=null){
                 layers = layer.split(",");
             }if (filter!=null){
-                filters = filter.split(",");
+                try{
+                    JSONArray jsonFilters= new JSONArray(filter);
+                    filters=new String[jsonFilters.length()];
+                for (int i=0; i < jsonFilters.length(); i++){
+                    filters[i] = jsonFilters.getString(i);
+                }
+                }catch (JSONException je){
+                    log.warn("error while parsing filters to JSON",je);
+                    filters = filter.split(",");
+                }
+                
             }if(color!=null){
                 colors = color.split(",");
             }if(style!=null){
