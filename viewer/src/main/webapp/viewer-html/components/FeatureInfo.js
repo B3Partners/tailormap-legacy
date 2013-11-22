@@ -22,7 +22,6 @@
 Ext.define ("viewer.components.FeatureInfo",{
     extend: "viewer.components.Maptip",   
     progressElement: null,
-    numRequestLayers:0,
     /**
      * Overwrite constructor to set some other settings then maptip.
      */
@@ -133,7 +132,8 @@ Ext.define ("viewer.components.FeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
-        if(this.numRequestLayers > 0){
+        var vislayers = this.viewerController.getVisibleLayers();
+        if(vislayers.length > 0){
             this.viewerController.mapComponent.setWaitingCursor(true);
             this.balloon.setContent("");
             this.balloon.hide();
