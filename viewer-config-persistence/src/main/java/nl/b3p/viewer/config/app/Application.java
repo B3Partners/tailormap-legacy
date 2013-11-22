@@ -534,9 +534,75 @@ public class Application {
             log.debug("postPersist(): not a copy");
             return;
         }
+        Map<String,Long> idMap = new HashMap();
         for(Object e: originalToCopy.entrySet()) {
             Map.Entry<Object,Object> entry = (Map.Entry<Object,Object>)e;
-            log.debug(String.format("postPersist(): original=%s, copy=%s", entry.getKey(), entry.getValue()));
+            Object original = entry.getKey();
+            Object copy = entry.getValue();
+            log.debug(String.format("postPersist(): original=%s, copy=%s", original, copy));
+            if(original instanceof Level) {
+                Level oL = (Level)original;
+                Level cL = (Level)copy;
+                idMap.put(original.getClass() + "_" + oL.getId(), cL.getId());
+            } else if(original instanceof ApplicationLayer) {
+                ApplicationLayer oAl = (ApplicationLayer)original;
+                ApplicationLayer cAl = (ApplicationLayer)copy;
+                idMap.put(original.getClass() + "_" + oAl.getId(), cAl.getId());
+            }
+        }
+        
+        log.debug("Updating component configs");
+        for(ConfiguredComponent comp: components) {
+            if(comp.getConfig() == null) {
+                continue;
+            }
+            log.debug(String.format("Checking component class %s, name %s", comp.getClassName(), comp.getName()));
+            boolean changed = false;
+            try {
+                JSONObject cfg = new JSONObject(comp.getConfig());
+                if(cfg.has("layers")) {
+                    JSONArray layers = cfg.getJSONArray("layers");
+                    for(int i = 0; i < layers.length(); i++) {
+                        Long newId = idMap.get(ApplicationLayer.class + "_" + layers.getInt(i));
+                        if(newId != null) {
+                            log.debug(String.format("Index %d: new id for application layer %d is %d", i, layers.getInt(i), newId));
+                            layers.put(i, newId.longValue());
+                        } else {
+                            log.debug(String.format("Index %d: old id %d was not a valid application layer in original", i, layers.getInt(i)));
+                            layers.put(i, -1);
+                        }
+                        changed = true;
+                    }
+                }
+                if(cfg.has("levels")) {
+                    JSONArray levels = cfg.getJSONArray("levels");
+                    for(int i = 0; i < levels.length(); i++) {
+                        Long newId = idMap.get(Level.class + "_" + levels.getInt(i));
+                        if(newId != null) {
+                            log.debug(String.format("Index %d: new id for level %d is %d", i, levels.getInt(i), newId));
+                            levels.put(i, newId.longValue());
+                        } else {
+                            log.debug(String.format("Index %d: old id %d was not a valid level in original", i, levels.getInt(i)));
+                            levels.put(i, -1);
+                        }
+                        changed = true;
+                    }
+                }
+                
+                if(changed) {
+                    log.debug("Old config: " + comp.getConfig());
+                    comp.setConfig(cfg.toString());
+                    log.debug("New config: " + comp.getConfig());
+                }
+                
+            } catch(Exception ex) {
+                log.error(String.format("Cannot update persistent object id's "
+                        + "in component config on application copy, "
+                        + "copied application=%s, component class=%s, component name=%s",
+                        getNameWithVersion(),
+                        comp.getClassName(),
+                        comp.getName()), ex);
+            }
         }
     }
 
