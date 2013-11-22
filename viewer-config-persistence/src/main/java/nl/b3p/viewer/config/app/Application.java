@@ -25,6 +25,8 @@ import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +42,8 @@ import org.stripesstuff.stripersist.Stripersist;
             @UniqueConstraint(columnNames={"name", "version"})
 )
 public class Application {
+    private static final Log log = LogFactory.getLog(Application.class);
+        
     public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
     
     private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[] { 
@@ -98,6 +102,14 @@ public class Application {
     @Basic(optional=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date authorizationsModified = new Date();    
+    
+    /**
+     * Map (populated in deepCopy()) of the original persistant object from the
+     * copy source Application to the new object in this copy used for updating 
+     * the references in component JSON config using id's in postPersist().
+     */
+    @Transient
+    Map originalToCopy;
     
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -507,16 +519,28 @@ public class Application {
         for(ConfiguredComponent cc: components) {
             copy.getComponents().add(cc.deepCopy(copy));
         }
-        
+
+        copy.originalToCopy = new HashMap();
         if(root != null) {
-            copy.setRoot(root.deepCopy(null));
+            copy.setRoot(root.deepCopy(null, copy.originalToCopy));
         }
         
         return copy;
     }
+    
+    @PostPersist
+    public void postPersist() {
+        if(originalToCopy == null) {
+            log.debug("postPersist(): not a copy");
+            return;
+        }
+        for(Object e: originalToCopy.entrySet()) {
+            Map.Entry<Object,Object> entry = (Map.Entry<Object,Object>)e;
+            log.debug(String.format("postPersist(): original=%s, copy=%s", entry.getKey(), entry.getValue()));
+        }
+    }
 
-    public void removeOldProperties()
-    {
+    public void removeOldProperties() {
         // In previous versions maxHeight and maxWidth where assigned to details directly
         // Now these settings are saved in globalLayout. We are removing these settings from
         // details (when present) to migrate from old layout to new layout
