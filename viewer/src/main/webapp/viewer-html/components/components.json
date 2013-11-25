@@ -487,8 +487,8 @@
         className: "viewer.components.TransparencySlider",
         name: "Transparantie",
         singleton: true,
-        sources: ["Slider.js","NonInitLayerSlider.js","TransparencySlider.js"],
-        configSource: ["ConfigObject.js","TransparencySlider-config.js"],
+        sources: ["Slider.js","NonInitLayerSlider.js","TransparencySlider.js","TransparencySliderLayerIds.js"],
+        configSource: ["ConfigObject.js","TransparencySlider-config.js","TransparencySliderLayerIds.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"],
         showHelp: true
         
