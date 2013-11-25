@@ -687,8 +687,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             for (var layerName in component[1]){
                 data[i]={
                     request : {
-                        appLayer: object.appLayerId
-                        
+                        appLayer: object.appLayerId,
+                        serviceLayer: layerName
                     },
                     features: component[1][layerName]
                 };
