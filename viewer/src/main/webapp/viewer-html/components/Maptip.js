@@ -92,24 +92,28 @@ Ext.define ("viewer.components.Maptip",{
             return;
         }
         if(this.isSummaryLayer(mapLayer)){            
-            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-            //Store the current map extent for every maptip request.            
-            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,function(map,options){
-                this.setRequestExtent(map.getExtent());
-            },this);         
-            
-            //do server side getFeature.
-            if (layer.hasFeatureType){
-                this.addLayerInServerRequest(appLayer);
-            }else{
-                if(mapLayer.getLayers() != null){
-                    //let the mapComponent handle the getFeature
-                    mapLayer.setMaptips(mapLayer.getLayers().split(","));
-                    //listen to the onMaptipData
-                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);         
+            if (mapLayer.appLayerId){
+                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                //Store the current map extent for every maptip request.            
+                this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,function(map,options){
+                    this.setRequestExtent(map.getExtent());
+                },this);         
+
+                //do server side getFeature.
+                if (layer.hasFeatureType){
+                    this.addLayerInServerRequest(appLayer);
+                }else{
+                    if(mapLayer.getLayers() != null){
+                        //let the mapComponent handle the getFeature
+                        mapLayer.setMaptips(mapLayer.getLayers().split(","));
+                        //listen to the onMaptipData
+                        mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);
+                    }
                 }
-            }            
+            }else{
+                mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);         
+            }
         }
     },
     
@@ -118,10 +122,12 @@ Ext.define ("viewer.components.Maptip",{
         if (mapLayer==null)
             return;        
         if(this.isSummaryLayer(mapLayer)){            
-            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-            if (layer.hasFeatureType && this.serverRequestLayers){
-                Ext.Array.remove(this.serverRequestLayers, appLayer);
+            if (mapLayer.appLayerId){
+                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                if (layer.hasFeatureType && this.serverRequestLayers){
+                    Ext.Array.remove(this.serverRequestLayers, appLayer);
+                }
             }
         }
 
@@ -233,9 +239,15 @@ Ext.define ("viewer.components.Maptip",{
                     this.viewerController.logger.error(layer.error);
                 }else{
                     var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
-        
-                    var noHtmlEncode = "true" == appLayer.details['summary.noHtmlEncode'];
-                    var nl2br = "true" == appLayer.details['summary.nl2br'];
+                    var details;
+                    if (appLayer){
+                        details = appLayer.details;
+                    }else{
+                        details = this.viewerController.mapComponent.getMap().getLayer(layer.request.serviceLayer);
+                    }
+                    
+                    var noHtmlEncode = "true" == details['summary.noHtmlEncode'];
+                    var nl2br = "true" == details['summary.nl2br'];
         
                     var layerName= appLayer.layerName;
                     for (var index in layer.features){
@@ -247,29 +259,29 @@ Ext.define ("viewer.components.Maptip",{
                         var leftColumnDiv = new Ext.Element(document.createElement("div"));
                         leftColumnDiv.addCls("feature_summary_leftcolumn");
                             //title
-                            if (appLayer.details && appLayer.details["summary.title"] ){
+                            if (details && details["summary.title"] ){
                                 var titleDiv = new Ext.Element(document.createElement("div"));
                                 titleDiv.addCls("feature_summary_title");
-                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(appLayer.details["summary.title"],feature,noHtmlEncode,nl2br));
+                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],feature,noHtmlEncode,nl2br));
                                 leftColumnDiv.appendChild(titleDiv);
                             }
                             //description
-                            if (appLayer.details && appLayer.details["summary.description"]){
+                            if (details && details["summary.description"]){
                                 var descriptionDiv = new Ext.Element(document.createElement("div"));
                                 descriptionDiv.addCls("feature_summary_description");
                                 if (this.heightDescription){
                                     descriptionDiv.setHeight(Number(this.heightDescription));
                                 }
-                                var desc = this.replaceByAttributes(appLayer.details["summary.description"],feature,noHtmlEncode,nl2br);
+                                var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br);
                                 
                                 descriptionDiv.insertHtml("beforeEnd",desc);
                                 leftColumnDiv.appendChild(descriptionDiv);
                             }
                             //link
-                            if (appLayer.details && appLayer.details["summary.link"]){
+                            if (details && details["summary.link"]){
                                 var linkDiv = new Ext.Element(document.createElement("div"));
                                 linkDiv.addCls("feature_summary_link");
-                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(appLayer.details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>");
+                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>");
                                 leftColumnDiv.appendChild(linkDiv);
                             }
                             //detail
@@ -296,10 +308,10 @@ Ext.define ("viewer.components.Maptip",{
 
                         var rightColumnDiv = new Ext.Element(document.createElement("div"));
                         rightColumnDiv.addCls("feature_summary_rightcolumn");
-                            if (appLayer.details && appLayer.details["summary.image"]){
+                            if (details && details["summary.image"]){
                                 var imageDiv = new Ext.Element(document.createElement("div"));
                                 imageDiv.addCls("feature_summary_image");
-                                imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(appLayer.details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>");
+                                imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>");
                                 rightColumnDiv.appendChild(imageDiv);
                             }
 
@@ -469,19 +481,19 @@ Ext.define ("viewer.components.Maptip",{
      * @return a string of layer names in the given layer that have a maptip configured.
      */
     isSummaryLayer: function(layer){
-        var appLayer=this.viewerController.app.appLayers[layer.appLayerId];
-        return this.isSummaryAppLayer(appLayer);
+        var details = layer.getDetails();        
+        return this.isSummaryDetails(details);
     },
     /**
-     * Check if the given applayer is a summary layer.
-     * @param appLayer the applayer that must be checked
+     * Check if the given details has data to show configured
+     * @param details the details for a layer
      */
-    isSummaryAppLayer: function (appLayer){
-        if (appLayer && appLayer.details !=undefined &&
-            (!Ext.isEmpty(appLayer.details["summary.description"]) ||
-                !Ext.isEmpty(appLayer.details["summary.image"]) ||
-                !Ext.isEmpty(appLayer.details["summary.link"]) ||
-                !Ext.isEmpty(appLayer.details["summary.title"]))){
+    isSummaryDetails: function (details){
+        if (details !=undefined &&
+            (!Ext.isEmpty(details["summary.description"]) ||
+                !Ext.isEmpty(details["summary.image"]) ||
+                !Ext.isEmpty(details["summary.link"]) ||
+                !Ext.isEmpty(details["summary.title"]))){
             return true;
         }
         return false;

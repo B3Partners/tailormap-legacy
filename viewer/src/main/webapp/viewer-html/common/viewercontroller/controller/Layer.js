@@ -33,7 +33,8 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         viewerController: null,
         url:null,
         appLayerId: null,
-        frameworkLayer: null
+        frameworkLayer: null,
+        details: null //if not a applayer, this can hold some details / settings
     },
     
     constructor: function (config){        
@@ -108,6 +109,18 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         this.map= map;
     },
     
+    /**
+     * Gets the details for this layer, if this is a layer from the register and has
+     * a applayerId, the configured applayer.details are returned. Otherwise the
+     * details object in this class is returned (custom layer)
+     */
+    getDetails: function(){
+        if (this.appLayerId){
+            return this.viewerController.app.appLayers[this.appLayerId].details;
+        }else{
+            return this.details;
+        }
+    },
     /**
      * Gets the layer type (WMS, ArcServer, ArcIms, Vector etc.)
      */
