@@ -280,19 +280,20 @@ public class Level {
         return false;
     }
 
-    Level deepCopy(Level parent) throws Exception {
+    Level deepCopy(Level parent, Map originalToCopy) throws Exception {
         Level copy = (Level)BeanUtils.cloneBean(this);
+        originalToCopy.put(this, copy);
         copy.setId(null);
         copy.setParent(parent);
         
         copy.setChildren(new ArrayList<Level>());
         for(Level child: children) {
-            copy.getChildren().add(child.deepCopy(copy));
+            copy.getChildren().add(child.deepCopy(copy, originalToCopy));
         }
         
         copy.setLayers(new ArrayList<ApplicationLayer>());
         for(ApplicationLayer appLayer: layers) {
-            copy.getLayers().add(appLayer.deepCopy());
+            copy.getLayers().add(appLayer.deepCopy(originalToCopy));
         }
         
         // do not clone documents, only the list
@@ -302,4 +303,12 @@ public class Level {
         
         return copy;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("Level [id=%d, name=%s, parent=%d]",
+                id,
+                name,
+                parent == null ? null : parent.getId());
+    }    
 }

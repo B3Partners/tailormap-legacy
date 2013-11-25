@@ -34,7 +34,11 @@ Ext.define ("viewer.components.TransparencySlider",{
     
     constructor: function (conf){        
         viewer.components.TransparencySlider.superclass.constructor.call(this, conf);
-        this.initConfig(conf);        
+        this.initConfig(conf); 
+        if(this.config.layers != null) {
+            transparencySlider_layersArrayIndexesToAppLayerIds(this.config);
+        }
+        
         var me = this;
         var title = "";
         if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
