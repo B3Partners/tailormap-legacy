@@ -490,9 +490,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,            
-            //this.getMap().setGetFeatureInfoControl(identifyTool);
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomToMaxExtent(frameworkOptions));
-            //this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
             return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
         }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE){
