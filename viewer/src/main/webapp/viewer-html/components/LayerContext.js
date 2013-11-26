@@ -68,7 +68,6 @@ Ext.define ("viewer.components.LayerContext",{
                 padding: '0 0 5 0',
                 margin: '0 0 5 0',
                 border: '0 0 1 0',
-                autoScroll: true,
                 style: {
                     borderColor: '#E0E0E0',
                     borderStyle: 'solid',
@@ -119,7 +118,8 @@ Ext.define ("viewer.components.LayerContext",{
             typeof layerObj.appLayer.details.context !== 'undefined'
         ) {
             this.htmlContainer.add({
-                xtype: 'box',
+                xtype: 'container',
+                autoScroll: true,
                 html: layerObj.appLayer.details.context
             });
         }
