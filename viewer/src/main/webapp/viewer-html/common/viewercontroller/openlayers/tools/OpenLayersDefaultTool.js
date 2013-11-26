@@ -20,7 +20,7 @@
  * @description Default tool for OpenLayers
  */
 Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
-    extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
+    extend: "viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",
     map: null,
     navigationControl: null,
     mapClick: null,
@@ -37,7 +37,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
             title: conf.tooltip
         };        
         var olTool= new OpenLayers.Control(controlOptions);        
-        viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool.superclass.constructor.call(this,conf,olTool);
+        //call super.super constructor
+        viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,olTool);
         //set type to correct tool type.
         this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
         //get the map.
@@ -51,35 +52,42 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
             id: "mapclick_"+this.id,
             viewerController: this.viewerController,
             handler: {
-                    fn: this.mapClicked,
+                    fn: this.handleClick,
                     scope: this
                 }
         });
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
         
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
+        
+        this.setUseWMSGetFeatureInfo(true);
+        
         return this;
-    },
-    /**
-     * called when the map is clicked with this tool
-     */
-    mapClicked: function(tool,options){
-        this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     },
     /**
      *Activate the tool
      */
     activate: function(){        
+        this.active=true;
         this.navigationControl.activate();
         this.mapClick.activateTool();
         this.getFrameworkObject().activate();
+        if (this.wmsGetFeatureInfoControl!=null){
+            this.wmsGetFeatureInfoControl.activate();
+        }
     },
     /**
      *Deactivate the tool
      */
     deactivate: function(){  
+        this.active=false;
         this.navigationControl.deactivate();  
         this.mapClick.deactivateTool();
         this.getFrameworkObject().deactivate();
+        if (this.wmsGetFeatureInfoControl!=null){
+            this.wmsGetFeatureInfoControl.deactivate();
+        }
     }
 });

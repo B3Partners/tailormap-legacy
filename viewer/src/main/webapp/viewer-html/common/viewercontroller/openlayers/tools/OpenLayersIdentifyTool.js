@@ -26,6 +26,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     wmsGetFeatureInfoControl:null,
     wmsGetFeatureInfoFormat: null,
     useWMSGetFeatureInfo:null,
+    active: false,
+    layersToAdd:null,
     /**
      * Constructor
      * @param conf the configuration object
@@ -34,7 +36,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
      */
     constructor : function (conf){
         this.wmsGetFeatureInfoFormat="application/vnd.ogc.gml";
-        this.useWMSGetFeatureInfo=false;
+        this.useWMSGetFeatureInfo=true;
         //this.wmsGetFeatureInfoFormat="text/plain";
         
         var frameworkOptions = {
@@ -57,20 +59,108 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 'stopSingle': true
             }
         });
-        if(this.useWMSGetFeatureInfo){
-            // add wms get featureInfo
-            this.wmsGetFeatureInfoControl = new OpenLayers.Control.WMSGetFeatureInfo({
-                drillDown: true,
-                queryVisible: false,
-                infoFormat: this.wmsGetFeatureInfoFormat
-            });  
-            this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);
-            this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
-        }
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
+        
+        this.setUseWMSGetFeatureInfo(this.useWMSGetFeatureInfo);
         // activate/deactivate
         this.getFrameworkTool().events.register("activate",this,this.activate);
         this.getFrameworkTool().events.register("deactivate",this,this.deactivate);
         return this;
+    },
+    setUseWMSGetFeatureInfo: function (val){
+        this.useWMSGetFeatureInfo=val;
+        if (this.useWMSGetFeatureInfo){
+            if (this.wmsGetFeatureInfoControl==null){
+                // add wms get featureInfo
+                if (this.layersToAdd==null){
+                    this.layersToAdd=[];
+                }
+                this.wmsGetFeatureInfoControl = new OpenLayers.Control.WMSGetFeatureInfo({
+                        drillDown: true,
+                        queryVisible: false,
+                        infoFormat: this.wmsGetFeatureInfoFormat,
+                        layers : this.layersToAdd
+                    });  
+                this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);            
+                this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
+            }
+            if (this.active){
+                this.wmsGetFeatureInfoControl.activate();
+            }else{
+                this.wmsGetFeatureInfoControl.deactivate();
+            }
+        }else{
+            if (this.wmsGetFeatureInfoControl!=null){
+                this.wmsGetFeatureInfoControl.deactivate();
+            }
+        }
+    },
+    /**
+     * Called when a layer is added
+     */
+    onAddLayer: function(map,options){        
+        var mapLayer=options.layer;
+        if (mapLayer==null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
+            return;
+        }
+        var details = mapLayer.getDetails();
+        //something to show?
+        if (details !=undefined &&
+            (!Ext.isEmpty(details["summary.description"]) ||
+                !Ext.isEmpty(details["summary.image"]) ||
+                !Ext.isEmpty(details["summary.link"]) ||
+                !Ext.isEmpty(details["summary.title"]))){
+            var doClientWms=true;
+            if (mapLayer.appLayerId){
+                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+                var confServiceLayer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                //do server side getFeature.
+                if (confServiceLayer.hasFeatureType){
+                    doClientWms=false;
+                }
+            }
+            if (doClientWms){
+                this.addWmsClientLayer(mapLayer);
+            }
+            
+        }
+    },
+    /**
+     * Called when a layer is removed
+     */
+    onRemoveLayer: function(map,options) {
+        var mapLayer=options.layer;
+        if (mapLayer==null 
+                || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
+            return;
+        }
+        this.removeWmsClientLayer(mapLayer);
+        
+    },
+    addWmsClientLayer: function(mapLayer){
+        var layer = mapLayer.getFrameworkLayer();
+        if (this.wmsGetFeatureInfoControl != null){
+            if (this.wmsGetFeatureInfoControl.layers==null){
+                this.wmsGetFeatureInfoControl.layers=[];
+            }
+            this.wmsGetFeatureInfoControl.layers.push(layer);
+        }else{
+            if (this.layersToAdd ==null){
+                this.layersToAdd=[];
+            }
+            this.layersToAdd.push(layer);
+        }
+    },
+    removeWmsClientLayer: function(mapLayer){
+        var layer = mapLayer.getFrameworkLayer();
+        if (this.wmsGetFeatureInfoControl != null){
+            if (this.wmsGetFeatureInfoControl.layers!=null){
+                this.wmsGetFeatureInfoControl.layers= Ext.Array.remove(this.wmsGetFeatureInfoControl.layers,layer);
+            }
+        }else if (this.layersToAdd!=null){
+            this.layersToAdd=Ext.Array.remove(this.layersToAdd,layer);
+        }
     },
     activate: function(){
         //if mobile: disable the navigation control. To make sure the click can be handled
@@ -87,6 +177,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 }
             }
         }
+        this.active=true;
         //set dragPan.activate();
         //this.map.getFrameworkMap().events.register("click", this, this.handleClick);    
         this.mapClick.activateTool();
@@ -102,6 +193,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 disCont.activate();
             }
         }
+        this.active=false;
         //this.map.getFrameworkMap().events.unregister("click", this, this.handleClick);
         this.mapClick.deactivateTool();
         //
