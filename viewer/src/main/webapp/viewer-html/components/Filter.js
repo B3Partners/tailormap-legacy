@@ -36,9 +36,9 @@ Ext.define ("viewer.components.Filter",{
     config: {
         attributes:null,
         logicOperator:null,
-		parentMainContainer:null,
+	parentMainContainer:null,
         showList:true,
-        parentComponent: null,
+        parentComponent: null
         
     },
     constructor: function(config){
