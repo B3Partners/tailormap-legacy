@@ -449,9 +449,14 @@ Ext.define ("viewer.components.Search",{
         }
     },
     getCurrentSearchconfig :function(){
-        var value = Ext.getCmp('searchName' + this.name).getValue();
-        var config = this.getSearchconfigById(value);
-        return config;
+        if(this.searchconfigs.length > 1){
+            var combo = Ext.getCmp('searchName' + this.name);
+            var value = combo.getValue();
+            var config = this.getSearchconfigById(value);
+            return config;
+        }else{
+            this.searchconfigs[0];
+        }
     },
     getSearchconfigById:function(id){
         for (var i = 0; i < this.searchconfigs.length; i++) {
