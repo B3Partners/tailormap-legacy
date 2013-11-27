@@ -140,13 +140,9 @@ Ext.define ("viewer.components.FeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
-        var vislayers = this.viewerController.getVisibleLayers();
-        if(vislayers.length > 0){
-            this.viewerController.mapComponent.setWaitingCursor(true);
-            this.balloon.setContent("");
-            this.balloon.hide();
-            this.setMaptipEnabled(false);
-        }
+        this.balloon.setContent("");
+        this.balloon.hide();
+        this.setMaptipEnabled(false);
     },
     /**
      * 
