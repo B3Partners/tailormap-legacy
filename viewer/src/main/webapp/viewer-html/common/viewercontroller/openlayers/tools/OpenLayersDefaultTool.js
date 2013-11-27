@@ -56,6 +56,15 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
                     scope: this
                 }
         });
+        /* The default tool can be added by the mapcomponent.checkTools. It's added
+         * when there is no other tool added. The layers are already added then, so 
+         * we need to iterate the layers and call the 'onaddlayer' event handler
+         */
+        var layers=this.getViewerController().mapComponent.getMap().getLayers();
+        for (var i=0; i < layers.length; i++){
+            this.onAddLayer(null,{layer: layers[i]});
+        }
+        
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
         
