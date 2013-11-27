@@ -47,8 +47,14 @@ public class ComponentRegistry {
         File path = new File(sc.getRealPath(p));
         log.debug(String.format("Real path for \"%s\": %s", p, path));
         
+        if (!path.exists() || !path.canRead()){
+            log.info(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"."
+                    + "trying as non-virtual path.", path));
+            path = new File(p);
+        }
+        
         if(!path.exists() || !path.canRead()) {
-            log.error(String.format("Cannot load component metadata from non-existing or unreadable path \"%s\"", path));
+            log.error(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"", path));
             return false;                    
         }        
 

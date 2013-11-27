@@ -263,33 +263,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             config.options.ratio = config.ratio;
         }
         var wmsLayer = Ext.create("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",config);
-        
-        if(ogcParams["query_layers"] != null && ogcParams["query_layers"] != ""){
-
-            var info = new OpenLayers.Control.WMSGetFeatureInfo({
-                url: wmsurl,
-                title: 'Identify features by clicking',
-                queryVisible: true,
-                layers: [wmsLayer.getFrameworkLayer()],
-                queryLayers : ogcParams["query_layers"],
-                infoFormat : "text/xml"
-            });
-            info.request = doGetFeatureRequest;
-            wmsLayer.setGetFeatureInfoControl(info);
-        }
-        if (config["maptip_layers"]!=null && config["maptip_layers"]!=""){
-            var maptip = new OpenLayers.Control.WMSGetFeatureInfo({
-                url: wmsurl,
-                title: 'Identify features by clicking',
-                queryVisible: true,
-                layers: [wmsLayer.getFrameworkLayer()],
-                queryLayers : config["maptip_layers"],
-                infoFormat : "application/vnd.ogc.gml",
-                hover: true
-            });
-            maptip.request = doGetFeatureRequest;
-            wmsLayer.setMapTipControl(maptip);
-        }
         return wmsLayer;
     },
     /**
@@ -517,9 +490,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.NavigationHistory(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.FULL_EXTENT){//21,            
-            //this.getMap().setGetFeatureInfoControl(identifyTool);
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomToMaxExtent(frameworkOptions));
-            //this.viewerController.logger.error("Tool FULL_EXTENT not implemented (yet)");
         }else if (type==viewer.viewercontroller.controller.Tool.MAP_CLICK){//22
             return Ext.create ("viewer.viewercontroller.openlayers.ToolMapClick",conf);
         }else if (conf.type == viewer.viewercontroller.controller.Tool.TOGGLE){
@@ -750,53 +721,4 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
 
 });
 
-
-/**
-    * The request function for WMSGetFeatureInfo redone, so that querylayers are properly set
-    */
-function doGetFeatureRequest(clickPosition, options) {
-    var layers = this.findLayers();
-    if(layers.length == 0) {
-        this.events.triggerEvent("nogetfeatureinfo");
-        // Reset the cursor.
-        OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
-        return;
-    }
-
-    options = options || {};
-    if(this.drillDown === false) {
-        var wmsOptions = this.buildWMSOptions(this.url, layers, clickPosition, layers[0].params.FORMAT);
-        (wmsOptions["params"])["STYLES"] = "";
-        (wmsOptions["params"])["QUERY_LAYERS"] = this.queryLayers.split(",");
-        var request = OpenLayers.Request.GET(wmsOptions);
-
-        if (options.hover === true) {
-            this.hoverRequest = request;
-        }
-    } else {
-        this._requestCount = 0;
-        this._numRequests = 0;
-        this.features = [];
-        // group according to service url to combine requests
-        var services = {}, url;
-        for(var i=0, len=layers.length; i<len; i++) {
-            var layer = layers[i];
-            var service, found = false;
-            url = layer.url instanceof Array ? layer.url[0] : layer.url;
-            if(url in services) {
-                services[url].push(layer);
-            } else {
-                this._numRequests++;
-                services[url] = [layer];
-            }
-        }
-        var layers;
-        for (var url in services) {
-            layers = services[url];
-            var wmsOptions = this.buildWMSOptions(url, layers,
-                clickPosition, layers[0].params.FORMAT);
-            OpenLayers.Request.GET(wmsOptions);
-        }
-    }
-}
 

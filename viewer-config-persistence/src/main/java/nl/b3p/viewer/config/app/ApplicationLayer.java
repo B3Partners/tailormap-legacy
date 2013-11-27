@@ -224,8 +224,9 @@ public class ApplicationLayer {
         return o;
     }
 
-    ApplicationLayer deepCopy() throws Exception {
+    ApplicationLayer deepCopy(Map originalToCopy) throws Exception {
         ApplicationLayer copy = (ApplicationLayer) BeanUtils.cloneBean(this);
+        originalToCopy.put(this, copy);
         copy.setId(null);
         
         // service reference is not deep copied, of course
@@ -239,5 +240,13 @@ public class ApplicationLayer {
             copy.getAttributes().add(a.deepCopy());
         }
         return copy;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("Application layer [id=%d, service id=%d, layer=%s]",
+                id,
+                service == null ? null : service.getId(),
+                layerName);
     }
 }

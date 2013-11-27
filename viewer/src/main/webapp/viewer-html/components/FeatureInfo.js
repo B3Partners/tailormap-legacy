@@ -78,21 +78,28 @@ Ext.define ("viewer.components.FeatureInfo",{
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.isSummaryLayer(mapLayer)){            
-            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+        if(this.isSummaryLayer(mapLayer)){   
             //Store the current map extent for every maptip request.            
             this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
                 this.setRequestExtent(map.getExtent());
             },this); 
-            //do server side getFeature.
-            if (layer.hasFeatureType){
-                this.addLayerInServerRequest(appLayer);
+            
+            if (mapLayer.appLayerId){
+                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+
+                //do server side getFeature.
+                if (layer.hasFeatureType){
+                    this.addLayerInServerRequest(appLayer);
+                }else{
+                    //TODO: add query layers to the map
+                    //listen to the onMaptipData
+                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
+                }            
+                this.numRequestLayers++;
             }else{
-                //TODO: add query layers to the map
-                //listen to the onMaptipData
-                mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
-            }            
+                mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);
+            }
         }
     },
     
@@ -100,12 +107,15 @@ Ext.define ("viewer.components.FeatureInfo",{
         var mapLayer = options.layer;
         if (mapLayer==null)
             return;        
-        if(this.isSummaryLayer(mapLayer)){            
-            var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-            var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-            if (layer.hasFeatureType){
-                Ext.Array.remove(this.serverRequestLayers, appLayer);
+        if(this.isSummaryLayer(mapLayer)){ 
+            if (mapLayer.appLayerId){
+                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                if (layer.hasFeatureType && this.serverRequestLayers){
+                    Ext.Array.remove(this.serverRequestLayers, appLayer);
+                }
             }
+            this.numRequestLayers--;
         }
 
     },
@@ -130,7 +140,6 @@ Ext.define ("viewer.components.FeatureInfo",{
      * When a feature info starts.
      */
     onFeatureInfoStart: function(){
-        this.viewerController.mapComponent.setWaitingCursor(true);
         this.balloon.setContent("");
         this.balloon.hide();
         this.setMaptipEnabled(false);

@@ -79,7 +79,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
                         var url = Ext.create(viewer.SLD).createURL(
                             this.options["layers"], 
                             this.getOption("styles") || "default", 
-                            filter.getCQL(),
+                            [filter.getCQL()],
                             layer.hasFeatureType ? layer.featureTypeName : null,
                             this.config.sld ? this.config.sld.id : null
                         );

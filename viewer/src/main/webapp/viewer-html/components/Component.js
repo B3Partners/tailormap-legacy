@@ -320,7 +320,7 @@ Ext.define("viewer.components.Component",{
             });
             // Popupwindow style
             styleContent += ' .' + compClassName + '_popup { ' +
-                            'background-position: -' + (spriteConfig.menuIconPosition.x + innerImageOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px !important; ' +
+                            'background-position: -' + (spriteConfig.menuIconPosition.x - innerImageOffset -(spriteConfig.popupImageSize/2) )+ 'px -' + (((row - 1) * spriteConfig.gridSize) + innerImageOffset) + 'px !important; ' +
                             '}';
         });
         Ext.util.CSS.createStyleSheet(styleContent, SPRITE_STYLE);

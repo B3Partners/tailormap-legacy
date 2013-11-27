@@ -25,6 +25,10 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(config != null) {
             if(config.sliders != null) sliders = config.sliders;
             if(config.title != null) title = config.title;
+            
+            if(config.layers != null) {
+                transparencySlider_layersArrayIndexesToAppLayerIds(config);
+            }
         }else{
             config={};
         }
@@ -115,6 +119,8 @@ Ext.define("viewer.components.CustomConfiguration",{
         var config = new Object();
         config.title = Ext.getCmp('componentTransparencyTitle').getValue();
         config.sliders = filterableCheckboxes.getSliders();
+   
+        transparencySlider_appLayerIdsToLayersArrayIndexes(config);
         
         config.sliderForUserAdded = Ext.getCmp('sliderForUserAdded').getValue();
         config.sliderForUserAddedText = Ext.getCmp('sliderForUserAddedText').getValue();

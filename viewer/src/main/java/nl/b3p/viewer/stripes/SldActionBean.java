@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.awt.Color;
 import java.io.*;
 import java.net.URL;
 import javax.servlet.http.HttpServletResponse;
@@ -38,10 +39,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.styling.*;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 import org.stripesstuff.stripersist.Stripersist;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -73,6 +77,18 @@ public class SldActionBean implements ActionBean {
     
     @Validate
     private String filter;
+
+    @Validate
+    private String color;
+    
+    @Validate
+    private String commonAndFilter;
+    
+    @Validate
+    private String commonOrFilter;
+    
+    @Validate
+    private Boolean useRuleFilter=false;
     
     @Validate
     private String featureTypeName;
@@ -152,6 +168,30 @@ public class SldActionBean implements ActionBean {
     
     public void setApplicationLayer(ApplicationLayer appLayer){
         this.applicationLayer=appLayer;
+    }    
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getCommonAndFilter() {
+        return commonAndFilter;
+    }
+
+    public void setCommonAndFilter(String commonAndFilter) {
+        this.commonAndFilter = commonAndFilter;
+    }
+
+    public String getCommonOrFilter() {
+        return commonOrFilter;
+    }
+
+    public void setCommonOrFilter(String commonOrFilter) {
+        this.commonOrFilter = commonOrFilter;
     }
     //</editor-fold>
     
@@ -183,13 +223,100 @@ public class SldActionBean implements ActionBean {
 
             newSld = sldFactory.createStyledLayerDescriptor();
             
-            NamedLayer nl = sldFactory.createNamedLayer();
-            nl.setName(layer);
-            newSld.addStyledLayer(nl);
-            if(style != null) {
-                NamedStyle ns = sldFactory.createNamedStyle();
-                ns.setName(style);
-                nl.addStyle(ns);
+            FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
+            String[] layers=null;
+            String[] filters=null;
+            String[] styles=null;
+            String[] colors=null;
+            
+            if (layer!=null){
+                layers = layer.split(",");
+            }if (filter!=null){
+                try{
+                    JSONArray jsonFilters= new JSONArray(filter);
+                    filters=new String[jsonFilters.length()];
+                for (int i=0; i < jsonFilters.length(); i++){
+                    filters[i] = jsonFilters.getString(i);
+                }
+                }catch (JSONException je){
+                    log.warn("error while parsing filters to JSON",je);
+                    filters = filter.split(",");
+                }
+                
+            }if(color!=null){
+                colors = color.split(",");
+            }if(style!=null){
+                styles = style.split(",");
+            }
+            
+            Filter andFilter = null;
+            Filter orFilter = null;
+            if (commonAndFilter!=null){
+                andFilter = ECQL.toFilter(commonAndFilter);
+            }
+            if (commonOrFilter!=null){
+                orFilter = ECQL.toFilter(commonOrFilter);
+            }
+            if(layers != null) {
+                
+                for(int i = 0; i < layers.length; i++) {
+                    Filter filter=null;
+                    if(filters != null && i < filters.length && !"none".equals(filters[i]) && filters[i].length()>0) {
+                         filter = ECQL.toFilter(filters[i]);
+                    }
+                    NamedLayer nl = sldFactory.createNamedLayer();
+                    nl.setName(layers[i]);                    
+                    
+                    newSld.addStyledLayer(nl);
+                    //Combine filter with allAndFilter and allOrFilter                     
+                    if (andFilter!=null){
+                        if (filter==null){
+                            filter=andFilter;
+                        }else{
+                            filter=filterFactory.and(filter, andFilter);
+                        }
+                    }if (orFilter!=null){
+                        if (filter==null){
+                            filter=orFilter;
+                        }else{
+                            filter=filterFactory.or(filter,orFilter);
+                        }
+                    }
+                    if(styles != null && i < styles.length && !"none".equals(styles[i])) {
+                        NamedStyle ns = sldFactory.createNamedStyle();
+                        ns.setName(styles[i]);
+                        nl.addStyle(ns);
+                    }
+                    else if (colors!=null && i < colors.length){      
+                        //create featureTypeStyle
+                        FeatureTypeStyle fts=sldFactory.createFeatureTypeStyle();
+                        Rule r=sldFactory.createRule();
+                        if (useRuleFilter && filter!=null){
+                            r.setFilter(filter);                        
+                        }
+                        PolygonSymbolizer ps = createPolygonSymbolizer(sldFactory,colors[i]);                        
+                        r.symbolizers().add(ps);
+                        fts.rules().add(r);      
+                        // add style to namedlayer
+                        Style style = sldFactory.createStyle();
+                        style.setDefault(true);
+                        style.setName("default");
+                        style.featureTypeStyles().add(fts);
+                        nl.addStyle(style);
+                    }else{
+                        NamedStyle ns = sldFactory.createNamedStyle();
+                        ns.setName("default");
+                        nl.addStyle(ns);
+                    }
+                    
+                    //if no featuretypestyle (created with color) then make featuretypeconstraint
+                    if (!useRuleFilter && filter!=null){
+                        // XXX name should be a feature type name from DescribeLayer response
+                        // use extra parameter...
+                        FeatureTypeConstraint ftc = sldFactory.createFeatureTypeConstraint(layers[i], filter, new Extent[] {});
+                        nl.setLayerFeatureConstraints(new FeatureTypeConstraint[] { ftc });
+                    }
+                }
             }
         }
     }
@@ -197,7 +324,7 @@ public class SldActionBean implements ActionBean {
     private static final String NS_SLD = "http://www.opengis.net/sld";
     private static final String NS_SE = "http://www.opengis.net/se";
     
-    private void addFilterToSld() throws Exception {
+    private void addFilterToExistingSld() throws Exception {
         Filter f = CQL.toFilter(filter);
         
         f = (Filter) f.accept(new ChangeMatchCase(false),null);
@@ -207,9 +334,7 @@ public class SldActionBean implements ActionBean {
         }
         FeatureTypeConstraint ftc = sldFactory.createFeatureTypeConstraint(featureTypeName, f, new Extent[] {});
         
-        if(newSld != null) {
-            ((NamedLayer)newSld.getStyledLayers()[0]).setLayerFeatureConstraints(new FeatureTypeConstraint[] { ftc });
-        } else {
+        if(newSld == null) {
 
             SLDTransformer sldTransformer = new SLDTransformer();             
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -285,6 +410,29 @@ public class SldActionBean implements ActionBean {
             sldXml = bos.toByteArray();
         }
     }
+    
+    private PolygonSymbolizer createPolygonSymbolizer(StyleFactory styleFactory,String color) { 
+        FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
+            
+        Color col = Color.GRAY;
+        if (color.startsWith("#")){
+            col= new Color(Integer.parseInt(color.substring(1),16));
+        }
+        // create a partially opaque outline stroke
+        Stroke stroke = styleFactory.createStroke(
+                filterFactory.literal(col),
+                filterFactory.literal(1),
+                filterFactory.literal(0.9));
+
+        // create a partial opaque fill
+        Fill fill = styleFactory.createFill(
+                filterFactory.literal(col),
+                filterFactory.literal(0.9));
+        
+        PolygonSymbolizer sym = styleFactory.createPolygonSymbolizer(stroke, fill, null);
+        return sym;
+    } 
+    
     @DefaultHandler
     public Resolution create() throws JSONException, UnsupportedEncodingException {
         JSONObject json = new JSONObject();
@@ -296,8 +444,8 @@ public class SldActionBean implements ActionBean {
             
             getSldXmlOrCreateNewSld();
 
-            if(filter != null) {
-                addFilterToSld();
+            if(newSld ==null && filter != null) {
+                addFilterToExistingSld();
             }
             
             if(newSld != null) {

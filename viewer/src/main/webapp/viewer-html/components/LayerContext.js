@@ -64,20 +64,18 @@ Ext.define ("viewer.components.LayerContext",{
     renderWindow: function(layerObj) {
         if(this.container === null) {
             this.htmlContainer = Ext.create('Ext.container.Container', {
-                width: '100%',
                 flex: 1,
                 padding: '0 0 5 0',
                 margin: '0 0 5 0',
                 border: '0 0 1 0',
-                autoScroll: true,
                 style: {
                     borderColor: '#E0E0E0',
                     borderStyle: 'solid',
                     borderWidth: '0 0 1px 0'
-                }
+                },
+                layout: 'fit'
             });
             this.linksContainer = Ext.create('Ext.container.Container', {
-                width: '100%',
                 height: 20,
                 layout: 'hbox'
             });
@@ -87,7 +85,10 @@ Ext.define ("viewer.components.LayerContext",{
                 padding: 5,
                 border: 0,
                 renderTo: this.getContentDiv(),
-                layout: 'vbox',
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
                 items: [
                     this.htmlContainer,
                     this.linksContainer
@@ -117,10 +118,9 @@ Ext.define ("viewer.components.LayerContext",{
             typeof layerObj.appLayer.details.context !== 'undefined'
         ) {
             this.htmlContainer.add({
-                xtype: 'box',
-                html: layerObj.appLayer.details.context,
-                height: '100%',
-                width: '100%'
+                xtype: 'container',
+                autoScroll: true,
+                html: layerObj.appLayer.details.context
             });
         }
         if(!this.popup.popupWin.isVisible()) {

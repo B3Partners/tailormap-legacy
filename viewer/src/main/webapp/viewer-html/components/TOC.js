@@ -55,7 +55,6 @@ Ext.define ("viewer.components.TOC",{
             this.showAllLayersOn=config.showToggleAllLayers;
         }   
         this.toggleAllLayersState = this.initToggleAllLayers;
-        this.buildButtonBar();
         this.loadTree();
         this.loadInitLayers();
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
@@ -76,33 +75,6 @@ Ext.define ("viewer.components.TOC",{
         // Seems to recalculate body and applies correct heights so scrollbars can be shown
         view.panel.doComponentLayout();
         view.panel.getLayout().layout();
-    },
-    /**
-     * Create button bar on top of toc. 
-     */
-    buildButtonBar: function(){
-        var me = this;
-        if(this.showAllLayersOn || this.showAllLayersOff){
-            this.buttonBar = Ext.create('Ext.toolbar.Toolbar', {
-                id: 'ButtonBar_'+this.id,
-                renderTo: this.getContentDiv(),
-                layout: {
-                    pack: 'end'
-                },
-                items: [
-                    {
-                        id: 'toggleAllLayersButton',
-                        text: me.toggleAllLayersState ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
-                        listeners: {
-                            click: {
-                                fn: function(){me.toggleAllLayers();},
-                                element: 'el'
-                            }
-                        }
-                    }
-                ]
-            });
-        }
     },
     // Build the tree
     loadTree : function(){        
@@ -140,14 +112,36 @@ Ext.define ("viewer.components.TOC",{
                 }
             }];
         }
-        var panelHeight = "100%";
+        
+        var dockedItems = [];
         if(this.showAllLayersOn || this.showAllLayersOff){
-            panelHeight="93%";
+            dockedItems = [
+                {
+                    xtype: 'toolbar',
+                    dock: 'top',
+                    layout: {
+                        pack: 'end'
+                    },
+                    items: [
+                        {
+                            id: 'toggleAllLayersButton',
+                            text: me.toggleAllLayersState ? me.toggleAllLayersOnText:me.toggleAllLayersOffText,
+                            listeners: {
+                                click: {
+                                    fn: function(){me.toggleAllLayers();},
+                                    element: 'el'
+                                }
+                            }
+                        }
+                    ]
+                }
+            ];
         }
+        
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
-            height: panelHeight,
+            height: "100%",
             scroll: false,
             useArrows: true,
             rootVisible: false,
@@ -165,7 +159,8 @@ Ext.define ("viewer.components.TOC",{
                 }
             },
             store: store,
-            tools: tools
+            tools: tools,
+            dockedItems: dockedItems
         });
     },
     // Start the treetraversal
@@ -180,6 +175,9 @@ Ext.define ("viewer.components.TOC",{
                 }
             }else if(contentItem.type === "appLayer"){
                 var layer = this.addLayer(contentItem.id);
+                if(layer === null){
+                    continue;
+                }
                 nodes.push(layer.node);
             }
         }
@@ -248,6 +246,9 @@ Ext.define ("viewer.components.TOC",{
         if(level.layers != undefined ){
             for(var j = 0 ; j < level.layers.length ; j ++){
                 var layer = this.addLayer(level.layers[j]);
+                if(layer === null){
+                    continue;
+                }
                 totalChilds++;
                 if(layer.checked) childsChecked++;
                 nodes.push(layer.node);
@@ -296,6 +297,9 @@ Ext.define ("viewer.components.TOC",{
         };
         if (!this.showLeafIcon){
             treeNodeLayer.iconCls='no_treenode_icon';
+        }
+        if(serviceLayer === undefined){
+            return null;
         }
         if(serviceLayer.details != undefined){
             if(serviceLayer.details ["metadata.stylesheet"] !== undefined){
@@ -416,7 +420,7 @@ Ext.define ("viewer.components.TOC",{
             this.toggleAllLayersState = !this.toggleAllLayersState;
             
             if (Ext.get("toggleAllLayersButton")){
-                Ext.get("toggleAllLayersButton").update(this.toggleAllLayersState ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
+                Ext.getCmp("toggleAllLayersButton").setText(this.toggleAllLayersState ? this.toggleAllLayersOnText:this.toggleAllLayersOffText);
             }
         }
     },
