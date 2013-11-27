@@ -175,6 +175,9 @@ Ext.define ("viewer.components.TOC",{
                 }
             }else if(contentItem.type === "appLayer"){
                 var layer = this.addLayer(contentItem.id);
+                if(layer === null){
+                    continue;
+                }
                 nodes.push(layer.node);
             }
         }
@@ -243,6 +246,9 @@ Ext.define ("viewer.components.TOC",{
         if(level.layers != undefined ){
             for(var j = 0 ; j < level.layers.length ; j ++){
                 var layer = this.addLayer(level.layers[j]);
+                if(layer === null){
+                    continue;
+                }
                 totalChilds++;
                 if(layer.checked) childsChecked++;
                 nodes.push(layer.node);
@@ -291,6 +297,9 @@ Ext.define ("viewer.components.TOC",{
         };
         if (!this.showLeafIcon){
             treeNodeLayer.iconCls='no_treenode_icon';
+        }
+        if(serviceLayer === undefined){
+            return null;
         }
         if(serviceLayer.details != undefined){
             if(serviceLayer.details ["metadata.stylesheet"] !== undefined){
