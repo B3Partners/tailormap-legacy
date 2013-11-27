@@ -270,7 +270,9 @@ public class ApplicationStartMapActionBean extends ApplicationActionBean {
             int id = Integer.parseInt(nodeId.substring(1));
             if (type.equals("n")) {
                 Level l = em.find(Level.class, new Long(id));
-                for (Level sub : l.getChildren()) {
+                List<Level> levels = l.getChildren();
+                Collections.sort(levels);
+                for (Level sub : levels) {
                     JSONObject j = new JSONObject();
                     j.put("id", "n" + sub.getId());
                     j.put("name", sub.getName());

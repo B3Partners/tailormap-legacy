@@ -33,7 +33,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @Entity
 @Table(name="level_")
-public class Level {
+public class Level implements Comparable{
     @Id
     private Long id;
 
@@ -311,4 +311,10 @@ public class Level {
                 name,
                 parent == null ? null : parent.getId());
     }    
+
+    public int compareTo(Object o) {
+        Level rhs = (Level)o;
+        return this.getName().compareTo(rhs.getName());
+    }
+
 }
