@@ -28,10 +28,11 @@ import org.json.JSONObject;
  */
 
 @XmlRootElement(name="legendPart")
-@XmlType(propOrder = {"label","url"})
+@XmlType(propOrder = {"label","url", "width", "height"})
 public class LegendPart {
     private String label;
     private String url;
+    private Integer width, height;
 
     LegendPart(){}
     LegendPart(JSONObject json) throws JSONException {
@@ -59,5 +60,21 @@ public class LegendPart {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 }
