@@ -226,6 +226,7 @@ public class ProxyActionBean implements ActionBean {
         }
         theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+sb.toString());
         
+        //TODO: Check if response is a getFeatureInfo response.
         final URLConnection connection = theUrl.openConnection();
         return new StreamingResolution(connection.getContentType()) {
             @Override
