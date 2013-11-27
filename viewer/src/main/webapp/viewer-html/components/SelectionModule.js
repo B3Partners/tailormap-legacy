@@ -229,13 +229,8 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         // load the selected content to the right container
         me.loadSelectedLayers();
-        // iterate over radio buttons on top to activate the checked item
-        var selectionModuleFormField = Ext.getCmp('selectionModuleFormFieldContainer');
-        if(selectionModuleFormField) {
-            selectionModuleFormField.items.each(function(item){
-                if(item.checked) me.handleSourceChange(item.id, item.checked);
-            });
-        }
+        // Show active left panel (based on checked radio boxes / only option)
+        me.showActiveLeftPanel();
         // apply a scroll fix
         me.applyTreeScrollFix();
         // add listeners to the popupwin to hide and show tree containers (which would otherwise remain visible)
@@ -308,7 +303,35 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         return panelIds;
     },
-            
+    
+    /**
+     * Show active left panel (initially).
+     * When multiple options are avaiable, show first left panel
+     * When only one option is available, show that option
+     */
+    showActiveLeftPanel: function() {
+        var me = this,
+            availableOptions = [];
+        
+        // First add all available options to array
+        if(me.config.selectGroups) availableOptions.push({ id: 'radioApplication', checked: true });
+        if(me.config.selectLayers) availableOptions.push({ id: 'radioRegistry', checked: true });
+        if(me.config.selectOwnServices) availableOptions.push({ id: 'radioCustom', checked: true });
+        if(me.config.selectCsw) availableOptions.push({ id: 'radioCSW', checked: true });
+        
+        // If there is only one option, show that option
+        if(availableOptions.length === 1) {
+            me.handleSourceChange(availableOptions[0].id, availableOptions[0].checked);
+        } else {
+            // iterate over radio buttons on top to activate the checked item
+            var selectionModuleFormField = Ext.getCmp('selectionModuleFormFieldContainer');
+            if(selectionModuleFormField) {
+                selectionModuleFormField.items.each(function(item){
+                    if(item.checked) me.handleSourceChange(item.id, item.checked);
+                });
+            }
+        }
+    },
     /**
      * Returns the type of the activeTree ([applicationTree, registeryTree, customServiceTree];
      * returns string The type of the active tree;
@@ -434,7 +457,12 @@ Ext.define ("viewer.components.SelectionModule",{
             radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         }
         if(me.config.selectCsw){
-            radioControls.push({id: 'radioCSW', name: 'layerSource', boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+            radioControls.push({id: 'radioCSW', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+        }
+        
+        // If there is only 1 control, do not add any
+        if(radioControls.length === 1) {
+            radioControls = [];
         }
         
         // minimal interface, just tree container and save/cancel buttons
@@ -582,7 +610,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         defaultType: 'radio',
                         items: radioControls
                     }],
-                    height: MobileManager.isMobile() ? 40 : 30,
+                    height: radioControls.length === 0 ? 0 : MobileManager.isMobile() ? 40 : 30,
                     padding: '5px',
                     border: 0,
                     id: 'selectionModuleFormContainer'
@@ -1057,7 +1085,6 @@ Ext.define ("viewer.components.SelectionModule",{
     },
     
     handleSourceChange: function(field, newval, height) {
-        console.log('handleSourceChange', field, newval, height);
         var me = this;
         var customServiceUrlTextfield = Ext.getCmp('customServiceUrlTextfield');
         var customServiceUrlSelect = Ext.getCmp('customServiceUrlSelect');
