@@ -320,20 +320,20 @@ Ext.define ("viewer.components.Search",{
         }
         var me = this;
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
-        var buttonList = new Array();
+        var panelList = new Array();
         this.groupedResult = new Object();
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];
             this.addResult(result,i);
-          //  buttonList.push(this.createResult(result,i));
         }
         
         for (var key in this.groupedResult) {
             var list = this.groupedResult[key];
             var subSetPanel = Ext.create('Ext.form.Panel', {
                 title: key + " (" + list.length + ")",
-                height: '250px',
-                autoScroll: true,
+                flex:1,
+                height: 200,
+                autoScroll:true,
                 collapsible:true,
                 collapsed:true,
                 style: {
@@ -341,7 +341,7 @@ Ext.define ("viewer.components.Search",{
                 },
                 items: list
             });
-            buttonList.push(subSetPanel);
+            panelList.push(subSetPanel);
         }
         
         
@@ -350,11 +350,16 @@ Ext.define ("viewer.components.Search",{
             renderTo: this.resultPanelId,
             html: html,
             height: '100%',
+            width: '100%',
+            layout:{
+                type: 'vbox',
+                align: 'stretch'
+            },
             autoScroll: true,
             style: { 
                 padding: '0px 0px 10px 0px'
             },
-            items: buttonList
+            items: panelList
         });
         if(this.searchResult.length === 1){
             this.handleSearchResult(this.searchResult[0]);
