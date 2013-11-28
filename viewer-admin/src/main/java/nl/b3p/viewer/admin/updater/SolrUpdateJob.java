@@ -144,6 +144,7 @@ public class SolrUpdateJob implements Job {
                 while (iterator.hasNext()) {
                     SimpleFeature feature = iterator.next();
                     SolrInputDocument doc = new SolrInputDocument();
+                    boolean hasAllRequiredFields = true;
                     for (AttributeDescriptor attr : indexAttributesConfig) {
                         String attributeName = attr.getName();
                         Object col = feature.getAttribute(attributeName);
@@ -151,7 +152,12 @@ public class SolrUpdateJob implements Job {
                         if (col != null) {
                             doc.addField("columns", attributeName);
                             doc.addField(field, col);
+                        }else{
+                            hasAllRequiredFields = false;
                         }
+                    }
+                    if(!hasAllRequiredFields){
+                        continue;
                     }
                     for (AttributeDescriptor attributeDescriptor : resultAttributesConfig) {
                         String attributeName = attributeDescriptor.getName();
