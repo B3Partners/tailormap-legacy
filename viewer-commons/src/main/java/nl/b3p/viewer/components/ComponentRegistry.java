@@ -20,6 +20,7 @@ import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -42,7 +43,7 @@ public class ComponentRegistry {
 
     private Map<String,ViewerComponent> components = new HashMap<String,ViewerComponent>();
     
-    private File[] componentPaths = new File[]{};
+    private List<File> componentPaths = new ArrayList();
     
     /* package */ boolean loadFromPath(ServletContext sc, String p) {
 
@@ -126,30 +127,18 @@ public class ComponentRegistry {
                 log.error("Duplicate component classname: " + className);
                 return;
             }
-
-            File[] sourceFiles = new File[] {};
-
-            JSONArray sources = metadata.optJSONArray("sources");
-
-            if(sources != null) {
-                sourceFiles = new File[sources.length()];
-                for(int i = 0; i < sources.length(); i++) {
-                    File sourceFile = new File(path.getCanonicalPath() + File.separator + sources.getString(i));
-                    if(!sourceFile.canRead()) {
-                        /*Maybe it's in an other configured path*/
-                        sourceFile = this.getFileFromComponentPaths(sources.getString(i));
-                        if (sourceFile==null){
-                            log.error(String.format("Cannot read sourcefile \"%s\" for component class \"%s\"",
-                                    sources.getString(i),
-                                    className));
-                            return;
-                        }
-                    }
-                    sourceFiles[i] = sourceFile;
-                }
+            
+            File[] sourceFiles = new File[]{};
+            File[] configSourceFiles = new File[]{};            
+            try{            
+                sourceFiles = getFiles(path, metadata.optJSONArray("sources"));
+                configSourceFiles=getFiles(path, metadata.optJSONArray("configSource"));
+            }catch(FileNotFoundException e){
+                log.error(String.format("Error reading file in component class \"%s\": \"%s\"" ,className,e.getMessage()));
+                return;
             }
 
-            components.put(className, new ViewerComponent(path.getCanonicalPath(), className, sourceFiles, metadata));
+            components.put(className, new ViewerComponent(path.getCanonicalPath(), className, sourceFiles,configSourceFiles, metadata));
             log.info("Registered component " + className);
 
         } catch(JSONException e) {
@@ -183,6 +172,27 @@ public class ComponentRegistry {
         return names;
     }    
     
+    private File[] getFiles(File path, JSONArray sources) throws IOException, JSONException{
+        File[] sourceFiles = new File[] {};
+        
+        if(sources != null) {
+            sourceFiles = new File[sources.length()];
+            for(int i = 0; i < sources.length(); i++) {
+                File sourceFile = new File(path.getCanonicalPath() + File.separator + sources.getString(i));
+                if(!sourceFile.canRead()) {
+                    /*Maybe it's in an other configured path*/
+                    sourceFile = this.getFileFromComponentPaths(sources.getString(i));
+                    if (sourceFile==null){                        
+                        throw new FileNotFoundException (String.format("Cannot read sourcefile \"%s\"",
+                                sources.getString(i)));
+                    }
+                }
+                sourceFiles[i] = sourceFile;
+            }
+        }
+        return sourceFiles;
+    }
+    
     private File resolvePath(ServletContext sc,String p){
         File path = new File(sc.getRealPath(p));
         log.debug(String.format("Real path for \"%s\": %s", p, path));
@@ -215,9 +225,12 @@ public class ComponentRegistry {
     }
 
     public void setComponentPaths(ServletContext sc,String[] componentPaths) {
-        this.componentPaths= new File[componentPaths.length];
+        this.componentPaths.clear();
         for (int i = 0; i<componentPaths.length; i++){
-            this.componentPaths[i]=this.resolvePath(sc, componentPaths[i]);
+            File f = this.resolvePath(sc, componentPaths[i]);
+            if (f!=null){
+                this.componentPaths.add(f);
+            }
         }
     }
 }
