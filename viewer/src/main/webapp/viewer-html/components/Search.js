@@ -332,7 +332,7 @@ Ext.define ("viewer.components.Search",{
             var list = this.groupedResult[key];
             var subSetPanel = Ext.create('Ext.form.Panel', {
                 title: key + " (" + list.length + ")",
-                height: '100%',
+                height: '250px',
                 autoScroll: true,
                 collapsible:true,
                 collapsed:true,
@@ -373,9 +373,8 @@ Ext.define ("viewer.components.Search",{
     },
     createResult: function(result, index){
         var me = this;
-        var typeLabel = result.type !== undefined ? result.type : "Onbekend";
         var item = {
-            text: result.label + (typeLabel !== undefined ? " (" + typeLabel + ")" : ""),
+            text: result.label,
             xtype: 'button',
             margin: '10px 10px 0px 10px',
             componentCls: 'mobileLarge',
