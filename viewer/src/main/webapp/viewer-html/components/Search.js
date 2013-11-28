@@ -179,6 +179,7 @@ Ext.define ("viewer.components.Search",{
                     anchor: '100%',
                     triggerAction: 'query',
                     queryParam: "searchText",
+                    autoSelect:false,
                     displayField: "label",
                     queryMode: queryMode,
                     id: 'searchfield' + this.name,
