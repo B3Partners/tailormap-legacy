@@ -41,14 +41,6 @@ Ext.define ("viewer.components.Search",{
         showRemovePin: true
     },    
     constructor: function (conf){            
-        if (conf.typeLabel===undefined){
-            conf.typeLabel={
-                Street: 'Straat',
-                MunicipalitySubdivision: 'Plaats',
-                Municipality: 'Gemeente',
-                CountrySubdivision: 'Provincie'
-            };
-        }
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.renderButton(); 
@@ -320,6 +312,7 @@ Ext.define ("viewer.components.Search",{
             // search request is not complete
         }        
     },
+    groupedResult : null,
     showSearchResults : function(){
         var html = "";
         if(this.searchResult.length <= 0){
@@ -328,31 +321,32 @@ Ext.define ("viewer.components.Search",{
         var me = this;
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         var buttonList = new Array();
+        this.groupedResult = new Object();
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];
-            var typeLabel = result.type !== undefined ? this.typeLabel[result.type] : undefined;
-            
-            buttonList.push({
-                text: result.label + (typeLabel!==undefined ? " ("+typeLabel+")" : ""),
-                xtype: 'button',
-                margin: '10px 10px 0px 10px',
-                componentCls: 'mobileLarge',
-                tooltip: 'Zoom naar locatie',
-                id: "searchButton_"+i,
-                listeners: {
-                    click:{
-                        scope: me,
-                        fn: function(button,e,eOpts){
-                            var config =this.searchResult[button.id.split("_")[1]];
-                            me.handleSearchResult(config);
-                        }
-                    }
-                }
-            });
+            this.addResult(result,i);
+          //  buttonList.push(this.createResult(result,i));
         }
         
+        for (var key in this.groupedResult) {
+            var list = this.groupedResult[key];
+            var subSetPanel = Ext.create('Ext.form.Panel', {
+                title: key + " (" + list.length + ")",
+                height: '100%',
+                autoScroll: true,
+                collapsible:true,
+                collapsed:true,
+                style: {
+                    padding: '0px 0px 10px 0px'
+                },
+                items: list
+            });
+            buttonList.push(subSetPanel);
+        }
+        
+        
         me.results = Ext.create('Ext.form.Panel', {
-            title: 'Resultaten:',
+            title: 'Resultaten (' + this.searchResult.length + ') :',
             renderTo: this.resultPanelId,
             html: html,
             height: '100%',
@@ -369,7 +363,37 @@ Ext.define ("viewer.components.Search",{
         }
         
     },
-    cancel : function(){
+    addResult : function(result,index){
+        var type = result.type;
+        if(!this.groupedResult.hasOwnProperty(type)){
+            this.groupedResult[type] = new Array()
+        }
+        var item = this.createResult(result,index);
+        this.groupedResult[type].push(item);
+    },
+    createResult: function(result, index){
+        var me = this;
+        var typeLabel = result.type !== undefined ? result.type : "Onbekend";
+        var item = {
+            text: result.label + (typeLabel !== undefined ? " (" + typeLabel + ")" : ""),
+            xtype: 'button',
+            margin: '10px 10px 0px 10px',
+            componentCls: 'mobileLarge',
+            tooltip: 'Zoom naar locatie',
+            id: "searchButton_" + index,
+            listeners: {
+                click: {
+                    scope: me,
+                    fn: function(button, e, eOpts) {
+                        var config = this.searchResult[button.id.split("_")[1]];
+                        me.handleSearchResult(config);
+                    }
+                }
+            }
+        };
+        return item;
+    },
+    cancel: function(){
         this.form.getChildByElement("searchfield"+ this.name).setValue("");
         this.form.getChildByElement("searchName"+ this.name).setValue("");
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
