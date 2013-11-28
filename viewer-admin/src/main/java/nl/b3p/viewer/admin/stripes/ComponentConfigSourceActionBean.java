@@ -67,50 +67,39 @@ public class ComponentConfigSourceActionBean implements ActionBean {
         if(vc == null) {
             return notFound;
         }
-        
-        try {
-            JSONArray configSources = vc.getMetadata().getJSONArray("configSource");
-            if(configSources == null) {
+                    
+        File[] files = vc.getConfigSources();            
+
+        long lastModified = -1;
+        for(File f: files) {
+            if(!f.exists() || !f.canRead()) {
                 return notFound;
             }
-            File[] files = new File[configSources.length()];
-            for (int i=0; i < configSources.length(); i++){
-                files[i]=new File(vc.getPath() + File.separator + configSources.getString(i));
-            }
-            
-            long lastModified = -1;
-            for(File f: files) {
-                if(!f.exists() || !f.canRead()) {
-                    return notFound;
-                }
-                lastModified = Math.max(lastModified, f.lastModified());
-            }
-            final File[] theFiles = files;
-            StreamingResolution res = new StreamingResolution("application/javascript") {
-                @Override
-                public void stream(HttpServletResponse response) throws Exception {
-
-                    OutputStream out = response.getOutputStream();
-                    for(File f: theFiles) {
-                        if(theFiles.length != 1) {
-                            out.write(("\n\n// Source file: " + f.getName() + "\n\n").getBytes("UTF-8"));
-                        }                        
-                        IOUtils.copy(new FileInputStream(f), out);                        
-                    }
-                }
-            };
-            if(lastModified != -1) {
-                long ifModifiedSince = context.getRequest().getDateHeader("If-Modified-Since");
-
-                if(ifModifiedSince != -1) {
-                    if(ifModifiedSince >= lastModified) {
-                        return new ErrorResolution(HttpServletResponse.SC_NOT_MODIFIED);
-                    }
-                }
-            }
-            return res;
-        } catch(JSONException je) {
-            return notFound;
+            lastModified = Math.max(lastModified, f.lastModified());
         }
+        final File[] theFiles = files;
+        StreamingResolution res = new StreamingResolution("application/javascript") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+
+                OutputStream out = response.getOutputStream();
+                for(File f: theFiles) {
+                    if(theFiles.length != 1) {
+                        out.write(("\n\n// Source file: " + f.getName() + "\n\n").getBytes("UTF-8"));
+                    }                        
+                    IOUtils.copy(new FileInputStream(f), out);                        
+                }
+            }
+        };
+        if(lastModified != -1) {
+            long ifModifiedSince = context.getRequest().getDateHeader("If-Modified-Since");
+
+            if(ifModifiedSince != -1) {
+                if(ifModifiedSince >= lastModified) {
+                    return new ErrorResolution(HttpServletResponse.SC_NOT_MODIFIED);
+                }
+            }
+        }
+        return res;        
     }
 }
