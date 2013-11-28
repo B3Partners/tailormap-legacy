@@ -24,17 +24,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import nl.b3p.viewer.SolrInitializer;
+import nl.b3p.viewer.config.services.SolrConfiguration;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -44,6 +46,8 @@ public class SolrSearchClient extends SearchClient {
 
     private JSONObject config;
     private List<Long> visibleLayers;
+    
+    private Map<Long, SolrConfiguration> configMap = new HashMap();
     
     @Override
     public JSONArray search(String term) {
@@ -169,7 +173,7 @@ public class SolrSearchClient extends SearchClient {
                     resultLabel += label;
                 }
                 result.put("label", resultLabel);
-                    if(!onlyLabel){
+                if(!onlyLabel){
                     Map bbox = new HashMap();
                     bbox.put("minx", doc.getFieldValue("minx"));
                     bbox.put("miny", doc.getFieldValue("miny"));
@@ -178,11 +182,23 @@ public class SolrSearchClient extends SearchClient {
                     result.put("location", bbox);
                 }
                 result.put("searchConfig", doc.getFieldValue("searchConfig"));
+                String naam = getConfigurationNaam((Integer)doc.getFieldValue("searchConfig"));
+                result.put("type", naam);
             }
         } catch (JSONException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
+    }
+    private String getConfigurationNaam(Integer id){
+        Long longValue = new Long(id);
+        if(!configMap.containsKey(longValue)){
+            EntityManager em = Stripersist.getEntityManager();
+            SolrConfiguration configuration = em.find(SolrConfiguration.class, longValue);
+            configMap.put(longValue,configuration);
+            return configuration.getName();
+        }
+        return configMap.get(longValue).getName();
     }
 
     public JSONObject getConfig() {
