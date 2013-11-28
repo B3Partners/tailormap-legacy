@@ -19,32 +19,21 @@
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="simple-border">
-                <xsl:attribute name="border-top-color">#000000</xsl:attribute>
-		<xsl:attribute name="border-top-style">solid</xsl:attribute>
-		<xsl:attribute name="border-top-width">thin</xsl:attribute>
-		<xsl:attribute name="border-bottom-color">#000000</xsl:attribute>
-		<xsl:attribute name="border-bottom-style">solid</xsl:attribute>
-		<xsl:attribute name="border-bottom-width">thin</xsl:attribute>
-		<xsl:attribute name="border-left-color">#000000</xsl:attribute>
-		<xsl:attribute name="border-left-style">solid</xsl:attribute>
-		<xsl:attribute name="border-left-width">thin</xsl:attribute>
-                <xsl:attribute name="border-right-color">#000000</xsl:attribute>
-		<xsl:attribute name="border-right-style">solid</xsl:attribute>
-		<xsl:attribute name="border-right-width">thin</xsl:attribute>
+		<xsl:attribute name="border-color">#000000</xsl:attribute>
+		<xsl:attribute name="border-style">solid</xsl:attribute>
+		<xsl:attribute name="border-width">thin</xsl:attribute>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="column-block">
 		<xsl:attribute name="position">absolute</xsl:attribute>
 		<xsl:attribute name="top">0cm</xsl:attribute>
 		<xsl:attribute name="left">0cm</xsl:attribute>
-		<xsl:attribute name="width">100%</xsl:attribute>
 	</xsl:attribute-set>
 
 	<xsl:attribute-set name="column-block-border" use-attribute-sets="simple-border">
 		<xsl:attribute name="position">absolute</xsl:attribute>
 		<xsl:attribute name="top">0cm</xsl:attribute>
 		<xsl:attribute name="left">0cm</xsl:attribute>
-		<xsl:attribute name="width">100%</xsl:attribute>
 	</xsl:attribute-set>
 
 </xsl:stylesheet>
