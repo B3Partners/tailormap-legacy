@@ -28,7 +28,7 @@ Ext.define ("viewer.components.Search",{
     autosuggestStore:null,
     searchField:null,
     resultPanelId: '',
-    defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
+    defaultFormHeight: MobileManager.isMobile() ? 60 : 50,
     searchRequestId: 0,
     config:{
         title: null,
@@ -175,6 +175,7 @@ Ext.define ("viewer.components.Search",{
                 this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
                     name: 'searchfield',
                     hideTrigger: true,
+                    flex:1,
                     anchor: '100%',
                     triggerAction: 'query',
                     queryParam: "searchText",
@@ -203,20 +204,29 @@ Ext.define ("viewer.components.Search",{
                     },
                     store:this.autosuggestStore
                 });
-                itemList.push(this.searchField);
 
-                itemList.push({ 
-                    xtype: 'button',
-                    text: 'Zoeken',
-                    componentCls: 'mobileLarge',
-                    margin: this.margin,
-                    listeners: {
-                        click:{
-                            scope: this,
-                            fn: this.search
-                        }
-                    }
+                var searchFieldAndButton = Ext.create('Ext.container.Container', {
+                    width: '100%',
+                    height: 30,
+                    layout: {
+                        type: 'hbox'
+                    },
+                    autoScroll: true,
+                    items: [this.searchField,{
+                            xtype: 'button',
+                            text: 'Zoeken',
+                            componentCls: 'mobileLarge',
+                            margin: this.margin,
+                            width: 60,
+                            listeners: {
+                                click: {
+                                    scope: this,
+                                    fn: this.search
+                                }
+                            }
+                        }]
                 });
+                itemList.push(searchFieldAndButton);
             }
         }
         itemList.push({ 
@@ -260,7 +270,7 @@ Ext.define ("viewer.components.Search",{
         if(this.results != null){
             this.results.destroy();
         }
-        var searchText = this.form.getChildByElement("searchfield" + this.name).getValue();
+        var searchText = Ext.getCmp( "searchfield" + this.name).getValue();
         var searchName = '';
         if(this.searchconfigs.length === 1){
             searchName = this.searchconfigs[0].id;
@@ -320,7 +330,11 @@ Ext.define ("viewer.components.Search",{
         }
         var me = this;
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
-        var panelList = new Array();
+        var panelList = [{
+                xtype: 'panel', // << fake hidden panel
+                hidden: true,
+                collapsed: false
+            }];
         this.groupedResult = new Object();
         for ( var i = 0 ; i < this.searchResult.length ; i ++){
             var result = this.searchResult[i];
@@ -329,7 +343,7 @@ Ext.define ("viewer.components.Search",{
         
         for (var key in this.groupedResult) {
             var list = this.groupedResult[key];
-            var subSetPanel = Ext.create('Ext.form.Panel', {
+            var subSetPanel = Ext.create('Ext.panel.Panel', {
                 title: key + " (" + list.length + ")",
                 flex:1,
                 height: 200,
@@ -345,15 +359,19 @@ Ext.define ("viewer.components.Search",{
         }
         
         
-        me.results = Ext.create('Ext.form.Panel', {
+        me.results = Ext.create('Ext.panel.Panel', {
             title: 'Resultaten (' + this.searchResult.length + ') :',
             renderTo: this.resultPanelId,
             html: html,
             height: '100%',
             width: '100%',
             layout:{
-                type: 'vbox',
-                align: 'stretch'
+                type: 'accordion',
+                titleCollapse: true,
+                animate: true,
+                flex:1,
+                height: 300,
+                multi:true
             },
             autoScroll: true,
             style: { 
