@@ -87,6 +87,7 @@ public class ComponentRegistryInitializer implements ServletContextListener {
              */
             componentPath = DEFAULT_COMPONENT_PATH;
         }
+        registry.setComponentPaths(servletContext,componentPath.split(","));
         
         tryComponentLoading();
     }

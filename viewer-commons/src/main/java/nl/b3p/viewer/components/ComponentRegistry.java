@@ -42,21 +42,14 @@ public class ComponentRegistry {
 
     private Map<String,ViewerComponent> components = new HashMap<String,ViewerComponent>();
     
+    private File[] componentPaths = new File[]{};
+    
     /* package */ boolean loadFromPath(ServletContext sc, String p) {
 
-        File path = new File(sc.getRealPath(p));
-        log.debug(String.format("Real path for \"%s\": %s", p, path));
-        
-        if (!path.exists() || !path.canRead()){
-            log.info(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"."
-                    + "trying as non-virtual path.", path));
-            path = new File(p);
+        File path = this.resolvePath(sc,p);
+        if (path==null){
+            return false;
         }
-        
-        if(!path.exists() || !path.canRead()) {
-            log.error(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"", path));
-            return false;                    
-        }        
 
         log.info("Loading component metadata from path " + path);
 
@@ -143,10 +136,14 @@ public class ComponentRegistry {
                 for(int i = 0; i < sources.length(); i++) {
                     File sourceFile = new File(path.getCanonicalPath() + File.separator + sources.getString(i));
                     if(!sourceFile.canRead()) {
-                        log.error(String.format("Cannot read sourcefile \"%s\" for component class \"%s\"",
-                                sources.getString(i),
-                                className));
-                        return;
+                        /*Maybe it's in an other configured path*/
+                        sourceFile = this.getFileFromComponentPaths(sources.getString(i));
+                        if (sourceFile==null){
+                            log.error(String.format("Cannot read sourcefile \"%s\" for component class \"%s\"",
+                                    sources.getString(i),
+                                    className));
+                            return;
+                        }
                     }
                     sourceFiles[i] = sourceFile;
                 }
@@ -185,8 +182,42 @@ public class ComponentRegistry {
         });
         return names;
     }    
+    
+    private File resolvePath(ServletContext sc,String p){
+        File path = new File(sc.getRealPath(p));
+        log.debug(String.format("Real path for \"%s\": %s", p, path));
+        
+        if (!path.exists() || !path.canRead()){
+            log.info(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"."
+                    + "trying as non-virtual path.", path));
+            path = new File(p);
+        }
+        
+        if(!path.exists() || !path.canRead()) {
+            log.error(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"", path));
+            return null;                    
+        }
+        return path;
+    }
+    private File getFileFromComponentPaths(String source) throws IOException{
+        File file;
+        for (File path : this.componentPaths){
+            file=new File(path.getCanonicalPath() + File.separator + source);
+            if (file.canRead()){
+                return file;
+            }
+        }
+        return null;
+    }
 
     public ViewerComponent getViewerComponent(String className) {
         return components.get(className);
+    }
+
+    public void setComponentPaths(ServletContext sc,String[] componentPaths) {
+        this.componentPaths= new File[componentPaths.length];
+        for (int i = 0; i<componentPaths.length; i++){
+            this.componentPaths[i]=this.resolvePath(sc, componentPaths[i]);
+        }
     }
 }
