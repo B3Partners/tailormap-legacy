@@ -131,7 +131,7 @@ public class OpenLSSearchClient extends SearchClient {
                     }
                     result.put("label", label.toString());
                     if (type != null) {
-                        result.put("type", type);
+                        result.put("type", convertType(type));
                     }
                     
                     Point p = geoAdress.getPoint();
@@ -143,6 +143,20 @@ public class OpenLSSearchClient extends SearchClient {
             }
         }
         return results;
+    }
+    
+    private String convertType(String openLSType) {
+        if (openLSType.equalsIgnoreCase("Street")) {
+            return "Straat";
+        } else if (openLSType.equalsIgnoreCase("MunicipalitySubdivision")) {
+            return "Plaats";
+        } else if (openLSType.equalsIgnoreCase("Municipality")) {
+            return "Gemeente";
+        } else if (openLSType.equalsIgnoreCase("CountrySubdivision")) {
+            return "Provincie";
+        } else {
+            return "Onbekend";
+        }
     }
 
     @Override
