@@ -28,7 +28,7 @@ Ext.define ("viewer.components.Search",{
     autosuggestStore:null,
     searchField:null,
     resultPanelId: '',
-    defaultFormHeight: MobileManager.isMobile() ? 60 : 50,
+    defaultFormHeight: MobileManager.isMobile() ? 80 : 70,
     searchRequestId: 0,
     config:{
         title: null,
