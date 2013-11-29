@@ -147,6 +147,9 @@ Ext.define ("viewer.components.LayerSelector",{
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,al,previousSelected,this);
         
     },
+    /**
+     * Retrieve the AppLayer that is selected.
+     */
     getValue : function (){
         // Retrieve appLayer from viewerController. Because the applayers in the comboBox are not the same as in the viewercontroller but copies. So by retrieving the ones
         // from the ViewerController you get the correct appLayer
@@ -161,15 +164,11 @@ Ext.define ("viewer.components.LayerSelector",{
     setValue : function (appLayer){
         this.combobox.setValue(appLayer);
     },
+    /**
+     * @deprecated use getValue()
+     */
     getSelectedAppLayer : function (){
-        var layerObj = this.getValue();
-        if (layerObj==null){
-            return null;
-        }
-        // Retrieve appLayer from viewerController. Because the applayers in the comboBox are not the same as in the viewercontroller but copies. So by retrieving the ones
-        // from the ViewerController you get the correct appLayer
-        var al = this.viewerController.getAppLayerById(layerObj.id);
-        return al;
+        return this.getValue();
     },
     getExtComponents: function() {
         return [ this.combobox.getId() ];
