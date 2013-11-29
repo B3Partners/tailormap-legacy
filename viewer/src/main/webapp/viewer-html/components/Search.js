@@ -118,12 +118,7 @@ Ext.define ("viewer.components.Search",{
         var me = this;
         var itemList = new Array();     
         if(this.searchconfigs ){
-            if(this.searchconfigs.length === 1){
-                itemList.push({
-                    xtype: 'label',
-                    text: 'Zoek op: '+ this.searchconfigs[0].name
-                });
-            }else if (this.searchconfigs.length > 1 ){
+            if (this.searchconfigs.length > 1 ){
                 var configs = Ext.create('Ext.data.Store', {
                     fields: ['id', 'name', 'url'],
                     data : this.searchconfigs
