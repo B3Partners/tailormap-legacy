@@ -191,9 +191,9 @@ Ext.define ("viewer.components.Search",{
                                 var label = data.label;
                                 me.searchField.setValue(label);
                                 me.search();
-                            }
-                        },
+                            },
                         scope:me
+                        }
                     },
                     listeners: {
                         specialkey: function(field, e){
@@ -216,7 +216,16 @@ Ext.define ("viewer.components.Search",{
                     },
                     store:this.autosuggestStore
                 });
-
+                Ext.view.BoundListKeyNav.override({
+                    selectHighlighted: function(e) {
+                        var item = this.boundList.highlightedItem;
+                        if (item) {
+                            this.callOverridden(e); // If an item is selected, the user did that. So use that for searching. Otherwise search with the user typed string
+                        }
+                        me.search();
+                    }
+                });
+                
                 var searchFieldAndButton = Ext.create('Ext.container.Container', {
                     width: '100%',
                     height: 30,
@@ -275,6 +284,7 @@ Ext.define ("viewer.components.Search",{
         return itemList;
     },
     hideWindow : function(){
+        this.searchField.collapse();
         this.popup.hide();
     },
     search : function(){
