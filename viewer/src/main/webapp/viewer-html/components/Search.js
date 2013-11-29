@@ -471,7 +471,7 @@ Ext.define ("viewer.components.Search",{
             }
         }
         
-        this.popup.hide();
+        this.hideWindow();
         if (this.showRemovePin){
             this.form.getChildByElement("removePin"+ this.name).setVisible(true);
         }
