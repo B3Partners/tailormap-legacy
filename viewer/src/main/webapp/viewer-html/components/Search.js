@@ -384,7 +384,7 @@ Ext.define ("viewer.components.Search",{
                 height: 300,
                 multi:true
             },
-            autoScroll: true,
+            autoScroll: false,
             style: { 
                 padding: '0px 0px 10px 0px'
             },
