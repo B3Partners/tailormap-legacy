@@ -52,7 +52,7 @@ Ext.define ("viewer.components.Edit",{
                 }
             }
             return true;
-        });        
+        });
         
         if (this.layers!=null){
             this.layers = Ext.Array.filter(this.layers, function(layerId) {
@@ -228,6 +228,9 @@ Ext.define ("viewer.components.Edit",{
         });
         this.inputContainer =  Ext.getCmp(this.name + 'InputPanel');
         
+        this.createLayerSelector();
+    },
+    createLayerSelector: function(){
         var config = {
             viewerController : this.viewerController,
             restriction : "editable",
@@ -238,6 +241,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
+            
     layerChanged : function (appLayer){
         if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
