@@ -53,6 +53,7 @@ public class SolrSearchClient extends SearchClient {
     public JSONArray search(String term) {
         JSONArray respDocs = new JSONArray();
         try {
+            term = term.replaceAll("\\:", "\\\\:");
             SolrServer server = SolrInitializer.getServerInstance();
             String extraQuery = createAttributeSourceQuery();
             term  += " AND (";
@@ -68,7 +69,7 @@ public class SolrSearchClient extends SearchClient {
             SolrDocumentList list = rsp.getResults();
 
             for (SolrDocument solrDocument : list) {
-                JSONObject doc = solrDocumentToResult(solrDocument,false);
+                JSONObject doc = solrDocumentToResult(solrDocument);
                 if(doc != null){
                     respDocs.put(doc);
                 }
@@ -106,7 +107,7 @@ public class SolrSearchClient extends SearchClient {
             SolrDocumentList list = rsp.getResults();
 
             for (SolrDocument solrDocument : list) {
-                JSONObject doc = solrDocumentToResult(solrDocument,true);
+                JSONObject doc = solrDocumentToAutosuggest(solrDocument);
                 if(doc != null){
                     respDocs.put(doc);
                 }
@@ -158,7 +159,34 @@ public class SolrSearchClient extends SearchClient {
       
     }
     
-    private JSONObject solrDocumentToResult(SolrDocument doc, boolean onlyLabel){
+    
+    private JSONObject solrDocumentToAutosuggest(SolrDocument doc){
+        JSONObject result = null;
+        try {
+            Collection<Object> resultValues = doc.getFieldValues("values");
+            if (resultValues != null) {
+                result = new JSONObject();
+                String resultLabel = "";
+                List<String> labels = new ArrayList(resultValues);
+                for (String label : labels) {
+                    if (!resultLabel.isEmpty()) {
+                        resultLabel += ", ";
+                    }
+                    resultLabel += label;
+                }
+                result.put("label", resultLabel);
+              
+                result.put("searchConfig", doc.getFieldValue("searchConfig"));
+                String naam = getConfigurationNaam((Integer)doc.getFieldValue("searchConfig"));
+                result.put("type", naam);
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+    
+    private JSONObject solrDocumentToResult(SolrDocument doc){
         JSONObject result = null;
         try {
             Collection<Object> resultValues = doc.getFieldValues("resultValues");
@@ -173,14 +201,13 @@ public class SolrSearchClient extends SearchClient {
                     resultLabel += label;
                 }
                 result.put("label", resultLabel);
-                if(!onlyLabel){
-                    Map bbox = new HashMap();
-                    bbox.put("minx", doc.getFieldValue("minx"));
-                    bbox.put("miny", doc.getFieldValue("miny"));
-                    bbox.put("maxx", doc.getFieldValue("maxx"));
-                    bbox.put("maxy", doc.getFieldValue("maxy"));
-                    result.put("location", bbox);
-                }
+                Map bbox = new HashMap();
+                bbox.put("minx", doc.getFieldValue("minx"));
+                bbox.put("miny", doc.getFieldValue("miny"));
+                bbox.put("maxx", doc.getFieldValue("maxx"));
+                bbox.put("maxy", doc.getFieldValue("maxy"));
+                result.put("location", bbox);
+
                 result.put("searchConfig", doc.getFieldValue("searchConfig"));
                 String naam = getConfigurationNaam((Integer)doc.getFieldValue("searchConfig"));
                 result.put("type", naam);
