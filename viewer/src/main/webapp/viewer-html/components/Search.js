@@ -171,7 +171,7 @@ Ext.define ("viewer.components.Search",{
                         }
                     }
                 });
-                
+                var me = this;
                 this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
                     name: 'searchfield',
                     hideTrigger: true,
@@ -184,6 +184,17 @@ Ext.define ("viewer.components.Search",{
                     queryMode: queryMode,
                     id: 'searchfield' + this.name,
                     minChars: 2,
+                    listConfig:{
+                        listeners:{
+                            itemclick:function(list, node){
+                                var data = node.data !== undefined ? node.data : node.raw;
+                                var label = data.label;
+                                me.searchField.setValue(label);
+                                me.search();
+                            }
+                        },
+                        scope:me
+                    },
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() === e.ENTER) {
