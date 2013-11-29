@@ -41,7 +41,7 @@ public abstract class SearchClient {
      *              maxx: <double>,
      *              maxy: <double>
      *          }, 
-     *          type: <string>, // This must be one of: Street, MunicipalitySubdivision, Municipality,CountrySubdivision
+     *          type: <string>, // For openLS this is one of: Street, MunicipalitySubdivision, Municipality,CountrySubdivision, for solr it is the name of the configuration
      *          label: <string>
      *      }
      * ]
