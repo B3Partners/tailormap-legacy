@@ -190,7 +190,7 @@ Ext.define ("viewer.components.Search",{
                                 var data = node.data !== undefined ? node.data : node.raw;
                                 var label = data.label;
                                 me.searchField.setValue(label);
-                                me.search(true);
+                                me.search();
                             }
                         },
                         scope:me
@@ -277,10 +277,7 @@ Ext.define ("viewer.components.Search",{
     hideWindow : function(){
         this.popup.hide();
     },
-    search : function(quoteTerm){
-        if(quoteTerm === undefined){
-            quoteTerm = false;
-        }
+    search : function(){
         this.searchRequestId++;
         if(this.results != null){
             this.results.destroy();
@@ -296,9 +293,6 @@ Ext.define ("viewer.components.Search",{
         if(searchName !== null && searchText !== ""){
             var requestPath=  contextPath+"/action/search"; 
             var requestParams = {};
-            if(quoteTerm){
-                searchText = '\"' + searchText + '\"';
-            }
             requestParams["searchText"]= searchText;
             requestParams["searchName"]= searchName;
             requestParams["appId"]= appId;
