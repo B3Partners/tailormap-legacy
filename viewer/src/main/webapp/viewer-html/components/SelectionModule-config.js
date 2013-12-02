@@ -63,6 +63,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 [false, "Nee"]
             ]
         });
+        
         this.form.add({
             xtype: "combo",
             fields: ['value', 'text'],
@@ -75,7 +76,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 [false, "Nee"]
             ]
         });
-        
         this.form.add({
             xtype: "textfield",
             value: configObject.defaultCswUrl !== undefined ? configObject.defaultCswUrl : "",
@@ -83,6 +83,19 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth,
             fieldLabel: "Standaard CSW Url",
             width: 500
+        });
+        
+         this.form.add({
+            xtype: "combo",
+            fields: ['value', 'text'],
+            value: configObject.showWhenOnlyBackground !== undefined ? configObject.showWhenOnlyBackground : true,
+            name: "showWhenOnlyBackground",
+            labelWidth: this.labelWidth,
+            fieldLabel: "Laat zien bij opstarten indien er alleen achtergrondlagen zijn",
+            store: [
+                [true, "Ja"],
+                [false, "Nee"]
+            ]
         });
         
         this.form.add({

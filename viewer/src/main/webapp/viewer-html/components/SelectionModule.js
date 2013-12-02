@@ -140,9 +140,10 @@ Ext.define ("viewer.components.SelectionModule",{
         defaultCswUrl:null,
         advancedLabel:null,
         advancedValue:null,
-        alwaysMatch:null
+        alwaysMatch:null,
+        showWhenOnlyBackground:null
     },
-    constructor: function (conf) {        
+    constructor: function (conf) {     
         //set defaults
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
@@ -154,6 +155,8 @@ Ext.define ("viewer.components.SelectionModule",{
             conf.selectOwnServices=true;
         } if(Ext.isEmpty(conf.selectCsw)){
             conf.selectCsw = true;
+        } if(Ext.isEmpty(conf.showWhenOnlyBackground)){
+            conf.showWhenOnlyBackground = true;
         }
         // call constructor and init config
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
@@ -165,7 +168,7 @@ Ext.define ("viewer.components.SelectionModule",{
             if(this.viewerController.app.selectedContent.length == 0 ){
                 me.openWindow();
             }else{
-                if(this.selectedContentHasOnlyBackgroundLayers()){
+                if(this.showWhenOnlyBackground && this.selectedContentHasOnlyBackgroundLayers()){
                     me.openWindow();
                 }
             }
