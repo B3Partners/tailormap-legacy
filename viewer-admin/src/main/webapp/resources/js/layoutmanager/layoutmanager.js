@@ -645,7 +645,7 @@ Ext.onReady(function() {
             iframe.dom.contentDocument.body.innerHTML = '';
         }
         var url = configPageLink;
-        if(url.contains("?")){
+        if(url.indexOf("?") !== -1){
             url += "&";
         }else{
             url += "?";
