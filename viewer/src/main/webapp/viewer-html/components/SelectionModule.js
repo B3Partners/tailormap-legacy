@@ -343,7 +343,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var panels= this.treePanels;
         for(var key in panels){
             var p = panels[key];
-            if(p.treePanel.getId() === this.activeTree.getId()){
+            if(p.treePanel && p.treePanel.getId() === this.activeTree.getId()){
                 return key;
             }
         }
