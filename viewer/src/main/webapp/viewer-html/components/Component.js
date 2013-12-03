@@ -50,6 +50,10 @@ Ext.define("viewer.components.Component",{
         var me = this;
         me.initConfig(config);
         me.createIconStylesheet();
+        var screenAreas = ['header', 'leftmargin_top', 'leftmargin_bottom', 'rightmargin_top', 'rightmargin_bottom', 'footer'];
+        if(config.hasOwnProperty('regionName') && Ext.Array.indexOf(screenAreas, config.regionName) !== -1) {
+            me.isPopup = false;
+        }
         if(me.isPopup){
             me.popup = Ext.create("viewer.components.ScreenPopup",config);
             me.popup.setComponent(me);
@@ -90,6 +94,8 @@ Ext.define("viewer.components.Component",{
             buttonWidth = me.defaultButtonWidth,
             baseClass = this.getBaseClass(),
             showLabel = false;
+
+        if(!me.isPopup) return;
 
         me.options = options;
         if(options.icon) {

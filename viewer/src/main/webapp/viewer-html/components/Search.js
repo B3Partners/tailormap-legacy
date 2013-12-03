@@ -71,7 +71,8 @@ Ext.define ("viewer.components.Search",{
             }
         });
         this.resultPanelId = Ext.id();
-        this.mainContainer = Ext.create('Ext.container.Container', {
+
+        var options = {
             id: this.name + 'Container',
             width: '100%',
             height: '100%',
@@ -83,35 +84,40 @@ Ext.define ("viewer.components.Search",{
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
-            items: [
-                this.form, {
-                    id: this.name + 'ContentPanel',
-                    xtype: "container",
-                    autoScroll: true,
-                    width: '100%',
-                    flex: 1,
-                    html: '<div id="' + me.resultPanelId + '" style="width: 100%; height: 100%; padding: 0px 10px 0px 10px;"></div>'
-                }, {
-                    id: this.name + 'ClosingPanel',
-                    xtype: "container",
-                    width: '100%',
-                    height: MobileManager.isMobile() ? 45 : 25,
-                    style: {
-                        marginTop: '10px',
-                        marginRight: '5px'
-                    },
-                    layout: {
-                        type:'hbox',
-                        pack:'end'
-                    },
-                    items: [
-                        {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
-                            me.popup.hide();
-                        }}
-                    ]
-                }
-            ]
-        });
+            items: [ this.form, {
+                id: this.name + 'ContentPanel',
+                xtype: "container",
+                autoScroll: true,
+                width: '100%',
+                flex: 1,
+                html: '<div id="' + me.resultPanelId + '" style="width: 100%; height: 100%; padding: 0px 10px 0px 10px;"></div>'
+            }]
+        };
+        if(!this.isPopup) {
+            options.title = this.config.title;
+            options.bodyPadding = '10 0 10 0';
+        } else {
+            options.items.push({
+                id: this.name + 'ClosingPanel',
+                xtype: "container",
+                width: '100%',
+                height: MobileManager.isMobile() ? 45 : 25,
+                style: {
+                    marginTop: '10px',
+                    marginRight: '5px'
+                },
+                layout: {
+                    type:'hbox',
+                    pack:'end'
+                },
+                items: [
+                    {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                        me.popup.hide();
+                    }}
+                ]
+            });
+        }
+        this.mainContainer = Ext.create(this.isPopup ? 'Ext.container.Container' : 'Ext.panel.Panel', options);
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
     },
     getFormItems: function(){
@@ -398,7 +404,9 @@ Ext.define ("viewer.components.Search",{
         if(this.searchResult.length === 1){
             this.handleSearchResult(this.searchResult[0]);
         }else{
-            this.popup.show();
+            if(this.isPopup) {
+                this.popup.show();
+            }
         }
         
     },
@@ -466,7 +474,9 @@ Ext.define ("viewer.components.Search",{
             }
         }
         
-        this.hideWindow();
+        if(this.isPopup) {
+            this.hideWindow();
+        }
         if (this.showRemovePin){
             this.form.getChildByElement("removePin"+ this.name).setVisible(true);
         }
