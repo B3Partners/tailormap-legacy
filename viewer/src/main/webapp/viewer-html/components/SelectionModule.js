@@ -779,11 +779,13 @@ Ext.define ("viewer.components.SelectionModule",{
 
         if(me.config.selectGroups) {
             me.treePanels.applicationTree.treeStore = Ext.create('Ext.data.TreeStore', Ext.apply({}, defaultStoreConfig));
-            me.treePanels.applicationTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply(defaultTreeConfig, {
+            var applicationTreeConfig = Ext.apply(defaultTreeConfig, {
                 treePanelType: 'applicationTree',
                 store: me.treePanels.applicationTree.treeStore,
-                renderTo: 'applicationTreeContainer',
-                tbar: [{xtype : 'textfield', id: 'applicationTreeSearchField',
+                renderTo: 'applicationTreeContainer'
+            });
+            if(!me.config.hasOwnProperty('showSearchGroups') || me.config.showSearchGroups) {
+                applicationTreeConfig.tbar = [{xtype : 'textfield', id: 'applicationTreeSearchField',
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() == e.ENTER) {
@@ -798,8 +800,9 @@ Ext.define ("viewer.components.SelectionModule",{
                             me.filterNodes(me.treePanels.applicationTree.treePanel, Ext.getCmp('applicationTreeSearchField').getValue());
                         }
                     }
-                ]
-            }));
+                ];
+            }
+            me.treePanels.applicationTree.treePanel = Ext.create('Ext.tree.Panel', applicationTreeConfig);
         }
         
         if(me.config.selectLayers) {
@@ -816,11 +819,13 @@ Ext.define ("viewer.components.SelectionModule",{
             });    
 
             me.treePanels.registryTree.treeStore = serviceStore;
-            me.treePanels.registryTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply(defaultTreeConfig, {
+            var registryTreeConfig = Ext.apply(defaultTreeConfig, {
                 treePanelType: 'registryTree',
                 store: me.treePanels.registryTree.treeStore,
-                renderTo: 'registryTreeContainer',
-                tbar: [{xtype : 'textfield', id: 'registryTreeSearchField',
+                renderTo: 'registryTreeContainer'
+            });
+            if(!me.config.hasOwnProperty('showSearchLayers') || me.config.showSearchLayers) {
+                registryTreeConfig.tbar = [{xtype : 'textfield', id: 'registryTreeSearchField',
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() == e.ENTER) {
@@ -835,17 +840,23 @@ Ext.define ("viewer.components.SelectionModule",{
                             me.filterRemote(me.treePanels.registryTree.treePanel, Ext.getCmp('registryTreeSearchField').getValue());
                         }
                     }
-                ]
-            }));
+                ];
+            }
+            me.treePanels.registryTree.treePanel = Ext.create('Ext.tree.Panel', registryTreeConfig);
         }
         
         if(me.config.selectOwnServices || me.config.selectCsw) {
             me.treePanels.customServiceTree.treeStore = Ext.create('Ext.data.TreeStore', Ext.apply({}, defaultStoreConfig));
-            me.treePanels.customServiceTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply(defaultTreeConfig, {
+            var customServiceConfig = Ext.apply(defaultTreeConfig, {
                 treePanelType: 'customServiceTree',
                 store: me.treePanels.customServiceTree.treeStore,
-                renderTo: 'customTreeContainer',
-                tbar: [{xtype : 'textfield', id: 'customServiceTreeSearchField',
+                renderTo: 'customTreeContainer'
+            });
+            if(
+                (!me.config.hasOwnProperty('showSearchOwnServices') || me.config.showSearchOwnServices) ||
+                (!me.config.hasOwnProperty('showSearchCsw') || me.config.showSearchCsw)
+            ) {
+                customServiceConfig.tbar = [{xtype : 'textfield', id: 'customServiceTreeSearchField',
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() == e.ENTER) {
@@ -860,8 +871,9 @@ Ext.define ("viewer.components.SelectionModule",{
                             me.filterNodes(me.treePanels.customServiceTree.treePanel, Ext.getCmp('customServiceTreeSearchField').getValue());
                         }
                     }
-                ]
-            }));
+                ];
+            }
+            me.treePanels.customServiceTree.treePanel = Ext.create('Ext.tree.Panel', customServiceConfig);
         }
         
         me.treePanels.selectionTree.treeStore = Ext.create('Ext.data.TreeStore', Ext.apply({}, defaultStoreConfig));

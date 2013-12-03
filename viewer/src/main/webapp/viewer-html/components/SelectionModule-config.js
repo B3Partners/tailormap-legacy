@@ -26,89 +26,121 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         this.labelWidth=200;
         configObject.showLabelconfig =true;
+        var me = this,
+            handleChangeListener = {
+                change: function(box) {
+                    me.handleChange(box);
+                }
+            },
+            checkboxgroupWidth = 500;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
         this.form.add({
-            xtype: "combo",
-            fields: ['value', 'text'],
-            value: configObject.selectGroups !== undefined ? configObject.selectGroups : true,
-            name: "selectGroups",
-            fieldLabel: "Kaarten selecteren",
-            labelWidth: this.labelWidth,
-            store: [
-                [true, "Ja"],
-                [false, "Nee"]
-            ]
+            xtype: 'checkboxgroup',
+            columns: 2,
+            width: checkboxgroupWidth,
+            vertical: true,
+            items: [{
+                xtype: "checkbox",
+                checked: configObject.selectGroups !== undefined ? configObject.selectGroups : true,
+                name: "selectGroups",
+                fieldLabel: "Kaarten selecteren",
+                labelWidth: this.labelWidth,
+                listeners: handleChangeListener
+            },{
+                xtype: "checkbox",
+                checked: configObject.showSearchGroups !== undefined ? configObject.showSearchGroups : true,
+                name: "showSearchGroups",
+                fieldLabel: "Toon zoekveld",
+                labelWidth: 80
+            }]
         });
         this.form.add({
-            xtype: "combo",
-            fields: ['value', 'text'],
-            value: configObject.selectLayers !== undefined ? configObject.selectLayers : true,
-            name: "selectLayers",
-            labelWidth: this.labelWidth,
-            fieldLabel: "Kaartlagen selecteren",
-            store: [
-                [true, "Ja"],
-                [false, "Nee"]
-            ]
+            xtype: 'checkboxgroup',
+            columns: 2,
+            width: checkboxgroupWidth,
+            vertical: true,
+            items: [{
+                xtype: "checkbox",
+                checked: configObject.selectLayers !== undefined ? configObject.selectLayers : true,
+                name: "selectLayers",
+                labelWidth: this.labelWidth,
+                fieldLabel: "Kaartlagen selecteren",
+                listeners: handleChangeListener
+            },{
+                xtype: "checkbox",
+                checked: configObject.showSearchLayers !== undefined ? configObject.showSearchLayers : true,
+                name: "showSearchLayers",
+                fieldLabel: "Toon zoekveld",
+                labelWidth: 80
+            }]
         });
         this.form.add({
-            xtype: "combo",
-            fields: ['value', 'text'],
-            value: configObject.selectOwnServices !== undefined ? configObject.selectOwnServices : true,
-            name: "selectOwnServices",
-            labelWidth: this.labelWidth,
-            fieldLabel: "Eigen services selecteren",
-            store: [
-                [true, "Ja"],
-                [false, "Nee"]
-            ]
+            xtype: 'checkboxgroup',
+            columns: 2,
+            width: checkboxgroupWidth,
+            vertical: true,
+            items: [{
+                xtype: "checkbox",
+                checked: configObject.selectOwnServices !== undefined ? configObject.selectOwnServices : true,
+                name: "selectOwnServices",
+                labelWidth: this.labelWidth,
+                fieldLabel: "Eigen services selecteren",
+                listeners: handleChangeListener
+            },{
+                xtype: "checkbox",
+                checked: configObject.showSearchOwnServices !== undefined ? configObject.showSearchOwnServices : true,
+                name: "showSearchOwnServices",
+                fieldLabel: "Toon zoekveld",
+                labelWidth: 80
+            }]
         });
         
         this.form.add({
-            xtype: "combo",
-            fields: ['value', 'text'],
-            value: configObject.selectCsw !== undefined ? configObject.selectCsw : true,
-            name: "selectCsw",
-            labelWidth: this.labelWidth,
-            fieldLabel: "CSW service doorzoeken",
-            store: [
-                [true, "Ja"],
-                [false, "Nee"]
-            ]
+            xtype: 'checkboxgroup',
+            columns: 2,
+            width: checkboxgroupWidth,
+            vertical: true,
+            items: [{
+                xtype: "checkbox",
+                checked: configObject.selectCsw !== undefined ? configObject.selectCsw : true,
+                name: "selectCsw",
+                labelWidth: this.labelWidth,
+                fieldLabel: "CSW service doorzoeken",
+                listeners: handleChangeListener
+            },{
+                xtype: "checkbox",
+                checked: configObject.showSearchCsw !== undefined ? configObject.showSearchCsw : true,
+                name: "showSearchCsw",
+                fieldLabel: "Toon zoekveld",
+                labelWidth: 80
+            }]
         });
         this.form.add({
             xtype: "textfield",
             value: configObject.defaultCswUrl !== undefined ? configObject.defaultCswUrl : "",
             name: "defaultCswUrl",
+            id: "defaultCswUrl",
             labelWidth: this.labelWidth,
             fieldLabel: "Standaard CSW Url",
             width: 500
         });
         
            this.form.add({
-            xtype: "combo",
-            value: configObject.showCswUrl !== undefined ? configObject.showCswUrl : true,
+            xtype: "checkbox",
+            checked: configObject.showCswUrl !== undefined ? configObject.showCswUrl : true,
             name: "showCswUrl",
+            id: "showCswUrl",
             labelWidth: this.labelWidth,
-            fieldLabel: "Laat CSW url zien",
-            store: [
-                [true, "Ja"],
-                [false, "Nee"]
-            ]
+            fieldLabel: "Laat CSW url zien"
         });
         
         
          this.form.add({
-            xtype: "combo",
-            fields: ['value', 'text'],
-            value: configObject.showWhenOnlyBackground !== undefined ? configObject.showWhenOnlyBackground : true,
+            xtype: "checkbox",
+            checked: configObject.showWhenOnlyBackground !== undefined ? configObject.showWhenOnlyBackground : true,
             name: "showWhenOnlyBackground",
             labelWidth: this.labelWidth,
-            fieldLabel: "Laat zien bij opstarten indien er alleen achtergrondlagen zijn",
-            store: [
-                [true, "Ja"],
-                [false, "Nee"]
-            ]
+            fieldLabel: "Laat zien bij opstarten indien er alleen achtergrondlagen zijn"
         });
         
         this.form.add({
@@ -148,7 +180,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             layout: {
                 type: 'vbox'
             },
-            height: 220,
+            height: 170,
             padding: '5 5 0 5',
             items:[
                 {
@@ -158,52 +190,73 @@ Ext.define("viewer.components.CustomConfiguration",{
                     id: "alwaysMatch",
                     labelWidth: this.labelWidth,
                     fieldLabel: "Match altijd met gegevensregister",
-                    width: 500,
+                    width: 500
                 },
                 {
-                    xtype: "textfield",
-                    name: "advancedLabel",
-                    id: "advancedLabel",
-                    labelWidth: this.labelWidth,
-                    fieldLabel: "Label voor het filterattribuut",
-                    value: configObject.advancedLabel !== null ? configObject.advancedLabel : ""
-                }, {
-                    xtype: "textfield",
-                    name: "advancedValue",
-                    id: "advancedValue",
-                    labelWidth: this.labelWidth,
-                    fieldLabel: "Waarde voor het filterattribuut",
-                    value: configObject.advancedValue !== null ? configObject.advancedValue : ""
-                },{
-                    xtype:"button",
-                    name: "addValue",
-                    text: "Voeg waarde toe",
-                    listeners:{
-                        click:{
-                            fn:function(){
-                                var valueSet = Ext.getCmp("advancedFilterValues");
-                                valueSet.add(this.createRow('', ''));
-                                valueSet.doLayout();
-                            },
-                            scope:this
+                    xtype: 'container',
+                    layout: 'hbox',
+                    defaults: {
+                        margin: '0 10 0 0'
+                    },
+                    width: '100%',
+                    items: [
+                        {
+                            xtype: "textfield",
+                            name: "advancedLabel",
+                            id: "advancedLabel",
+                            labelWidth: this.labelWidth,
+                            fieldLabel: "Label voor het filterattribuut",
+                            value: configObject.advancedLabel !== null ? configObject.advancedLabel : ""
+                        }, {
+                            xtype: "textfield",
+                            name: "advancedValue",
+                            id: "advancedValue",
+                            labelWidth: 180,
+                            fieldLabel: "Waarde voor het filterattribuut",
+                            value: configObject.advancedValue !== null ? configObject.advancedValue : ""
                         }
-                    }
+                    ]
                 },
                 {
                     xtype: "fieldset",
-                    height: 130,
+                    height: 110,
                     width: '100%',
                     title: "Waardes",
+                    layout: 'hbox',
                     items: [{
+                        xtype:"button",
+                        name: "addValue",
+                        text: "Voeg waarde toe",
+                        margin: '0 10 0 0',
+                        listeners:{
+                            click:{
+                                fn:function(){
+                                    var valueSet = Ext.getCmp("advancedFilterValues");
+                                    valueSet.add(this.createRow('', ''));
+                                    valueSet.doLayout();
+                                },
+                                scope:this
+                            }
+                        }
+                    },{
                         xtype: 'container',
                         name: "advancedFilterValues",
                         id: "advancedFilterValues",
                         items: waardeItems,
+                        flex: 1,
                         autoScroll: true,
-                        height: 110 // Weird ExtJS behaviour (bug?) does not take fieldset height into account when calculating layout
+                        height: 90 // Weird ExtJS behaviour (bug?) does not take fieldset height into account when calculating layout
                     }]
                 }
             ]
+        });
+        
+        // Trigger change event on all checkboxgroups to enable/disable the 'show search' checkbox
+        this.form.query('.checkboxgroup').forEach(function(field) {
+            // Select the first checkbox child of the checkbox group
+            var checkbox = field.child('.checkbox');
+            // Fire change event and pass the checkbox as first argument
+            checkbox.fireEvent('change', checkbox);
         });
         
     },
@@ -229,8 +282,38 @@ Ext.define("viewer.components.CustomConfiguration",{
                     name: "comboValue",
                     fieldLabel: "Waarde",
                     value: comboValue
+                }, {
+                    xtype: "button",
+                    text: " X ",
+                    width: "auto",
+                    listeners:{
+                        click: function(btn) {
+                            Ext.getCmp('advancedFilterValues').remove(btn.up('.container'));
+                            Ext.getCmp("advancedFilterValues").doLayout();
+                        }
+                    }
                 }]
         };
+    },
+    handleChange: function(box) {
+        // Get next sibling and set sibling disabled / enabled based on checked value
+        var sibl = box.next(),
+            isChecked = box.getValue();
+        // We only set the class to disabled to emulate disabled, this will ensure that
+        // the value is sent to the backend anyway. This is important to reliably show/
+        // hide the search box in the front-end
+        if(!isChecked) {
+            sibl.addCls('x-item-disabled');
+            sibl.setValue(false);
+        } else {
+            sibl.removeCls('x-item-disabled');
+        }
+        
+        if(box.getName() === 'selectCsw') {
+            Ext.getCmp('defaultCswUrl').setVisible(isChecked);
+            Ext.getCmp('showCswUrl').setVisible(isChecked);
+            
+        }
     },
     getConfiguration: function() {
         var config = this.callParent(arguments);
