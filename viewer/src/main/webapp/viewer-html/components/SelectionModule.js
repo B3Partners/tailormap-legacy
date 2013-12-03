@@ -453,15 +453,15 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var radioControls = [];
         // Add only if config option is set to true
-        if(me.config.selectGroups) radioControls.push({id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+        if(me.config.selectGroups) radioControls.push({id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
-        if(me.config.selectLayers) radioControls.push({id: 'radioRegistry', checked: (radioControls.length === 0), name: 'layerSource', boxLabel: 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+        if(me.config.selectLayers) radioControls.push({id: 'radioRegistry', checked: (radioControls.length === 0), name: 'layerSource', boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
         if(me.config.selectOwnServices) {
-            radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+            radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         }
         if(me.config.selectCsw){
-            radioControls.push({id: 'radioCSW', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+            radioControls.push({id: 'radioCSW', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
         }
         
         // If there is only 1 control, do not add any

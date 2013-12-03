@@ -26,95 +26,60 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         this.labelWidth=200;
         configObject.showLabelconfig =true;
-        var me = this,
-            handleChangeListener = {
-                change: function(box) {
-                    me.handleChange(box);
-                }
-            },
-            checkboxgroupWidth = 500;
+        var me = this;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);
-        this.form.add({
-            xtype: 'checkboxgroup',
-            columns: 2,
-            width: checkboxgroupWidth,
-            vertical: true,
-            items: [{
-                xtype: "checkbox",
-                checked: configObject.selectGroups !== undefined ? configObject.selectGroups : true,
-                name: "selectGroups",
-                fieldLabel: "Kaarten selecteren",
-                labelWidth: this.labelWidth,
-                listeners: handleChangeListener
-            },{
-                xtype: "checkbox",
-                checked: configObject.showSearchGroups !== undefined ? configObject.showSearchGroups : true,
-                name: "showSearchGroups",
-                fieldLabel: "Toon zoekveld",
-                labelWidth: 80
-            }]
-        });
-        this.form.add({
-            xtype: 'checkboxgroup',
-            columns: 2,
-            width: checkboxgroupWidth,
-            vertical: true,
-            items: [{
-                xtype: "checkbox",
-                checked: configObject.selectLayers !== undefined ? configObject.selectLayers : true,
-                name: "selectLayers",
-                labelWidth: this.labelWidth,
-                fieldLabel: "Kaartlagen selecteren",
-                listeners: handleChangeListener
-            },{
-                xtype: "checkbox",
-                checked: configObject.showSearchLayers !== undefined ? configObject.showSearchLayers : true,
-                name: "showSearchLayers",
-                fieldLabel: "Toon zoekveld",
-                labelWidth: 80
-            }]
-        });
-        this.form.add({
-            xtype: 'checkboxgroup',
-            columns: 2,
-            width: checkboxgroupWidth,
-            vertical: true,
-            items: [{
-                xtype: "checkbox",
-                checked: configObject.selectOwnServices !== undefined ? configObject.selectOwnServices : true,
-                name: "selectOwnServices",
-                labelWidth: this.labelWidth,
-                fieldLabel: "Eigen services selecteren",
-                listeners: handleChangeListener
-            },{
-                xtype: "checkbox",
-                checked: configObject.showSearchOwnServices !== undefined ? configObject.showSearchOwnServices : true,
-                name: "showSearchOwnServices",
-                fieldLabel: "Toon zoekveld",
-                labelWidth: 80
-            }]
-        });
         
         this.form.add({
-            xtype: 'checkboxgroup',
-            columns: 2,
-            width: checkboxgroupWidth,
-            vertical: true,
-            items: [{
-                xtype: "checkbox",
-                checked: configObject.selectCsw !== undefined ? configObject.selectCsw : true,
-                name: "selectCsw",
-                labelWidth: this.labelWidth,
-                fieldLabel: "CSW service doorzoeken",
-                listeners: handleChangeListener
-            },{
-                xtype: "checkbox",
-                checked: configObject.showSearchCsw !== undefined ? configObject.showSearchCsw : true,
-                name: "showSearchCsw",
-                fieldLabel: "Toon zoekveld",
-                labelWidth: 80
-            }]
+            xtype: "checkbox",
+            checked: configObject.showWhenOnlyBackground !== undefined ? configObject.showWhenOnlyBackground : true,
+            name: "showWhenOnlyBackground",
+            labelWidth: this.labelWidth,
+            fieldLabel: "Laat zien bij opstarten indien er alleen achtergrondlagen zijn"
         });
+        
+        var fieldNames = [
+            { name: 'Groups', description: 'Kaarten selecteren', defaultLabel: 'Kaart' },
+            { name: 'Layers', description: 'Kaartlagen selecteren', defaultLabel: 'Kaartlaag' },
+            { name: 'OwnServices', description: 'Eigen services selecteren', defaultLabel: 'Eigen service' },
+            { name: 'Csw', description: 'CSW service doorzoeken', defaultLabel: 'CSW service' }
+        ];
+        // Adding configuration options for all fieldNames
+        Ext.Array.forEach(fieldNames, function(field) {
+            me.form.add({
+                xtype: 'container',
+                layout: 'hbox',
+                margin: '0 0 2 0',
+                items: [{
+                    xtype: "checkbox",
+                    id: "checkbox" + field.name,
+                    checked: configObject.hasOwnProperty('select' + field.name) ? configObject['select' + field.name] : true,
+                    name: 'select' + field.name,
+                    fieldLabel: field.description,
+                    labelWidth: me.labelWidth,
+                    margin: '0 10 0 0',
+                    listeners: {
+                        change: function(box) {
+                            me.handleChange(box);
+                        }
+                    }
+                },{
+                    xtype: "checkbox",
+                    checked: configObject.hasOwnProperty('showSearch' + field.name) ? configObject['showSearch' + field.name] : true,
+                    name: "showSearch" + field.name,
+                    fieldLabel: "Toon zoekveld",
+                    margin: '0 10 0 0',
+                    labelWidth: 95
+                },{
+                    xtype: "textfield",
+                    value: configObject.hasOwnProperty('label' + field.name) ? configObject['label' + field.name] : field.defaultLabel,
+                    name: "label" + field.name,
+                    fieldLabel: "Label",
+                    labelWidth: 60,
+                    width: 200
+                }]
+            });
+        });
+
         this.form.add({
             xtype: "textfield",
             value: configObject.defaultCswUrl !== undefined ? configObject.defaultCswUrl : "",
@@ -134,28 +99,17 @@ Ext.define("viewer.components.CustomConfiguration",{
             fieldLabel: "Laat CSW url zien"
         });
         
-        
-         this.form.add({
-            xtype: "checkbox",
-            checked: configObject.showWhenOnlyBackground !== undefined ? configObject.showWhenOnlyBackground : true,
-            name: "showWhenOnlyBackground",
-            labelWidth: this.labelWidth,
-            fieldLabel: "Laat zien bij opstarten indien er alleen achtergrondlagen zijn"
-        });
-        
         this.form.add({
             xtype: "checkbox",
             checked: configObject.advancedFilter !== undefined ? configObject.advancedFilter : false,
             name: "advancedFilter",
+            id: "advancedFilter",
             labelWidth: this.labelWidth,
             fieldLabel: "Gebruik een geavanceerd filter",
             width: 500,
             listeners:{
-                change:{
-                    fn:function(obj, val){
-                        Ext.getCmp("advancedFilterFieldset").setVisible(val);
-                    },
-                    scope:this
+                change: function(obj, val) {
+                    Ext.getCmp("advancedFilterFieldset").setVisible(val);
                 }
             }
         });
@@ -251,14 +205,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             ]
         });
         
-        // Trigger change event on all checkboxgroups to enable/disable the 'show search' checkbox
-        this.form.query('.checkboxgroup').forEach(function(field) {
-            // Select the first checkbox child of the checkbox group
-            var checkbox = field.child('.checkbox');
-            // Fire change event and pass the checkbox as first argument
+        // Trigger change on checkboxes to show/enable / hide/disable fields
+        Ext.Array.forEach(fieldNames, function(field) {
+            var checkbox = Ext.getCmp('checkbox' + field.name);
             checkbox.fireEvent('change', checkbox);
         });
-        
     },
     createRow: function(labelValue, comboValue) {
         return {
@@ -297,22 +248,30 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
     handleChange: function(box) {
         // Get next sibling and set sibling disabled / enabled based on checked value
-        var sibl = box.next(),
+        var siblCheckbox = box.next(),
+            siblTextfield = siblCheckbox.next(),
             isChecked = box.getValue();
         // We only set the class to disabled to emulate disabled, this will ensure that
         // the value is sent to the backend anyway. This is important to reliably show/
         // hide the search box in the front-end
         if(!isChecked) {
-            sibl.addCls('x-item-disabled');
-            sibl.setValue(false);
+            siblCheckbox.addCls('x-item-disabled');
+            siblCheckbox.setValue(false);
+            siblTextfield.addCls('x-item-disabled');
         } else {
-            sibl.removeCls('x-item-disabled');
+            siblCheckbox.removeCls('x-item-disabled');
+            siblTextfield.removeCls('x-item-disabled');
         }
         
         if(box.getName() === 'selectCsw') {
             Ext.getCmp('defaultCswUrl').setVisible(isChecked);
             Ext.getCmp('showCswUrl').setVisible(isChecked);
-            
+            Ext.getCmp('advancedFilter').setVisible(isChecked);
+            var showAdvanced = isChecked;
+            if(isChecked && !Ext.getCmp('advancedFilter').getValue()) {
+                showAdvanced = false;
+            }
+            Ext.getCmp("advancedFilterFieldset").setVisible(showAdvanced);
         }
     },
     getConfiguration: function() {
