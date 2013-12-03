@@ -141,7 +141,8 @@ Ext.define ("viewer.components.SelectionModule",{
         advancedLabel:null,
         advancedValue:null,
         alwaysMatch:null,
-        showWhenOnlyBackground:null
+        showWhenOnlyBackground:null,
+        showCswUrl: null
     },
     constructor: function (conf) {     
         //set defaults
@@ -1135,7 +1136,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 me.customServiceType = 'csw';
                 customTreeContainer.setStyle('visibility', 'visible');
                 me.activeTree = me.treePanels.customServiceTree.treePanel;
-                cswServiceUrlTextfield.setVisible(true);
+                cswServiceUrlTextfield.setVisible(Ext.isEmpty( this.showCswUrl)|| this.showCswUrl);
                 cswSearchTextfield.setVisible(true);
                 cswServiceUrlButton.setVisible(true);
                 cswAdvancedSearchField.setVisible(true);

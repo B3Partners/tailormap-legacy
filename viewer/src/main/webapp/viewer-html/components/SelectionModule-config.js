@@ -85,6 +85,19 @@ Ext.define("viewer.components.CustomConfiguration",{
             width: 500
         });
         
+           this.form.add({
+            xtype: "combo",
+            value: configObject.showCswUrl !== undefined ? configObject.showCswUrl : true,
+            name: "showCswUrl",
+            labelWidth: this.labelWidth,
+            fieldLabel: "Laat CSW url zien",
+            store: [
+                [true, "Ja"],
+                [false, "Nee"]
+            ]
+        });
+        
+        
          this.form.add({
             xtype: "combo",
             fields: ['value', 'text'],
