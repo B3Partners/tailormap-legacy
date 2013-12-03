@@ -449,6 +449,7 @@ public class Application {
         
         List<Level> children = treeCache.childrenByParent.get(l);
         if(children != null) {
+            Collections.sort(children);
             JSONArray jsonChildren = new JSONArray();
             o.put("children", jsonChildren);
             for(Level child: children) {
