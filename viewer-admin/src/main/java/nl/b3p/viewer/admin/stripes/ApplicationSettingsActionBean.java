@@ -292,12 +292,12 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         }
         if(startExtent != null){
             if(startExtent.getMinx() == null || startExtent.getMiny() == null || startExtent.getMaxx() == null || startExtent.getMaxy() == null ){
-                errors.add("startExtent", new SimpleError("Alle velden van de start extentie moeten ingevult worden."));
+                errors.add("startExtent", new SimpleError("Alle velden van de start extentie moeten ingevuld worden."));
             }
         }
         if(maxExtent != null){
             if(maxExtent.getMinx() == null || maxExtent.getMiny() == null || maxExtent.getMaxx() == null || maxExtent.getMaxy() == null ){
-                errors.add("maxExtent", new SimpleError("Alle velden van de max extentie moeten ingevult worden."));
+                errors.add("maxExtent", new SimpleError("Alle velden van de max extentie moeten ingevuld worden."));
             }
         }
     }
