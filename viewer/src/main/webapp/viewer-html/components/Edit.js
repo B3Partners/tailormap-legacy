@@ -351,12 +351,18 @@ Ext.define ("viewer.components.Edit",{
                         if(values!= undefined){
                             fieldText = values[0];
                         }
-                        input = Ext.create("Ext.form.field.Text",{
+                        var options={
                             name: attribute.name,
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
-                            value:  fieldText
-                        });
+                            value:  fieldText,                            
+                        };
+                        if (attribute.editHeight){
+                            options.rows = attribute.editHeight;                           
+                            input = Ext.create("Ext.form.field.TextArea",options)
+                        }else{
+                            input = Ext.create("Ext.form.field.Text",options);
+                        }
                     }else if (values.length > 1){
                         Ext.each(values,function(value,index,original){
                             original[index] = {
