@@ -73,8 +73,7 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     drawFeature : function(type){
         Ext.Error.raise({msg: "VectorLayer.drawFeature() Not implemented! Must be implemented in sub-class"});  
     },
-    stopDrawingFeature : function(){
-        Ext.Error.raise({msg: "VectorLayer.stopDrawingFeature() Not implemented! Must be implemented in sub-class"});
-        
+    stopDrawing : function(){
+        Ext.Error.raise({msg: "VectorLayer.stopDrawing() Not implemented! Must be implemented in sub-class"});
     }
 });
