@@ -270,7 +270,7 @@ Ext.define ("viewer.components.Search",{
             });
             this.form.getChildByElement("cancel"+ this.name).setVisible(true);
         } else {
-            Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevult te worden.");
+            Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevuld te worden.");
             // search request is not complete
         }        
     },
