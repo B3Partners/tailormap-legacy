@@ -482,8 +482,12 @@ Ext.define ("viewer.components.Edit",{
         if(this.mode == "edit"){
             feature.__fid = this.currentFID;
         }
-        
-        feature = this.changeFeatureBeforeSave(feature);
+        try{
+            feature = this.changeFeatureBeforeSave(feature);
+        }catch(e){
+            this.failed(e);
+            return;
+        }
         
         var me = this;
         me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
