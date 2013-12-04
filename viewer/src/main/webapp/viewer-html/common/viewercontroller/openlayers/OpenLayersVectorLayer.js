@@ -202,12 +202,16 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         //also stop drawing
         if (this.point.active){
             this.point.cancel();
+            this.point.deactivate();
         }if (this.line.active){
-            this.point.cancel();
+            this.line.cancel();
+            this.line.deactivate();
         }if (this.polygon.active){
             this.polygon.cancel();
+            this.polygon.deactivate();
         }if (this.circle.active){
             this.circle.cancel();
+            this.circle.deactivate();
         }
     },
     
