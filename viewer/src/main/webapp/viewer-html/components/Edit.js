@@ -359,7 +359,7 @@ Ext.define ("viewer.components.Edit",{
                             name: attribute.name,
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
-                            value:  fieldText,                            
+                            value:  fieldText       
                         };
                         if (attribute.editHeight){
                             options.rows = attribute.editHeight;                           
@@ -384,6 +384,7 @@ Ext.define ("viewer.components.Edit",{
                             queryMode: 'local',
                             displayField: 'id',
                             name:attribute.name,
+                            renderTo: this.name + 'InputPanel',
                             valueField: 'id'
                         });
                     }
