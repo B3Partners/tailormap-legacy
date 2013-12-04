@@ -483,6 +483,8 @@ Ext.define ("viewer.components.Edit",{
             feature.__fid = this.currentFID;
         }
         
+        feature = this.changeFeatureBeforeSave(feature);
+        
         var me = this;
         me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
@@ -493,6 +495,14 @@ Ext.define ("viewer.components.Edit",{
             feature,
             function(fid) { me.saveSucces(fid); }, 
             this.failed);
+    },
+    /**
+     * Can be overwritten to add some extra feature attributes before saving the
+     * feature.
+     * @return the changed feature
+     */
+    changeFeatureBeforeSave: function(feature){
+        return feature;
     },
     saveSucces : function (fid){
         this.editingLayer.reload();
