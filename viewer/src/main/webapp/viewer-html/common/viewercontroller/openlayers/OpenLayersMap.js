@@ -162,12 +162,9 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     /**
     * see @link Map.setLayerIndex
     */
-    setLayerIndex : function (layer, newIndex){
-        if (!(layer instanceof OpenLayersLayer)){
-            throw("OpenLayersMap.setLayerIndex(): Given layer not of type OpenLayersLayer.");
-        }
+    setLayerIndex : function (layer, newIndex){        
         this.getFrameworkMap().setLayerIndex(layer.getFrameworkLayer(),newIndex);
-        return Map.prototype.setLayerIndex(layer,newIndex);
+        return this.callParent(arguments);
     },
 
     /**
