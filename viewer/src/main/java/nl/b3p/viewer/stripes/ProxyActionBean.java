@@ -21,9 +21,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +35,7 @@ import javax.servlet.http.HttpSession;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.ArcIMSService;
+import nl.b3p.viewer.config.services.WMSService;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -94,11 +98,13 @@ public class ProxyActionBean implements ActionBean {
         // this may allow the attacker to request maps from that service if that
         // service does not verify IP using the X-Forwarded-For header we send.
         
-        // We only proxy ArcIMS for OpenLayers for the moment
-        if(! ArcIMSService.PROTOCOL.equals(mode)) {
-            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy mode unacceptable");
-        } else {
+        // We only proxy ArcIMS for OpenLayers for the moment        
+        if(ArcIMSService.PROTOCOL.equals(mode)) {
             return proxyArcIMS();
+        } else if(WMSService.PROTOCOL.equals(mode)){
+            return proxyWMS();            
+        }else{
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy mode unacceptable");
         }
     }
 
@@ -169,5 +175,64 @@ public class ProxyActionBean implements ActionBean {
                 
             }
         };
-    }    
+    }  
+    
+    private Resolution proxyWMS() throws IOException{
+        
+        HttpServletRequest request = getContext().getRequest();
+        
+        if(!"GET".equals(request.getMethod())) {
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
+        }
+        
+        List allowedParams = new ArrayList<String>();
+        allowedParams.add("VERSION");
+        allowedParams.add("SERVICE");
+        allowedParams.add("REQUEST");
+        allowedParams.add("UPDATESEQUENCE");
+        allowedParams.add("LAYERS");
+        allowedParams.add("LAYER");
+        allowedParams.add("STYLES");
+        allowedParams.add("SRS");
+        allowedParams.add("BBOX");
+        allowedParams.add("FORMAT");
+        allowedParams.add("WIDTH");
+        allowedParams.add("HEIGHT");
+        allowedParams.add("TRANSPARENT");
+        allowedParams.add("BGCOLOR");
+        allowedParams.add("EXCEPTIONS");
+        allowedParams.add("TIME");
+        allowedParams.add("ELEVATION");
+        allowedParams.add("QUERY_LAYERS");
+        allowedParams.add("X");
+        allowedParams.add("Y");
+        allowedParams.add("INFO_FORMAT");
+        allowedParams.add("FEATURE_COUNT");
+        allowedParams.add("SLD");
+        allowedParams.add("SLD_BODY");
+        //vendor
+        allowedParams.add("MAP");
+        
+        URL theUrl = new URL(url);
+        
+        String query = theUrl.getQuery();
+        //only WMS request param's allowed
+        String[] params = query.split("&");        
+        StringBuilder sb = new StringBuilder();
+        for (String param : params){
+            if (allowedParams.contains((param.split("=")[0]).toUpperCase())){
+                sb.append(param+"&");
+            }
+        }
+        theUrl = new URL("http",theUrl.getHost(),theUrl.getPort(),theUrl.getPath()+"?"+sb.toString());
+        
+        //TODO: Check if response is a getFeatureInfo response.
+        final URLConnection connection = theUrl.openConnection();
+        return new StreamingResolution(connection.getContentType()) {
+            @Override
+            protected void stream(HttpServletResponse response) throws IOException {
+                IOUtils.copy(connection.getInputStream(), response.getOutputStream());                
+            }
+        };
+    }
 }

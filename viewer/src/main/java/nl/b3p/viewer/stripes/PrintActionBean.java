@@ -112,7 +112,6 @@ public class PrintActionBean implements ActionBean {
         /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
-                ArrayList<Legend> legends= new ArrayList<Legend>();
                 JSONArray jarray=null;
                 Object o = jRequest.get("legendUrl");
                 if (o instanceof JSONArray){
@@ -124,11 +123,13 @@ public class PrintActionBean implements ActionBean {
                 for (int i=0; i < jarray.length();i++){
                     JSONObject legendJson = new JSONObject(jarray.getString(i));
                     Legend legend = new Legend(legendJson);   
-                    legends.add(legend);
+                    info.getLegendUrls().add(legend);
                 }
-                info.setLegendUrls(legends);
             }
+            info.cacheLegendImagesAndReadDimensions();
         }
+        
+        
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;
@@ -173,7 +174,11 @@ public class PrintActionBean implements ActionBean {
                         log.error("Can't find template: "+f.getAbsolutePath()+". Using the default templates");
                         f= new File(context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName));
                     }
-                    createOutput(info,mimeType, f,true,response);
+                    try {
+                        createOutput(info,mimeType, f,true,response);
+                    } finally {
+                        info.removeLegendImagesCache();
+                    }
                 }
                 
             }
@@ -235,9 +240,11 @@ public class PrintActionBean implements ActionBean {
             JAXBSource src = new JAXBSource(jc, info);
             
             JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
-            StringWriter sw = new StringWriter();
-            jaxbContext.createMarshaller().marshal(info, sw);
-            String s = sw.toString();
+            if(log.isDebugEnabled()) {
+                StringWriter sw = new StringWriter();
+                jaxbContext.createMarshaller().marshal(info, sw);
+                log.debug("Print XML: " + sw.toString());
+            }
             /* Setup xslt */
             Source xsltSrc = new StreamSource(xslIs);
             xsltSrc.setSystemId(basePath);

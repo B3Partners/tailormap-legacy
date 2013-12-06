@@ -4,12 +4,24 @@
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
-    <xsl:output method="xml" version="1.0" omit-xml-declaration="no" indent="yes"/>
 
+    <xsl:import href="legend.xsl"/>
+	
+    <xsl:output method="xml" version="1.0" omit-xml-declaration="no" indent="yes"/>
+	
     <xsl:param name="versionParam" select="'1.0'"/>
 
     <xsl:variable name="map-width-px" select="'403'"/>
     <xsl:variable name="map-height-px" select="'678'"/>
+    
+    <!-- See legend.xsl (does not currently affect size of other elements!) -->
+    <xsl:variable name="legend-width-cm" select="5.6"/>
+    <!-- See legend.xsl ('none', 'before', 'right') -->
+    <xsl:variable name="legend-labels-pos" select="'before'"/>
+    <xsl:variable name="legend-scale-images-same-ratio" select="true()"/>
+    <xsl:attribute-set name="legend-attributes">
+		<xsl:attribute name="font-size">10pt</xsl:attribute>
+    </xsl:attribute-set>
 
     <!-- formatter -->
     <xsl:decimal-format name="MyFormat" decimal-separator="." grouping-separator=","
@@ -105,20 +117,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 U bekijkt een demo ontwerp.
             </fo:block>
             
-            <xsl:for-each select="legendUrls/legendUrl">
-                <!--xsl:value-of select="name"/-->
-                <xsl:for-each select="legendParts/legendPart">
-                    <fo:block margin-left="0.2cm" margin-top="0.1cm" font-size="10pt" text-align-last="justify">
-                        <fo:external-graphic >
-                            <xsl:attribute name="src">
-                                <xsl:value-of select="url"/>
-                            </xsl:attribute>
-                        </fo:external-graphic>
-                        <fo:leader leader-pattern="space" />
-                        <xsl:value-of select="label"/>                        
-                    </fo:block>
-                </xsl:for-each>
-            </xsl:for-each>
+            <fo:block space-before="0.4cm"/>
+            <xsl:call-template name="legend"/>
 
             <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="8pt" font-style="italic">
                 <xsl:value-of select="remark"/>

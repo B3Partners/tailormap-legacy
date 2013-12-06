@@ -27,12 +27,14 @@ public class ViewerComponent {
     private String path;
     private String className;
     private File[] sources;
+    private File[] configSources;
     private JSONObject metadata;
 
-    public ViewerComponent(String path, String className, File[] sources, JSONObject metadata) {
+    public ViewerComponent(String path, String className, File[] sources, File[] configSources, JSONObject metadata) {
         this.path = path;
         this.className = className;
         this.sources = sources;
+        this.configSources = configSources;
         this.metadata = metadata;
     }
 
@@ -50,5 +52,9 @@ public class ViewerComponent {
 
     public File[] getSources() {
         return sources;
+    }
+    
+    public File[] getConfigSources(){
+        return configSources;
     }
 }

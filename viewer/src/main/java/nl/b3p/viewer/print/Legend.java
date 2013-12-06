@@ -17,6 +17,7 @@
 package nl.b3p.viewer.print;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,7 +35,7 @@ import org.json.JSONObject;
 @XmlType(propOrder = {"name","legendParts"})
 public class Legend {
     private String name;
-    private ArrayList<LegendPart> legendParts=null;
+    private List<LegendPart> legendParts = new ArrayList();
 
     public Legend(){}
     public Legend(JSONObject json) throws JSONException {
@@ -46,7 +47,7 @@ public class Legend {
             for (int i=0; i < jsonParts.length(); i++){
                 JSONObject jsonPart = jsonParts.getJSONObject(i);
                 LegendPart legendPart = new LegendPart(jsonPart);
-                this.addLegendpart(legendPart);
+                this.legendParts.add(legendPart);
             }
         }
     }
@@ -61,18 +62,11 @@ public class Legend {
     }
     @XmlElementWrapper(name="legendParts")
     @XmlElement(name="legendPart")
-    public ArrayList<LegendPart> getLegendParts() {
+    public List<LegendPart> getLegendParts() {
         return legendParts;
     }
 
-    public void setLegendParts(ArrayList<LegendPart> legendParts) {
+    public void setLegendParts(List<LegendPart> legendParts) {
         this.legendParts = legendParts;
-    }
-    
-    public void addLegendpart(LegendPart legendPart){
-        if (this.getLegendParts() == null){
-            this.setLegendParts(new ArrayList<LegendPart>());
-        }
-        this.legendParts.add(legendPart);
-    }
+    }    
 }

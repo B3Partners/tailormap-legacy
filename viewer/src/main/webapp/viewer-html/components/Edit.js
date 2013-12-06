@@ -52,7 +52,7 @@ Ext.define ("viewer.components.Edit",{
                 }
             }
             return true;
-        });        
+        });
         
         if (this.layers!=null){
             this.layers = Ext.Array.filter(this.layers, function(layerId) {
@@ -228,6 +228,9 @@ Ext.define ("viewer.components.Edit",{
         });
         this.inputContainer =  Ext.getCmp(this.name + 'InputPanel');
         
+        this.createLayerSelector();
+    },
+    createLayerSelector: function(){
         var config = {
             viewerController : this.viewerController,
             restriction : "editable",
@@ -238,6 +241,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
+            
     layerChanged : function (appLayer){
         if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
@@ -351,12 +355,18 @@ Ext.define ("viewer.components.Edit",{
                         if(values!= undefined){
                             fieldText = values[0];
                         }
-                        input = Ext.create("Ext.form.field.Text",{
+                        var options={
                             name: attribute.name,
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
-                            value:  fieldText
-                        });
+                            value:  fieldText       
+                        };
+                        if (attribute.editHeight){
+                            options.rows = attribute.editHeight;                           
+                            input = Ext.create("Ext.form.field.TextArea",options)
+                        }else{
+                            input = Ext.create("Ext.form.field.Text",options);
+                        }
                     }else if (values.length > 1){
                         Ext.each(values,function(value,index,original){
                             original[index] = {
@@ -374,6 +384,7 @@ Ext.define ("viewer.components.Edit",{
                             queryMode: 'local',
                             displayField: 'id',
                             name:attribute.name,
+                            renderTo: this.name + 'InputPanel',
                             valueField: 'id'
                         });
                     }
@@ -472,6 +483,12 @@ Ext.define ("viewer.components.Edit",{
         if(this.mode == "edit"){
             feature.__fid = this.currentFID;
         }
+        try{
+            feature = this.changeFeatureBeforeSave(feature);
+        }catch(e){
+            this.failed(e);
+            return;
+        }
         
         var me = this;
         me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
@@ -483,6 +500,14 @@ Ext.define ("viewer.components.Edit",{
             feature,
             function(fid) { me.saveSucces(fid); }, 
             this.failed);
+    },
+    /**
+     * Can be overwritten to add some extra feature attributes before saving the
+     * feature.
+     * @return the changed feature
+     */
+    changeFeatureBeforeSave: function(feature){
+        return feature;
     },
     saveSucces : function (fid){
         this.editingLayer.reload();

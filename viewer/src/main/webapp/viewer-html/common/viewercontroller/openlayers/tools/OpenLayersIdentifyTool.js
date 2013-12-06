@@ -78,12 +78,15 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 }
                 this.wmsGetFeatureInfoControl = new OpenLayers.Control.WMSGetFeatureInfo({
                         drillDown: true,
-                        queryVisible: false,
+                        queryVisible: true,
                         infoFormat: this.wmsGetFeatureInfoFormat,
                         layers : this.layersToAdd
                     });  
                 this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);            
                 this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
+                
+                //set proxy for getFeatureInfoRequests:
+                OpenLayers.ProxyHost = contextPath+"/action/proxy/wms?url=";
             }
             if (this.active){
                 this.wmsGetFeatureInfoControl.activate();
@@ -225,7 +228,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 },
                 features: features
             };
-            i++;
         } 
         options.data=data;
         this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,options);

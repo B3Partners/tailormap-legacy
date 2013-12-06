@@ -745,5 +745,27 @@
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: ""}
         }
+    },
+    {
+        className: "viewer.components.BrowserCheck",
+        name: "Browser check",
+        shortName: "BC",
+        restrictions: ["content"],
+        sources: ["BrowserCheck.js"],
+        singleton: true,
+        extPropertyGridConfigs: {
+            propertyNames: {
+                showPopup: "Toon popup-melding",
+                title: "Titel popup-melding",
+                test: "Testmodus (altijd melding tonen)",
+                message: "Melding"
+            },
+            source: {
+                showPopup: true,
+                test: false,
+                message: "De browser (of de versie ervan) die u gebruikt wordt mogelijk niet ondersteund. Deze website werkt het best met een recente, moderne browser.",
+                title: "Browser controle"
+            }
+        }
     }
 ]
