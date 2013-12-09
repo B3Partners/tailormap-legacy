@@ -325,6 +325,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().detach(application);
 
             Stripersist.getEntityManager().persist(copy);
+            Stripersist.getEntityManager().persist(copy);
+            Stripersist.getEntityManager().flush();
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
