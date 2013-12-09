@@ -530,6 +530,10 @@ public class Application {
     
     @PostPersist
     public void postPersist() {
+        if(isMashup()) {
+            log.debug("postPersist(): mashup");
+            return;
+        }
         if(originalToCopy == null) {
             log.debug("postPersist(): not a copy");
             return;
@@ -550,6 +554,7 @@ public class Application {
                 idMap.put(original.getClass() + "_" + oAl.getId(), cAl.getId());
             }
         }
+        originalToCopy = null;
         
         log.debug("Updating component configs");
         for(ConfiguredComponent comp: components) {
