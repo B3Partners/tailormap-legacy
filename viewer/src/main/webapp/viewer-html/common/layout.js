@@ -126,6 +126,7 @@ Ext.define('viewer.LayoutManager', {
                     layout.flex = 1;
                     layout.height = '100%';
                 }
+                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, centerItem.regionDefaultConfig.columnOrientation));
                 return Ext.apply({
                     xtype: 'container',
                     region: regionid,
@@ -163,6 +164,7 @@ Ext.define('viewer.LayoutManager', {
                         backgroundColor: regionlayout.bgcolor
                     };
                 }
+                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, regionitems[0].regionDefaultConfig.columnOrientation));
                 return Ext.apply({
                     xtype: 'container',
                     region: regionid,
@@ -226,6 +228,28 @@ Ext.define('viewer.LayoutManager', {
                 };
                 me.popupWin = Ext.create('viewer.components.ScreenPopup', popupWindowConfig);
             }
+        }
+        return {};
+    },
+    
+    getCollapseConfig: function(regionLayout, columnOrientation) {
+        var me = this;
+        if(columnOrientation === 'vertical' && regionLayout.hasOwnProperty('enableCollapse') && regionLayout.enableCollapse) {
+            return {
+                xtype: 'panel',
+                border: 0,
+                collapsible: true,
+                animCollapse: false,
+                title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
+                listeners: {
+                    collapse: function() {
+                        me.resizeLayout();
+                    },
+                    expand: function() {
+                        me.resizeLayout();
+                    }
+                }
+            };
         }
         return {};
     },
