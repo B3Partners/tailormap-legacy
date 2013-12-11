@@ -321,6 +321,8 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().detach(applicationWorkversion);
 
             Stripersist.getEntityManager().persist(copy);
+            Stripersist.getEntityManager().persist(copy);
+            Stripersist.getEntityManager().flush();
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));

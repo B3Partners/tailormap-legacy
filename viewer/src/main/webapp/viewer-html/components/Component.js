@@ -100,6 +100,7 @@ Ext.define("viewer.components.Component",{
         me.options = options;
         if(options.icon) {
             buttonIcon = options.icon;
+            buttonCls = "customIconButton"
         } else if(me.haveSprite) {
             buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
         } else {
