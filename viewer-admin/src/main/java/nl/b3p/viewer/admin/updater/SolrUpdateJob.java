@@ -41,6 +41,7 @@ import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -111,8 +112,8 @@ public class SolrUpdateJob implements Job {
             log.error("Could not delete documents for solr configuration: " + config.getName() + " - id: " + config.getId(),ex);
         }
     }
-
-    public static void insertSolrConfigurationIntoIndex(SolrConfiguration config, EntityManager em, WaitPageStatus status, SolrServer solrServer) {
+    
+    public static void insertSolrConfigurationIntoIndex(SolrConfiguration config, EntityManager em, WaitPageStatus status, SolrServer solrServer, Filter filter) {
         log.info("Insert SolrConfiguration " + config.getName() + " into index.");
         org.geotools.data.FeatureSource fs = null;
         try {
@@ -129,6 +130,11 @@ public class SolrUpdateJob implements Job {
             if (sft.getFeatureSource() instanceof WFSFeatureSource) {
                 q.setMaxFeatures(5000);
             }
+            
+            if(filter != null){
+                q.setFilter(filter);
+            }
+            
             FeatureCollection fc = fs.getFeatures(q);
             List<AttributeDescriptor> indexAttributesConfig = config.getIndexAttributes();
             List<AttributeDescriptor> resultAttributesConfig = config.getResultAttributes();
@@ -206,6 +212,10 @@ public class SolrUpdateJob implements Job {
                 fs.getDataStore().dispose();
             }
         }
+    }
+
+    public static void insertSolrConfigurationIntoIndex(SolrConfiguration config, EntityManager em, WaitPageStatus status, SolrServer solrServer) {
+        insertSolrConfigurationIntoIndex(config, em, status, solrServer, null);
     }
     
     private static Envelope featureToEnvelope(Geometry g){
