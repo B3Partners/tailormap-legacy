@@ -248,7 +248,7 @@ Ext.define ("viewer.components.Maptip",{
                     
                     var noHtmlEncode = "true" == details['summary.noHtmlEncode'];
                     var nl2br = "true" == details['summary.nl2br'];
-        
+                    var showRightColumn = (details && details["summary.image"]);
                     var layerName= appLayer.layerName;
                     for (var index in layer.features){
                         var feature = layer.features[index];
@@ -258,6 +258,11 @@ Ext.define ("viewer.components.Maptip",{
                         //left column
                         var leftColumnDiv = new Ext.Element(document.createElement("div"));
                         leftColumnDiv.addCls("feature_summary_leftcolumn");
+                        if(!showRightColumn) {
+                            leftColumnDiv.setStyle({
+                                'width': '100%'
+                            });
+                        }
                             //title
                             if (details && details["summary.title"] ){
                                 var titleDiv = new Ext.Element(document.createElement("div"));
@@ -306,16 +311,15 @@ Ext.define ("viewer.components.Maptip",{
 
                         featureDiv.appendChild(leftColumnDiv);
 
-                        var rightColumnDiv = new Ext.Element(document.createElement("div"));
-                        rightColumnDiv.addCls("feature_summary_rightcolumn");
-                            if (details && details["summary.image"]){
-                                var imageDiv = new Ext.Element(document.createElement("div"));
-                                imageDiv.addCls("feature_summary_image");
-                                imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>");
-                                rightColumnDiv.appendChild(imageDiv);
-                            }
-
-                        featureDiv.appendChild(rightColumnDiv);
+                        if (showRightColumn) {
+                            var rightColumnDiv = new Ext.Element(document.createElement("div"));
+                            rightColumnDiv.addCls("feature_summary_rightcolumn");
+                            var imageDiv = new Ext.Element(document.createElement("div"));
+                            imageDiv.addCls("feature_summary_image");
+                            imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>");
+                            rightColumnDiv.appendChild(imageDiv);
+                            featureDiv.appendChild(rightColumnDiv);
+                        }
 
                         components.push(featureDiv);
 

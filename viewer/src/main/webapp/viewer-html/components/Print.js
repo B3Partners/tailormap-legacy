@@ -226,7 +226,9 @@ Ext.define ("viewer.components.Print",{
                     id: 'legendContainer',
                     height: 200,
                     flex: 0.4,
-                    items: [{}]
+                    items: [{}],
+                    autoScroll: true,
+                    margin: '0 5 0 0'
                 },{
                     xtype: 'container',
                     flex: 0.6,

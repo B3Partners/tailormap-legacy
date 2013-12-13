@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+Ext.tip.QuickTipManager.init();
 Ext.Loader.setConfig({enabled:true});
 Ext.require([
     'Ext.tree.*',

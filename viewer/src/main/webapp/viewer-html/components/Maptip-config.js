@@ -29,7 +29,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         configObject.showLabelconfig = false;
         
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        this.checkPanelHeight=250;
+        this.checkPanelHeight = 210;
         this.form.add([{
             xtype: 'textfield',
             fieldLabel: 'Maptip Delay',

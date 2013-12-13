@@ -195,6 +195,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             
 
             Ext.onReady(function() {
+                Ext.tip.QuickTipManager.init();
                 appendPanel('headertext', 'formcontent', 'content');
                 var htmlEditor = Ext.create('Ext.form.HtmlEditor', {
                     width: 525,
