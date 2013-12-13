@@ -104,5 +104,39 @@ Ext.define("viewer.AppLayerService", {
     getStoreUrl: function() {
         var url = this.getActionbeanUrl();
         return Ext.urlAppend(url, "store=1&application=" + this.appId + "&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : ""));
+    },
+    
+    loadFeatures: function(appLayer, successFunction, failureFunction,limit,scope) {
+        var appLayerId= appLayer.id;
+        if(!isNaN(appLayerId)){
+            var filter=null;
+            if(appLayer && appLayer.filter) {
+                filter = appLayer.filter.getCQL();
+            }
+            Ext.Ajax.request({
+                url: this.getStoreUrl(),
+                params: {application: this.appId, appLayer: appLayerId, limit: limit,filter:filter},
+                scope: scope,
+                success: function(result) {
+                    var response = Ext.JSON.decode(result.responseText);
+                    if(response.success) {
+                        successFunction.call(this,response.features);
+                    } else {
+                        if(failureFunction != undefined) {
+                            failureFunction.call(this,response.error);
+                        }
+                    }
+                },
+                failure: function(result) {
+                    if(failureFunction != undefined) {
+                        failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                    }
+                }
+            });
+        }else{
+            if(failureFunction != undefined) {
+                failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+            }
+        }
     }
 });

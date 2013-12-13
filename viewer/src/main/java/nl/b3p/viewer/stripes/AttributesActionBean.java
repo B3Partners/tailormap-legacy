@@ -439,13 +439,14 @@ public class AttributesActionBean implements ActionBean {
                 FeatureToJson ftoj = new FeatureToJson(arrays,false);
                 
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
-                 
+                
                 if (!startIndexSupported){
                     if (features.length() < limit){
                         //the end is reached..... Otherwise there would be a 'limit' number of features
                         total = start+features.length();
                     }
                 }
+                json.put("success", true);
                 json.put("features", features);
             }
             json.put("total", total);
