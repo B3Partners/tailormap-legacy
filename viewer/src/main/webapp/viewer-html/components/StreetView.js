@@ -39,6 +39,9 @@ Ext.define ("viewer.components.tools.StreetView",{
     url: "",
     constructor: function (conf){        
         viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
+        if(conf.title === null || conf.title === undefined){
+            conf.title = "Streetview";
+        }
         this.initConfig(conf);   
         
         this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
