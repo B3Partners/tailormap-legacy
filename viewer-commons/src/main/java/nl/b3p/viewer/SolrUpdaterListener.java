@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.admin.updater;
+package nl.b3p.viewer;
 
 import java.util.Properties;
 import javax.servlet.ServletContext;

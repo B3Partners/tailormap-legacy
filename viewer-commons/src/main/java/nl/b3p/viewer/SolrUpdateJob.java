@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.admin.updater;
+package nl.b3p.viewer;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
-import nl.b3p.viewer.SolrInitializer;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConfiguration;
@@ -47,6 +46,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.stripesstuff.stripersist.Stripersist;
 
+
 /**
  *
  * @author Meine Toonen
@@ -55,6 +55,7 @@ public class SolrUpdateJob implements Job {
 
     private static final Log log = LogFactory.getLog(SolrUpdateJob.class);
     private SolrServer server;
+    public static int MAX_FEATURES = 5000;
 
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException {
@@ -128,7 +129,7 @@ public class SolrUpdateJob implements Job {
 
             Query q = new Query();
             if (sft.getFeatureSource() instanceof WFSFeatureSource) {
-                q.setMaxFeatures(5000);
+                q.setMaxFeatures(MAX_FEATURES);
             }
             
             if(filter != null){

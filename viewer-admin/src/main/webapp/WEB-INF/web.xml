@@ -76,7 +76,7 @@
             Comment out this parameter or set to -1 to disable.
         </description>
         <param-name>flamingo.solr.schedule</param-name>
-        <param-value>0 10 * ? * *</param-value>
+        <param-value>0 10 4 ? * *</param-value>
     </context-param>
     <context-param>
         <description>
@@ -103,7 +103,7 @@
     </listener>
     <listener>
         <description>The class which initializes (and if configured sets up) the solr instance.</description>
-        <listener-class>nl.b3p.viewer.admin.updater.SolrUpdaterListener</listener-class>
+        <listener-class>nl.b3p.viewer.SolrUpdaterListener</listener-class>
     </listener>
     <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>

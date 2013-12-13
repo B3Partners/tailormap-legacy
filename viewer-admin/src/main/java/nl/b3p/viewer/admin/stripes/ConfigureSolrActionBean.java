@@ -39,7 +39,7 @@ import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.SolrInitializer;
-import nl.b3p.viewer.admin.updater.SolrUpdateJob;
+import nl.b3p.viewer.SolrUpdateJob;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
@@ -272,6 +272,7 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution addToIndex() throws InterruptedException {
+        removeFromIndex();
         status = new WaitPageStatus();
         EntityManager em = Stripersist.getEntityManager();
         SolrServer server = SolrInitializer.getServerInstance();
@@ -331,6 +332,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution delete() {
+        removeFromIndex();
         EntityManager em = Stripersist.getEntityManager();
         solrConfiguration.getIndexAttributes().clear();
         solrConfiguration.getResultAttributes().clear();

@@ -102,6 +102,34 @@
                <type>jar</type>
                <scope>compile</scope>
         </dependency>
+        
+        
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.stripesstuff</groupId>
+            <artifactId>stripersist</artifactId>
+            <version>1.0.3</version>
+        </dependency>      
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>3.6.8.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.6.8.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
+            <artifactId>viewer-config-persistence</artifactId>
+            <version>${project.parent.version}</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <repositories>
