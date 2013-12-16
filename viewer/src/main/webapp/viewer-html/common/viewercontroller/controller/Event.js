@@ -40,7 +40,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param layer the layer where this event occured
          * @param options a object with options         
          * @param options.data[i].features the data as a multi array
-         * @param options.data[i].request.appLayer the appLayer
+         * @param options.data[i].request.appLayer the id of the appLayer
          * @param options.data[i].request.serviceLayer the service name for the layer 
          * @param options.x the x pixel (screen location)
          * @param options.y the y pixel (screen location)
@@ -60,7 +60,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          *                           {	
          *                                   features: [],
          *                                   request:{
-         *                                           appLayer: appLayer
+         *                                           appLayer: appLayerId
          *                                           serviceLayer: serviceLayerName
          *                                  }
          *                          }

@@ -228,7 +228,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             var appLayer = this.getAppLayerByOpenLayersLayer(feature.url,feature.layerNames);
             data[i]={
                 request : {
-                    appLayer: appLayer,
+                    appLayer: appLayer.id,
                     serviceLayer: feature.layerNames
                 },
                 features: features

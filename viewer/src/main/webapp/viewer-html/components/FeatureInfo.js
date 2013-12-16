@@ -94,7 +94,7 @@ Ext.define ("viewer.components.FeatureInfo",{
                 }else{
                     //TODO: add query layers to the map
                     //listen to the onMaptipData
-                    mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
+                    this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
                 }            
                 this.numRequestLayers++;
             }else{
