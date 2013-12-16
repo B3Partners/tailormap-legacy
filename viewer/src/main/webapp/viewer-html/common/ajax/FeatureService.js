@@ -106,16 +106,22 @@ Ext.define("viewer.AppLayerService", {
         return Ext.urlAppend(url, "store=1&application=" + this.appId + "&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : ""));
     },
     
-    loadFeatures: function(appLayer, successFunction, failureFunction,limit,scope) {
+    loadFeatures: function(appLayer, successFunction, failureFunction,options,scope) {
         var appLayerId= appLayer.id;
         if(!isNaN(appLayerId)){
             var filter=null;
             if(appLayer && appLayer.filter) {
                 filter = appLayer.filter.getCQL();
             }
+            if (options === undefined || options === null){
+                options={};
+            }
+            options.application = this.appId;
+            options.appLayer = appLayerId;
+            options.filter = filter;
             Ext.Ajax.request({
                 url: this.getStoreUrl(),
-                params: {application: this.appId, appLayer: appLayerId, limit: limit,filter:filter},
+                params: options,
                 scope: scope,
                 success: function(result) {
                     var response = Ext.JSON.decode(result.responseText);

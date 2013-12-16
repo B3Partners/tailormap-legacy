@@ -82,6 +82,8 @@ public class AttributesActionBean implements ActionBean {
     @Validate
     private boolean arrays;
     @Validate
+    private boolean edit=false;
+    @Validate
     private String filter;
     
     @Validate
@@ -194,6 +196,14 @@ public class AttributesActionBean implements ActionBean {
     
     public void setFeatureType(SimpleFeatureType ft){
         this.featureType=ft;
+    }
+    
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
     }
     //</editor-fold>
     
@@ -436,7 +446,7 @@ public class AttributesActionBean implements ActionBean {
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
                 
-                FeatureToJson ftoj = new FeatureToJson(arrays,false);
+                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit);
                 
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
                 
