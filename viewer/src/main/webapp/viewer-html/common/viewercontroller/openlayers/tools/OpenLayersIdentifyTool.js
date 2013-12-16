@@ -221,21 +221,37 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         coord.y = c.y;        
         options.coord=coord;
         var data=[];
+        var featuresByLayer = new Object();
         for (var i=0; i< evt.features.length; i++){
-            var features=[];
+            
             var feature = evt.features[i];
-            features.push(feature.attributes);
             var appLayer = this.getAppLayerByOpenLayersLayer(feature.url,feature.layerNames);
-            data[i]={
-                request : {
-                    appLayer: appLayer.id,
-                    serviceLayer: feature.layerNames
-                },
-                features: features
-            };
+            if (!featuresByLayer.hasOwnProperty(appLayer.id)) {
+                featuresByLayer[appLayer.id] = new Object();
+                featuresByLayer[appLayer.id].features = new Array();
+                featuresByLayer[appLayer.id].appLayerObj = appLayer;             
+            }
+            featuresByLayer[appLayer.id].features.push(feature.attributes);
         } 
-        options.data=data;
-        this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,options);
+
+        for(var applayer in featuresByLayer){
+            var groupedFeatures = featuresByLayer[applayer];
+            var features = groupedFeatures.features;
+              var response  = {
+                    request: {
+                        appLayer: appLayer.id,
+                        serviceLayer: feature.layerNames
+                    },
+                    features: features,
+                    appLayer: appLayer
+            };
+            options.data = new Object();
+            options.data[appLayer.id] =response;
+       
+            groupedFeatures.appLayerObj.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
+
+        }
+        
     },
     getAppLayerByOpenLayersLayer : function(url, layerNames){
         var layers = this.map.layers;
