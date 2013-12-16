@@ -95,13 +95,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <artifactId>solr-solrj</artifactId>
-            <groupId>org.apache.solr</groupId>
-            <version>4.5.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         
         
         <dependency>
@@ -123,12 +116,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>3.6.8.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
-            <artifactId>viewer-config-persistence</artifactId>
-            <version>${project.parent.version}</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
 
