@@ -74,6 +74,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.flamingo-mc.solr-commons</groupId>
+            <artifactId>solr-commons</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
             <version>1.0</version>

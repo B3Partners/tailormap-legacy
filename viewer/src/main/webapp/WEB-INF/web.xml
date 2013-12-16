@@ -12,7 +12,7 @@
     </listener>
     <listener>
         <description>The class which initializes (and if configured sets up) the solr instance.</description>
-        <listener-class>nl.b3p.viewer.SolrInitializer</listener-class>
+        <listener-class>nl.b3p.viewer.solr.SolrInitializer</listener-class>
     </listener>
 
     <!-- Localization context voor o.a. de <fmt:message> JSTL tag -->
