@@ -40,7 +40,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param layer the layer where this event occured
          * @param options a object with options         
          * @param options.data[i].features the data as a multi array
-         * @param options.data[i].request.appLayer the appLayer
+         * @param options.data[i].request.appLayer the id of the appLayer
          * @param options.data[i].request.serviceLayer the service name for the layer 
          * @param options.x the x pixel (screen location)
          * @param options.y the y pixel (screen location)
@@ -53,6 +53,27 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param options.extent.maxy (not always available) the maxy world coord (world location)
          * @param options.nr nr of layer that is done
          * @param options.total total identifies that needs to be done         
+         * 
+         * Example: <appLayer>,
+         *           {
+         *                   data[
+         *                           {	
+         *                                   features: [],
+         *                                   request:{
+         *                                           appLayer: appLayerId
+         *                                           serviceLayer: serviceLayerName
+         *                                  }
+         *                          }
+         *                  ],
+         *                   x: screenX,
+         *                   y: screenY,
+         *                   options:{	
+         *                           extent:{minX:minX, minY:minY,maxX:maxX,maxY:maxY}, // optional	
+         *                           nr: nr, // nr of layer that is done
+         *                           total: total // total identifies
+         *                   }
+         *
+         *          }
          **/        
         ON_GET_FEATURE_INFO_DATA              : "ON_GET_FEATURE_INFO_DATA",
         /** @field */

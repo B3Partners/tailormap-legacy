@@ -82,6 +82,9 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                         infoFormat: this.wmsGetFeatureInfoFormat,
                         layers : this.layersToAdd
                     });  
+                    
+                this.wmsGetFeatureInfoControl.handleResponse = handleResponse;
+                this.wmsGetFeatureInfoControl.buildWMSOptions = buildWMSOptions;
                 this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);            
                 this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
                 
@@ -218,19 +221,52 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         coord.y = c.y;        
         options.coord=coord;
         var data=[];
+        var featuresByLayer = new Object();
         for (var i=0; i< evt.features.length; i++){
-            var features=[];
-            features.push(evt.features[i].attributes);
-            data[i]={
-                request : {
-                    appLayer: null,
-                    serviceLayer: evt.features[i].type
-                },
-                features: features
-            };
+            
+            var feature = evt.features[i];
+            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url,feature.layerNames);
+            if (!featuresByLayer.hasOwnProperty(appLayer.id)) {
+                featuresByLayer[appLayer.id] = new Object();
+                featuresByLayer[appLayer.id].features = new Array();
+                featuresByLayer[appLayer.id].appLayerObj = appLayer;             
+            }
+            featuresByLayer[appLayer.id].features.push(feature.attributes);
         } 
-        options.data=data;
-        this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,options);
+
+        for(var applayer in featuresByLayer){
+            var groupedFeatures = featuresByLayer[applayer];
+            var features = groupedFeatures.features;
+              var response  = {
+                    request: {
+                        appLayer: appLayer.id,
+                        serviceLayer: feature.layerNames
+                    },
+                    features: features,
+                    appLayer: appLayer
+            };
+            options.data = new Object();
+            options.data[appLayer.id] =response;
+       
+            groupedFeatures.appLayerObj.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
+
+        }
+        
+    },
+    getAppLayerByOpenLayersLayer : function(url, layerNames){
+        var layers = this.map.layers;
+        for (var i = 0; i < layers.length; i++) {
+            var layer = layers[i];
+            if (layer.url === url) {
+                for (var j = 0; j < layerNames.length; j++) {
+
+                    if (layer.options.name === layerNames[j]) {
+                        return layer;
+                    }
+                }
+            }
+        }
+        return null;
     }
     
 });
