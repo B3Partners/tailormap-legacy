@@ -554,17 +554,18 @@ Ext.define ("viewer.components.Search",{
     }, 
    simpleListSearch:function(term){
         var config = this.getCurrentSearchconfig();
-        var values = config.values;
+        var values = config.simpleSearchConfig;
         term = term.toLowerCase();
         var results = new Array();
         for(var i = 0 ; i < values.length; i++){
             var entry = values[i];
-            var value = entry.value;
+            var value = Ext.isEmpty (entry.value ) ? entry.label : entry.value;
             value = value.toLowerCase();
             if(value.indexOf(term) !== -1){
                 var result = {
-                    label : entry.value,
-                    location:entry.location
+                    label : entry.label,
+                    location:entry.bbox,
+                    type: config.name
                 };
                 results.push(result);
             }
