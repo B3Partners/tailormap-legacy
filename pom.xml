@@ -25,6 +25,7 @@
         
     </dependencies>
     <modules>
+        <module>solr-commons</module>
         <module>web-commons</module>
         <module>viewer-commons</module>
         <module>viewer-config-persistence</module>

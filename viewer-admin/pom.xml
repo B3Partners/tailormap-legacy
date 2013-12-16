@@ -81,6 +81,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.flamingo-mc.solr-commons</groupId>
+            <artifactId>solr-commons</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.flamingo-mc.web-commons</groupId>
             <artifactId>web-commons</artifactId>
             <version>${project.parent.version}</version>

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nl.b3p.viewer;
+package nl.b3p.viewer.solr;
 
 import java.io.File;
 import javax.servlet.ServletContext;
