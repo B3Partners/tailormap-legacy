@@ -7,7 +7,7 @@
     <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 	
-	<parent>
+    <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
         <version>4.3.3-SNAPSHOT</version>
@@ -75,7 +75,7 @@
             <version>20090211</version>
             <type>jar</type>
         </dependency>
-          <!-- Solr dependencies for indexing and searching -->
+        <!-- Solr dependencies for indexing and searching -->
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
@@ -96,11 +96,11 @@
             </exclusions>
         </dependency>
         <dependency>
-               <artifactId>solr-solrj</artifactId>
-               <groupId>org.apache.solr</groupId>
-               <version>4.5.0</version>
-               <type>jar</type>
-               <scope>compile</scope>
+            <artifactId>solr-solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <version>4.5.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         
         
