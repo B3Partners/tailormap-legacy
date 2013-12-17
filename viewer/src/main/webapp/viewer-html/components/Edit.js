@@ -353,6 +353,7 @@ Ext.define ("viewer.components.Edit",{
             for(var i= 0 ; i < attributes.length ;i++){
                 var attribute = attributes[i];
                 if(attribute.editable){
+                    var allowedEditable = this.allowedEditable(attribute);
                     var values = Ext.clone(attribute.editValues);
                     var input = null;
                     if(i == appLayer.geometryAttributeIndex){
@@ -367,7 +368,8 @@ Ext.define ("viewer.components.Edit",{
                             name: attribute.name,
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
-                            value:  fieldText       
+                            value:  fieldText,
+                            disabled: !allowedEditable
                         };
                         if (attribute.editHeight){
                             options.rows = attribute.editHeight;                           
@@ -393,7 +395,8 @@ Ext.define ("viewer.components.Edit",{
                             displayField: 'id',
                             name:attribute.name,
                             renderTo: this.name + 'InputPanel',
-                            valueField: 'id'
+                            valueField: 'id',
+                            disabled: !allowedEditable
                         });
                     }
                     this.inputContainer.add(input);
@@ -516,6 +519,12 @@ Ext.define ("viewer.components.Edit",{
      */
     changeFeatureBeforeSave: function(feature){
         return feature;
+    },
+    /**
+     * Can be overwritten to disable editing in the component/js
+     */
+    allowedEditable: function (attribute){
+        return true;
     },
     saveSucces : function (fid){
         this.editingLayer.reload();
