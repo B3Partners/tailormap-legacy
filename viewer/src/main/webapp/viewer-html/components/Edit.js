@@ -378,7 +378,18 @@ Ext.define ("viewer.components.Edit",{
                             input = Ext.create("Ext.form.field.Text",options);
                         }
                     }else if (values.length > 1){
+                        var allBoolean=true;
+                        for (var v=0; v < values.length; v++){
+                            if (values[v].toLowerCase()!=="true" && values[v].toLowerCase()!=="false"){
+                                allBoolean =false;
+                                break;
+                            }
+                        }
+                        
                         Ext.each(values,function(value,index,original){
+                            if (allBoolean){
+                                value= value.toLowerCase() ==="true";
+                            }
                             original[index] = {
                                 id: value
                             };
