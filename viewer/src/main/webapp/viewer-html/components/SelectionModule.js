@@ -398,17 +398,26 @@ Ext.define ("viewer.components.SelectionModule",{
                 csw.config["advancedProperty"] = this.advancedValue;
                 csw.config["application"] = appId;
                 csw.loadInfo(
-                    function(results) {
+                    function(response) {
+                        var results = response.found;
                         var rootNode = me.treePanels.customServiceTree.treePanel.getRootNode();
                         me.clearTree(rootNode);
-                        var levels = new Array();
+                        var foundIds = new Array();
                         for(var i = 0 ; i < results.length; i++){
                             var  result = results[i];
-                            
-                            var l = me.addLevel(result.id, true, false, false);
-                            levels.push(l);
+                            foundIds.push(result.id);
                         }
-                        me.insertTreeNode(levels, rootNode);
+                        
+                        var levels = response.children;
+                        var levelsToShow = new Array();
+                        for(var i = 0 ; i < levels.length ; i ++){
+                            var level = levels[i];
+                            var l = me.addLevel(level.id, true, false, false, foundIds);
+                            if(l !== null){
+                                levelsToShow.push(l);
+                            }
+                        }
+                        me.insertTreeNode(levelsToShow, rootNode);
                         Ext.getCmp("selectionModuleTreeContentContainer").setLoading(false);
                     },
                     function(msg) {
@@ -1025,7 +1034,8 @@ Ext.define ("viewer.components.SelectionModule",{
         me.insertTreeNode(nodes, rootNode);
     },
 
-    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers) {
+    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow) {
+
         var me = this;
         if(!Ext.isDefined(me.levels[levelId])) {
             return null;
@@ -1046,9 +1056,12 @@ Ext.define ("viewer.components.SelectionModule",{
             var nodes = [];
             if(Ext.isDefined(level.children)) {
                 for(var i = 0 ; i < level.children.length; i++) {
-                    var l = me.addLevel(level.children[i], showChildren, showLayers, showBackgroundLayers);
-                    if(l !== null) {
-                        nodes.push(l);
+                    var child = level.children[i];
+                    if(!childrenIdsToShow || me.containsId(child,childrenIdsToShow)){
+                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow);
+                        if(l !== null) {
+                            nodes.push(l);
+                        }
                     }
                 }
             }
@@ -1060,6 +1073,29 @@ Ext.define ("viewer.components.SelectionModule",{
             treeNodeLayer.children = nodes;
         }
         return treeNodeLayer;
+    },
+            
+    containsId : function (level, ids){
+        var l = this.levels[level];
+        if(Ext.Array.contains(ids, parseInt(level))){
+            return true;
+        }
+        if(l.children){
+            for( var i = 0 ; i < l.children.length;i++){
+                var child = l.children[i];
+                var found = Ext.Array.contains(ids,parseInt(child));
+                if(found){
+                    return true;
+                }else{                
+                    found = this.containsId(child, ids);
+                    if(found){
+                        return true;
+                    }
+                }
+            }
+            
+        }
+        return false;
     },
     
     addLayer: function (layerId){

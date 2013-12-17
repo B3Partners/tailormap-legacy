@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 import net.sourceforge.stripes.action.*;
@@ -52,7 +53,6 @@ import nl.b3p.viewer.config.services.Layer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.nl.DutchAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -196,13 +196,20 @@ public class CatalogSearchActionBean implements ActionBean {
             List<Layer> layers = getLayers(list);
             List<ApplicationLayer> appLayers = getAppLayers(layers);
             List<Level> levels = getLevels(appLayers);
-            JSONArray results = new JSONArray();
+            JSONArray found = new JSONArray();
             for (Level level : levels) {
                 JSONObject obj = level.toJSONObject(false, application, context.getRequest());
-                results.put(obj);
+                found.put(obj);
+            }            
+            List <Level> children = application.getRoot().getChildren();
+            JSONArray childs = new JSONArray();
+            for (Level child : children) {
+                childs.put(child.toJSONObject(false, application, context.getRequest()));
             }
-            json.put("results", results);                
-
+            JSONObject results = new JSONObject();
+            results.put("found", found);
+            results.put("children", childs);
+            json.put("results", results);    
             json.put("success", Boolean.TRUE);
         } catch (IOException ex) {
             log.error("Fout bij zoeken in csw:",ex);
