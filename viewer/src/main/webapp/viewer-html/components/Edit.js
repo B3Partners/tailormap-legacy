@@ -242,7 +242,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
             
-    layerChanged : function (appLayer){
+    layerChanged : function (appLayer,afterLoadAttributes,scope){
         if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
             this.mode=null;
@@ -252,17 +252,19 @@ Ext.define ("viewer.components.Edit",{
             }
             this.inputContainer.setLoading("Laad attributen...");
             this.inputContainer.removeAll();
-            this.loadAttributes(appLayer);
+            this.loadAttributes(appLayer,afterLoadAttributes,scope);
             this.inputContainer.setLoading(false);
         }else{
             this.cancel();
         }
     },
-    loadAttributes: function(appLayer) {
+    loadAttributes: function(appLayer,afterLoadAttributes,scope) {
         this.appLayer = appLayer;
         
         var me = this;
-        
+        if (scope==undefined){
+            scope=me;
+        }
         if(this.appLayer != null) {
             
             this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
@@ -271,9 +273,15 @@ Ext.define ("viewer.components.Edit",{
             if(this.appLayer.attributes == undefined) {
                 this.featureService.loadAttributes(me.appLayer, function(attributes) {
                     me.initAttributeInputs(me.appLayer);
+                    if (afterLoadAttributes){
+                        afterLoadAttributes.call(scope);
+                    }
                 });
             } else {
                 this.initAttributeInputs(me.appLayer);
+                if (afterLoadAttributes){
+                    afterLoadAttributes.call(scope);
+                }
             }    
         }
     },
