@@ -75,6 +75,10 @@ function featureTypeChanged(featuretypeId){
                 var data = Ext.JSON.decode(text);
                 var resultEl = Ext.get("attributes");
                 if(data) {
+                    var child= resultEl.child("*");
+                    if (child) {
+                        child.remove();
+                    }
                     var rows = data.gridrows;
                     html  = '<table class=\'formtable striped-table checkbox-table\'>';
                     html += '<tr><td>Doorzoekbaar</td><td>Resultaat</td><td>Attribuutnaam</td></tr>';
