@@ -394,7 +394,7 @@ Ext.define ("viewer.components.Search",{
                 animate: true,
                 flex:1,
                 height: 300,
-                multi:true
+                multi:false
             },
             autoScroll: false,
             style: { 
@@ -441,7 +441,7 @@ Ext.define ("viewer.components.Search",{
         return item;
     },
     cancel: function(){
-        this.form.getChildByElement("searchfield"+ this.name).setValue("");
+        this.searchField.setValue("");
         this.form.getChildByElement("searchName"+ this.name).setValue("");
         this.form.getChildByElement("cancel"+ this.name).setVisible(false);
         this.results.destroy();
