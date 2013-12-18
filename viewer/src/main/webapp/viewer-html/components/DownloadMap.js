@@ -33,18 +33,31 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         this.initConfig(conf);   
         
         this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/downloadMap/up.png";
+        this.iconUrl_up_large= contextPath+"/viewer-html/components/resources/images/downloadMap/up_large.png";
         this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/downloadMap/over.png";
-        
-        this.button= this.viewerController.mapComponent.createTool({
-            type: viewer.viewercontroller.controller.Tool.BUTTON,
-            iconUrl_up: this.iconUrl_up,
-            iconUrl_over: this.iconUrl_over,
-            tooltip: this.tooltip || null,
-            viewerController: this.viewerController
-        });
-        this.viewerController.mapComponent.addTool(this.button);
-        
-        this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
+        if(this.isPopup){
+            var me = this;
+            this.renderButton({
+                text: me.title,
+                icon: this.iconUrl_up_large,
+                tooltip: me.tooltip,
+                label: me.label,
+                handler: function() {
+                    me.buttonDown();
+                }
+            });
+        }else{
+            this.button= this.viewerController.mapComponent.createTool({
+                type: viewer.viewercontroller.controller.Tool.BUTTON,
+                iconUrl_up: this.iconUrl_up,
+                iconUrl_over: this.iconUrl_over,
+                tooltip: this.tooltip || null,
+                viewerController: this.viewerController
+            });
+            this.viewerController.mapComponent.addTool(this.button);
+
+            this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
+        }
         return this;
     },
     /**

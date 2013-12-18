@@ -738,9 +738,9 @@
         className: "viewer.components.tools.DownloadMap",
         name: "Download Map",
         shortName: "DM",
-        restrictions: ["top_menu"],
+        restrictions: ["top_menu", "left_menu"],
         sources: [ "Print.js","DownloadMap.js"],
-        singleton: true,
+        singleton: false,
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: ""}
