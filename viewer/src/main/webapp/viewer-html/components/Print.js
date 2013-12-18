@@ -424,22 +424,6 @@ Ext.define ("viewer.components.Print",{
                             }
                         }
                     }                    
-                },{
-                    xtype: 'button',
-                    text: 'Printen via PDF',
-                    componentCls: 'mobileLarge',
-                    style: {
-                        "float": "right",
-                        marginLeft: '5px'
-                    },
-                    listeners: {
-                        click:{
-                            scope: this,
-                            fn: function (){
-                                this.submitSettings("printPDF")
-                            }
-                        }
-                    }  
                 }]                
             }]
         });
