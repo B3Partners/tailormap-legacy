@@ -494,6 +494,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 pack:'end'
             },
             items: [
+                    {xtype:"label", text:"Tip: toevoegen kaarten kan ook door dubbelklikken."},
                     {xtype: 'button', text: 'Annuleren', handler: function() {
                         me.cancelSelection();
                     }},
