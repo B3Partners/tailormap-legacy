@@ -293,6 +293,7 @@ Ext.define ("viewer.components.Search",{
         if(this.results != null){
             this.results.destroy();
         }
+        this.searchField.getPicker().hide();
         var searchText = Ext.getCmp( "searchfield" + this.name).getValue();
         var searchName = '';
         if(this.searchconfigs.length === 1){
