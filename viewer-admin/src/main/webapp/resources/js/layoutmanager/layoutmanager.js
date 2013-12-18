@@ -372,6 +372,7 @@ Ext.onReady(function() {
                 if(item.value === (globalLayout.backgroundRepeat || '')) bgRepeat.dom.selectedIndex = index;
             });
             Ext.get('app_background_position').set({ value: globalLayout.backgroundPosition || ''});
+            Ext.get('app_extracss').dom.value = globalLayout.extraCss || '';
         }
         if(layoutJson && Ext.isDefined(layoutJson)) {
             layoutRegionsStore.each(function(layoutRegion){
@@ -740,7 +741,8 @@ Ext.onReady(function() {
             backgroundColor: Ext.get('app_background_color').getValue() || "",
             backgroundImage: Ext.get('app_background_image').getValue() || "",
             backgroundRepeat: Ext.get('app_background_repeat').getValue() || "no-repeat",
-            backgroundPosition: Ext.get('app_background_position').getValue() || ""
+            backgroundPosition: Ext.get('app_background_position').getValue() || "",
+            extraCss: Ext.get('app_extracss').getValue() || ""
         };
         Ext.Ajax.request({ 
             url: layoutSaveUrl, 

@@ -393,6 +393,11 @@ input[type="submit"]:hover,
 .globalconfig .configrow:nth-child(odd) {
     background-color: #f9f9f9;
 }
+.globalconfig .configrow .extliketextarea {
+    width: 100%;
+    min-height: 75px;
+    display: block;
+}
 #layout-container .content-container .regionconfig .widthconfig,
 #layout-container .content-container .regionconfig .heightconfig,
 #layout-container .content-container .regionconfig .tabsconfig {
