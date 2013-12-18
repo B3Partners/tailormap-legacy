@@ -1004,6 +1004,7 @@ Ext.define ("viewer.components.SelectionModule",{
             for(var i = 0 ; i < rootLevel.children.length; i++) {
                 var l = me.addLevel(rootLevel.children[i], true, false, false);
                 if(l !== null) {
+                    l.expanded = true; // Make top levels expand
                     levels.push(l);
                 }
             }
