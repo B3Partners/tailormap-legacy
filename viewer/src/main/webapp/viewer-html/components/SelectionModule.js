@@ -568,7 +568,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                     }},
                                     {hidden: true, id: 'cswServiceUrlTextfield', flex: 1, emptyText:'Voer een URL in', value : this.defaultCswUrl !== undefined ? this.defaultCswUrl : "" },
                                     {hidden: true, id: 'cswSearchTextfield', flex: 1, emptyText:'Zoekterm'},
-                                    {xtype: 'button', text: 'CSW doorzoeken', hidden: true, id: 'cswServiceUrlButton', handler: function() {
+                                    {xtype: 'button', text: 'Zoeken', hidden: true, id: 'cswServiceUrlButton', handler: function() {
                                             me.loadCustomService();
                                     }}
                                 ]
