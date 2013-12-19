@@ -24,7 +24,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     map: null,
     deactivatedControls: null,
     wmsGetFeatureInfoControl:null,
-    wmsGetFeatureInfoFormat: null,
+    wmsGetFeatureInfoFormat: "application/vnd.ogc.gml",
     useWMSGetFeatureInfo:null,
     active: false,
     layersToAdd:null,
@@ -35,7 +35,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
      * @param map the viewer.viewercontroller.openlayers.OpenLayersMap
      */
     constructor : function (conf){
-        this.wmsGetFeatureInfoFormat="application/vnd.ogc.gml";
         this.useWMSGetFeatureInfo=true;
         //this.wmsGetFeatureInfoFormat="text/plain";
         
@@ -258,9 +257,28 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         for (var i = 0; i < layers.length; i++) {
             var layer = layers[i];
             if (layer.url === url) {
-                for (var j = 0; j < layerNames.length; j++) {
-
-                    if (layer.options.name === layerNames[j]) {
+                var mapLayers= layer.getLayers();
+                if (!(mapLayers instanceof Array)){
+                    var array = [];
+                    array.push(mapLayers);
+                    mapLayers = array;
+                }
+                if (mapLayers.length === layerNames.length){
+                    var allFound = true;
+                    for (var j = 0; j < layerNames.length; j++) {
+                        var found=false;
+                        for (var l=0; l < mapLayers.length; l++){
+                            if (mapLayers[l]=== layerNames[j]) {
+                                found=true;
+                                break;
+                            }
+                        }
+                        if (!found){
+                            allFound=false;
+                            break;
+                        }                        
+                    }
+                    if (allFound){
                         return layer;
                     }
                 }

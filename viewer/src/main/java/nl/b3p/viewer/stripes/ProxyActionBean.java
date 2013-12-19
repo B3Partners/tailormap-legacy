@@ -102,7 +102,7 @@ public class ProxyActionBean implements ActionBean {
         if(ArcIMSService.PROTOCOL.equals(mode)) {
             return proxyArcIMS();
         } else if(WMSService.PROTOCOL.equals(mode)){
-            return proxyWMS();            
+            return proxyWMS();
         }else{
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy mode unacceptable");
         }
