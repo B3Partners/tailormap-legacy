@@ -39,7 +39,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * Occures when a maptip returns data
          * @param layer the layer where this event occured
          * @param options a object with options         
-         * @param options.data[i].features the data as a multi array
+         * 
+         * @param options.data[i].features the data as a object array
+         * or
+         * @param options.data[i].features[].layer the name of the layer in the layer
+         * @param options.data[i].features[].attributes the data as a object array
+         * 
          * @param options.data[i].request.appLayer the id of the appLayer
          * @param options.data[i].request.serviceLayer the service name for the layer 
          * @param options.x the x pixel (screen location)
