@@ -46,6 +46,7 @@ public class Application {
     private static final Log log = LogFactory.getLog(Application.class);
         
     public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
+    public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
     
     private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[] { 
         "opmerking" 
@@ -295,7 +296,19 @@ public class Application {
      */
     public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers) throws JSONException {
       
-        JSONObject o = new JSONObject();
+        JSONObject o = null;
+        
+        ClobElement el = this.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
+        if(el != null){
+            o = new JSONObject(el.getValue());
+        }else{
+            /* TODO check readers */
+            SelectedContentCache cache = new SelectedContentCache();
+            o = cache.createSelectedContent(this, validXmlTags);
+            
+            this.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT, new ClobElement(o.toString()));
+            Stripersist.getEntityManager().getTransaction().commit();
+        }
 
         o.put("id", id);
         o.put("name", name);
@@ -321,87 +334,7 @@ public class Application {
                 o.put("maxExtent", maxExtent.toJSONObject());
             }
         }
-        
-        /* TODO check readers */
-        
-        if(root != null) {
-            o.put("rootLevel", root.getId().toString());
-
-            loadTreeCache();
-            
-            // Prevent n+1 queries for each level            
-            Stripersist.getEntityManager().createQuery("from Level l "
-                    + "left join fetch l.documents "
-                    + "where l in (:levels) ")
-                    .setParameter("levels", treeCache.levels)
-                    .getResultList();            
-
-            if(!treeCache.applicationLayers.isEmpty()) {
-                // Prevent n+1 queries for each ApplicationLayer            
-                Stripersist.getEntityManager().createQuery("from ApplicationLayer al "
-                        + "left join fetch al.details "
-                        + "where al in (:alayers) ")
-                        .setParameter("alayers", treeCache.applicationLayers)
-                        .getResultList();
-            }
-
-            JSONObject levels = new JSONObject();
-            o.put("levels", levels);
-            JSONObject appLayers = new JSONObject();
-            o.put("appLayers", appLayers);
-            JSONArray selectedContent = new JSONArray();
-            o.put("selectedContent", selectedContent);         
-            
-            List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, request,validXmlTags);
-
-            Collections.sort(selectedObjects, new Comparator() {
-
-                @Override
-                public int compare(Object lhs, Object rhs) {
-                    Integer lhsIndex, rhsIndex;
-                    if(lhs instanceof Level) {
-                        lhsIndex = ((Level)lhs).getSelectedIndex();
-                    } else {
-                        lhsIndex = ((ApplicationLayer)lhs).getSelectedIndex();
-                    }
-                    if(rhs instanceof Level) {
-                        rhsIndex = ((Level)rhs).getSelectedIndex();
-                    } else {
-                        rhsIndex = ((ApplicationLayer)rhs).getSelectedIndex();
-                    }
-                    return lhsIndex.compareTo(rhsIndex);
-                }
-            });
-            for(Object obj: selectedObjects) {
-                JSONObject j = new JSONObject();
-                if(obj instanceof Level) {
-                    j.put("type", "level");
-                    j.put("id", ((Level)obj).getId().toString());
-                } else {
-                    j.put("type", "appLayer");
-                    j.put("id", ((ApplicationLayer)obj).getId().toString());
-                }
-                selectedContent.put(j);
-            }
-           
-            Map<GeoService,Set<String>> usedLayersByService = new HashMap<GeoService,Set<String>>();
-            visitLevelForUsedServicesLayers(root, usedLayersByService, request);
-
-            if(!usedLayersByService.isEmpty()) {
-                JSONObject services = new JSONObject();
-                o.put("services", services);
-                for(Map.Entry<GeoService,Set<String>> entry: usedLayersByService.entrySet()) {
-                    GeoService gs = entry.getKey();
-                    Set<String> usedLayers = entry.getValue();
-                    String serviceId = gs.getId().toString();
-                    if (validXmlTags){
-                        serviceId="service_"+serviceId;
-                    }
-                    services.put(serviceId, gs.toJSONObject(false, usedLayers,validXmlTags));
-                }
-            }           
-        }
+       
         if (!onlyServicesAndLayers){
             // Prevent n+1 query for ConfiguredComponent.details
             Stripersist.getEntityManager().createQuery(
