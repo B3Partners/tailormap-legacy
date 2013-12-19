@@ -178,9 +178,10 @@ public class ApplicationActionBean implements ActionBean {
     
     public Resolution saveCache() throws JSONException, IOException{
         Resolution view = view();
+        
         EntityManager em = Stripersist.getEntityManager();
         SelectedContentCache cache = new SelectedContentCache();
-        JSONObject sc = cache.createSelectedContent(application, this.context.getRequest(), false);
+        JSONObject sc = cache.createSelectedContent(application, false);
         application.getDetails().put("selected_content_cache", new ClobElement(sc.toString()));
         em.getTransaction().commit();
         return view;
@@ -191,11 +192,11 @@ public class ApplicationActionBean implements ActionBean {
         EntityManager em = Stripersist.getEntityManager();
         SelectedContentCache cache = new SelectedContentCache();
         ClobElement el = application.getDetails().get("selected_content_cache");
-        String sc = el.getValue();
-        JSONObject selectedContent = new JSONObject(sc);
+        appConfigJSON = el.getValue();
         return view;
     }
     
+    @DefaultHandler
     public Resolution view() throws JSONException, IOException {
         application = findApplication(name, version);
 

@@ -24,12 +24,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Authorizations;
-import static nl.b3p.viewer.config.security.Authorizations.getApplicationCache;
 import nl.b3p.viewer.config.services.GeoService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,8 +39,10 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Meine Toonen
  */
 public class SelectedContentCache {
+    
+    
 
-    public JSONObject createSelectedContent(Application app,HttpServletRequest request, boolean validXmlTags) throws JSONException {
+    public JSONObject createSelectedContent(Application app, boolean validXmlTags) throws JSONException {
         Level root = app.getRoot();
         JSONObject o = new JSONObject();
         if (root != null) {
@@ -75,7 +75,7 @@ public class SelectedContentCache {
             o.put("selectedContent", selectedContent);
 
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, request, validXmlTags, app, treeCache, appCache);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, app, treeCache, appCache);
 
             Collections.sort(selectedObjects, new Comparator() {
                 @Override
@@ -107,7 +107,7 @@ public class SelectedContentCache {
             }
 
             Map<GeoService, Set<String>> usedLayersByService = new HashMap<GeoService, Set<String>>();
-            visitLevelForUsedServicesLayers(root, usedLayersByService, request, app, treeCache);
+            visitLevelForUsedServicesLayers(root, usedLayersByService, app, treeCache);
 
             if (!usedLayersByService.isEmpty()) {
                 JSONObject services = new JSONObject();
@@ -126,8 +126,8 @@ public class SelectedContentCache {
         return o;
     }
     
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache) throws JSONException {
-        JSONObject o = l.toJSONObject(false, app, request);
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache) throws JSONException {
+        JSONObject o = l.toJSONObject(false, app, null);
         o.put("background", l.isBackground() || parentIsBackground);
         String levelId= l.getId().toString();
         if (validXmlTags){
@@ -141,10 +141,6 @@ public class SelectedContentCache {
         
         for(ApplicationLayer al: l.getLayers()) {
             
-            /*if(!Authorizations.isAppLayerReadAuthorized(app, al, request)) {
-                //System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
-                continue;
-            }*/
             JSONObject p = al.toJSONObject();
             p.put("background", l.isBackground() || parentIsBackground);
             
@@ -180,21 +176,15 @@ public class SelectedContentCache {
                 childObject.put("child", childId);
                 childObject.put("authorizations", auths != null ? auths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request, validXmlTags, app, treeCache, appCache);
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, app, treeCache, appCache);
             }
         }
     }
     
         
-    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService, HttpServletRequest request, Application app, Application.TreeCache treeCache) {
-      /*  if(!Authorizations.isLevelReadAuthorized(app, l, request)) {
-            return;
-        }*/
-        
+    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService,Application app, Application.TreeCache treeCache) {
+
         for(ApplicationLayer al: l.getLayers()) {
-       /*     if(!Authorizations.isAppLayerReadAuthorized(app, al, request)) {
-                continue;
-            }         */   
             GeoService gs = al.getService();
             
             Set<String> usedLayers = usedLayersByService.get(gs);
@@ -207,7 +197,7 @@ public class SelectedContentCache {
         List<Level> children = treeCache.getChildrenByParent().get(l);
         if(children != null) {        
             for(Level child: children) {
-                visitLevelForUsedServicesLayers(child, usedLayersByService, request, app, treeCache);
+                visitLevelForUsedServicesLayers(child, usedLayersByService, app, treeCache);
             }        
         }
     }
