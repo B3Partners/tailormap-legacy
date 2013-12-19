@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
@@ -40,6 +41,12 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 public class SelectedContentCache {
     
+    
+    public JSONObject getSelectedContent(Application app, HttpServletRequest request, JSONObject cached){
+        JSONObject o = new JSONObject();
+        
+        return o;
+    }
     
 
     public JSONObject createSelectedContent(Application app, boolean validXmlTags) throws JSONException {
@@ -128,6 +135,9 @@ public class SelectedContentCache {
     
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache) throws JSONException {
         JSONObject o = l.toJSONObject(false, app, null);
+        
+        Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
+        o.put("authorizations", auths != null ? auths.toJSON() : new JSONObject());
         o.put("background", l.isBackground() || parentIsBackground);
         String levelId= l.getId().toString();
         if (validXmlTags){
@@ -168,22 +178,20 @@ public class SelectedContentCache {
             o.put("children", jsonChildren);
             for(Level child: children) {
                 JSONObject childObject = new JSONObject();
-                Authorizations.Read auths = appCache.getProtectedLevels().get(child.getId());
                 String childId = child.getId().toString();
                 if (validXmlTags) {
                     childId = "level_" + childId;
                 }
                 childObject.put("child", childId);
+                Authorizations.Read auths = appCache.getProtectedLevels().get(child.getId());
                 childObject.put("authorizations", auths != null ? auths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
                 walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, app, treeCache, appCache);
             }
         }
     }
-    
         
     private void visitLevelForUsedServicesLayers(Level l, Map<GeoService,Set<String>> usedLayersByService,Application app, Application.TreeCache treeCache) {
-
         for(ApplicationLayer al: l.getLayers()) {
             GeoService gs = al.getService();
             
