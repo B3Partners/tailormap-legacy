@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,14 +42,109 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 public class SelectedContentCache {
     
+    public static final String AUTHORIZATIONS_KEY = "authorizations";
     
-    public JSONObject getSelectedContent(Application app, HttpServletRequest request, JSONObject cached){
+    public JSONObject getSelectedContent(Application app, HttpServletRequest request, JSONObject cached) throws JSONException{
         JSONObject o = new JSONObject();
+        Set<String> roles = Authorizations.getRoles(request);
         
-        return o;
+        JSONObject levels = cached.getJSONObject("levels");
+        JSONObject appLayers = cached.getJSONObject("appLayers");
+        JSONObject services = cached.getJSONObject("services");
+        JSONObject services = cached.getJSONObject("selectedContent");
+    
+        for (Iterator it = levels.sortedKeys(); it.hasNext();) {
+             String key = (String )it.next();
+             JSONObject level = levels.getJSONObject(key);
+             boolean allowed = isLevelAllowed(level, roles);
+             if(!allowed){
+                 levels.remove(key);
+             }
+        }
+        
+        for (Iterator<String> it = appLayers.sortedKeys(); it.hasNext();) {
+            String key = it.next();
+            JSONObject appLayer = appLayers.getJSONObject(key);
+            boolean allowed = isAppLayerAllowed(appLayer, roles);
+            if(!allowed){
+                appLayers.remove(key);
+            }
+        }
+        
+        return cached;
     }
     
+    private boolean isLevelAllowed(JSONObject level, Set<String> roles) throws JSONException{
+        boolean allowed = isAuthorized(level, roles, false);
+        if(!allowed){
+            return false;
+        }
+        
+        if(level.has("children")){
+            JSONArray children = level.getJSONArray("children");
+            JSONArray newChildren = new JSONArray();
+            for (int i = 0; i < children.length(); i++) {
+                JSONObject child = children.getJSONObject(i);
+                if(isLevelAllowed(child, roles)){
+                    newChildren.put(child.getString("child"));
+                }
+            }
+            level.put("children", newChildren);
+        }
+        return true;
+    }
+    
+    private boolean isAppLayerAllowed(JSONObject appLayer, Set<String> roles) throws JSONException{
+        boolean allowed = isAuthorized(appLayer, roles, true);
+        if(!allowed){
+            return false;
+        }
+        
+        boolean editAuthorized = isAuthorized(appLayer, roles, allowed, "editAuthorizations");
+        appLayer.put("editAuthorized", editAuthorized);
+        
+        return true;
+    }
+    
+    private boolean isAuthorized(JSONObject obj, Set<String> roles, boolean alsoWriters) throws JSONException{
+        return isAuthorized(obj, roles, alsoWriters, AUTHORIZATIONS_KEY);
+    }
+    
+    private boolean isAuthorized(JSONObject obj, Set<String> roles, boolean alsoWriters, String authString) throws JSONException{
 
+         if(obj.has(authString) && obj.getJSONObject(authString).length() != 0){
+            // Levels only have readers
+            JSONArray readers = obj.getJSONObject(authString).getJSONArray("readers");
+            if(readers.length() > 0){
+                Set<String> allowedRoles = new HashSet();
+                for(int i = 0 ; i < readers.length();i++){
+                    String reader = readers.getString(i);
+                    allowedRoles.add(reader);
+                }
+                
+                if( Collections.disjoint(roles, allowedRoles)){
+                    return false;
+                }
+            }
+
+            if (alsoWriters) {
+                JSONArray writers = obj.getJSONObject(authString).getJSONArray("writers");
+                if (writers.length() > 0) {
+                    Set<String> allowedRoles = new HashSet();
+                    for (int i = 0; i < writers.length(); i++) {
+                        String writer = writers.getString(i);
+                        allowedRoles.add(writer);
+                    }
+
+                    if (Collections.disjoint(roles, allowedRoles)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
     public JSONObject createSelectedContent(Application app, boolean validXmlTags) throws JSONException {
         Level root = app.getRoot();
         JSONObject o = new JSONObject();
@@ -137,7 +233,7 @@ public class SelectedContentCache {
         JSONObject o = l.toJSONObject(false, app, null);
         
         Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
-        o.put("authorizations", auths != null ? auths.toJSON() : new JSONObject());
+        o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
         o.put("background", l.isBackground() || parentIsBackground);
         String levelId= l.getId().toString();
         if (validXmlTags){
@@ -161,8 +257,8 @@ public class SelectedContentCache {
                 alId="appLayer_"+alId;
             }
             
-            Authorizations.ReadWrite auths = appCache.getProtectedAppLayers().get(al.getId());
-            p.put("authorizations", auths != null ? auths.toJSON() : new JSONObject());
+            Authorizations.ReadWrite applayerAuths = appCache.getProtectedAppLayers().get(al.getId());
+            p.put(AUTHORIZATIONS_KEY, applayerAuths != null ? applayerAuths.toJSON() : new JSONObject());
             
             appLayers.put(alId, p);
             
@@ -183,8 +279,8 @@ public class SelectedContentCache {
                     childId = "level_" + childId;
                 }
                 childObject.put("child", childId);
-                Authorizations.Read auths = appCache.getProtectedLevels().get(child.getId());
-                childObject.put("authorizations", auths != null ? auths.toJSON() : new JSONObject());
+                Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
+                childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
                 walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, app, treeCache, appCache);
             }

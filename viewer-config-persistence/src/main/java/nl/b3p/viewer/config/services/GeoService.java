@@ -21,6 +21,7 @@ import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.Authorizations.ReadWrite;
+import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -429,7 +430,7 @@ public abstract class GeoService {
                 JSONObject layer = l.toJSONObject();
                 if(includeAuthorizations){
                     ReadWrite rw = Authorizations.getLayerAuthorizations(l);
-                    layer.put("authorizations", rw != null ? rw.toJSON() : new JSONObject());
+                    layer.put(SelectedContentCache.AUTHORIZATIONS_KEY, rw != null ? rw.toJSON() : new JSONObject());
                 }
                 layers.put(name, layer);
             }

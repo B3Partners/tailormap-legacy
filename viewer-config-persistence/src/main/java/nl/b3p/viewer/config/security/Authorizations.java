@@ -183,7 +183,7 @@ public class Authorizations {
         public Set<String> getWriters() {
             return writers;
         }
-        
+       
         public JSONObject toJSON() throws JSONException{
             JSONObject obj = new JSONObject();
             JSONArray jWriters = new JSONArray(writers);
