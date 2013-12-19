@@ -21,6 +21,9 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.config.app.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -160,6 +163,13 @@ public class Authorizations {
         public Set<String> getReaders() {
             return readers;
         }
+        
+        public JSONObject toJSON() throws JSONException{
+            JSONObject obj = new JSONObject();
+            JSONArray jReaders = new JSONArray(readers);
+            obj.put("readers", jReaders);
+            return obj;
+        }
     }
 
     public static class ReadWrite extends Read {
@@ -172,6 +182,15 @@ public class Authorizations {
 
         public Set<String> getWriters() {
             return writers;
+        }
+        
+        public JSONObject toJSON() throws JSONException{
+            JSONObject obj = new JSONObject();
+            JSONArray jWriters = new JSONArray(writers);
+            JSONArray jReaders = new JSONArray(readers);
+            obj.put("readers", jReaders);
+            obj.put("writers", jWriters);
+            return obj;
         }
     }
     
