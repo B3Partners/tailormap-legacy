@@ -19,6 +19,8 @@ package nl.b3p.viewer.config.services;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.config.security.Authorizations.ReadWrite;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -341,6 +343,10 @@ public abstract class GeoService {
     }
     
     public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags) throws JSONException {
+        return toJSONObject(includeLayerTree, layersToInclude, validXmlTags, false);
+    }
+    
+    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("id", id);
         o.put("name", name);
@@ -393,7 +399,7 @@ public abstract class GeoService {
 
             JSONObject layers = new JSONObject();
             o.put("layers", layers);
-            walkLayerJSONFlatten(topLayer, layers, layersToInclude,validXmlTags);
+            walkLayerJSONFlatten(topLayer, layers, layersToInclude,validXmlTags, includeAuthorizations);
             
             if(includeLayerTree) {
                 o.put("topLayer", walkLayerJSONTree(topLayer));
@@ -403,7 +409,7 @@ public abstract class GeoService {
         return o;
     }
     
-    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude,boolean validXmlTags) throws JSONException {
+    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
 
         /* TODO check readers (and include readers in n+1 prevention query */
         
@@ -420,12 +426,17 @@ public abstract class GeoService {
                     name=name.replaceAll(" ", "_");*/
                     name="layer"+layers.length();
                 }
-                layers.put(name, l.toJSONObject());
+                JSONObject layer = l.toJSONObject();
+                if(includeAuthorizations){
+                    ReadWrite rw = Authorizations.getLayerAuthorizations(l);
+                    layer.put("authorizations", rw != null ? rw.toJSON() : new JSONObject());
+                }
+                layers.put(name, layer);
             }
         }
 
         for(Layer child: l.getCachedChildren()) {                
-            walkLayerJSONFlatten(child, layers, layersToInclude,validXmlTags);
+            walkLayerJSONFlatten(child, layers, layersToInclude,validXmlTags,includeAuthorizations);
         }
     }
     
@@ -444,7 +455,7 @@ public abstract class GeoService {
     }
     
     public JSONObject toJSONObject(boolean includeLayerTree) throws JSONException {
-        return toJSONObject(includeLayerTree, null,false);
+        return toJSONObject(includeLayerTree, null,false,false);
     }
     
     /**
