@@ -252,6 +252,8 @@ Ext.define ("viewer.components.Maptip",{
                     var layerName= layer.request.appLayer;
                     for (var index in layer.features){
                         var feature = layer.features[index];
+                        //backwards compatibility. If the feature is the attributes (old way) use the feature as attribute obj.
+                        var attributes = feature.attributes? feature.attributes : feature;
                         var featureDiv = new Ext.Element(document.createElement("div"));
                         featureDiv.addCls("feature_summary_feature");
                         var id= "f";
@@ -272,7 +274,7 @@ Ext.define ("viewer.components.Maptip",{
                             if (details && details["summary.title"] ){
                                 var titleDiv = new Ext.Element(document.createElement("div"));
                                 titleDiv.addCls("feature_summary_title");
-                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],feature,noHtmlEncode,nl2br));
+                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],attributes,noHtmlEncode,nl2br));
                                 leftColumnDiv.appendChild(titleDiv);
                             }
                             //description
@@ -282,7 +284,7 @@ Ext.define ("viewer.components.Maptip",{
                                 if (this.heightDescription){
                                     descriptionDiv.setHeight(Number(this.heightDescription));
                                 }
-                                var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br);
+                                var desc = this.replaceByAttributes(details["summary.description"],attributes,noHtmlEncode,nl2br);
                                 
                                 descriptionDiv.insertHtml("beforeEnd",desc);
                                 leftColumnDiv.appendChild(descriptionDiv);
@@ -291,7 +293,7 @@ Ext.define ("viewer.components.Maptip",{
                             if (details && details["summary.link"]){
                                 var linkDiv = new Ext.Element(document.createElement("div"));
                                 linkDiv.addCls("feature_summary_link");
-                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>");
+                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],attributes,noHtmlEncode,nl2br)+"'>link</a>");
                                 leftColumnDiv.appendChild(linkDiv);
                             }
                             //detail
@@ -301,7 +303,7 @@ Ext.define ("viewer.components.Maptip",{
                             if (this.getMoreLink()!=null){ 
                                 var detailElem=document.createElement("a");
                                 detailElem.href='javascript: void(0)';
-                                detailElem.feature=feature;
+                                detailElem.feature=attributes;
                                 detailElem.appLayer=appLayer;
                                 var detailLink = new Ext.Element(detailElem);
                                 detailLink.addListener("click",
@@ -321,7 +323,7 @@ Ext.define ("viewer.components.Maptip",{
                             rightColumnDiv.addCls("feature_summary_rightcolumn");
                             var imageDiv = new Ext.Element(document.createElement("div"));
                             imageDiv.addCls("feature_summary_image");
-                            imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>");
+                            imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],attributes,noHtmlEncode,nl2br)+"'/>");
                             rightColumnDiv.appendChild(imageDiv);
                             featureDiv.appendChild(rightColumnDiv);
                         }

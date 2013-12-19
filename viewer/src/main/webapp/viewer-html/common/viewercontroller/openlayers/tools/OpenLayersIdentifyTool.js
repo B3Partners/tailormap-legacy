@@ -84,7 +84,9 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                     
                 this.wmsGetFeatureInfoControl.handleResponse = handleResponse;
                 this.wmsGetFeatureInfoControl.buildWMSOptions = buildWMSOptions;
-                this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);            
+                this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);   
+                //deegree handler:
+                this.wmsGetFeatureInfoControl.format.read_FeatureCollection = this.readFeatureCollection;
                 this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
                 
                 //set proxy for getFeatureInfoRequests:
@@ -230,7 +232,10 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 featuresByLayer[appLayer.id].features = new Array();
                 featuresByLayer[appLayer.id].appLayerObj = appLayer;             
             }
-            featuresByLayer[appLayer.id].features.push(feature.attributes);
+            featuresByLayer[appLayer.id].features.push({
+                attributes: feature.attributes,
+                layer: feature.type? feature.type : feature.layer
+            });
         } 
 
         for(var applayer in featuresByLayer){
@@ -285,6 +290,29 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             }
         }
         return null;
-    }
+    },
     
+    /**
+     * Is called by the .format from the OpenLayers GetFeatureInfoControl to parse the xml
+     * This parses the deegree
+     * @param {DOMElement} Root DOM element
+     */
+    readFeatureCollection: function (data){
+        var featureIdentifier = "featureMember";
+        var layerNodes = this.getSiblingNodesByTagCriteria(data,
+            featureIdentifier);
+        var response = [];
+        if (layerNodes) {
+            for (var i=0, len=layerNodes.length; i<len; ++i) {                
+                var featureNode = layerNodes[i].firstElementChild;                
+                var attributes = this.parseAttributes(featureNode);
+                var geomAttr = this.parseGeometry(featureNode);
+                var feature = new OpenLayers.Feature.Vector(geomAttr.geometry,
+                    attributes,null);
+                feature.type = featureNode.localName;
+                response.push(feature);
+            }
+        }
+        return response;
+    }
 });
