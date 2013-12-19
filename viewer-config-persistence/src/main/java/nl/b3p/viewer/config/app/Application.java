@@ -24,6 +24,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -225,6 +226,10 @@ public class Application {
         public List<ApplicationLayer> getApplicationLayers() {
             return applicationLayers;
         }
+        
+        public Map<Level,List<Level>> getChildrenByParent(){
+            return childrenByParent;
+        }
 
         public List<Level> getChildren(Level l) {
             List<Level> children = childrenByParent.get(l);
@@ -289,6 +294,7 @@ public class Application {
      * @return
      */
     public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers) throws JSONException {
+      
         JSONObject o = new JSONObject();
 
         o.put("id", id);
