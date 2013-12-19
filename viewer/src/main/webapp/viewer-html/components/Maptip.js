@@ -243,18 +243,23 @@ Ext.define ("viewer.components.Maptip",{
                     if (appLayer){
                         details = appLayer.details;
                     }else{
-                        details = this.viewerController.mapComponent.getMap().getLayer(layer.request.serviceLayer);
+                        details = this.viewerController.mapComponent.getMap().getLayer(layer.request.appLayer).getDetails();
                     }
                     
                     var noHtmlEncode = "true" == details['summary.noHtmlEncode'];
                     var nl2br = "true" == details['summary.nl2br'];
                     var showRightColumn = (details && details["summary.image"]);
-                    var layerName= appLayer.layerName;
+                    var layerName= layer.request.appLayer;
                     for (var index in layer.features){
                         var feature = layer.features[index];
                         var featureDiv = new Ext.Element(document.createElement("div"));
                         featureDiv.addCls("feature_summary_feature");
-                        featureDiv.id="f"+appLayer.serviceId+"_"+layerName+"_"+index;
+                        var id= "f";
+                        if (appLayer){
+                            id += appLayer.serviceId;
+                        }
+                        id += "_"+layerName+"_"+index;                        
+                        featureDiv.id= id;
                         //left column
                         var leftColumnDiv = new Ext.Element(document.createElement("div"));
                         leftColumnDiv.addCls("feature_summary_leftcolumn");
