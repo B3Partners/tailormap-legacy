@@ -298,18 +298,8 @@ public class Application {
       
         JSONObject o = null;
         SelectedContentCache cache = new SelectedContentCache();
-
-        ClobElement el = this.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
-        if(el == null){
-            /* TODO check readers */
-            JSONObject cached = cache.createSelectedContent(this, validXmlTags);
-            el = new ClobElement(cached.toString());
-            this.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT, el);
-            Stripersist.getEntityManager().getTransaction().commit();
-        }
-        
-        JSONObject cached = new JSONObject(el.getValue());
-        o = cache.getSelectedContent(this, request, cached);
+        o = cache.getSelectedContent(request, this, validXmlTags);
+       
         o.put("id", id);
         o.put("name", name);
         if(!onlyServicesAndLayers && layout != null) {

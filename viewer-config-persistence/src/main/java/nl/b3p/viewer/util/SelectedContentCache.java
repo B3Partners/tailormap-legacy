@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
+import static nl.b3p.viewer.config.app.Application.DETAIL_CACHED_SELECTED_CONTENT;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Authorizations;
@@ -44,8 +46,25 @@ public class SelectedContentCache {
     
     public static final String AUTHORIZATIONS_KEY = "authorizations";
     
-    public JSONObject getSelectedContent(Application app, HttpServletRequest request, JSONObject cached) throws JSONException{
-        Set<String> roles = Authorizations.getRoles(request);
+    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags) throws JSONException {
+        ClobElement el = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
+        JSONObject cached = null;
+        if(el == null){
+            /* TODO check readers */
+            cached = createSelectedContent(app, validXmlTags);
+            el = new ClobElement(cached.toString());
+            app.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT, el);
+            Stripersist.getEntityManager().getTransaction().commit();
+        }else{
+            cached = new JSONObject(el.getValue());
+        }
+        
+        JSONObject selectedContent = processCache(request, cached);
+        return selectedContent;
+    }
+    
+    private JSONObject processCache( HttpServletRequest request, JSONObject cached) throws JSONException{
+         Set<String> roles = Authorizations.getRoles(request);
         
         JSONObject levels = cached.getJSONObject("levels");
         JSONObject appLayers = cached.getJSONObject("appLayers");
