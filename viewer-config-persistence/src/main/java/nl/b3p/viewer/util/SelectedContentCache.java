@@ -45,12 +45,10 @@ public class SelectedContentCache {
     public static final String AUTHORIZATIONS_KEY = "authorizations";
     
     public JSONObject getSelectedContent(Application app, HttpServletRequest request, JSONObject cached) throws JSONException{
-        JSONObject o = new JSONObject();
         Set<String> roles = Authorizations.getRoles(request);
         
         JSONObject levels = cached.getJSONObject("levels");
         JSONObject appLayers = cached.getJSONObject("appLayers");
-        JSONObject services = cached.getJSONObject("services");
         JSONArray selectedContent = cached.getJSONArray("selectedContent");
          
         for (Iterator<String> it = appLayers.sortedKeys(); it.hasNext();) {
@@ -172,6 +170,7 @@ public class SelectedContentCache {
                 }
             }
         }
+        obj.remove(authString);
         return true;
     }
     
