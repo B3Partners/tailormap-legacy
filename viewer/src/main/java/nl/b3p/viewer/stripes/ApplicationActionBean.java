@@ -27,10 +27,12 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.config.ClobElement;
 import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -173,7 +175,28 @@ public class ApplicationActionBean implements ActionBean {
         }
         return null;
     }
-
+    
+    public Resolution saveCache() throws JSONException, IOException{
+        Resolution view = view();
+        
+        EntityManager em = Stripersist.getEntityManager();
+        SelectedContentCache cache = new SelectedContentCache();
+        JSONObject sc = cache.createSelectedContent(application, false);
+        application.getDetails().put("selected_content_cache", new ClobElement(sc.toString()));
+        em.getTransaction().commit();
+        return view;
+    }
+    
+     public Resolution retrieveCache() throws JSONException, IOException{
+        Resolution view = view();
+        EntityManager em = Stripersist.getEntityManager();
+        SelectedContentCache cache = new SelectedContentCache();
+        ClobElement el = application.getDetails().get("selected_content_cache");
+        appConfigJSON = el.getValue();
+        return view;
+    }
+    
+    @DefaultHandler
     public Resolution view() throws JSONException, IOException {
         application = findApplication(name, version);
 
