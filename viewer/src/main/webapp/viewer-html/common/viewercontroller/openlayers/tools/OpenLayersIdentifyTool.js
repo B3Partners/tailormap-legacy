@@ -226,34 +226,34 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         for (var i=0; i< evt.features.length; i++){
             
             var feature = evt.features[i];
+            var layerName = feature.type? feature.type : feature.layer;
             var appLayer = this.getAppLayerByOpenLayersLayer(feature.url,feature.layerNames);
             if (!featuresByLayer.hasOwnProperty(appLayer.id)) {
                 featuresByLayer[appLayer.id] = new Object();
-                featuresByLayer[appLayer.id].features = new Array();
                 featuresByLayer[appLayer.id].appLayerObj = appLayer;             
             }
-            featuresByLayer[appLayer.id].features.push({
-                attributes: feature.attributes,
-                layer: feature.type? feature.type : feature.layer
-            });
-        } 
-
+            if (!featuresByLayer[appLayer.id].hasOwnProperty(layerName)){
+                featuresByLayer[appLayer.id][layerName] = new Object();
+                featuresByLayer[appLayer.id][layerName].features = new Array();
+            }
+            featuresByLayer[appLayer.id][layerName].features.push(feature.attributes);
+        }
+        options.data = [];
         for(var applayer in featuresByLayer){
-            var groupedFeatures = featuresByLayer[applayer];
-            var features = groupedFeatures.features;
-              var response  = {
+            var groupedLayers = featuresByLayer[applayer];
+            for (var lName in groupedLayers){
+                var features = groupedLayers[lName].features;
+                var response = {
                     request: {
                         appLayer: appLayer.id,
-                        serviceLayer: feature.layerNames
+                        serviceLayer: lName
                     },
                     features: features,
                     appLayer: appLayer
-            };
-            options.data = new Object();
-            options.data[appLayer.id] =response;
-       
-            groupedFeatures.appLayerObj.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
-
+                }                
+                options.data.push(response);
+            }
+            featuresByLayer[applayer].appLayerObj.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
         }
         
     },
