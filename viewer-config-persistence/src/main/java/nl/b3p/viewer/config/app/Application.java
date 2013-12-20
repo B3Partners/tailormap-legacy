@@ -46,7 +46,6 @@ public class Application {
     private static final Log log = LogFactory.getLog(Application.class);
         
     public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
-    public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
     
     private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[] { 
         "opmerking" 

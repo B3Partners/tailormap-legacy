@@ -28,7 +28,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
-import static nl.b3p.viewer.config.app.Application.DETAIL_CACHED_SELECTED_CONTENT;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Authorizations;
@@ -45,17 +44,20 @@ import org.stripesstuff.stripersist.Stripersist;
 public class SelectedContentCache {
     
     public static final String AUTHORIZATIONS_KEY = "authorizations";
+    public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
+    public static final String DETAIL_CACHED_SELECTED_CONTENT_DIRTY = "cachedSelectedContentDirty";
     
     public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags) throws JSONException {
-        ClobElement el = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
+        
         JSONObject cached = null;
-        if(el == null){
-            /* TODO check readers */
+        if(mustCreateNewCache(app)){
             cached = createSelectedContent(app, validXmlTags);
-            el = new ClobElement(cached.toString());
+            ClobElement el = new ClobElement(cached.toString());
             app.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT, el);
+            setApplicationCacheDirty(app, false);
             Stripersist.getEntityManager().getTransaction().commit();
         }else{
+            ClobElement el = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
             cached = new JSONObject(el.getValue());
         }
         
@@ -354,4 +356,19 @@ public class SelectedContentCache {
         }
     }
     
+    private boolean mustCreateNewCache(Application app){
+        ClobElement cache = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
+        if(cache == null){
+            return true;
+        }else{
+            ClobElement dirtyClob = app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT_DIRTY);
+            boolean dirty = Boolean.valueOf(dirtyClob.getValue());
+            return dirty;
+        }
+    }
+    
+    private void setApplicationCacheDirty(Application app, Boolean dirty){
+        app.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
+        Stripersist.getEntityManager().getTransaction().commit();
+    }
 }
