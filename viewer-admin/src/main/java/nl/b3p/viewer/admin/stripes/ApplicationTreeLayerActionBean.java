@@ -27,6 +27,7 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang3.StringUtils;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
@@ -401,6 +402,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         application.authorizationsModified();
 
         displayName = applicationLayer.getDisplayName();
+        SelectedContentCache.setApplicationCacheDirty(application, true);
         
         Stripersist.getEntityManager().getTransaction().commit();
 

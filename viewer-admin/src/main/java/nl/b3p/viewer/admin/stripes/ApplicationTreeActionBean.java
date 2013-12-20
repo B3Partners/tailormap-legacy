@@ -25,6 +25,7 @@ import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -267,6 +268,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
         em.persist(l);
         em.persist(parent);
+        SelectedContentCache.setApplicationCacheDirty(application, true);
         application.authorizationsModified();
         em.getTransaction().commit();
 
