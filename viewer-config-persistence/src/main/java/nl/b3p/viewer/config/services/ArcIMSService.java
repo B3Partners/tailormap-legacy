@@ -378,7 +378,7 @@ public class ArcIMSService extends GeoService implements Updatable {
     
     @Override
     public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags);
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations);
         if(serviceName != null) {
             o.put("serviceName", serviceName);
         }
