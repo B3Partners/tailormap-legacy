@@ -51,17 +51,8 @@ public class SelectedContentCache {
         JSONObject levels = cached.getJSONObject("levels");
         JSONObject appLayers = cached.getJSONObject("appLayers");
         JSONObject services = cached.getJSONObject("services");
-        JSONObject services = cached.getJSONObject("selectedContent");
-    
-        for (Iterator it = levels.sortedKeys(); it.hasNext();) {
-             String key = (String )it.next();
-             JSONObject level = levels.getJSONObject(key);
-             boolean allowed = isLevelAllowed(level, roles);
-             if(!allowed){
-                 levels.remove(key);
-             }
-        }
-        
+        JSONArray selectedContent = cached.getJSONArray("selectedContent");
+         
         for (Iterator<String> it = appLayers.sortedKeys(); it.hasNext();) {
             String key = it.next();
             JSONObject appLayer = appLayers.getJSONObject(key);
@@ -71,8 +62,47 @@ public class SelectedContentCache {
             }
         }
         
+        for (Iterator it = levels.sortedKeys(); it.hasNext();) {
+             String key = (String )it.next();
+             JSONObject level = levels.getJSONObject(key);
+             boolean allowed = isLevelAllowed(level, roles);
+             if(!allowed){
+                 levels.remove(key);
+             }
+             JSONArray newLayers = new JSONArray();
+             if(level.has("layers")){
+                 JSONArray layers = level.getJSONArray("layers");
+                 for (int i = 0; i < layers.length(); i++) {
+                     String layerId = layers.getString(i);
+                     if(appLayers.has(layerId)){
+                         newLayers.put(layerId);
+                     }
+                 }
+                 level.put("layers", newLayers);
+             }
+        }
+   
+        
+        JSONArray newSelectedContent = new JSONArray();
+        for (int i = 0; i < selectedContent.length(); i++) {
+            JSONObject obj = selectedContent.getJSONObject(i);
+            String type = obj.getString("type");
+            String id = obj.getString("id");
+            if(type.equalsIgnoreCase("level")){
+                if(isLevelAllowed(id, levels)){
+                   newSelectedContent.put(obj);
+                }
+            }
+        }
+        
+        cached.put("selectedContent", newSelectedContent);
         return cached;
     }
+    
+    private boolean isLevelAllowed(String id, JSONObject levels){
+        return levels.has(id);
+    }
+    
     
     private boolean isLevelAllowed(JSONObject level, Set<String> roles) throws JSONException{
         boolean allowed = isAuthorized(level, roles, false);
@@ -93,14 +123,14 @@ public class SelectedContentCache {
         }
         return true;
     }
-    
+        
     private boolean isAppLayerAllowed(JSONObject appLayer, Set<String> roles) throws JSONException{
-        boolean allowed = isAuthorized(appLayer, roles, true);
+        boolean allowed = isAuthorized(appLayer, roles, false);
         if(!allowed){
             return false;
         }
         
-        boolean editAuthorized = isAuthorized(appLayer, roles, allowed, "editAuthorizations");
+        boolean editAuthorized = isAuthorized(appLayer, roles, true, "editAuthorizations");
         appLayer.put("editAuthorized", editAuthorized);
         
         return true;
