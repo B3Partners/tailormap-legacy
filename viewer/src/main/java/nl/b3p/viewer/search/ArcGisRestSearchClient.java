@@ -39,7 +39,8 @@ public class ArcGisRestSearchClient extends SearchClient{
         this.url = url;
     }
     @Override
-    public JSONArray search(String query){      
+    public SearchResult search(String query){      
+        SearchResult result = new SearchResult();
         String queryUrl;
         if (this.url.contains(SEARCHTERM_HOLDER)){
             queryUrl= this.url.replace(SEARCHTERM_HOLDER, query);
@@ -51,13 +52,15 @@ public class ArcGisRestSearchClient extends SearchClient{
             JSONObject obj= new JSONObject(IOUtils.toString(new URL(queryUrl).openStream(), "UTF-8"));
             JSONArray candidates = (JSONArray)obj.get("candidates");            
             returnValue = candidateToResult(candidates);
+            result.setResults(returnValue);
+            result.setLimitReached(false);
         }catch(JSONException je){
             log.error("Search error while creating json objects",je);
             
         } catch (IOException ex) {
             log.error("Error while requesting url: "+queryUrl,ex);
         }
-        return returnValue;
+        return result;
     }
     
     private JSONArray candidateToResult(JSONArray candidates) throws JSONException{

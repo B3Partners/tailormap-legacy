@@ -50,13 +50,18 @@ public class SolrSearchClient extends SearchClient {
     private Map<Long, SolrConfiguration> configMap = new HashMap();
     
     @Override
-    public JSONArray search(String term) {
+    public SearchResult search(String term) {
+        SearchResult result = new SearchResult();
         JSONArray respDocs = new JSONArray();
         try {
-            term = term.replaceAll("\\:", "\\\\:");
+            if(term == null){
+                term = "";
+            }else{
+                term = term.replaceAll("\\:", "\\\\:");
+                term  += " AND (";
+            }
             SolrServer server = SolrInitializer.getServerInstance();
             String extraQuery = createAttributeSourceQuery();
-            term  += " AND (";
             if(!extraQuery.isEmpty()){
                  term += extraQuery + ")";
             }else{
@@ -67,20 +72,24 @@ public class SolrSearchClient extends SearchClient {
             query.setRequestHandler("/select");
             QueryResponse rsp = server.query(query);
             SolrDocumentList list = rsp.getResults();
-
+            
             for (SolrDocument solrDocument : list) {
                 JSONObject doc = solrDocumentToResult(solrDocument);
                 if(doc != null){
                     respDocs.put(doc);
                 }
             }
+            result.setResults(respDocs);
+            result.setLimitReached( list.getNumFound()> list.size() );
+           
 
         } catch (SolrServerException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
             Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
         } 
-        return respDocs;
+        
+        return result;
     }
     
     @Override

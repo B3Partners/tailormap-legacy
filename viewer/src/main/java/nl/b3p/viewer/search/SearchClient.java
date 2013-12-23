@@ -47,7 +47,7 @@ public abstract class SearchClient {
      * ]
      * </pre>
      */
-    public abstract JSONArray search(String query);
+    public abstract SearchResult search(String query);
     
     public abstract JSONArray autosuggest(String query) throws JSONException;
     

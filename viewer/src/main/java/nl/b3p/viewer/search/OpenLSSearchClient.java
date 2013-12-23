@@ -56,7 +56,8 @@ public class OpenLSSearchClient extends SearchClient {
     }
 
     @Override
-    public JSONArray search(String query) {
+    public SearchResult search(String query) {
+        SearchResult result = new SearchResult();
         String queryUrl;
         if (this.url.contains(SEARCHTERM_HOLDER)) {
             queryUrl = this.url.replace(SEARCHTERM_HOLDER, query);
@@ -64,7 +65,7 @@ public class OpenLSSearchClient extends SearchClient {
             queryUrl = this.url + query;
         }
 
-        JSONArray result = new JSONArray();
+        JSONArray resultArray = new JSONArray();
         String response = null;
         try {
             String encodedQuery = URIUtil.encodeQuery(queryUrl, "UTF-8");
@@ -72,10 +73,12 @@ public class OpenLSSearchClient extends SearchClient {
             GeocodeResponse gecoderResponse = parser.parseOpenLSResponse(response);
 
             try {
-                result = responseToResult(gecoderResponse);
+                resultArray = responseToResult(gecoderResponse);
             } catch (JSONException ex) {
                 log.error("Error while converting OpenLS result to JSON result", ex);
             }
+            result.setResults(resultArray);
+            result.setLimitReached(false);
         } catch (IOException ex) {
             log.error("Error while getting OpenLS response", ex);
         }

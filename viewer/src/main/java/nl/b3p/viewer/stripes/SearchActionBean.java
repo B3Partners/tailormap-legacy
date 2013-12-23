@@ -17,7 +17,6 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
-import java.net.URL;
 import java.util.*;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
@@ -27,8 +26,8 @@ import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.search.ArcGisRestSearchClient;
 import nl.b3p.viewer.search.OpenLSSearchClient;
 import nl.b3p.viewer.search.SearchClient;
+import nl.b3p.viewer.search.SearchResult;
 import nl.b3p.viewer.search.SolrSearchClient;
-import org.apache.commons.io.IOUtils;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -130,14 +129,15 @@ public class SearchActionBean implements ActionBean {
         if(search == null){
             error += "No searchconfig found";
         }else{
-            JSONArray results = new JSONArray();
+            JSONArray resultsArray = new JSONArray();
             SearchClient client = getSearchClient(search);
-
+            SearchResult response = new SearchResult();
             if (client != null) {
-                results = client.search(searchText);
+                response = client.search(searchText);
+                resultsArray =response.getResults();
             }
-
-            result.put("results",results);
+            result.put("limitReached", response.getLimitReached());
+            result.put("results",resultsArray);
             result.put("error",error);
         }
         return new StreamingResolution("application/json", new StringReader(result.toString())); 
