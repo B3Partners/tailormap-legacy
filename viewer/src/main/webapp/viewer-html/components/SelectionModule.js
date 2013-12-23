@@ -143,6 +143,7 @@ Ext.define ("viewer.components.SelectionModule",{
         alwaysMatch:null,
         alwaysShow:null,
         showWhenOnlyBackground:null,
+        showBackgroundLevels:null,
         showCswUrl: null
     },
     constructor: function (conf) {     
@@ -160,7 +161,9 @@ Ext.define ("viewer.components.SelectionModule",{
         } if(Ext.isEmpty(conf.showWhenOnlyBackground)){
             conf.showWhenOnlyBackground = true;
         } if(Ext.isEmpty(conf.alwaysShow)){
-            conf.alwaysShow = false;
+            conf.alwaysShow = false;        
+        } if(Ext.isEmpty(conf.showBackgroundLevels)){
+            conf.showBackgroundLevels = false;
         }
         // call constructor and init config
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
@@ -1011,7 +1014,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var rootLevel = me.levels[me.rootLevel];
         if(Ext.isDefined(rootLevel.children)) {
             for(var i = 0 ; i < rootLevel.children.length; i++) {
-                var l = me.addLevel(rootLevel.children[i], true, false, false);
+                var l = me.addLevel(rootLevel.children[i], true, false, this.showBackgroundLevels);
                 if(l !== null) {
                     l.expanded = true; // Make top levels expand
                     levels.push(l);
@@ -1032,7 +1035,7 @@ Ext.define ("viewer.components.SelectionModule",{
         for ( var i = 0 ; i < me.selectedContent.length ; i ++){
             var contentItem = me.selectedContent[i];
             if(contentItem.type ==  "level") {
-                var level = me.addLevel(contentItem.id, false, false, false);
+                var level = me.addLevel(contentItem.id, false, false, this.showBackgroundLevels);
                 if(level != null){
                     nodes.push(level);
                 }

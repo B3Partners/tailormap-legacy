@@ -36,6 +36,13 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth,
             fieldLabel: "Laat zien bij opstarten indien er alleen achtergrondlagen zijn"
         });
+        this.form.add({
+            xtype: "checkbox",
+            checked: configObject.showBackgroundLevels !== undefined ? configObject.showBackgroundLevels : false,
+            name: "showBackgroundLevels",
+            labelWidth: this.labelWidth,
+            fieldLabel: "Laat achtergrondlagen zien"
+        });
         
         var fieldNames = [
             { name: 'Groups', description: 'Kaarten selecteren', defaultLabel: 'Kaart' },
