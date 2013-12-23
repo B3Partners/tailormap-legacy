@@ -327,8 +327,11 @@ Ext.define ("viewer.components.Search",{
                         if (response.error){
                             Ext.MessageBox.alert("Foutmelding", response.error);
                         }
-                        if (me.searchRequestId==response.request.searchRequestId){
+                        if (me.searchRequestId===parseInt( response.request.searchRequestId)){
                             me.showSearchResults();
+                            if(response.limitReached){
+                                me.results.setTitle (me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
+                            }
                         }
                         me.mainContainer.setLoading(false);
                     },
