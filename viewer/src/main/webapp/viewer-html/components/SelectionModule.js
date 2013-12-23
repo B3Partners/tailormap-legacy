@@ -141,6 +141,7 @@ Ext.define ("viewer.components.SelectionModule",{
         advancedLabel:null,
         advancedValue:null,
         alwaysMatch:null,
+        alwaysShow:null,
         showWhenOnlyBackground:null,
         showCswUrl: null
     },
@@ -158,6 +159,8 @@ Ext.define ("viewer.components.SelectionModule",{
             conf.selectCsw = true;
         } if(Ext.isEmpty(conf.showWhenOnlyBackground)){
             conf.showWhenOnlyBackground = true;
+        } if(Ext.isEmpty(conf.alwaysShow)){
+            conf.alwaysShow = false;
         }
         // call constructor and init config
         viewer.components.SelectionModule.superclass.constructor.call(this, conf);
@@ -584,7 +587,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 columnWidth: 0.5,
                                 title: 'Geavanceerd zoeken',
                                 collapsible: true,
-                                collapsed:true,
+                                collapsed:!this.alwaysShow,
                                 height: 65,
                                 bodyPadding: 5,
                                 hidden:true,
@@ -1194,8 +1197,13 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswServiceUrlTextfield.setVisible(Ext.isEmpty( this.showCswUrl)|| this.showCswUrl);
                 cswSearchTextfield.setVisible(true);
                 cswServiceUrlButton.setVisible(true);
-                cswAdvancedSearchField.setVisible(true);
-                this.setTopHeight(height || 80);
+                cswAdvancedSearchField.setVisible(this.advancedFilter);
+                if(this.advancedFilter){
+                    height = height || this.alwaysShow ? 120 : 80;
+                }else{
+                    height = height || 40;
+                }
+                this.setTopHeight(height);
             }
         }
         

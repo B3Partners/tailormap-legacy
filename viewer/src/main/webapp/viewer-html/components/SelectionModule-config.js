@@ -139,6 +139,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             items:[
                 {
                     xtype: "checkbox",
+                    checked: configObject.alwaysShow !== undefined ? configObject.alwaysShow : false,
+                    name: "alwaysShow",
+                    id: "alwaysShow",
+                    labelWidth: this.labelWidth,
+                    fieldLabel: "Filter opengeklapt bij opstarten",
+                    width: 500
+                },
+                {
+                    xtype: "checkbox",
                     checked: configObject.alwaysMatch !== undefined ? configObject.alwaysMatch : false,
                     name: "alwaysMatch",
                     id: "alwaysMatch",
@@ -279,10 +288,12 @@ Ext.define("viewer.components.CustomConfiguration",{
         var advancedLabel = Ext.getCmp("advancedLabel");
         var advancedValue = Ext.getCmp("advancedValue");
         var alwaysMatch = Ext.getCmp("alwaysMatch");
+        var alwaysShow = Ext.getCmp("alwaysShow");
         var values =  Ext.getCmp("advancedFilterValues");
         config.advancedLabel = advancedLabel !== null ? advancedLabel.getValue() : "";
         config.advancedValue = advancedValue !== null ? advancedValue.getValue() : "";
         config.alwaysMatch = alwaysMatch !== null ? alwaysMatch.getValue() : "";
+        config.alwaysShow = alwaysShow !== null ? alwaysShow.getValue() : "";
         
         var items = values.items.items;
         
