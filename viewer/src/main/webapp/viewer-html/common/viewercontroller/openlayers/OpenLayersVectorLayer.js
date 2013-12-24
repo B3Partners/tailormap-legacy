@@ -284,6 +284,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         });
         if(openLayersFeature.style){
             feature.label = openLayersFeature.style.label;
+            var color = openLayersFeature.style.fillColor;
+            if(color.indexOf("#") !== -1){
+                color = color.substring(color.indexOf("#")+1, color.length);
+            }
+            feature.color = color;
         }
         return feature;
     }, 
