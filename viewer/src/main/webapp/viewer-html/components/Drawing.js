@@ -489,16 +489,31 @@ Ext.define ("viewer.components.Drawing",{
     drawCircle: function(){
         this.vectorLayer.drawFeature("Circle");
     },
-    deleteAll: function(){
-        this.vectorLayer.removeAllFeatures();
-        this.toggleSelectForm(false);
-        this.features = {};
-        this.label.setValue("");
-        this.title.setValue("");
-        this.description.setValue("");
-        if(this.activeFeature != null){
-            this.activeFeature=null;
-        }
+    deleteAll: function() {
+        Ext.Msg.show({
+            title: "Weet u het zeker?",
+            msg: "Weet u zeker dat u alle tekenobjecten wilt weggooien?",
+            fn: function(button) {
+                if (button === 'yes') {
+                    this.vectorLayer.removeAllFeatures();
+                    this.toggleSelectForm(false);
+                    this.features = {};
+                    this.label.setValue("");
+                    this.title.setValue("");
+                    this.description.setValue("");
+                    if (this.activeFeature != null) {
+                        this.activeFeature = null;
+                    }
+                }
+            },
+            scope: this,
+            buttons: Ext.Msg.YESNO,
+            buttonText: {
+                no: "Nee",
+                yes: "Ja"
+            },
+            icon: Ext.Msg.WARNING
+        });
     },
     deleteObject: function(){
         delete this.features[this.activeFeature.id];
