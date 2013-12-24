@@ -427,8 +427,7 @@ Ext.define ("viewer.components.Search",{
         var item = {
             text: result.label,
             xtype: 'button',
-            margin: '10px 10px 0px 10px',
-            componentCls: 'mobileLarge',
+            componentCls: 'searchResultButton',
             tooltip: 'Zoom naar locatie',
             id: "searchButton_" + index,
             listeners: {
