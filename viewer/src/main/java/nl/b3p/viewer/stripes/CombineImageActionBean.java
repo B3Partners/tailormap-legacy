@@ -188,6 +188,9 @@ public class CombineImageActionBean implements ActionBean {
                             if (geom.has("color") && !geom.isNull("color")){
                                 ciw.setColor(geom.getString("color"));
                             }
+                            if (geom.has("label") && !geom.isNull("label") && !geom.getString("label").equals("")){
+                                ciw.setLabel(geom.getString("label"));
+                            }
                             wkts.add(ciw);
                         }
                     }
