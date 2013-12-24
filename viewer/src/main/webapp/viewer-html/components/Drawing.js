@@ -95,7 +95,7 @@ Ext.define ("viewer.components.Drawing",{
             style: {
                 'fillcolor': this.color || 'FF0000',
                 'fillopacity': 50,
-                'strokecolor': "FF0000",
+                'strokecolor': this.color ||"FF0000",
                 'strokeopacity': 50
             }
         });
@@ -457,6 +457,7 @@ Ext.define ("viewer.components.Drawing",{
     colorChanged : function (hexColor){
         this.color = hexColor;
         this.vectorLayer.style.fillcolor = this.color;
+        this.vectorLayer.style.strokecolor = this.color;
         this.vectorLayer.adjustStyle();
         if(this.activeFeature != null){
             this.activeFeature.color = this.color;
@@ -562,6 +563,7 @@ Ext.define ("viewer.components.Drawing",{
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
             this.vectorLayer.style.fillcolor = featureObject.color;
+            this.vectorLayer.style.strokecolor = featureObject.color;
             //this.color = featureObject.color;
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
