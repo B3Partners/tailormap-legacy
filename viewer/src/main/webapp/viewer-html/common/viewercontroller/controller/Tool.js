@@ -32,7 +32,8 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         PAN                        : 4,
         SUPERPAN                   : 5,        
         GET_FEATURE_INFO           : 10,
-        MEASURE                    : 11,
+        MEASURELINE               : 11,
+        MEASUREAREA               : 12,
         ZOOM_BAR                   : 13,
         DEFAULT                    : 15,
 

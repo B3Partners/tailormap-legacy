@@ -421,7 +421,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));            
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {  
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
-        }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
+        }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
             
             frameworkOptions["persist"]=true;
             frameworkOptions["callbacks"]={
@@ -452,6 +452,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }
             var me = this;
             var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
+            var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
                 if (measureValueDiv){                
