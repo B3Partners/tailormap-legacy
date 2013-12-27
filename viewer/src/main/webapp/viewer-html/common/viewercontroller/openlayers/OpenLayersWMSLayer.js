@@ -60,7 +60,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
      */
     setUrl: function(url){
         this.url=url;
-    /*Todo: needs to implement. CHange the url in the framework*/
+        if (this.getFrameworkLayer()){
+            this.getFrameworkLayer().setUrl(url);
+        }
     },   
     /**
     *Set a OGC-WMS param and refresh the layer
