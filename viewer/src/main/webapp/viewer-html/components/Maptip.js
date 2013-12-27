@@ -240,9 +240,6 @@ Ext.define ("viewer.components.Maptip",{
                 this.balloon.setPosition(x,y,true,browserZoomRatio);
                 this.balloon.addElements(components);
                 this.balloon.show();
-            } else {
-                this.balloon.setContent("");
-                this.balloon.hide();      
             }
         }catch(e){
             this.viewerController.logger.error(e);

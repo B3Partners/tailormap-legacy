@@ -84,9 +84,10 @@ Ext.define("viewer.SLD", {
      * @param {String} featureTypeName featuretypename
      * @param {String} sldId the id of the predefined sld
      * @param {String} commonAndFilter a common and filter (filter for all layers)
-     * 
+     * @param {String/Array} colors of the objects that pass the filter.
+     * @param {boolean} true if the filter must be added to the rule
      */
-    createURL: function(layer, style, cqlFilter, featureTypeName, sldId, commonAndFilter) {
+    createURL: function(layer, style, cqlFilter, featureTypeName, sldId, commonAndFilter,colors,useRuleFilter) {
         var url = absoluteURIPrefix + this.config.actionbeanUrl;
         if (layer instanceof Array){    
             url = Ext.String.urlAppend(url, "layer=" + layer.join(","));
@@ -110,7 +111,15 @@ Ext.define("viewer.SLD", {
         }if (sldId!==null){
             url = Ext.String.urlAppend(url, "id=" + sldId);
         }if (commonAndFilter){
-            url = Ext.String.urlAppend(url, "commonAndFilter="+commonAndFilter);
+            url = Ext.String.urlAppend(url, "commonAndFilter="+encodeURIComponent(commonAndFilter));
+        }if(colors){
+            if (colors instanceof Array){
+                colors= colors.join(",");
+            }            
+            url = Ext.String.urlAppend(url, "color="+encodeURIComponent(colors));
+            
+        }if (useRuleFilter){
+            url = Ext.String.urlAppend(url, "useRuleFilter=true");
         }
         url = Ext.String.urlAppend(url, "format=xml");
         return url;
