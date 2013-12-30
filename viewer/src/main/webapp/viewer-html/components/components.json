@@ -72,10 +72,11 @@
         sources: ["StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
-        extPropertyGridConfigs: {
+        configSource: ["ConfigObject.js","StreetView-config.js"]   
+        /*extPropertyGridConfigs: {
             propertyNames: { tooltip: 'Tooltip' },
             source: { tooltip: 'Streetview' }
-        }
+        }*/
     },
     
     {

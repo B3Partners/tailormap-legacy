@@ -24,6 +24,9 @@ Ext.define ("viewer.components.tools.StreetView",{
     extend: "viewer.components.Component",
     config:{
         name: "Street View",
+        width:null,
+        height:null,
+        usePopup:null,
         title: "",
         titlebarIcon : "",
         tooltip : ""
@@ -41,6 +44,15 @@ Ext.define ("viewer.components.tools.StreetView",{
         viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
         if(conf.title === null || conf.title === undefined){
             conf.title = "Streetview";
+        }
+        if(conf.usePopup === null || conf.usePopup === undefined){
+            conf.usePopup = false;
+        }
+        if(conf.height === null || conf.height === undefined){
+            conf.height = "600";
+        }
+        if(conf.width === null || conf.width === undefined){
+            conf.width = "600";
         }
         this.initConfig(conf);   
         
@@ -92,7 +104,11 @@ Ext.define ("viewer.components.tools.StreetView",{
         var newUrl = ""+this.url;
         newUrl=newUrl.replace(/\[x\]/g, point.x);
         newUrl=newUrl.replace(/\[y\]/g, point.y);
-        window.open(newUrl);
+        if(this.usePopup){        
+            window.open(newUrl,'name','height='+this.height + ',width=' + this.width);
+        }else{
+             window.open(newUrl);
+        }
     },
     transformLatLon : function(x,y){
         var dest = new Proj4js.Proj("EPSG:4236");
