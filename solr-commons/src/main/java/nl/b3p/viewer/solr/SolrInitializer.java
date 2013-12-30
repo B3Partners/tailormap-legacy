@@ -94,8 +94,10 @@ public class SolrInitializer implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        server.shutdown();
-        log.debug("SolrInitializer destroyed");
+        if(server != null){
+            server.shutdown();
+            log.debug("SolrInitializer destroyed");
+        }
     }
 
     private boolean isCorrectDir(File f) {
