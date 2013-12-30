@@ -76,6 +76,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 checked: config.showLeafIcon!==undefined? config.showLeafIcon:true,
                 value: true,
                 labelWidth:me.labelWidth
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Algemeen icoon voor kaart(groep) tonen',
+                inputValue: true,
+                name: 'showNodeIcon',
+                checked: config.showNodeIcon!==undefined? config.showNodeIcon:true,
+                value: true,
+                labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
                 fieldLabel: 'Zoom naar schaal tekst',

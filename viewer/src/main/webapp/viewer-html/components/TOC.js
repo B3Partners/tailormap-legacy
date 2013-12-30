@@ -37,6 +37,7 @@ Ext.define ("viewer.components.TOC",{
         showBaselayers:true,
         title: "Table of Contents",
         showLeafIcon: true,
+        showNodeIcon: true,
         zoomToScaleText: "Zoom to scale",
         expandOnStartup: true,
         toggleAllLayersOnText: 'All layers on',
@@ -217,6 +218,9 @@ Ext.define ("viewer.components.TOC",{
                 serviceId: level.id
             }
         };
+        if(!this.showNodeIcon){
+            treeNodeLayer.iconCls='no_treenode_icon';
+        }
         if(this.groupCheck){
             treeNodeLayer.checked=  false;
         }
