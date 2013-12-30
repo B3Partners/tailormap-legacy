@@ -415,10 +415,11 @@ Ext.define ("viewer.components.SelectionModule",{
                         }
                         
                         var levels = response.children;
+                        var descriptions = response.descriptions;
                         var levelsToShow = new Array();
                         for(var i = 0 ; i < levels.length ; i ++){
                             var level = levels[i];
-                            var l = me.addLevel(level.id, true, false, false, foundIds);
+                            var l = me.addLevel(level.id, true, false, false, foundIds,descriptions);
                             if(l !== null){
                                 levelsToShow.push(l);
                             }
@@ -1047,7 +1048,7 @@ Ext.define ("viewer.components.SelectionModule",{
         me.insertTreeNode(nodes, rootNode);
     },
 
-    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow) {
+    addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions) {
 
         var me = this;
         if(!Ext.isDefined(me.levels[levelId])) {
@@ -1057,7 +1058,8 @@ Ext.define ("viewer.components.SelectionModule",{
         if(level.background && !showBackgroundLayers) {
             return null;
         }
-        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, !Ext.isDefined(level.children));
+        var description = descriptions ? descriptions[level.id] : null;
+        var treeNodeLayer = me.createNode('n' + level.id, level.name, level.id, !Ext.isDefined(level.children), undefined,description);
         treeNodeLayer.type = 'level';
         // Create a leaf node when a level has layers (even if it has children)
         if(Ext.isDefined(level.layers)) {
@@ -1071,7 +1073,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 for(var i = 0 ; i < level.children.length; i++) {
                     var child = level.children[i];
                     if(!childrenIdsToShow || me.containsId(child,childrenIdsToShow)){
-                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow);
+                        var l = me.addLevel(child, showChildren, showLayers, showBackgroundLayers,childrenIdsToShow,descriptions);
                         if(l !== null) {
                             nodes.push(l);
                         }
@@ -1125,9 +1127,9 @@ Ext.define ("viewer.components.SelectionModule",{
         return treeNodeLayer;
     },
     
-    createNode: function (nodeid, nodetext, serviceid, leaf, expanded) {
+    createNode: function (nodeid, nodetext, serviceid, leaf, expanded,description) {
         if(typeof expanded === "undefined") expanded = false;
-        return {
+        var node =  {
             text: nodetext,
             name: nodetext,
             id: nodeid,
@@ -1139,6 +1141,10 @@ Ext.define ("viewer.components.SelectionModule",{
                 service: serviceid
             }
         };
+        if(description){
+            node["qtip"] = description.description;
+        }
+        return node;
     },
 
     insertTreeNode: function(node, root, autoExpand) {

@@ -19,9 +19,13 @@ package nl.b3p.viewer.stripes;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigInteger;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 import net.sourceforge.stripes.action.*;
@@ -45,6 +49,7 @@ import nl.b3p.csw.jaxb.filter.SortBy;
 import nl.b3p.csw.server.CswServable;
 import nl.b3p.csw.server.GeoNetworkCswServer;
 import nl.b3p.csw.util.OnlineResource;
+import nl.b3p.csw.util.Protocol;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
@@ -59,6 +64,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.util.Version;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 
 import org.json.*;
@@ -192,10 +198,29 @@ public class CatalogSearchActionBean implements ActionBean {
         CswClient client = new CswClient(server);
         try {
             OutputBySearch output = client.search(new InputBySearch(createAdvancedCswRequest(q, advancedString, advancedProperty, null, maxRecords, null)));
-            List<OnlineResource> list = output.getResourcesFlattened();
-            List<Layer> layers = getLayers(list);
-            List<ApplicationLayer> appLayers = getAppLayers(layers);
-            List<Level> levels = getLevels(appLayers);
+            List<Element> els = output.getSearchResults();
+            List<Protocol> prots = new ArrayList();
+            prots.add(Protocol.WMS);
+            List<OnlineResource> list = new ArrayList();
+            for (Iterator<Element> it = els.iterator(); it.hasNext();) {
+                Element element = it.next();
+                Map<URI, List<OnlineResource>> orMap = output.getResourcesMap(element, prots);
+                Set<URI> uris = orMap.keySet();
+                for (Iterator<URI> uriIt = uris.iterator(); uriIt.hasNext();) {
+                    URI uri = uriIt.next();
+                    List<OnlineResource> orList = orMap.get(uri);
+                    list.addAll(orList);
+                }
+            }
+            Map<Layer, String> descriptionsByLayer = new HashMap();
+            List<Layer> layers = getLayers(list,descriptionsByLayer,output);
+            
+            Map<ApplicationLayer, String> descriptionsByApplayer = new HashMap();
+            List<ApplicationLayer> appLayers = getAppLayers(layers,descriptionsByApplayer, descriptionsByLayer);
+            
+            Map<Level, String> descriptionsByLevel = new HashMap();
+            List<Level> levels = getLevels(appLayers,descriptionsByApplayer,descriptionsByLevel);
+           
             JSONArray found = new JSONArray();
             for (Level level : levels) {
                 JSONObject obj = level.toJSONObject(false, application, context.getRequest());
@@ -206,9 +231,20 @@ public class CatalogSearchActionBean implements ActionBean {
             for (Level child : children) {
                 childs.put(child.toJSONObject(false, application, context.getRequest()));
             }
+
+            Set<Level> levelDesc = descriptionsByLevel.keySet();
+            JSONObject descriptions = new JSONObject();
+            for (Iterator<Level> LevelIterator = levelDesc.iterator(); LevelIterator.hasNext();) {
+                Level level = LevelIterator.next();
+                JSONObject obj = new JSONObject();
+                obj.put("level", level.getId());
+                obj.put("description", descriptionsByLevel.get(level));
+                descriptions.put(""+level.getId(),obj);
+            }
             JSONObject results = new JSONObject();
             results.put("found", found);
             results.put("children", childs);
+            results.put("descriptions", descriptions);
             json.put("results", results);    
             json.put("success", Boolean.TRUE);
         } catch (IOException ex) {
@@ -224,19 +260,22 @@ public class CatalogSearchActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
     
-    private List<Level> getLevels(List<ApplicationLayer> appLayers){
+    private List<Level> getLevels(List<ApplicationLayer> appLayers,Map<ApplicationLayer, String> descriptionsByApplayer,Map<Level, String> descriptionsByLevel){
         List<Level> foundLevels = new ArrayList();
         Level root = application.getRoot();
         for (ApplicationLayer applicationLayer : appLayers) {
             Level l =root.getParentInSubtree(applicationLayer);
             if(l != null){
                 foundLevels.add(l);
+                if(descriptionsByApplayer.containsKey(applicationLayer)){
+                    descriptionsByLevel.put(l, descriptionsByApplayer.get(applicationLayer));
+                }
             }
         }
         return foundLevels;
     }
     
-    private List<ApplicationLayer> getAppLayers(List<Layer> layers){
+    private List<ApplicationLayer> getAppLayers(List<Layer> layers,Map<ApplicationLayer, String> descriptionsByApplayer, Map<Layer, String> descriptionsByLayer){
         EntityManager em = Stripersist.getEntityManager();
         List<ApplicationLayer> foundAppLayers = new ArrayList();
         Level root = application.getRoot();
@@ -245,6 +284,9 @@ public class CatalogSearchActionBean implements ActionBean {
             for (ApplicationLayer applicationLayer : appLayers) {
                 if(root.containsLayerInSubtree(applicationLayer)){
                     foundAppLayers.add(applicationLayer);
+                    if(descriptionsByLayer.containsKey(layer)){
+                        descriptionsByApplayer.put(applicationLayer, descriptionsByLayer.get(layer));
+                    }
                 }
                 
             }
@@ -252,7 +294,7 @@ public class CatalogSearchActionBean implements ActionBean {
         return foundAppLayers;
     }
     
-    private List<Layer> getLayers(List<OnlineResource> lijst){
+    private List<Layer> getLayers(List<OnlineResource> lijst,Map<Layer, String> descriptions,OutputBySearch output){
         EntityManager em = Stripersist.getEntityManager();
         List<Layer> foundLayers = new ArrayList();
         for (OnlineResource resource : lijst) {
@@ -268,6 +310,13 @@ public class CatalogSearchActionBean implements ActionBean {
                         for (Layer layer : layers) {
                             if(!layer.isVirtual()){
                                 if (layer.getName().equalsIgnoreCase(layerName)) {
+                                    try {
+                                        String abstractText = output.getAbstractText(resource.getMetadata());
+                                        descriptions.put(layer, abstractText);
+                                        
+                                    } catch (JDOMException ex) {
+                                    }
+                                    
                                     foundLayers.add(layer);
                                 }
                             }
