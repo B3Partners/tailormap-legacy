@@ -28,6 +28,9 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     useWMSGetFeatureInfo:null,
     active: false,
     layersToAdd:null,
+    config: {
+        maxFeatures: 1000
+    },
     /**
      * Constructor
      * @param conf the configuration object
@@ -79,7 +82,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                         drillDown: true,
                         queryVisible: true,
                         infoFormat: this.wmsGetFeatureInfoFormat,
-                        layers : this.layersToAdd
+                        layers : this.layersToAdd,
+                        maxFeatures: this.getMaxFeatures()
                     });  
                     
                 this.wmsGetFeatureInfoControl.handleResponse = handleResponse;
