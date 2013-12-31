@@ -50,6 +50,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 labelWidth: me.labelWidth
             },{
                 xtype: 'checkbox',
+                fieldLabel:  "Ga na gebruik naar de eerste tool",
+                inputValue: false,
+                name: 'nonSticky',
+                checked: config.nonSticky !== undefined ? config.nonSticky : false,
+                value: false,
+                labelWidth: me.labelWidth
+            },{
+                xtype: 'checkbox',
                 fieldLabel: "Gebruik pop-up voor streetview",
                 inputValue: false,
                 name: 'usePopup',

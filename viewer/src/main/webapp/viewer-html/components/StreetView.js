@@ -29,6 +29,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         useMarker:null,
         usePopup:null,
         title: "",
+        nonSticky:null,
         titlebarIcon : "",
         tooltip : ""
     },
@@ -44,7 +45,6 @@ Ext.define ("viewer.components.tools.StreetView",{
     popupWindow:null,
     url: "",
     constructor: function (conf){        
-        viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
         if(conf.title === null || conf.title === undefined){
             conf.title = "Streetview";
         }
@@ -60,6 +60,10 @@ Ext.define ("viewer.components.tools.StreetView",{
         if(conf.width === null || conf.width === undefined){
             conf.width = "600";
         }
+        if(conf.nonSticky === null || conf.nonSticky === undefined){
+            conf.nonSticky = false;
+        }
+        viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
 
         this.markerName = this.id + "MARKER";
@@ -84,6 +88,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         
         this.button= this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
+            id:this.getName(),
             name: this.getName(),
             iconUrl_up: this.iconUrl_up,
             iconUrl_over: this.iconUrl_over,
@@ -122,6 +127,9 @@ Ext.define ("viewer.components.tools.StreetView",{
            }
         }else{
             window.open(newUrl);
+        }
+        if(this.nonSticky){
+            this.viewerController.mapComponent.activateTool(null,true);
         }
     },
     transformLatLon : function(x,y){
