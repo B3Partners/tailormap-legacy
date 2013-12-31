@@ -450,6 +450,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     }
                 }
             }
+            var me = this;
             var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
@@ -457,6 +458,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     measureValueDiv.style.display="none";
                 }
                 this.cancel();
+                if(conf.nonSticky){
+                    me.activateTool(null,true);
+                }
             });
             measureTool.getFrameworkTool().events.register('deactivate',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
@@ -678,12 +682,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         removeMap.remove();
         this.maps=new Array();
     },
-    activateTool : function (id){
+    activateTool : function (id,firstIfNull){
         var tools = this.tools;
         for(var i = 0 ; i < tools.length ; i++){
-            tools[i].getFrameworkTool().deactivate();
+            var t = tools[i];
+            t.getFrameworkTool().deactivate();
         }
         var tool = this.getTool(id);
+        if(firstIfNull){
+            tool = tools[0];
+        }
         tool.getFrameworkTool().activate();
     },
     /**

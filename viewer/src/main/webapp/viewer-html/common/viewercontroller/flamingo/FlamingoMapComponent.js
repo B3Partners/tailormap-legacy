@@ -415,7 +415,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      * See @link MapComponent.activateTool
      */
-    activateTool : function (id){
+    activateTool : function (id,firstIfNull){
+        if(firstIfNull){
+            id = this.tools[0].id;
+        }
         this.viewerObject.call(this.toolGroupId, "setTool", id);
     },
     /**

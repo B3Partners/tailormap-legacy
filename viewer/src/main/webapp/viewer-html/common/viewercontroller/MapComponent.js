@@ -326,7 +326,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
  * Activates the tool
  * @param id Id of the tool to be activated
  */
-    activateTool : function (id){
+    activateTool : function (id,firstIfNull){
         Ext.Error.raise({msg: "MapComponent.activateTool() Not implemented! Must be implemented in sub-class"});
     },
     /**
