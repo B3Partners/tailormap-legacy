@@ -26,6 +26,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         name: "Street View",
         width:null,
         height:null,
+        useMarker:null,
         usePopup:null,
         title: "",
         titlebarIcon : "",
@@ -38,7 +39,9 @@ Ext.define ("viewer.components.tools.StreetView",{
     iconUrl_sel: null,
     iconUrl_dis: null,
     toolMapClick: null,
+    markerName:null,
     button: null,
+    popupWindow:null,
     url: "",
     constructor: function (conf){        
         viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
@@ -48,6 +51,9 @@ Ext.define ("viewer.components.tools.StreetView",{
         if(conf.usePopup === null || conf.usePopup === undefined){
             conf.usePopup = false;
         }
+        if(conf.useMarker === null || conf.useMarker === undefined){
+            conf.useMarker = false;
+        }
         if(conf.height === null || conf.height === undefined){
             conf.height = "600";
         }
@@ -55,6 +61,8 @@ Ext.define ("viewer.components.tools.StreetView",{
             conf.width = "600";
         }
         this.initConfig(conf);   
+
+        this.markerName = this.id + "MARKER";
         
         this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
         this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/streetview/streetview_over.png";
@@ -101,13 +109,19 @@ Ext.define ("viewer.components.tools.StreetView",{
         var x = coords.x;
         var y = coords.y;
         var point = this.transformLatLon(x,y);
+        if(this.useMarker){
+            this.viewerController.mapComponent.getMap().setMarker(this.markerName,x,y);
+        }
         var newUrl = ""+this.url;
         newUrl=newUrl.replace(/\[x\]/g, point.x);
         newUrl=newUrl.replace(/\[y\]/g, point.y);
         if(this.usePopup){        
-            window.open(newUrl,'name','height='+this.height + ',width=' + this.width);
+           this.popupWindow = window.open(newUrl,'name','height='+this.height + ',width=' + this.width);
+           if(window.focus){
+               this.popupWindow.focus();
+           }
         }else{
-             window.open(newUrl);
+            window.open(newUrl);
         }
     },
     transformLatLon : function(x,y){
@@ -133,6 +147,9 @@ Ext.define ("viewer.components.tools.StreetView",{
      * When the button is hit and toggled false
      */
     buttonUp: function(button,object){
+        if(this.useMarker){
+            this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
         this.toolMapClick.deactivateTool();
     },    
     /**
@@ -145,6 +162,9 @@ Ext.define ("viewer.components.tools.StreetView",{
      * raised when the tool is deactivated.
      */
     onDeactivate: function(){
+        if(this.useMarker){
+            this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
         this.button.setSelectedState(false);
     }
 });

@@ -42,6 +42,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             
             },{
                 xtype: 'checkbox',
+                fieldLabel: "Zet een marker na klikken",
+                inputValue: false,
+                name: 'useMarker',
+                checked: config.useMarker !== undefined ? config.useMarker : false,
+                value: false,
+                labelWidth: me.labelWidth
+            },{
+                xtype: 'checkbox',
                 fieldLabel: "Gebruik pop-up voor streetview",
                 inputValue: false,
                 name: 'usePopup',
