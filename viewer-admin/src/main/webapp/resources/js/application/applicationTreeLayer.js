@@ -308,6 +308,11 @@ Ext.onReady(function() {
                     "margin-top": "5px"
                 },
                 items: [{
+                    xtype: 'label',
+                    text: 'Kies een attribuut waarvan de ingelogde username het \n\
+zelfde moet zijn als een gebruiker de betreffende feature mag wijzigen. Indien leeg wordt\n\
+hier niet op gecontroleerd.'
+                },{
                     xtype: 'combobox',                    
                     store: attributeStore,
                     displayField: 'name',
