@@ -359,6 +359,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/components/Overview.js</param>
                                 <!-- Flamingo Tools -->
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/tools/JSButton.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/tools/FlamingoMeasureArea.js</param>
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/flamingo-min.js</outputFile>
                         </compilation>

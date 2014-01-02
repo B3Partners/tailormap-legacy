@@ -196,6 +196,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/components/Overview.js"></script>
                         
                         <script type="text/javascript" src="${scriptDir}/tools/JSButton.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/FlamingoMeasureArea.js"></script>
                     </c:otherwise>
                 </c:choose>
 

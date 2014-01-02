@@ -24,7 +24,7 @@
 Ext.define ("viewer.components.tools.Measure.Line",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "pan"
+        name: "measureline"
     },
     constructor: function (conf){        
         viewer.components.tools.Measure.Line.superclass.constructor.call(this, conf);
@@ -37,7 +37,7 @@ Ext.define ("viewer.components.tools.Measure.Line",{
 Ext.define ("viewer.components.tools.Measure.Area",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "pan"
+        name: "measurearea"
     },
     constructor: function (conf){        
         viewer.components.tools.Measure.Area.superclass.constructor.call(this, conf);

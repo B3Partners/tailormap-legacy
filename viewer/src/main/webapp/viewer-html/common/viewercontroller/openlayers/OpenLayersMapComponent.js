@@ -450,10 +450,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                     }
                 }
             }
+
             var me = this;
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
-            var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
             var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
+            var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
+            if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
+                measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
+                
+            }
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
                 if (measureValueDiv){                
