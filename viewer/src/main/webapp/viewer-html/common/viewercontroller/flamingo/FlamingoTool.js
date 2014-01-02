@@ -99,7 +99,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
             return "ToolPan"
         }else if (toolType == viewer.viewercontroller.controller.Tool.SUPERPAN){
             return "ToolSuperPan";
-        }else if (toolType == viewer.viewercontroller.controller.Tool.MEASURE){
+        }else if (toolType == viewer.viewercontroller.controller.Tool.MEASURELINE){
             return "ToolMeasure";
         }else if (toolType == viewer.viewercontroller.controller.Tool.DEFAULT){
             return "ToolDefault";

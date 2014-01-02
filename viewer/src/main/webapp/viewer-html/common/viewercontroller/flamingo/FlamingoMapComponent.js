@@ -239,6 +239,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
             conf.toggle=false;
             tool = Ext.create("viewer.components.tools.JSButton",conf);
+        }else if( conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
+            tool = Ext.create("viewer.components.tools.FlamingoMeasureArea",conf);
         }else{
             tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
         }

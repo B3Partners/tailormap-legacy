@@ -19,16 +19,30 @@
  * Creates a MapComponent Tool with the given configuration by calling createTool 
  * of the MapComponent
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.tools.Measure",{
+Ext.define ("viewer.components.tools.Measure.Line",{
     extend: "viewer.components.tools.Tool",
     config:{
-        name: "pan"
+        name: "measureline"
     },
     constructor: function (conf){        
-        viewer.components.tools.Measure.superclass.constructor.call(this, conf);
+        viewer.components.tools.Measure.Line.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.MEASURE;        
+        conf.type = viewer.viewercontroller.controller.Tool.MEASURELINE;        
+        this.initTool(conf);
+        return this;
+    }
+});
+Ext.define ("viewer.components.tools.Measure.Area",{
+    extend: "viewer.components.tools.Tool",
+    config:{
+        name: "measurearea"
+    },
+    constructor: function (conf){        
+        viewer.components.tools.Measure.Area.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        conf.type = viewer.viewercontroller.controller.Tool.MEASUREAREA;        
         this.initTool(conf);
         return this;
     }

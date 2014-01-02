@@ -187,9 +187,34 @@
         }
     },  
     {
-        className: "viewer.components.tools.Measure",
-        name: "Measure",
-        shortName: "Ms",
+        className: "viewer.components.tools.Measure.Line",
+        name: "Measure line",
+        shortName: "ML",
+        sources: ["tools/Tool.js","tools/Measure.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {
+                tooltip: "Tooltip",
+                units: "Eenheden",
+                magicnumber: "Delen door",
+                decimals: "Decimalen"
+            },
+            source: {
+                tooltip: "Measure",
+                units: "",
+                decimals: 2,
+                magicnumber: ""  
+            }
+        }
+    },  
+    {
+        className: "viewer.components.tools.Measure.Area",
+        name: "Measure area",
+        shortName: "MA",
         sources: ["tools/Tool.js","tools/Measure.js"],
         closureCompilerSafe: true,
 
