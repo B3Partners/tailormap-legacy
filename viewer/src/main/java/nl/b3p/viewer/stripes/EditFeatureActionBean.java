@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
@@ -125,6 +126,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     error = "U heeft geen rechten om deze kaartlaag te bewerken";
                     break;
                 }
+                
                 layer = appLayer.getService().getLayer(appLayer.getLayerName());
 
                 if(layer == null) {
@@ -146,6 +148,9 @@ public class EditFeatureActionBean  implements ActionBean {
                 store = (SimpleFeatureStore)fs;
                 
                 jsonFeature = new JSONObject(feature);
+                if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
+                     error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                }
                 String fid = jsonFeature.optString(FID, null);
 
                 if(fid == null) {
@@ -267,5 +272,17 @@ public class EditFeatureActionBean  implements ActionBean {
         } finally {
             transaction.close();
         }                
+    }
+
+    private boolean isFeatureWriteAuthorized(ApplicationLayer appLayer, JSONObject jsonFeature, HttpServletRequest request) {
+        if (appLayer.getDetails()!=null && appLayer.getDetails().containsKey("editfeature.usernameAttribute")){
+            String attr=appLayer.getDetails().get("editfeature.usernameAttribute").getValue();
+
+            String featureUsername=jsonFeature.optString(attr);
+            if (featureUsername!=null && featureUsername.equals(request.getRemoteUser())){
+                return true;
+            }
+        }
+        return false;
     }
 }
