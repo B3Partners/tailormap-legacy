@@ -104,7 +104,7 @@ Ext.define("viewer.FeatureInfo", {
         
         var params = {featureInfo: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(queries)};
         if(queries.length > 0) {
-            this.viewerController.mapComponent.setWaitingCursor(true);
+            this.viewerController.mapComponent.setWaitingCursor(true, "wait");
             this.featureInfoInternal(params, successFunction, failureFunction);
         }
     },    

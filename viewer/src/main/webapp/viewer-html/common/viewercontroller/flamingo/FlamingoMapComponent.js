@@ -756,9 +756,9 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         return this.viewerObject.callMethod(this.flamingoId,"getHeight");
     },
     /**
-     * @see viewer.viewercontroller.MapComponent#setWaitingCursor
+     * @see viewer.viewercontroller.MapComponent#setCursor
      */
-    setWaitingCursor: function(showWaitingCursor) {
+    setCursor: function(show,cursor) {
         // TODO: set waiting cursor for Flamingo map
     },
     /**

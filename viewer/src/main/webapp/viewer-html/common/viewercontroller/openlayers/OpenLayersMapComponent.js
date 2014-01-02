@@ -721,13 +721,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return null;
     },
     /**
-     * @see viewer.viewercontroller.MapComponent#setWaitingCursor
+     * @see viewer.viewercontroller.MapComponent#setCursor
      */
-    setWaitingCursor: function(showWaitingCursor) {
-        if(showWaitingCursor) {
-            OpenLayers.Element.addClass(this.getMap().getFrameworkMap().viewPortDiv, "olCursorWait");
+    setCursor: function(show,cursor) {
+        if(show) {
+            Ext.get(this.domId).dom.style.cursor = cursor;
         } else {
-            OpenLayers.Element.removeClass(this.getMap().getFrameworkMap().viewPortDiv, "olCursorWait");
+            Ext.get(this.domId).dom.style.cursor = "default";
         }
     }
     

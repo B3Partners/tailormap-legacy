@@ -163,7 +163,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             this.setMaptipEnabled(true);
         }
         this.callParent(arguments);        
-        this.viewerController.mapComponent.setWaitingCursor(false);
+        this.viewerController.mapComponent.setCursor(false);
     },
     /**
      *Called when extent is changed, recalculate the position

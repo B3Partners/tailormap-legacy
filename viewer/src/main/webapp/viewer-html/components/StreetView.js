@@ -150,11 +150,14 @@ Ext.define ("viewer.components.tools.StreetView",{
      */
     buttonDown : function(button,object){        
         this.toolMapClick.activateTool();
+        
+        this.viewerController.mapComponent.setCursor(true, "crosshair");
     },
     /**
      * When the button is hit and toggled false
      */
     buttonUp: function(button,object){
+        this.viewerController.mapComponent.setCursor(false);
         if(this.useMarker){
             this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
         }
@@ -164,6 +167,7 @@ Ext.define ("viewer.components.tools.StreetView",{
      * raised when the tool is activated.
      */    
     onActivate: function (){
+        this.viewerController.mapComponent.setCursor(true, "crosshair");
         this.button.setSelectedState(true);
     },
     /**
@@ -174,5 +178,6 @@ Ext.define ("viewer.components.tools.StreetView",{
             this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
         }
         this.button.setSelectedState(false);
+        this.viewerController.mapComponent.setCursor(false);
     }
 });
