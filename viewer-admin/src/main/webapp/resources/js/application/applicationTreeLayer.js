@@ -70,7 +70,7 @@ Ext.onReady(function() {
     var filterAllowed = false;
     if(Ext.isArray(attributes) && attributes.length > 0) {
         editAllowed = true;
-        filterAllowed = true;
+        filterAllowed = true;        
         Ext.Array.each(attributes, function(attribute) {
             var name = attribute.alias || attribute.name;
             if(editable) {
@@ -284,6 +284,47 @@ Ext.onReady(function() {
             })));
             collapsed = true;
         });
+        
+        if (editAllowed && editable){
+            var data =[];
+            Ext.Array.each(attributes, function(attribute) {
+                data.push({
+                    name: attribute.alias || attribute.name,
+                    value: attribute.name
+                });
+            });
+            var attributeStore=Ext.create('Ext.data.Store', {
+                fields: ['value', 'name'],
+                data: data
+            });
+            var usernameAttrValue="";
+            if (Ext.get('details_editfeature_usernameAttribute')){
+                usernameAttrValue=Ext.get('details_editfeature_usernameAttribute').getValue();
+            }
+            editPanelItems.push({
+                xtype: 'panel',
+                title: 'Autorisatie',
+                style: {
+                    "margin-top": "5px"
+                },
+                items: [{
+                    xtype: 'label',
+                    text: 'Kies een attribuut waarvan de ingelogde username het \n\
+zelfde moet zijn als een gebruiker de betreffende feature mag wijzigen. Indien leeg wordt\n\
+hier niet op gecontroleerd.'
+                },{
+                    xtype: 'combobox',                    
+                    store: attributeStore,
+                    displayField: 'name',
+                    queryMode: 'local',
+                    hideMode: 'visibility',
+                    fieldLabel: 'Attribuut',
+                    id: 'ext_editfeature_usernameAttribute',
+                    labelWidth: 150,
+                    value: usernameAttrValue 
+                }]
+            });
+        }
     }
     var tabconfig = [{
         contentEl:'settings-tab', 
@@ -409,6 +450,9 @@ Ext.onReady(function() {
         var htmlEditor = Ext.getCmp('extContextHtmlEditor');
         if(htmlEditor) {
             Ext.get('context_textarea').dom.value = htmlEditor.getValue();
+        }
+        if (Ext.get('details_editfeature_usernameAttribute')){
+            Ext.get('details_editfeature_usernameAttribute').dom.value= Ext.getCmp('ext_editfeature_usernameAttribute').getValue();
         }
     });
     

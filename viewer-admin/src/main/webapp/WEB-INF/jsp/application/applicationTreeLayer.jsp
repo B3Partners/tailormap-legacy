@@ -202,6 +202,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </table>
                 </div>
                 <div id="edit-tab" class="x-hide-display">
+                    <stripes:hidden name="details['editfeature.usernameAttribute']" id="details_editfeature_usernameAttribute"/>
                     <a href="#Edit_Per_Kaartlaag_Help" title="Help" class="helplink"></a>
                     <c:choose>
                         <c:when test="${actionBean.editable}">
