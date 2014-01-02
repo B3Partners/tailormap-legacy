@@ -442,18 +442,18 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                         }
                         var px= this.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
                         measureValueDiv.style.top=px.y+"px";
-                        measureValueDiv.style.left=px.x+10+'px'
+                        measureValueDiv.style.left=px.x+10+'px';
                         measureValueDiv.style.display="block";
                         var measureValueText=document.getElementById('olControlMeasureValueText');
                         var bestLengthTokens=this.getBestLength(evt.parent);
                         measureValueText.innerHTML= bestLengthTokens[0].toFixed(3)+" "+bestLengthTokens[1];
                     }
                 }
-            }
+            };
 
             var me = this;
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
             var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
             if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
                 measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
                 
