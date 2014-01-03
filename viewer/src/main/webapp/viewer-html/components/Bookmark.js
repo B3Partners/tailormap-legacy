@@ -178,18 +178,20 @@ Ext.define ("viewer.components.Bookmark",{
             },
             items: socialButtons
         });
-        formItems.push({ 
-            xtype: 'button',
-            componentCls: 'mobileLarge',
-            margin: '10px 0px 0px 0px',
-            text: 'Toevoegen aan favorieten',
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.addToFavorites
+        if(Ext.ieVersion != 0){
+            formItems.push({ 
+                xtype: 'button',
+                componentCls: 'mobileLarge',
+                margin: '10px 0px 0px 0px',
+                text: 'Toevoegen aan favorieten',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: this.addToFavorites
+                    }
                 }
-            }
-        });
+            });
+        }
         formItems.push({ 
             xtype: 'button',
             componentCls: 'mobileLarge',
