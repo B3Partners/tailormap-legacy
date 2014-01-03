@@ -354,8 +354,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var appLayer = appLayers[key];
             if(appLayer.filter){
                 var mapLayer = this.getLayer(appLayer);
-                mapLayer.setQuery(appLayer.filter);
-                this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+                if(mapLayer){
+                    mapLayer.setQuery(appLayer.filter);
+                    this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+                }
             }
         }
     },
