@@ -369,6 +369,5 @@ public class SelectedContentCache {
     
     public static void setApplicationCacheDirty(Application app, Boolean dirty){
         app.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
-        Stripersist.getEntityManager().getTransaction().commit();
     }
 }
