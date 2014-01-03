@@ -102,9 +102,9 @@ Ext.define("viewer.SLD", {
             }
         }if(cqlFilter!==null){
             if (cqlFilter instanceof Array){
-                url = Ext.String.urlAppend(url, "filter=" + JSON.stringify(cqlFilter));
+                url = Ext.String.urlAppend (url,"filter=" + encodeURIComponent(JSON.stringify(cqlFilter)));
             }else{
-                url = Ext.String.urlAppend(url, "filter=" + cqlFilter);
+                url = Ext.String.urlAppend(url, "filter=" + encodeURIComponent(cqlFilter));
             }
         }if (featureTypeName!==null){
             url = Ext.String.urlAppend(url, "featureTypeName=" + featureTypeName);

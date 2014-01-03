@@ -37,6 +37,7 @@ import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.emf.common.util.URI;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.ecql.ECQL;
@@ -252,9 +253,17 @@ public class SldActionBean implements ActionBean {
             Filter andFilter = null;
             Filter orFilter = null;
             if (commonAndFilter!=null){
+                //GeoServer encodes the sld url even if its a valid url
+                if (commonAndFilter.indexOf("%")>0){
+                    commonAndFilter = URI.decode(commonAndFilter);  
+                }
                 andFilter = ECQL.toFilter(commonAndFilter);
             }
             if (commonOrFilter!=null){
+                //GeoServer encodes the sld url even if its a valid url
+                if (commonOrFilter.indexOf("%")>0){
+                    commonOrFilter = URI.decode(commonOrFilter);
+                }
                 orFilter = ECQL.toFilter(commonOrFilter);
             }
             if(layers != null) {
