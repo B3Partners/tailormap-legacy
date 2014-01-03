@@ -201,13 +201,15 @@
                 tooltip: "Tooltip",
                 units: "Eenheden",
                 magicnumber: "Delen door",
-                decimals: "Decimalen"
+                decimals: "Decimalen",
+                nonSticky: "Ga na gebruik naar de eerste tool"
             },
             source: {
                 tooltip: "Measure",
                 units: "",
                 decimals: 2,
-                magicnumber: ""  
+                magicnumber: "",
+                nonSticky: false
             }
         }
     },  
