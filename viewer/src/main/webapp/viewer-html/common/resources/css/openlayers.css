@@ -85,7 +85,7 @@
 }
 
 .olControlPanel .olControlMeasureAreaItemActive{
-    background: url("../../../components/resources/images/measureArea/ruler_square.png");
+    background: url("../../../components/resources/images/measureArea/ruler_square_over.png");
     background-repeat: no-repeat;
 }
 .olControlPanel .olControlMeasureAreaItemInactive{
