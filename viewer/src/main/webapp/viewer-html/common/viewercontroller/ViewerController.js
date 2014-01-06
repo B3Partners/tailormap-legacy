@@ -1355,6 +1355,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
                 appLayers = this.loadBookmarkLayers(value);
                 layersLoaded = true;
+            }else if(key ==="selectedContent"){
+                selectedContent = value;
             }else if(key === "extent"){
                 var coords = value;
                 var newExtent = new Object();
@@ -1511,11 +1513,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         var levelOrder = [];
         for (var i=0; i < this.app.selectedContent.length; i++){
-            levelOrder.push(this.app.selectedContent[i].id);
+            var levelId = this.app.selectedContent[i].id;
+            levelOrder.push(levelId);
         }
+        
         paramJSON.params.push({
             name: "levelOrder",
             value: levelOrder
+        });
+        
+        paramJSON.params.push({
+            name: "selectedContent",
+            value: this.app.selectedContent
         });
         return paramJSON;
     },
