@@ -97,11 +97,11 @@
         </attributes>
     </entity>
     
-       <entity class="nl.b3p.viewer.config.services.SolrConfiguration">
+       <entity class="nl.b3p.viewer.config.services.SolrConf">
         <attributes>
             <id name="id">
-                <generated-value strategy="SEQUENCE" generator="ft_solrconfiguration_key_id_seq"/>
-                <sequence-generator name="ft_solrconfiguration_key_id_seq" sequence-name="ft_solrconfiguration_key_id_seq"/>
+                <generated-value strategy="SEQUENCE" generator="ft_solrconf_key_id_seq"/>
+                <sequence-generator name="ft_solrconf_key_id_seq" sequence-name="ft_solrconf_key_id_seq"/>
             </id>
         </attributes>
     </entity>

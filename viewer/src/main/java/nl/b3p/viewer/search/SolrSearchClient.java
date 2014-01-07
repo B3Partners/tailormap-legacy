@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import nl.b3p.viewer.config.services.SolrConfiguration;
+import nl.b3p.viewer.config.services.SolrConf;
 import nl.b3p.viewer.solr.SolrInitializer;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -47,7 +47,7 @@ public class SolrSearchClient extends SearchClient {
     private JSONObject config;
     private List<Long> visibleLayers;
     
-    private Map<Long, SolrConfiguration> configMap = new HashMap();
+    private Map<Long, SolrConf> configMap = new HashMap();
     
     @Override
     public SearchResult search(String term) {
@@ -230,7 +230,7 @@ public class SolrSearchClient extends SearchClient {
         Long longValue = new Long(id);
         if(!configMap.containsKey(longValue)){
             EntityManager em = Stripersist.getEntityManager();
-            SolrConfiguration configuration = em.find(SolrConfiguration.class, longValue);
+            SolrConf configuration = em.find(SolrConf.class, longValue);
             configMap.put(longValue,configuration);
             return configuration.getName();
         }

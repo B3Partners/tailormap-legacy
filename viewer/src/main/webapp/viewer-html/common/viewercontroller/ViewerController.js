@@ -354,8 +354,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var appLayer = appLayers[key];
             if(appLayer.filter){
                 var mapLayer = this.getLayer(appLayer);
-                mapLayer.setQuery(appLayer.filter);
-                this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+                if(mapLayer){
+                    mapLayer.setQuery(appLayer.filter);
+                    this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+                }
             }
         }
     },
@@ -1353,6 +1355,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
                 appLayers = this.loadBookmarkLayers(value);
                 layersLoaded = true;
+            }else if(key ==="selectedContent"){
+                selectedContent = value;
             }else if(key === "extent"){
                 var coords = value;
                 var newExtent = new Object();
@@ -1509,11 +1513,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         var levelOrder = [];
         for (var i=0; i < this.app.selectedContent.length; i++){
-            levelOrder.push(this.app.selectedContent[i].id);
+            var levelId = this.app.selectedContent[i].id;
+            levelOrder.push(levelId);
         }
+        
         paramJSON.params.push({
             name: "levelOrder",
             value: levelOrder
+        });
+        
+        paramJSON.params.push({
+            name: "selectedContent",
+            value: this.app.selectedContent
         });
         return paramJSON;
     },
