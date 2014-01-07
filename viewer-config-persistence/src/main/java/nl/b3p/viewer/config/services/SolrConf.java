@@ -38,7 +38,7 @@ import org.json.JSONObject;
  * @author Meine Toonen
  */
 @Entity
-public class SolrConfiguration {
+public class SolrConf {
 
     @Id
     private Long id;

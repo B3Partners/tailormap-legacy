@@ -42,7 +42,7 @@ import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.config.services.SolrConfiguration;
+import nl.b3p.viewer.config.services.SolrConf;
 import nl.b3p.viewer.solr.SolrInitializer;
 import nl.b3p.viewer.solr.SolrUpdateJob;
 import nl.b3p.web.WaitPageStatus;
@@ -91,7 +91,7 @@ public class ConfigureSolrActionBean implements ActionBean {
             @Validate(field= "simpleFeatureType"),
             @Validate(field= "name")
     })
-    private SolrConfiguration solrConfiguration;
+    private SolrConf solrConfiguration;
     
     @Validate
     private Long simpleFeatureTypeId;
@@ -120,11 +120,11 @@ public class ConfigureSolrActionBean implements ActionBean {
         this.context = context;
     }
 
-    public SolrConfiguration getSolrConfiguration() {
+    public SolrConf getSolrConfiguration() {
         return solrConfiguration;
     }
 
-    public void setSolrConfiguration(SolrConfiguration solrConfiguration) {
+    public void setSolrConfiguration(SolrConf solrConfiguration) {
         this.solrConfiguration = solrConfiguration;
     }
 
@@ -276,7 +276,7 @@ public class ConfigureSolrActionBean implements ActionBean {
         status = new WaitPageStatus();
         EntityManager em = Stripersist.getEntityManager();
         SolrServer server = SolrInitializer.getServerInstance();
-        solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
+        solrConfiguration = em.find(SolrConf.class, solrConfiguration.getId());
         SolrUpdateJob.insertSolrConfigurationIntoIndex(solrConfiguration, em, status, server);
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
@@ -285,7 +285,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     public Resolution removeFromIndex(){
         EntityManager em = Stripersist.getEntityManager();
         SolrServer server = SolrInitializer.getServerInstance();
-        solrConfiguration = em.find(SolrConfiguration.class, solrConfiguration.getId());
+        solrConfiguration = em.find(SolrConf.class, solrConfiguration.getId());
         SolrUpdateJob.removeSolrConfigurationFromIndex(solrConfiguration, em, server);
         em.getTransaction().commit();
         return new ForwardResolution(EDIT_JSP);
@@ -318,7 +318,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     }
 
     public Resolution newSearchConfig() {
-        solrConfiguration = new SolrConfiguration();
+        solrConfiguration = new SolrConf();
         return new ForwardResolution(EDIT_JSP);
     }
     
@@ -343,9 +343,9 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     public Resolution getGridData() throws JSONException {
         EntityManager em =Stripersist.getEntityManager();
-        List<SolrConfiguration> configs = em.createQuery("FROM SolrConfiguration").getResultList();
+        List<SolrConf> configs = em.createQuery("FROM SolrConf").getResultList();
         JSONArray gridRows = new JSONArray();
-        for (SolrConfiguration solrConfig : configs) {
+        for (SolrConf solrConfig : configs) {
             JSONObject config= solrConfig.toJSON();
             gridRows.put(config);
         }
@@ -358,9 +358,9 @@ public class ConfigureSolrActionBean implements ActionBean {
     
     public Resolution getSearchconfigData() throws JSONException {
         EntityManager em =Stripersist.getEntityManager();
-        List<SolrConfiguration> configs = em.createQuery("FROM SolrConfiguration").getResultList();
+        List<SolrConf> configs = em.createQuery("FROM SolrConf").getResultList();
         JSONArray searchconfigs = new JSONArray();
-        for (SolrConfiguration solrConfig : configs) {
+        for (SolrConf solrConfig : configs) {
             JSONObject config = new JSONObject();
             config.put("id", solrConfig.getId());
             config.put("name", solrConfig.getName());

@@ -28,7 +28,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.config.services.SolrConfiguration;
+import nl.b3p.viewer.config.services.SolrConf;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
@@ -84,8 +84,8 @@ public class SolrUpdateJob implements Job {
                 }
             };
                     
-            List<SolrConfiguration> configs = em.createQuery("FROM SolrConfiguration", SolrConfiguration.class).getResultList();
-            for (SolrConfiguration solrConfiguration : configs) {
+            List<SolrConf> configs = em.createQuery("FROM SolrConf", SolrConf.class).getResultList();
+            for (SolrConf solrConfiguration : configs) {
                 removeSolrConfigurationFromIndex(solrConfiguration, em, server);
                 insertSolrConfigurationIntoIndex(solrConfiguration, em, status,server);
             }
@@ -99,7 +99,7 @@ public class SolrUpdateJob implements Job {
         }
     }
 
-    public static void removeSolrConfigurationFromIndex(SolrConfiguration config, EntityManager em, SolrServer solrServer) {
+    public static void removeSolrConfigurationFromIndex(SolrConf config, EntityManager em, SolrServer solrServer) {
         log.info("Remove documents from SolrConfiguration " + config.getName() + " from index.");
         try {
             solrServer.deleteByQuery("searchConfig:"+config.getId());
@@ -114,7 +114,7 @@ public class SolrUpdateJob implements Job {
         }
     }
     
-    public static void insertSolrConfigurationIntoIndex(SolrConfiguration config, EntityManager em, WaitPageStatus status, SolrServer solrServer, Filter filter) {
+    public static void insertSolrConfigurationIntoIndex(SolrConf config, EntityManager em, WaitPageStatus status, SolrServer solrServer, Filter filter) {
         log.info("Insert SolrConfiguration " + config.getName() + " into index.");
         org.geotools.data.FeatureSource fs = null;
         try {
@@ -215,7 +215,7 @@ public class SolrUpdateJob implements Job {
         }
     }
 
-    public static void insertSolrConfigurationIntoIndex(SolrConfiguration config, EntityManager em, WaitPageStatus status, SolrServer solrServer) {
+    public static void insertSolrConfigurationIntoIndex(SolrConf config, EntityManager em, WaitPageStatus status, SolrServer solrServer) {
         insertSolrConfigurationIntoIndex(config, em, status, solrServer, null);
     }
     

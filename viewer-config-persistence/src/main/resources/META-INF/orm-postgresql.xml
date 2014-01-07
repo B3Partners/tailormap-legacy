@@ -101,7 +101,7 @@
         </attributes>
     </entity>
     
-    <entity class="nl.b3p.viewer.config.services.SolrConfiguration">
+    <entity class="nl.b3p.viewer.config.services.SolrConf">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>

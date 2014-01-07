@@ -1,0 +1,1 @@
+DROP TABLE "SOLR_CONFIGURATION" CASCADE constraints purge;
