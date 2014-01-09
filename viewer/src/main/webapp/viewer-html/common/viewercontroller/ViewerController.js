@@ -301,12 +301,22 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.app.services[service.id] = service;
         }
     },
+            
+    addOrReplaceService: function (service){
+        this.app.services[service.id] = service;
+    },
    
     addAppLayer:function(appLayer) {
        if(this.app.appLayers[appLayer.id] == undefined) {
            this.app.appLayers[appLayer.id] = appLayer;
        }
     },
+            
+    addOrReplaceAppLayer: function(appLayer){
+        this.app.appLayers[appLayer.id] = appLayer;
+    },
+    
+    
    
     counter: 0,
     max: 0,
