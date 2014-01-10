@@ -62,6 +62,16 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                 }]
             },{
+                        xtype: 'checkbox',
+                        boxLabel: 'Laat labels zien voor velden',
+                        name: 'showLabels',
+                        value: true,
+                        inputValue: true,
+                        checked: this.configObject.showLabels !== undefined ? this.configObject.showLabels : true,
+                        style: {
+                            marginRight: "90px"
+                        }
+                },{
                 xtype: 'label',
                 text: 'Toon \'deel\' knoppen in venster',
                 style: {

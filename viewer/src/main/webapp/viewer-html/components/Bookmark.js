@@ -39,10 +39,12 @@ Ext.define ("viewer.components.Bookmark",{
         shareText: "I'd like to share this with #FlamingoMC: ",
         shareTitle: "Sharing",
         showShortUrl: true,
-        showFullUrl: true
+        showFullUrl: true,
+        showLabels: true
     },
     constructor: function (conf){ 
         if(!Ext.isDefined(conf.details.height)) conf.details.height = 200; 
+        if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true; 
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
        
@@ -155,7 +157,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.showFullUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel: 'Bookmark',
+                fieldLabel: this.showLabels ? 'Bookmark' : '',
                 name: 'bookmark',
                 anchor: '100%',
                 id: 'bookmark',
@@ -166,7 +168,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (this.showShortUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel: 'Compact link',
+                fieldLabel:this.showLabels ? 'Compact link' : '',
                 name: 'compactlink',
                 rows:3,
                 anchor: '100%',
