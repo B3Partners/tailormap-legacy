@@ -71,6 +71,9 @@ public class Level implements Comparable{
     @JoinTable(joinColumns=@JoinColumn(name="level_"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
+    
+    
+    private String url;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -152,6 +155,14 @@ public class Level implements Comparable{
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -168,6 +179,7 @@ public class Level implements Comparable{
         o.put("selectedIndex", selectedIndex);
         o.put("background", background);
         o.put("info", info);
+        o.put("url",url);
         
         if(!documents.isEmpty()) {
             JSONArray docs = new JSONArray();
@@ -300,6 +312,10 @@ public class Level implements Comparable{
         copy.setDocuments(new ArrayList<Document>(documents));
         
         copy.setReaders(new HashSet<String>(readers));
+        
+        copy.setInfo(info);
+        
+        copy.setUrl(url);
         
         return copy;
     }

@@ -228,6 +228,10 @@ Ext.define ("viewer.components.TOC",{
             this.addQtip("Informatie over de kaart", 'span_'+levelId);
             treeNodeLayer.layerObj.info = level.info;
         }
+        if(level.url!= undefined){
+            this.addQtip("Informatie over de kaart", 'span_'+levelId);
+            treeNodeLayer.layerObj.url = level.url;
+        }
         
         var childsChecked = 0;
         var totalChilds = 0;
@@ -619,32 +623,7 @@ Ext.define ("viewer.components.TOC",{
         if(node ===undefined){
             node = record.data;
         }
-        var layerName = node.text;
-        if(node.leaf){
-            this.viewerController.layerClicked(node.layerObj);
-        }else if(!node.leaf){
-            if(node.layerObj.info!= undefined){
-                if(this.popup != null){
-                    this.popup.hide();
-                }
-                var config = {
-                    details:{
-                        width : 700,
-                        frame: false,
-                        height: 500
-                    },
-                    title: "Info"
-                };
-                
-                this.popup = Ext.create("viewer.components.ScreenPopup",config);
-                var panelConfig={
-                    renderTo : this.popup.getContentId(),
-                    html: node.layerObj.info
-                };
-                var panel = Ext.create ("Ext.panel.Panel",panelConfig);
-                this.popup.show();
-            }
-        }
+        this.viewerController.layerClicked(node.layerObj);
     },
     // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
     selectedContentChanged : function (){
