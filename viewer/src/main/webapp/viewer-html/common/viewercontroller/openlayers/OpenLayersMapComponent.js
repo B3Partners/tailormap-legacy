@@ -445,8 +445,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                         measureValueDiv.style.left=px.x+10+'px';
                         measureValueDiv.style.display="block";
                         var measureValueText=document.getElementById('olControlMeasureValueText');
-                        var bestLengthTokens=this.getBestLength(evt.parent);
-                        measureValueText.innerHTML= bestLengthTokens[0].toFixed(3)+" "+bestLengthTokens[1];
+                        var bestMeasure=this.getBestLength(evt.parent);
+                        if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
+                            bestMeasure = this.getBestArea(evt.parent);
+                            if(bestMeasure[0] < 0){
+                                bestMeasure[0] *= -1;
+                            }
+                        }
+                        measureValueText.innerHTML= bestMeasure[0].toFixed(3)+" "+bestMeasure[1];
                     }
                 }
             };
