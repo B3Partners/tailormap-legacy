@@ -154,20 +154,23 @@ Ext.define ("viewer.components.Bookmark",{
         
         if (this.showFullUrl){
             formItems.push({ 
-                xtype: 'textfield',
+                xtype: 'textarea',
                 fieldLabel: 'Bookmark',
                 name: 'bookmark',
                 anchor: '100%',
                 id: 'bookmark',
+                readOnly:true,
                 value: this.url
             });
         }
         if (this.showShortUrl){
             formItems.push({ 
-                xtype: 'textfield',
+                xtype: 'textarea',
                 fieldLabel: 'Compact link',
                 name: 'compactlink',
+                rows:3,
                 anchor: '100%',
+                readOnly:true,
                 id: 'compactlink'
             });
         }
