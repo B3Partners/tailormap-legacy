@@ -121,7 +121,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         newUrl=newUrl.replace(/\[x\]/g, point.x);
         newUrl=newUrl.replace(/\[y\]/g, point.y);
         if(this.usePopup){        
-           this.popupWindow = window.open(newUrl,'name','height='+this.height + ',width=' + this.width);
+           this.popupWindow = window.open(newUrl,'name','height='+this.height + ',width=' + this.width + ',location=no,status=no,toolbar=no,menubar=no');
            if(window.focus){
                this.popupWindow.focus();
            }
