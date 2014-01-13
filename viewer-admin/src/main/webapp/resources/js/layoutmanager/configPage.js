@@ -66,7 +66,7 @@ Ext.onReady(function(){
     }
 });
 function createHelpTab() {
-    var showHelpButton = "true"; // Default is to show help button
+    var showHelpButton = "false"; // Default is to show help button
     if(configObject && configObject.showHelpButton) {
         showHelpButton = configObject.showHelpButton;
     }
