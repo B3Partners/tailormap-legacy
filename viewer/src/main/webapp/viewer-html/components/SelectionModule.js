@@ -421,6 +421,7 @@ Ext.define ("viewer.components.SelectionModule",{
                             var level = levels[i];
                             var l = me.addLevel(level.id, true, false, false, foundIds,descriptions);
                             if(l !== null){
+                                l.expanded = true;
                                 levelsToShow.push(l);
                             }
                         }
