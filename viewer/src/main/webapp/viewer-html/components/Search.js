@@ -351,7 +351,10 @@ Ext.define ("viewer.components.Search",{
     groupedResult : null,
     showSearchResults : function(){
         var html = "";
-        if(this.searchResult.length <= 0){
+        if (!Ext.isDefined(this.searchResult)) {
+            html = "<div style=\"padding: 10px; \">Fout bij het zoeken.</div>";
+        }
+        if (Ext.isDefined(this.searchResult) && this.searchResult.length <= 0) {
             html = "<div style=\"padding: 10px;\">Er zijn geen resultaten gevonden.</div>";
         }
         var me = this;
@@ -359,34 +362,35 @@ Ext.define ("viewer.components.Search",{
         var panelList = [{
                 xtype: 'panel', // << fake hidden panel
                 hidden: true,
-                collapsed: false
-            }];
+            collapsed: false
+        }];
         this.groupedResult = new Object();
-        for ( var i = 0 ; i < this.searchResult.length ; i ++){
-            var result = this.searchResult[i];
-            this.addResult(result,i);
+        if (Ext.isDefined(this.searchResult)) {
+            for (var i = 0; i < this.searchResult.length; i++) {
+                var result = this.searchResult[i];
+                this.addResult(result, i);
+            }
+
+            for (var key in this.groupedResult) {
+                var list = this.groupedResult[key];
+                var subSetPanel = Ext.create('Ext.panel.Panel', {
+                    title: key + " (" + list.length + ")",
+                    flex: 1,
+                    height: 200,
+                    autoScroll: true,
+                    collapsible: true,
+                    collapsed: true,
+                    style: {
+                        padding: '0px 0px 10px 0px'
+                    },
+                    items: list
+                });
+                panelList.push(subSetPanel);
+            }
+
         }
-        
-        for (var key in this.groupedResult) {
-            var list = this.groupedResult[key];
-            var subSetPanel = Ext.create('Ext.panel.Panel', {
-                title: key + " (" + list.length + ")",
-                flex:1,
-                height: 200,
-                autoScroll:true,
-                collapsible:true,
-                collapsed:true,
-                style: {
-                    padding: '0px 0px 10px 0px'
-                },
-                items: list
-            });
-            panelList.push(subSetPanel);
-        }
-        
-        
         me.results = Ext.create('Ext.panel.Panel', {
-            title: 'Resultaten (' + this.searchResult.length + ') :',
+            title: 'Resultaten (' +( Ext.isDefined(this.searchResult) ? this.searchResult.length : 0 )+ ') :',
             renderTo: this.resultPanelId,
             html: html,
             height: '100%',
@@ -405,7 +409,7 @@ Ext.define ("viewer.components.Search",{
             },
             items: panelList
         });
-        if(this.searchResult.length === 1){
+        if(this.searchResult && this.searchResult.length === 1){
             this.handleSearchResult(this.searchResult[0]);
         }else{
             if(this.isPopup) {
