@@ -37,6 +37,7 @@ Ext.define ("viewer.components.Print",{
         orientation: null,
         legend: null,
         max_imagesize: "2048",
+        showPrintRtf:null,
         label: ""
     },
     /**
@@ -46,6 +47,7 @@ Ext.define ("viewer.components.Print",{
     constructor: function (conf){  
         //set minwidth:
         if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
+        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true 
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
@@ -395,6 +397,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
+                    hidden: !this.showPrintRtf,
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -410,7 +413,7 @@ Ext.define ("viewer.components.Print",{
                     }                  
                 },{
                     xtype: 'button',
-                    text: 'Opslaan als PDF'  ,
+                    text: 'Opslaan via PDF'  ,
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
