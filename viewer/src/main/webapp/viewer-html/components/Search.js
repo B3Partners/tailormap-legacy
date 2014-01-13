@@ -315,7 +315,7 @@ Ext.define ("viewer.components.Search",{
                 this.simpleListSearch(searchText);
             }else{
                 var me = this;
-                me.mainContainer.setLoading({
+                Ext.getCmp(this.name + 'ContentPanel').setLoading({
                     msg: 'Bezig met zoeken'
                 });
                 Ext.Ajax.request({ 
@@ -333,12 +333,12 @@ Ext.define ("viewer.components.Search",{
                                 me.results.setTitle (me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
                             }
                         }
-                        me.mainContainer.setLoading(false);
+                        Ext.getCmp(me.name + 'ContentPanel').setLoading(false);
                     },
                     failure: function(result, request) {
                         var response = Ext.JSON.decode(result.responseText);
                         Ext.MessageBox.alert("Foutmelding", response.error);
-                        me.mainContainer.setLoading(false);
+                        Ext.getCmp(me.name + 'ContentPanel').setLoading(false);
                     }
                 });
             }
@@ -580,7 +580,7 @@ Ext.define ("viewer.components.Search",{
 
         this.searchResult = results;
         this.showSearchResults();
-        this.mainContainer.setLoading(false);
+        Ext.getCmp(this.name + 'ContentPanel').setLoading(false);
     },
     loadVariables: function(param){
         var searchConfig = param.substring(0,param.indexOf(":"));
