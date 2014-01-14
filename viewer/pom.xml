@@ -99,8 +99,9 @@
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
-            <version>2.2.5</version>
+            <version>3.0.5</version>
         </dependency>
+            
         <!-- nl b3p csw-->
         <dependency>
             <groupId>nl.b3p</groupId>
