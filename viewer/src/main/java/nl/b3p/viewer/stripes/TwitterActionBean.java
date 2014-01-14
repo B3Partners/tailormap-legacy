@@ -85,7 +85,7 @@ public class TwitterActionBean implements ActionBean {
     public Resolution create() throws JSONException {
         JSONObject json = new JSONObject();
 
-        json.put("success", Boolean.FALSE);
+      /* json.put("success", Boolean.FALSE);
         String error = null;
 
         try {
@@ -134,7 +134,7 @@ public class TwitterActionBean implements ActionBean {
         if(error != null) {
             json.put("error", error);
         }
-        
+        */
         return new StreamingResolution("application/json", new StringReader(json.toString()));                
     }
     

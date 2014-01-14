@@ -472,10 +472,25 @@ Ext.define ("viewer.components.Search",{
                 var solrConfig = searchconfig.solrConfig[config.searchConfig];
                 var switchOnLayers = solrConfig.switchOnLayers;
                 if(switchOnLayers){
+                    var selectedContentChanged = false;
                     for(var i = 0 ; i <switchOnLayers.length ;i++){
                         var appLayerId = switchOnLayers[i];
-                        var applayer = this.viewerController.getAppLayerById(appLayerId);
-                        this.viewerController.setLayerVisible(applayer,true);
+                        var appLayer = this.viewerController.app.appLayers[appLayerId];
+                        var layer = this.viewerController.getLayer(appLayer);
+                        if(!layer){
+                            var level = this.viewerController.getAppLayerParent(appLayerId);
+                            this.viewerController.app.selectedContent.push({
+                                id: level.id,
+                                type: "level"
+                            });
+                            selectedContentChanged = true;
+                            layer = this.viewerController.createLayer(appLayer);
+                        }
+                        this.viewerController.setLayerVisible(appLayer,true);
+                        
+                    }
+                    if(selectedContentChanged){
+                        this.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
                     }
                 }
             }
@@ -534,7 +549,7 @@ Ext.define ("viewer.components.Search",{
             var config = this.getSearchconfigById(value);
             return config;
         }else{
-            this.searchconfigs[0];
+            return this.searchconfigs[0];
         }
     },
     getSearchconfigById:function(id){
