@@ -401,7 +401,7 @@ Ext.define ("viewer.components.Search",{
                 animate: true,
                 flex:1,
                 height: 300,
-                multi:false
+                multi:true
             },
             autoScroll: false,
             style: { 
