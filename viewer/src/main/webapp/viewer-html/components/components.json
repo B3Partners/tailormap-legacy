@@ -389,7 +389,8 @@
                 tooltip_slider: "Tooltip slider",
                 show_zoom_buttons: "Show zoom buttons",
                 left: "Positie vanaf links",
-                top: "Positie vanaf boven"
+                top: "Positie vanaf boven",
+                zoomToFullIsStart: "Zoom naar maximale extent zoomt naar startextent"
             },
             source: {          
                 navigationPanel: true,
@@ -404,7 +405,8 @@
                 tooltip_slider: "Sleep om te zoomen",
                 show_zoom_buttons: false,
                 left: "0",
-                top: "20"
+                top: "20",
+                zoomToFullIsStart: false
             }
         },
         singleton: true,
