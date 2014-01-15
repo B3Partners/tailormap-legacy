@@ -448,8 +448,12 @@ Ext.define ("viewer.components.Search",{
     },
     cancel: function(){
         this.searchField.setValue("");
-        this.form.getChildByElement("searchName"+ this.name).setValue("");
-        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
+        var name = this.form.getChildByElement("searchName" + this.name);
+        if (name) {
+            name.setValue("");
+        }
+        Ext.getCmp(this.name + 'ContentPanel').setLoading(false);
+        this.form.getChildByElement("cancel" + this.name).setVisible(false);
         this.results.destroy();
     },
     removePin: function(){
