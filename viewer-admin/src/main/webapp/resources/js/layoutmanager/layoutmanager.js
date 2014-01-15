@@ -32,14 +32,14 @@ var objectBeingConfigured = null;
 Ext.onReady(function() {
      var layoutRegions = [
         {id:'header', htmlId:'layout_header', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
-        {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[], configureCollapsible: true},
+        {id:'leftmargin_top', htmlId:'layout_left_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[], configureCollapsible: true, configureFloating: true},
         {id:'leftmargin_bottom', htmlId:'layout_left_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
         {id:'left_menu', htmlId:'layout_left_menu', useShortName:true, floatComponents: false, configureHeight: false, configureWidth: true, addedComponents:[]},
         {id:'top_menu', htmlId:'layout_top_menu', useShortName:true, floatComponents: true, configureHeight: true, configureWidth: false, addedComponents:[]},
         {id:'content', htmlId:'layout_content', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: false, addedComponents:[], titleOverride: 'Map' },
         {id:'content_bottom', htmlId:'layout_content_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, addedComponents:[], titleOverride: 'Map bottom'},
         {id:'popupwindow', htmlId:'layout_popupwindow', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: true, configureTabs: true, configureTitle: true, configurePosition: true, addedComponents:[]},
-        {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[], configureCollapsible: true},
+        {id:'rightmargin_top', htmlId:'layout_right_top', useShortName:false, floatComponents: false, configureHeight: false, configureWidth: true, configureTabs: true, addedComponents:[], configureCollapsible: true, configureFloating: true},
         {id:'rightmargin_bottom', htmlId:'layout_right_bottom', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]},
         {id:'footer', htmlId:'layout_footer', useShortName:false, floatComponents: false, configureHeight: true, configureWidth: false, configureTabs: true, addedComponents:[]}
     ];
@@ -204,9 +204,19 @@ Ext.onReady(function() {
                     layoutRegionConfigHtml += '<div class="tabsconfig">' + 
                                                     'Balk in/uit kunnen klappen : ' + 
                                                     '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableCollapse" />' + 
-                                                    '<br />Titel in/uitklapbare balk : ' + 
-                                                    '<input type="text" id="' + layoutRegion.get('id') + '_panelTitle" style="width: 100%;" />' + 
                                                 '</div>';
+                }
+                if(layoutRegion.get('configureFloating')) {
+                    layoutRegionConfigHtml += '<div class="tabsconfig">' + 
+                                                    'Maak balk zwevend : ' + 
+                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableFloating" />' + 
+                                                '</div>';
+                }
+                if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
+                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
+                                                    'Titel in/uitklapbare balk / zwevend paneel : ' + 
+                                                    '<input type="text" id="' + layoutRegion.get('id') + '_panelTitle" style="width: 100%;" />' +
+                                              '</div>';
                 }
                 if(layoutRegion.get('configurePosition')) {
                     layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
@@ -433,6 +443,15 @@ Ext.onReady(function() {
                                 collapseChecked = layoutJson[regionId]['layout']['enableCollapse'];
                             }
                             Ext.fly(regionId + '_enableCollapse').dom.checked = collapseChecked;
+                        }
+                        if(layoutRegion.get('configureFloating')) {
+                            var floatingChecked = false;
+                            if(Ext.isDefined(layoutJson[regionId]['layout']['enableFloating']) && layoutJson[regionId]['layout']['enableFloating']) {
+                                floatingChecked = layoutJson[regionId]['layout']['enableFloating'];
+                            }
+                            Ext.fly(regionId + '_enableFloating').dom.checked = floatingChecked;
+                        }
+                        if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
                             Ext.fly(regionId + '_panelTitle').set({
                                 value:(layoutJson[regionId]['layout']['panelTitle'] || '')
                             });
@@ -712,6 +731,16 @@ Ext.onReady(function() {
             if(region.get('configureCollapsible')) {
                 Ext.apply(layoutConfig, {
                     'enableCollapse': Ext.fly(regionId + '_enableCollapse').dom.checked,
+                    'panelTitle': Ext.fly(regionId + '_panelTitle').getValue() || ''
+                });
+            }
+            if(region.get('configureFloating')) {
+                Ext.apply(layoutConfig, {
+                    'enableFloating': Ext.fly(regionId + '_enableFloating').dom.checked
+                });
+            }
+            if(region.get('configureCollapsible') || region.get('configureFloating')) {
+                Ext.apply(layoutConfig, {
                     'panelTitle': Ext.fly(regionId + '_panelTitle').getValue() || ''
                 });
             }

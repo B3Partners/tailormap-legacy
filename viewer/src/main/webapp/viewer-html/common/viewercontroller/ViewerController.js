@@ -80,7 +80,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 layoutOptions.wrapperId= domId;
             }
             this.layoutManager = Ext.create('viewer.LayoutManager', 
-                layoutOptions                
+                layoutOptions,
+                app.components // Components configuration is used for floating panels
             );            
         }
         this.layers = {};
