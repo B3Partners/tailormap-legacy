@@ -228,6 +228,8 @@ Ext.define ("viewer.components.Print",{
                     id: 'legendContainer',
                     height: 200,
                     flex: 0.4,
+                    hideMode: "offsets",
+                    hidden: !this.getLegend(),
                     items: [{}],
                     autoScroll: true,
                     margin: '0 5 0 0'
@@ -342,7 +344,15 @@ Ext.define ("viewer.components.Print",{
                                 name: 'includeLegend',
                                 checked: me.getLegend(),
                                 inputValue: true,
-                                boxLabel: 'Legenda toevoegen'
+                                boxLabel: 'Legenda toevoegen',
+                                listeners:{
+                                    change:{
+                                        fn: function(obj, on){
+                                            Ext.getCmp("legendContainer").setVisible(on);
+                                        },
+                                        scope:this
+                                    }
+                                }
                             }]                        
                         },{
                             //(8)
