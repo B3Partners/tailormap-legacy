@@ -125,6 +125,10 @@
                     <artifactId>jsp-api</artifactId>
                     <groupId>javax.servlet.jsp</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>commons-fileupload</groupId>
+                    <artifactId>commons-fileupload</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
