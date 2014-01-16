@@ -119,7 +119,7 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
-            <version>4.5.0</version>
+            <version>4.6.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>jsp-api</artifactId>
@@ -130,7 +130,7 @@
         <dependency>
                <artifactId>solr-solrj</artifactId>
                <groupId>org.apache.solr</groupId>
-               <version>4.5.0</version>
+               <version>4.6.0</version>
                <type>jar</type>
                <scope>compile</scope>
         </dependency>
