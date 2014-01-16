@@ -129,6 +129,14 @@
                     <groupId>commons-fileupload</groupId>
                     <artifactId>commons-fileupload</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>org.restlet</artifactId>
+                    <groupId>org.restlet.jee</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.restlet.ext.servlet</artifactId>
+                    <groupId>org.restlet.jee</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
