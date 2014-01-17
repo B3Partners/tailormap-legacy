@@ -27,6 +27,7 @@ Ext.define ("viewer.components.Search",{
     margin: "0 5 0 0",
     autosuggestStore:null,
     searchField:null,
+    searchName:null,
     resultPanelId: '',
     defaultFormHeight: MobileManager.isMobile() ? 80 : 70,
     searchRequestId: 0,
@@ -141,8 +142,7 @@ Ext.define ("viewer.components.Search",{
                 fields: ['id', 'name', 'url'],
                 data: this.searchconfigs
             });
-            itemList.push({
-                xtype: "flamingocombobox",
+            this.searchName = Ext.create('viewer.components.FlamingoCombobox',{
                 fieldLabel: 'Zoek op',
                 store: configs,
                 queryMode: 'local',
@@ -161,6 +161,7 @@ Ext.define ("viewer.components.Search",{
                     }
                 }
             });
+            itemList.push(this.searchName );
             if (this.searchconfigs.length> 0){
                 var queryMode = 'local';
                 var extraParams = {};
@@ -463,9 +464,8 @@ Ext.define ("viewer.components.Search",{
     },
     cancel: function(){
         this.searchField.setValue("");
-        var name = this.form.getChildByElement("searchName" + this.name);
-        if (name) {
-            name.setValue("");
+        if (this.searchName) {
+            this.searchName.setValue("");
         }
         Ext.getCmp(this.name + 'ContentPanel').setLoading(false);
         this.form.getChildByElement("cancel" + this.name).setVisible(false);
@@ -548,6 +548,9 @@ Ext.define ("viewer.components.Search",{
                 break;
             }
         }
+        if(searchConfig === "" && this.searchconfigs.length === 1){
+            this.searchConfigChanged(this.searchconfigs[0].id);
+        }
     },
     getCurrentSearchType: function() {
         var config = this.getCurrentSearchconfig();
@@ -587,7 +590,7 @@ Ext.define ("viewer.components.Search",{
             // Nothing to do here
         }
     }, 
-   simpleListSearch:function(term){
+    simpleListSearch:function(term){
         var config = this.getCurrentSearchconfig();
         var values = config.simpleSearchConfig;
         term = term.toLowerCase();
@@ -611,13 +614,22 @@ Ext.define ("viewer.components.Search",{
         Ext.getCmp(this.name + 'ContentPanel').setLoading(false);
     },
     loadVariables: function(param){
-        var searchConfig = param.substring(0,param.indexOf(":"));
+        var searchConfigId = param.substring(0,param.indexOf(":"));
         var term = param.substring(param.indexOf(":") +1, param.length);
-        var config = this.getSearchconfigById(searchConfig);
+        var config = this.getSearchconfigById(searchConfigId);
+        
         this.searchField.setValue(term);
+        if(!config.urlOnly){
+            this.searchName.setValue(searchConfigId);
+        }else{
+            this.searchConfigChanged(searchConfigId);
+        }
         var me = this;
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function() {
-            me.executeSearch(term,config.id);
+            me.executeSearch(term, config.id);
+            if (config.urlOnly) {
+                me.searchName.setValue("");
+            }
         }, this);
         return;
     }
