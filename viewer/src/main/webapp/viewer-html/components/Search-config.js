@@ -131,7 +131,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },
                     items: [
                         { fieldLabel: 'Naam', name: 'name', value: config.name, id: 'name'+config.id },
-                        { fieldLabel: 'Id', name: 'idField', value: config.id,disabled:true, disabledCls:'disabledTextField', tooltip:'sdfasdfasdf'},
+                        { fieldLabel: 'Gebruik alleen via url', name: 'urlOnly'+config.id, id: 'urlOnly'+config.id, checked: config.urlOnly, xtype:'checkbox',listeners:{ change:{scope:this, fn:function(obj,on){
+                                    var idField = Ext.getCmp( 'idField'+config.id);
+                                    idField.setVisible(on);
+                                }
+                            } }},
+                        { fieldLabel: 'Id', id: 'idField'+config.id,name: 'idField'+config.id, value: config.id,disabled:true, hidden: Ext.isDefined(config.urlOnly) ? !config.urlOnly : true, disabledCls:'disabledTextField'},
                         {                           
                             xtype: 'radiogroup',
                             id: 'type' + config.id,
@@ -236,7 +241,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             var configid = searchconfig.id,
                 name = Ext.getCmp('name' + configid).getValue(),
                 type = Ext.getCmp('type' + configid).getValue()['type' + configid],
-                url = Ext.getCmp('url' + configid).getValue();
+                url = Ext.getCmp('url' + configid).getValue(),
+                urlOnly = Ext.getCmp('urlOnly'+configid).getValue();
             if(name === '') {
                 name = configid;
             }
@@ -244,6 +250,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             searchconfig.name = name;
             searchconfig.url = url;
             searchconfig.type= type;
+            searchconfig.urlOnly= urlOnly;
             if(type === 'solr') {
                 me.saveSolrconfig(configid);
             }
