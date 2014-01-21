@@ -48,10 +48,11 @@ Ext.define ("viewer.components.Search",{
         this.initConfig(conf);
         this.renderButton(); 
         var notUrlConfigs = new Array();
+        this.onlyUrlConfig = new Array();
         for(var i = 0 ; i < this.searchconfigs.length ;i++){
             var config = this.searchconfigs[i];
             if(Ext.isDefined(config.urlOnly) && config.urlOnly ){
-                this.onlyUrlConfig = config;
+                this.onlyUrlConfig.push(config);
             }else{
                 notUrlConfigs.push(config);
             }
@@ -565,8 +566,10 @@ Ext.define ("viewer.components.Search",{
         return config;
     },
     getSearchconfigById:function(id){
-        if(this.onlyUrlConfig && this.onlyUrlConfig.id === id){
-            return this.onlyUrlConfig;
+        for (var j = 0; j < this.onlyUrlConfig.length; j++) {
+            if (this.onlyUrlConfig[j].id === id) {
+                return this.onlyUrlConfig[j];
+            }
         }
         
         for (var i = 0; i < this.searchconfigs.length; i++) {
