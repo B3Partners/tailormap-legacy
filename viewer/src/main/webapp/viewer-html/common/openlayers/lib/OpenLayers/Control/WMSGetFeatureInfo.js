@@ -459,9 +459,14 @@ OpenLayers.Control.WMSGetFeatureInfo = OpenLayers.Class(OpenLayers.Control, {
             var layers;
             for (var url in services) {
                 layers = services[url];
-                var wmsOptions = this.buildWMSOptions(url, layers, 
-                    clickPosition, layers[0].params.FORMAT);
-                OpenLayers.Request.GET(wmsOptions); 
+                for (var i = 0; i < layers.length; i++) {
+                    var wmsOptions = this.buildWMSOptions(url, [layers[i]],
+                            clickPosition, layers[0].params.FORMAT);
+                            wmsOptions.headers= new Object();
+                            wmsOptions.headers.total = layers.length;
+                            wmsOptions.headers.index = i;
+                    OpenLayers.Request.GET(wmsOptions);
+                }
             }
         }
     },

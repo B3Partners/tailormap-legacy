@@ -88,6 +88,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                     
                 this.wmsGetFeatureInfoControl.handleResponse = handleResponse;
                 this.wmsGetFeatureInfoControl.buildWMSOptions = buildWMSOptions;
+                this.wmsGetFeatureInfoControl.request = requestWmsGFI;
                 this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);   
                 //deegree handler:
                 this.wmsGetFeatureInfoControl.format.read_FeatureCollection = this.readFeatureCollection;
