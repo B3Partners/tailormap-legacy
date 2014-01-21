@@ -23,7 +23,7 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.2.1</version>
+            <version>1.3</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
@@ -146,17 +146,25 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>4.5.0</version>
+            <version>4.6.0</version>
         </dependency>
         <!-- Solr dependencies for indexing and searching -->
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
-            <version>4.5.0</version>
+            <version>4.6.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>jsp-api</artifactId>
                     <groupId>javax.servlet.jsp</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.restlet</artifactId>
+                    <groupId>org.restlet.jee</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.restlet.ext.servlet</artifactId>
+                    <groupId>org.restlet.jee</groupId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.lucene</groupId>
@@ -171,7 +179,7 @@
                 <dependency>
                <artifactId>solr-solrj</artifactId>
                <groupId>org.apache.solr</groupId>
-               <version>4.5.0</version>
+               <version>4.6.0</version>
                <type>jar</type>
                <scope>compile</scope>
         </dependency>
