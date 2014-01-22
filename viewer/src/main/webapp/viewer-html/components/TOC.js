@@ -560,12 +560,12 @@ Ext.define ("viewer.components.TOC",{
     
     getNodeChecked: function(node) {
         if(Ext.isDefined(node.data)) {
-            if(Ext.isDefined(node.data.checked)) return node.data.checked;
-            if(Ext.isDefined(node.data.hidden_check)) return node.data.hidden_check;
+            if(node.data.checked !== undefined && node.data.checked !== null) return node.data.checked;
+            if(node.data.hidden_check !== undefined && node.data.hidden_check !== null) return node.data.hidden_check;
         }
         if(Ext.isDefined(node.raw)) {
-            if(Ext.isDefined(node.raw.checked)) return node.raw.checked;
-            if(Ext.isDefined(node.raw.hidden_check)) return node.raw.hidden_check;
+            if(node.raw.checked !== undefined && node.raw.checked !== null) return node.raw.checked;
+            if(node.raw.hidden_check !== undefined && node.raw.hidden_check !== null) return node.raw.hidden_check;
         }
         return false;
     },
@@ -583,7 +583,11 @@ Ext.define ("viewer.components.TOC",{
         var nodeId = "layer-" + layer.appLayerId;
         var node = this.panel.getRootNode().findChild("id",nodeId,true);
         if (node){
-            node.set('checked', vis);
+            if (this.layersChecked || (node.hasChildNodes() && this.groupCheck)){
+                 node.set('checked', vis);
+            }else {
+                node.set('hidden_check', vis);
+            }
             this.setTriState(node);
         }
     },
