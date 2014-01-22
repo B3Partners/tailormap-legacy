@@ -209,67 +209,6 @@ public class ConfigureSolrActionBean implements ActionBean {
         return new ForwardResolution(EDIT_JSP);
     }
     
-    public Resolution prototype() {
-        return new ForwardResolution(PROTOTYPE_JSP);
-    }
-    
-    public Resolution autosuggest() throws JSONException, SolrServerException {
-        SolrServer server = SolrInitializer.getServerInstance();
-        
-        JSONObject obj = new JSONObject();
-        JSONObject response = new JSONObject();
-        JSONArray respDocs = new JSONArray();
-        response.put("docs", respDocs);
-        obj.put("response", response);
-
-
-        SolrQuery query = new SolrQuery();
-        query.setQuery(term);
-        query.setRequestHandler("/suggest");
-        //query.addSort("values", SolrQuery.ORDER.asc);
-        QueryResponse rsp = server.query(query);
-        SpellCheckResponse sc = rsp.getSpellCheckResponse();
-        List<SpellCheckResponse.Suggestion> suggestions = sc.getSuggestions();
-        for (SpellCheckResponse.Suggestion suggestion : suggestions) {
-            List<String> alternatives = suggestion.getAlternatives();
-            for (String alt : alternatives) {
-                JSONObject sug = new JSONObject();
-                sug.put("suggestion", alt);
-                respDocs.put(sug);
-            }
-        }
-        response.put("docs", respDocs);
-
-        return new StreamingResolution("application/json", obj.toString(4));
-    }
-    
-    public Resolution search() throws IOException, JSONException, SolrServerException {
-        SolrServer server = SolrInitializer.getServerInstance();
-
-        JSONObject obj = new JSONObject();
-        JSONObject response = new JSONObject();
-        obj.put("response", response);
-
-        SolrQuery query = new SolrQuery();
-        query.setQuery(term);
-        query.setRequestHandler("/select");
-        QueryResponse rsp = server.query(query);
-        SolrDocumentList list = rsp.getResults();
-        
-        JSONArray respDocs = new JSONArray();
-        for (SolrDocument solrDocument : list) {
-            JSONObject doc = new JSONObject();
-            for (String key : solrDocument.keySet()) {
-                doc.put(key, solrDocument.get(key));
-            }
-            respDocs.put(doc);
-        }
-        
-        response.put("docs", respDocs);
-        obj.put("success", Boolean.TRUE);
-        return new StreamingResolution("application/json", new StringReader(obj.toString(4)));
-    }
-
     @WaitPage(path = "/WEB-INF/jsp/waitpage.jsp", delay = 2000, refresh = 1000, ajax = "/WEB-INF/jsp/waitpageajax.jsp")
     public Resolution addToIndex() throws InterruptedException {
         removeFromIndex();
