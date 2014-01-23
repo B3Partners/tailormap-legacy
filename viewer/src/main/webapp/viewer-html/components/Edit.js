@@ -499,20 +499,22 @@ Ext.define ("viewer.components.Edit",{
         var feature =this.inputContainer.getValues();
         
         if(this.geometryEditable){
-            var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
-            feature[this.appLayer.geometryAttribute] = wkt;
+            if(this.vectorLayer.getActiveFeature()){
+                var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
+                feature[this.appLayer.geometryAttribute] = wkt;
+            }
         }
         if(this.mode == "edit"){
             feature.__fid = this.currentFID;
         }
+        var me = this;
         try{
             feature = this.changeFeatureBeforeSave(feature);
         }catch(e){
-            this.failed(e);
+            me.failed(e);
             return;
         }
         
-        var me = this;
         me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
             viewerController: this.viewerController
@@ -520,8 +522,8 @@ Ext.define ("viewer.components.Edit",{
         .edit(
             me.editingLayer,
             feature,
-            function(fid) { me.saveSucces(fid); }, 
-            this.failed);
+            function(fid) { me.saveSucces(fid); }, function(error){
+            me.failed(error);});
     },
     /**
      * Can be overwritten to add some extra feature attributes before saving the
