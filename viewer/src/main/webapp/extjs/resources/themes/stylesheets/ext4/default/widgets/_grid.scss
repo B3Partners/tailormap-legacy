@@ -754,55 +754,6 @@
             width: 192px;
             height: 24px;
         }
-
-        &-ml,
-        &-mr,
-        &-bl,
-        &-br,
-        &-bc {
-            position: absolute;
-            overflow: hidden;
-        }
-
-        &-bl,
-        &-br {
-            width: 4px;
-            height: 4px;
-            bottom: 0px;
-            background-image: theme-background-image($theme-name, 'panel/panel-default-framed-corners.gif');
-        }
-        &-bl {
-            left: 0px;
-            background-position: 0px -16px;
-        }
-        &-br {
-            right: 0px;
-            background-position: 0px -20px;
-        }
-
-        &-bc {
-            position: absolute;
-            left: 4px;
-            bottom: 0px;
-            width: 192px;
-            height: 1px;
-            background-color: $grid-row-editor-border-color;
-        }
-
-        &-ml,
-        &-mr {
-            height: 27px;
-            width: 1px;
-            top: 1px;
-            background-color: $grid-row-editor-border-color;
-        }
-        &-ml {
-            left: 0px
-        }
-        &-mr {
-            background-position: 0px -20px;
-            right: 0px;
-        }
     }
 
     .#{$prefix}grid-row-editor-errors {
@@ -814,4 +765,53 @@
             margin-left: 15px;
         }
     }
+
+    .#{$prefix}grid-row-editor-buttons-ml,
+        .#{$prefix}grid-row-editor-buttons-mr,
+        .#{$prefix}grid-row-editor-buttons-bl,
+        .#{$prefix}grid-row-editor-buttons-br,
+        .#{$prefix}grid-row-editor-buttons-bc {
+            position: absolute;
+            overflow: hidden;
+        }
+
+        .#{$prefix}grid-row-editor-buttons-bl,
+        .#{$prefix}grid-row-editor-buttons-br {
+            width: 4px;
+            height: 4px;
+            bottom: 0px;
+            background-image: theme-background-image($theme-name, 'panel/panel-default-framed-corners.gif');
+        }
+        .#{$prefix}grid-row-editor-buttons-bl {
+            left: 0px;
+            background-position: 0px -16px;
+        }
+        .#{$prefix}grid-row-editor-buttons-br {
+            right: 0px;
+            background-position: 0px -20px;
+        }
+
+        .#{$prefix}grid-row-editor-buttons-bc {
+            position: absolute;
+            left: 4px;
+            bottom: 0px;
+            width: 192px;
+            height: 1px;
+            background-color: $grid-row-editor-border-color;
+        }
+
+        .#{$prefix}grid-row-editor-buttons-ml,
+        .#{$prefix}grid-row-editor-buttons-mr {
+            height: 27px;
+            width: 1px;
+            top: 1px;
+            background-color: $grid-row-editor-border-color;
+        }
+        .#{$prefix}grid-row-editor-buttons-ml {
+            left: 0px
+        }
+        .#{$prefix}grid-row-editor-buttons-mr {
+            background-position: 0px -20px;
+            right: 0px;
+        }
 }
