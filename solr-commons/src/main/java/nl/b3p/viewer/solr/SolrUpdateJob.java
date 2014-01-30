@@ -195,11 +195,28 @@ public class SolrUpdateJob implements Job {
             } finally {
                 iterator.close();
             }
+            status.setProgress(60);
             status.setCurrentAction("Features toevoegen aan solr index");
 
-            status.setProgress(60);
-            solrServer.add(docs);
-            solrServer.commit();
+            if(docs.size() > MAX_FEATURES){
+                double percentagesForCommitting = 30;
+                int numIterations = (int)Math.ceil(size/ MAX_FEATURES);
+                double percentagePerIteration = percentagesForCommitting / numIterations;
+                total = (double) status.getProgress();
+                for (int i = 0; i < numIterations; i++) {
+                    int begin = i * MAX_FEATURES;
+                    int end = Math.min((i+1) * MAX_FEATURES, docs.size());
+                    List<SolrInputDocument> sublist = docs.subList(begin, end);
+                    
+                    solrServer.add(sublist);
+                    solrServer.commit();
+                    total += percentagePerIteration;
+                    status.setProgress(total.intValue());
+                }
+            }else{
+                solrServer.add(docs);
+                solrServer.commit();
+            }
             Date now = new Date();
             config.setLastUpdated(now);
             em.persist(config);
