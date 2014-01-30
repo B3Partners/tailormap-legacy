@@ -41,8 +41,8 @@ Ext.onReady(function(){
     var searchConfigStore = Ext.create('Ext.data.Store', {
         pageSize: 10,
         model: 'SearchConfigTableRow',
-        remoteSort: true,
-        remoteFilter: true,
+        remoteSort: false,
+        remoteFilter: false,
         proxy: {
             type: 'ajax',
             url: gridurl,

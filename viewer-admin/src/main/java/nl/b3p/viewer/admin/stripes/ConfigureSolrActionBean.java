@@ -16,8 +16,6 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -48,14 +46,9 @@ import nl.b3p.viewer.solr.SolrUpdateJob;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
-import org.apache.solr.client.solrj.response.SpellCheckResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
