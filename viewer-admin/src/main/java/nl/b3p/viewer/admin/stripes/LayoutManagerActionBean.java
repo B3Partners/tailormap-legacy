@@ -73,6 +73,7 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private String componentLayout;
     private Boolean loadCustomConfig = false;
     private JSONObject details;
+    private String appConfigJSON;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
     public JSONArray getComponents() {
@@ -179,7 +180,15 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.details = details;
     }
 
+    public String getAppConfigJSON() {
+        return appConfigJSON;
+    }
+
+    public void setAppConfigJSON(String appConfigJSON) {
+        this.appConfigJSON = appConfigJSON;
+    }
     //</editor-fold>
+    
     @DefaultHandler
     public Resolution view() throws JSONException {
         if (application == null) {
@@ -196,6 +205,11 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
         allGroups = Stripersist.getEntityManager().createQuery("from Group").getResultList();
 
+        try {
+            appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true);
+        } catch(JSONException je) {
+        }
+        
         try {
             if(component == null){
                 component = (ConfiguredComponent) em.createQuery(
