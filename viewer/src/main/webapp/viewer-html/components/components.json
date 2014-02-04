@@ -767,5 +767,15 @@
                 title: "Browser controle"
             }
         }
+    },
+    {
+        className: "viewer.components.SimpleFilter",
+        name: "Simpel filter",
+        shortName: "SF",
+        closureCompilerSafe: true,
+        restrictions: ["leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom"],
+        sources: ["SimpleFilter.js"],
+        singleton: false,
+        configSource: ["ConfigObject.js","SimpleFilter-config.js"]
     }
 ]
