@@ -57,9 +57,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             ]
         });
         
-        //var layerStore = Ext.create("Ext.data.Store", {
-        //    fields""
-        //});
+        var layerStore = this.createLayerStore();
         
         var me = this;
         
@@ -121,17 +119,42 @@ Ext.define("viewer.components.CustomConfiguration",{
                         },
                         items: [{
                             xtype: "combo",
+                            id: "layerCombo",
                             fieldLabel: "Laag",
-                            store: null/*layerStore*/,
-                            queryModes: "local",
-                            displayField: "title",
-                            valueField: "name"
+                            store: layerStore,
+                            queryMode: "local",
+                            displayField: "alias",
+                            valueField: "id",
+                            listeners: {
+                                select: function(combo, records, eOpts) {
+                                    var layerId = records[0].get("id");
+                                    
+                                    var appLayer = appConfig.appLayers[layerId];
+                                    
+                                    var ac = Ext.getCmp("attributeCombo");
+                                    var store = ac.getStore();
+                                    
+                                    store.removeAll();
+                                    
+                                    Ext.Array.each(appLayer.attributes, function(att) {
+                                        store.add({
+                                            name: att.name,
+                                            alias: att.alias || att.name,
+                                            type: att.type
+                                        });
+                                    });
+
+                                }
+                            }
                         },{
                             xtype: "combo",
+                            id: "attributeCombo",
                             fieldLabel: "Attribuut",
-                            store: null,
-                            queryModes: "local",
-                            displayField: "title",
+                            store: Ext.create("Ext.data.Store", {
+                                fields: ["name", "alias", "type"]
+                            }),
+                            queryMode: "local",
+                            displayField: "alias",
                             valueField: "name"
                         }]
                     }]
@@ -186,8 +209,22 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.titleField.focus(false, true);*/
         return this;
     },
+    
     getConfiguration: function(){
         return { title: 'hoi'};
+    },
+    
+    createLayerStore: function() {
+        var store = Ext.create("Ext.data.Store", {
+            fields: ["id", "serviceId", "layerName", "alias"]
+        });
+        
+        Ext.Object.each(appConfig.appLayers, function(id, appLayer) {
+            if(appLayer.attributes.length > 0) {
+                store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
+            }
+        });
+        return store;
     }
 });
 
