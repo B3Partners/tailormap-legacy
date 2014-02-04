@@ -284,11 +284,15 @@ public class Application {
         authorizationsModified = new Date();
     }
     
+    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers) throws JSONException {
+        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false);
+    }
+    
     /**
      * Create a JSON representation for use in browser to start this application
      * @return
      */
-    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers) throws JSONException {
+    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
         JSONObject o = new JSONObject();
 
         o.put("id", id);
@@ -347,7 +351,7 @@ public class Application {
             o.put("selectedContent", selectedContent);         
             
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, request,validXmlTags);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, request, validXmlTags, includeAppLayerAttributes, includeRelations);
 
             Collections.sort(selectedObjects, new Comparator() {
 
@@ -415,7 +419,7 @@ public class Application {
         return o.toString(4);
     }
     
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags) throws JSONException {
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
         JSONObject o = l.toJSONObject(false, this, request);
         o.put("background", l.isBackground() || parentIsBackground);
         String levelId= l.getId().toString();
@@ -433,7 +437,7 @@ public class Application {
                 //System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
                 continue;
             }
-            JSONObject p = al.toJSONObject();
+            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations);
             p.put("background", l.isBackground() || parentIsBackground);
             p.put("editAuthorized", Authorizations.isAppLayerWriteAuthorized(this, al, request));
             String alId = al.getId().toString();
@@ -458,7 +462,7 @@ public class Application {
                         childId="level_"+childId;
                     }
                     jsonChildren.put(childId);
-                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request,validXmlTags);
+                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request,validXmlTags, includeAppLayerAttributes, includeRelations);
                 }
             }
         }
