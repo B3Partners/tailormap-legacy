@@ -155,7 +155,19 @@ Ext.define("viewer.components.CustomConfiguration",{
                             }),
                             queryMode: "local",
                             displayField: "alias",
-                            valueField: "name"
+                            valueField: "name",
+                            listeners: {
+                                select: function(combo, records, eOpts) {
+                                    var attributeName = records[0].get("name");
+                                    
+                                    Ext.getCmp("attributeInfo").setValue("Type: " + records[0].get("type"));
+                                }
+                            }
+                        },{
+                            xtype: 'displayfield',
+                            id: 'attributeInfo',
+                            fieldLabel: 'Attribuut info',
+                            value: ''
                         }]
                     }]
                 },{
