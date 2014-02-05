@@ -17,14 +17,104 @@
 
 Ext.define("viewer.components.sf.SliderConfig", {
     configObject: null,
+    
+    form: null,
 
-    constructor: function(configObject, renderTo) {
-        this.configObject = configObject;
+    constructor: function(config) {
+        this.configObject = config.configObject;
         
+        this.form = Ext.create("Ext.form.Panel", {
+            title: 'Slider',
+            width: 325,
+            bodyPadding: 5,
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
+            defaultType: 'textfield',
+            items: [{
+                fieldLabel: 'Label',
+                name: 'label'
+            },{ 
+                fieldLabel: "Minimale waarde",
+                name: "min",
+                qtip: "Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt",
+                listeners: {
+                    render: function(c) {
+                        Ext.QuickTips.register({
+                            target: c.getEl(),
+                            text: c.qtip
+                        });
+                    }
+                }            
+            },{
+                fieldLabel: "Maximale waarde",
+                name: "max",
+                qtip: "Indien geen waarde ingevuld wordt grootste attribuutwaarde uit de attribuutlijst gebruikt",
+                listeners: {
+                    render: function(c) {
+                        Ext.QuickTips.register({
+                            target: c.getEl(),
+                            text: c.qtip
+                        });
+                    }
+                }            
+            },{
+                fieldLabel: "Beginwaarde(s)",
+                name: "start",
+                value: "min,max",
+                qtip: "Vul een vaste waarde in of 'min' of 'max'. Bij een slider voor een bereik geef twee waardes op gescheiden door een komma",
+                listeners: {
+                    render: function(c) {
+                        Ext.QuickTips.register({
+                            target: c.getEl(),
+                            text: c.qtip
+                        });
+                    }
+                }            
+            },{
+                fieldLabel: "Stap",
+                name: "step",
+                value: 1
+            },{
+                xtype: 'combo',
+                fieldLabel: "Soort slider",
+                name: "sliderType",
+                store: Ext.create("Ext.data.Store", {
+                    fields: ["type", "label"],
+                    data: [ 
+                        {type: "eq", label: "Attribuut gelijk aan waarde slider"},
+                        {type: "gt", label: "Attribuut groter dan waarde slider"},
+                        {type: "lt", label: "Attribuut kleiner dan waarde slider"},
+                        {type: "range", label: "Attribuut binnen bereik (twee schuifjes)"}
+                    ]
+                }),
+                queryModes: "local",
+                displayField: "label",
+                editable: false,
+                valueField: "type",
+                value: "eq"
+            },{
+                fieldLabel: "Waarde format string",
+                name: "valueFormatString",
+                value: "",
+                qtip: "Laat leeg om geen waarde van de schuifjes te tonen. Voorbeelden format strings: '0' (alleen hele getallen), '0 m²' (met eenheid), '0.00' (twee decimalen), '0,000' (met duizendtalscheidingsteken), '€ 0,000.00' (bedrag)",
+                listeners: {
+                    render: function(c) {
+                        Ext.QuickTips.register({
+                            target: c.getEl(),
+                            text: c.qtip
+                        });
+                    }
+                }            
+            }]
+        });
         
-        //Ext.create
+        Ext.getCmp(config.renderTo).items.add(this.form);
     },
     getConfig: function() {
+        var config = this.form.getValues();
+        return config;
     }
 });
 
@@ -90,11 +180,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },       
                     items: [{
                         xtype: 'combo',
-                        fieldLabel: 'Soort filtergereedschap',
-                        blankText: 'Selecteer een optie',        
+                        fieldLabel: 'Soort filtergereedschap', 
                         store: filterTypes,
                         queryModes: "local",
                         displayField: "label",
+                        editable: false,
                         valueField: "type",
                         listeners: {
                             select: function(combo, records, eOpts) {
@@ -105,11 +195,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                                     configObject: me,
                                     renderTo: "filterConfigFieldset"
                                 });
+                                Ext.getCmp("filterConfigFieldset").doLayout();
                             }
                         }
                     },{
                         xtype: "fieldset",
-                        id: "filterConfigFieldset",
+                        id: "filterAttributeConfigFieldset",
                         title: "Instellingen voor filter",
                         collapsible: false,
                         defaultType: "textfield",
@@ -124,6 +215,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             store: layerStore,
                             queryMode: "local",
                             displayField: "alias",
+                            editable: false,
                             valueField: "id",
                             listeners: {
                                 select: function(combo, records, eOpts) {
@@ -132,6 +224,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                                     var appLayer = appConfig.appLayers[layerId];
                                     
                                     var ac = Ext.getCmp("attributeCombo");
+                                    ac.clearValue();
                                     var store = ac.getStore();
                                     
                                     store.removeAll();
@@ -155,6 +248,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             }),
                             queryMode: "local",
                             displayField: "alias",
+                            editable: false,
                             valueField: "name",
                             listeners: {
                                 select: function(combo, records, eOpts) {
@@ -169,6 +263,23 @@ Ext.define("viewer.components.CustomConfiguration",{
                             fieldLabel: 'Attribuut info',
                             value: ''
                         }]
+                    },{
+                        xtype: "fieldset",
+                        id: "filterConfigFieldset",
+                        title: "Instellingen voor filtergereedschap",
+                        collapsible: false,
+                        defaultType: "textfield",
+                        layout: "anchor",
+                        height: 300,
+                        autoScroll: true,
+                        defaults: {
+                            anchor: '100%',
+                            width: 500
+                        },
+                        items: [/*{
+                            xtype: 'label',
+                            text: 'Selecteer een laag en attribuut'
+                        }*/]
                     }]
                 },{
                     xtype: 'panel',
@@ -183,7 +294,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                     items: [{
                         xtype: 'button',
                         text: '+',
-                        margin: '0 0 5 0'
+                        margin: '0 0 5 0',
+                        listeners: { 
+                            click: {
+                                fn: me.addClick,
+                                scope: me
+                            }
+                        }
                     },{
                         xtype: 'button',
                         text: 'x',
@@ -198,13 +315,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                     }]
                 }, {
                     xtype: 'gridpanel',
+                    id: 'configuredFiltersGrid',
                     title: 'Toegevoegde filters',
                     height: 430,
                     columnWidth: 0.48,
                     store: this.filterStore,
                     columns: [
-                        {header: 'Soort', dataIndex: 'label', sortable: false, hideable: false},
-                        {header: 'Instellingen', dataIndex: 'description', sortable: false, hideable: false, flex: 1}
+                        {header: 'Soort', dataIndex: 'soort', sortable: false, hideable: false},
+                        {header: 'Laag en attribuut', dataIndex: 'description', sortable: false, hideable: false, flex: 1}
                     ]
                 }]
             }]
@@ -220,6 +338,24 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         this.titleField.focus(false, true);*/
         return this;
+    },
+    
+    addClick: function(button, e, eOpts) {
+        console.log("addClick", this);
+        if(this.filterConfigurer) {
+            var filterConfigurerClass = this.filterConfigurer.self.getName();
+            var filterControl = {
+                class: filterConfigurerClass.substring(0, filterConfigurerClass.length - 6),
+                appLayerId: Ext.getCmp("layerCombo").getValue(),
+                attributeName: Ext.getCmp("attributeCombo").getValue(),
+                config: this.filterConfigurer.getConfig()
+            }
+            var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
+            var appLayer = appConfig.appLayers[filterControl.appLayerId];
+            var description = appLayer.alias + "." + filterControl.attributeName;
+            console.log("add: ", soort, description, filterControl);
+            this.filterStore.add({soort: soort, description: description});
+        }
     },
     
     getConfiguration: function(){
