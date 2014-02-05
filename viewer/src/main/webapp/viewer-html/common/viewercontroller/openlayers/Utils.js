@@ -347,11 +347,22 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
 });
 
 function handleResponse(xy, request, url,layerNames) {
+    if(!this.cache ){
+        this.cache = new Object();
+    }
+    if(!this.cache[url]){
+        
+        this.cache[url] = new Object();
+        this.cache[url].features = new Array();
+        this.cache[url].counter = 0;
+    }
+    this.cache[url].counter++;
     var doc = request.responseXML;
     if(!doc || !doc.documentElement) {
         doc = request.responseText;
     }
     var features = this.format.read(doc);
+    this.cache[url].features = this.cache[url].features.concat(features);
     for ( var i = 0 ; i < features.length ;i++){
         features[i].layerNames = layerNames;
         features[i].url = url;
@@ -367,11 +378,76 @@ function handleResponse(xy, request, url,layerNames) {
         } else {
         this._features = (this._features || []).concat(features);
         }
-        if (this._requestCount === this._numRequests) {
-            this.triggerGetFeatureInfo(request, xy, this._features.concat(),layerNames); 
+        //if (this._requestCount === this._numRequests) {
+        if (request._headers.total === this.cache[url].counter) {
+            this.cache[url].counter = 0;
+            this.triggerGetFeatureInfo(request, xy, this.cache[url].features, layerNames);
             delete this._features;
             delete this._requestCount;
+            delete this.cache[url];
             delete this._numRequests;
+        }
+    }
+}
+
+/**
+ * Method: request
+ * Sends a GetFeatureInfo request to the WMS
+ * 
+ * Parameters:
+ * clickPosition - {<OpenLayers.Pixel>} The position on the map where the
+ *     mouse event occurred.
+ * options - {Object} additional options for this method.
+ * 
+ * Valid options:
+ * - *hover* {Boolean} true if we do the request for the hover handler
+ */
+function requestWmsGFI(clickPosition, options) {
+    var layers = this.findLayers();
+    if (layers.length == 0) {
+        this.events.triggerEvent("nogetfeatureinfo");
+        // Reset the cursor.
+        OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
+        return;
+    }
+
+    options = options || {};
+    if (this.drillDown === false) {
+        var wmsOptions = this.buildWMSOptions(this.url, layers,
+                clickPosition, layers[0].params.FORMAT);
+        var request = OpenLayers.Request.GET(wmsOptions);
+
+        if (options.hover === true) {
+            this.hoverRequest = request;
+        }
+    } else {
+        this._requestCount = 0;
+        this._numRequests = 0;
+        this.features = [];
+        // group according to service url to combine requests
+        var services = {}, url;
+        for (var i = 0, len = layers.length; i < len; i++) {
+            var layer = layers[i];
+            var service, found = false;
+            url = OpenLayers.Util.isArray(layer.url) ? layer.url[0] : layer.url;
+            if (url in services) {
+                services[url].push(layer);
+            } else {
+                this._numRequests++;
+                services[url] = [layer];
+            }
+        }
+        var layers;
+        for (var url in services) {
+            layers = services[url];
+            for (var i = 0; i < layers.length; i++) {
+                var wmsOptions = this.buildWMSOptions(url, [layers[i]],
+                        clickPosition, layers[0].params.FORMAT);
+                wmsOptions.headers = new Object();
+                wmsOptions.headers.total = layers.length;
+                wmsOptions.headers.index = i;
+                OpenLayers.Request.GET(wmsOptions);
+            }
         }
     }
 }
