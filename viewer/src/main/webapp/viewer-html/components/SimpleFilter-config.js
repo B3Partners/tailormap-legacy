@@ -122,6 +122,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
 
     filterStore: null,
+    filterConfigs: null,
     
     filterConfigurer: null,
     
@@ -137,7 +138,8 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {type: "slider", label: "Slider"},
                 {type: "combo", label: "Selectielijst"},
                 {type: "checkbox", label: "Vinkvak"},
-                {type: "radio", label: "Keuzerondje"}
+                {type: "radio", label: "Keuzerondje"},
+                {type: "reset", label: "Reset filter knop"}
             ]
         });
         
@@ -146,6 +148,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             data: [
             ]
         });
+        
+        this.filterConfigs = [];
         
         var layerStore = this.createLayerStore();
         
@@ -349,17 +353,32 @@ Ext.define("viewer.components.CustomConfiguration",{
                 appLayerId: Ext.getCmp("layerCombo").getValue(),
                 attributeName: Ext.getCmp("attributeCombo").getValue(),
                 config: this.filterConfigurer.getConfig()
-            }
+            };
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
             var appLayer = appConfig.appLayers[filterControl.appLayerId];
             var description = appLayer.alias + "." + filterControl.attributeName;
             console.log("add: ", soort, description, filterControl);
+            this.filterConfigs.push(filterControl);
             this.filterStore.add({soort: soort, description: description});
         }
     },
     
-    getConfiguration: function(){
-        return { title: 'hoi'};
+    getConfiguration: function() {
+        var config = { filters: this.filterConfigs};
+        config.layers = [];
+        /* App layers must always be in the "layers" property so they can get
+         * updated when the application is copied, use indexes to this array
+         */
+        Ext.Array.each(config.filters, function(filter) {
+            var index = Ext.Array.indexOf(config.layers, filter.appLayerId);
+            if(index === -1) {
+                config.layers.push(filter.appLayerId);
+                filter.appLayerId = config.layers.length - 1;
+            } else {
+                filter.appLayerId = index;
+            }
+        });
+        return config;
     },
     
     createLayerStore: function() {

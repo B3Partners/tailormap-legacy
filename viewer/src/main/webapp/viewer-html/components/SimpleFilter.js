@@ -15,17 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+Ext.define("viewer.components.sf.Slider", {
+    
+    config: {
+        appLayerId: null,
+        attributeName: null,
+        config: null,
+        container: null,
+        simpleFilter: null
+    },
+    
+    constructor: function(conf) {
+        this.initConfig(conf);
+        console.log("init " + this.self.getName(), this);
+    }
+});
 
 Ext.define("viewer.components.SimpleFilter", {
     extend: "viewer.components.Component",
     container: null,
     config: {
-        title: "Filter"
+        filters: null,
+        layers: null,
+        name: null
     },
     constructor: function (conf){
         viewer.components.SimpleFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        
+        console.log("config: ", conf);
         var parentDiv = Ext.get(this.div);
         
         this.container = Ext.create('Ext.container.Container', {
@@ -35,7 +52,17 @@ Ext.define("viewer.components.SimpleFilter", {
             autoScroll: true,
             html: 'Dit wordt het simpele filter component'
         });
-        
+
+        var me = this;
+        Ext.Array.each(this.config.filters, function(filter) {
+            Ext.create(filter.class, {
+                appLayerId: me.config.layers[filter.appLayerId], // convert from index to actual appLayerId
+                attributeName: filter.attributeName,
+                config: filter.config,
+                container: me.container,
+                simpleFilter: me
+            });
+        });
         return this;
     },
     
