@@ -158,7 +158,7 @@
        <str name="defType">edismax</str>
        <str name="df">values</str>
        <str name="qf">
-          exact_match^2.0 values^1.0
+          values^1.0
        </str>
        <str name="fl">*,score</str>
      </lst>

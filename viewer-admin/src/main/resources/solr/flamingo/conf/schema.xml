@@ -9,8 +9,6 @@
         <field name="values" type="text_flamingo" indexed="true" stored="true" multiValued="true" required="true"/>
         <field name="autosuggestValues" type="text_general" indexed="true" stored="true" multiValued="true" required="true"/>
         <copyField source="values" dest="autosuggestValues" />
-        <field name="exact_match" type="string" indexed="true" stored="true" multiValued="true" required="true"/>
-        <copyField source="values" dest="exact_match" />
         <!-- multivalues are maintaining their ordering.
         http://lucene.472066.n3.nabble.com/quot-order-quot-question-on-solr-multi-value-field-td4027695.html -->
         <field name="columns" type="string" indexed="false" stored="true" multiValued="true" required="true"/>
@@ -98,7 +96,7 @@
                 <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
                 -->
                 <filter class="solr.LowerCaseFilterFactory"/>
-                <filter class="solr.EdgeNGramFilterFactory" minGramSize="1" maxGramSize="25" side="front"/>
+                <filter class="solr.EdgeNGramFilterFactory" minGramSize="1" maxGramSize="100" side="front"/>
             </analyzer>
             <analyzer type="query">
                 <tokenizer class="solr.StandardTokenizerFactory"/>
