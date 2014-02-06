@@ -482,6 +482,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                             if(bestMeasure[0] < 0){
                                 bestMeasure[0] *= -1;
                             }
+                            bestMeasure[1] += "<sup>2</" + "sup>";
                         }
                         measureValueText.innerHTML= bestMeasure[0].toFixed(3)+" "+bestMeasure[1];
                     }
