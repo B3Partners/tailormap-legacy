@@ -88,6 +88,7 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                     
                 this.wmsGetFeatureInfoControl.handleResponse = handleResponse;
                 this.wmsGetFeatureInfoControl.buildWMSOptions = buildWMSOptions;
+                this.wmsGetFeatureInfoControl.request = requestWmsGFI;
                 this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);   
                 //deegree handler:
                 this.wmsGetFeatureInfoControl.format.read_FeatureCollection = this.readFeatureCollection;
@@ -225,13 +226,12 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         coord.x = c.x;
         coord.y = c.y;        
         options.coord=coord;
-        var data=[];
         var featuresByLayer = new Object();
         for (var i=0; i< evt.features.length; i++){
             
             var feature = evt.features[i];
-            var layerName = feature.type? feature.type : feature.layer;
-            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url,feature.layerNames);
+            var layerName = feature.type? feature.type : feature.layerNames;
+            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url,layerName);
             if (!featuresByLayer.hasOwnProperty(appLayer.id)) {
                 featuresByLayer[appLayer.id] = new Object();
                 featuresByLayer[appLayer.id].appLayerObj = appLayer;             
@@ -242,18 +242,18 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             }
             featuresByLayer[appLayer.id][layerName].features.push(feature.attributes);
         }
-        options.data = [];
         for(var applayer in featuresByLayer){
+            options.data = [];
             var groupedLayers = featuresByLayer[applayer];
             for (var lName in groupedLayers){
                 var features = groupedLayers[lName].features;
                 var response = {
                     request: {
-                        appLayer: appLayer.id,
+                        appLayer: applayer,
                         serviceLayer: lName
                     },
                     features: features,
-                    appLayer: appLayer
+                    appLayer: groupedLayers.applayerObj
                 }                
                 options.data.push(response);
             }
