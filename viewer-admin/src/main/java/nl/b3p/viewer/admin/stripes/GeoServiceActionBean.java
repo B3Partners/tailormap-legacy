@@ -21,7 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +42,7 @@ import javax.xml.validation.SchemaFactory;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.ArcGISService;
@@ -57,6 +60,7 @@ import nl.b3p.viewer.config.services.TileSet;
 import nl.b3p.viewer.config.services.Updatable;
 import nl.b3p.viewer.config.services.UpdateResult;
 import nl.b3p.viewer.config.services.WMSService;
+import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -482,6 +486,28 @@ public class GeoServiceActionBean implements ActionBean {
 
         return edit();
     }
+    
+     
+    private List<Application> findApplications() {
+        List<Application> apps = new ArrayList();
+
+        List<ApplicationLayer> applicationLayers = Stripersist.getEntityManager().createQuery("from ApplicationLayer where service = :service")
+                .setParameter("service", service).getResultList();
+        for (ApplicationLayer appLayer : applicationLayers) {
+            /*
+            * The parent level of the applicationLayer is needed to find out in
+            * which application the Layer is used. This solution is not good
+            * when there are many levels.
+            */
+            List<Application> applications = Stripersist.getEntityManager().createQuery("from Application").getResultList();
+            for (Application app : applications) {
+                if (app.getRoot().containsLayerInSubtree(appLayer)) {
+                    apps.add(app);
+                }
+            }
+        }
+        return apps;
+    }
 
     public Resolution delete() {
         /*
@@ -554,6 +580,11 @@ public class GeoServiceActionBean implements ActionBean {
         log.info("Updated layers: " + byStatus.get(UpdateResult.Status.UPDATED));
         log.info("New layers: " + byStatus.get(UpdateResult.Status.NEW));
         log.info("Missing layers: " + byStatus.get(UpdateResult.Status.MISSING));
+                
+        List<Application> apps = findApplications();
+        for (Application application : apps) {
+            SelectedContentCache.setApplicationCacheDirty(application, true);
+        }
                 
         Stripersist.getEntityManager().getTransaction().commit();
         
