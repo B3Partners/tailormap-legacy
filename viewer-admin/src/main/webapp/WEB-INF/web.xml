@@ -83,7 +83,7 @@
             The url on where the solr server is to be found.
         </description>
         <param-name>flamingo.solr.url</param-name>
-        <param-value>http://localhost:8084/solr/</param-value>
+        <param-value>http://webkaart.b3p.nl/solr/</param-value>
     </context-param>
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
