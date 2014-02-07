@@ -239,7 +239,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application.setMaxExtent(maxExtent);
 
         application.setAuthenticatedRequired(authenticatedRequired);
-        
+        details.put("isMashup",new ClobElement(application.isMashup().toString()));
         application.getDetails().clear();
         application.getDetails().putAll(details);        
     }
