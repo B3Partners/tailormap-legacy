@@ -126,6 +126,8 @@ Ext.define("viewer.components.CustomConfiguration",{
     
     filterConfigurer: null,
     
+    currentEditIndex: null,
+    
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         var title = config && config.title ? config.title : "";
@@ -144,12 +146,23 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         
         this.filterStore = Ext.create("Ext.data.Store", {
-            fields: ["type", "label", "description"],
+            fields: ["soort", "description"],
             data: [
             ]
         });
         
         this.filterConfigs = [];
+        
+        if(config.filters) {
+            var me = this;
+            Ext.Array.each(config.filters, function(filter) {
+                var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
+                var soort = filterTypes.findRecord("type", type).get("label");
+                var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
+                me.filterConfigs.push(filter);
+                me.filterStore.add({soort: soort, description: (appLayer.alias || appLayer.layerName) + "." + filter.attributeName});
+            });
+        }
         
         var layerStore = this.createLayerStore();
         
@@ -195,6 +208,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                                 var type = records[0].get("type");
                                 var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
                                 
+                                if(type !== "slider") {
+                                    Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
+                                    return;
+                                }
+
                                 me.filterConfigurer = Ext.create(configurerClass, {
                                     configObject: me,
                                     renderTo: "filterConfigFieldset"
@@ -327,7 +345,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                     columns: [
                         {header: 'Soort', dataIndex: 'soort', sortable: false, hideable: false},
                         {header: 'Laag en attribuut', dataIndex: 'description', sortable: false, hideable: false, flex: 1}
-                    ]
+                    ],
+                    listeners: {
+                        select: {
+                            fn: me.gridSelect,
+                            scope: me
+                        }
+                    }
                 }]
             }]
         });
@@ -361,6 +385,11 @@ Ext.define("viewer.components.CustomConfiguration",{
             this.filterConfigs.push(filterControl);
             this.filterStore.add({soort: soort, description: description});
         }
+    },
+    
+    gridSelect: function(grid, record, index, eOpts) {
+        this.currentEditIndex = index;
+        Ext.MessageBox.alert("Concept", "Filtergereedschappen kunnen nog niet bewerkt worden...");
     },
     
     getConfiguration: function() {
