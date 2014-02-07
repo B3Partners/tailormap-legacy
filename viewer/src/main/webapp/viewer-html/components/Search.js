@@ -82,7 +82,7 @@ Ext.define ("viewer.components.Search",{
             items: this.getFormItems(),
             border: 0,
             style: { 
-                padding: '0px 10px 0px 10px'
+                padding: '5px 10px 0px 10px'
             }
         });
         this.resultPanelId = Ext.id();
@@ -150,6 +150,7 @@ Ext.define ("viewer.components.Search",{
                 hidden: this.searchconfigs.length === 1,
                 displayField: 'name',
                 valueField: 'id',
+                margin:"10 100 0 0 ",
                 anchor: '100%',
                 emptyText: 'Maak uw keuze',
                 id: 'searchName' + this.name,
