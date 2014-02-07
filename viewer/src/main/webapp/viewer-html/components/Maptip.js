@@ -230,6 +230,7 @@ Ext.define ("viewer.components.Maptip",{
             var data=options.data;        
             var components=[];    
             //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
+            this.viewerController.mapComponent.setCursor(false);
             if (data==null || data =="null" || data==undefined){
                 return;
             }
