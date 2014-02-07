@@ -26,6 +26,7 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -180,6 +181,14 @@ public class LayerActionBean implements ActionBean {
     }
 
     private void findApplicationsUsedIn() {
+        List<Application> applications = findApplications();
+        for (Application application : applications) {
+            applicationsUsedIn.add(application.getNameWithVersion());
+        }
+    }
+    
+    private List<Application> findApplications() {
+        List<Application> apps = new ArrayList();
         GeoService service = layer.getService();
         String layerName = layer.getName();
 
@@ -188,28 +197,20 @@ public class LayerActionBean implements ActionBean {
 
         for (Iterator it = applicationLayers.iterator(); it.hasNext();) {
             ApplicationLayer appLayer = (ApplicationLayer) it.next();
+
             /*
              * The parent level of the applicationLayer is needed to find out in
              * which application the Layer is used. This solution is not good
              * when there are many levels.
              */
-            List<Level> levels = Stripersist.getEntityManager().createQuery("from Level").getResultList();
-            for (Iterator iter = levels.iterator(); iter.hasNext();) {
-                Level level = (Level) iter.next();
-                if (level != null && level.getLayers().contains(appLayer)) {
-                    applicationsUsedIn.addAll(getApplicationNames(level));
+            List<Application> applications = Stripersist.getEntityManager().createQuery("from Application").getResultList();
+            for (Application app : applications) {
+                if (app.getRoot().containsLayerInSubtree(appLayer)) {
+                    apps.add(app);
                 }
             }
         }
-    }
-
-    private Set<String> getApplicationNames(Level level) {
-        
-        Set<String> names = new HashSet();
-        for(Application app:  level.findApplications()) {
-            names.add(app.getNameWithVersion());
-        }
-        return names;
+        return apps;
     }
 
     public Resolution save() {
@@ -242,8 +243,11 @@ public class LayerActionBean implements ActionBean {
 
         Stripersist.getEntityManager().persist(layer);
         layer.getService().authorizationsModified();
+        List<Application> apps = findApplications();
+        for (Application application : apps) {
+            SelectedContentCache.setApplicationCacheDirty(application, true);
+        }
         Stripersist.getEntityManager().getTransaction().commit();
-
         getContext().getMessages().add(new SimpleMessage("De kaartlaag is opgeslagen"));
 
         return new ForwardResolution(JSP);
