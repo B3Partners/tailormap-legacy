@@ -44,7 +44,8 @@ Ext.define ("viewer.components.TOC",{
         toggleAllLayersOffText: 'All layers off',
         initToggleAllLayers: true,
         showAllLayersOff: false,
-        showAllLayersOn: false
+        showAllLayersOn: false,
+        expandOnEnabledLayer:false
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -194,6 +195,18 @@ Ext.define ("viewer.components.TOC",{
         // Apply the scroll fix when all layers are added
         this.applyTreeScrollFix();
     },
+    
+    isExpanded : function(level , triState){
+        var expand = this.expandOnStartup;
+        if(this.expandOnEnabledLayer && triState >= 0){
+            expand = true;
+        }
+        if (level.background) {
+            expand = false;
+        }  
+        
+        return expand;
+    },
     // Add a level to the tree, and load all it's levels and applayers
     addLevel : function (levelId){
         var nodes = new Array();
@@ -202,14 +215,9 @@ Ext.define ("viewer.components.TOC",{
             return null;
         }
         var levelId = "level-"+level.id;
-        var expand = this.expandOnStartup;
-        if (level.background){
-            expand=false;
-        }
         var treeNodeLayer = {
             text: '<span id="span_'+levelId+'">'+level.name+'</span>', 
             id: levelId,
-            expanded: expand,
             expandable: !level.background,
             collapsible: !level.background,
             leaf: false,
@@ -271,7 +279,11 @@ Ext.define ("viewer.components.TOC",{
                 treeNodeLayer.cls = 'tristatenode';
             }
         }
+        var triState = this.calculateTriState(childsChecked, totalChilds);
+        
+        var expand = this.isExpanded(level, triState);
         treeNodeLayer.children= nodes;
+        treeNodeLayer.expanded = expand;
         var node = {
             node: treeNodeLayer,
             tristate: tristate
@@ -516,15 +528,23 @@ Ext.define ("viewer.components.TOC",{
             me.updateTriState(node.parentNode);
         }
     },
-    
-    updateTriStateClass: function(node, totalChecked, totalNodes) {
+    calculateTriState : function(totalChecked, totalNodes){
         var tristate = 0;
-        if(!this.groupCheck) return tristate;
         if(totalChecked === 0) {
             tristate = -1;
         } else if(totalChecked === totalNodes) {
             tristate = 1;
         }
+        return tristate;
+    },
+    
+    updateTriStateClass: function(node, totalChecked, totalNodes) {
+        var tristate = 0;
+        if(!this.groupCheck){
+            return tristate;
+        }
+        tristate = this.calculateTriState(totalChecked, totalNodes);
+        
         if(node != null) {
             if(tristate === -1) {
                 node.data.tristate = -1;
@@ -700,5 +720,5 @@ Ext.define ("viewer.components.TOC",{
         var me = this;
         me.panel.doLayout();
         me.applyTreeScrollFix();
-    }
+    } 
 });

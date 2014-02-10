@@ -99,6 +99,14 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: true,
                 labelWidth:me.labelWidth
             },{
+                xtype: 'checkbox',
+                fieldLabel: 'Aangezette kaarten openklappen',
+                inputValue: false,
+                name: 'expandOnEnabledLayer',
+                checked: config.expandOnEnabledLayer!==undefined? config.expandOnEnabledLayer:false,
+                value: false,
+                labelWidth:me.labelWidth
+            },{
                 xtype: 'container',
                 layout: {
                     type : 'hbox'
