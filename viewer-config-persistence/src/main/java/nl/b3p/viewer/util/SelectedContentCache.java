@@ -52,7 +52,7 @@ public class SelectedContentCache {
         // Don't use cache when any of these parameters is true, cache only
         // the JSON variant used when starting up the viewer
         if(validXmlTags || includeAppLayerAttributes || includeRelations) {
-            return processCache(request,createSelectedContent(app, validXmlTags));
+            return processCache(request,createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations));
         }
         
         JSONObject cached = null;
@@ -201,7 +201,7 @@ public class SelectedContentCache {
         return true;
     }
     
-    public JSONObject createSelectedContent(Application app, boolean validXmlTags) throws JSONException {
+    public JSONObject createSelectedContent(Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations) throws JSONException {
         Level root = app.getRoot();
         JSONObject o = new JSONObject();
         if (root != null) {
@@ -234,7 +234,7 @@ public class SelectedContentCache {
             o.put("selectedContent", selectedContent);
 
             List selectedObjects = new ArrayList();
-            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, app, treeCache, appCache);
+            walkAppTreeForJSON(levels, appLayers, selectedObjects, root, false, validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache);
 
             Collections.sort(selectedObjects, new Comparator() {
                 @Override
@@ -285,7 +285,7 @@ public class SelectedContentCache {
         return o;
     }
     
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache) throws JSONException {
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, Application.TreeCache treeCache, Authorizations.ApplicationCache appCache) throws JSONException {
         JSONObject o = l.toJSONObject(false, app, null);
         
         Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
@@ -303,7 +303,7 @@ public class SelectedContentCache {
         
         for(ApplicationLayer al: l.getLayers()) {
             
-            JSONObject p = al.toJSONObject();
+            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations);
             p.put("background", l.isBackground() || parentIsBackground);
             
             Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
@@ -338,7 +338,7 @@ public class SelectedContentCache {
                 Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
                 childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, app, treeCache, appCache);
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, includeRelations, app, treeCache, appCache);
             }
         }
     }
