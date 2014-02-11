@@ -401,6 +401,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var app = this.app;
         
         var traverseLevel = function(level) {
+            if(!level){
+                return;
+            }
             onLevel(level);
             if(level.children) {
                 for(var i in level.children) {
@@ -429,17 +432,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     getLevelAppLayerIds: function(level) {
         var appLayers = [];
-        
-        if(level.layers) {
-            for(var i in level.layers) {
-                appLayers.push(level.layers[i]);
+        if (level) {
+            if (level.layers) {
+                for (var i in level.layers) {
+                    appLayers.push(level.layers[i]);
+                }
             }
-        }
-        if(level.children) {
-            for(var c in level.children) {
-                var childId = level.children[c];
-                var childLayers = this.getLevelAppLayerIds(this.app.levels[childId]);
-                appLayers = appLayers.concat(childLayers);
+            if (level.children) {
+                for (var c in level.children) {
+                    var childId = level.children[c];
+                    var childLayers = this.getLevelAppLayerIds(this.app.levels[childId]);
+                    appLayers = appLayers.concat(childLayers);
+                }
             }
         }
         return appLayers;
@@ -560,7 +564,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     initLevel: function(levelId,background) {
         var level = this.app.levels[levelId];
-        if (level.background!=background){
+        if (!level || level.background!=background){
             return;
         }
         if(level.layers) {
@@ -1179,7 +1183,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @param appLayer the application layer
      */
     setFilter : function (filter, appLayer){
-         if(!appLayer.filter){
+        if(!appLayer){
+            return;
+        }
+        if(!appLayer.filter){
             appLayer.filter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "",
                 cql: "",

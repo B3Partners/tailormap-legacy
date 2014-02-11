@@ -211,7 +211,7 @@ Ext.define ("viewer.components.TOC",{
     addLevel : function (levelId){
         var nodes = new Array();
         var level = this.levels[levelId];
-        if(level.background && !this.showBaselayers){
+        if(!level || level.background && !this.showBaselayers){
             return null;
         }
         var levelId = "level-"+level.id;
