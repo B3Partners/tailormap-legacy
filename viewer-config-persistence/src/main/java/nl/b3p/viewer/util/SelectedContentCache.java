@@ -49,6 +49,12 @@ public class SelectedContentCache {
     
     public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags) throws JSONException {
         
+        // Don't use cache when validXmlTags parameters is true, cache only
+        // the JSON variant used when starting up the viewer
+        if(validXmlTags) {
+            return processCache(request,createSelectedContent(app, validXmlTags));
+        }
+        
         JSONObject cached = null;
         if(mustCreateNewCache(app)){
             cached = createSelectedContent(app, validXmlTags);
