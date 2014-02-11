@@ -382,6 +382,7 @@ Ext.onReady(function() {
                 if(item.value === (globalLayout.backgroundRepeat || '')) bgRepeat.dom.selectedIndex = index;
             });
             Ext.get('app_background_position').set({ value: globalLayout.backgroundPosition || ''});
+            Ext.get('app_extracss').dom.value = globalLayout.extraCss || '';
         }
         if(layoutJson && Ext.isDefined(layoutJson)) {
             layoutRegionsStore.each(function(layoutRegion){
@@ -682,7 +683,13 @@ Ext.onReady(function() {
         if(iframe.dom.contentDocument && iframe.dom.contentDocument.body && iframe.dom.contentDocument.body.innerHTML) {
             iframe.dom.contentDocument.body.innerHTML = '';
         }
-        var url = configPageLink + "?name="+componentData.componentName+"&className="+componentData.componentClass;
+        var url = configPageLink;
+        if(url.indexOf("?") !== -1){
+            url += "&";
+        }else{
+            url += "?";
+        }
+        url += "name="+componentData.componentName+"&className="+componentData.componentClass;
         iframe.dom.src = url;
         iframe.setStyle('display', 'block');
         popupWin.setTitle('Configuratie ' + componentData.componentPrettyName);
@@ -763,7 +770,8 @@ Ext.onReady(function() {
             backgroundColor: Ext.get('app_background_color').getValue() || "",
             backgroundImage: Ext.get('app_background_image').getValue() || "",
             backgroundRepeat: Ext.get('app_background_repeat').getValue() || "no-repeat",
-            backgroundPosition: Ext.get('app_background_position').getValue() || ""
+            backgroundPosition: Ext.get('app_background_position').getValue() || "",
+            extraCss: Ext.get('app_extracss').getValue() || ""
         };
         Ext.Ajax.request({ 
             url: layoutSaveUrl, 

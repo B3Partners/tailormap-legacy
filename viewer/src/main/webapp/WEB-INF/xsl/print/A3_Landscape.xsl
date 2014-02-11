@@ -6,6 +6,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:fo="http://www.w3.org/1999/XSL/Format" 
 	xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
 	xmlns:svg="http://www.w3.org/2000/svg" exclude-result-prefixes="fo">
+    <xsl:import href="legend.xsl"/>
     <xsl:output method="xml" version="1.0" omit-xml-declaration="no" indent="yes"/>
 
     <xsl:param name="versionParam" select="'1.0'"/>

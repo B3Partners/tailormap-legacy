@@ -24,7 +24,12 @@ Ext.define ("viewer.components.tools.StreetView",{
     extend: "viewer.components.Component",
     config:{
         name: "Street View",
+        width:null,
+        height:null,
+        useMarker:null,
+        usePopup:null,
         title: "",
+        nonSticky:null,
         titlebarIcon : "",
         tooltip : ""
     },
@@ -35,11 +40,33 @@ Ext.define ("viewer.components.tools.StreetView",{
     iconUrl_sel: null,
     iconUrl_dis: null,
     toolMapClick: null,
+    markerName:null,
     button: null,
+    popupWindow:null,
     url: "",
     constructor: function (conf){        
+        if(conf.title === null || conf.title === undefined){
+            conf.title = "Streetview";
+        }
+        if(conf.usePopup === null || conf.usePopup === undefined){
+            conf.usePopup = false;
+        }
+        if(conf.useMarker === null || conf.useMarker === undefined){
+            conf.useMarker = false;
+        }
+        if(conf.height === null || conf.height === undefined){
+            conf.height = "600";
+        }
+        if(conf.width === null || conf.width === undefined){
+            conf.width = "600";
+        }
+        if(conf.nonSticky === null || conf.nonSticky === undefined){
+            conf.nonSticky = false;
+        }
         viewer.components.tools.StreetView.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
+
+        this.markerName = this.id + "MARKER";
         
         this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
         this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/streetview/streetview_over.png";
@@ -61,6 +88,7 @@ Ext.define ("viewer.components.tools.StreetView",{
         
         this.button= this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
+            id:this.getName(),
             name: this.getName(),
             iconUrl_up: this.iconUrl_up,
             iconUrl_over: this.iconUrl_over,
@@ -86,10 +114,23 @@ Ext.define ("viewer.components.tools.StreetView",{
         var x = coords.x;
         var y = coords.y;
         var point = this.transformLatLon(x,y);
+        if(this.useMarker){
+            this.viewerController.mapComponent.getMap().setMarker(this.markerName,x,y);
+        }
         var newUrl = ""+this.url;
         newUrl=newUrl.replace(/\[x\]/g, point.x);
         newUrl=newUrl.replace(/\[y\]/g, point.y);
-        window.open(newUrl);
+        if(this.usePopup){        
+           this.popupWindow = window.open(newUrl,'name','height='+this.height + ',width=' + this.width + ',location=no,status=no,toolbar=no,menubar=no');
+           if(window.focus){
+               this.popupWindow.focus();
+           }
+        }else{
+            window.open(newUrl);
+        }
+        if(this.nonSticky){
+            this.viewerController.mapComponent.activateTool(null,true);
+        }
     },
     transformLatLon : function(x,y){
         var dest = new Proj4js.Proj("EPSG:4236");
@@ -109,23 +150,34 @@ Ext.define ("viewer.components.tools.StreetView",{
      */
     buttonDown : function(button,object){        
         this.toolMapClick.activateTool();
+        
+        this.viewerController.mapComponent.setCursor(true, "crosshair");
     },
     /**
      * When the button is hit and toggled false
      */
     buttonUp: function(button,object){
+        this.viewerController.mapComponent.setCursor(false);
+        if(this.useMarker){
+            this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
         this.toolMapClick.deactivateTool();
     },    
     /**
      * raised when the tool is activated.
      */    
     onActivate: function (){
+        this.viewerController.mapComponent.setCursor(true, "crosshair");
         this.button.setSelectedState(true);
     },
     /**
      * raised when the tool is deactivated.
      */
     onDeactivate: function(){
+        if(this.useMarker){
+            this.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
         this.button.setSelectedState(false);
+        this.viewerController.mapComponent.setCursor(false);
     }
 });

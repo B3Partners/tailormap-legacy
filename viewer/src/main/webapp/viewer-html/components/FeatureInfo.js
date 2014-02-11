@@ -92,7 +92,6 @@ Ext.define ("viewer.components.FeatureInfo",{
                 if (layer.hasFeatureType){
                     this.addLayerInServerRequest(appLayer);
                 }else{
-                    //TODO: add query layers to the map
                     //listen to the onMaptipData
                     mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,this.onMapData,this);       
                 }            
@@ -164,7 +163,7 @@ Ext.define ("viewer.components.FeatureInfo",{
             this.setMaptipEnabled(true);
         }
         this.callParent(arguments);        
-        this.viewerController.mapComponent.setWaitingCursor(false);
+        this.viewerController.mapComponent.setCursor(false);
     },
     /**
      *Called when extent is changed, recalculate the position

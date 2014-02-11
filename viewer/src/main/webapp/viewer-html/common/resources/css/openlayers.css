@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-.olImageLoadError{
-    background-color: transparent !important;
+.olImageLoadError { 
+    display: none !important;
 }
 .olControlPanel{
     position: absolute;
@@ -83,6 +83,16 @@
 .olControlPanel .olControlMeasureItemActive{
     background-image: url("../../openlayers/theme/default/img/measure_on.png");
 }
+
+.olControlPanel .olControlMeasureAreaItemActive{
+    background: url("../../../components/resources/images/measureArea/ruler_square_over.png");
+    background-repeat: no-repeat;
+}
+.olControlPanel .olControlMeasureAreaItemInactive{
+    background: url("../../../components/resources/images/measureArea/ruler_square.png");
+    background-repeat: no-repeat;
+}
+
 .olControlPanel .olControlDefaultItemActive{
     background-image: url("../../openlayers/theme/default/img/default_on.png");
 }

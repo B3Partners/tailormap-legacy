@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.3.3-SNAPSHOT</version>
+        <version>4.4.0-SNAPSHOT</version>
     </parent>
     <name>viewer-admin</name>
     
@@ -19,7 +19,7 @@
     </properties>
 
     <dependencies>
-        <!-- logging dependencies -->
+        <!-- logging dependencies --> 
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -37,10 +37,9 @@
             <version>2.1.5</version>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
-            <type>jar</type>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
         </dependency>
         <!-- Stripes -->
         <dependency>
@@ -82,6 +81,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.flamingo-mc.solr-commons</groupId>
+            <artifactId>solr-commons</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.flamingo-mc.web-commons</groupId>
             <artifactId>web-commons</artifactId>
             <version>${project.parent.version}</version>
@@ -109,6 +114,37 @@
             <artifactId>poi</artifactId>
             <version>3.9</version>
             <type>jar</type>
+        </dependency>
+        <!-- Solr dependencies for indexing and searching -->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
+            <version>4.6.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsp-api</artifactId>
+                    <groupId>javax.servlet.jsp</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-fileupload</groupId>
+                    <artifactId>commons-fileupload</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.restlet</artifactId>
+                    <groupId>org.restlet.jee</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>org.restlet.ext.servlet</artifactId>
+                    <groupId>org.restlet.jee</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+               <artifactId>solr-solrj</artifactId>
+               <groupId>org.apache.solr</groupId>
+               <version>4.6.0</version>
+               <type>jar</type>
+               <scope>compile</scope>
         </dependency>
     </dependencies>
     <repositories>

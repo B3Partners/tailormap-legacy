@@ -138,6 +138,7 @@ public class CatalogServiceActionBean implements ActionBean{
             json.put("success", Boolean.TRUE);
         } catch(Exception e) {
 
+
             error = "Fout bij zoeken in CSW: " + e.toString();
             if(e.getCause() != null) {
                 error += "; oorzaak: " + e.getCause().toString();

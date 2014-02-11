@@ -58,13 +58,15 @@ public class SearchClientTest extends HttpTestSupport{
     
     @Test
     public void searchOpenLs(){        
-        JSONArray result = ols.search("grote+markt+groningen");
+        SearchResult response = ols.search("grote+markt+groningen");
+        JSONArray result = response.getResults();
         assertTrue(result.length()==1);
     }    
     
     @Test
     public void searchOpenLsUnencoded(){        
-        JSONArray result = ols.search("grote markt groningen");
+        SearchResult response =   ols.search("grote markt groningen");   
+        JSONArray result = response.getResults();
         assertTrue(result.length()==1);
     }    
 }

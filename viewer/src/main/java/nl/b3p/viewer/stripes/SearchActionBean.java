@@ -17,22 +17,25 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
-import java.net.URL;
 import java.util.*;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.OneToManyTypeConverter;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.search.ArcGisRestSearchClient;
 import nl.b3p.viewer.search.OpenLSSearchClient;
 import nl.b3p.viewer.search.SearchClient;
-import org.apache.commons.io.IOUtils;
+import nl.b3p.viewer.search.SearchResult;
+import nl.b3p.viewer.search.SolrSearchClient;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
  * @author Jytte Schaeffer
+ * @author Roy Braam
+ * @author Meine Toonen
  */
 @UrlBinding("/action/search")
 @StrictBinding
@@ -49,6 +52,8 @@ public class SearchActionBean implements ActionBean {
     private String componentName;
     @Validate
     private String searchRequestId;
+    @Validate(converter = OneToManyTypeConverter.class)
+    private List<Long> visibleLayers = new ArrayList();
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
     public ActionBeanContext getContext() {
@@ -98,10 +103,19 @@ public class SearchActionBean implements ActionBean {
     public void setSearchRequestId(String searchRequestId) {
         this.searchRequestId = searchRequestId;
     }
+
+    public List<Long> getVisibleLayers() {
+        return visibleLayers;
+    }
+
+    public void setVisibleLayers(List<Long> visibleLayers) {
+        this.visibleLayers = visibleLayers;
+    }
+
     //</editor-fold>
     
+    @DefaultHandler
     public Resolution source() throws Exception {
-        EntityManager em = Stripersist.getEntityManager();
         JSONObject result = new JSONObject();        
         JSONObject request = new JSONObject();
         request.put("appId",appId);
@@ -111,9 +125,56 @@ public class SearchActionBean implements ActionBean {
         request.put("searchRequestId",searchRequestId);
         result.put("request",request);
         String error="";
-        String url = "";
-        String type = null;
-        if (appId != null) {
+        JSONObject search =  getSearchConfig();
+        if(search == null){
+            error += "No searchconfig found";
+        }else{
+            JSONArray resultsArray = new JSONArray();
+            SearchClient client = getSearchClient(search);
+            SearchResult response = new SearchResult();
+            if (client != null) {
+                response = client.search(searchText);
+                resultsArray =response.getResults();
+            }
+            result.put("limitReached", response.getLimitReached());
+            result.put("results",resultsArray);
+            result.put("error",error);
+        }
+        return new StreamingResolution("application/json", new StringReader(result.toString())); 
+    }
+    
+    public Resolution autosuggest() throws JSONException {
+        
+         JSONObject result = new JSONObject();        
+        JSONObject request = new JSONObject();
+        request.put("appId",appId);
+        request.put("componentName",componentName);
+        request.put("searchName", searchName);
+        request.put("searchText", searchText);
+        request.put("searchRequestId",searchRequestId);
+        result.put("request",request);
+        String error="";
+        JSONObject search =  getSearchConfig();
+        if(search == null){
+            error += "No suggestions found";
+        }else{
+            JSONArray results = new JSONArray();
+            SearchClient client = getSearchClient(search);
+
+            if (client != null) {
+                results = client.autosuggest(searchText);
+            }
+
+            result.put("results",results);
+            result.put("error",error);
+        }
+        return new StreamingResolution("application/json", new StringReader(result.toString())); 
+    }
+    
+    private JSONObject getSearchConfig() throws JSONException{
+        JSONObject obj = new JSONObject();
+         if (appId != null) {
+            EntityManager em = Stripersist.getEntityManager();
             Application app = em.find(Application.class, appId);
             Set components = app.getComponents();
             for(Iterator it = components.iterator(); it.hasNext();){
@@ -125,41 +186,39 @@ public class SearchActionBean implements ActionBean {
                         for(int i = 0; i < searchConfig.length(); i++){
                             JSONObject search = (JSONObject)searchConfig.get(i);
                             if(search.get("id").equals(searchName)){
-                                url = search.getString("url");
-                                if (search.has("type")){
-                                    type=search.getString("type");
-                                }
+                              obj = search;
                             }
                         }
                     }else if (config.has("searchUrl")){
-                        url=config.getString("searchUrl");
+                        obj.put("url", config.get("searchUrl"));
                     }
                 }
             }
         }else{
-            error="No application id";
+            return null;
         }
-        
-        JSONArray results = new JSONArray();
-        if(url != null && !url.equals("")){
-            SearchClient client=null;
-            if(type==null || "arcgisrest".equalsIgnoreCase(type)){
-                client = new ArcGisRestSearchClient(url);                
-            }else if (type.equalsIgnoreCase("openls")){
-                client = new OpenLSSearchClient(url);
-            }
-            if (client!=null){            
-                results = client.search(searchText);
-            }
-             
-        }
-        result.put("results",results);
-        result.put("error",error);
-        return new StreamingResolution("application/json", new StringReader(result.toString())); 
-    }
-    
-    private static JSONObject issueRequest(String url) throws Exception {
-        return new JSONObject(IOUtils.toString(new URL(url).openStream(), "UTF-8"));
+        return obj;
     }
 
+    private SearchClient getSearchClient(JSONObject config) throws JSONException {
+        SearchClient client;
+        if(config == null){
+            client = null;
+        }else{
+            String type = config.getString("type");
+            String url = config.has("searchUrl") ? config.getString("searchUrl") : config.getString("url");
+            if (type == null || "arcgisrest".equalsIgnoreCase(type)) {
+                client = new ArcGisRestSearchClient(url);
+            } else if (type.equalsIgnoreCase("openls")) {
+                client = new OpenLSSearchClient(url);
+            } else if(type.equalsIgnoreCase("solr")){
+                client = new SolrSearchClient();
+                ((SolrSearchClient)client).setConfig(config);
+                ((SolrSearchClient)client).setVisibleLayers(visibleLayers);
+            }else{
+                client = null;
+            }
+        }
+        return client;
+    }
 }

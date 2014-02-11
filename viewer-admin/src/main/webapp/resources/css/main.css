@@ -145,7 +145,6 @@ input[type="submit"]:hover,
 #header #menu ul li ul li ul {
   float: none;
   position: absolute;
-  right: 0px;
   margin-top: 40px;
   margin-right: -2px;
   border: 2px solid #1c6ca7;
@@ -159,7 +158,7 @@ input[type="submit"]:hover,
 #header #menu ul li ul li ul li a {
   width: 100%;
   float: right;
-  text-align: right;
+  text-align: left;
   border-top: 1px solid #ffffff;
 }
 #header #menu ul li.menuclicked ul {
@@ -394,6 +393,11 @@ input[type="submit"]:hover,
 .globalconfig .configrow:nth-child(odd) {
     background-color: #f9f9f9;
 }
+.globalconfig .configrow .extliketextarea {
+    width: 100%;
+    min-height: 75px;
+    display: block;
+}
 #layout-container .content-container .regionconfig .widthconfig,
 #layout-container .content-container .regionconfig .heightconfig,
 #layout-container .content-container .regionconfig .tabsconfig {
@@ -562,4 +566,13 @@ input[type="submit"]:hover,
 }
 .flamingoLogo{
     margin: 20px;
+}
+.striped-table tr:nth-child(even) {
+    background-color: #EEEEEE;
+}
+.checkbox-table {
+    width: 100%;
+}
+.checkbox-table input[type=checkbox] {
+    margin-left: 8px;
 }

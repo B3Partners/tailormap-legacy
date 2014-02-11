@@ -61,10 +61,9 @@ Ext.define("viewer.components.NonInitLayerSlider",{
             for (var i=0; i < this.initSelectedContent.length; i++){
                 if (this.initSelectedContent[i].type=="appLayer"){
                     if (this.initSelectedContent[i].id==appLayerId){
-                        return true
+                        return true;
                     }
-                }
-                else {
+                }else {
                     if(this.checkInitSelectedLevel(this.initSelectedContent[i].id,appLayerId)){
                         return true;
                     }                    

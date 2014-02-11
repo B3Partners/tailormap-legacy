@@ -239,6 +239,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
             conf.toggle=false;
             tool = Ext.create("viewer.components.tools.JSButton",conf);
+        }else if( conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
+            tool = Ext.create("viewer.components.tools.FlamingoMeasureArea",conf);
         }else{
             tool = new viewer.viewercontroller.flamingo.FlamingoTool(conf);
         }
@@ -415,7 +417,10 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     /**
      * See @link MapComponent.activateTool
      */
-    activateTool : function (id){
+    activateTool : function (id,firstIfNull){
+        if(firstIfNull){
+            id = this.tools[0].id;
+        }
         this.viewerObject.call(this.toolGroupId, "setTool", id);
     },
     /**
@@ -614,12 +619,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 nr: component[1],
                 total: component[2]
             };
-        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){           
-            var extent=component[3];
+        }else if( event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA){          
+            var extent=component[2];
             var centerx=(extent.minx+extent.maxx)/2;
             var centery=(extent.miny+extent.maxy)/2;
             var map= object;
-            var pixel = map.coordinateToPixel(centerx,centery);
+            var pixel = this.getMap().coordinateToPixel(centerx,centery);
             var comp= {
                 coord:{
                     x: centerx,
@@ -635,13 +640,13 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
             //correct the data
             var data=[];
             var i=0;
-            for (var layerName in component[2]){
+            for (var layerName in component[1]){
                 data[i]={
                     request : {
                         appLayer: object.appLayerId,
                         serviceLayer: layerName
                     },
-                    features: component[2][layerName]
+                    features: component[1][layerName]
                 };
                 i++;
             }       
@@ -751,9 +756,9 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         return this.viewerObject.callMethod(this.flamingoId,"getHeight");
     },
     /**
-     * @see viewer.viewercontroller.MapComponent#setWaitingCursor
+     * @see viewer.viewercontroller.MapComponent#setCursor
      */
-    setWaitingCursor: function(showWaitingCursor) {
+    setCursor: function(show,cursor) {
         // TODO: set waiting cursor for Flamingo map
     },
     /**

@@ -37,6 +37,7 @@ Ext.define ("viewer.components.Print",{
         orientation: null,
         legend: null,
         max_imagesize: "2048",
+        showPrintRtf:null,
         label: ""
     },
     /**
@@ -46,6 +47,7 @@ Ext.define ("viewer.components.Print",{
     constructor: function (conf){  
         //set minwidth:
         if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
+        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true 
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
@@ -226,6 +228,8 @@ Ext.define ("viewer.components.Print",{
                     id: 'legendContainer',
                     height: 200,
                     flex: 0.4,
+                    hideMode: "offsets",
+                    hidden: !this.getLegend(),
                     items: [{}],
                     autoScroll: true,
                     margin: '0 5 0 0'
@@ -340,7 +344,15 @@ Ext.define ("viewer.components.Print",{
                                 name: 'includeLegend',
                                 checked: me.getLegend(),
                                 inputValue: true,
-                                boxLabel: 'Legenda toevoegen'
+                                boxLabel: 'Legenda toevoegen',
+                                listeners:{
+                                    change:{
+                                        fn: function(obj, on){
+                                            Ext.getCmp("legendContainer").setVisible(on);
+                                        },
+                                        scope:this
+                                    }
+                                }
                             }]                        
                         },{
                             //(8)
@@ -395,6 +407,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
+                    hidden: !this.showPrintRtf,
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -410,7 +423,7 @@ Ext.define ("viewer.components.Print",{
                     }                  
                 },{
                     xtype: 'button',
-                    text: 'Opslaan als PDF'  ,
+                    text: 'Opslaan via PDF'  ,
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -424,22 +437,6 @@ Ext.define ("viewer.components.Print",{
                             }
                         }
                     }                    
-                },{
-                    xtype: 'button',
-                    text: 'Printen via PDF',
-                    componentCls: 'mobileLarge',
-                    style: {
-                        "float": "right",
-                        marginLeft: '5px'
-                    },
-                    listeners: {
-                        click:{
-                            scope: this,
-                            fn: function (){
-                                this.submitSettings("printPDF")
-                            }
-                        }
-                    }  
                 }]                
             }]
         });

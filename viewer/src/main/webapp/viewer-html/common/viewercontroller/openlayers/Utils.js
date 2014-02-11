@@ -345,3 +345,179 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
     onDblclick: function(evt) {          
     }
 });
+
+function handleResponse(xy, request, url,layerNames) {
+    if(!this.cache ){
+        this.cache = new Object();
+    }
+    if(!this.cache[url]){
+        
+        this.cache[url] = new Object();
+        this.cache[url].features = new Array();
+        this.cache[url].counter = 0;
+    }
+    this.cache[url].counter++;
+    var doc = request.responseXML;
+    if(!doc || !doc.documentElement) {
+        doc = request.responseText;
+    }
+    var features = this.format.read(doc);
+    this.cache[url].features = this.cache[url].features.concat(features);
+    for ( var i = 0 ; i < features.length ;i++){
+        features[i].layerNames = layerNames;
+        features[i].url = url;
+    }
+    if (this.drillDown === false) {
+        this.triggerGetFeatureInfo(request, xy, features,layerNames);
+    } else {
+        this._requestCount++;
+        if (this.output === "object") {
+            this._features = (this._features || []).concat(
+                {url: url, features: features}
+            );
+        } else {
+        this._features = (this._features || []).concat(features);
+        }
+        //if (this._requestCount === this._numRequests) {
+        if (request._headers.total === this.cache[url].counter) {
+            this.cache[url].counter = 0;
+            this.triggerGetFeatureInfo(request, xy, this.cache[url].features, layerNames);
+            delete this._features;
+            delete this._requestCount;
+            delete this.cache[url];
+            delete this._numRequests;
+        }
+    }
+}
+
+/**
+ * Method: request
+ * Sends a GetFeatureInfo request to the WMS
+ * 
+ * Parameters:
+ * clickPosition - {<OpenLayers.Pixel>} The position on the map where the
+ *     mouse event occurred.
+ * options - {Object} additional options for this method.
+ * 
+ * Valid options:
+ * - *hover* {Boolean} true if we do the request for the hover handler
+ */
+function requestWmsGFI(clickPosition, options) {
+    var layers = this.findLayers();
+    if (layers.length == 0) {
+        this.events.triggerEvent("nogetfeatureinfo");
+        // Reset the cursor.
+        OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
+        return;
+    }
+
+    options = options || {};
+    if (this.drillDown === false) {
+        var wmsOptions = this.buildWMSOptions(this.url, layers,
+                clickPosition, layers[0].params.FORMAT);
+        var request = OpenLayers.Request.GET(wmsOptions);
+
+        if (options.hover === true) {
+            this.hoverRequest = request;
+        }
+    } else {
+        this._requestCount = 0;
+        this._numRequests = 0;
+        this.features = [];
+        // group according to service url to combine requests
+        var services = {}, url;
+        for (var i = 0, len = layers.length; i < len; i++) {
+            var layer = layers[i];
+            var service, found = false;
+            url = OpenLayers.Util.isArray(layer.url) ? layer.url[0] : layer.url;
+            if (url in services) {
+                services[url].push(layer);
+            } else {
+                this._numRequests++;
+                services[url] = [layer];
+            }
+        }
+        var layers;
+        for (var url in services) {
+            layers = services[url];
+            for (var i = 0; i < layers.length; i++) {
+                var wmsOptions = this.buildWMSOptions(url, [layers[i]],
+                        clickPosition, layers[0].params.FORMAT);
+                wmsOptions.headers = new Object();
+                wmsOptions.headers.total = layers.length;
+                wmsOptions.headers.index = i;
+                OpenLayers.Request.GET(wmsOptions);
+            }
+        }
+    }
+}
+    
+/**
+ * Method: buildWMSOptions
+ * Build an object with the relevant WMS options for the GetFeatureInfo request
+ *
+ * Parameters:
+ * url - {String} The url to be used for sending the request
+ * layers - {Array(<OpenLayers.Layer.WMS)} An array of layers
+ * clickPosition - {<OpenLayers.Pixel>} The position on the map where the mouse
+ *     event occurred.
+ * format - {String} The format from the corresponding GetMap request
+ */
+function buildWMSOptions(url, layers, clickPosition, format) {
+    var layerNames = [], styleNames = [];
+    for (var i = 0, len = layers.length; i < len; i++) {
+        if (layers[i].params.LAYERS != null) {
+            layerNames = layerNames.concat(layers[i].params.LAYERS);
+            styleNames = styleNames.concat(this.getStyleNames(layers[i]));
+        }
+    }
+    var firstLayer = layers[0];
+    // use the firstLayer's projection if it matches the map projection -
+    // this assumes that all layers will be available in this projection
+    var projection = this.map.getProjection();
+    var layerProj = firstLayer.projection;
+    if (layerProj && layerProj.equals(this.map.getProjectionObject())) {
+        projection = layerProj.getCode();
+    }
+    var params = OpenLayers.Util.extend({
+        service: "WMS",
+        version: firstLayer.params.VERSION,
+        request: "GetFeatureInfo",
+        exceptions: firstLayer.params.EXCEPTIONS,
+        bbox: this.map.getExtent().toBBOX(null,
+            firstLayer.reverseAxisOrder()),
+        feature_count: this.maxFeatures,
+        height: this.map.getSize().h,
+        width: this.map.getSize().w,
+        format: format,
+        info_format: firstLayer.params.INFO_FORMAT || this.infoFormat
+    }, (parseFloat(firstLayer.params.VERSION) >= 1.3) ?
+        {
+            crs: projection,
+            i: parseInt(clickPosition.x),
+            j: parseInt(clickPosition.y)
+        } :
+        {
+            srs: projection,
+            x: parseInt(clickPosition.x),
+            y: parseInt(clickPosition.y)
+        }
+    );
+    if (layerNames.length != 0) {
+        params = OpenLayers.Util.extend({
+            layers: layerNames,
+            query_layers: layerNames,
+            styles: styleNames
+        }, params);
+    }
+    OpenLayers.Util.applyDefaults(params, this.vendorParams);
+    return {
+        url: url,
+        params: OpenLayers.Util.upperCaseObject(params),
+        extra: layerNames,
+        callback: function(request) {
+            this.handleResponse(clickPosition, request, url, layerNames);
+        },
+        scope: this
+    };
+}

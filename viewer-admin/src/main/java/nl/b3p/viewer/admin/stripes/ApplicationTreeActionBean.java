@@ -25,6 +25,7 @@ import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -120,7 +121,9 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             int id = Integer.parseInt(nodeId.substring(1));
             if(type.equals("n")) {
                 Level l = em.find(Level.class, new Long(id));
-                for(Level sub: l.getChildren()) {
+                List<Level> levels = l.getChildren();
+                Collections.sort(levels);
+                for(Level sub: levels) {
                     JSONObject j = new JSONObject();
                     j.put("id", "n" + sub.getId());
                     j.put("name", sub.getName());
@@ -265,6 +268,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
 
         em.persist(l);
         em.persist(parent);
+        SelectedContentCache.setApplicationCacheDirty(application, true);
         application.authorizationsModified();
         em.getTransaction().commit();
 

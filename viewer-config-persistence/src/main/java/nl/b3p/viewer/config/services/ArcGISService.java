@@ -571,9 +571,15 @@ public class ArcGISService extends GeoService implements Updatable {
     }
     
     //<editor-fold desc="Add currentVersion to toJSONObject()">
+    
     @Override
     public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags);
+        return toJSONObject(validXmlTags, layersToInclude, validXmlTags, false);
+    }
+    
+    @Override
+    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations) throws JSONException {
+        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations);
         
         // Add currentVersion info to service info
         

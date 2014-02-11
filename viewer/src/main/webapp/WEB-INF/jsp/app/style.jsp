@@ -124,4 +124,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     font-family: ${actionBean.application.details.font.value};
                 }
             </c:if>
+                
+            <c:forEach items="${actionBean.globalLayout}" var="globalLayout">
+                <c:if test="${!empty globalLayout.value}">
+                    <c:if test="${globalLayout.key=='extraCss'}">
+                        ${globalLayout.value}
+                    </c:if>
+                </c:if>
+            </c:forEach>
         </style>

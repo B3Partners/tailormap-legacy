@@ -53,7 +53,7 @@ function appendPanel(header, content, container) {
 function applyTreeScrollFix(view) {
     view.getEl().setStyle({
         overflow: 'auto',
-        overflowX: 'hidden'
+        overflowX: 'auto'
     });
     // From ext-all-debug, r77661 & r77663
     // Seems to recalculate body and applies correct heights so scrollbars can be shown

@@ -27,6 +27,7 @@ import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.*;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -49,7 +50,8 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
     @Validate
     @ValidateNestedProperties({
                 @Validate(field="info", label="Info"),
-                @Validate(field="name", label="Naam")
+                @Validate(field="name", label="Naam"),
+                @Validate(field="url", label="url")
     })
     private Level level;
     
@@ -99,6 +101,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         }
         
         application.authorizationsModified();        
+        SelectedContentCache.setApplicationCacheDirty(application, true);
         Stripersist.getEntityManager().getTransaction().commit();
         
         return new ForwardResolution(JSP);
@@ -143,6 +146,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         } else {
             try {
                 Stripersist.getEntityManager().persist(level);
+                SelectedContentCache.setApplicationCacheDirty(application, true);
                 Stripersist.getEntityManager().getTransaction().commit();
                 json.put("name", level.getName());
                 json.put("success", Boolean.TRUE);
@@ -185,6 +189,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
                 parent.getChildren().remove(level);
                 Stripersist.getEntityManager().remove(level);
                 application.authorizationsModified();
+                SelectedContentCache.setApplicationCacheDirty(application, true);
                 Stripersist.getEntityManager().getTransaction().commit();
 
                 json.put("success", Boolean.TRUE);
@@ -256,6 +261,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         
         Stripersist.getEntityManager().persist(level);
         application.authorizationsModified();
+        SelectedContentCache.setApplicationCacheDirty(application, true);
         Stripersist.getEntityManager().getTransaction().commit();
         
         getContext().getMessages().add(new SimpleMessage("Het niveau is opgeslagen"));

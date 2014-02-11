@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <tr>
                             <td>Bron URL *:</td>
                             <td>
-                                <stripes:text name="url" maxlength="255" size="30" disabled="true"/>
+                                ${actionBean.featureSource.url}
                             </td>
                         </tr>
                         <tr>

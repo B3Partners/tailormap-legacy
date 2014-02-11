@@ -105,7 +105,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         // Find out which background levels are in the selected content
         me.selectedBackgroundLevels = [];
         this.viewerController.traverseSelectedContent(function(level) {
-            if(level.background) {
+            if(level && level.background) {
                 me.selectedBackgroundLevels.push(level);
             }
         }, Ext.emptyFn);

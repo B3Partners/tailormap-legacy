@@ -365,8 +365,39 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             }if (config.left){
                 x = Number(config.left);
             }
-            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,
-                new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(x,y), zoomWorldIcon: true}));
+            var panZoom =  new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(x,y), zoomWorldIcon:true});
+            if(config.zoomToFullIsStart){
+                var me = this;
+                function onButtonClick (evt) {
+                    var btn = evt.buttonElement;
+                    switch (btn.action) {
+                        case "panup": 
+                            this.map.pan(0, -this.getSlideFactor("h"));
+                            break;
+                        case "pandown": 
+                            this.map.pan(0, this.getSlideFactor("h"));
+                            break;
+                        case "panleft": 
+                            this.map.pan(-this.getSlideFactor("w"), 0);
+                            break;
+                        case "panright": 
+                            this.map.pan(this.getSlideFactor("w"), 0);
+                            break;
+                        case "zoomin": 
+                            this.map.zoomIn(); 
+                            break;
+                        case "zoomout": 
+                            this.map.zoomOut(); 
+                            break;
+                        case "zoomworld": 
+                            me.viewerController.mapComponent.getMap().zoomToExtent(me.viewerController.mapComponent.mapOptions.options.startExtent); 
+                            break;
+                    }
+                }
+                panZoom.onButtonClick = onButtonClick;
+            }
+            
+            comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,panZoom);
         }else if (type == viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
             comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);                
         }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
@@ -421,7 +452,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));            
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {  
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
-        }else if(type == viewer.viewercontroller.controller.Tool.MEASURE){
+        }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
             
             frameworkOptions["persist"]=true;
             frameworkOptions["callbacks"]={
@@ -442,21 +473,38 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                         }
                         var px= this.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
                         measureValueDiv.style.top=px.y+"px";
-                        measureValueDiv.style.left=px.x+10+'px'
+                        measureValueDiv.style.left=px.x+10+'px';
                         measureValueDiv.style.display="block";
                         var measureValueText=document.getElementById('olControlMeasureValueText');
-                        var bestLengthTokens=this.getBestLength(evt.parent);
-                        measureValueText.innerHTML= bestLengthTokens[0].toFixed(3)+" "+bestLengthTokens[1];
+                        var bestMeasure=this.getBestLength(evt.parent);
+                        if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
+                            bestMeasure = this.getBestArea(evt.parent);
+                            if(bestMeasure[0] < 0){
+                                bestMeasure[0] *= -1;
+                            }
+                            bestMeasure[1] += "<sup>2</" + "sup>";
+                        }
+                        measureValueText.innerHTML= bestMeasure[0].toFixed(3)+" "+bestMeasure[1];
                     }
                 }
+            };
+
+            var me = this;
+            var handler = conf.type === viewer.viewercontroller.controller.Tool.MEASURELINE ? OpenLayers.Handler.Path : OpenLayers.Handler.Polygon;
+            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.Measure( handler, frameworkOptions));
+            if(conf.type === viewer.viewercontroller.controller.Tool.MEASUREAREA){
+                measureTool.getFrameworkTool().displayClass = 'olControlMeasureArea';
+                
             }
-            var measureTool= new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.Measure( OpenLayers.Handler.Path, frameworkOptions));
             measureTool.getFrameworkTool().events.register('measure',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
                 if (measureValueDiv){                
                     measureValueDiv.style.display="none";
                 }
                 this.cancel();
+                if(conf.nonSticky){
+                    me.activateTool(null,true);
+                }
             });
             measureTool.getFrameworkTool().events.register('deactivate',measureTool.getFrameworkTool(),function(){
                 var measureValueDiv=document.getElementById("olControlMeasureValue");
@@ -678,12 +726,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         removeMap.remove();
         this.maps=new Array();
     },
-    activateTool : function (id){
+    activateTool : function (id,firstIfNull){
         var tools = this.tools;
         for(var i = 0 ; i < tools.length ; i++){
-            tools[i].getFrameworkTool().deactivate();
+            var t = tools[i];
+            t.getFrameworkTool().deactivate();
         }
         var tool = this.getTool(id);
+        if(firstIfNull){
+            tool = tools[0];
+        }
         tool.getFrameworkTool().activate();
     },
     /**
@@ -707,13 +759,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return null;
     },
     /**
-     * @see viewer.viewercontroller.MapComponent#setWaitingCursor
+     * @see viewer.viewercontroller.MapComponent#setCursor
      */
-    setWaitingCursor: function(showWaitingCursor) {
-        if(showWaitingCursor) {
-            OpenLayers.Element.addClass(this.getMap().getFrameworkMap().viewPortDiv, "olCursorWait");
+    setCursor: function(show,cursor) {
+        if(show) {
+            Ext.get(this.domId).dom.style.cursor = cursor;
         } else {
-            OpenLayers.Element.removeClass(this.getMap().getFrameworkMap().viewPortDiv, "olCursorWait");
+            Ext.get(this.domId).dom.style.cursor = "default";
         }
     }
     

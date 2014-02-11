@@ -32,7 +32,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             items: [{                  
                 fieldLabel: 'Titel',
                 name: 'title',
-                value: config.title || "Titel",
+                value: config.title !== null && config.title !== undefined ? config.title : "Titel",
                 labelWidth: me.labelWidth,
                 width: 500
             },{                        
@@ -51,7 +51,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur',
                 name: 'backgroundColor',
-                value: this.backgroundColor || "transparent",
+                value: config.backgroundColor || "transparent",
                 labelWidth: me.labelWidth
             },{
                 fieldLabel: 'Dikte van rand',
@@ -63,13 +63,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: 'colorfield',
                 fieldLabel: 'Kleur van rand',
                 name: 'borderColor',
-                value: this.borderColor || "D0D0D0",
+                value: config.borderColor || "D0D0D0",
                 labelWidth: me.labelWidth
             },{
                 xtype: 'colorfield',
                 fieldLabel: 'Tekstkleur',
                 name: 'textColor',
-                value: this.textColor || "000000",
+                value: config.textColor || "000000",
                 labelWidth: me.labelWidth
             },{
                 xtype: "combo",

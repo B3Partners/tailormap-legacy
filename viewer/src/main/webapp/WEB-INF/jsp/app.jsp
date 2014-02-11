@@ -196,6 +196,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/components/Overview.js"></script>
                         
                         <script type="text/javascript" src="${scriptDir}/tools/JSButton.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/FlamingoMeasureArea.js"></script>
                     </c:otherwise>
                 </c:choose>
 
@@ -248,11 +249,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "featureinfo":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureInfoActionBean"/></js:quote>,
                 "editfeature":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditFeatureActionBean"/></js:quote>,
                 "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
+                "advancedcsw":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean" event="advancedSearch"/></js:quote>,
                 "unique":             <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.UniqueValuesActionBean"/></js:quote>,
                 "twitter":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.TwitterActionBean"/></js:quote>, 
                 "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>,
                 "proxy":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ProxyActionBean"/></js:quote>,
                 "datastorespinup":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DataStoreSpinupActionBean"/></js:quote>,
+                "autosuggest":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SearchActionBean" event="autosuggest"/></js:quote>,
                 "componentresource":  <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ComponentResourceActionBean"/></js:quote>
             };
             

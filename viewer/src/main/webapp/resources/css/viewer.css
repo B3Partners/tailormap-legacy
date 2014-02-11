@@ -137,3 +137,8 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     height: 38px;
     line-height: 38px;
 }
+
+.searchResultButton{
+    width:100%;
+    border-radius: 0;
+}

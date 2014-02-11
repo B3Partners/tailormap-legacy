@@ -33,7 +33,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @Entity
 @Table(name="level_")
-public class Level {
+public class Level implements Comparable{
     @Id
     private Long id;
 
@@ -71,6 +71,9 @@ public class Level {
     @JoinTable(joinColumns=@JoinColumn(name="level_"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
+    
+    
+    private String url;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -152,6 +155,14 @@ public class Level {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -168,6 +179,7 @@ public class Level {
         o.put("selectedIndex", selectedIndex);
         o.put("background", background);
         o.put("info", info);
+        o.put("url",url);
         
         if(!documents.isEmpty()) {
             JSONArray docs = new JSONArray();
@@ -301,6 +313,10 @@ public class Level {
         
         copy.setReaders(new HashSet<String>(readers));
         
+        copy.setInfo(info);
+        
+        copy.setUrl(url);
+        
         return copy;
     }
     
@@ -311,4 +327,10 @@ public class Level {
                 name,
                 parent == null ? null : parent.getId());
     }    
+
+    public int compareTo(Object o) {
+        Level rhs = (Level)o;
+        return this.getName().compareTo(rhs.getName());
+    }
+
 }

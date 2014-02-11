@@ -72,10 +72,7 @@
         sources: ["StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
-        extPropertyGridConfigs: {
-            propertyNames: { tooltip: 'Tooltip' },
-            source: { tooltip: 'Streetview' }
-        }
+        configSource: ["ConfigObject.js","StreetView-config.js"]   
     },
     
     {
@@ -190,9 +187,9 @@
         }
     },  
     {
-        className: "viewer.components.tools.Measure",
-        name: "Measure",
-        shortName: "Ms",
+        className: "viewer.components.tools.Measure.Line",
+        name: "Measure line",
+        shortName: "ML",
         sources: ["tools/Tool.js","tools/Measure.js"],
         closureCompilerSafe: true,
 
@@ -204,13 +201,42 @@
                 tooltip: "Tooltip",
                 units: "Eenheden",
                 magicnumber: "Delen door",
-                decimals: "Decimalen"
+                decimals: "Decimalen",
+                nonSticky: "Ga na gebruik naar de eerste tool"
             },
             source: {
                 tooltip: "Measure",
                 units: "",
                 decimals: 2,
-                magicnumber: ""  
+                magicnumber: "",
+                nonSticky: false
+            }
+        }
+    },  
+    {
+        className: "viewer.components.tools.Measure.Area",
+        name: "Measure area",
+        shortName: "MA",
+        sources: ["tools/Tool.js","tools/Measure.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {
+                tooltip: "Tooltip",
+                units: "Eenheden",
+                magicnumber: "Delen door",
+                decimals: "Decimalen",
+                nonSticky: "Ga na gebruik naar de eerste tool"
+            },
+            source: {
+                tooltip: "Measure",
+                units: "",
+                decimals: 2,
+                magicnumber: "",
+                nonSticky: false
             }
         }
     }, 
@@ -363,7 +389,8 @@
                 tooltip_slider: "Tooltip slider",
                 show_zoom_buttons: "Show zoom buttons",
                 left: "Positie vanaf links",
-                top: "Positie vanaf boven"
+                top: "Positie vanaf boven",
+                zoomToFullIsStart: "Zoom naar maximale extent zoomt naar startextent"
             },
             source: {          
                 navigationPanel: true,
@@ -378,7 +405,8 @@
                 tooltip_slider: "Sleep om te zoomen",
                 show_zoom_buttons: false,
                 left: "0",
-                top: "20"
+                top: "20",
+                zoomToFullIsStart: false
             }
         },
         singleton: true,
@@ -595,7 +623,7 @@
         shortName: "Se",
         sources: ["Search.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],        
         type: "popup",
         showHelp: true        
      },
@@ -738,9 +766,9 @@
         className: "viewer.components.tools.DownloadMap",
         name: "Download Map",
         shortName: "DM",
-        restrictions: ["top_menu"],
+        restrictions: ["top_menu", "left_menu"],
         sources: [ "Print.js","DownloadMap.js"],
-        singleton: true,
+        singleton: false,
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: ""}

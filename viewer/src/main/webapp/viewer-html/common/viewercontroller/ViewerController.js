@@ -222,7 +222,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.addMap(map);
             
             this.initializeConfiguredComponents();
-            var layersloaded = this.bookmarkValuesFromURL(this.queryParams);
+            var layersloaded = this.valuesFromURL(this.queryParams);
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();                
@@ -302,12 +302,22 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.app.services[service.id] = service;
         }
     },
+            
+    addOrReplaceService: function (service){
+        this.app.services[service.id] = service;
+    },
    
     addAppLayer:function(appLayer) {
        if(this.app.appLayers[appLayer.id] == undefined) {
            this.app.appLayers[appLayer.id] = appLayer;
        }
     },
+            
+    addOrReplaceAppLayer: function(appLayer){
+        this.app.appLayers[appLayer.id] = appLayer;
+    },
+    
+    
    
     counter: 0,
     max: 0,
@@ -355,8 +365,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var appLayer = appLayers[key];
             if(appLayer.filter){
                 var mapLayer = this.getLayer(appLayer);
-                mapLayer.setQuery(appLayer.filter);
-                this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+                if(mapLayer){
+                    mapLayer.setQuery(appLayer.filter);
+                    this.fireEvent(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,appLayer.filter,appLayer);
+                }
             }
         }
     },
@@ -390,6 +402,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var app = this.app;
         
         var traverseLevel = function(level) {
+            if(!level){
+                return;
+            }
             onLevel(level);
             if(level.children) {
                 for(var i in level.children) {
@@ -418,17 +433,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     
     getLevelAppLayerIds: function(level) {
         var appLayers = [];
-        
-        if(level.layers) {
-            for(var i in level.layers) {
-                appLayers.push(level.layers[i]);
+        if (level) {
+            if (level.layers) {
+                for (var i in level.layers) {
+                    appLayers.push(level.layers[i]);
+                }
             }
-        }
-        if(level.children) {
-            for(var c in level.children) {
-                var childId = level.children[c];
-                var childLayers = this.getLevelAppLayerIds(this.app.levels[childId]);
-                appLayers = appLayers.concat(childLayers);
+            if (level.children) {
+                for (var c in level.children) {
+                    var childId = level.children[c];
+                    var childLayers = this.getLevelAppLayerIds(this.app.levels[childId]);
+                    appLayers = appLayers.concat(childLayers);
+                }
             }
         }
         return appLayers;
@@ -549,7 +565,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     initLevel: function(levelId,background) {
         var level = this.app.levels[levelId];
-        if (level.background!=background){
+        if (!level || level.background!=background){
             return;
         }
         if(level.layers) {
@@ -1168,7 +1184,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @param appLayer the application layer
      */
     setFilter : function (filter, appLayer){
-         if(!appLayer.filter){
+        if(!appLayer){
+            return;
+        }
+        if(!appLayer.filter){
             appLayer.filter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "",
                 cql: "",
@@ -1335,7 +1354,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return joinedFeatureTypes;
     },
             
-    bookmarkValuesFromURL : function(params){
+    valuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
         var appLayers = this.app.appLayers;
@@ -1343,18 +1362,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         for( var key in params){
             var value = params[key];
-            if(key == "bookmark"){
+            if(key === "bookmark"){
                 var me = this;
                 Ext.create("viewer.Bookmark").getBookmarkParams(value,function(code){me.succesReadUrl(code);},function(code){me.failureReadUrl(code);});
                 layersLoaded = true;
                 bookmark = true;
-            }else if(key == "layers"){
+            }else if(key === "layers"){
                 if(!Ext.isArray(value)){
                     value = value.split(",");
                 }
                 appLayers = this.loadBookmarkLayers(value);
                 layersLoaded = true;
-            }else if(key == "extent"){
+            }else if(key ==="selectedContent"){
+                selectedContent = value;
+            }else if(key === "extent"){
                 var coords = value;
                 var newExtent = new Object();
                 if(!Ext.isObject(value)){
@@ -1373,7 +1394,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
                 };
                 this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);   
-            }else if (key == "levelOrder"){
+            }else if (key === "levelOrder"){
                selectedContent=[];
                if(!Ext.isArray(value)){
                     value = value.split(",");
@@ -1391,10 +1412,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         selectedContent.push(this.app.selectedContent[s]);
                     }
                 }
+            }else if(key === "search"){
+                if(!Ext.isEmpty(value)){
+                    var components = this.getComponentsByClassName("viewer.components.Search");
+                    for (var i = 0 ; i < components.length ;i++){
+                        var comp = components[i];
+                        comp.loadVariables(value);
+                    }
+                }
             }else{
                 var component=this.getComponentByName(key);
                 if (component && !Ext.isEmpty(value)){
-                    component.loadBookmarkState(Ext.decode(value));
+                    component.loadVariables(value);
                 }
             }
         }
@@ -1439,7 +1468,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var value = parameter.value;
             params[key] = value;
         }
-        this.bookmarkValuesFromURL(params);
+        this.valuesFromURL(params);
     },
     failureReadUrl : function(code){
     },
@@ -1502,11 +1531,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         var levelOrder = [];
         for (var i=0; i < this.app.selectedContent.length; i++){
-            levelOrder.push(this.app.selectedContent[i].id);
+            var levelId = this.app.selectedContent[i].id;
+            levelOrder.push(levelId);
         }
+        
         paramJSON.params.push({
             name: "levelOrder",
             value: levelOrder
+        });
+        
+        paramJSON.params.push({
+            name: "selectedContent",
+            value: this.app.selectedContent
         });
         return paramJSON;
     },

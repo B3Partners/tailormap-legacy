@@ -230,117 +230,134 @@ Ext.define ("viewer.components.Maptip",{
             var data=options.data;        
             var components=[];    
             //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
+            this.viewerController.mapComponent.setCursor(false);
             if (data==null || data =="null" || data==undefined){
                 return;
             }
-            for (var layerIndex in data){            
-                var layer=data[layerIndex];
-                if (layer.error){
-                    this.viewerController.logger.error(layer.error);
-                }else{
-                    var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
-                    var details;
-                    if (appLayer){
-                        details = appLayer.details;
-                    }else{
-                        details = this.viewerController.mapComponent.getMap().getLayer(layer.request.serviceLayer);
-                    }
-                    
-                    var noHtmlEncode = "true" == details['summary.noHtmlEncode'];
-                    var nl2br = "true" == details['summary.nl2br'];
-                    var showRightColumn = (details && details["summary.image"]);
-                    var layerName= appLayer.layerName;
-                    for (var index in layer.features){
-                        var feature = layer.features[index];
-                        var featureDiv = new Ext.Element(document.createElement("div"));
-                        featureDiv.addCls("feature_summary_feature");
-                        featureDiv.id="f"+appLayer.serviceId+"_"+layerName+"_"+index;
-                        //left column
-                        var leftColumnDiv = new Ext.Element(document.createElement("div"));
-                        leftColumnDiv.addCls("feature_summary_leftcolumn");
-                        if(!showRightColumn) {
-                            leftColumnDiv.setStyle({
-                                'width': '100%'
-                            });
-                        }
-                            //title
-                            if (details && details["summary.title"] ){
-                                var titleDiv = new Ext.Element(document.createElement("div"));
-                                titleDiv.addCls("feature_summary_title");
-                                titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],feature,noHtmlEncode,nl2br));
-                                leftColumnDiv.appendChild(titleDiv);
-                            }
-                            //description
-                            if (details && details["summary.description"]){
-                                var descriptionDiv = new Ext.Element(document.createElement("div"));
-                                descriptionDiv.addCls("feature_summary_description");
-                                if (this.heightDescription){
-                                    descriptionDiv.setHeight(Number(this.heightDescription));
-                                }
-                                var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br);
-                                
-                                descriptionDiv.insertHtml("beforeEnd",desc);
-                                leftColumnDiv.appendChild(descriptionDiv);
-                            }
-                            //link
-                            if (details && details["summary.link"]){
-                                var linkDiv = new Ext.Element(document.createElement("div"));
-                                linkDiv.addCls("feature_summary_link");
-                                linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],feature,noHtmlEncode,nl2br)+"'>link</a>");
-                                leftColumnDiv.appendChild(linkDiv);
-                            }
-                            //detail
-                            var detailDiv = new Ext.Element(document.createElement("div"));
-                            detailDiv.addCls("feature_summary_detail");
-                            //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                            if (this.getMoreLink()!=null){ 
-                                var detailElem=document.createElement("a");
-                                detailElem.href='javascript: void(0)';
-                                detailElem.feature=feature;
-                                detailElem.appLayer=appLayer;
-                                var detailLink = new Ext.Element(detailElem);
-                                detailLink.addListener("click",
-                                    function (evt,el,o){ 
-                                        me.showDetails(el.appLayer,el.feature);
-                                    },
-                                    this);
-                                detailLink.insertHtml("beforeEnd",this.getMoreLink());
-                                detailDiv.appendChild(detailLink);
-                            }                            
-                            leftColumnDiv.appendChild(detailDiv);
-
-                        featureDiv.appendChild(leftColumnDiv);
-
-                        if (showRightColumn) {
-                            var rightColumnDiv = new Ext.Element(document.createElement("div"));
-                            rightColumnDiv.addCls("feature_summary_rightcolumn");
-                            var imageDiv = new Ext.Element(document.createElement("div"));
-                            imageDiv.addCls("feature_summary_image");
-                            imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],feature,noHtmlEncode,nl2br)+"'/>");
-                            rightColumnDiv.appendChild(imageDiv);
-                            featureDiv.appendChild(rightColumnDiv);
-                        }
-
-                        components.push(featureDiv);
-
-                    }
-                }
-            }
+            components = this.createInfoHtmlElements(data);
             if (!Ext.isEmpty(components)){
                 var x= options.x;
                 var y= options.y;               
                 this.balloon.setPosition(x,y,true,browserZoomRatio);
                 this.balloon.addElements(components);
                 this.balloon.show();
-            } else {
-                this.balloon.setContent("");
-                this.balloon.hide();      
             }
         }catch(e){
             this.viewerController.logger.error(e);
         }
     },
-    
+    /**
+     * create info elements for the balloon.
+     */
+    createInfoHtmlElements: function (data){
+        var me = this;
+        var components=[];
+        for (var layerIndex in data){            
+            var layer=data[layerIndex];
+            if (layer.error){
+                this.viewerController.logger.error(layer.error);
+            }else{
+                var appLayer =  this.viewerController.app.appLayers[layer.request.appLayer];
+                var details;
+                if (appLayer){
+                    details = appLayer.details;
+                }else{
+                    details = this.viewerController.mapComponent.getMap().getLayer(layer.request.appLayer).getDetails();
+                }
+
+                var noHtmlEncode = "true" == details['summary.noHtmlEncode'];
+                var nl2br = "true" == details['summary.nl2br'];
+                //has a details for this layer
+                if (details[layer.request.serviceLayer]){
+                    details=details[layer.request.serviceLayer];
+                }
+                var showRightColumn = (details && details["summary.image"]);
+                var layerName= layer.request.appLayer;
+                for (var index in layer.features){
+                    var feature = layer.features[index];
+                    //backwards compatibility. If the feature is the attributes (old way) use the feature as attribute obj.
+                    var attributes = feature.attributes? feature.attributes : feature;
+                    var featureDiv = new Ext.Element(document.createElement("div"));
+                    featureDiv.addCls("feature_summary_feature");
+                    var id= "f";
+                    if (appLayer){
+                        id += appLayer.serviceId;
+                    }
+                    id += "_"+layerName+"_"+index;                        
+                    featureDiv.id= id;
+                    //left column
+                    var leftColumnDiv = new Ext.Element(document.createElement("div"));
+                    leftColumnDiv.addCls("feature_summary_leftcolumn");
+                    if(!showRightColumn) {
+                        leftColumnDiv.setStyle({
+                            'width': '100%'
+                        });
+                    }
+                        //title
+                        if (details && details["summary.title"] ){
+                            var titleDiv = new Ext.Element(document.createElement("div"));
+                            titleDiv.addCls("feature_summary_title");
+                            titleDiv.insertHtml("beforeEnd",this.replaceByAttributes(details["summary.title"],attributes,noHtmlEncode,nl2br));
+                            leftColumnDiv.appendChild(titleDiv);
+                        }
+                        //description
+                        if (details && details["summary.description"]){
+                            var descriptionDiv = new Ext.Element(document.createElement("div"));
+                            descriptionDiv.addCls("feature_summary_description");
+                            if (this.heightDescription){
+                                descriptionDiv.setHeight(Number(this.heightDescription));
+                            }
+                            var desc = this.replaceByAttributes(details["summary.description"],attributes,noHtmlEncode,nl2br);
+
+                            descriptionDiv.insertHtml("beforeEnd",desc);
+                            leftColumnDiv.appendChild(descriptionDiv);
+                        }
+                        //link
+                        if (details && details["summary.link"]){
+                            var linkDiv = new Ext.Element(document.createElement("div"));
+                            linkDiv.addCls("feature_summary_link");
+                            linkDiv.insertHtml("beforeEnd","<a target='_blank' href='"+this.replaceByAttributes(details["summary.link"],attributes,noHtmlEncode,nl2br)+"'>link</a>");
+                            leftColumnDiv.appendChild(linkDiv);
+                        }
+                        //detail
+                        var detailDiv = new Ext.Element(document.createElement("div"));
+                        detailDiv.addCls("feature_summary_detail");
+                        //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
+                        if (this.getMoreLink()!=null){ 
+                            var detailElem=document.createElement("a");
+                            detailElem.href='javascript: void(0)';
+                            detailElem.feature=attributes;
+                            detailElem.appLayer=appLayer;
+                            var detailLink = new Ext.Element(detailElem);
+                            detailLink.addListener("click",
+                                function (evt,el,o){ 
+                                    me.showDetails(el.appLayer,el.feature);
+                                },
+                                this);
+                            detailLink.insertHtml("beforeEnd",this.getMoreLink());
+                            detailDiv.appendChild(detailLink);
+                        }                            
+                        leftColumnDiv.appendChild(detailDiv);
+
+                    featureDiv.appendChild(leftColumnDiv);
+
+                    if (showRightColumn) {
+                        var rightColumnDiv = new Ext.Element(document.createElement("div"));
+                        rightColumnDiv.addCls("feature_summary_rightcolumn");
+                        var imageDiv = new Ext.Element(document.createElement("div"));
+                        imageDiv.addCls("feature_summary_image");
+                        imageDiv.insertHtml("beforeEnd","<img src='"+this.replaceByAttributes(details["summary.image"],attributes,noHtmlEncode,nl2br)+"'/>");
+                        rightColumnDiv.appendChild(imageDiv);
+                        featureDiv.appendChild(rightColumnDiv);
+                    }
+
+                    components.push(featureDiv);
+
+                }
+            }
+        }
+        return components;
+    },
     /**
      * Return the browser zoom ratio.
      * @return ratio of zoom (in or out)

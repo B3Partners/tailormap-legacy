@@ -79,6 +79,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                 xtype: "textfield",
                 name: "max_imagesize",
                 value: me.configObject.max_imagesize ? me.configObject.max_imagesize :"2048"
+            },{
+                xtype: "checkbox",
+                name: "showPrintRtf",
+                checked: me.configObject.showPrintRtf ? me.configObject.showPrintRtf : true,
+                boxLabel: "Laat de print via RTF knop zien"
             }
         ]);
                  

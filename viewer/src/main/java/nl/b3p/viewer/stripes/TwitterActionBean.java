@@ -27,7 +27,11 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import twitter4j.*;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
 
 /**
  *
@@ -89,8 +93,7 @@ public class TwitterActionBean implements ActionBean {
         String error = null;
 
         try {
-
-            // The factory instance is re-useable and thread safe.
+           // The factory instance is re-useable and thread safe.
             Twitter twitter = new TwitterFactory().getInstance();
             Query query = new Query(term);
             if(latestId != null){
@@ -100,13 +103,14 @@ public class TwitterActionBean implements ActionBean {
             
             QueryResult result = twitter.search(query);
             JSONArray tweets = new JSONArray();
-            for (Tweet tweet : result.getTweets()) {
+            for (Status tweet : result.getTweets()) {
+                
                 //System.out.println(tweet.getFromUser() + ":" + tweet.getText());
                 JSONObject t = new JSONObject();
                 t.put("id_str",String.valueOf( tweet.getId()));
                 t.put("text",tweet.getText());
-                t.put("user_from",tweet.getFromUser());
-                t.put("img_url",tweet.getProfileImageUrl());
+                t.put("user_from",tweet.getUser().getScreenName());
+                t.put("img_url",tweet.getUser().getProfileImageURL());
                 
                 JSONObject geo = new JSONObject();
                 if(tweet.getGeoLocation() != null){

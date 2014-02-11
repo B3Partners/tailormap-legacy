@@ -37,13 +37,15 @@ Ext.define ("viewer.components.TOC",{
         showBaselayers:true,
         title: "Table of Contents",
         showLeafIcon: true,
+        showNodeIcon: true,
         zoomToScaleText: "Zoom to scale",
         expandOnStartup: true,
         toggleAllLayersOnText: 'All layers on',
         toggleAllLayersOffText: 'All layers off',
         initToggleAllLayers: true,
         showAllLayersOff: false,
-        showAllLayersOn: false
+        showAllLayersOn: false,
+        expandOnEnabledLayer:false
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -193,22 +195,29 @@ Ext.define ("viewer.components.TOC",{
         // Apply the scroll fix when all layers are added
         this.applyTreeScrollFix();
     },
+    
+    isExpanded : function(level , triState){
+        var expand = this.expandOnStartup;
+        if(this.expandOnEnabledLayer && triState >= 0){
+            expand = true;
+        }
+        if (level.background) {
+            expand = false;
+        }  
+        
+        return expand;
+    },
     // Add a level to the tree, and load all it's levels and applayers
     addLevel : function (levelId){
         var nodes = new Array();
         var level = this.levels[levelId];
-        if(level.background && !this.showBaselayers){
+        if(!level || level.background && !this.showBaselayers){
             return null;
         }
         var levelId = "level-"+level.id;
-        var expand = this.expandOnStartup;
-        if (level.background){
-            expand=false;
-        }
         var treeNodeLayer = {
             text: '<span id="span_'+levelId+'">'+level.name+'</span>', 
             id: levelId,
-            expanded: expand,
             expandable: !level.background,
             collapsible: !level.background,
             leaf: false,
@@ -217,12 +226,19 @@ Ext.define ("viewer.components.TOC",{
                 serviceId: level.id
             }
         };
+        if(!this.showNodeIcon){
+            treeNodeLayer.iconCls='no_treenode_icon';
+        }
         if(this.groupCheck){
             treeNodeLayer.checked=  false;
         }
         if(level.info != undefined){
             this.addQtip("Informatie over de kaart", 'span_'+levelId);
             treeNodeLayer.layerObj.info = level.info;
+        }
+        if(level.url!= undefined){
+            this.addQtip("Informatie over de kaart", 'span_'+levelId);
+            treeNodeLayer.layerObj.url = level.url;
         }
         
         var childsChecked = 0;
@@ -263,7 +279,11 @@ Ext.define ("viewer.components.TOC",{
                 treeNodeLayer.cls = 'tristatenode';
             }
         }
+        var triState = this.calculateTriState(childsChecked, totalChilds);
+        
+        var expand = this.isExpanded(level, triState);
         treeNodeLayer.children= nodes;
+        treeNodeLayer.expanded = expand;
         var node = {
             node: treeNodeLayer,
             tristate: tristate
@@ -508,15 +528,23 @@ Ext.define ("viewer.components.TOC",{
             me.updateTriState(node.parentNode);
         }
     },
-    
-    updateTriStateClass: function(node, totalChecked, totalNodes) {
+    calculateTriState : function(totalChecked, totalNodes){
         var tristate = 0;
-        if(!this.groupCheck) return tristate;
         if(totalChecked === 0) {
             tristate = -1;
         } else if(totalChecked === totalNodes) {
             tristate = 1;
         }
+        return tristate;
+    },
+    
+    updateTriStateClass: function(node, totalChecked, totalNodes) {
+        var tristate = 0;
+        if(!this.groupCheck){
+            return tristate;
+        }
+        tristate = this.calculateTriState(totalChecked, totalNodes);
+        
         if(node != null) {
             if(tristate === -1) {
                 node.data.tristate = -1;
@@ -552,12 +580,12 @@ Ext.define ("viewer.components.TOC",{
     
     getNodeChecked: function(node) {
         if(Ext.isDefined(node.data)) {
-            if(Ext.isDefined(node.data.checked)) return node.data.checked;
-            if(Ext.isDefined(node.data.hidden_check)) return node.data.hidden_check;
+            if(node.data.checked !== undefined && node.data.checked !== null) return node.data.checked;
+            if(node.data.hidden_check !== undefined && node.data.hidden_check !== null) return node.data.hidden_check;
         }
         if(Ext.isDefined(node.raw)) {
-            if(Ext.isDefined(node.raw.checked)) return node.raw.checked;
-            if(Ext.isDefined(node.raw.hidden_check)) return node.raw.hidden_check;
+            if(node.raw.checked !== undefined && node.raw.checked !== null) return node.raw.checked;
+            if(node.raw.hidden_check !== undefined && node.raw.hidden_check !== null) return node.raw.hidden_check;
         }
         return false;
     },
@@ -575,7 +603,11 @@ Ext.define ("viewer.components.TOC",{
         var nodeId = "layer-" + layer.appLayerId;
         var node = this.panel.getRootNode().findChild("id",nodeId,true);
         if (node){
-            node.set('checked', vis);
+            if (this.layersChecked || (node.hasChildNodes() && this.groupCheck)){
+                 node.set('checked', vis);
+            }else {
+                node.set('hidden_check', vis);
+            }
             this.setTriState(node);
         }
     },
@@ -615,32 +647,7 @@ Ext.define ("viewer.components.TOC",{
         if(node ===undefined){
             node = record.data;
         }
-        var layerName = node.text;
-        if(node.leaf){
-            this.viewerController.layerClicked(node.layerObj);
-        }else if(!node.leaf){
-            if(node.layerObj.info!= undefined){
-                if(this.popup != null){
-                    this.popup.hide();
-                }
-                var config = {
-                    details:{
-                        width : 700,
-                        frame: false,
-                        height: 500
-                    },
-                    title: "Info"
-                };
-                
-                this.popup = Ext.create("viewer.components.ScreenPopup",config);
-                var panelConfig={
-                    renderTo : this.popup.getContentId(),
-                    html: node.layerObj.info
-                };
-                var panel = Ext.create ("Ext.panel.Panel",panelConfig);
-                this.popup.show();
-            }
-        }
+        this.viewerController.layerClicked(node.layerObj);
     },
     // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.
     selectedContentChanged : function (){
@@ -713,5 +720,5 @@ Ext.define ("viewer.components.TOC",{
         var me = this;
         me.panel.doLayout();
         me.applyTreeScrollFix();
-    }
+    } 
 });

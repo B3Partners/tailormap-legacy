@@ -39,10 +39,12 @@ Ext.define ("viewer.components.Bookmark",{
         shareText: "I'd like to share this with #FlamingoMC: ",
         shareTitle: "Sharing",
         showShortUrl: true,
-        showFullUrl: true
+        showFullUrl: true,
+        showLabels: true
     },
     constructor: function (conf){ 
         if(!Ext.isDefined(conf.details.height)) conf.details.height = 200; 
+        if(!Ext.isDefined(conf.showLabels)) conf.showLabels = true; 
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
        
@@ -154,20 +156,23 @@ Ext.define ("viewer.components.Bookmark",{
         
         if (this.showFullUrl){
             formItems.push({ 
-                xtype: 'textfield',
-                fieldLabel: 'Bookmark',
+                xtype: 'textarea',
+                fieldLabel: this.showLabels ? 'Bookmark' : '',
                 name: 'bookmark',
                 anchor: '100%',
                 id: 'bookmark',
+                readOnly:true,
                 value: this.url
             });
         }
         if (this.showShortUrl){
             formItems.push({ 
-                xtype: 'textfield',
-                fieldLabel: 'Compact link',
+                xtype: 'textarea',
+                fieldLabel:this.showLabels ? 'Compact link' : '',
                 name: 'compactlink',
+                rows:3,
                 anchor: '100%',
+                readOnly:true,
                 id: 'compactlink'
             });
         }
@@ -178,18 +183,20 @@ Ext.define ("viewer.components.Bookmark",{
             },
             items: socialButtons
         });
-        formItems.push({ 
-            xtype: 'button',
-            componentCls: 'mobileLarge',
-            margin: '10px 0px 0px 0px',
-            text: 'Toevoegen aan favorieten',
-            listeners: {
-                click:{
-                    scope: this,
-                    fn: this.addToFavorites
+        if(Ext.ieVersion != 0){
+            formItems.push({ 
+                xtype: 'button',
+                componentCls: 'mobileLarge',
+                margin: '10px 0px 0px 0px',
+                text: 'Toevoegen aan favorieten',
+                listeners: {
+                    click:{
+                        scope: this,
+                        fn: this.addToFavorites
+                    }
                 }
-            }
-        });
+            });
+        }
         formItems.push({ 
             xtype: 'button',
             componentCls: 'mobileLarge',

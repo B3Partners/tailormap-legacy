@@ -242,7 +242,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
             
-    layerChanged : function (appLayer){
+    layerChanged : function (appLayer,afterLoadAttributes,scope){
         if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
             this.mode=null;
@@ -252,17 +252,19 @@ Ext.define ("viewer.components.Edit",{
             }
             this.inputContainer.setLoading("Laad attributen...");
             this.inputContainer.removeAll();
-            this.loadAttributes(appLayer);
+            this.loadAttributes(appLayer,afterLoadAttributes,scope);
             this.inputContainer.setLoading(false);
         }else{
             this.cancel();
         }
     },
-    loadAttributes: function(appLayer) {
+    loadAttributes: function(appLayer,afterLoadAttributes,scope) {
         this.appLayer = appLayer;
         
         var me = this;
-        
+        if (scope==undefined){
+            scope=me;
+        }
         if(this.appLayer != null) {
             
             this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
@@ -271,9 +273,15 @@ Ext.define ("viewer.components.Edit",{
             if(this.appLayer.attributes == undefined) {
                 this.featureService.loadAttributes(me.appLayer, function(attributes) {
                     me.initAttributeInputs(me.appLayer);
+                    if (afterLoadAttributes){
+                        afterLoadAttributes.call(scope);
+                    }
                 });
             } else {
                 this.initAttributeInputs(me.appLayer);
+                if (afterLoadAttributes){
+                    afterLoadAttributes.call(scope);
+                }
             }    
         }
     },
@@ -345,6 +353,7 @@ Ext.define ("viewer.components.Edit",{
             for(var i= 0 ; i < attributes.length ;i++){
                 var attribute = attributes[i];
                 if(attribute.editable){
+                    var allowedEditable = this.allowedEditable(attribute);
                     var values = Ext.clone(attribute.editValues);
                     var input = null;
                     if(i == appLayer.geometryAttributeIndex){
@@ -359,7 +368,8 @@ Ext.define ("viewer.components.Edit",{
                             name: attribute.name,
                             fieldLabel: attribute.editAlias || attribute.name,
                             renderTo: this.name + 'InputPanel',
-                            value:  fieldText       
+                            value:  fieldText,
+                            disabled: !allowedEditable
                         };
                         if (attribute.editHeight){
                             options.rows = attribute.editHeight;                           
@@ -368,7 +378,18 @@ Ext.define ("viewer.components.Edit",{
                             input = Ext.create("Ext.form.field.Text",options);
                         }
                     }else if (values.length > 1){
+                        var allBoolean=true;
+                        for (var v=0; v < values.length; v++){
+                            if (values[v].toLowerCase()!=="true" && values[v].toLowerCase()!=="false"){
+                                allBoolean =false;
+                                break;
+                            }
+                        }
+                        
                         Ext.each(values,function(value,index,original){
+                            if (allBoolean){
+                                value= value.toLowerCase() ==="true";
+                            }
                             original[index] = {
                                 id: value
                             };
@@ -385,7 +406,8 @@ Ext.define ("viewer.components.Edit",{
                             displayField: 'id',
                             name:attribute.name,
                             renderTo: this.name + 'InputPanel',
-                            valueField: 'id'
+                            valueField: 'id',
+                            disabled: !allowedEditable
                         });
                     }
                     this.inputContainer.add(input);
@@ -477,20 +499,22 @@ Ext.define ("viewer.components.Edit",{
         var feature =this.inputContainer.getValues();
         
         if(this.geometryEditable){
-            var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
-            feature[this.appLayer.geometryAttribute] = wkt;
+            if(this.vectorLayer.getActiveFeature()){
+                var wkt =  this.vectorLayer.getActiveFeature().wktgeom;
+                feature[this.appLayer.geometryAttribute] = wkt;
+            }
         }
         if(this.mode == "edit"){
             feature.__fid = this.currentFID;
         }
+        var me = this;
         try{
             feature = this.changeFeatureBeforeSave(feature);
         }catch(e){
-            this.failed(e);
+            me.failed(e);
             return;
         }
         
-        var me = this;
         me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
             viewerController: this.viewerController
@@ -498,8 +522,8 @@ Ext.define ("viewer.components.Edit",{
         .edit(
             me.editingLayer,
             feature,
-            function(fid) { me.saveSucces(fid); }, 
-            this.failed);
+            function(fid) { me.saveSucces(fid); }, function(error){
+            me.failed(error);});
     },
     /**
      * Can be overwritten to add some extra feature attributes before saving the
@@ -508,6 +532,12 @@ Ext.define ("viewer.components.Edit",{
      */
     changeFeatureBeforeSave: function(feature){
         return feature;
+    },
+    /**
+     * Can be overwritten to disable editing in the component/js
+     */
+    allowedEditable: function (attribute){
+        return true;
     },
     saveSucces : function (fid){
         this.editingLayer.reload();

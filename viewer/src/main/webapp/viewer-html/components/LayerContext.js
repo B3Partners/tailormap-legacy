@@ -50,14 +50,8 @@ Ext.define ("viewer.components.LayerContext",{
     },
     layerClicked: function(layerObj) {
         // Check if any data is present
-        if(
-            typeof layerObj.metadata !== 'undefined' ||
-            typeof layerObj.download !== 'undefined' ||
-            (   typeof layerObj.appLayer !== 'undefined' &&
-                typeof layerObj.appLayer.details !== 'undefined' &&
-                typeof layerObj.appLayer.details.context !== 'undefined'
-            )
-        ) {
+        if( typeof layerObj.metadata !== 'undefined' ||typeof layerObj.download !== 'undefined' || typeof layerObj.info !== 'undefined' || typeof layerObj.url !== 'undefined' ||
+            (   typeof layerObj.appLayer !== 'undefined' && typeof layerObj.appLayer.details !== 'undefined' &&typeof layerObj.appLayer.details.context !== 'undefined')) {
             this.renderWindow(layerObj);
         }
     },
@@ -97,10 +91,11 @@ Ext.define ("viewer.components.LayerContext",{
         }
         this.linksContainer.removeAll();
         this.htmlContainer.removeAll();
-        if(typeof layerObj.metadata !== 'undefined') {
+        if(typeof layerObj.metadata !== 'undefined' || typeof layerObj.url !== 'undefined' ) {
+            var url =  typeof layerObj.url !== 'undefined' ? layerObj.url : layerObj.metadata;
             this.linksContainer.add({
                 xtype: 'box',
-                html: '<a target="_BLANK" href="' + layerObj.metadata + '">Metadata</a>',
+                html: '<a target="_BLANK" href="' + url + '">Metadata</a>',
                 height: 20,
                 width: 80
             });
@@ -123,8 +118,21 @@ Ext.define ("viewer.components.LayerContext",{
                 html: layerObj.appLayer.details.context
             });
         }
-        if(!this.popup.popupWin.isVisible()) {
-            this.popup.show();
+        
+        if(typeof layerObj.info !== 'undefined'){
+             this.htmlContainer.add({
+                xtype: 'container',
+                autoScroll: true,
+                html: layerObj.info
+            });
+        }
+        
+        if(typeof layerObj.url !== 'undefined' && (typeof layerObj.info === 'undefined' || layerObj.info === '<br>' ) ){
+             window.open(layerObj.url,'name','height='+this.config.details.height + ',width=' + this.config.details.width + ',location=no,status=no,toolbar=no,menubar=no');
+        }else{
+            if(!this.popup.popupWin.isVisible()) {
+                this.popup.show();
+            }
         }
     },
     selectedContentChanged: function(){

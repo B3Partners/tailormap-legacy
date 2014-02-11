@@ -196,7 +196,8 @@ Ext.define('viewer.LayoutManager', {
                     region: regionid,
                     layout: extLayout,
                     items: componentItems,
-                    style: style
+                    style: style,
+                    cls: 'layout-' + regionitems[0].name
                 }, layout);
             } else if(regionitems[0].regionDefaultConfig.region == "popupwindow") {
                 
@@ -389,7 +390,8 @@ Ext.define('viewer.LayoutManager', {
                     xtype: 'container',
                     items: componentItems,
                     layout: extLayout,
-                    style: style
+                    style: style,
+                    cls: 'layout-' + item.name
                 }, sublayout);
             }
         });

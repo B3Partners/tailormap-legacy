@@ -89,7 +89,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <table class="formtable">
         <tr>
             <td>URL van de service *:</td>
-            <td><stripes:text name="url" maxlength="255" size="80" disabled="${edit && !isTiling}"/></td>
+            <td><c:choose><c:when test="${edit && !isTiling}">${actionBean.service.url}</c:when><c:otherwise><stripes:text name="url" maxlength="255" size="80"/></c:otherwise></c:choose></td>
         </tr>
         <tr><td>Protocol *:</td>
             <td>
