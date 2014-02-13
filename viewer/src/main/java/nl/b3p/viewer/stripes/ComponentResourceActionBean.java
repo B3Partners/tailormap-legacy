@@ -23,8 +23,8 @@ import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.IOUtils;
 
-/**
- * ActionBean to get the resource of a (3d party component).
+/** 
+ * ActionBean to get the resource of a (3rd party component).
  * The resource is in the same directory (or a child) as the component class.
  * @author Roy Braam
  */
