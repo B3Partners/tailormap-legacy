@@ -497,7 +497,11 @@ Ext.define ("viewer.components.Search",{
                     for(var i = 0 ; i <switchOnLayers.length ;i++){
                         var appLayerId = switchOnLayers[i];
                         var appLayer = this.viewerController.app.appLayers[appLayerId];
+                        // Suppress logmessages for non-existing layers
+                        var logLevel = this.viewerController.logger.logLevel;
+                        this.viewerController.logger.logLevel = viewer.components.Logger.LEVEL_ERROR;
                         var layer = this.viewerController.getLayer(appLayer);
+                        this.viewerController.logger.logLevel = logLevel;
                         if(!layer){
                             var level = this.viewerController.getAppLayerParent(appLayerId);
                             this.viewerController.app.selectedContent.push({
