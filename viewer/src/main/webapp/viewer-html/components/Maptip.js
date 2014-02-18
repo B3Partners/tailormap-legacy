@@ -147,9 +147,7 @@ Ext.define ("viewer.components.Maptip",{
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
             this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
-            this.requestManager = Ext.create(viewer.components.RequestManager,{
-                featureInfo:Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController})
-            });
+            this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController}));
             
             this.serverRequestEnabled = true;
         }
