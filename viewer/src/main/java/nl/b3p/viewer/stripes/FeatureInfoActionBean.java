@@ -79,6 +79,9 @@ public class FeatureInfoActionBean implements ActionBean {
     private String y;
     
     @Validate
+    private String requestId;
+    
+    @Validate
     private String distance;
     
     @Validate
@@ -162,6 +165,14 @@ public class FeatureInfoActionBean implements ActionBean {
     public void setArrays(boolean arrays) {
         this.arrays = arrays;
     }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
     //</editor-fold>
     
     public Resolution info() throws JSONException {
@@ -173,7 +184,9 @@ public class FeatureInfoActionBean implements ActionBean {
         
         for(int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
-            
+            if(requestId != null){
+                query.put("requestId", requestId);
+            }
             JSONObject response = new JSONObject();
             responses.put(response);
             response.put("request", query);
