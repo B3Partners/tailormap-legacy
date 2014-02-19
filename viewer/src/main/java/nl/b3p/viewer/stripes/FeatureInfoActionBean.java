@@ -184,12 +184,13 @@ public class FeatureInfoActionBean implements ActionBean {
         
         for(int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
-            if(requestId != null){
-                query.put("requestId", requestId);
-            }
+           
             JSONObject response = new JSONObject();
             responses.put(response);
             response.put("request", query);
+            if(requestId != null){
+                response.put("requestId", requestId);
+            }
 
             String error = null;
             String exceptionMsg = query.toString();
