@@ -23,9 +23,11 @@
 Ext.define ("viewer.components.RequestManager",{
     previousRequests: null,
     featureInfo:null,
-    constructor: function(featureInfo){
+    viewerController:null,
+    constructor: function(featureInfo,viewerController){
         this.previousRequests = new Object();
         this.featureInfo = featureInfo;
+        this.viewerController = viewerController;
     },
     request: function(id, options, radius, layers, callback, failure) {
         var me = this;
@@ -39,7 +41,6 @@ Ext.define ("viewer.components.RequestManager",{
         var extraParams = {
             requestId: id
         };
-        var koe = "asdf";
         for(var i = 0 ; i < layers.length;i++){
             var request = this.featureInfo.layersFeatureInfo(options.coord.x, options.coord.y, radius, [layers[i]], extraParams,function(data){
                 me.responseReceived(data[0].requestId);
@@ -55,6 +56,9 @@ Ext.define ("viewer.components.RequestManager",{
     
     responseReceived: function (id){
         this.previousRequests[id].done++;
+        if(this.previousRequests[id].done === this.previousRequests[id].total){
+            this.viewerController.mapComponent.setCursor(false);
+        }
     },
     
     cancelPrevious : function(currentId){
