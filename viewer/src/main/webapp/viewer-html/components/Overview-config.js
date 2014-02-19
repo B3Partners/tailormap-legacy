@@ -137,6 +137,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: 'layers',
                 value: config.layers,
                 labelWidth:me.labelWidth
+            },{
+                xtype: "checkbox",
+                checked: config.hasOwnProperty('followZoom') ? config['followZoom'] : true,
+                name: "followZoom",
+                fieldLabel: "Volg zoomen",
+                labelWidth:me.labelWidth
             },{ 
                 xtype:'container',
                 margin: 5,
