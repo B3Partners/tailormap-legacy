@@ -112,7 +112,6 @@ Ext.define("viewer.FeatureInfo", {
         };
         Ext.merge(params, extraParams);
         if(queries.length > 0) {
-            this.viewerController.mapComponent.setCursor(true, "wait");
             return this.featureInfoInternal(params, successFunction, failureFunction,scope);
         }
     },    

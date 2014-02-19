@@ -18,8 +18,6 @@
  * A manager to handle asynchronous requests
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
-
-
 Ext.define ("viewer.components.RequestManager",{
     previousRequests: null,
     featureInfo:null,
@@ -49,6 +47,7 @@ Ext.define ("viewer.components.RequestManager",{
             
             if(request){
                 this.previousRequests[id].requests.push(request);
+                this.viewerController.mapComponent.setCursor(true, "wait");
                 this.previousRequests[id].total++;
             }
         }
