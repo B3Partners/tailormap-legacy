@@ -116,8 +116,8 @@
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "Tooltip"},
-            source: {tooltip: "Zoom out"}
+            propertyNames: {tooltip: "Tooltip", zoomBox: "Trek rechthoek voor uitzoomen"},
+            source: {tooltip: "Zoom out", zoomBox : false}
         }
     },
     {        

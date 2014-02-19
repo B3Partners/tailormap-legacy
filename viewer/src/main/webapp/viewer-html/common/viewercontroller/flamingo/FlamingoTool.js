@@ -91,7 +91,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     getTagName: function (toolType){
         if (toolType == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
             return "ToolZoomin";
-        }else if (toolType == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){
+        }else if (toolType == viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX || toolType == viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON){
             return "ToolZoomout";
         }else if (toolType == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO){
             return "ToolIdentify";
