@@ -305,6 +305,7 @@
                                 <param>${viewerhtml.path}/components/Component.js</param>
                                 <param>${viewerhtml.path}/components/LogMessage.js</param>
                                 <param>${viewerhtml.path}/components/Logger.js</param>
+                                <param>${viewerhtml.path}/components/RequestManager.js</param>
                                 <param>${viewerhtml.path}/components/DataSelectionChecker.js</param>
                                 <!-- Common -->
                                 <param>${viewerhtml.path}/common/overrides.js</param>
