@@ -41,12 +41,13 @@ Ext.define("viewer.FeatureInfo", {
         return visibleAppLayers;
 
     },
-    featureInfoInternal: function(params, successFunction, failureFunction) {
+    featureInfoInternal: function(params, successFunction, failureFunction,scope) {
         var me = this;
         params = Ext.apply(params, { application: this.viewerController.app.id });
         return Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: params,
+            scope:scope,
             timeout: 60000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
@@ -85,7 +86,7 @@ Ext.define("viewer.FeatureInfo", {
 
         this.featureInfoInternal(params, successFunction, failureFunction);
     },
-    layersFeatureInfo: function(x, y, distance, appLayers, requestId, successFunction, failureFunction) {
+    layersFeatureInfo: function(x, y, distance, appLayers, extraParams, successFunction, failureFunction,scope) {
 
         var visibleAppLayers = this.getVisibleAppLayers();
         
@@ -107,12 +108,12 @@ Ext.define("viewer.FeatureInfo", {
             x: x, 
             y: y, 
             distance: distance, 
-            queryJSON: Ext.JSON.encode(queries),
-            requestId: requestId
+            queryJSON: Ext.JSON.encode(queries)
         };
+        Ext.merge(params, extraParams);
         if(queries.length > 0) {
             this.viewerController.mapComponent.setCursor(true, "wait");
-            return this.featureInfoInternal(params, successFunction, failureFunction);
+            return this.featureInfoInternal(params, successFunction, failureFunction,scope);
         }
     },    
     editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction) {

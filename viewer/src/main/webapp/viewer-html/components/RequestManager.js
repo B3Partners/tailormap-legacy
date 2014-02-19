@@ -29,16 +29,34 @@ Ext.define ("viewer.components.RequestManager",{
     },
     request: function(id, options, radius, layers, callback, failure) {
         var me = this;
-  
         if (this.previousRequests[id] === undefined) {
-            this.previousRequests[id] = new Array();
+            this.previousRequests[id] = new Object();
+            this.previousRequests[id].requests = new Array();
+            this.previousRequests[id].total = 0;
+            this.previousRequests[id].done = 0;
             this.cancelPrevious(id);
         }
-        var request = this.featureInfo.layersFeatureInfo(options.coord.x, options.coord.y, radius, layers, id,callback, this.onFailure);
-        
-        this.previousRequests[id].push(request);
-        
+        var extraParams = {
+            requestId: id
+        };
+        var koe = "asdf";
+        for(var i = 0 ; i < layers.length;i++){
+            var request = this.featureInfo.layersFeatureInfo(options.coord.x, options.coord.y, radius, [layers[i]], extraParams,function(data){
+                me.responseReceived(data[0].requestId);
+                callback(data);
+            }, this.onFailure,me);
+            
+            if(request){
+                this.previousRequests[id].requests.push(request);
+                this.previousRequests[id].total++;
+            }
+        }
     },
+    
+    responseReceived: function (id){
+        this.previousRequests[id].done++;
+    },
+    
     cancelPrevious : function(currentId){
         for( var id in this.previousRequests){
             if(id !== currentId){
@@ -48,7 +66,7 @@ Ext.define ("viewer.components.RequestManager",{
         }
     },
     cancel : function (id){
-        var requests = this.previousRequests[id];
+        var requests = this.previousRequests[id].requests;
         for (var i = 0 ; i < requests.length; i++){
             var request = requests[i];
             Ext.Ajax.abort(request);
