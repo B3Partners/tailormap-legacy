@@ -424,6 +424,8 @@ public class GeoServiceActionBean implements ActionBean {
                     imageExtension = ce != null ? ce.getValue() : null;
                 }
 
+            }else if(protocol.equals(WMSService.PROTOCOL)){
+                overrideUrl = ((WMSService)service).getOverrideUrl();
             }
             
             if(service.getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
@@ -470,6 +472,10 @@ public class GeoServiceActionBean implements ActionBean {
                 l.getDetails().remove("image_extension");
             }
 
+        }
+        
+        if (service instanceof WMSService) {
+            ((WMSService)service).setOverrideUrl(overrideUrl);
         }
         
         if (useIntersect!=null){
