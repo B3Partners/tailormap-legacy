@@ -43,6 +43,7 @@ Ext.define ("viewer.components.Maptip",{
     lastPosition: null,
     worldPosition: null,
     requestExtent:null,
+    requestManager:null,
     /**
      * @constructor
      */
@@ -146,7 +147,8 @@ Ext.define ("viewer.components.Maptip",{
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
             this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
-            this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
+            this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController}), this.viewerController);
+            
             this.serverRequestEnabled = true;
         }
         if (this.serverRequestLayers ==null){
@@ -158,7 +160,7 @@ Ext.define ("viewer.components.Maptip",{
      * Do a server request
      */
     doServerRequest: function(map,options){
-        if (!this.featureInfo || !this.enabled){
+        if (!this.requestManager || !this.enabled){
             return;
         }        
         var radius=4*map.getResolution();
@@ -174,11 +176,12 @@ Ext.define ("viewer.components.Maptip",{
                 }
             }
         }
-        
-        this.featureInfo.layersFeatureInfo(options.coord.x,options.coord.y,radius,inScaleLayers,function(data){
-            options.data=data;
-            me.onMapData(null,options);
-        },this.onFailure);
+        var requestId = Ext.id();
+
+        this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
+            options.data = data;
+            me.onMapData(null, options);
+        }, this.onFailure);
     },
     /**
      * Handles when the mapping framework returns with data
@@ -190,7 +193,6 @@ Ext.define ("viewer.components.Maptip",{
         if (curExtent.equals(this.requestExtent)){
             this.onDataReturned(options);
         }
-        
     },
     /**
      * Handle the data that is returned.
@@ -230,7 +232,6 @@ Ext.define ("viewer.components.Maptip",{
             var data=options.data;        
             var components=[];    
             //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
-            this.viewerController.mapComponent.setCursor(false);
             if (data==null || data =="null" || data==undefined){
                 return;
             }
@@ -1006,6 +1007,6 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             }else{
             }
         },1000);
-    }
-    
+    }  
 }
+
