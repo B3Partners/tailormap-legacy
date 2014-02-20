@@ -77,6 +77,7 @@ Ext.define ("viewer.components.Drawing",{
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }  
+        this.viewerController.mapComponent.deactivateTools()
         this.popup.show();
     },
     selectedContentChanged : function (){
