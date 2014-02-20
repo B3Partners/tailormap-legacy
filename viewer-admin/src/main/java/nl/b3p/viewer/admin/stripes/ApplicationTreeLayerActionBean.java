@@ -261,8 +261,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         List<FeatureTypeRelation> relations = layerSft.getRelations();
         for (FeatureTypeRelation relation : relations) {
              SimpleFeatureType foreign = relation.getForeignFeatureType();
+             // Sort the attributes of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
              sortPerFeatureType(foreign, cas);
         }
+        // Sort the attributes of the given SimpleFeatureType (layerSft), ordering by attributename
         Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
@@ -283,7 +285,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
-        //Sort the attributes, by featuretype and the featuretyp
+        //Sort the attributes, by featuretype: neccessary for related featuretypes
         Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
@@ -302,8 +304,10 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
             }
         });
-
+        
+        // Sort the attributes by name (per featuretype)
         sortPerFeatureType(layerSft, cas);
+        
         for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
             
