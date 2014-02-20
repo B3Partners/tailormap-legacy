@@ -44,11 +44,19 @@ import org.stripesstuff.stripersist.Stripersist;
 )
 public class Application {
     private static final Log log = LogFactory.getLog(Application.class);
-        
+    
+    // Details keys
+    public static final String DETAIL_IS_MASHUP = "isMashup";
+    public static final String DETAIL_GLOBAL_LAYOUT = "globalLayout";
     public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
     
     private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[] { 
         "opmerking" 
+    }));  
+    
+    public static final Set<String> preventClearDetails = new HashSet<String>(Arrays.asList(new String[] { 
+        DETAIL_IS_MASHUP,
+        DETAIL_GLOBAL_LAYOUT
     }));  
     
     @Id
@@ -420,8 +428,8 @@ public class Application {
     }
     
     public Boolean isMashup(){
-         if(this.getDetails().containsKey("isMashup")){
-             String mashupValue = this.getDetails().get("isMashup").getValue();
+         if(this.getDetails().containsKey(Application.DETAIL_IS_MASHUP)){
+             String mashupValue = this.getDetails().get(Application.DETAIL_IS_MASHUP).getValue();
              Boolean mashup = Boolean.valueOf(mashupValue);
              return mashup;
          }else{
