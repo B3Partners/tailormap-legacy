@@ -18,6 +18,7 @@ package nl.b3p.viewer.stripes;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
+import java.io.IOException;
 import net.sourceforge.stripes.action.ActionBean;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class EditFeatureActionBean  implements ActionBean {
         this.appLayer = appLayer;
     }
     //</editor-fold>
-
+    @DefaultHandler
     public Resolution edit() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -150,6 +151,7 @@ public class EditFeatureActionBean  implements ActionBean {
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
                      error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                     break;
                 }
                 String fid = jsonFeature.optString(FID, null);
 
@@ -158,6 +160,81 @@ public class EditFeatureActionBean  implements ActionBean {
                 } else {
                     editFeature(fid);
                     json.put(FID, fid);
+                }
+                
+                json.put("success", Boolean.TRUE);
+            } while(false);
+        } catch(Exception e) {
+            log.error(String.format("Exception editing feature", e));
+            
+            error = e.toString();
+            if(e.getCause() != null) {
+                error += "; cause: " + e.getCause().toString();
+            }
+        } finally {
+            if(fs != null) {
+                fs.getDataStore().dispose();
+            }
+        }
+                
+        if(error != null) {
+            json.put("error", error);
+            log.error("Returned error message editing feature: " + error);
+        }      
+        
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));            
+    }
+    
+    public Resolution delete() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        String error = null;
+    
+        FeatureSource fs = null;
+        try {
+            do {
+                if(appLayer == null) {
+                    error = "App layer or service not found";
+                    break;
+                }
+                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                    error = "U heeft geen rechten om deze kaartlaag te bewerken";
+                    break;
+                }
+                
+                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+
+                if(layer == null) {
+                    error = "Layer not found";
+                    break;
+                }
+
+                if(layer.getFeatureType() == null) {
+                    error ="No feature type";
+                    break;
+                }
+
+                fs = layer.getFeatureType().openGeoToolsFeatureSource();
+                
+                if(!(fs instanceof SimpleFeatureStore)) {
+                    error = "Feature source does not support editing";
+                    break;
+                }
+                store = (SimpleFeatureStore)fs;
+                
+                jsonFeature = new JSONObject(feature);
+                if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
+                     error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                     break;
+                }
+                String fid = jsonFeature.optString(FID, null);
+
+                if(fid == null) {
+                    error = "Feature without FID can't be deleted";
+                    break;
+                } else {
+                    deleteFeature(fid);
                 }
                 
                 json.put("success", Boolean.TRUE);
@@ -219,6 +296,24 @@ public class EditFeatureActionBean  implements ActionBean {
         } finally {
             transaction.close();
         }               
+    }
+    
+    private void deleteFeature(String fid) throws IOException, Exception{
+        Transaction transaction = new DefaultTransaction("edit");
+        store.setTransaction(transaction);
+
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        Filter filter = ff.id(new FeatureIdImpl(fid));
+        
+        try {
+            store.removeFeatures(filter);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        } finally {
+            transaction.close();
+        }
     }
     
     private void editFeature(String fid) throws Exception {

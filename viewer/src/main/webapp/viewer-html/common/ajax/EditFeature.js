@@ -52,5 +52,27 @@ Ext.define("viewer.EditFeature", {
                 }
             }
         });        
+    },
+    remove: function(appLayer, feature,successFunction, failureFunction){
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl,
+            params: {application: this.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature),"delete": "d"},
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                
+                if(response.success) {                    
+                    successFunction();
+                } else {
+                    if(failureFunction != undefined) {
+                        failureFunction(response.error);
+                    }
+                }
+            },
+            failure: function(result) {
+                if(failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
+                }
+            }
+        });
     }
 });
