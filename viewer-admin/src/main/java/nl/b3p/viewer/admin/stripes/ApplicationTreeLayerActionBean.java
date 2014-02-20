@@ -256,6 +256,30 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         }
         return attributesToRetain;
     }
+    
+    private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas) {
+        List<FeatureTypeRelation> relations = layerSft.getRelations();
+        for (FeatureTypeRelation relation : relations) {
+             SimpleFeatureType foreign = relation.getForeignFeatureType();
+             sortPerFeatureType(foreign, cas);
+        }
+        Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
+            @Override
+            public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
+                if (o1.getFeatureType() == null) {
+                    return 0;
+                }
+                if (o2.getFeatureType() == null) {
+                    return 0;
+                }
+                if (o1.getFeatureType().getId().equals(layerSft.getId()) && o2.getFeatureType().getId().equals(layerSft.getId())) {
+                    return o1.getAttributeName().compareTo(o2.getAttributeName());
+                }else{
+                    return 0;
+                }
+            }
+        });
+    }
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
@@ -263,21 +287,23 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         Collections.sort(cas, new Comparator<ConfiguredAttribute>() {
             @Override
             public int compare(ConfiguredAttribute o1, ConfiguredAttribute o2) {
-                if (o1.getFeatureType()==null){
+                if (o1.getFeatureType() == null) {
                     return -1;
                 }
-                if (o2.getFeatureType()==null){
+                if (o2.getFeatureType() == null) {
                     return 1;
                 }
-                if (o1.getFeatureType().getId().equals(layerSft.getId())){
+                if (o1.getFeatureType().getId().equals(layerSft.getId())) {
                     return -1;
                 }
-                if (o2.getFeatureType().getId().equals(layerSft.getId())){
+                if (o2.getFeatureType().getId().equals(layerSft.getId())) {
                     return 1;
                 }
                 return o1.getFeatureType().getId().compareTo(o2.getFeatureType().getId());
             }
         });
+
+        sortPerFeatureType(layerSft, cas);
         for(ConfiguredAttribute ca: cas) {
             JSONObject j = ca.toJSONObject();
             
