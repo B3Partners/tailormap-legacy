@@ -84,7 +84,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     @Validate
     @ValidateNestedProperties({
             @Validate(field= "simpleFeatureType"),
-            @Validate(field= "name")
+            @Validate(field= "name",required = true, on = "save")
     })
     private SolrConf solrConfiguration;
     
