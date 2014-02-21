@@ -509,7 +509,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** Remove all layers
      */
     clearLayers: function() {
-        this.layers = [];
+        this.layers = {};
         this.mapComponent.getMap().removeAllLayers();
     },
     /**
@@ -892,10 +892,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getVisibleLayers : function (){
         var layers = this.layers;
         var layerArray = new Array();
-        for ( var i in layers){
-            var layer = layers[i];
-            if(layer.getVisible()){
-                layerArray.push(i);
+        for (var i in layers){
+            if (layers.hasOwnProperty(i)){
+                var layer = layers[i];
+                if(layer.getVisible()){
+                    layerArray.push(i);
+                }
             }
         }
         return layerArray;

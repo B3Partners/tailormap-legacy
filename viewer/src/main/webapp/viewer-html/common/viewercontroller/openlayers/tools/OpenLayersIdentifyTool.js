@@ -312,14 +312,18 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             featureIdentifier);
         var response = [];
         if (layerNodes) {
-            for (var i=0, len=layerNodes.length; i<len; ++i) {                
-                var featureNode = layerNodes[i].firstElementChild;                
-                var attributes = this.parseAttributes(featureNode);
-                var geomAttr = this.parseGeometry(featureNode);
-                var feature = new OpenLayers.Feature.Vector(geomAttr.geometry,
-                    attributes,null);
-                feature.type = featureNode.localName;
-                response.push(feature);
+            for (var i=0, len=layerNodes.length; i<len; ++i) {
+                if (layerNodes.hasOwnProperty(i)){
+                    var featureNode = layerNodes[i].firstElementChild;                
+                    if (featureNode){
+                        var attributes = this.parseAttributes(featureNode);
+                        var geomAttr = this.parseGeometry(featureNode);
+                        var feature = new OpenLayers.Feature.Vector(geomAttr.geometry,
+                            attributes,null);
+                        feature.type = featureNode.localName;
+                        response.push(feature);
+                    }
+                }
             }
         }
         return response;
