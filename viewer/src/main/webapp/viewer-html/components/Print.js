@@ -815,8 +815,12 @@ Ext.define ("viewer.components.Print",{
         if(config.includeOverview){
             var overviews = this.getOverviews();
             if(overviews.length > 0){
-                var url = overviews[0].config.url;
-                config.overviewUrl = url;
+                var overview = overviews[0];
+                var url = overview.config.url;
+                config.overview = new Object();
+                config.overview.overviewUrl = url;
+                config.overview.extent = overview.config.lox + "," + overview.config.loy + "," + overview.config.rbx + "," + overview.config.rby;
+                config.overview.geom = this.viewerController.mapComponent.getMap().getExtent().toWKT();
             }
         }
         return config;
