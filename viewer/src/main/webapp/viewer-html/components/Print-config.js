@@ -80,10 +80,23 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "max_imagesize",
                 value: me.configObject.max_imagesize ? me.configObject.max_imagesize :"2048"
             },{
+                xtype: "label",
+                text: "RTF-Knop",
+                style: "font-weight: bold;"                
+            },{
                 xtype: "checkbox",
                 name: "showPrintRtf",
                 checked: me.configObject.showPrintRtf ? me.configObject.showPrintRtf : true,
                 boxLabel: "Laat de print via RTF knop zien"
+            },{
+                xtype: "label",
+                text: "Overzichtskaart",
+                style: "font-weight: bold;"                
+            },{
+                xtype: "checkbox",
+                name: "overview",
+                checked: me.configObject.overview ? me.configObject.overview : false,
+                boxLabel: "Neem de overzichtskaart op als de overzichtskaart aanwezig is"
             }
         ]);
                  
