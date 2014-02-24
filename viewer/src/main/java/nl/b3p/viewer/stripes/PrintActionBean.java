@@ -90,6 +90,7 @@ public class PrintActionBean implements ActionBean {
         
         //get the image url:
         String imageUrl= getImageUrl(params);
+        
         //get the form settings
         final PrintInfo info = new PrintInfo();
         if (jRequest.has("title")){
@@ -108,6 +109,11 @@ public class PrintActionBean implements ActionBean {
         }
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
+        }
+        
+        if(jRequest.has("overview")){
+            String overviewUrl = getOverviewUrl(params);
+            info.setOverviewUrl(overviewUrl);
         }
         /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
@@ -288,6 +294,32 @@ public class PrintActionBean implements ActionBean {
             out.close();
         }
     }      
+    
+    private String getOverviewUrl(String params) throws JSONException, Exception{
+        JSONObject info = new JSONObject(params);
+        info.remove("requests"); // Remove old requests, to replace them with overview-only parameters
+        
+        JSONObject overview = info.getJSONObject("overview");
+        info.put("bbox", overview.get("extent"));
+        JSONArray reqs = new JSONArray();
+        
+        JSONObject image = new JSONObject();
+        image.put("protocol", CombineImageActionBean.IMAGE);
+        image.put("url", overview.get("overviewUrl"));
+        image.put("extent", overview.get("extent"));
+        reqs.put(image);
+        info.put("requests", reqs);
+        
+        JSONArray geometries = new JSONArray();
+        JSONObject bbox = new JSONObject();
+        String extent = overview.getString("geom");
+        bbox.put("wktgeom",extent);
+        
+        geometries.put(bbox);
+        info.put("geometries", geometries);
+        String overviewUrl = getImageUrl(info.toString());
+        return overviewUrl;
+    }
     /**
      * Get the image url from the CombineImageAction
      * @param param the json as string with params needed to create the image
