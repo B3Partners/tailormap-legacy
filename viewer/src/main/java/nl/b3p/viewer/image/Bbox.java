@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,13 @@ public class Bbox {
 
     public Bbox(double[] b) {
         setBbox(b);
+    }
+    
+    public Bbox(double minx,double miny,double maxx,double maxy) {
+        this.minx = minx;
+        this.maxx = maxx;
+        this.miny = miny;
+        this.maxy = maxy;
     }
 
     public Bbox(Bbox b){
