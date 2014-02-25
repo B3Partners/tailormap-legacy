@@ -69,6 +69,8 @@ public class CombineImageActionBean implements ActionBean {
     private Integer height=null;
     @Validate
     private String bbox=null;
+    @Validate
+    private String geom = null;
     
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public void setContext(ActionBeanContext context) {
@@ -126,7 +128,16 @@ public class CombineImageActionBean implements ActionBean {
     public void setBbox(String bbox) {
         this.bbox = bbox;
     }
+
+    public String getGeom() {
+        return geom;
+    }
+
+    public void setGeom(String geom) {
+        this.geom = geom;
+    }
     //</editor-fold>
+    
     @DefaultHandler
     public Resolution create() throws JSONException, Exception {        
         JSONObject jRequest = new JSONObject(params);
@@ -259,14 +270,42 @@ public class CombineImageActionBean implements ActionBean {
         //final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
         final CombineImageSettings settings = imageSettings.get(imageId);
         //if these settings are given then overwrite those in the CombineImageSettings
-        if (this.getWidth()!=null && this.getWidth()>0){
+        if (this.getWidth() != null && this.getWidth() > 0) {
             settings.setWidth(getWidth());
-        }if (this.getHeight()!=null && this.getHeight()>0){
+        }
+        if (this.getHeight() != null && this.getHeight() > 0) {
             settings.setHeight(getHeight());
-        }if (this.getBbox()!=null){
+        }
+        if (this.getBbox() != null) {
             settings.setBbox(getBbox());
         }
-        
+        if (this.getGeom() != null) {
+            String firstChar = geom.substring(0, 1);
+            try {
+                int test = Integer.parseInt(firstChar);
+                // This is a bounding box, so parse it into a polygon
+                String[] tokens = geom.split(",");
+                String minx = tokens[0];
+                String miny = tokens[1];
+                String maxx = tokens[2];
+                String maxy = tokens[3];
+                String wkt = "POLYGON((";
+                wkt += minx + " " + miny + ", ";
+                wkt += maxx + " " + miny + ", ";
+                wkt += maxx + " " + maxy + ", ";
+                wkt += minx + " " + maxy + ", ";
+                wkt += minx + " " + miny + "))";
+                this.geom = wkt;
+            } catch (NumberFormatException e) {
+                // this is not a boundingbox
+            }
+            CombineImageWkt ciw = new CombineImageWkt(geom);
+            if(settings.getWktGeoms() == null){
+               settings.setWktGeoms(new ArrayList());
+            }
+            settings.getWktGeoms().add(ciw);
+        }
+
         //stream the result.
         StreamingResolution res = new StreamingResolution(settings.getMimeType()) {
             @Override

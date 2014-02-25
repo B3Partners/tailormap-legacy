@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @XmlRootElement(name="info")
-@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle"})
+@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle","overviewUrl"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
     
@@ -58,7 +58,9 @@ public class PrintInfo {
     private List<Legend> legendUrls = new ArrayList();
     
     private List<File> tempFiles = new ArrayList();
-
+    
+    private String overviewUrl;
+    
     public PrintInfo() {
     }    
 
@@ -141,6 +143,15 @@ public class PrintInfo {
 
     public void setAngle(int angle) {
         this.angle = angle;
+    }
+
+    @XmlElement(name="overviewUrl")
+    public String getOverviewUrl() {
+        return overviewUrl;
+    }
+
+    public void setOverviewUrl(String overviewUrl) {
+        this.overviewUrl = overviewUrl;
     }
     
     public void cacheLegendImagesAndReadDimensions() {

@@ -38,7 +38,8 @@ Ext.define ("viewer.components.Print",{
         legend: null,
         max_imagesize: "2048",
         showPrintRtf:null,
-        label: ""
+        label: "",
+        overview:null
     },
     /**
      * @constructor
@@ -353,6 +354,12 @@ Ext.define ("viewer.components.Print",{
                                         scope:this
                                     }
                                 }
+                            },{
+                                xtype: 'checkbox',
+                                name: 'includeOverview',
+                                hidden: !me.shouldAddOverview(),
+                                inputValue: true,
+                                boxLabel: 'Overzichtskaart toevoegen'
                             }]                        
                         },{
                             //(8)
@@ -545,6 +552,14 @@ Ext.define ("viewer.components.Print",{
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
         return width > height? width : height;
+    },
+    shouldAddOverview : function(){
+        var overviews = this.getOverviews();
+        if(this.overview && overviews.length > 0){
+            return true;
+        }else{
+            return false;
+        }
     },
     /**
      * Called when quality is changed.
@@ -796,9 +811,21 @@ Ext.define ("viewer.components.Print",{
                 
             }
         }
+        if(config.includeOverview){
+            var overviews = this.getOverviews();
+            if(overviews.length > 0){
+                var overview = overviews[0];
+                var url = overview.config.url;
+                config.overview = new Object();
+                config.overview.overviewUrl = url;
+                config.overview.extent = overview.config.lox + "," + overview.config.loy + "," + overview.config.rbx + "," + overview.config.rby;
+            }
+        }
         return config;
     },
-
+    getOverviews : function(){
+      return this.viewerController.getComponentsByClassName("viewer.components.Overview");  
+    },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }
