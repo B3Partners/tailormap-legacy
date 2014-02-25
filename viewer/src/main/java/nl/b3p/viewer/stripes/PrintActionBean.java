@@ -312,10 +312,7 @@ public class PrintActionBean implements ActionBean {
         image.put("extent", overview.get("extent"));
         reqs.put(image);
         info.put("requests", reqs);
-       
-        info.put("width", 769);
-        info.put("height", 557);
-        
+               
         String overviewUrl = getImageUrl(info.toString());
         return overviewUrl;
     }

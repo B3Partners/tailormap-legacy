@@ -293,19 +293,22 @@
     
     
     <xsl:template name="overview-block">
+        <xsl:param name="width" select="'4cm'"/>
+        <xsl:param name="height" select="'4cm'"/>
         <xsl:variable name="bbox-corrected">
             <xsl:call-template name="correct-bbox">
                 <xsl:with-param name="bbox" select="bbox"/>
             </xsl:call-template>
         </xsl:variable>
+        
         <xsl:if test="overviewUrl">
-            <fo:block margin-left="0.2cm" margin-right="0.05cm">
+            <fo:block margin-left="0cm" margin-right="0cm">
                 <xsl:variable name="overviewSrc">
                     <xsl:value-of select="overviewUrl"/>
                     <xsl:text>&amp;geom=</xsl:text>
                     <xsl:value-of select="$bbox-corrected"/>
                 </xsl:variable>
-                <fo:external-graphic src="url({$overviewSrc})" content-height="scale-to-fit" content-width="scale-to-fit" scaling="uniform" width="2cm" height="2cm"/>
+                <fo:external-graphic src="url({$overviewSrc})" content-height="scale-to-fit" content-width="scale-to-fit" scaling="uniform" width="{$width}" height="{$height}"/>
             </fo:block>
         </xsl:if>
             
