@@ -104,6 +104,11 @@ public class PrintActionBean implements ActionBean {
         if (jRequest.has("bbox")){
             info.setBbox(jRequest.getString("bbox"));
         }
+        
+        if (jRequest.has("overview")){
+            String url = getOverviewUrl(params);
+            info.setOverviewUrl(url);
+        }
         if (jRequest.has("extraTekst")){
             info.setRemark(jRequest.getString("extraTekst"));
         }
@@ -111,10 +116,6 @@ public class PrintActionBean implements ActionBean {
             info.setQuality(jRequest.getInt("quality"));
         }
         
-        if(jRequest.has("overview")){
-            String overviewUrl = getOverviewUrl(params);
-            info.setOverviewUrl(overviewUrl);
-        }
         /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
@@ -298,6 +299,8 @@ public class PrintActionBean implements ActionBean {
     private String getOverviewUrl(String params) throws JSONException, Exception{
         JSONObject info = new JSONObject(params);
         info.remove("requests"); // Remove old requests, to replace them with overview-only parameters
+        info.remove("geometries");
+        info.remove("quality");
         
         JSONObject overview = info.getJSONObject("overview");
         info.put("bbox", overview.get("extent"));
@@ -309,14 +312,10 @@ public class PrintActionBean implements ActionBean {
         image.put("extent", overview.get("extent"));
         reqs.put(image);
         info.put("requests", reqs);
+       
+        info.put("width", 769);
+        info.put("height", 557);
         
-        JSONArray geometries = new JSONArray();
-        JSONObject bbox = new JSONObject();
-        String extent = overview.getString("geom");
-        bbox.put("wktgeom",extent);
-        
-        geometries.put(bbox);
-        info.put("geometries", geometries);
         String overviewUrl = getImageUrl(info.toString());
         return overviewUrl;
     }

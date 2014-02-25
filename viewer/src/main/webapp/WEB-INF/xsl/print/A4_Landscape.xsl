@@ -122,6 +122,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 U bekijkt een demo ontwerp.
             </fo:block>
             
+            <xsl:call-template name="overview-block"/>
+            
             <fo:block space-before="0.4cm"/>            
             <xsl:call-template name="legend"/>
             

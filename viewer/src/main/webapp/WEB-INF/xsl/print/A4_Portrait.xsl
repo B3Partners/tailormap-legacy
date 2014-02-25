@@ -113,11 +113,13 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 <xsl:value-of select="date"/>
             </fo:block>
 
-            <fo:block margin-left="0.2cm" margin-top="0.1cm" font-size="10pt">
+            <fo:block margin-left="0.2cm" margin-top="0.1cm" font-size="10pt" xsl:use-attribute-sets="column-block-border">
                 U bekijkt een demo ontwerp.
             </fo:block>
             
-            <fo:block space-before="0.4cm"/>
+            <xsl:call-template name="overview-block" xsl:use-attribute-sets="column-block-border"/>
+            
+            <fo:block space-before="0.4cm" xsl:use-attribute-sets="column-block-border"/>
             <xsl:call-template name="legend"/>
 
             <fo:block margin-left="0.2cm" margin-top="0.3cm" font-size="8pt" font-style="italic">
