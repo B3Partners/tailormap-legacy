@@ -46,7 +46,7 @@ public class CombineStaticImageUrl extends CombineImageUrl{
         double unitsY =imbbox.getUnitsPixelY();
         
         csiu.width= (int)Math.round(csiu.getBbox().getWidth()/unitsX);       
-        csiu.height= (int)Math.round(csiu.getBbox().getWidth()/unitsX);       
+        csiu.height= (int)Math.round(csiu.getBbox().getHeight()/unitsY);       
         
         csiu.x= (int)Math.round((csiu.getBbox().getMinx()-imbbox.getBbox().getMinx())/unitsX);
         csiu.y= (int)Math.round((imbbox.getBbox().getMaxy()-csiu.getBbox().getMaxy())/unitsY);
