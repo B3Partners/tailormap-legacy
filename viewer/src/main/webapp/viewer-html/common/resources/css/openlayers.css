@@ -84,15 +84,6 @@
     background-image: url("../../openlayers/theme/default/img/measure_on.png");
 }
 
-.olControlPanel .olControlMeasureAreaItemActive{
-    background: url("../../../components/resources/images/measureArea/ruler_square_over.png");
-    background-repeat: no-repeat;
-}
-.olControlPanel .olControlMeasureAreaItemInactive{
-    background: url("../../../components/resources/images/measureArea/ruler_square.png");
-    background-repeat: no-repeat;
-}
-
 .olControlPanel .olControlDefaultItemActive{
     background-image: url("../../openlayers/theme/default/img/default_on.png");
 }

@@ -65,7 +65,8 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
             maximized: true,
             mapOptions: {
                 maxExtent: maxBounds,
-                projection: "EPSG:28992"
+                projection: "EPSG:28992",
+                theme: null
             },
             size: size,
             layers: [layer]

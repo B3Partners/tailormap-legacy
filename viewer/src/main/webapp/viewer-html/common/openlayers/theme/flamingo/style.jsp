@@ -11,7 +11,7 @@
         </c:otherwise>
     </c:choose>
 </c:set>
-@import url('${contextPath}${actionBean.location}default/style.css');    
+@import url('${contextPath}${actionBean.location}default/style.jsp');    
 .olControlPanel{
     border: 0px transparent;
     background-color: transparent;
