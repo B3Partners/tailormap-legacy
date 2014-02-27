@@ -309,7 +309,7 @@ Ext.define("viewer.components.Component",{
                 x: 561
             },
             paddingCorrection: 3,
-            xOffset: 350
+            xOffset: 354
         };
         var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
             styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';
