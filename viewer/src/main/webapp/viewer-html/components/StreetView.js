@@ -21,7 +21,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.tools.StreetView",{
-    extend: "viewer.components.Component",
+    extend: "viewer.components.tools.Tool",
     config:{
         name: "Street View",
         width:null,
@@ -97,6 +97,7 @@ Ext.define ("viewer.components.tools.StreetView",{
             tooltip: this.config.tooltip || null,
             viewerController: this.viewerController
         });
+        this.button.frameworkObject.displayClass = "aap";
         this.viewerController.mapComponent.addTool(this.button);
         
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);

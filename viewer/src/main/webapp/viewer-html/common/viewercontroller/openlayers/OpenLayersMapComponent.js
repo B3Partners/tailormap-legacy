@@ -129,7 +129,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     createMap : function(id, options){
         options = Ext.merge(this.mapOptions,options);
-        options["theme"]=OpenLayers._getScriptLocation()+'theme/'+this.getTheme()+'/style.css';        
+        options["theme"]= actionBeans["css"]+"?theme="+this.getTheme() + "&location="+  OpenLayers._getScriptLocation() + "&app="+this.viewerController.app.id;//+'theme/'+this.getTheme()+'/style.jsp';        
         options.mapComponent=this;   
         options.viewerController = this.viewerController;
         options.domId=this.domId;
