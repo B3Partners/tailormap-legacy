@@ -76,10 +76,10 @@ background: url("${sprite}") 514px 394px;
 }
 
 .olControlPanel .downloadMapItemInactive{
-    background: url("${sprite}") 0 450px;
+    background: url("${sprite}") 508px 135px;
 }
 .olControlPanel .downloadMapItemActive{
-    background: url("${sprite}") 514px 450px;
+    background: url("${sprite}") 538px 135px;
 }
 
 .olControlPanel .currentLocationItemActive{
