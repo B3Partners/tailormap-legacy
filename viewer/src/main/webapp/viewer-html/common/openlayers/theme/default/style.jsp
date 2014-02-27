@@ -1,6 +1,15 @@
 <%@include file="/WEB-INF/jsp/taglibs.jsp" %>
 <%@page contentType="text/css" %>
-
+<c:set var="sprite">
+    <c:choose>
+        <c:when test="${!empty actionBean.app.details.iconSprite.value}">
+            <c:out value="${contextPath}${actionBean.app.details.iconSprite.value}"/>
+        </c:when>
+        <c:otherwise>
+            <c:out value="${sprite}"/>
+        </c:otherwise>
+    </c:choose>
+</c:set>
 div.olMap {
     z-index: 0;
     padding: 0 !important;
@@ -430,6 +439,35 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 }
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemActive {
     background-position: -26px -24px;
+}
+
+
+.olControlPanel .streetViewItemActive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .streetViewItemInactive{
+    background: url("${sprite}") 514px 450px;
+}
+
+.olControlPanel .olControlMeasureAreaItemInactive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .olControlMeasureAreaItemInactive{
+    background: url("${sprite}") 514px 450px;
+}
+
+.olControlPanel .downloadMapItemInactive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .downloadMapItemInactive{
+    background: url("${sprite}") 514px 450px;
+}
+
+.olControlPanel .currentLocationItemInactive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .currentLocationItemInactive{
+    background: url("${sprite}") 514px 450px;
 }
 
 div.olControlZoom {
