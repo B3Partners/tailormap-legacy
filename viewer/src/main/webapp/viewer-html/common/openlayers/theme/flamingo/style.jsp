@@ -83,10 +83,10 @@ background: url("${sprite}") 514px 394px;
 }
 
 .olControlPanel .currentLocationItemActive{
-    background: url("${sprite}") 514px 450px;
+    background: url("${sprite}")-2px 166px;
 }
 .olControlPanel .currentLocationItemInactive{
-    background: url("${sprite}") 514px 450px;
+    background: url("${sprite}") 538px 166px;
 }
 
 .olControlPanel .olControlDefaultItemActive{
