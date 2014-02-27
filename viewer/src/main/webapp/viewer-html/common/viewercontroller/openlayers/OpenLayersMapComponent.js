@@ -551,11 +551,19 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
             frameworkOptions.type=OpenLayers.Control.TYPE_TOOL;
-            frameworkOptions.displayClass ="olTool_"+conf.id;
+            if (conf.displayClass) {
+                frameworkOptions.displayClass = conf.displayClass;
+            } else {
+                frameworkOptions.displayClass = "olButton_" + conf.id;
+            }  
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
             frameworkOptions.type=OpenLayers.Control.TYPE_BUTTON;
-            frameworkOptions.displayClass ="olButton_"+conf.id;            
+            if(conf.displayClass){
+                frameworkOptions.displayClass = conf.displayClass;
+            }else{
+                frameworkOptions.displayClass ="olButton_"+conf.id;
+            }            
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
