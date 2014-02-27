@@ -16,9 +16,6 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,15 +24,11 @@ import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ErrorResolution;
 import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.RedirectResolution;
 import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
-import static nl.b3p.viewer.stripes.PrintActionBean.DEFAULT_TEMPLATE_PATH;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -46,14 +39,13 @@ import org.apache.commons.io.IOUtils;
 public class CSSActionBean implements ActionBean {
 
     private ActionBeanContext context;
-
+    
     private static final String CSS_FILE = "style.jsp";
 
     @Validate
     private String theme;
 
-    @Validate
-    private String location;
+    private final String location = "/viewer-html/common/openlayers/theme/";
 
     @Validate
     private Application app;
@@ -79,10 +71,6 @@ public class CSSActionBean implements ActionBean {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public Application getApp() {
         return app;
     }
@@ -99,14 +87,9 @@ public class CSSActionBean implements ActionBean {
         // Session must exist
         HttpSession sess = request.getSession(false);
         if (sess == null) {
-            //  return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy requests forbidden");
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy requests forbidden");
         }
 
-        //String url = "/viewer/viewer-html/common/openlayers/theme/"+ theme + "/" + CSS_FILE;
-      //  String url = context.getServletContext().getRealPath("/viewer-html/common/openlayers/theme/" + theme + "/" + CSS_FILE);
-
-       // File f = new File(context.getServletContext().getRealPath(url));
-       // return new ForwardResolution(url);
-        return new ForwardResolution("/viewer-html/common/openlayers/theme/" + theme + "/" + CSS_FILE);
+        return new ForwardResolution(location + theme + "/" + CSS_FILE);
     }
 }
