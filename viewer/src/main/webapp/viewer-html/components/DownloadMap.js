@@ -32,9 +32,6 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         viewer.components.tools.DownloadMap.superclass.constructor.call(this, conf);
         this.initConfig(conf);   
         
-        this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/downloadMap/up.png";
-        this.iconUrl_up_large= contextPath+"/viewer-html/components/resources/images/downloadMap/up_large.png";
-        this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/downloadMap/over.png";
         if(this.isPopup){
             var me = this;
             this.renderButton({
@@ -49,8 +46,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         }else{
             this.button= this.viewerController.mapComponent.createTool({
                 type: viewer.viewercontroller.controller.Tool.BUTTON,
-                iconUrl_up: this.iconUrl_up,
-                iconUrl_over: this.iconUrl_over,
+                displayClass: "downloadMap",
                 tooltip: this.tooltip || null,
                 viewerController: this.viewerController
             });
