@@ -142,3 +142,6 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     width:100%;
     border-radius: 0;
 }
+.layout-left_menu{
+    z-index: 100000;
+}
