@@ -1,7 +1,6 @@
 <%@include file="/WEB-INF/jsp/taglibs.jsp" %>
 <%@page contentType="text/css" %>
-
-@import url('../default/style.css');               
+           
 <c:set var="sprite">
     <c:choose>
         <c:when test="${!empty actionBean.app.details.iconSprite.value}">
@@ -12,8 +11,7 @@
         </c:otherwise>
     </c:choose>
 </c:set>
-${sprite}
-> ${actionBean.app.details.iconSprite.value} <
+@import url('${contextPath}${actionBean.location}default/style.css');    
 .olControlPanel{
     border: 0px transparent;
     background-color: transparent;
@@ -60,6 +58,34 @@ background: url("${sprite}") 514px 394px;
     background: url("${sprite}") 0 450px;
 }
 .olControlPanel .olControlMeasureItemInactive{
+    background: url("${sprite}") 514px 450px;
+}
+
+.olControlPanel .streetViewItemActive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .streetViewItemInactive{
+    background: url("${sprite}") 514px 450px;
+}
+
+.olControlPanel .olControlMeasureAreaItemInactive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .olControlMeasureAreaItemInactive{
+    background: url("${sprite}") 514px 450px;
+}
+
+.olControlPanel .downloadMapItemInactive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .downloadMapItemInactive{
+    background: url("${sprite}") 514px 450px;
+}
+
+.olControlPanel .currentLocationItemInactive{
+    background: url("${sprite}") 0 450px;
+}
+.olControlPanel .currentLocationItemInactive{
     background: url("${sprite}") 514px 450px;
 }
 
