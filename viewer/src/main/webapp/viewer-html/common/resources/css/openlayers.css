@@ -30,8 +30,8 @@
 .olControlPanel div {
     float: left;
     display:block;
-    width:  24px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     margin: 5px;
     background-repeat: no-repeat;
 }
