@@ -62,28 +62,28 @@ background: url("${sprite}") 514px 394px;
 }
 
 .olControlPanel .streetViewItemActive{
-    background: url("${sprite}") 0 450px;
+    background: url("${sprite}") -2px 196px !important;;
 }
 .olControlPanel .streetViewItemInactive{
-    background: url("${sprite}") 514px 450px;
+    background: url("${sprite}") 510px 196px !important;;
 }
 
 .olControlPanel .olControlMeasureAreaItemInactive{
     background: url("${sprite}") 0 450px;
 }
-.olControlPanel .olControlMeasureAreaItemInactive{
+.olControlPanel .olControlMeasureAreaItemActive{
     background: url("${sprite}") 514px 450px;
 }
 
 .olControlPanel .downloadMapItemInactive{
     background: url("${sprite}") 0 450px;
 }
-.olControlPanel .downloadMapItemInactive{
+.olControlPanel .downloadMapItemActive{
     background: url("${sprite}") 514px 450px;
 }
 
-.olControlPanel .currentLocationItemInactive{
-    background: url("${sprite}") 0 450px;
+.olControlPanel .currentLocationItemActive{
+    background: url("${sprite}") 514px 450px;
 }
 .olControlPanel .currentLocationItemInactive{
     background: url("${sprite}") 514px 450px;
