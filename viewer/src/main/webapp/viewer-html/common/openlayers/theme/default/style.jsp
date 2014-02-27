@@ -443,31 +443,31 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 
 
 .olControlPanel .streetViewItemActive{
-    background: url("${sprite}") 0 450px;
+    background: url("${sprite}") -2px 196px !important;;
 }
 .olControlPanel .streetViewItemInactive{
-    background: url("${sprite}") 514px 450px;
+    background: url("${sprite}") 510px 196px !important;;
 }
 
 .olControlPanel .olControlMeasureAreaItemInactive{
-    background: url("${sprite}") 0 450px;
+    background: url("${sprite}") 508px 107px;
 }
-.olControlPanel .olControlMeasureAreaItemInactive{
-    background: url("${sprite}") 514px 450px;
+.olControlPanel .olControlMeasureAreaItemActive{
+    background: url("${sprite}") 538px 107px;
 }
 
 .olControlPanel .downloadMapItemInactive{
-    background: url("${sprite}") 0 450px;
+    background: url("${sprite}") 509px 136px;
 }
-.olControlPanel .downloadMapItemInactive{
-    background: url("${sprite}") 514px 450px;
+.olControlPanel .downloadMapItemActive{
+    background: url("${sprite}") 538px 135px;
 }
 
-.olControlPanel .currentLocationItemInactive{
-    background: url("${sprite}") 0 450px;
+.olControlPanel .currentLocationItemActive{
+    background: url("${sprite}")-2px 166px;
 }
 .olControlPanel .currentLocationItemInactive{
-    background: url("${sprite}") 514px 450px;
+    background: url("${sprite}") 538px 166px;
 }
 
 div.olControlZoom {
