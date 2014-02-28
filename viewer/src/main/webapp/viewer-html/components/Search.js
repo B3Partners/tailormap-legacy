@@ -504,10 +504,12 @@ Ext.define ("viewer.components.Search",{
                         this.viewerController.logger.logLevel = logLevel;
                         if(!layer){
                             var level = this.viewerController.getAppLayerParent(appLayerId);
-                            this.viewerController.app.selectedContent.push({
-                                id: level.id,
-                                type: "level"
-                            });
+                            if(!this.viewerController.doesLevelExist(level)){ 
+                                this.viewerController.app.selectedContent.push({
+                                    id: level.id,
+                                    type: "level"
+                                });
+                            }
                             selectedContentChanged = true;
                             layer = this.viewerController.createLayer(appLayer);
                         }

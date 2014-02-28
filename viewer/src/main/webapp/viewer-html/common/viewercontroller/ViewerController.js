@@ -429,6 +429,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
     },
+    /**
+     * Function to determine if the level does exist.
+     * @param {Level} level The level to be checked
+     */
+    doesLevelExist : function (levelToCheck){
+        var me = this;
+        me.found = false;
+        this.traverseSelectedContent(function(level){
+            me.found = level.id == levelToCheck.id || me.found;
+        }, Ext.emptyFn);
+        return me.found;
+    },
     
     getLevelAppLayerIds: function(level) {
         var appLayers = [];
