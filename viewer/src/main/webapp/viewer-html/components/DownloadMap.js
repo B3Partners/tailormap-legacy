@@ -36,7 +36,6 @@ Ext.define ("viewer.components.tools.DownloadMap",{
             var me = this;
             this.renderButton({
                 text: me.title,
-                icon: this.iconUrl_up_large,
                 tooltip: me.tooltip,
                 label: me.label,
                 handler: function() {

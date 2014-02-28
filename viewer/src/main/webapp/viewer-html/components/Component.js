@@ -303,7 +303,8 @@ Ext.define("viewer.components.Component",{
                 'viewercomponentsInfluenceImage': 11,
                 'viewercomponentsRelatedDocuments': 12,
                 'viewercomponentsAttributeList': 13,
-                'viewercomponentsPrint': 15
+                'viewercomponentsPrint': 15,
+                'viewercomponentstoolsDownloadMap': 16
             },
             menuIconPosition: {
                 x: 561
