@@ -363,8 +363,8 @@ public class EditFeatureActionBean  implements ActionBean {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            throw e;
-        } finally {
+            throw e; 
+       } finally {
             transaction.close();
         }                
     }
@@ -376,8 +376,10 @@ public class EditFeatureActionBean  implements ActionBean {
             String featureUsername=jsonFeature.optString(attr);
             if (featureUsername!=null && featureUsername.equals(request.getRemoteUser())){
                 return true;
+            }else{
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }
