@@ -45,7 +45,8 @@ Ext.define ("viewer.components.TOC",{
         initToggleAllLayers: true,
         showAllLayersOff: false,
         showAllLayersOn: false,
-        expandOnEnabledLayer:false
+        expandOnEnabledLayer:false,
+        showHorizontalScrollbar: true // Not a config option in viewer-admin yet, could be added in the future
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -71,7 +72,7 @@ Ext.define ("viewer.components.TOC",{
         var view = this.panel.getView();
         view.getEl().setStyle({
             overflow: 'auto',
-            overflowX: 'hidden'
+            overflowX: this.showHorizontalScrollbar ? 'scroll' : 'hidden'
         });
         // From ext-all-debug, r77661 & r77663
         // Seems to recalculate body and applies correct heights so scrollbars can be shown
@@ -139,12 +140,12 @@ Ext.define ("viewer.components.TOC",{
                 }
             ];
         }
-        
+
         this.panel =Ext.create('Ext.tree.Panel', {
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            scroll: false,
+            scroll: this.showHorizontalScrollbar ? 'both' : false,
             useArrows: true,
             rootVisible: false,
             floating: false,
@@ -194,6 +195,57 @@ Ext.define ("viewer.components.TOC",{
         this.registerQtips();
         // Apply the scroll fix when all layers are added
         this.applyTreeScrollFix();
+        this.applyHorizontalScrolling();
+    },
+           
+    /*
+     * Applies horizontal scrolling to treepanel (if configured)
+     * Needs workaround because horizontal scrolling is broken in Ext 4.0.7
+     * http://stackoverflow.com/questions/9388916/horizontal-scroller-on-tree-panel
+     * 
+     * What this function does is compute the max width of the longest label and sets
+     * the width of the parent and also sets overflowX to auto
+     */
+    applyHorizontalScrolling: function() {
+        if(!this.showHorizontalScrollbar) return;
+        var view = this.panel;
+        var c = view.container;
+        var e = view.el;
+        var max = 0;
+        Ext.each(e.query('.x-grid-cell-inner'), function(el) {
+            el = Ext.get(el);
+            var size = el.getPadding('lr');
+            Ext.each(el.dom.childNodes, function(el2) {
+                if (el2.nodeType === 3) { // 3 === Node.TEXT_NODE
+                    size += 6 + el.getTextWidth(el2.nodeValue);
+                } else {
+                    var _el2 = Ext.get(el2);
+                    if((Ext.isIE8 || Ext.isIE9) && el2.nodeName.toUpperCase() === 'SPAN') {
+                        // The SPAN inside the layername has the same width as the parent in IE8|9
+                        // so we use the getTextWidth function of Ext to compute width of element
+                        size += el.getTextWidth(el2.innerText);
+                    } else {
+                        size += (_el2.getWidth() + _el2.getMargin('lr'));
+                    }
+                }
+            });
+            max = Math.max(max, size);
+        });
+        max += c.getPadding('lr') + 5; // Add some extra padding to have some whitespace on the right
+        if (c.getWidth() < max) {
+            c.dom.style.overflowX = 'auto';
+            if(Ext.isIE8) {
+                // IE8 is behaving strange and cannot find table with e.down('table') so we search mannually
+                var tables = e.dom.getElementsByTagName('table');
+                for(var x = 0; x < tables.length; x++) {
+                    if((' ' + tables[x].className + ' ').indexOf(' x-grid-table ') > -1) {
+                        tables[x].style.width = max + 'px';
+                    }
+                }
+            } else {
+                e.down('table').setWidth(max);
+            }
+        }
     },
     
     isExpanded : function(level , triState){
@@ -720,5 +772,6 @@ Ext.define ("viewer.components.TOC",{
         var me = this;
         me.panel.doLayout();
         me.applyTreeScrollFix();
+        me.applyHorizontalScrolling();
     } 
 });
