@@ -427,15 +427,18 @@ Ext.define ("viewer.components.TOC",{
                 collapsible : true,
                 leaf: false,
                 background: false,
-                checked : false,
                 children: nodesArray
             };
-            var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
-            if(tristate === 1) {
-                background.checked = true;
-            }
-            else if (tristate === 0) {
-                background.cls = 'tristatenode';
+            if (this.groupCheck) {
+                var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
+                if (tristate === 1) {
+                    background.checked = true;
+                }
+                else if (tristate === 0) {
+                    background.cls = 'tristatenode';
+                } else if (tristate === -1) {
+                    background.checked = false;
+                }
             }
             nodes.push(background);
         }
@@ -618,8 +621,9 @@ Ext.define ("viewer.components.TOC",{
     checkChildNodes: function(node, checked) {
         var me = this;
         node.eachChild(function(childNode) {
-            if(me.layersChecked || (childNode.hasChildNodes() && me.groupCheck)) childNode.set('checked', checked);
-            else {
+            if((!childNode.hasChildNodes() && me.layersChecked) || (childNode.hasChildNodes() && me.groupCheck)){ 
+                childNode.set('checked', checked);
+            }else {
                 childNode.set('hidden_check', checked);
             }
             me.updateTreeNodes.push(childNode);
