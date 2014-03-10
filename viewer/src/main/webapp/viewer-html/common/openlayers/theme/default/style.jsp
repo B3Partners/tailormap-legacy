@@ -2,11 +2,11 @@
 <%@page contentType="text/css" %>
 <c:set var="sprite">
     <c:choose>
-        <c:when test="${!empty actionBean.app.details.iconSprite.value}">
-            <c:out value="${contextPath}${actionBean.app.details.iconSprite.value}"/>
+        <c:when test="${fn:startsWith( actionBean.app.details.iconSprite.value, 'http')}">
+            <c:out value="${actionBean.app.details.iconSprite.value}"/>
         </c:when>
         <c:otherwise>
-            <c:out value="${sprite}"/>
+            <c:out value="${contextPath}${actionBean.app.details.iconSprite.value}"/>
         </c:otherwise>
     </c:choose>
 </c:set>
