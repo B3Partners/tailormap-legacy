@@ -37,6 +37,7 @@ Ext.define ("viewer.components.DataSelection",{
     config: {
         layers:null,
         title:null,
+        maxFeatures:null,
         iconUrl:null,
         tooltip:null,
         label: "",
@@ -49,6 +50,9 @@ Ext.define ("viewer.components.DataSelection",{
         // minimal width = 600
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
+        if(!Ext.isDefined(conf.maxFeatures)){
+            conf.maxFeatures=250;
+        }
 		
         this.attributes =[];
         viewer.components.DataSelection.superclass.constructor.call(this, conf);
@@ -446,6 +450,7 @@ Ext.define ("viewer.components.DataSelection",{
             attributes: this.attributes,
             logicOperator: logicOperator,
             parentMainContainer: this.filterTab,
+            maxFeatures:this.maxFeatures,
             parentComponent: this
         });
         this.filters.push(filter);

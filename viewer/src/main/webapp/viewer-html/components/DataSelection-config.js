@@ -27,6 +27,17 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        this.form.add([
+        {
+            xtype: "textfield",
+            name: "maxFeatures",
+            fieldLabel: "Maximum aantal unieke objecten",
+            labelWidth:this.labelWidth,
+            width: 500,
+            id: "maxFeatures",
+            value: configObject.maxFeatures ? configObject.maxFeatures : 250
+        }
+        ]);
         this.createCheckBoxes(this.configObject.layers,{filterable:true});
     }
 });
