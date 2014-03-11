@@ -1211,7 +1211,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         var mapLayer = this.getLayer(appLayer);
         
-        if (appLayer.relations && appLayer.relations.length > 0){
+        if (appLayer.relations && appLayer.relations.length > 0 && appLayer.filter && appLayer.filter.getCQL()){
             var me = this;
             var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
             //alert("do reformat filter!!!");
