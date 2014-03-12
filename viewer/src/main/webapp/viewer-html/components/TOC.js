@@ -72,7 +72,7 @@ Ext.define ("viewer.components.TOC",{
         var view = this.panel.getView();
         view.getEl().setStyle({
             overflow: 'auto',
-            overflowX: this.showHorizontalScrollbar ? 'scroll' : 'hidden'
+            overflowX: this.showHorizontalScrollbar ? 'auto' : 'hidden'
         });
         // From ext-all-debug, r77661 & r77663
         // Seems to recalculate body and applies correct heights so scrollbars can be shown
