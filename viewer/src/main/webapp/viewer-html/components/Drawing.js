@@ -47,6 +47,9 @@ Ext.define ("viewer.components.Drawing",{
     constructor: function (conf){        
         viewer.components.Drawing.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        if(this.color === ""){
+            this.color = "ff0000";
+        }
         this.features = new Object();
         var me = this;
         this.renderButton({
