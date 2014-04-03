@@ -231,7 +231,8 @@ public class ImageTool {
                 centerPoint = calculateCenter(shape, srid, bbox, width, height);
                 gbi.draw(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 4, 4));
             } else {
-                gbi.setStroke(new BasicStroke(3));
+                float strokeWidth = ciw.getStrokeWidth() != null ? ciw.getStrokeWidth() : 3f;
+                gbi.setStroke(new BasicStroke(strokeWidth));
                 gbi.draw(shape);
             }
             if (ciw.getLabel() != null) {

@@ -283,23 +283,24 @@ public class CombineImageActionBean implements ActionBean {
             String firstChar = geom.substring(0, 1);
             try {
                 int test = Integer.parseInt(firstChar);
-                // This is a bounding box, so parse it into a polygon
+                // This is a bounding box, so parse it into a linestring
                 String[] tokens = geom.split(",");
                 String minx = tokens[0];
                 String miny = tokens[1];
                 String maxx = tokens[2];
                 String maxy = tokens[3];
-                String wkt = "POLYGON((";
+                String wkt = "LINESTRING(";
                 wkt += minx + " " + miny + ", ";
                 wkt += maxx + " " + miny + ", ";
                 wkt += maxx + " " + maxy + ", ";
                 wkt += minx + " " + maxy + ", ";
-                wkt += minx + " " + miny + "))";
+                wkt += minx + " " + miny + ")";
                 this.geom = wkt;
             } catch (NumberFormatException e) {
                 // this is not a boundingbox
             }
             CombineImageWkt ciw = new CombineImageWkt(geom);
+            ciw.setStrokeWidth(8f);
             if(settings.getWktGeoms() == null){
                settings.setWktGeoms(new ArrayList());
             }
