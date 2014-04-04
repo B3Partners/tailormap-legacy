@@ -57,8 +57,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         
         //Overwrite default OpenLayers tools,don't set any mouse controls
         config.controls=[
-            new OpenLayers.Control.Attribution(),            
-            new OpenLayers.Control.Navigation()
+            new OpenLayers.Control.Attribution()
         ];
         this.frameworkMap=new OpenLayers.Map(config.domId,config);        
         this.frameworkMap.centerLayerContainer();
