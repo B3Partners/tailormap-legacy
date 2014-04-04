@@ -52,7 +52,7 @@ Ext.define ("viewer.components.Print",{
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
-        this.legends={};
+        this.legends=[];
         
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
@@ -521,18 +521,21 @@ Ext.define ("viewer.components.Print",{
                 xtype: "label",
                 text: "Opnemen in legenda:"
             });
-            for (var key in this.legends){
-                var appLayer =this.viewerController.getAppLayerById(key);
-                var title = appLayer.alias;
-                checkboxes.push({
-                    xtype: "checkbox",
-                    boxLabel: title,
-                    name: 'legendUrl',
-                    inputValue: Ext.JSON.encode(this.legends[key]),
-                    id: 'legendCheckBox'+key,
-                    checked: true
-                });
-            } 
+            for (var key  =0 ; key < this.legends.length ;key++){
+                if(this.legends.hasOwnProperty(key)){
+                    var appLayer =this.viewerController.getAppLayerById(key);
+                    var title = appLayer.alias;
+                    checkboxes.push({
+                        xtype: "checkbox",
+                        boxLabel: title,
+                        name: 'legendUrl',
+                        inputValue: Ext.JSON.encode(this.legends[key]),
+                        id: 'legendCheckBox'+key,
+                        checked: true
+                    });
+                }
+            };
+       
             Ext.getCmp('legendContainer').removeAll();
             Ext.getCmp('legendContainer').add(checkboxes);        
             Ext.getCmp('legendContainer').doLayout();
