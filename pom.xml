@@ -4,7 +4,7 @@
 
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.4.1-SNAPSHOT</version>
+    <version>4.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>flamingo-mc</name>
