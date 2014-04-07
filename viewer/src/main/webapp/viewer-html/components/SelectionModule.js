@@ -243,12 +243,14 @@ Ext.define ("viewer.components.SelectionModule",{
         me.showActiveLeftPanel();
         // apply a scroll fix
         me.applyTreeScrollFix();
+        me.applyHorizontalScrolling();
         // add listeners to the popupwin to hide and show tree containers (which would otherwise remain visible)
         me.popup.popupWin.addListener('hide', me.hideTreeContainers);
         me.popup.popupWin.addListener('show', me.showTreeContainers);
         me.popup.popupWin.addListener("dragstart", me.hideTreeContainers);
         me.popup.popupWin.addListener("dragend", me.showTreeContainers);
         me.popup.popupWin.addListener("resize", me.applyTreeScrollFix, me);
+        me.popup.popupWin.addListener("resize", me.applyHorizontalScrolling, me);
         // set rendered to true so this function won't be called again
         me.rendered = true;
     },
@@ -366,7 +368,7 @@ Ext.define ("viewer.components.SelectionModule",{
         for(var i in activePanels) {
             activePanels[i].getView().getEl().setStyle({
                 overflow: 'auto',
-                overflowX: 'hidden'
+                overflowX: 'auto'
             });
             // From ext-all-debug, r77661 & r77663
             // Seems to recalculate body and applies correct heights so scrollbars can be shown
@@ -374,7 +376,49 @@ Ext.define ("viewer.components.SelectionModule",{
             activePanels[i].getView().panel.getLayout().layout();
         }
     },
-    
+     applyHorizontalScrolling: function() {
+        var panels = this.getActiveTreePanels();
+        for(var i = 0 ; i < panels.length ;i++){
+            var view = panels[i];
+            var c = view.container;
+            var e = view.el;
+            var max = 0;
+            Ext.each(e.query('.x-grid-cell-inner'), function(el) {
+                el = Ext.get(el);
+                var size = el.getPadding('lr');
+                Ext.each(el.dom.childNodes, function(el2) {
+                    if (el2.nodeType === 3) { // 3 === Node.TEXT_NODE
+                        size += 6 + el.getTextWidth(el2.nodeValue);
+                    } else {
+                        var _el2 = Ext.get(el2);
+                        if ((Ext.isIE8 || Ext.isIE9) && el2.nodeName.toUpperCase() === 'SPAN') {
+                            // The SPAN inside the layername has the same width as the parent in IE8|9
+                            // so we use the getTextWidth function of Ext to compute width of element
+                            size += el.getTextWidth(el2.innerText);
+                        } else {
+                            size += (_el2.getWidth() + _el2.getMargin('lr'));
+                        }
+                    }
+                });
+                max = Math.max(max, size);
+            });
+            max += c.getPadding('lr') + 5; // Add some extra padding to have some whitespace on the right
+            if (c.getWidth() < max) {
+                c.dom.style.overflowX = 'auto';
+                if (Ext.isIE8) {
+                    // IE8 is behaving strange and cannot find table with e.down('table') so we search mannually
+                    var tables = e.dom.getElementsByTagName('table');
+                    for (var x = 0; x < tables.length; x++) {
+                        if ((' ' + tables[x].className + ' ').indexOf(' x-grid-table ') > -1) {
+                            tables[x].style.width = max + 'px';
+                        }
+                    }
+                } else {
+                    e.down('table').setWidth(max);
+                }
+            }
+        }
+    },
     initViewerControllerData: function() {
         var me = this;
         // We make a cloned reference, so we can easily edit this array and merge it to the original after clicking 'Ok'
@@ -791,7 +835,7 @@ Ext.define ("viewer.components.SelectionModule",{
             rootVisible: false,
             useArrows: true,
             height: "100%",
-            scroll: false,
+            scroll: "both",
             animate: false,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
@@ -1218,6 +1262,7 @@ Ext.define ("viewer.components.SelectionModule",{
         }
         
         me.applyTreeScrollFix();
+        me.applyHorizontalScrolling();
     },
             
     setTopHeight: function(height) {
