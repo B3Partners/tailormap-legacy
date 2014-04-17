@@ -90,6 +90,7 @@ public class PrintActionBean implements ActionBean {
         
         //get the image url:
         String imageUrl= getImageUrl(params);
+        
         //get the form settings
         final PrintInfo info = new PrintInfo();
         if (jRequest.has("title")){
@@ -103,12 +104,18 @@ public class PrintActionBean implements ActionBean {
         if (jRequest.has("bbox")){
             info.setBbox(jRequest.getString("bbox"));
         }
+        
+        if (jRequest.has("overview")){
+            String url = getOverviewUrl(params);
+            info.setOverviewUrl(url);
+        }
         if (jRequest.has("extraTekst")){
             info.setRemark(jRequest.getString("extraTekst"));
         }
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
         }
+        
         /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
@@ -288,6 +295,27 @@ public class PrintActionBean implements ActionBean {
             out.close();
         }
     }      
+    
+    private String getOverviewUrl(String params) throws JSONException, Exception{
+        JSONObject info = new JSONObject(params);
+        info.remove("requests"); // Remove old requests, to replace them with overview-only parameters
+        info.remove("geometries");
+        info.remove("quality");
+        
+        JSONObject overview = info.getJSONObject("overview");
+        info.put("bbox", overview.get("extent"));
+        JSONArray reqs = new JSONArray();
+        
+        JSONObject image = new JSONObject();
+        image.put("protocol", CombineImageActionBean.IMAGE);
+        image.put("url", overview.get("overviewUrl"));
+        image.put("extent", overview.get("extent"));
+        reqs.put(image);
+        info.put("requests", reqs);
+               
+        String overviewUrl = getImageUrl(info.toString());
+        return overviewUrl;
+    }
     /**
      * Get the image url from the CombineImageAction
      * @param param the json as string with params needed to create the image

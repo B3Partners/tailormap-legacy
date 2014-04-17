@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
-import javax.annotation.security.RolesAllowed;
 import net.sourceforge.stripes.action.*;
 
 /**
@@ -25,7 +24,6 @@ import net.sourceforge.stripes.action.*;
  */
 @UrlBinding("/action/index")
 @StrictBinding
-@RolesAllowed("*")
 public class IndexActionBean implements ActionBean {
 
     private ActionBeanContext context;

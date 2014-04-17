@@ -35,6 +35,7 @@ Ext.define ("viewer.components.Filter",{
     uniqueList: null,
     config: {
         attributes:null,
+        maxFeatures:null,
         logicOperator:null,
 	parentMainContainer:null,
         showList:true,
@@ -141,6 +142,7 @@ Ext.define ("viewer.components.Filter",{
                 params: { 
                     attributes: [attributeName],
                     applicationLayer: appLayer.id,
+                    maxFeatures:this.maxFeatures,
                     featureType: ft
                 }, 
                 success: function ( result, request ) { 

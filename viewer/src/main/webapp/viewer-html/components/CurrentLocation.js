@@ -28,24 +28,12 @@ Ext.define ("viewer.components.CurrentLocation",{
     lastPoint: null,
     MARKER_PREFIX: "CurrentLocation_",
     config: {
-        interval: null,
-        iconUrl_up: null,
-        iconUrl_over: null,
-        iconUrl_sel: null,
-        iconUrl_dis: null
+        interval: null
     },
     constructor: function(config){
         this.callParent(arguments);
         //set some defaults.
-        if (this.iconUrl_up==null){
-            this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_up.png";
-        }if (this.iconUrl_over ==null){
-            this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_over.png";
-        }if (this.iconUrl_sel==null){
-            this.iconUrl_sel= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_down.png";
-        }if (this.iconUrl_dis ==null){
-            this.iconUrl_dis= contextPath+"/viewer-html/components/resources/images/currentLocation/currentLocation_up.png";
-        }
+       
         if (this.interval==null || isNaN(this.interval)){
             this.interval=0;
         }        
@@ -72,10 +60,7 @@ Ext.define ("viewer.components.CurrentLocation",{
         this.button= this.viewerController.mapComponent.createTool({
             type: type,
             id: this.getName(),
-            iconUrl_up: this.iconUrl_up,
-            iconUrl_over: this.iconUrl_over,
-            iconUrl_sel: this.iconUrl_sel,
-            iconUrl_dis: this.iconUrl_dis,
+            displayClass: "currentLocation",
             tooltip: this.config.tooltip || null,
             viewerController: this.viewerController
         });

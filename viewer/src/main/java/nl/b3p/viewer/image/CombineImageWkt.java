@@ -15,6 +15,7 @@ public class CombineImageWkt {
     private String wktGeom="";
     private Color color = null;
     private String label=null;
+    private Float strokeWidth = null;
 
     public CombineImageWkt(String wktGeomString){
         int colorIndex=wktGeomString.indexOf("#");
@@ -86,5 +87,13 @@ public class CombineImageWkt {
      */
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Float getStrokeWidth() {
+        return strokeWidth;
+    }
+
+    public void setStrokeWidth(Float strokeWidth) {
+        this.strokeWidth = strokeWidth;
     }
 }

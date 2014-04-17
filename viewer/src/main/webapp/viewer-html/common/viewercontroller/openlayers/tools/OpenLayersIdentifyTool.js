@@ -314,13 +314,13 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         if (layerNodes) {
             for (var i=0, len=layerNodes.length; i<len; ++i) {
                 if (layerNodes.hasOwnProperty(i)){
-                    var featureNode = layerNodes[i].firstElementChild;                
+                    var featureNode = layerNodes[i].firstElementChild || layerNodes[i].firstChild || layerNodes[i].children[0] ||{};
                     if (featureNode){
                         var attributes = this.parseAttributes(featureNode);
                         var geomAttr = this.parseGeometry(featureNode);
                         var feature = new OpenLayers.Feature.Vector(geomAttr.geometry,
                             attributes,null);
-                        feature.type = featureNode.localName;
+                        feature.type = featureNode.localName || featureNode.baseName;
                         response.push(feature);
                     }
                 }

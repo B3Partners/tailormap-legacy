@@ -164,6 +164,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     removeFeature : function (feature){
         var olFeature = this.getFrameworkLayer().getFeatureById(feature.getId());
+        this.modifyFeature.unselectFeature(olFeature);
         this.getFrameworkLayer().removeFeatures([olFeature]);
     },
     

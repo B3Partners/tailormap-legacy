@@ -38,7 +38,8 @@ Ext.define ("viewer.components.Print",{
         legend: null,
         max_imagesize: "2048",
         showPrintRtf:null,
-        label: ""
+        label: "",
+        overview:null
     },
     /**
      * @constructor
@@ -51,7 +52,7 @@ Ext.define ("viewer.components.Print",{
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
-        this.legends={};
+        this.legends=[];
         
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
@@ -353,6 +354,12 @@ Ext.define ("viewer.components.Print",{
                                         scope:this
                                     }
                                 }
+                            },{
+                                xtype: 'checkbox',
+                                name: 'includeOverview',
+                                hidden: !me.shouldAddOverview(),
+                                inputValue: true,
+                                boxLabel: 'Overzichtskaart toevoegen'
                             }]                        
                         },{
                             //(8)
@@ -514,18 +521,21 @@ Ext.define ("viewer.components.Print",{
                 xtype: "label",
                 text: "Opnemen in legenda:"
             });
-            for (var key in this.legends){
-                var appLayer =this.viewerController.getAppLayerById(key);
-                var title = appLayer.alias;
-                checkboxes.push({
-                    xtype: "checkbox",
-                    boxLabel: title,
-                    name: 'legendUrl',
-                    inputValue: Ext.JSON.encode(this.legends[key]),
-                    id: 'legendCheckBox'+key,
-                    checked: true
-                });
-            } 
+            for (var key  =0 ; key < this.legends.length ;key++){
+                if(this.legends.hasOwnProperty(key)){
+                    var appLayer =this.viewerController.getAppLayerById(key);
+                    var title = appLayer.alias;
+                    checkboxes.push({
+                        xtype: "checkbox",
+                        boxLabel: title,
+                        name: 'legendUrl',
+                        inputValue: Ext.JSON.encode(this.legends[key]),
+                        id: 'legendCheckBox'+key,
+                        checked: true
+                    });
+                }
+            };
+       
             Ext.getCmp('legendContainer').removeAll();
             Ext.getCmp('legendContainer').add(checkboxes);        
             Ext.getCmp('legendContainer').doLayout();
@@ -545,6 +555,14 @@ Ext.define ("viewer.components.Print",{
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
         return width > height? width : height;
+    },
+    shouldAddOverview : function(){
+        var overviews = this.getOverviews();
+        if(this.overview && overviews.length > 0){
+            return true;
+        }else{
+            return false;
+        }
     },
     /**
      * Called when quality is changed.
@@ -796,9 +814,21 @@ Ext.define ("viewer.components.Print",{
                 
             }
         }
+        if(config.includeOverview){
+            var overviews = this.getOverviews();
+            if(overviews.length > 0){
+                var overview = overviews[0];
+                var url = overview.config.url;
+                config.overview = new Object();
+                config.overview.overviewUrl = url;
+                config.overview.extent = overview.config.lox + "," + overview.config.loy + "," + overview.config.rbx + "," + overview.config.rby;
+            }
+        }
         return config;
     },
-
+    getOverviews : function(){
+      return this.viewerController.getComponentsByClassName("viewer.components.Overview");  
+    },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }

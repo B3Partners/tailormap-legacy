@@ -19,13 +19,13 @@ package nl.b3p.viewer.config.services;
 import java.util.*;
 import javax.persistence.*;
 import nl.b3p.web.WaitPageStatus;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.type.AttributeType;
@@ -199,7 +199,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put("schema", schema);
         params.put("user", getUsername());
         params.put("passwd", getPassword());
-        
+        params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
         log.debug("Opening datastore using parameters: " + params);
         try {
             DataStore ds = DataStoreFinder.getDataStore(params);      
