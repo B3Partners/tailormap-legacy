@@ -738,7 +738,7 @@ Ext.define ("viewer.components.Print",{
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.getVisible()){
-                if (layer.getType()== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
+                if (layer.getType()=== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
                     var features=layer.getAllFeatures();
                     for (var f =0; f < features.length; f++){
                         var feature=features[f];
@@ -746,7 +746,7 @@ Ext.define ("viewer.components.Print",{
                             wktGeoms.push(feature);
                         }
                     }
-                }else if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE && layer.protocol == "TMS"){
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol == "TMS" || layer.protocol == "WMSC")){
                     var printLayer = new Object();
                     printLayer.url=layer.config.url; 
                     printLayer.alpha=layer.alpha; 
@@ -756,6 +756,12 @@ Ext.define ("viewer.components.Print",{
                     printLayer.tileWidth = layer.tileWidth;
                     printLayer.tileHeight = layer.tileHeight;
                     printLayer.resolutions= layer.resolutions.toString();
+                    printLayers.push(printLayer);                                
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.WMS_TYPE ){
+                    var printLayer = new Object();
+                    printLayer.url=layer.getLastMapRequest()[0].url; 
+                    printLayer.alpha=layer.alpha; 
+                    printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
                     printLayers.push(printLayer);                                
                 }else{
                     var requests=layer.getLastMapRequest();                
