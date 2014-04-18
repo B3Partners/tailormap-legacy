@@ -29,6 +29,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
     private Double[] resolutions = null;
     private Integer tileWidth = 256;
     private Integer tileHeight = 256;
+    protected String extension;
     
     private static double epsilon=0.00001;
 
@@ -245,6 +246,16 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
     public void setTileHeight(Integer tileHeight) {
         this.tileHeight = tileHeight;
     }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+    
+    
     //</editor-fold>
 
     protected abstract String createUrl(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY, int zoomlevel);

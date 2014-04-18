@@ -150,84 +150,8 @@ public class CombineImageActionBean implements ActionBean {
             error = "invalid parameters";
         }else{
             try{
-                CombineImageSettings cis = new CombineImageSettings();            
-                //get the requests
-                if (jRequest.has("requests")){
-                    JSONArray requests = jRequest.getJSONArray("requests");
-                    for (int r=0; r < requests.length(); r++){
-                        CombineImageUrl ciu = null;
-                        JSONObject request=requests.getJSONObject(r);
-
-                        String protocol = null;
-                        if (request.has("protocol")){
-                            protocol=request.getString("protocol");
-                        }
-                        if (ARCSERVER.equals(protocol)){
-                            ciu= new CombineArcServerUrl();
-                        }else if (ARCSERVERREST.equals(protocol)){
-                            ciu = new CombineArcServerRestUrl();
-                        }else if (ARCIMS.equals(protocol)){
-                            ciu= new CombineArcIMSUrl();
-                        }else if (WMS.equals(protocol)){
-                            ciu = new CombineWmsUrl();
-                        }else if (IMAGE.equals(protocol)) {                            
-                            CombineStaticImageUrl csiu = new CombineStaticImageUrl();
-                            if (request.has("extent")){
-                                csiu.setBbox(new Bbox(request.getString("extent")));                                
-                            }
-                            ciu=csiu;
-                        }
-                        ciu.setUrl(request.getString("url"));
-                        if (request.has("alpha")){
-                            Double alpha=request.getDouble("alpha");
-                            //divide by 100 (number between 0 and 1)
-                            ciu.setAlpha(alpha.floatValue()/100);
-                        }
-                        if (request.has("body")){
-                            ciu.setBody(request.getString("body"));  
-                        }
-                        cis.addUrl(ciu);
-                    }
-                }
-                if (jRequest.has("geometries")){
-                    JSONArray geometries = jRequest.getJSONArray("geometries");
-                    List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
-                    for (int g=0; g < geometries.length(); g++){
-                        JSONObject geom = geometries.getJSONObject(g);
-                        if (geom.has("wktgeom")){
-                            CombineImageWkt ciw = new CombineImageWkt(geom.getString("wktgeom"));
-                            if (geom.has("color") && !geom.isNull("color")){
-                                ciw.setColor(geom.getString("color"));
-                            }
-                            if (geom.has("label") && !geom.isNull("label") && !geom.getString("label").equals("")){
-                                ciw.setLabel(geom.getString("label"));
-                            }
-                            wkts.add(ciw);
-                        }
-                    }
-                    cis.setWktGeoms(wkts);
-                }
-                if (jRequest.has("bbox")){
-                    cis.setBbox(jRequest.getString("bbox"));                
-                }if (jRequest.has("width")){
-                    cis.setWidth(jRequest.getInt("width"));
-                }if (jRequest.has("height")){
-                    cis.setHeight(jRequest.getInt("height"));
-                }if (jRequest.has("srid")){
-                    cis.setSrid(jRequest.getInt("srid"));
-                }if (jRequest.has("angle")){
-                    cis.setAngle(jRequest.getInt("angle"));
-                }
-                if (jRequest.has("quality")){
-                    Integer quality = jRequest.getInt("quality");
-                    if (cis.getWidth() > cis.getHeight()){
-                        cis.setHeight(Math.round(cis.getHeight() * quality/cis.getWidth()));
-                        cis.setWidth(quality);
-                    }else{
-                        cis.setWidth(Math.round(cis.getWidth() * quality/cis.getHeight()));
-                        cis.setHeight(quality);
-                    }
-                }
+                
+                CombineImageSettings cis =CombineImageSettings.fromJson(jRequest);
                 //if no imageId is set, create a new one.
                 if (imageId==null){
                     imageId= uniqueId();

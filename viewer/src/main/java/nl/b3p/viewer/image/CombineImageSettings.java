@@ -391,6 +391,9 @@ public class CombineImageSettings {
                     if (request.has("tileHeight")) {
                         ctu.setTileHeight(request.getInt("tileHeight"));
                     }
+                    if (request.has("extension")) {
+                        ctu.setExtension(request.getString("extension"));
+                    }
                     if (request.has("resolutions")) {
                         String resolutions = request.getString("resolutions");
                         String[] tokens = resolutions.split(",");
