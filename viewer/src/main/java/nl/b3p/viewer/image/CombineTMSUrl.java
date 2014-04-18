@@ -30,7 +30,7 @@ public class CombineTMSUrl extends CombineTileImageUrl {
      * @param xCoord The x coord.
      * @param res The resolution for which the tile should be calculated
      * @param max If it is the max, increase the index with one more, to prevent missing tiles
-     * @return The index of the tile specified at the 
+     * @return The index of the tile specified at the coordinate/resolution pair
      * @see coremodel.service.tiling.factory.TileFactoryInterface#getTileIndexX
      */
     @Override
@@ -59,7 +59,7 @@ public class CombineTMSUrl extends CombineTileImageUrl {
      * @param xCoord The x coord.
      * @param res The resolution for which the tile should be calculated
      * @param max If it is the max, increase the index with one more, to prevent missing tiles
-     * @return The index of the tile specified at the 
+     * @return The index of the tile specified at the coordinate/resolution pair
      */
     @Override
     public Integer getTileIndexY(double yCoord, Double res, boolean max) {
