@@ -27,6 +27,7 @@ public class CombineImageSettings {
     public static final String ARCSERVER_PROTOCOL = "ARCSERVER";
     public static final String IMAGE_PROTOCOL="IMAGE";
     public static final String WMSC_PROTOCOL="WMSC";
+    public static final String TMS_PROTOCOL="TMS";
     
     private List<CombineImageUrl> urls = null;
     private List<CombineImageWkt> wktGeoms = null;
@@ -379,6 +380,27 @@ public class CombineImageSettings {
                         cwu.setResolutions(res);
                     }
                     ciu = cwu;
+                } else if (TMS_PROTOCOL.equals(protocol)) {
+                    CombineTMSUrl ctu = new CombineTMSUrl();
+                    if (request.has("serverExtent")) {
+                        ctu.setServiceBbox(new Bbox(request.getString("serverExtent")));
+                    }
+                    if (request.has("tileWidth")) {
+                        ctu.setTileWidth(request.getInt("tileWidth"));
+                    }
+                    if (request.has("tileHeight")) {
+                        ctu.setTileHeight(request.getInt("tileHeight"));
+                    }
+                    if (request.has("resolutions")) {
+                        String resolutions = request.getString("resolutions");
+                        String[] tokens = resolutions.split(",");
+                        Double[] res = new Double[tokens.length];
+                        for (int i = 0; i < tokens.length; i++) {
+                            res[i] = new Double(tokens[i]);
+                        }
+                        ctu.setResolutions(res);
+                    }
+                    ciu = ctu;
                 }
                 ciu.setUrl(request.getString("url"));
                 if (request.has("alpha")){
