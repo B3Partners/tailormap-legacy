@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,8 +63,7 @@ public abstract class PrePostImageCollector extends ImageCollector{
                 }
             }finally{
                 if (method!=null){
-                    try{method.releaseConnection();
-                    }catch (Exception e){}
+                    method.releaseConnection();
                 }
             }
             

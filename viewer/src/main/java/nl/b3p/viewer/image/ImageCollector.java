@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Stack;
+import java.util.concurrent.Callable;
 import javax.imageio.ImageIO;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -39,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * ImageCollector definition:
  */
-public class ImageCollector extends Thread {
+public class ImageCollector implements Callable<ImageCollector> {
 
     private static final Log log = LogFactory.getLog(ImageCollector.class);
     private int maxResponseTime = 10000;
@@ -54,7 +55,8 @@ public class ImageCollector extends Thread {
     private String username = null;
     private String password = null;
     private CombineImageUrl combinedImageUrl = null;
-    protected HttpClient client=null;
+    protected HttpClient client =null;
+ 
     /*public ImageCollector(String url, int maxResponseTime) {
         this.url = url;
         this.maxResponseTime = maxResponseTime;
@@ -64,28 +66,20 @@ public class ImageCollector extends Thread {
     public ImageCollector(CombineImageUrl ciu, int maxResponseTime,HttpClient client) {
         this.combinedImageUrl=ciu;
         this.maxResponseTime = maxResponseTime;
-        this.client=client;
+        this.client = client;
         this.setMessage("Still downloading...");
     }
 
     public ImageCollector(CombineImageUrl ciu, int maxResponseTime, HttpClient client, String uname, String pw) {
-        this(ciu, maxResponseTime,client);
+        this(ciu, maxResponseTime, client);
         this.username = uname;
         this.password = pw;
     }
 
-    public void processNew() throws InterruptedException {
+    public ImageCollector call() throws Exception {        
         status = ACTIVE;
-        start();
-    }
-
-    public void processWaiting() throws InterruptedException {
-        join(getMaxResponseTime());
-    }
-    
-    public void run() {
         if ((getUrl() == null || getUrl().length() == 0) && getRealUrl() == null) {
-            return;
+            return this;
         }
 
         try {
@@ -100,6 +94,7 @@ public class ImageCollector extends Thread {
             log.warn("error callimage collector: ", ex);
             setStatus(ERROR);
         } 
+        return this;
     }
     /**
      * Load the image with a http-get

@@ -21,16 +21,20 @@
  */
 package nl.b3p.viewer.image;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -41,8 +45,9 @@ import org.apache.commons.logging.LogFactory;
 public class ImageManager {
 
     private final Log log = LogFactory.getLog(this.getClass());
-    private List ics = new ArrayList();
+    private List<ImageCollector> ics = new ArrayList<ImageCollector>();
     private int maxResponseTime = 10000;
+    private int MAX_TREADS = 8;
     
     protected static final String host = AuthScope.ANY_HOST;
     protected static final int port = AuthScope.ANY_PORT;
@@ -71,36 +76,30 @@ public class ImageManager {
         for (CombineImageUrl ciu : urls) {
             ImageCollector ic = null;
             if (ciu instanceof CombineWmsUrl){
-                ic = new ImageCollector(ciu, maxResponseTime, client, uname, pw);
+                ic = new ImageCollector(ciu, maxResponseTime, client,uname, pw);
             }else if (ciu instanceof CombineArcIMSUrl){
                 ic = new ArcImsImageCollector(ciu, maxResponseTime,client);
             }else if (ciu instanceof CombineArcServerUrl){
                 ic = new ArcServerImageCollector(ciu, maxResponseTime,client);
             }else {
-                ic= new ImageCollector(ciu,maxResponseTime, client);
+                ic= new ImageCollector(ciu,maxResponseTime,client,uname,pw);
             }
             ics.add(ic);
         }
     }
 
     public void process() throws Exception {
-
-        // Start threads
-        ImageCollector ic = null;
-        for (int i = 0; i < ics.size(); i++) {
-            ic = (ImageCollector) ics.get(i);
+        ExecutorService threadPool=Executors.newFixedThreadPool(MAX_TREADS);
+        CompletionService<ImageCollector> pool = new ExecutorCompletionService<ImageCollector>(threadPool);
+        for (ImageCollector ic : ics){
             if (ic.getStatus() == ImageCollector.NEW) {
-                ic.processNew();
+                pool.submit(ic);
             }
         }
-
-        // Wait for all threads to be ready
+        //wait for all to complete. Wait max 5 min
         for (int i = 0; i < ics.size(); i++) {
-            ic = (ImageCollector) ics.get(i);
-            if (ic.getStatus() == ImageCollector.ACTIVE) {//if (ic.isAlive()) { /
-                ic.processWaiting();
-            }
-        }
+            pool.poll(5, TimeUnit.MINUTES).get();            
+        }             
     }
     /**
      * Combine all the images recieved

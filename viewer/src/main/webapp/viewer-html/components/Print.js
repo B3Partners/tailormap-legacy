@@ -738,7 +738,7 @@ Ext.define ("viewer.components.Print",{
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.getVisible()){
-                if (layer.getType()== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
+                if (layer.getType()=== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
                     var features=layer.getAllFeatures();
                     for (var f =0; f < features.length; f++){
                         var feature=features[f];
@@ -746,6 +746,23 @@ Ext.define ("viewer.components.Print",{
                             wktGeoms.push(feature);
                         }
                     }
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol == "TMS" || layer.protocol == "WMSC")){
+                    var printLayer = new Object();
+                    printLayer.url=layer.config.url; 
+                    printLayer.alpha=layer.alpha; 
+                    printLayer.extension=layer.extension; 
+                    printLayer.protocol=layer.protocol ;
+                    printLayer.serverExtent = layer.serviceEnvelope;
+                    printLayer.tileWidth = layer.tileWidth;
+                    printLayer.tileHeight = layer.tileHeight;
+                    printLayer.resolutions= layer.resolutions.toString();
+                    printLayers.push(printLayer);                                
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.WMS_TYPE ){
+                    var printLayer = new Object();
+                    printLayer.url=layer.getLastMapRequest()[0].url; 
+                    printLayer.alpha=layer.alpha; 
+                    printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
+                    printLayers.push(printLayer);                                
                 }else{
                     var requests=layer.getLastMapRequest();                
                     for (var r in requests){
@@ -760,10 +777,7 @@ Ext.define ("viewer.components.Print",{
                             if (request.extent){
                                 request.extent=request.extent.toString();
                             }
-                            //TODO tiling is now added as images, needs te be added as a tiling server
-                            if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE){
-                                request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;                                
-                            }
+                          
                         }
                     }
                 }

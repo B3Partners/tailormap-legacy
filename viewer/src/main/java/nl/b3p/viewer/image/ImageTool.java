@@ -43,9 +43,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageWriter;
@@ -116,27 +116,23 @@ public class ImageTool {
             }
             ImageInputStream stream = ImageIO.createImageInputStream(new ByteArrayInputStream(baos.toByteArray()));
             ir.setInput(stream, true);
-            try{
-                i = ir.read(0);
-                //if image is a png, has no alpha and has a tRNS then make that color transparent.
-                if (!i.getColorModel().hasAlpha() && ir.getImageMetadata(0) instanceof PNGMetadata) {
-                    PNGMetadata metadata = (PNGMetadata) ir.getImageMetadata(0);
-                    if (metadata.tRNS_present) {
-                        int alphaPix = (metadata.tRNS_red << 16) | (metadata.tRNS_green << 8) | (metadata.tRNS_blue);
-                        BufferedImage tmp = new BufferedImage(i.getWidth(), i.getHeight(),
-                                BufferedImage.TYPE_INT_ARGB);
-                        for (int x = 0; x < i.getWidth(); x++) {
-                            for (int y = 0; y < i.getHeight(); y++) {
-                                int rgb = i.getRGB(x, y);
-                                rgb = (rgb & 0xFFFFFF) == alphaPix ? alphaPix : rgb;
-                                tmp.setRGB(x, y, rgb);
-                            }
+            i = ir.read(0);
+            //if image is a png, has no alpha and has a tRNS then make that color transparent.
+            if (!i.getColorModel().hasAlpha() && ir.getImageMetadata(0) instanceof PNGMetadata) {
+                PNGMetadata metadata = (PNGMetadata) ir.getImageMetadata(0);
+                if (metadata.tRNS_present) {
+                    int alphaPix = (metadata.tRNS_red << 16) | (metadata.tRNS_green << 8) | (metadata.tRNS_blue);
+                    BufferedImage tmp = new BufferedImage(i.getWidth(), i.getHeight(),
+                            BufferedImage.TYPE_INT_ARGB);
+                    for (int x = 0; x < i.getWidth(); x++) {
+                        for (int y = 0; y < i.getHeight(); y++) {
+                            int rgb = i.getRGB(x, y);
+                            rgb = (rgb & 0xFFFFFF) == alphaPix ? alphaPix : rgb;
+                            tmp.setRGB(x, y, rgb);
                         }
-                        i = tmp;
                     }
+                    i = tmp;
                 }
-            }catch(IIOException ie){
-                log.debug("Error while getting image",ie);
             }
         } finally {
             if (ir != null) {
@@ -347,11 +343,11 @@ public class ImageTool {
      */
     private static BufferedImage combineJPGImages(List<ReferencedImage> images,Integer width, Integer height) {
         if (images.get(0)!=null){
-            BufferedImage bi = images.get(0).getImage();
-            if (width==null || width <=0){
+        BufferedImage bi = images.get(0).getImage();
+            if (width==null){
                 width = bi.getWidth();
             }
-            if (height==null || height <=0){
+            if (height==null){
                 height = bi.getHeight();
             }
         }
@@ -377,13 +373,14 @@ public class ImageTool {
         if (images.get(0)!=null){
             BufferedImage bi = images.get(0).getImage();
             //if no height / width use the height/widht of the first image.
-            if (height==null || height <=0){
+            if (height==null){
                 height= bi.getHeight();
             }
-            if (width==null || width <=0){
+            if (width==null){
                 width= bi.getWidth();
             }
         }
+        
         BufferedImage newBufIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);        
         
         Graphics2D gbi = newBufIm.createGraphics();
@@ -406,10 +403,17 @@ public class ImageTool {
         }else {
             gbi.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         }
+        Integer x=image.getX();
+        Integer y=image.getY();
+        if (x==null){
+            x=0;
+        }if (y==null){
+            y=0;
+        }
         if (image.getHeight()!=null && image.getWidth()!=null){
-            gbi.drawImage(image.getImage(), image.getX(), image.getY(), image.getWidth(),image.getHeight(),null);        
+            gbi.drawImage(image.getImage(), x, y, image.getWidth(),image.getHeight(),null);        
         }else{
-            gbi.drawImage(image.getImage(), image.getX(), image.getY(), null);        
+            gbi.drawImage(image.getImage(), x, y, null);        
         }
     }
     // </editor-fold>

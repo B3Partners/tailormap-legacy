@@ -16,6 +16,9 @@
  */
 package nl.b3p.viewer.image;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Roy Braam
@@ -31,14 +34,44 @@ public class CombineArcServerRestUrl extends CombineImageUrl{
     }
 
     
-    public CombineArcServerRestUrl calculateNewUrl(ImageBbox bbox) {
+    public List<CombineImageUrl> calculateNewUrl(ImageBbox bbox) {
+        CombineArcServerRestUrl ciu=null;
         if (bbox.getHeight()!=null && bbox.getWidth()!=null){
-            CombineArcServerRestUrl ciu = new CombineArcServerRestUrl(this);
+            ciu = new CombineArcServerRestUrl(this);
             ciu.changeParameter("bbox", bbox.getBbox().toString());
-            ciu.changeParameter("size", bbox.getWidth() + "," +bbox.getHeight());
-            return ciu;
+            ciu.changeParameter("size", bbox.getWidth() + "," +bbox.getHeight());            
         }else{
-            return this;
+            ciu = this;
         }
+        List<CombineImageUrl> list= new ArrayList<CombineImageUrl>();
+        list.add(ciu);        
+        return list;
     }    
+    
+    protected void changeParameter(String key,String newValue) {
+        String lowerUrl = url.toLowerCase();
+        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
+            int beginIndex = 0;
+            int endIndex = lowerUrl.length();
+            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
+                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
+            } else {
+                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
+            }
+            if (lowerUrl.indexOf("&", beginIndex) > 0) {
+                endIndex = lowerUrl.indexOf("&", beginIndex);
+            }
+            if (beginIndex < endIndex) {
+                String newUrl="";
+                if (beginIndex>0){
+                    newUrl+=url.substring(0,beginIndex);
+                }
+                newUrl+=newValue;
+                if (endIndex < url.length()){
+                    newUrl+=url.substring(endIndex,url.length());
+                }
+                url=newUrl;
+            }
+        }
+    }
 }
