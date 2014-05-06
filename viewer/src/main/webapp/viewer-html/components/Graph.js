@@ -22,16 +22,17 @@
 Ext.define("viewer.components.Graph", {
     extend: "viewer.components.Component",
     panel: null,
+    initialized:false,
     config: {
         title: null,
         iconUrl: null,
         tooltip: null,
-        label: null
+        label: null,
+        graphs:null
     },
     constructor: function(conf) {
         viewer.components.Graph.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-
         var me = this;
         this.renderButton({
             handler: function() {
@@ -42,7 +43,36 @@ Ext.define("viewer.components.Graph", {
             tooltip: me.tooltip,
             label: me.label
         });
+        // Make hook for Returned feature infos
+        // Stub for development
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initialize,this);
+        //this.
+        // Make hook for onaddlayers
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.addLayer,this);
         return this;
+    },
+    initialize : function(){
+        this.initialized = true;
+        var layer = this.viewerController.mapComponent.getMap().getLayer(3);// gemeente
+        
+        
+        this.addLayer(null,{layer:layer});
+    },
+    addLayer : function(layer,options){
+        if (this.initialized) {
+            var mapLayer = options.layer;
+            mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, this.featureInfoReturned, this);
+        }
+    },
+    featureInfoReturned : function (layer,options){
+        this.loadGraph(layer);
+    },
+    loadGraph : function (appLayer){
+        this.popup.show();
+        this.popup.setWindowTitle(appLayer.alias);
+        // Create store
+        // Create graph
+        
     },
     getExtComponents: function() {
         return [];
