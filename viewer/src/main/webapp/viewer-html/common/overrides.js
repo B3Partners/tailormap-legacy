@@ -17,7 +17,7 @@
 
 // FIX EXT JS 4.0.7 BUG ON COMBO LIST (Y POSITION FIX, SEE http://www.sencha.com/forum/showthread.php?152001-4.0.7-ComboBox-list-position-Incorrect-in-IE7)
 // PROPABLY FIXED IN EXT JS 4.1
-Ext.override(Ext.form.field.Picker, {
+/* Ext.override(Ext.form.field.Picker, {
     expand: function() {
         var me = this;
         me.callOverridden();
@@ -26,7 +26,7 @@ Ext.override(Ext.form.field.Picker, {
             me.getPicker().el.alignTo(me.inputEl, 'tl-bl?');
         }, 0);
     }
-});
+}); */
 if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
     Ext.override(Ext.form.field.ComboBox, {
         editable: false 

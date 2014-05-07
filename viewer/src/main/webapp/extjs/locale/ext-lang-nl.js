@@ -1,16 +1,22 @@
 /*
+This file is part of Ext JS 4.2
 
-This file is part of Ext JS 4
-
-Copyright (c) 2011 Sencha Inc
+Copyright (c) 2011-2013 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
 GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+This file may be used under the terms of the GNU General Public License version 3.0 as
+published by the Free Software Foundation and appearing in the file LICENSE included in the
+packaging of this file.
 
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+Please review the following information to ensure the GNU General Public License version 3.0
+requirements will be met: http://www.gnu.org/copyleft/gpl.html.
 
+If you are unsure which license is appropriate for your use, please contact the sales department
+at http://www.sencha.com/contact.
+
+Build date: 2013-05-16 14:36:50 (f9be68accb407158ba2b1be2c226a6ce1f649314)
 */
 /**
  * List compiled by mystix on the extjs.com forums.
@@ -22,37 +28,8 @@ If you are unsure which license is appropriate for your use, please contact the 
  */
 Ext.onReady(function() {
 
-    if (Ext.Updater) {
-        Ext.Updater.defaults.indicatorText = '<div class="loading-indicator">Bezig met laden...</div>';
-    }
-
-    if(Ext.view.View){
-        Ext.view.View.prototype.emptyText = '';
-    }
-
-    if(Ext.grid.Panel){
-        Ext.grid.Panel.prototype.ddText = '{0} geselecteerde rij(en)';
-    }
-
-    if(Ext.LoadMask){
-        Ext.LoadMask.prototype.msg = 'Bezig met laden...';
-    }
-
     if (Ext.Date) {
-        Ext.Date.monthNames = [
-        'januari',
-        'februari',
-        'maart',
-        'april',
-        'mei',
-        'juni',
-        'juli',
-        'augustus',
-        'september',
-        'oktober',
-        'november',
-        'december'
-        ];
+        Ext.Date.monthNames = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
 
         Ext.Date.getShortMonthName = function(month) {
             if (month == 2) {
@@ -84,15 +61,7 @@ Ext.onReady(function() {
             return Ext.Date.monthNumbers[sname];
         };
 
-        Ext.Date.dayNames = [
-        'zondag',
-        'maandag',
-        'dinsdag',
-        'woensdag',
-        'donderdag',
-        'vrijdag',
-        'zaterdag'
-        ];
+        Ext.Date.dayNames = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
 
         Ext.Date.getShortDayName = function(day) {
             return Ext.Date.dayNames[day].substring(0, 3);
@@ -101,245 +70,250 @@ Ext.onReady(function() {
         Ext.Date.parseCodes.S.s = "(?:ste|e)";
     }
 
-    if(Ext.MessageBox){
-        Ext.MessageBox.buttonText = {
-            ok: 'OK',
-            cancel: 'Annuleren',
-            yes: 'Ja',
-            no: 'Nee'
-        };
-    }
-
-    if(Ext.util.Format){
+    if (Ext.util && Ext.util.Format) {
         Ext.apply(Ext.util.Format, {
             thousandSeparator: '.',
             decimalSeparator: ',',
-            currencySign: '\u20ac',  // Dutch Euro
+            currencySign: '\u20ac',
+            // Dutch Euro
             dateFormat: 'j-m-Y'
-        });
-    }
-
-    if(Ext.picker.Date){
-        Ext.apply(Ext.picker.Date.prototype, {
-            todayText: 'Vandaag',
-            minText: 'Deze datum is eerder dan de minimale datum',
-            maxText: 'Deze datum is later dan de maximale datum',
-            disabledDaysText: '',
-            disabledDatesText: '',
-            monthNames: Ext.Date.monthNames,
-            dayNames: Ext.Date.dayNames,
-            nextText: 'Volgende maand (Ctrl+rechts)',
-            prevText: 'Vorige maand (Ctrl+links)',
-            monthYearText: 'Kies een maand (Ctrl+omhoog/omlaag volgend/vorig jaar)',
-            todayTip: '{0} (spatie)',
-            format: 'j-m-y',
-            startDay: 1
-        });
-    }
-
-    if(Ext.picker.Month) {
-        Ext.apply(Ext.picker.Month.prototype, {
-            okText: '&#160;OK&#160;',
-            cancelText: 'Annuleren'
-        });
-    }
-
-    if(Ext.toolbar.Paging){
-        Ext.apply(Ext.PagingToolbar.prototype, {
-            beforePageText: 'Pagina',
-            afterPageText: 'van {0}',
-            firstText: 'Eerste pagina',
-            prevText: 'Vorige pagina',
-            nextText: 'Volgende pagina',
-            lastText: 'Laatste pagina',
-            refreshText: 'Ververs',
-            displayMsg: 'Getoond {0} - {1} van {2}',
-            emptyMsg: 'Geen gegevens om weer te geven'
-        });
-    }
-
-    if(Ext.form.field.Base){
-        Ext.form.field.Base.prototype.invalidText = 'De waarde van dit veld is ongeldig';
-    }
-
-    if(Ext.form.field.Text){
-        Ext.apply(Ext.form.field.Text.prototype, {
-            minLengthText: 'De minimale lengte van dit veld is {0}',
-            maxLengthText: 'De maximale lengte van dit veld is {0}',
-            blankText: 'Dit veld is verplicht',
-            regexText: '',
-            emptyText: null
-        });
-    }
-
-    if(Ext.form.field.Number){
-        Ext.apply(Ext.form.field.Number.prototype, {
-            decimalSeparator : ",",
-            decimalPrecision : 2,
-            minText: 'De minimale waarde van dit veld is {0}',
-            maxText: 'De maximale waarde van dit veld is {0}',
-            nanText: '{0} is geen geldig getal'
-        });
-    }
-
-    if(Ext.form.field.Date){
-        Ext.apply(Ext.form.field.Date.prototype, {
-            disabledDaysText: 'Uitgeschakeld',
-            disabledDatesText: 'Uitgeschakeld',
-            minText: 'De datum in dit veld moet na {0} liggen',
-            maxText: 'De datum in dit veld moet voor {0} liggen',
-            invalidText: '{0} is geen geldige datum - formaat voor datum is {1}',
-            format: 'j-m-y',
-            altFormats: 'd/m/Y|d-m-y|d-m-Y|d/m|d-m|dm|dmy|dmY|d|Y-m-d'
-        });
-    }
-
-    if(Ext.form.field.ComboBox){
-        Ext.apply(Ext.form.field.ComboBox.prototype, {
-            valueNotFoundText: undefined
-        });
-        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
-            loadingText: 'Bezig met laden...'
-        });
-    }
-
-    if(Ext.form.field.VTypes){
-        Ext.apply(Ext.form.field.VTypes, {
-            emailText: 'Dit veld moet een e-mail adres bevatten in het formaat "gebruiker@domein.nl"',
-            urlText: 'Dit veld moet een URL bevatten in het formaat "http:/'+'/www.domein.nl"',
-            alphaText: 'Dit veld mag alleen letters en _ bevatten',
-            alphanumText: 'Dit veld mag alleen letters, cijfers en _ bevatten'
-        });
-    }
-
-    if(Ext.form.field.HtmlEditor){
-        Ext.apply(Ext.form.field.HtmlEditor.prototype, {
-            createLinkText: 'Vul hier de URL voor de hyperlink in:',
-            buttonTips: {
-                bold: {
-                    title: 'Vet (Ctrl+B)',
-                    text: 'Maak de geselecteerde tekst vet.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                italic: {
-                    title: 'Cursief (Ctrl+I)',
-                    text: 'Maak de geselecteerde tekst cursief.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                underline: {
-                    title: 'Onderstrepen (Ctrl+U)',
-                    text: 'Onderstreep de geselecteerde tekst.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                increasefontsize: {
-                    title: 'Tekst vergroten',
-                    text: 'Vergroot het lettertype.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                decreasefontsize: {
-                    title: 'Tekst verkleinen',
-                    text: 'Verklein het lettertype.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                backcolor: {
-                    title: 'Tekst achtergrondkleur',
-                    text: 'Verander de achtergrondkleur van de geselecteerde tekst.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                forecolor: {
-                    title: 'Tekst kleur',
-                    text: 'Verander de kleur van de geselecteerde tekst.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                justifyleft: {
-                    title: 'Tekst links uitlijnen',
-                    text: 'Lijn de tekst links uit.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                justifycenter: {
-                    title: 'Tekst centreren',
-                    text: 'Centreer de tekst.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                justifyright: {
-                    title: 'Tekst rechts uitlijnen',
-                    text: 'Lijn de tekst rechts uit.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                insertunorderedlist: {
-                    title: 'Opsommingstekens',
-                    text: 'Begin een ongenummerde lijst.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                insertorderedlist: {
-                    title: 'Genummerde lijst',
-                    text: 'Begin een genummerde lijst.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                createlink: {
-                    title: 'Hyperlink',
-                    text: 'Maak van de geselecteerde tekst een hyperlink.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                },
-                sourceedit: {
-                    title: 'Bron aanpassen',
-                    text: 'Schakel modus over naar bron aanpassen.',
-                    cls: Ext.baseCSSPrefix + 'html-editor-tip'
-                }
-            }
-        });
-    }
-
-    if(Ext.grid.header.Container){
-        Ext.apply(Ext.grid.header.Container.prototype, {
-            sortAscText: 'Sorteer oplopend',
-            sortDescText: 'Sorteer aflopend',
-            columnsText: 'Kolommen'
-        });
-    }
-
-    if(Ext.grid.GroupingFeature){
-        Ext.apply(Ext.grid.GroupingFeature.prototype, {
-            emptyGroupText: '(Geen)',
-            groupByText: 'Dit veld groeperen',
-            showGroupsText: 'Toon in groepen'
-        });
-    }
-
-    if(Ext.grid.PropertyColumnModel){
-        Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
-            nameText: 'Naam',
-            valueText: 'Waarde',
-            dateFormat: 'j-m-Y'
-        });
-    }
-
-    if(Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion){
-        Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
-            splitTip: 'Sleep om grootte aan te passen.',
-            collapsibleSplitTip: 'Sleep om grootte aan te passen. Dubbel klikken om te verbergen.'
-        });
-    }
-
-    if(Ext.form.field.Time){
-        Ext.apply(Ext.form.field.Time.prototype, {
-            minText: 'De tijd in dit veld moet op of na {0} liggen',
-            maxText: 'De tijd in dit veld moet op of voor {0} liggen',
-            invalidText: '{0} is geen geldig tijdstip',
-            format: 'G:i',
-            altFormats: 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H'
-        });
-    }
-
-    if(Ext.form.CheckboxGroup){
-        Ext.apply(Ext.form.CheckboxGroup.prototype, {
-            blankText : 'Selecteer minimaal een element in deze groep'
-        });
-    }
-
-    if(Ext.form.RadioGroup){
-        Ext.apply(Ext.form.RadioGroup.prototype, {
-            blankText : 'Selecteer een element in deze groep'
         });
     }
 });
+
+Ext.define("Ext.locale.nl.view.View", {
+    override: "Ext.view.View",
+    emptyText: ''
+});
+
+Ext.define("Ext.locale.nl.grid.plugin.DragDrop", {
+    override: "Ext.grid.plugin.DragDrop",
+    dragText: '{0} geselecteerde rij(en)'
+});
+
+// changing the msg text below will affect the LoadMask
+Ext.define("Ext.locale.nl.view.AbstractView", {
+    override: "Ext.view.AbstractView",
+    loadingText: 'Bezig met laden...'
+});
+
+Ext.define("Ext.locale.nl.picker.Date", {
+    override: "Ext.picker.Date",
+    todayText: 'Vandaag',
+    minText: 'Deze datum is eerder dan de minimale datum',
+    maxText: 'Deze datum is later dan de maximale datum',
+    disabledDaysText: '',
+    disabledDatesText: '',
+    nextText: 'Volgende maand (Ctrl+rechts)',
+    prevText: 'Vorige maand (Ctrl+links)',
+    monthYearText: 'Kies een maand (Ctrl+omhoog/omlaag volgend/vorig jaar)',
+    todayTip: '{0} (spatie)',
+    format: 'j-m-y',
+    startDay: 1
+});
+
+Ext.define("Ext.locale.nl.picker.Month", {
+    override: "Ext.picker.Month",
+    okText: '&#160;OK&#160;',
+    cancelText: 'Annuleren'
+});
+
+Ext.define("Ext.locale.nl.toolbar.Paging", {
+    override: "Ext.PagingToolbar",
+    beforePageText: 'Pagina',
+    afterPageText: 'van {0}',
+    firstText: 'Eerste pagina',
+    prevText: 'Vorige pagina',
+    nextText: 'Volgende pagina',
+    lastText: 'Laatste pagina',
+    refreshText: 'Ververs',
+    displayMsg: 'Getoond {0} - {1} van {2}',
+    emptyMsg: 'Geen gegevens om weer te geven'
+});
+
+Ext.define("Ext.locale.nl.form.field.Base", {
+    override: "Ext.form.field.Base",
+    invalidText: 'De waarde van dit veld is ongeldig'
+});
+
+Ext.define("Ext.locale.nl.form.field.Text", {
+    override: "Ext.form.field.Text",
+    minLengthText: 'De minimale lengte van dit veld is {0}',
+    maxLengthText: 'De maximale lengte van dit veld is {0}',
+    blankText: 'Dit veld is verplicht',
+    regexText: '',
+    emptyText: null
+});
+
+Ext.define("Ext.locale.nl.form.field.Number", {
+    override: "Ext.form.field.Number",
+    decimalSeparator: ",",
+    decimalPrecision: 2,
+    minText: 'De minimale waarde van dit veld is {0}',
+    maxText: 'De maximale waarde van dit veld is {0}',
+    nanText: '{0} is geen geldig getal'
+});
+
+Ext.define("Ext.locale.nl.form.field.Date", {
+    override: "Ext.form.field.Date",
+    disabledDaysText: 'Uitgeschakeld',
+    disabledDatesText: 'Uitgeschakeld',
+    minText: 'De datum in dit veld moet na {0} liggen',
+    maxText: 'De datum in dit veld moet voor {0} liggen',
+    invalidText: '{0} is geen geldige datum - formaat voor datum is {1}',
+    format: 'j-m-y',
+    altFormats: 'd/m/Y|d-m-y|d-m-Y|d/m|d-m|dm|dmy|dmY|d|Y-m-d'
+});
+
+Ext.define("Ext.locale.nl.form.field.ComboBox", {
+    override: "Ext.form.field.ComboBox",
+    valueNotFoundText: undefined
+}, function() {
+    Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
+        loadingText: 'Bezig met laden...'
+    });
+});
+
+Ext.define("Ext.locale.nl.form.field.VTypes", {
+    override: "Ext.form.field.VTypes",
+    emailText: 'Dit veld moet een e-mail adres bevatten in het formaat "gebruiker@domein.nl"',
+    urlText: 'Dit veld moet een URL bevatten in het formaat "http:/' + '/www.domein.nl"',
+    alphaText: 'Dit veld mag alleen letters en _ bevatten',
+    alphanumText: 'Dit veld mag alleen letters, cijfers en _ bevatten'
+});
+
+Ext.define("Ext.locale.nl.form.field.HtmlEditor", {
+    override: "Ext.form.field.HtmlEditor",
+    createLinkText: 'Vul hier de URL voor de hyperlink in:'
+}, function() {
+    Ext.apply(Ext.form.field.HtmlEditor.prototype, {
+        buttonTips: {
+            bold: {
+                title: 'Vet (Ctrl+B)',
+                text: 'Maak de geselecteerde tekst vet.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            italic: {
+                title: 'Cursief (Ctrl+I)',
+                text: 'Maak de geselecteerde tekst cursief.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            underline: {
+                title: 'Onderstrepen (Ctrl+U)',
+                text: 'Onderstreep de geselecteerde tekst.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            increasefontsize: {
+                title: 'Tekst vergroten',
+                text: 'Vergroot het lettertype.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            decreasefontsize: {
+                title: 'Tekst verkleinen',
+                text: 'Verklein het lettertype.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            backcolor: {
+                title: 'Tekst achtergrondkleur',
+                text: 'Verander de achtergrondkleur van de geselecteerde tekst.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            forecolor: {
+                title: 'Tekst kleur',
+                text: 'Verander de kleur van de geselecteerde tekst.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            justifyleft: {
+                title: 'Tekst links uitlijnen',
+                text: 'Lijn de tekst links uit.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            justifycenter: {
+                title: 'Tekst centreren',
+                text: 'Centreer de tekst.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            justifyright: {
+                title: 'Tekst rechts uitlijnen',
+                text: 'Lijn de tekst rechts uit.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            insertunorderedlist: {
+                title: 'Opsommingstekens',
+                text: 'Begin een ongenummerde lijst.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            insertorderedlist: {
+                title: 'Genummerde lijst',
+                text: 'Begin een genummerde lijst.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            createlink: {
+                title: 'Hyperlink',
+                text: 'Maak van de geselecteerde tekst een hyperlink.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            },
+            sourceedit: {
+                title: 'Bron aanpassen',
+                text: 'Schakel modus over naar bron aanpassen.',
+                cls: Ext.baseCSSPrefix + 'html-editor-tip'
+            }
+        }
+    });
+});
+
+Ext.define("Ext.locale.nl.grid.header.Container", {
+    override: "Ext.grid.header.Container",
+    sortAscText: 'Sorteer oplopend',
+    sortDescText: 'Sorteer aflopend',
+    columnsText: 'Kolommen'
+});
+
+Ext.define("Ext.locale.nl.grid.GroupingFeature", {
+    override: "Ext.grid.GroupingFeature",
+    emptyGroupText: '(Geen)',
+    groupByText: 'Dit veld groeperen',
+    showGroupsText: 'Toon in groepen'
+});
+
+Ext.define("Ext.locale.nl.grid.PropertyColumnModel", {
+    override: "Ext.grid.PropertyColumnModel",
+    nameText: 'Naam',
+    valueText: 'Waarde',
+    dateFormat: 'j-m-Y'
+});
+
+Ext.define("Ext.locale.nl.form.field.Time", {
+    override: "Ext.form.field.Time",
+    minText: 'De tijd in dit veld moet op of na {0} liggen',
+    maxText: 'De tijd in dit veld moet op of voor {0} liggen',
+    invalidText: '{0} is geen geldig tijdstip',
+    format: 'G:i',
+    altFormats: 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H'
+});
+
+Ext.define("Ext.locale.nl.form.CheckboxGroup", {
+    override: "Ext.form.CheckboxGroup",
+    blankText: 'Selecteer minimaal een element in deze groep'
+});
+
+Ext.define("Ext.locale.nl.form.RadioGroup", {
+    override: "Ext.form.RadioGroup",
+    blankText: 'Selecteer een element in deze groep'
+});
+
+Ext.define("Ext.locale.nl.window.MessageBox", {
+    override: "Ext.window.MessageBox",
+    buttonText: {
+        ok: 'OK',
+        cancel: 'Annuleren',
+        yes: 'Ja',
+        no: 'Nee'
+    }    
+});
+
+// This is needed until we can refactor all of the locales into individual files
+Ext.define("Ext.locale.nl.Component", {	
+    override: "Ext.Component"
+});
+

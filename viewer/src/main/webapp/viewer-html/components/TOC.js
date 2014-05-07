@@ -65,20 +65,6 @@ Ext.define ("viewer.components.TOC",{
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         return this;
     },
-    /**
-     *  Apply fixes to the trees for ExtJS scrolling issues
-     */
-    applyTreeScrollFix: function() {
-        var view = this.panel.getView();
-        view.getEl().setStyle({
-            overflow: 'auto',
-            overflowX: this.showHorizontalScrollbar ? 'auto' : 'hidden'
-        });
-        // From ext-all-debug, r77661 & r77663
-        // Seems to recalculate body and applies correct heights so scrollbars can be shown
-        view.panel.doComponentLayout();
-        view.panel.getLayout().layout();
-    },
     // Build the tree
     loadTree : function(){        
         // Get the current state of the map
@@ -193,61 +179,7 @@ Ext.define ("viewer.components.TOC",{
         this.checkScaleLayer(this.panel.getRootNode(),scale);
         
         this.registerQtips();
-        // Apply the scroll fix when all layers are added
-        this.applyTreeScrollFix();
-        this.applyHorizontalScrolling();
     },
-           
-    /*
-     * Applies horizontal scrolling to treepanel (if configured)
-     * Needs workaround because horizontal scrolling is broken in Ext 4.0.7
-     * http://stackoverflow.com/questions/9388916/horizontal-scroller-on-tree-panel
-     * 
-     * What this function does is compute the max width of the longest label and sets
-     * the width of the parent and also sets overflowX to auto
-     */
-    applyHorizontalScrolling: function() {
-        if(!this.showHorizontalScrollbar) return;
-        var view = this.panel;
-        var c = view.container;
-        var e = view.el;
-        var max = 0;
-        Ext.each(e.query('.x-grid-cell-inner'), function(el) {
-            el = Ext.get(el);
-            var size = el.getPadding('lr');
-            Ext.each(el.dom.childNodes, function(el2) {
-                if (el2.nodeType === 3) { // 3 === Node.TEXT_NODE
-                    size += 6 + el.getTextWidth(el2.nodeValue);
-                } else {
-                    var _el2 = Ext.get(el2);
-                    if((Ext.isIE8 || Ext.isIE9) && el2.nodeName.toUpperCase() === 'SPAN') {
-                        // The SPAN inside the layername has the same width as the parent in IE8|9
-                        // so we use the getTextWidth function of Ext to compute width of element
-                        size += el.getTextWidth(el2.innerText);
-                    } else {
-                        size += (_el2.getWidth() + _el2.getMargin('lr'));
-                    }
-                }
-            });
-            max = Math.max(max, size);
-        });
-        max += c.getPadding('lr') + 5; // Add some extra padding to have some whitespace on the right
-        if (c.getWidth() < max) {
-            c.dom.style.overflowX = 'auto';
-            if(Ext.isIE8) {
-                // IE8 is behaving strange and cannot find table with e.down('table') so we search mannually
-                var tables = e.dom.getElementsByTagName('table');
-                for(var x = 0; x < tables.length; x++) {
-                    if((' ' + tables[x].className + ' ').indexOf(' x-grid-table ') > -1) {
-                        tables[x].style.width = max + 'px';
-                    }
-                }
-            } else {
-                e.down('table').setWidth(max);
-            }
-        }
-    },
-    
     isExpanded : function(level , triState){
         var expand = this.expandOnStartup;
         if(this.expandOnEnabledLayer && triState >= 0){
@@ -269,12 +201,14 @@ Ext.define ("viewer.components.TOC",{
         var levelId = "level-"+level.id;
         var treeNodeLayer = {
             text: '<span id="span_'+levelId+'">'+level.name+'</span>', 
-            id: levelId,
+            // id: levelId,
             expandable: !level.background,
             collapsible: !level.background,
             leaf: false,
             background: level.background,
+            // nodeId: levelId,
             layerObj: {
+                nodeId: levelId,
                 serviceId: level.id
             }
         };
@@ -334,7 +268,7 @@ Ext.define ("viewer.components.TOC",{
         var triState = this.calculateTriState(childsChecked, totalChilds);
         
         var expand = this.isExpanded(level, triState);
-        treeNodeLayer.children= nodes;
+        treeNodeLayer.layerObj.children = nodes;
         treeNodeLayer.expanded = expand;
         var node = {
             node: treeNodeLayer,
@@ -357,11 +291,13 @@ Ext.define ("viewer.components.TOC",{
         var me = this;
         var treeNodeLayer = {
             text: '<span id="span_'+ layerId+'">'+layerTitle +'</span>',
-            id: layerId,
+            // id: layerId,
             expanded: me.expandOnStartup,
             leaf: true,
             background: appLayerObj.background,
+            // nodeId: layerId,
             layerObj: {
+                nodeId: layerId,
                 service: service.id,
                 layerName : appLayerObj.layerName,
                 appLayer: appLayerObj
@@ -421,13 +357,15 @@ Ext.define ("viewer.components.TOC",{
             }
             var background = {
                 text: "Achtergrond", 
-                id: this.name + "Achtergrond",
+                // id: this.name + "Achtergrond",
                 expanded: this.expandOnStartup,
                 expandable: true,
                 collapsible : true,
                 leaf: false,
                 background: false,
-                children: nodesArray
+                layerObj: {
+                    children: nodesArray
+                }
             };
             if (this.groupCheck) {
                 var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
@@ -521,19 +459,24 @@ Ext.define ("viewer.components.TOC",{
         }
     },
     insertLayer : function (config){
-        var root = this.panel.getRootNode();
-        root.appendChild(config);
+        var root = this.panel.getRootNode(),
+            me = this;
+        Ext.Array.each(config, function(node) {
+           me.insertNode(root, node); 
+        });
         root.expand();
     },
-    getAppLayerId : function (name){
-        // Not the correct way to get the applayerID TODO: Fix it
-        for ( var i in this.appLayers){
-            var appLayer = this.appLayers[i];
-            if(appLayer.layerName=== name){
-                return "layer-"+appLayer.id;
-            }
+    // Appending the whole tree at once gave issues in ExtJS 4.2.1
+    // when there where sub-sub-childs present. Looping over childs,
+    // and adding them manually seems to fix this
+    insertNode: function(parentNode, insertNode) {
+        var me = this,
+            newParentNode = parentNode.appendChild(insertNode);
+        if(insertNode.layerObj.children) {
+            Ext.Array.each(insertNode.layerObj.children, function(childNode) {
+                me.insertNode(newParentNode, childNode);
+            });
         }
-        return null;
     },
     
     setTriState: function(node) {
@@ -657,7 +600,7 @@ Ext.define ("viewer.components.TOC",{
         var layer = object.layer;
         var vis = object.visible;
         var nodeId = "layer-" + layer.appLayerId;
-        var node = this.panel.getRootNode().findChild("id",nodeId,true);
+        var node = this.panel.getRootNode().findChild("nodeId",nodeId,true);
         if (node){
             if (this.layersChecked || (node.hasChildNodes() && this.groupCheck)){
                  node.set('checked', vis);
@@ -725,7 +668,7 @@ Ext.define ("viewer.components.TOC",{
             if(record != null){
                 var extElement = Ext.fly(record);
                 //if(this.isInScale(scale, layer.minScale, layer.maxScale)){
-                var spanEl = Ext.get("span_"+child.data.id);
+                var spanEl = Ext.get("span_"+layerObj.nodeId);
                 if (this.viewerController.isWithinScale(layerObj.appLayer,scale)){
                     extElement.removeCls("toc-outofscale");
                     extElement.addCls("toc-inscale");
@@ -775,7 +718,5 @@ Ext.define ("viewer.components.TOC",{
     doResize: function() {
         var me = this;
         me.panel.doLayout();
-        me.applyTreeScrollFix();
-        me.applyHorizontalScrolling();
     } 
 });

@@ -312,17 +312,17 @@ Ext.define("viewer.components.Component",{
             paddingCorrection: 3,
             xOffset: 354
         };
-        var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
+        var styleContent  = '.applicationSpriteClass .x-btn-icon-el { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
             styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';
-            styleContent += ' .buttonDefaultClass_normal button { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
-            styleContent += ' .buttonDefaultClass_hover button { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
-            styleContent += ' .buttonDefaultClass_click button { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+            styleContent += ' .buttonDefaultClass_normal .x-btn-icon-el { background-position: -' + ((spriteConfig.columnConfig.normal - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+            styleContent += ' .buttonDefaultClass_hover .x-btn-icon-el { background-position: -' + ((spriteConfig.columnConfig.hover - 1) * spriteConfig.gridSize) + 'px 0px; } ';
+            styleContent += ' .buttonDefaultClass_click .x-btn-icon-el { background-position: -' + ((spriteConfig.columnConfig.click - 1) * spriteConfig.gridSize) + 'px 0px; } ';
 
         var innerImageOffset = (spriteConfig.imageSize / 2) - (spriteConfig.popupImageSize / 2);
         Ext.Object.each(spriteConfig.rowConfig, function(compClassName, row) {
             Ext.Object.each(spriteConfig.columnConfig, function(state, col) {
             // Button style
-            styleContent += ' .' + compClassName + '_' + state + ' button { ' +
+            styleContent += ' .' + compClassName + '_' + state + ' .x-btn-icon-el { ' +
                             'background-position: -' + (((col - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection + spriteConfig.xOffset) + 'px -' + (((row - 1) * spriteConfig.gridSize) + spriteConfig.paddingCorrection) + 'px !important; ' +
                             '}';
             });

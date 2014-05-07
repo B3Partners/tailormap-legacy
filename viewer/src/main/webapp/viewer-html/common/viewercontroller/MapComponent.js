@@ -30,6 +30,7 @@ Ext.define("viewer.viewercontroller.MapComponent",{
      */    
     constructor :function (viewerController,domId,config){
         //init values
+        viewer.viewercontroller.MapComponent.superclass.constructor.call(this, config);
         this.eventList={};
         this.maps=[];
         this.tools=[];

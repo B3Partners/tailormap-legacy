@@ -28,6 +28,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * @param config.options options for the map @see viewer.viewercontroller.MapComponent#createMap
      */
     constructor: function(config){
+        viewer.viewercontroller.controller.Map.superclass.constructor.call(this, config);
         this.initConfig(config);
         
         this.addEvents(

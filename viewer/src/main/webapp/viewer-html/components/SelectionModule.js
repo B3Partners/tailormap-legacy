@@ -242,15 +242,15 @@ Ext.define ("viewer.components.SelectionModule",{
         // Show active left panel (based on checked radio boxes / only option)
         me.showActiveLeftPanel();
         // apply a scroll fix
-        me.applyTreeScrollFix();
-        me.applyHorizontalScrolling();
+        me.resizeTrees();
+        // me.applyHorizontalScrolling();
         // add listeners to the popupwin to hide and show tree containers (which would otherwise remain visible)
         me.popup.popupWin.addListener('hide', me.hideTreeContainers);
         me.popup.popupWin.addListener('show', me.showTreeContainers);
         me.popup.popupWin.addListener("dragstart", me.hideTreeContainers);
         me.popup.popupWin.addListener("dragend", me.showTreeContainers);
-        me.popup.popupWin.addListener("resize", me.applyTreeScrollFix, me);
-        me.popup.popupWin.addListener("resize", me.applyHorizontalScrolling, me);
+        me.popup.popupWin.addListener("resize", me.resizeTrees, me);
+        // me.popup.popupWin.addListener("resize", me.applyHorizontalScrolling, me);
         // set rendered to true so this function won't be called again
         me.rendered = true;
     },
@@ -362,18 +362,12 @@ Ext.define ("viewer.components.SelectionModule",{
     /**
      *  Apply fixes to the trees for ExtJS scrolling issues
      */
-    applyTreeScrollFix: function() {
+    resizeTrees: function() {
         var me = this;
         var activePanels = me.getActiveTreePanels();
-        for(var i in activePanels) {
-            activePanels[i].getView().getEl().setStyle({
-                overflow: 'auto',
-                overflowX: 'auto'
-            });
-            // From ext-all-debug, r77661 & r77663
-            // Seems to recalculate body and applies correct heights so scrollbars can be shown
+        for(var i = 0; i < activePanels.length; i++) {
             activePanels[i].getView().panel.doComponentLayout();
-            activePanels[i].getView().panel.getLayout().layout();
+            // activePanels[i].getView().panel.getLayout().layout();
         }
     },
      applyHorizontalScrolling: function() {
@@ -1261,8 +1255,8 @@ Ext.define ("viewer.components.SelectionModule",{
             }
         }
         
-        me.applyTreeScrollFix();
-        me.applyHorizontalScrolling();
+        me.resizeTrees();
+        // me.applyHorizontalScrolling();
     },
             
     setTopHeight: function(height) {
