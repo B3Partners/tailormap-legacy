@@ -802,7 +802,7 @@
         shortName: "Gr",
         singleton: true,
         sources: ["Graph.js"],
-        configSource: ["ConfigObject.js","Graph-config.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
         showHelp: true

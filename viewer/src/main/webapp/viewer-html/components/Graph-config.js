@@ -20,14 +20,107 @@
  */
 Ext.define("viewer.components.CustomConfiguration", {
     extend: "viewer.components.SelectionWindowConfig",
+    nextId:null,
+    graphConfigs:null,
+    panel:null,
     constructor: function(parentId, configObject) {
+        this.nextId = 1;
+        this.graphConfigs = new Array();
         if (configObject === null) {
             configObject = {};
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
-        /*this.createCheckBoxes(this.configObject.layers, {
-            bufferable: true
-        });*/
+        this.createGraphForm();  
+    },
+    createGraphForm: function() {
+        var me = this;
+        this.panel = Ext.create("Ext.panel.Panel", {
+            width: me.formWidth,
+            margin: '15 0 0 0',
+            height: 350,
+            layout: 'auto',
+            autoScroll: true,
+            title: "Maak grafieken",
+            id: "layerListContainer",
+            style: {
+                marginTop: "10px"
+            },
+            frame: false,
+            bodyPadding: me.formPadding,
+            width: me.formWidth,
+            height: me.checkPanelHeight,
+            tbar: [
+                {
+                    xtype: 'button',
+                    iconCls: 'addbutton-icon',
+                    text: 'Grafiekconfiguratie toevoegen',
+                    listeners: {
+                        click: function() {
+                            me.addGraphConfig();
+                        }
+                    }
+                }
+            ],
+            renderTo: this.parentId
+        });
+    },
+    addGraphConfig: function(config) {
+        var me = this;
+        var nextId = me.nextId;
+        var newconfig = config || {
+            id: 'graph' + nextId,
+            title: 'Grafiek ' + nextId
+        };
+        me.graphConfigs.push(newconfig);
+        var collapsed = true;
+        if (nextId === 1){
+            collapsed = false;
+        }
+        me.panel.add(me.newGraphField(newconfig, collapsed));
+        me.nextId++;
+    },
+    removeGraphConfig : function(id){
+        this.panel.remove(id);
+        var me = this;
+        var newGraphConfigs = [];
+        Ext.Array.each(me.graphConfigs, function(graphConfig) {
+            if(graphconfig.id != id) {
+                newGraphConfigs.push(graphconfig);
+            }
+        });
+        me.graphConfigs = newGraphConfigs;
+    },
+    newGraphField: function(config, collapsed) {
+        var me = this;
+        return {
+            xtype: 'panel',
+            id: config.id,
+            layout: 'anchor',
+            anchor: '100%',
+            width: '100%',
+            title: config.title,
+            animCollapse: false,
+            collapsible: true,
+            collapsed: collapsed,
+            iconCls: "edit-icon-bw",
+            titleCollapse: true,
+            hideCollapseTool: false,
+            defaultType: 'textfield',
+            items: [
+                   { fieldLabel: 'Titel', name: 'title', value: config.title, id: 'name'+config.id },
+                   { fieldLabel: 'Gebruik alleen via url', name: 'urlOnly'+config.id, id: 'urlOnly'+config.id, checked: false, xtype:'checkbox'}
+            ],
+            tbar: ["->", {
+                xtype:'button',
+                iconCls: 'removebutton-icon',
+                text: 'Grafiekconfiguratie verwijderen',
+                listeners: {
+                    click: function() {
+                        me.removeGraphConfig(config.id);
+                    }
+                }
+            }]
+        };
     }
 });
 
