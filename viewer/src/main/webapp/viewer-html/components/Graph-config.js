@@ -23,6 +23,7 @@ Ext.define("viewer.components.CustomConfiguration", {
     nextId:null,
     layers:null,
     graphConfigs:null,
+    graphTypeStore:null,
     panel:null,
     constructor: function(parentId, configObject) {
         this.nextId = 1;
@@ -31,6 +32,14 @@ Ext.define("viewer.components.CustomConfiguration", {
             configObject = {};
         }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        this.graphTypeStore = Ext.create('Ext.data.Store', {
+            fields: ['naam',"type"],
+            data: [
+                {"naam": "Lijn", type: "LINE"},
+                {"naam": "Staaf (horizontaal)", type : "BAR_HORIZONTAL"},
+                {"naam": "Staaf (verticaal)",type: "BAR_VERTICAL"}
+            ]
+        });        
         this.getLayerList();
     },
     createGraphForm: function() {
@@ -107,13 +116,16 @@ Ext.define("viewer.components.CustomConfiguration", {
             hideCollapseTool: false,
             defaultType: 'textfield',
             items: [
-                   { fieldLabel: 'Titel', name: 'title', value: config.title, id: 'name'+config.id },
+                   { fieldLabel: 'Titel', name: 'title', value: config.title, id: 'title'+config.id },
+                    {fieldLabel: "Kies grafiektype", name : "type" + config.id, id: "type" + config.id, xtype: "combo",emptyText:'Maak uw keuze',store: me.graphTypeStore,
+                        queryMode: 'local',displayField: 'naam',valueField: 'type',listeners :{change:{fn: me.layerChanged,scope: me}}},
                    {fieldLabel: "Laag", name : "layer" + config.id, id: "layer" + config.id, xtype: "combo",emptyText:'Maak uw keuze',store: me.layers,queryMode: 'local',
                        displayField: 'alias',valueField: 'id',listeners :{change:{fn: me.layerChanged,scope: me}}},
                    {fieldLabel: "Categorie attribuut",  name : "categoryAttribute"+config.id ,id: "categoryAttribute"+config.id , disabled:true, xtype: "combo",emptyText:'Maak uw keuze',
                        store:null,queryMode: 'local',
                        displayField: 'longname',valueField: 'id'},
-                   {fieldLabel: "Serie attribuut", name : "serieAttribute"+config.id ,id: "serieAttribute"+config.id , disabled:true, xtype: "combo",emptyText:'Maak uw keuze',store:null,queryMode: 'local',
+                   {fieldLabel: "Serie attribuut", name : "serieAttribute"+config.id ,id: "serieAttribute"+config.id , disabled:true, xtype: "combo",emptyText:'Maak uw keuze',
+                       store:null,queryMode: 'local',
                        displayField: 'longname',valueField: 'id'}
             ],
             tbar: ["->", {
@@ -156,7 +168,13 @@ Ext.define("viewer.components.CustomConfiguration", {
         });
     },
     getAttributeList : function(appLayerId,configId){
-         var me = this;
+        var me = this;
+        var category = Ext.getCmp("categoryAttribute" + configId);
+        var serie = Ext.getCmp("serieAttribute" + configId);
+        category.setLoading("Attributen ophalen");
+        serie.setLoading("Attributen ophalen");
+        category.getStore().removeAll();
+       // serie.getStore().removeAll();
         Ext.Ajax.request({ 
             url: contextPath+"/action/applicationtreelayer",
             params:{
@@ -165,20 +183,49 @@ Ext.define("viewer.components.CustomConfiguration", {
             }, 
             success: function ( result, request ) {
                 var attributeData = Ext.JSON.decode(result.responseText);
+                var newList = new Array();
+                for(var i = 0 ; i < attributeData.length; i++){
+                    var attribute = attributeData[i];
+                    if(attribute.visible){
+                        newList.push(attribute);
+                    }
+                }
                 
-                var attributes = Ext.create('Ext.data.Store', {fields: ['id', 'longname'],data : attributeData});
-                var category = Ext.getCmp("categoryAttribute" + configId);
-                category.store = attributes;
+                //var attributes = Ext.create('Ext.data.Store', {fields: ['id', 'longname'],data : newList});
+                category.getStore().add(newList);
                 category.setDisabled(false);
-                
-                var serie = Ext.getCmp("serieAttribute" + configId);
-                serie.store = attributes;
                 serie.setDisabled(false);
+                serie.setLoading(false)
+                category.setLoading(false);
             },
             failure: function() {
+                serie.setLoading(false)
+                category.setLoading(false);
                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
             }
         });
+    },
+    getConfiguration : function(){
+        var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
+        var graphs = new Array();
+        for(var i = 0 ; i < this.graphConfigs.length ; i ++){
+            var gCO = this.graphConfigs[i];
+            var graphConfig = this.getGraphConfig(gCO.id);
+            graphs.push(graphConfig);
+            
+        }
+        config.graphs = graphs;
+        return config;
+    },
+    getGraphConfig : function (id){
+        var config = new Object();
+        config.id = id;
+        config.title = Ext.getCmp("title"+id ).getValue();
+        config.type = Ext.getCmp("type"+id ).getValue();
+        config.layer = Ext.getCmp("layer"+id ).getValue();
+        config.categoryAttribute = Ext.getCmp("categoryAttribute"+id ).getValue();
+        config.serieAttribute = Ext.getCmp("serieAttribute"+id ).getValue();
+        return config;
     }
 });
 
