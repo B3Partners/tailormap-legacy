@@ -57,11 +57,20 @@ public class FeatureToJson {
     public static final int MAX_FEATURES = 1000;
     private boolean arrays = false;
     private boolean edit = false;
+    private boolean graph = false;
+    private List<Long> attributesToInclude = new ArrayList<Long>();
     private static final int TIMEOUT=5000;
     
     public FeatureToJson(boolean arrays,boolean edit){
         this.arrays=arrays;
         this.edit=edit;        
+    }
+    
+    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<Long> attributesToInclude){
+        this.arrays=arrays;
+        this.edit=edit;        
+        this.graph = graph;
+        this.attributesToInclude=attributesToInclude;
     }
     /**
      * Get the features as JSONArray with the given params
@@ -249,7 +258,7 @@ public class FeatureToJson {
             return propertyNamesReturnCache.get(sft.getId());
         }else{            
             for(ConfiguredAttribute ca: appLayer.getAttributes(sft)) {
-                if((!edit && ca.isVisible()) || (edit && ca.isEditable())) {
+                if((!edit && !graph && ca.isVisible()) || (edit && ca.isEditable()) || (graph && attributesToInclude.contains(ca.getId()))) {
                     propertyNames.add(ca.getAttributeName());
                 } else {
                     haveInvisibleProperties = true;

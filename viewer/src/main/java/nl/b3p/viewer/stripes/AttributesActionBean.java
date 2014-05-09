@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,12 @@ public class AttributesActionBean implements ActionBean {
     private boolean noCache;
     
     private boolean unauthorized;
+    
+    @Validate
+    private List<Long> attributesToInclude = new ArrayList();
+    
+    @Validate
+    private boolean graph = false;
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
@@ -204,6 +211,22 @@ public class AttributesActionBean implements ActionBean {
 
     public void setEdit(boolean edit) {
         this.edit = edit;
+    }
+    
+    public List<Long> getAttributesToInclude() {
+        return attributesToInclude;
+    }
+
+    public void setAttributesToInclude(List<Long> attributesToInclude) {
+        this.attributesToInclude = attributesToInclude;
+    }
+
+    public boolean isGraph() {
+        return graph;
+    }
+
+    public void setGraph(boolean graph) {
+        this.graph = graph;
     }
     //</editor-fold>
     
@@ -446,7 +469,7 @@ public class AttributesActionBean implements ActionBean {
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
                 
-                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit);
+                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, attributesToInclude);
                 
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
                 

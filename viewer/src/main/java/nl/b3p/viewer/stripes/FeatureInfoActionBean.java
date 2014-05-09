@@ -24,6 +24,8 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
@@ -92,6 +94,12 @@ public class FeatureInfoActionBean implements ActionBean {
     
     @Validate
     private boolean arrays = false;
+    
+    @Validate
+    private List<Long> attributesToInclude = new ArrayList();
+    
+    @Validate
+    private boolean graph = false;
     
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -173,6 +181,22 @@ public class FeatureInfoActionBean implements ActionBean {
     public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
+
+    public List<Long> getAttributesToInclude() {
+        return attributesToInclude;
+    }
+
+    public void setAttributesToInclude(List<Long> attributesToInclude) {
+        this.attributesToInclude = attributesToInclude;
+    }
+
+    public boolean isGraph() {
+        return graph;
+    }
+
+    public void setGraph(boolean graph) {
+        this.graph = graph;
+    }
     //</editor-fold>
     
     public Resolution info() throws JSONException {
@@ -232,11 +256,13 @@ public class FeatureInfoActionBean implements ActionBean {
                     if(l.getFeatureType() == null) {
                         response.put("noFeatureType",true);
                         break;
-                    }                
+                    }else{
+                        response.put("featureType", l.getFeatureType().getId());
+                        
+                    }
                     String filter = query.optString("filter", null);
                     
                     fs = l.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
-                    
                     Query q = new Query(fs.getName().toString());
                     
                     String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
@@ -284,7 +310,7 @@ public class FeatureInfoActionBean implements ActionBean {
                     q.setFilter(f);
                     q.setMaxFeatures(limit);
                     
-                    FeatureToJson ftjson =new FeatureToJson(arrays, edit);
+                    FeatureToJson ftjson =new FeatureToJson(arrays, edit,graph,attributesToInclude);
                     JSONArray features = ftjson.getJSONFeatures(al,l.getFeatureType(), fs, q,null,null);
                     
                     response.put("features", features);
