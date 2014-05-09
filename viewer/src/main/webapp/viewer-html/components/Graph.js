@@ -102,6 +102,13 @@ Ext.define("viewer.components.Graph", {
                         }
                     }
 
+                },
+                 {
+                    id: this.name + 'graphPanel',
+                    xtype: "container",
+                    padding: "4px",
+                    width: '100%',
+                    height: 36
                 }
             ]
         });
@@ -190,6 +197,8 @@ Ext.define("viewer.components.Graph", {
             scope: this,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
+                var features = response.features;
+                this.createGraph(appLayer, features);
                 var a =0;
             },
             failure: function(result) {
@@ -199,7 +208,6 @@ Ext.define("viewer.components.Graph", {
     },
     buttonClick: function(){
         this.popup.show();
-        
     },
     featureInfoReturned: function(layer, options) {
         this.loadGraph(layer);
@@ -226,6 +234,68 @@ Ext.define("viewer.components.Graph", {
             this.viewerController.logger.error("No featureservice available for layer " + appLayer.alias);
         }
 
+    },
+    createGraph : function (appLayer,  data){
+        var gco = this.getConfigByAppLayer(appLayer.id);
+        var me = this;
+        var store = Ext.create('Ext.data.JsonStore', {
+            fields: [this.getAttribute(appLayer,gco.serieAttribute).name,this.getAttribute(appLayer,gco.categoryAttribute).name],
+            data: data
+        });
+
+       var a=  Ext.create('Ext.chart.Chart', {
+            renderTo:this.name + 'graphPanel',
+            width: 300,
+            height: 300,
+            animate: true,
+            store: store,
+            axes: [
+                {
+                    type: 'Numeric',
+                    position: 'left',
+                    fields: [this.getAttribute(appLayer,gco.serieAttribute).name],
+                    label: {
+                        renderer: Ext.util.Format.numberRenderer('0,0')
+                    },
+                    title: this.getAttribute(appLayer,gco.serieAttribute).alias,
+                    grid: true,
+                    minimum: 0
+                },
+                {
+                    type: 'Category',
+                    position: 'bottom',
+                    fields: [this.getAttribute(appLayer,gco.categoryAttribute).name],
+                    title: this.getAttribute(appLayer,gco.categoryAttribute).alias
+                }
+            ],
+            series: [
+                {
+                    type: 'line',
+                    highlight: {
+                        size: 7,
+                        radius: 7
+                    },
+                    axis: 'left',
+                    xField: this.getAttribute(appLayer,gco.categoryAttribute).name,
+                    yField: this.getAttribute(appLayer,gco.serieAttribute).name,
+                    markerConfig: {
+                        type: 'circle',
+                        size: 4,
+                        radius: 4,
+                        'stroke-width': 0
+                    },
+                    tips: {
+                        trackMouse: true,
+                        width: 140,
+                        height: 28,
+                        
+                        renderer: function(storeItem, item) {
+                            this.setTitle(storeItem.get(me.getAttribute(appLayer,gco.categoryAttribute).name) + ': ' + storeItem.get(me.getAttribute(appLayer,gco.serieAttribute).name) + ' views');
+                        }
+                    }
+                }
+            ]
+        });  
     },
     loadData: function(appLayer) {
         var featureService = appLayer.featureService;
@@ -341,6 +411,14 @@ Ext.define("viewer.components.Graph", {
         for (var i = 0 ; i < this.graphs.length ;i++){
             if(this.graphs[i].layer === appLayerId){
                 return this.graphs[i];
+            }
+        }
+        return null;
+    },
+    getAttribute : function (appLayer, attributeId){
+        for(var i = 0 ; i < appLayer.attributes.length;i++){
+            if(appLayer.attributes[i].id === attributeId){
+                return appLayer.attributes[i];
             }
         }
         return null;
