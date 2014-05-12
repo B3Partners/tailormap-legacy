@@ -257,7 +257,8 @@ Ext.define("viewer.components.Graph", {
                     label: {
                         renderer: Ext.util.Format.numberRenderer('0,0')
                     },
-                    title: this.getAttribute(appLayer,gco.serieAttribute).alias,
+                  //  title: this.getAttribute(appLayer,gco.serieAttribute).alias,
+                  title: 'asdfasdfsd',
                     grid: true,
                     minimum: 0
                 },
@@ -265,7 +266,7 @@ Ext.define("viewer.components.Graph", {
                     type: 'Category',
                     position: 'bottom',
                     fields: [this.getAttribute(appLayer,gco.categoryAttribute).name],
-                    title: this.getAttribute(appLayer,gco.categoryAttribute).alias
+                    title: this.getAttribute(appLayer,gco.categoryAttribute).name
                 }
             ],
             series: [
@@ -290,7 +291,7 @@ Ext.define("viewer.components.Graph", {
                         height: 28,
                         
                         renderer: function(storeItem, item) {
-                            this.setTitle(storeItem.get(me.getAttribute(appLayer,gco.categoryAttribute).name) + ': ' + storeItem.get(me.getAttribute(appLayer,gco.serieAttribute).name) + ' views');
+                            this.setTitle(storeItem.get(me.getAttribute(appLayer,gco.categoryAttribute).name) + ': ' + storeItem.get(me.getAttribute(appLayer,gco.serieAttribute).name));
                         }
                     }
                 }
