@@ -199,20 +199,12 @@ Ext.define('Ext.ux.RowExpander', {
             row.removeCls(this.rowCollapsedCls);
             nextBd.removeCls(this.rowBodyHiddenCls);
             this.recordsExpanded[record.internalId] = true;
-<<<<<<< Updated upstream
-            this.view.fireEvent('expandbody', rowNode, record, nextBd.dom);
-=======
             view.fireEvent('expandbody', rowNode, record, nextBd.dom,recordIndex);
->>>>>>> Stashed changes
         } else {
             row.addCls(this.rowCollapsedCls);
             nextBd.addCls(this.rowBodyHiddenCls);
             this.recordsExpanded[record.internalId] = false;
-<<<<<<< Updated upstream
-            this.view.fireEvent('collapsebody', rowNode, record, nextBd.dom);
-=======
             view.fireEvent('collapsebody', rowNode, record, nextBd.dom,recordIndex);
->>>>>>> Stashed changes
         }
 
 
@@ -250,11 +242,7 @@ Ext.define('Ext.ux.RowExpander', {
             processEvent: function(type, view, cell, recordIndex, cellIndex, e) {
                 if (type == "mousedown" && e.getTarget('.x-grid-row-expander')) {
                     var row = e.getTarget('.x-grid-row');
-<<<<<<< Updated upstream
-                    toggleRow(row);
-=======
                     toggleRow(row,view,recordIndex);
->>>>>>> Stashed changes
                     return selectRowOnExpand;
                 }
             }
