@@ -205,9 +205,9 @@ Ext.define ("viewer.components.AttributeList",{
         }                
         this.createGrid("main",document.getElementById(this.name + 'Container'), appLayer, null, filter,true,showExpand);
     },
-    onExpandRow: function(rowNode,record,expandRow,eOpts){
+    onExpandRow: function(rowNode,record,expandRow,recordIndex,eOpts){
         var store=record.store;
-        var rawData = store.data.items[record.index].raw;        
+        var rawData = store.data.items[recordIndex].raw;
         if (rawData.related_featuretypes){
             var childGridIds=[];
             for (var i=0; i < rawData.related_featuretypes.length; i++){
@@ -387,14 +387,14 @@ Ext.define ("viewer.components.AttributeList",{
                 listeners: {
                     expandbody : {
                         scope: me,
-                        fn: function(rowNode,record,expandRow,eOpts){
-                            this.onExpandRow(rowNode,record,expandRow,eOpts);
+                        fn: function(rowNode,record,expandRow,eOpts,recordIndex){
+                            this.onExpandRow(rowNode,record,expandRow,eOpts,recordIndex);
                         }
                     },
                     collapsebody: {
                         scope: me,
-                        fn: function(rowNode,record,expandRow,eOpts){
-                            this.onCollapseBody(rowNode,record,expandRow,eOpts);
+                        fn: function(rowNode,record,expandRow,eOpts,recordIndex){
+                            this.onCollapseBody(rowNode,record,expandRow,eOpts,recordIndex);
                         }
                     }
                 }
