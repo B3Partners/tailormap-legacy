@@ -188,13 +188,16 @@ Ext.define('Ext.ux.RowExpander', {
         }
     },
 
-    toggleRow: function(rowIdx) {
-        var rowNode = this.view.getNode(rowIdx),
+    toggleRow: function(rowIdx,view,recordIndex) {
+        var rowNode = view.getNode(rowIdx),
             row = Ext.get(rowNode),
             nextBd = Ext.get(row).down(this.rowBodyTrSelector),
-            record = this.view.getRecord(rowNode),
+            record = view.getRecord(rowNode),
             grid = this.getCmp();
-
+           
+        if(!record){
+            return;
+        }
         if (row.hasCls(this.rowCollapsedCls)) {
             row.removeCls(this.rowCollapsedCls);
             nextBd.removeCls(this.rowBodyHiddenCls);
@@ -212,7 +215,7 @@ Ext.define('Ext.ux.RowExpander', {
         if (!grid.isFixedHeight()) {
             grid.doComponentLayout();
         }
-        this.view.up('gridpanel').invalidateScroller();
+        view.up('gridpanel').invalidateScroller();
     },
 
     onDblClick: function(view, cell, rowIdx, cellIndex, e) {

@@ -327,7 +327,7 @@ Ext.define ("viewer.components.AttributeList",{
             remoteFilter: true,
             proxy: {
                 type: 'ajax',
-                timeout: 40000,
+                timeout: 120000,
                 url: appLayer.featureService.getStoreUrl() + "&arrays=1"+featureType+filter,
                 reader: {
                     type: 'json',
