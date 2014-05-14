@@ -22,24 +22,23 @@ Ext.define("viewer.components.CustomConfiguration", {
     extend: "viewer.components.SelectionWindowConfig",
     nextId:null,
     layers:null,
+    configObject: {},
     graphConfigs:null,
     graphTypeStore:null,
     panel:null,
     constructor: function(parentId, configObject) {
+        this.configObject = configObject || {};
+        this.graphConfigs = [];
         this.nextId = 1;
-        this.graphConfigs = new Array();
-        if (configObject === null) {
-            configObject = {};
-        }
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
         this.graphTypeStore = Ext.create('Ext.data.Store', {
             fields: ['naam',"type"],
             data: [
                 {"naam": "Lijn", type: "LINE"},
-                {"naam": "Staaf (horizontaal)", type : "BAR_HORIZONTAL"},
-                {"naam": "Staaf (verticaal)",type: "BAR_VERTICAL"}
+                {"naam": "Staaf (horizontaal)", type : "BAR"},
+                {"naam": "Staaf (verticaal)",type: "COLUMN"}
             ]
-        });        
+        });
         this.getLayerList();
     },
     createGraphForm: function() {
@@ -72,7 +71,22 @@ Ext.define("viewer.components.CustomConfiguration", {
             renderTo: this.parentId
         });
     },
+    addInitialGraphConfig: function() {
+        if(!this.configObject.graphs) {
+            this.addGraphConfig();
+            return;
+        }
+        var config = null;
+        for(var i = 0; i < this.configObject.graphs.length; i++) {
+            config = this.configObject.graphs[i];
+            this.addGraphConfig(config);
+            if(config.layer) {
+                this.getAttributeList( config.layer, config.id);
+            }
+        }
+    },
     addGraphConfig: function(config) {
+        
         var me = this;
         var nextId = me.nextId;
         var newconfig = config || {
@@ -91,16 +105,18 @@ Ext.define("viewer.components.CustomConfiguration", {
         this.panel.remove(id);
         var me = this;
         var newGraphConfigs = [];
-        Ext.Array.each(me.graphConfigs, function(graphConfig) {
-            if(graphconfig.id != id) {
-                newGraphConfigs.push(graphconfig);
+        for(var i = 0; i < me.graphConfigs.length; i++) {
+            if(me.graphConfigs[i].id !== id) {
+                newGraphConfigs.push(me.graphConfigs[i]);
             }
-        });
+        };
         me.graphConfigs = newGraphConfigs;
     },
     newGraphField: function(config, collapsed) {
         var me = this;
-        var a = 0;
+        var store = Ext.create('Ext.data.ArrayStore', {
+            fields: ['id', 'longname']
+        });
         return {
             xtype: 'panel',
             id: config.id,
@@ -116,17 +132,70 @@ Ext.define("viewer.components.CustomConfiguration", {
             hideCollapseTool: false,
             defaultType: 'textfield',
             items: [
-                   { fieldLabel: 'Titel', name: 'title', value: config.title, id: 'title'+config.id },
-                    {fieldLabel: "Kies grafiektype", name : "type" + config.id, id: "type" + config.id, xtype: "combo",emptyText:'Maak uw keuze',store: me.graphTypeStore,
-                        queryMode: 'local',displayField: 'naam',valueField: 'type',listeners :{change:{fn: me.layerChanged,scope: me}}},
-                   {fieldLabel: "Laag", name : "layer" + config.id, id: "layer" + config.id, xtype: "combo",emptyText:'Maak uw keuze',store: me.layers,queryMode: 'local',
-                       displayField: 'alias',valueField: 'id',listeners :{change:{fn: me.layerChanged,scope: me}}},
-                   {fieldLabel: "Categorie attribuut",  name : "categoryAttribute"+config.id ,id: "categoryAttribute"+config.id , disabled:true, xtype: "combo",emptyText:'Maak uw keuze',
-                       store:null,queryMode: 'local',
-                       displayField: 'longname',valueField: 'id'},
-                   {fieldLabel: "Serie attribuut", name : "serieAttribute"+config.id ,id: "serieAttribute"+config.id , disabled:true, xtype: "combo",emptyText:'Maak uw keuze',
-                       store:null,queryMode: 'local',
-                       displayField: 'longname',valueField: 'id'}
+                   {
+                       fieldLabel: 'Titel',
+                       name: 'title',
+                       value: config.title,
+                       id: 'title'+config.id
+                   },
+                   {
+                       fieldLabel: "Kies grafiektype",
+                       name : "type" + config.id,
+                       id: "type" + config.id,
+                       xtype: "combo",
+                       emptyText:'Maak uw keuze',
+                       store: me.graphTypeStore,
+                       queryMode: 'local',
+                       displayField: 'naam',
+                       valueField: 'type',
+                       value: config.type || null
+                   },
+                   {
+                       fieldLabel: "Laag",
+                       name : "layer" + config.id,
+                       id: "layer" + config.id,
+                       xtype: "combo",
+                       emptyText:'Maak uw keuze',
+                       store: me.layers,
+                       queryMode: 'local',
+                       displayField: 'alias',
+                       valueField: 'id',
+                       value: config.layer || null,
+                       listeners :{
+                           change: function(comboBox){
+                               me.getAttributeList( comboBox.getValue(), config.id);
+                           }
+                       }
+                   },
+                   {
+                       fieldLabel: "x-as",
+                       name : "categoryAttribute"+config.id,
+                       id: "categoryAttribute"+config.id,
+                       disabled:true,
+                       xtype: "combo",
+                       emptyText:'Maak uw keuze',
+                       store: store,
+                       queryMode: 'local',
+                       displayField: 'longname',
+                       valueField: 'id',
+                       value: config.categoryAttribute || null,
+                       width: 400
+                   },
+                   {
+                       fieldLabel: "y-as",
+                       name : "serieAttribute"+config.id,
+                       id: "serieAttribute"+config.id,
+                       disabled:true,
+                       xtype: "combo",
+                       multiSelect: true,
+                       emptyText:'Maak uw keuze',
+                       store: store,
+                       queryMode: 'local',
+                       displayField: 'longname',
+                       valueField: 'id',
+                       value: config.serieAttribute || null,
+                       width: 400
+                   }
             ],
             tbar: ["->", {
                 xtype:'button',
@@ -140,12 +209,6 @@ Ext.define("viewer.components.CustomConfiguration", {
             }]
         };
     },
-    layerChanged:function( comboBox ){
-        var selectId = comboBox.getId();
-        var configId = selectId.substring("layer".length);
-        var appLayerId = comboBox.getValue();
-        this.getAttributeList(appLayerId,configId);
-    },
     getLayerList: function() {
         var me = this;
         me.layers = null;
@@ -157,10 +220,9 @@ Ext.define("viewer.components.CustomConfiguration", {
             }, 
             success: function ( result, request ) {
                 var layers = Ext.JSON.decode(result.responseText);
-                
                 me.layers = Ext.create('Ext.data.Store', {fields: ['id', 'alias'],data : layers});
                 me.createGraphForm();  
-                me.addGraphConfig();
+                me.addInitialGraphConfig();
             },
             failure: function() {
                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
@@ -174,7 +236,8 @@ Ext.define("viewer.components.CustomConfiguration", {
         category.setLoading("Attributen ophalen");
         serie.setLoading("Attributen ophalen");
         category.getStore().removeAll();
-       // serie.getStore().removeAll();
+        var currentCategoryValue = category.getValue();
+        var currentSerieValue = serie.getValue();
         Ext.Ajax.request({ 
             url: contextPath+"/action/applicationtreelayer",
             params:{
@@ -183,23 +246,23 @@ Ext.define("viewer.components.CustomConfiguration", {
             }, 
             success: function ( result, request ) {
                 var attributeData = Ext.JSON.decode(result.responseText);
-                var newList = new Array();
+                var newList = [];
                 for(var i = 0 ; i < attributeData.length; i++){
                     var attribute = attributeData[i];
                     if(attribute.visible){
                         newList.push(attribute);
                     }
                 }
-                
-                //var attributes = Ext.create('Ext.data.Store', {fields: ['id', 'longname'],data : newList});
                 category.getStore().add(newList);
                 category.setDisabled(false);
+                category.setValue(currentCategoryValue);
                 serie.setDisabled(false);
-                serie.setLoading(false)
+                serie.setLoading(false);
+                serie.setValue(currentSerieValue);
                 category.setLoading(false);
             },
             failure: function() {
-                serie.setLoading(false)
+                serie.setLoading(false);
                 category.setLoading(false);
                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
             }
@@ -207,7 +270,7 @@ Ext.define("viewer.components.CustomConfiguration", {
     },
     getConfiguration : function(){
         var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
-        var graphs = new Array();
+        var graphs = [];
         for(var i = 0 ; i < this.graphConfigs.length ; i ++){
             var gCO = this.graphConfigs[i];
             var graphConfig = this.getGraphConfig(gCO.id);
@@ -218,14 +281,14 @@ Ext.define("viewer.components.CustomConfiguration", {
         return config;
     },
     getGraphConfig : function (id){
-        var config = new Object();
-        config.id = id;
-        config.title = Ext.getCmp("title"+id ).getValue();
-        config.type = Ext.getCmp("type"+id ).getValue();
-        config.layer = Ext.getCmp("layer"+id ).getValue();
-        config.categoryAttribute = Ext.getCmp("categoryAttribute"+id ).getValue();
-        config.serieAttribute = Ext.getCmp("serieAttribute"+id ).getValue();
-        return config;
+        return {
+            id: id,
+            title: Ext.getCmp( "title"+id ).getValue(),
+            type: Ext.getCmp( "type"+id ).getValue(),
+            layer: Ext.getCmp("layer"+id ).getValue(),
+            categoryAttribute: Ext.getCmp( "categoryAttribute"+id ).getValue(),
+            serieAttribute: Ext.getCmp( "serieAttribute"+id ).getValue()
+        };
     }
 });
 
