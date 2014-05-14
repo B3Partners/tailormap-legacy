@@ -25,6 +25,7 @@ public class CombineImageSettings {
     public static final String WMS_PROTOCOL = "WMS";
     public static final String ARCIMS_PROTOCOL = "ARCIMS";
     public static final String ARCSERVER_PROTOCOL = "ARCSERVER";
+    public static final String ARCSERVERREST_PROTOCOL = "ARCSERVERREST";
     public static final String IMAGE_PROTOCOL="IMAGE";
     public static final String WMSC_PROTOCOL="WMSC";
     public static final String TMS_PROTOCOL="TMS";
@@ -404,6 +405,11 @@ public class CombineImageSettings {
                         ctu.setResolutions(res);
                     }
                     ciu = ctu;
+                }else if (ARCSERVERREST_PROTOCOL.equals(protocol)){
+                    CombineArcServerRestUrl casr = new CombineArcServerRestUrl();
+                    ciu = casr;
+                }else{
+                    throw new IllegalArgumentException( "Illegal servicetype: " + protocol);
                 }
                 ciu.setUrl(request.getString("url"));
                 if (request.has("alpha")){
