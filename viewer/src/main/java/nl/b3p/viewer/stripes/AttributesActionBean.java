@@ -307,7 +307,7 @@ public class AttributesActionBean implements ActionBean {
     private static final String CACHE_TIME = "total_count_cache_time";
     private static final String CACHE_COUNT = "total_count_cache";
     
-    private static final int CACHE_MAX_AGE = 60 * 1000;
+    private static final int CACHE_MAX_AGE = 600 * 1000;
     
     /**
      * Call this to clear the "total feature count" cached value when a new feature 
