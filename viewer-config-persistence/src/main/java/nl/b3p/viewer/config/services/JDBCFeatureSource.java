@@ -198,7 +198,7 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         
         params.put("schema", schema);
         params.put("user", getUsername());
-        params.put(JDBCDataStoreFactory.FETCHSIZE,50);
+        params.put(JDBCDataStoreFactory.FETCHSIZE.key,50);
         params.put("passwd", getPassword());
         params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
         log.debug("Opening datastore using parameters: " + params);
