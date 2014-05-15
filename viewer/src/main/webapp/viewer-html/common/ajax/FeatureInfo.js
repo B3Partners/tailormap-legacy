@@ -115,11 +115,15 @@ Ext.define("viewer.FeatureInfo", {
             return this.featureInfoInternal(params, successFunction, failureFunction,scope);
         }
     },    
-    editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction) {
+    editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams) {
         var query = [{appLayer: appLayer.id}];
+        var params ={application: this.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};
+        if(extraParams){
+            Ext.merge(params, extraParams);
+        }
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {application: this.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)},
+            params: params,
             timeout: 40000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText)[0];

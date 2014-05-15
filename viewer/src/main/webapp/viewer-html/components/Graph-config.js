@@ -1,0 +1,294 @@
+/* 
+ * Copyright (C) 2012-2013 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * Custom configuration object for Graph configuration
+ * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
+ */
+Ext.define("viewer.components.CustomConfiguration", {
+    extend: "viewer.components.SelectionWindowConfig",
+    nextId:null,
+    layers:null,
+    configObject: {},
+    graphConfigs:null,
+    graphTypeStore:null,
+    panel:null,
+    constructor: function(parentId, configObject) {
+        this.configObject = configObject || {};
+        this.graphConfigs = [];
+        this.nextId = 1;
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject);
+        this.graphTypeStore = Ext.create('Ext.data.Store', {
+            fields: ['naam',"type"],
+            data: [
+                {"naam": "Lijn", type: "LINE"},
+                {"naam": "Staaf (horizontaal)", type : "BAR"},
+                {"naam": "Staaf (verticaal)",type: "COLUMN"}
+            ]
+        });
+        this.getLayerList();
+    },
+    createGraphForm: function() {
+        var me = this;
+        this.panel = Ext.create("Ext.panel.Panel", {
+            width: me.formWidth,
+            margin: '15 0 0 0',
+            height: 350,
+            layout: 'auto',
+            autoScroll: true,
+            title: "Maak grafieken",
+            id: "layerListContainer",
+            style: {
+                marginTop: "10px"
+            },
+            frame: false,
+            bodyPadding: me.formPadding,
+            tbar: [
+                {
+                    xtype: 'button',
+                    iconCls: 'addbutton-icon',
+                    text: 'Grafiekconfiguratie toevoegen',
+                    listeners: {
+                        click: function() {
+                            me.addGraphConfig();
+                        }
+                    }
+                }
+            ],
+            renderTo: this.parentId
+        });
+    },
+    addInitialGraphConfig: function() {
+        if(!this.configObject.graphs) {
+            this.addGraphConfig();
+            return;
+        }
+        var config = null;
+        for(var i = 0; i < this.configObject.graphs.length; i++) {
+            config = this.configObject.graphs[i];
+            this.addGraphConfig(config);
+            if(config.layer) {
+                this.getAttributeList( config.layer, config.id);
+            }
+        }
+    },
+    addGraphConfig: function(config) {
+        
+        var me = this;
+        var nextId = me.nextId;
+        var newconfig = config || {
+            id: 'graph' + nextId,
+            title: 'Grafiek ' + nextId
+        };
+        me.graphConfigs.push(newconfig);
+        var collapsed = true;
+        if (nextId === 1){
+            collapsed = false;
+        }
+        me.panel.add(me.newGraphField(newconfig, collapsed));
+        me.nextId++;
+    },
+    removeGraphConfig : function(id){
+        this.panel.remove(id);
+        var me = this;
+        var newGraphConfigs = [];
+        for(var i = 0; i < me.graphConfigs.length; i++) {
+            if(me.graphConfigs[i].id !== id) {
+                newGraphConfigs.push(me.graphConfigs[i]);
+            }
+        };
+        me.graphConfigs = newGraphConfigs;
+    },
+    newGraphField: function(config, collapsed) {
+        var me = this;
+        var store = Ext.create('Ext.data.ArrayStore', {
+            fields: ['id', 'longname']
+        });
+        return {
+            xtype: 'panel',
+            id: config.id,
+            layout: 'anchor',
+            anchor: '100%',
+            width: '100%',
+            title: config.title,
+            animCollapse: false,
+            collapsible: true,
+            collapsed: collapsed,
+            iconCls: "edit-icon-bw",
+            titleCollapse: true,
+            hideCollapseTool: false,
+            defaultType: 'textfield',
+            items: [
+                   {
+                       fieldLabel: 'Titel',
+                       name: 'title',
+                       value: config.title,
+                       id: 'title'+config.id
+                   },
+                   {
+                       fieldLabel: "Kies grafiektype",
+                       name : "type" + config.id,
+                       id: "type" + config.id,
+                       xtype: "combo",
+                       emptyText:'Maak uw keuze',
+                       store: me.graphTypeStore,
+                       queryMode: 'local',
+                       displayField: 'naam',
+                       valueField: 'type',
+                       value: config.type || null
+                   },
+                   {
+                       fieldLabel: "Laag",
+                       name : "layer" + config.id,
+                       id: "layer" + config.id,
+                       xtype: "combo",
+                       emptyText:'Maak uw keuze',
+                       store: me.layers,
+                       queryMode: 'local',
+                       displayField: 'alias',
+                       valueField: 'id',
+                       value: config.layer || null,
+                       listeners :{
+                           change: function(comboBox){
+                               me.getAttributeList( comboBox.getValue(), config.id);
+                           }
+                       }
+                   },
+                   {
+                       fieldLabel: "x-as",
+                       name : "categoryAttribute"+config.id,
+                       id: "categoryAttribute"+config.id,
+                       disabled:true,
+                       xtype: "combo",
+                       emptyText:'Maak uw keuze',
+                       store: store,
+                       queryMode: 'local',
+                       displayField: 'longname',
+                       valueField: 'id',
+                       value: config.categoryAttribute || null,
+                       width: 400
+                   },
+                   {
+                       fieldLabel: "y-as",
+                       name : "serieAttribute"+config.id,
+                       id: "serieAttribute"+config.id,
+                       disabled:true,
+                       xtype: "combo",
+                       multiSelect: true,
+                       emptyText:'Maak uw keuze',
+                       store: store,
+                       queryMode: 'local',
+                       displayField: 'longname',
+                       valueField: 'id',
+                       value: config.serieAttribute || null,
+                       width: 400
+                   }
+            ],
+            tbar: ["->", {
+                xtype:'button',
+                iconCls: 'removebutton-icon',
+                text: 'Grafiekconfiguratie verwijderen',
+                listeners: {
+                    click: function() {
+                        me.removeGraphConfig(config.id);
+                    }
+                }
+            }]
+        };
+    },
+    getLayerList: function() {
+        var me = this;
+        me.layers = null;
+        Ext.Ajax.request({ 
+            url: contextPath+"/action/componentConfigLayerList",
+            params:{
+                appId:applicationId,
+                attribute:true
+            }, 
+            success: function ( result, request ) {
+                var layers = Ext.JSON.decode(result.responseText);
+                me.layers = Ext.create('Ext.data.Store', {fields: ['id', 'alias'],data : layers});
+                me.createGraphForm();  
+                me.addInitialGraphConfig();
+            },
+            failure: function() {
+                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+            }
+        });
+    },
+    getAttributeList : function(appLayerId,configId){
+        var me = this;
+        var category = Ext.getCmp("categoryAttribute" + configId);
+        var serie = Ext.getCmp("serieAttribute" + configId);
+        category.setLoading("Attributen ophalen");
+        serie.setLoading("Attributen ophalen");
+        category.getStore().removeAll();
+        var currentCategoryValue = category.getValue();
+        var currentSerieValue = serie.getValue();
+        Ext.Ajax.request({ 
+            url: contextPath+"/action/applicationtreelayer",
+            params:{
+                applicationLayer: appLayerId,
+                attributes:true
+            }, 
+            success: function ( result, request ) {
+                var attributeData = Ext.JSON.decode(result.responseText);
+                var newList = [];
+                for(var i = 0 ; i < attributeData.length; i++){
+                    var attribute = attributeData[i];
+                    if(attribute.visible){
+                        newList.push(attribute);
+                    }
+                }
+                category.getStore().add(newList);
+                category.setDisabled(false);
+                category.setValue(currentCategoryValue);
+                serie.setDisabled(false);
+                serie.setLoading(false);
+                serie.setValue(currentSerieValue);
+                category.setLoading(false);
+            },
+            failure: function() {
+                serie.setLoading(false);
+                category.setLoading(false);
+                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+            }
+        });
+    },
+    getConfiguration : function(){
+        var config = viewer.components.CustomConfiguration.superclass.getConfiguration.call(this);
+        var graphs = [];
+        for(var i = 0 ; i < this.graphConfigs.length ; i ++){
+            var gCO = this.graphConfigs[i];
+            var graphConfig = this.getGraphConfig(gCO.id);
+            graphs.push(graphConfig);
+            
+        }
+        config.graphs = graphs;
+        return config;
+    },
+    getGraphConfig : function (id){
+        return {
+            id: id,
+            title: Ext.getCmp( "title"+id ).getValue(),
+            type: Ext.getCmp( "type"+id ).getValue(),
+            layer: Ext.getCmp("layer"+id ).getValue(),
+            categoryAttribute: Ext.getCmp( "categoryAttribute"+id ).getValue(),
+            serieAttribute: Ext.getCmp( "serieAttribute"+id ).getValue()
+        };
+    }
+});
+

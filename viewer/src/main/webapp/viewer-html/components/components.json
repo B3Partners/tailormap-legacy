@@ -795,5 +795,16 @@
                 title: "Browser controle"
             }
         }
+    },
+    {
+        className: "viewer.components.Graph",
+        name: "Graph",
+        shortName: "Gr",
+        singleton: true,
+        sources: ["Graph.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js"],
+        restrictions: ["left_menu"],        
+        type: "popup",
+        showHelp: true
     }
 ]
