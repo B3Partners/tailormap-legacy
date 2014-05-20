@@ -455,17 +455,6 @@ public class AttributesActionBean implements ActionBean {
 
                 setFilter(q,ft);
                                 
-                final FeatureSource fs2 = fs;
-                total = lookupTotalCountCache(new Callable<Integer>() {
-                    public Integer call() throws Exception {
-                        return fs2.getCount(q);
-                    }
-                });
-
-                if(total == -1) {
-                    total = FeatureToJson.MAX_FEATURES;
-                }
-                
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
                 
@@ -483,6 +472,63 @@ public class AttributesActionBean implements ActionBean {
                 json.put("features", features);
             }
             json.put("total", total);
+        } catch(Exception e) {
+            log.error("Error loading features", e);
+            
+            json.put("success", false);
+            
+            String message = "Fout bij ophalen features: " + e.toString();
+            Throwable cause = e.getCause();
+            while(cause != null) {
+                message += "; " + cause.toString();
+                cause = cause.getCause();
+            }
+            json.put("message", message);
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
+    }
+    
+    public Resolution featureCount() throws JSONException{
+        JSONObject json = new JSONObject();
+        if(unauthorized) {
+            json.put("success", false);
+            json.put("message", "Not authorized");
+            return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
+        }
+        
+        try {
+            int total = 0;
+            if(featureType!=null || (layer != null && layer.getFeatureType() != null)) {
+                final FeatureSource fs;
+                SimpleFeatureType ft = featureType;
+                if (ft==null){
+                    ft=layer.getFeatureType();
+                }
+                if(isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
+                    Map extraDataStoreParams = new HashMap();
+                    extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
+                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                } else {
+                    
+                    fs = ft.openGeoToolsFeatureSource();
+                }
+                
+                final Query q = new Query(fs.getName().toString());
+                setFilter(q,ft);
+                                
+                total = lookupTotalCountCache(new Callable<Integer>() {
+                    public Integer call() throws Exception {
+                        return fs.getCount(q);
+                    }
+                });
+
+                if(total == -1) {
+                    total = FeatureToJson.MAX_FEATURES;
+                }
+            }
+            json.put("total", total);
+            json.put("success", true);
         } catch(Exception e) {
             log.error("Error loading features", e);
             
