@@ -311,6 +311,28 @@
         }
     },
     {
+        className: "viewer.components.KeyboardNavigation",
+        name: "Keyboard Navigation",
+        shortName: "kn",
+        sources: ["KeyboardNavigation.js"],
+        closureCompilerSafe: true,
+        singleton: true,
+        restrictions: ["content"],
+        extPropertyGridConfigs:{
+            propertyNames:{
+                tooltip_pan_right: "Tooltip pan rechts",
+                tooltip_pan_left: "Tooltip pan links",
+                tooltip_pan_up: "Tooltip pan omhoog",
+                tooltip_pan_down: "Tooltip pan omlaag"
+            },
+            source:{
+                tooltip_pan_right: "Pan naar rechts",
+                tooltip_pan_left: "Pan naar links",
+                tooltip_pan_up: "Pan omhoog",
+                tooltip_pan_down: "Pan omlaag"}
+        }
+    },
+    {
         className: "viewer.components.ScaleBar",
         name: "ScaleBar",
         shortName: "sb",

@@ -399,7 +399,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config,panZoom);
         }else if (type == viewer.viewercontroller.controller.Component.BORDER_NAVIGATION){
-            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);                
+            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavigation",config);
+        }else if (type == viewer.viewercontroller.controller.Component.KEYBOARD_NAVIGATION){
+            comp = Ext.create("viewer.viewercontroller.openlayers.components.OpenLayersKeyboardNavigation",config);
         }else if(type == viewer.viewercontroller.controller.Component.COORDINATES){            
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
