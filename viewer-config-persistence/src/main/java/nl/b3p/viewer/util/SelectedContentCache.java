@@ -374,6 +374,15 @@ public class SelectedContentCache {
     }
     
     public static void setApplicationCacheDirty(Application app, Boolean dirty){
-        app.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
+        Set<Application> apps = new HashSet<Application>();
+        if(dirty){
+            apps = app.getRoot().findApplications();
+        }else{
+            apps.add(app);
+        }
+        // Also invalidate possible mashups
+        for (Application application : apps) {
+            application.getDetails().put(DETAIL_CACHED_SELECTED_CONTENT_DIRTY, new ClobElement(dirty.toString()));
+        }
     }
 }
