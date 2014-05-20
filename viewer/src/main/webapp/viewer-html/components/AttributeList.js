@@ -325,6 +325,16 @@ Ext.define ("viewer.components.AttributeList",{
             model: modelName,
             remoteSort: true,
             remoteFilter: true,
+            listeners:{
+                load:{
+                    scope: me,
+                    fn: function() {
+                        if (!relateFilter) {
+                            this.getFeatureCount(featureType, filter, appLayer);
+                        }
+                    }
+                }
+            },
             proxy: {
                 type: 'ajax',
                 timeout: 120000,
@@ -414,6 +424,32 @@ Ext.define ("viewer.components.AttributeList",{
             });
             this.pagers[gridId]=p;
         }
+    },
+    getFeatureCount: function(featureType, filter, appLayer) {
+        Ext.Ajax.request({
+            url: appLayer.featureService.getActionbeanUrl() + "?featureCount=1" + featureType + filter,
+            timeout: 120000,
+            scope:this,
+            params: { application: appId, appLayer: this.appLayer.id},
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                if (response.success) {
+                    this.featureCountReceived(response.total);
+                } else {
+                    this.viewerController.logger.error("Cannot retrieve featurecount:" + response.message);
+                }
+            },
+            failure: function(result) {
+                this.viewerController.logger.error("Cannot retrieve featurecount:" + result);
+            }
+        });
+
+    },
+    featureCountReceived: function(count){
+        var grid = this.grids.main;
+        grid.store.totalCount = count //update the totalCount property of Store
+        this.pagers.main.onLoad();    
     }
+    
 });
 
