@@ -328,8 +328,10 @@ Ext.define ("viewer.components.AttributeList",{
             listeners:{
                 load:{
                     scope: me,
-                    fn: function(){
-                        this.getFeatureCount(featureType, filter, appLayer);
+                    fn: function() {
+                        if (!relateFilter) {
+                            this.getFeatureCount(featureType, filter, appLayer);
+                        }
                     }
                 }
             },
