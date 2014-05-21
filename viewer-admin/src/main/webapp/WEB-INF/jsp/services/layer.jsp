@@ -38,6 +38,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>Naam van layer bij service:</td>
                         <td><stripes:text name="layer.name" disabled="true" size="30"/></td>
                     </tr>
+					<tr>
+						<td>Layer ID:</td>
+						<td><stripes:text name="layer.id" disabled="true" size="30"/></td>
+					</tr>
                     <tr>     
                         <td>Titel:</td> 
                         <td><stripes:text name="layer.title" disabled="true" maxlength="255" size="30"/></td>
