@@ -791,6 +791,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     ogcOptions.sld = sldUrl;
                     layerConfig.originalSldUrl = sldUrl;
                 }
+                
+                // CQL filtering option
+                if(this.app.wmsSelection) {
+                    if(this.app.wmsSelection.cqlFilter && this.app.wmsSelection.selectionLayerId == layer.id) {
+                        options.cqlFilter = this.app.wmsSelection.cqlFilter;
+                    }
+                }
 
                 layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
                 

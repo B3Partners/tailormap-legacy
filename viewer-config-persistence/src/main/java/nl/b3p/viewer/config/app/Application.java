@@ -347,6 +347,18 @@ public class Application {
                 }
             }
         }
+       
+        if (!onlyServicesAndLayers){
+            String selectionLayerId = request.getParameter("selectionLayerId");
+            String cqlFilter = request.getParameter("cqlFilter");
+            
+            if (selectionLayerId != null && cqlFilter != null) {
+                JSONObject wmsSelection = new JSONObject();
+                o.put("wmsSelection", wmsSelection);
+                wmsSelection.put("cqlFilter", cqlFilter);
+                wmsSelection.put("selectionLayerId", selectionLayerId);
+            }
+        }
 
         return o.toString(4);
     }

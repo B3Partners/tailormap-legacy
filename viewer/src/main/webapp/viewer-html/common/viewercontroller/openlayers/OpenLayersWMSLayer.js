@@ -32,6 +32,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         this.options.singleTile=true;
         this.options.transitionEffect = "resize";
         this.frameworkLayer = new OpenLayers.Layer.WMS(this.options.name,this.url,this.ogcParams,this.options);
+        
+        if(config.cqlFilter) {
+            this.frameworkLayer.mergeNewParams({cql_filter: config.cqlFilter});
+        }
                 
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
         
