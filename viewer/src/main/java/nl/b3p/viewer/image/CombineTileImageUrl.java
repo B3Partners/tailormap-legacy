@@ -102,6 +102,8 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         
          /* 5) Opbouwen nieuwe tile url en per url ook x,y positie van tile bepalen 
          zodat drawImage deze op de juiste plek kan zetten */
+        int numX = 0;
+        int numY =0;
         for (int ix = minTileIndexX; ix <= maxTileIndexX; ix++) {
             for (int iy = minTileIndexY; iy <= maxTileIndexY; iy++) {
                 double[] tempBbox = new double[4];
@@ -113,10 +115,13 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
                 
                 Bbox tileBbox = new Bbox(tempBbox);                
                 
-                CombineStaticImageUrl tile = createTile(imbbox, tileBbox, ix, iy,zoomlevel);               
+                CombineStaticImageUrl tile = createTile(imbbox, tileBbox, ix, iy,zoomlevel, numX, numY);               
                 
                 tileImages.add(tile);
-            }            
+                numY++;
+            }
+            numX++;
+            numY=0;
         }
         return tileImages;
     }
@@ -130,7 +135,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
      * @param zoomlevel
      * @return 
      */
-    public CombineStaticImageUrl createTile(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY,int zoomlevel) {
+    public CombineStaticImageUrl createTile(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY,int zoomlevel, int numX, int numY) {
         
         CombineStaticImageUrl tile = new CombineStaticImageUrl();
         tile.setBbox(tileBbox);
@@ -144,8 +149,8 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         Double width = Math.floor( (tileBbox.getMaxx() - tileBbox.getMinx()) / msx );
         Double height = Math.floor( (tileBbox.getMaxy() - tileBbox.getMiny()) / msy );
         
-        tile.setX(posX.intValue());
-        tile.setY(posY.intValue());
+        tile.setX(posX.intValue() - numX);
+        tile.setY(posY.intValue() + numY);
         
         tile.setWidth(width.intValue());
         tile.setHeight(height.intValue());
