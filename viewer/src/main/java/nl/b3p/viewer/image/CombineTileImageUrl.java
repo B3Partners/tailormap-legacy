@@ -140,6 +140,7 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         CombineStaticImageUrl tile = new CombineStaticImageUrl();
         tile.setBbox(tileBbox);
         tile.setUrl(this.url);
+        tile.setAlpha(this.getAlpha());
         Bbox requestBbox = imageBbox.getBbox();
         Double msx = (requestBbox.getMaxx() - requestBbox.getMinx()) / imageBbox.getWidth();
         Double msy = (requestBbox.getMaxy() - requestBbox.getMiny()) / imageBbox.getHeight();
