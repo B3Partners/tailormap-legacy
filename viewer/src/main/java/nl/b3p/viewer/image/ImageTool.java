@@ -225,7 +225,7 @@ public class ImageTool {
                 gbi.fill(shape);
             } else if (geom instanceof com.vividsolutions.jts.geom.Point) {
                 centerPoint = calculateCenter(shape, srid, bbox, width, height);
-                gbi.draw(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 4, 4));
+                gbi.fill(new Ellipse2D.Double(centerPoint.getX(), centerPoint.getY(), 8, 8));
             } else {
                 float strokeWidth = ciw.getStrokeWidth() != null ? ciw.getStrokeWidth() : 3f;
                 gbi.setStroke(new BasicStroke(strokeWidth));
