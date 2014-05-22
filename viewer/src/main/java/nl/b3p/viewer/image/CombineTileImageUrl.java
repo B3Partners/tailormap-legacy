@@ -144,8 +144,8 @@ public abstract class CombineTileImageUrl extends CombineImageUrl{
         Double width = Math.floor( (tileBbox.getMaxx() - tileBbox.getMinx()) / msx );
         Double height = Math.floor( (tileBbox.getMaxy() - tileBbox.getMiny()) / msy );
         
-        tile.setX(posX.intValue() - indexX);
-        tile.setY(posY.intValue() + indexY);
+        tile.setX(posX.intValue());
+        tile.setY(posY.intValue());
         
         tile.setWidth(width.intValue());
         tile.setHeight(height.intValue());
