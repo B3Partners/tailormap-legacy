@@ -796,8 +796,6 @@
             }
         }
     }
-<<<<<<< Updated upstream
-=======
     ,
     {
         className: "viewer.components.Dbk",
@@ -808,5 +806,4 @@
         singleton: true, 
         restrictions: ["content"]        
     }
->>>>>>> Stashed changes
 ]

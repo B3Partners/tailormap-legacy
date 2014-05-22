@@ -10,6 +10,7 @@ Ext.define ("viewer.components.Dbk",{
         console.log("viewer.components.Dbk.constructor");
 
         viewer.components.Dbk.superclass.constructor.call(this,conf);
+        
         //----------------------------------------------------------------------
         // OVERRIDE DE STANDAARD getProperties METHODE.
         //----------------------------------------------------------------------
