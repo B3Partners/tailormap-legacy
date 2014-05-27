@@ -204,6 +204,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }else{
                 startExtent = Ext.create("viewer.viewercontroller.controller.Extent","12000,304000,280000,620000");
             }
+             
+            var maxScale;
+            if(this.app.details && this.app.details.maxScale) {
+                maxScale = parseFloat(this.app.details.maxScale);
+                if(maxScale === 0) {
+                    maxScale = undefined;
+                }
+            }
+            
             //xxx todo: remove specific flamingo things.
             var map = this.mapComponent.createMap("map", {
                 viewerController: this,
@@ -215,7 +224,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     visible: "true",
                     maxExtent : maxExtent,
                     startExtent: startExtent,
-                    extenthistory: "10"
+                    extenthistory: "10",
+                    maxScale: maxScale
                 }
             });
             this.mapComponent.addMap(map);

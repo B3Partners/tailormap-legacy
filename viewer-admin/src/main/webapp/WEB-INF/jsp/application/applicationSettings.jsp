@@ -111,6 +111,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </td>
                         </tr>
                         <tr>
+                            <td>Maximale kaartschaal:</td>
+                            <td>1 : <stripes:text name="maxScale" maxlength="255" size="10"/></td>
+                        </tr>
+                        <tr>
                             <td colspan="2">
                                 <stripes:checkbox name="authenticatedRequired"/> Inloggen verplicht
                             </td>

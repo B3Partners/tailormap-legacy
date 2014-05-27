@@ -51,6 +51,23 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         
         config.restrictedExtent = maxBounds;
         
+        if(config.options.maxScale){
+            config.maxScale = config.options.maxScale;
+            
+            // Adjust resolutions array
+            var minRes = OpenLayers.Util.getResolutionFromScale(config.maxScale, config.units);
+            for(var i = 0; i < config.resolutions.length; i++) {
+                if(config.resolutions[i] < minRes) {
+                    // Remove the rest of the array, since resolutions are sorted in descending order
+                    config.resolutions = config.resolutions.splice(0, i);
+                }
+            }
+            
+            // Add minRes
+            if(config.resolutions != minRes) {
+                config.resolutions.push(minRes);
+            }
+        }
         
         //create a click control that handles only single click     
         var me=this;
