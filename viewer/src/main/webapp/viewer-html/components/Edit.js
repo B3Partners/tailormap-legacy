@@ -380,22 +380,34 @@ Ext.define ("viewer.components.Edit",{
                     }else if (values.length > 1){
                         var allBoolean=true;
                         for (var v=0; v < values.length; v++){
-                            if (values[v].toLowerCase()!=="true" && values[v].toLowerCase()!=="false"){
+                            
+                            var hasLabel = values[v].indexOf(":") !== -1;
+                            var val = hasLabel ?  values[v].substring(0, values[v].indexOf(":")) :  values[v];
+                            if (val.toLowerCase()!=="true" && val.toLowerCase()!=="false"){
                                 allBoolean =false;
                                 break;
                             }
                         }
                         
                         Ext.each(values,function(value,index,original){
+                            var hasLabel = value.indexOf(":") !== -1;
+                            var label = value;
+                            if(hasLabel){
+                                label = value.substring(value.indexOf(":")+1);
+                                value = value.substring(0,value.indexOf(":"));
+                            }
+                            
                             if (allBoolean){
                                 value= value.toLowerCase() ==="true";
                             }
                             original[index] = {
-                                id: value
+                                id: value,
+                                label: label
                             };
+                            
                         });
                         var valueStore = Ext.create('Ext.data.Store', {
-                            fields: ['id'],
+                            fields: ['id', 'label'],
                             data : values
                         });
 
@@ -403,7 +415,7 @@ Ext.define ("viewer.components.Edit",{
                             fieldLabel: attribute.editAlias || attribute.name,
                             store: valueStore,
                             queryMode: 'local',
-                            displayField: 'id',
+                            displayField: 'label',
                             name:attribute.name,
                             renderTo: this.name + 'InputPanel',
                             valueField: 'id',
