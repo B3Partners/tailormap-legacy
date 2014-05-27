@@ -9,7 +9,6 @@
 	in verhouding hoogte/breedte kaart op scherm en van kaart in template -->
     <xsl:template name="calc-bbox-width-m-corrected">
         <xsl:param name="bbox"/>
-
         <xsl:variable name="xmin" select="substring-before($bbox, ',')"/>
         <xsl:variable name="bbox1" select="substring-after($bbox, ',')"/>
         <xsl:variable name="ymin" select="substring-before($bbox1, ',')"/>
@@ -177,6 +176,7 @@
         <xsl:param name="width"/>
         <xsl:param name="label"/>
         <xsl:param name="unit"/>
+        <!--
         <xsl:variable name="text-height" select="'6'"/>
         <xsl:variable name="text-offset" select="'2'"/>
         <xsl:variable name="scale-top" select="'4'"/>
@@ -184,6 +184,20 @@
         <xsl:variable name="scale-height" select="'3'"/>
         <xsl:variable name="scale-segment-width" select="$width"/>
         <xsl:variable name="dash-height" select="'2'"/>
+
+        <xsl:variable name="scale-height" select="'2'"/>
+        <xsl:variable name="scale-segment-width" select="$width"/>
+        <xsl:variable name="dash-height" select="'1'"/>
+        -->
+
+        <!-- scale-top, scale-height, dash-height aangepast. -->
+        <xsl:variable name="text-height" select="'6'"/>
+        <xsl:variable name="text-offset" select="'2'"/>
+        <xsl:variable name="scale-top" select="'2'"/>
+        <xsl:variable name="scale-left" select="'0'"/>
+        <xsl:variable name="scale-height" select="'2.5'"/>
+        <xsl:variable name="scale-segment-width" select="$width"/>
+        <xsl:variable name="dash-height" select="'1'"/>
         <xsl:variable name="scale-1">
             <xsl:value-of select="$text-offset +$scale-left"/>
             <xsl:text>,</xsl:text>
@@ -228,6 +242,7 @@
             <xsl:value-of select="$text-height + $scale-top"/>
             <xsl:text> </xsl:text>
         </xsl:variable>
+        <!--
         <xsl:variable name="scale-3">
             <xsl:value-of select="$text-offset +$scale-left + 2*$scale-segment-width"/>
             <xsl:text>,</xsl:text>
@@ -250,21 +265,33 @@
             <xsl:value-of select="$text-height + $scale-top"/>
             <xsl:text> </xsl:text>
         </xsl:variable>
-
+        -->
+<!--
+            <svg xmlns="http://www.w3.org/2000/svg" width="4.5cm" height="0.6cm" preserveAspectRatio="xMaxYMax meet">
+-->
         <fo:instream-foreign-object font-size="7pt" xsl:use-attribute-sets="default-font">
             <svg xmlns="http://www.w3.org/2000/svg" width="4.5cm" height="0.6cm" preserveAspectRatio="xMaxYMax meet">
                 <g font-size="7pt" xsl:use-attribute-sets="default-font">
                     <polygon points="{$scale-1}" fill="black" stroke="black" stroke-width="0.5"/>
                     <polygon points="{$scale-2}" fill="white" stroke="black" stroke-width="0.5"/>
+                    <!--
                     <polygon points="{$scale-3}" fill="black" stroke="black" stroke-width="0.5"/>
+                    -->
                     <line x1="{$text-offset +$scale-left}" y1="{$text-height + $scale-top - $dash-height}" x2="{$text-offset +$scale-left}" y2="{$text-height + $scale-top}" stroke="black" stroke-width="0.5"/>
                     <line x1="{$text-offset +$scale-left + $scale-segment-width}" y1="{$text-height + $scale-top - $dash-height}" x2="{$text-offset +$scale-left + $scale-segment-width}" y2="{$text-height + $scale-top}" stroke="black" stroke-width="0.5"/>
                     <line x1="{$text-offset +$scale-left + 2*$scale-segment-width}" y1="{$text-height + $scale-top - $dash-height}" x2="{$text-offset +$scale-left + 2*$scale-segment-width}" y2="{$text-height + $scale-top}" stroke="black" stroke-width="0.5"/>
+                    <!--
                     <line x1="{$text-offset +$scale-left + 3*$scale-segment-width}" y1="{$text-height + $scale-top - $dash-height}" x2="{$text-offset +$scale-left + 3*$scale-segment-width}" y2="{$text-height + $scale-top}" stroke="black" stroke-width="0.5"/>
+                    -->
                     <text x="{$scale-left}" y="{$text-height}">0</text>
                     <text x="{$scale-left + $scale-segment-width}" y="{$text-height}">
                         <xsl:value-of select="$label"/>
                     </text>
+                    <text x="{$scale-left + 2*$scale-segment-width}" y="{$text-height}">
+                        <xsl:value-of select="2*$label"/>
+                        <xsl:value-of select="$unit"/>
+                    </text>
+                    <!--
                     <text x="{$scale-left + 2*$scale-segment-width}" y="{$text-height}">
                         <xsl:value-of select="2*$label"/>
                     </text>
@@ -272,6 +299,7 @@
                         <xsl:value-of select="3*$label"/>
                         <xsl:value-of select="$unit"/>
                     </text>
+                    -->
                 </g>
             </svg>
         </fo:instream-foreign-object>
@@ -287,6 +315,20 @@
         <fo:block-container fox:transform="translate({$millipoints},{$millipoints}) rotate({$angle}) translate(-{$millipoints}, -{$millipoints})" absolute-position="absolute" top="{$top}" left="{$left}">
             <fo:block>
                 <fo:external-graphic width="{$width}" height="{$height}" content-height="scale-to-fit" content-width="scale-to-fit" src="windrose.svg"/>
+            </fo:block>
+        </fo:block-container>
+    </xsl:template>
+    <!-- wind rose template -->
+    <xsl:template name="northarrow">
+        <xsl:param name="angle" select="0"/>
+        <xsl:param name="width" select="'4cm'"/>
+        <xsl:param name="height" select="'4cm'"/>
+        <xsl:param name="top" select="'0cm'"/>
+        <xsl:param name="left" select="'0cm'"/>		
+        <xsl:param name="millipoints" select="58000"/>
+        <fo:block-container fox:transform="translate({$millipoints},{$millipoints}) rotate({$angle}) translate(-{$millipoints}, -{$millipoints})" absolute-position="absolute" top="{$top}" left="{$left}">
+            <fo:block>
+                <fo:external-graphic width="{$width}" height="{$height}" content-height="scale-to-fit" content-width="scale-to-fit" src="northarrow.svg"/>
             </fo:block>
         </fo:block-container>
     </xsl:template>
@@ -311,6 +353,5 @@
                 <fo:external-graphic src="url({$overviewSrc})" content-height="scale-to-fit" content-width="scale-to-fit" scaling="uniform" width="{$width}" height="{$height}"/>
             </fo:block>
         </xsl:if>
-            
     </xsl:template>
 </xsl:stylesheet>

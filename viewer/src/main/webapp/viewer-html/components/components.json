@@ -807,4 +807,14 @@
         type: "popup",
         showHelp: true
     }
+    ,
+    {
+        className: "viewer.components.Dbk",
+        name: "Dbk Component",
+        shortName: "Dbk",
+        sources: ["Dbk.js","xml2json.min.js"],
+        closureCompilerSafe: true,   
+        singleton: true, 
+        restrictions: ["content"]        
+    }
 ]

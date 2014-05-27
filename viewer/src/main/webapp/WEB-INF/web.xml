@@ -41,7 +41,14 @@
         </description>
         <param-name>flamingo.solr.setup</param-name>
         <param-value>false</param-value>
-    </context-param>
+     </context-param>
+     <context-param>
+        <description>
+            Component registry path(s).
+        </description>
+        <param-name>componentregistry.path</param-name>
+        <param-value>/viewer-html/components,/3rd-party-components/dbk-component</param-value>
+     </context-param>
      <context-param>
         <description>
             The url on where the solr server is to be found.
