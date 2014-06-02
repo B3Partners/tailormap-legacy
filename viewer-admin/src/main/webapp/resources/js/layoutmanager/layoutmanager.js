@@ -57,11 +57,6 @@ Ext.onReady(function() {
         ]
     });
     
-    var componentStore = Ext.create('Ext.data.Store', {
-        model: 'DraggableViewerComponent',
-        data: components
-    });
-    
     Ext.define('LayoutRegion', {
         extend: 'Ext.data.Model',
         idProperty: 'id',
@@ -95,61 +90,27 @@ Ext.onReady(function() {
         data: layoutRegions
     });
     
-    Ext.create('Ext.view.View', {
-        cls: 'component-view',
-        tpl: '<tpl for=".">' +
-        '<div class="component-block">' +
-        '<div class="remove"></div>' +
-        '<div class="wrangler"></div>' +
-        '<span class="title">{name}</span>' +
-        '<div style="clear: both;"></div>' +
-        '</div>' +
-        '</tpl>',
-        itemSelector: 'div.component-block',
-        overItemCls: 'component-over',
-        selectedItemClass: 'component-selected',
-        singleSelect: true,
-        store: componentStore,
-        renderTo: 'component-container',
-        listeners: {
-            render: function(v) {
-                v.dragZone = Ext.create('Ext.dd.DragZone', v.getEl(), {
-                    getDragData: function(e) {
-                        var sourceEl = e.getTarget(v.itemSelector, 10);
-                        if (sourceEl && !Ext.fly(sourceEl).hasCls('component-added')) {
-                            var d = sourceEl.cloneNode(true);
-                            d.id = Ext.id();
-                            return v.dragData = {
-                                sourceEl: sourceEl,
-                                repairXY: Ext.fly(sourceEl).getXY(),
-                                ddel: d,
-                                componentData: v.getRecord(sourceEl).data
-                            };
-                        }
-                        return null;
-                    },
-                    getRepairXY: function() {
-                        return this.dragData.repairXY;
-                    },
-                    onStartDrag: function() {
-                        var data = v.dragData;
-                        layoutRegionsStore.each(function(region) {
-                            if(checkDropAllowed(region, data)) Ext.fly(region.get('htmlId')).addCls('dropallowed');
-                        });
-                    },
-                    endDrag: function() {
-                        layoutRegionsStore.each(function(region) {
-                            Ext.fly(region.get('htmlId')).removeCls('dropallowed');
-                        });
-                    }
-                });
-            },
-            viewready: function(view, e) {
-                initRegions();
-                initConfig(view);
-            }
+    initRegions();
+    var groups = {};
+    for(var i = 0 ; i < components.length;i++){
+        var component = components[i];
+        var group = component.group;
+        if(!groups.hasOwnProperty(group)){
+            groups[group] = {
+                name: group,
+                childs : []
+            };
         }
-    });
+        groups[group].childs.push(component);
+    }
+    
+    for(var g in groups){
+        var group = groups[g];
+        var name = group.name;
+        var childs = group.childs;
+        createComponentGroup(name, childs);
+    }
+   
 
     function changeCaseFirstLetter(string, lowercase) {
         var firstChar = "";
@@ -159,6 +120,79 @@ Ext.onReady(function() {
             firstChar = string.charAt(0).toLowerCase();
         }
         return firstChar + string.slice(1);
+    }
+    
+    function createComponentGroup(name,childs, last){
+        var groupedStore = Ext.create('Ext.data.Store', {
+            model: 'DraggableViewerComponent',
+            data: childs
+        });
+       var view = Ext.create('Ext.view.View', {
+            cls: 'component-view',
+            tpl: '<tpl for=".">' +
+            '<div class="component-block">' +
+            '<div class="remove"></div>' +
+            '<div class="wrangler"></div>' +
+            '<span class="title">{name}</span>' +
+            '<div style="clear: both;"></div>' +
+            '</div>' +
+            '</tpl>',
+            itemSelector: 'div.component-block',
+            overItemCls: 'component-over',
+            selectedItemClass: 'component-selected',
+            singleSelect: true,
+            store: groupedStore,
+            listeners: {
+                render: function(v) {
+                    v.dragZone = Ext.create('Ext.dd.DragZone', v.getEl(), {
+                        getDragData: function(e) {
+                            var sourceEl = e.getTarget(v.itemSelector, 10);
+                            if (sourceEl && !Ext.fly(sourceEl).hasCls('component-added')) {
+                                var d = sourceEl.cloneNode(true);
+                                d.id = Ext.id();
+                                return v.dragData = {
+                                    sourceEl: sourceEl,
+                                    repairXY: Ext.fly(sourceEl).getXY(),
+                                    ddel: d,
+                                    componentData: v.getRecord(sourceEl).data
+                                };
+                            }
+                            return null;
+                        },
+                        getRepairXY: function() {
+                            return this.dragData.repairXY;
+                        },
+                        onStartDrag: function() {
+                            var data = v.dragData;
+                            layoutRegionsStore.each(function(region) {
+                                if(checkDropAllowed(region, data)) Ext.fly(region.get('htmlId')).addCls('dropallowed');
+                            });
+                        },
+                        endDrag: function() {
+                            layoutRegionsStore.each(function(region) {
+                                Ext.fly(region.get('htmlId')).removeCls('dropallowed');
+                            });
+                        }
+                    });
+                },
+                viewready: function(view, e) {
+                    //
+                    initConfig(view);
+                }
+            }
+        });
+         Ext.create('Ext.panel.Panel',{
+            renderTo: "component-container",
+            title: 'Groep: ' +name,
+            id:'group-'+name,
+            height: "600px",
+            autoScroll:true,
+            collapsible: true,
+            titleCollapse:true,
+            collapsed:false,
+            items: view
+        });
+        
     }
 
     function initRegions() {
@@ -460,7 +494,7 @@ Ext.onReady(function() {
                     if(Ext.isDefined(layoutJson[regionId]['components'])) {
                         Ext.Array.each(layoutJson[regionId]['components'], function(componentref, index) {
                             
-                            var component = componentStore.findRecord('className', componentref.componentClass);
+                            var component = view.getStore().findRecord('className', componentref.componentClass);
                             var sourceEl = view.getNode(component);
                             if(sourceEl && layoutRegion) {
                                 var d = sourceEl.cloneNode(true);

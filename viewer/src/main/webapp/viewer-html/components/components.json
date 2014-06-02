@@ -18,6 +18,8 @@
  *                   already been added to a region, this component cannot be added to that region
  * 
  * showHelp: boolean value to show help configuration tab for component (default false)
+ * group: string, indicates to which group this component belongs: used to indicate in which closable panel it should be rendered. 
+ * Possible values: Map, Tools, Functionality. Defaults to "Functionality"
  *
  * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
  *   
@@ -37,7 +39,7 @@
         name: "Flamingo Map",
         shortName: "Fm",
         restrictions: ["content"],
-
+        group: "maps",
         singleton: true,
         notInCombinationWith: ["viewer.mapcomponents.OpenLayersMap"],
         extPropertyGridConfigs: {
@@ -49,7 +51,7 @@
         className: "viewer.mapcomponents.OpenLayersMap",
         name: "OpenLayers Map",
         shortName: "Om",
-
+        group: "maps",
         singleton: true,
         restrictions: ["content"],
         notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
