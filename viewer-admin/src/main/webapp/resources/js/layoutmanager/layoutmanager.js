@@ -97,20 +97,17 @@ Ext.onReady(function() {
         var group = component.group;
         if(!groups.hasOwnProperty(group)){
             groups[group] = {
-                name: group,
                 childs : []
             };
         }
         groups[group].childs.push(component);
     }
     
-    for(var g in groups){
-        var group = groups[g];
-        var name = group.name;
+    for(var groupName in groups){
+        var group = groups[groupName];
         var childs = group.childs;
-        createComponentGroup(name, childs);
+        createComponentGroup(groupName, childs);
     }
-   
 
     function changeCaseFirstLetter(string, lowercase) {
         var firstChar = "";
@@ -176,23 +173,21 @@ Ext.onReady(function() {
                     });
                 },
                 viewready: function(view, e) {
-                    //
                     initConfig(view);
                 }
             }
         });
          Ext.create('Ext.panel.Panel',{
             renderTo: "component-container",
-            title: 'Groep: ' +name,
+            title: name,
             id:'group-'+name,
-            height: "600px",
+            height: "400px",
             autoScroll:true,
             collapsible: true,
             titleCollapse:true,
             collapsed:false,
             items: view
         });
-        
     }
 
     function initRegions() {
