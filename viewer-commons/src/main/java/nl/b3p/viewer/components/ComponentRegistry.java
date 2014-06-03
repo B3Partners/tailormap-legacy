@@ -128,7 +128,7 @@ public class ComponentRegistry {
                 return;
             }
             
-            String group = "Functionality";
+            String group = "Rest";
             if(metadata.has("group")){
                 group = metadata.getString("group");
             }else{
