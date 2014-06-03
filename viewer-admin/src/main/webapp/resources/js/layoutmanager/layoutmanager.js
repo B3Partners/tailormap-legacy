@@ -103,11 +103,11 @@ Ext.onReady(function() {
         }
         groups[group].childs.push(component);
     }
-    var panels = [{
+    var panels = [Ext.create ("Ext.panel.Panel",{
             xtype: 'panel', // << fake hidden panel
             hidden: true,
-            collapsed: false
-    }];
+            collapsed: true
+    })];
     
     for(var groupName in groups){
         var group = groups[groupName];
@@ -136,6 +136,11 @@ Ext.onReady(function() {
         renderTo:"component-container",
         items:panels
     });
+
+    // open all panels, so the view is initialized (and all the previously configured components are rendered.
+    for(var i = 0 ; i < panels.length;i++){
+        panels[i].expand(); 
+    }
 
     function changeCaseFirstLetter(string, lowercase) {
         var firstChar = "";
@@ -205,13 +210,11 @@ Ext.onReady(function() {
                 }
             }
         });
-        var groupPanel = {
+        var groupPanel =Ext.create("Ext.panel.Panel", {
             title: name,
             id:'group-'+name,
             autoScroll:true,
             collapsible: true,
-            collapsed: true,
-            height: 200,
             defaults: {
                 border: 0,
                 width: '100%'
@@ -220,7 +223,7 @@ Ext.onReady(function() {
                 padding: '0px 0px 10px 0px'
             },
             items: view
-        };
+        });
         return groupPanel;
     }
 
