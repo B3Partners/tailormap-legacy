@@ -91,6 +91,7 @@ Ext.onReady(function() {
     });
     
     initRegions();
+   
     var groups = {};
     for(var i = 0 ; i < components.length;i++){
         var component = components[i];
@@ -102,12 +103,39 @@ Ext.onReady(function() {
         }
         groups[group].childs.push(component);
     }
+    var panels = [{
+            xtype: 'panel', // << fake hidden panel
+            hidden: true,
+            collapsed: false
+    }];
     
     for(var groupName in groups){
         var group = groups[groupName];
         var childs = group.childs;
-        createComponentGroup(groupName, childs);
+        panels.push(createComponentGroup(groupName, childs));
     }
+    
+    Ext.create("Ext.panel.Panel",{
+        name:"toolbox",
+        title:"Werkbank",
+        animCollapse: true,
+        autoScroll:true,
+        height: "100%",
+        width: 245,
+        minWidth: 0,
+        border: 0,
+        defaults: {
+            border: 0,
+            width: '100%'
+        },
+        layout: {
+            type: 'accordion',
+            align: 'stretch',
+            multi: true
+        },
+        renderTo:"component-container",
+        items:panels
+    });
 
     function changeCaseFirstLetter(string, lowercase) {
         var firstChar = "";
@@ -119,12 +147,12 @@ Ext.onReady(function() {
         return firstChar + string.slice(1);
     }
     
-    function createComponentGroup(name,childs, last){
+    function createComponentGroup(name,childs){
         var groupedStore = Ext.create('Ext.data.Store', {
             model: 'DraggableViewerComponent',
             data: childs
         });
-       var view = Ext.create('Ext.view.View', {
+        var view = Ext.create('Ext.view.View', {
             cls: 'component-view',
             tpl: '<tpl for=".">' +
             '<div class="component-block">' +
@@ -177,17 +205,23 @@ Ext.onReady(function() {
                 }
             }
         });
-         Ext.create('Ext.panel.Panel',{
-            renderTo: "component-container",
+        var groupPanel = {
             title: name,
             id:'group-'+name,
-            height: "400px",
             autoScroll:true,
             collapsible: true,
-            titleCollapse:true,
-            collapsed:false,
+            collapsed: true,
+            height: 200,
+            defaults: {
+                border: 0,
+                width: '100%'
+            },
+            style: {
+                padding: '0px 0px 10px 0px'
+            },
             items: view
-        });
+        };
+        return groupPanel;
     }
 
     function initRegions() {
