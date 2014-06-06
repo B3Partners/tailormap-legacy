@@ -57,7 +57,7 @@
         notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
         extPropertyGridConfigs: {
             propertyNames: {
-                resolutions: "Resoluties",
+                resolutions: "Resoluties (komma gescheiden)",
                 theme: "Theme ('flamingo' or 'default')"
             },
             source: {
