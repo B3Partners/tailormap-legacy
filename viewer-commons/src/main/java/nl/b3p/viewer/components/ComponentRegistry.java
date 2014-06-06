@@ -128,6 +128,12 @@ public class ComponentRegistry {
                 return;
             }
             
+            String group = "Rest";
+            if(metadata.has("group")){
+                group = metadata.getString("group");
+            }else{
+                metadata.put("group", group);
+            }
             File[] sourceFiles = new File[]{};
             File[] configSourceFiles = new File[]{};            
             try{            
@@ -138,7 +144,7 @@ public class ComponentRegistry {
                 return;
             }
 
-            components.put(className, new ViewerComponent(path.getCanonicalPath(), className, sourceFiles,configSourceFiles, metadata));
+            components.put(className, new ViewerComponent(path.getCanonicalPath(), className, sourceFiles,configSourceFiles, metadata,group));
             log.info("Registered component " + className);
 
         } catch(JSONException e) {
