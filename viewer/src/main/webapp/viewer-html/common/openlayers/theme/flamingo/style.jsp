@@ -125,9 +125,10 @@ background: url("${sprite}") 514px 394px;
 }
 
 .olControlPanPanel .olControlPanEastItemInactive{
-    background: url("${sprite}") 514px 0 !important;
+    
+    background: url("${sprite}") 514px 812px !important;
 }
 
 .olControlPanPanel .olControlPanWestItemInactive{
-    background: url("${sprite}") 514px 618px !important;
+    background:  url("${sprite}") 514px 618px !important;
 }
