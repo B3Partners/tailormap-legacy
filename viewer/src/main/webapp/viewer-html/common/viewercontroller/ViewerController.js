@@ -6,6 +6,8 @@
  * @param mapId The id of the div in which the map has to be shown.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 Ext.define("viewer.viewercontroller.ViewerController", {
     extend: "Ext.util.Observable", 

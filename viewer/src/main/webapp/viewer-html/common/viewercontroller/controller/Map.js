@@ -5,6 +5,8 @@
  * Map object interface class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  **/
 Ext.define("viewer.viewercontroller.controller.Map",{
     extend: "Ext.util.Observable",

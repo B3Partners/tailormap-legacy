@@ -30,6 +30,8 @@
  * For example: 
  *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
  *
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 [
     {

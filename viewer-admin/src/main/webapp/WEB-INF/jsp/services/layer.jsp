@@ -13,6 +13,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Notice: This file was modified in 2014 by Vicrea Solutions B.V.
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
