@@ -368,5 +368,13 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     updateSize : function(){
         Ext.Error.raise({msg: "Map.updateSize() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Zooms to the given selection at the maximum scale
+     * @param layer selection layer (with CQL filter) to zoom on
+     * @param cqlFilter CQL-filter to use to retrieve the feature(s) to zoom to
+     */
+    zoomToSelection : function(layer, cqlFilter){
+        Ext.Error.raise({msg: "Map.zoomToSelection() Not implemented! Must be implemented in sub-class"});
     }
 });

@@ -448,6 +448,50 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     },
     
     /**
+     * Zooms to the given selection at the maximum scale
+     * @param layer selection layer (with CQL filter) to zoom on
+     * @param cqlFilter CQL-filter to use to retrieve the feature(s) to zoom to
+     */
+    zoomToSelection : function(layer, cqlFilter){
+    
+        var wmsBasedProtocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer.frameworkLayer);
+        
+        // Store some OpenLayersMap properties, because it won't be available in the loadend
+        // callback below anymore.
+        var frameworkMap = this.frameworkMap;
+        var logger = this.viewerController.logger;
+        
+        var wfsLayer = new OpenLayers.Layer.Vector("WFS", {
+            strategies: [new OpenLayers.Strategy.BBOX()],
+            protocol: new OpenLayers.Protocol.WFS({
+                // When the SERVICE=WMS parameter is present in the WMS URL, the WFS request will be
+                // interpreted as a WMS request instead, so this needs to be changed.
+                url: wmsBasedProtocol.url.replace("SERVICE=WMS", "SERVICE=WFS"),
+                featureType: wmsBasedProtocol.featureType,
+                featureNS: wmsBasedProtocol.featureNS,
+                srsName: wmsBasedProtocol.srsName,
+                // Force WFS version 1.1.0, otherwise the extent is compared to the (probably non-
+                // existant) property 'the_geom'.
+                version: "1.1.0"
+            }),
+            filter: new OpenLayers.Format.CQL().read(cqlFilter),
+            eventListeners: {
+                'loadend': function (evt) {
+                    if(wfsLayer.getDataExtent()) {
+                        frameworkMap.zoomToExtent(wfsLayer.getDataExtent());
+                    } else {
+                        logger.error("No result found for CQL filter to zoom to.");
+                    }
+                    wfsLayer.setVisibility(false);
+                    frameworkMap.removeLayer(wfsLayer);
+                    }
+            }
+        });
+        
+        this.frameworkMap.addLayer(wfsLayer);
+    },
+
+    /**
      * The OpenLayers ID can't be changed. With this function you can get the 
      * viewer.viewercontroller.openlayers.OpenLayersLayer with the openlayersid
      * @param olId the openlayers id of the layer
