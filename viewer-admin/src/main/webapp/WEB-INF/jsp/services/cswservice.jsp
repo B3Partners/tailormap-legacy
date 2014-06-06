@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <table class="formtable">
                     <tr>
                         <td>URL van de service:</td>
-                        <td><stripes:text id="url" name="url" value="http://www.nationaalgeoregister.nl/geonetwork/srv/en/csw" maxlength="255" size="80"/></td>
+                        <td><stripes:text id="url" name="url" value="http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw" maxlength="255" size="80"/></td>
                     </tr>
                     <tr>
                         <td>Zoekterm:</td>
