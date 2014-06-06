@@ -325,7 +325,7 @@ Ext.onReady(function() {
             var styleConfig = {
                 width: '100%',
                 minHeight: '25px'
-            }
+            };
             var renderTo = layoutRegion.get('htmlId');
             if(layoutRegion.get('floatComponents')) {
                 layoutType = 'hbox';
@@ -397,6 +397,88 @@ Ext.onReady(function() {
                 }
             });
             layoutRegion.regionContainer = regionContainer;
+            var regionId = layoutRegion.get('id');
+            if(Ext.isDefined(layoutJson[regionId])) {
+                // Apply config
+                if(Ext.isDefined(layoutJson[regionId]['layout'])) {
+                    if(layoutRegion.get('configureWidth')) {
+                        Ext.fly(regionId + '_width').set({
+                            value:(layoutJson[regionId]['layout']['width'] || '')
+                        });
+                        var widthMeasureSelect = Ext.get(regionId + '_widthmeasure');
+                        Ext.each(widthMeasureSelect.dom.options, function(item, index){
+                            if(item.value === layoutJson[regionId]['layout']['widthmeasure']) widthMeasureSelect.dom.selectedIndex = index;
+                        });
+                        Ext.fly(regionId + '_maxwidth').set({
+                            value:(layoutJson[regionId]['layout']['maxwidth'] || '')
+                        });
+                    }
+                    if(layoutRegion.get('configureHeight')) {
+                        Ext.fly(regionId + '_height').set({
+                            value:(layoutJson[regionId]['layout']['height'] || '')
+                        });
+                        var heightMeasureSelect = Ext.get(regionId + '_heightmeasure');
+                        Ext.each(heightMeasureSelect.dom.options, function(item, index){
+                            if(item.value === layoutJson[regionId]['layout']['heightmeasure']) heightMeasureSelect.dom.selectedIndex = index;
+                        });
+                        Ext.fly(regionId + '_maxheight').set({
+                            value:(layoutJson[regionId]['layout']['maxheight'] || '')
+                        });
+                    }
+                    if(layoutRegion.get('configureTabs')) {
+                        var checked = false;
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['useTabs'])) {
+                            checked = layoutJson[regionId]['layout']['useTabs'];
+                        }
+                        Ext.fly(regionId + '_useTabs').dom.checked = checked;
+                    }
+                    if(layoutRegion.get('configureTitle')) {
+                        var title = '';
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['title'])) {
+                            bgcolor = layoutJson[regionId]['layout']['title'];
+                        }
+                        Ext.fly(regionId + '_title').set({
+                            value: title
+                        });
+                    }
+                    if(layoutRegion.get('configurePosition')) {
+                        Ext.fly(regionId + '_posx').set({
+                            value:(layoutJson[regionId]['layout']['posx'] || '')
+                        });
+                        Ext.fly(regionId + '_posy').set({
+                            value:(layoutJson[regionId]['layout']['posy'] || '')
+                        });
+                    }
+                    if(layoutRegion.get('configureCollapsible')) {
+                        var collapseChecked = false;
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['enableCollapse']) && layoutJson[regionId]['layout']['enableCollapse']) {
+                            collapseChecked = layoutJson[regionId]['layout']['enableCollapse'];
+                        }
+                        Ext.fly(regionId + '_enableCollapse').dom.checked = collapseChecked;
+                        Ext.fly(regionId + '_panelTitle').set({
+                            value:(layoutJson[regionId]['layout']['panelTitle'] || '')
+                        });
+                    }
+                    var bgcolor = '';
+                    if(Ext.isDefined(layoutJson[regionId]['layout']['bgcolor'])) {
+                        bgcolor = layoutJson[regionId]['layout']['bgcolor'];
+                    }
+                    Ext.fly(regionId + '_bgcolor').set({
+                        value: bgcolor
+                    });
+                    var openOnLeft = false;
+                    var openOnTop = false;
+                    if(regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom') openOnLeft = true;
+                    if(regionId === 'footer') openOnTop = true;
+                    Ext.create('Ext.ux.b3p.ColorPickerButton', {
+                        startColor: bgcolor,
+                        renderTo: 'colorpicker_' + regionId + '_bgcolor',
+                        textfield: regionId + '_bgcolor',
+                        openOnLeft: openOnLeft,
+                        openOnTop: openOnTop
+                    });
+                }
+            }
         });
     }
     
@@ -423,106 +505,10 @@ Ext.onReady(function() {
       
     // Initial config. Adds all previously added components to the right regions
     function initConfig(view) {
-        Ext.get('global_layout_switch').on('click', function(e) {
-            e.preventDefault();
-            Ext.get('global_layout').toggle(false);
-        });
-        if(globalLayout) {
-            Ext.get('app_max_width').set({ value: globalLayout.maxWidth || '' });
-            Ext.get('app_max_height').set({ value: globalLayout.maxHeight || ''});
-            Ext.get('app_margin').set({ value: globalLayout.margin || ''});
-            Ext.get('app_background_color').set({ value: globalLayout.backgroundColor || ''});
-            Ext.get('app_background_image').set({ value: globalLayout.backgroundImage || ''});
-            var bgRepeat = Ext.get('app_background_repeat');
-            Ext.each(bgRepeat.dom.options, function(item, index){
-                if(item.value === (globalLayout.backgroundRepeat || '')) bgRepeat.dom.selectedIndex = index;
-            });
-            Ext.get('app_background_position').set({ value: globalLayout.backgroundPosition || ''});
-            Ext.get('app_extracss').dom.value = globalLayout.extraCss || '';
-        }
         if(layoutJson && Ext.isDefined(layoutJson)) {
             layoutRegionsStore.each(function(layoutRegion){
                 var regionId = layoutRegion.get('id');
                 if(Ext.isDefined(layoutJson[regionId])) {
-                    // Apply config
-                    if(Ext.isDefined(layoutJson[regionId]['layout'])) {
-                        if(layoutRegion.get('configureWidth')) {
-                            Ext.fly(regionId + '_width').set({
-                                value:(layoutJson[regionId]['layout']['width'] || '')
-                            });
-                            var widthMeasureSelect = Ext.get(regionId + '_widthmeasure');
-                            Ext.each(widthMeasureSelect.dom.options, function(item, index){
-                                if(item.value == layoutJson[regionId]['layout']['widthmeasure']) widthMeasureSelect.dom.selectedIndex = index;
-                            });
-                            Ext.fly(regionId + '_maxwidth').set({
-                                value:(layoutJson[regionId]['layout']['maxwidth'] || '')
-                            });
-                        }
-                        if(layoutRegion.get('configureHeight')) {
-                            Ext.fly(regionId + '_height').set({
-                                value:(layoutJson[regionId]['layout']['height'] || '')
-                            });
-                            var heightMeasureSelect = Ext.get(regionId + '_heightmeasure');
-                            Ext.each(heightMeasureSelect.dom.options, function(item, index){
-                                if(item.value == layoutJson[regionId]['layout']['heightmeasure']) heightMeasureSelect.dom.selectedIndex = index;
-                            });
-                            Ext.fly(regionId + '_maxheight').set({
-                                value:(layoutJson[regionId]['layout']['maxheight'] || '')
-                            });
-                        }
-                        if(layoutRegion.get('configureTabs')) {
-                            var checked = false;
-                            if(Ext.isDefined(layoutJson[regionId]['layout']['useTabs'])) {
-                                checked = layoutJson[regionId]['layout']['useTabs'];
-                            }
-                            Ext.fly(regionId + '_useTabs').dom.checked = checked;
-                        }
-                        if(layoutRegion.get('configureTitle')) {
-                            var title = '';
-                            if(Ext.isDefined(layoutJson[regionId]['layout']['title'])) {
-                                bgcolor = layoutJson[regionId]['layout']['title'];
-                            }
-                            Ext.fly(regionId + '_title').set({
-                                value: title
-                            });
-                        }
-                        if(layoutRegion.get('configurePosition')) {
-                            Ext.fly(regionId + '_posx').set({
-                                value:(layoutJson[regionId]['layout']['posx'] || '')
-                            });
-                            Ext.fly(regionId + '_posy').set({
-                                value:(layoutJson[regionId]['layout']['posy'] || '')
-                            });
-                        }
-                        if(layoutRegion.get('configureCollapsible')) {
-                            var collapseChecked = false;
-                            if(Ext.isDefined(layoutJson[regionId]['layout']['enableCollapse']) && layoutJson[regionId]['layout']['enableCollapse']) {
-                                collapseChecked = layoutJson[regionId]['layout']['enableCollapse'];
-                            }
-                            Ext.fly(regionId + '_enableCollapse').dom.checked = collapseChecked;
-                            Ext.fly(regionId + '_panelTitle').set({
-                                value:(layoutJson[regionId]['layout']['panelTitle'] || '')
-                            });
-                        }
-                        var bgcolor = '';
-                        if(Ext.isDefined(layoutJson[regionId]['layout']['bgcolor'])) {
-                            bgcolor = layoutJson[regionId]['layout']['bgcolor'];
-                        }
-                        Ext.fly(regionId + '_bgcolor').set({
-                            value: bgcolor
-                        });
-                        var openOnLeft = false;
-                        var openOnTop = false;
-                        if(regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom') openOnLeft = true;
-                        if(regionId === 'footer') openOnTop = true;
-                        Ext.create('Ext.ux.b3p.ColorPickerButton', {
-                            startColor: bgcolor,
-                            renderTo: 'colorpicker_' + regionId + '_bgcolor',
-                            textfield: regionId + '_bgcolor',
-                            openOnLeft: openOnLeft,
-                            openOnTop: openOnTop
-                        });
-                    }
                     if(Ext.isDefined(layoutJson[regionId]['components'])) {
                         Ext.Array.each(layoutJson[regionId]['components'], function(componentref, index) {
                             
@@ -537,7 +523,7 @@ Ext.onReady(function() {
                                     ddel: d,
                                     componentData: component.data,
                                     componentName: componentref.name
-                                }
+                                };
                                 addComponentToRegion(layoutRegion.regionContainer, data, layoutRegion);
                             }
                         });
