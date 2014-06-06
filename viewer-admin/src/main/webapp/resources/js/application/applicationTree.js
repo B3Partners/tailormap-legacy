@@ -322,37 +322,41 @@ function changeLevelName(record) {
 }
 
 function removeLevel(record) {
-    Ext.MessageBox.show({
-        title: "Niveau verwijderen",
-        msg: "Weet u zeker dat u het niveau " + record.data.text + " wilt verwijderen?",
-        buttons: Ext.MessageBox.OKCANCEL,
-        fn: function(btn){
-            if(btn=='ok'){
+    if(record.data && record.data.name === "Achtergrond"){
+        Ext.MessageBox.alert("Foutmelding", 'Vast niveau "Achtergrond" niet toegestaan om te verwijderen.');
+    }else{
+        Ext.MessageBox.show({
+            title: "Niveau verwijderen",
+            msg: "Weet u zeker dat u het niveau " + record.data.text + " wilt verwijderen?",
+            buttons: Ext.MessageBox.OKCANCEL,
+            fn: function(btn){
+                if(btn==='ok'){
 
-                Ext.Ajax.request({
-                    url: actionBeans.appTreeLevel,
-                    params: {
-                        deleteAjax: true,
-                        level: record.data.id.substring(1)
-                    },
-                    method: 'POST',
-                    success: function(result) {
-                        var response = Ext.JSON.decode(result.responseText);
+                    Ext.Ajax.request({
+                        url: actionBeans.appTreeLevel,
+                        params: {
+                            deleteAjax: true,
+                            level: record.data.id.substring(1)
+                        },
+                        method: 'POST',
+                        success: function(result) {
+                            var response = Ext.JSON.decode(result.responseText);
 
-                        if(response.success) {
-                            record.remove();
-                            Ext.get('editFrame').dom.src = "about:blank";
-                        } else {
-                            Ext.MessageBox.alert("Fout", response.error);
+                            if(response.success) {
+                                record.remove();
+                                Ext.get('editFrame').dom.src = "about:blank";
+                            } else {
+                                Ext.MessageBox.alert("Fout", response.error);
+                            }
+                        },
+                        failure: function (result) {
+                            Ext.MessageBox.alert("Fout", result.responseText);
                         }
-                    },
-                    failure: function (result) {
-                        Ext.MessageBox.alert("Fout", result.responseText);
-                    }
-                });
+                    });
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 // Function to add a service node. Parameter should hold the JSON for 1 servicenode
