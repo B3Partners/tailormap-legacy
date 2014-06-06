@@ -4,7 +4,6 @@
 
     <groupId>org.flamingo-mc.web-commons</groupId>
     <artifactId>web-commons</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 	
     <parent>

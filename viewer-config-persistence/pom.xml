@@ -4,7 +4,6 @@
 
     <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
     <artifactId>viewer-config-persistence</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
     <parent>

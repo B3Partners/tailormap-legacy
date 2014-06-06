@@ -4,7 +4,6 @@
 
     <groupId>org.flamingo-mc.viewer-commons</groupId>
     <artifactId>viewer-commons</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 	
     <parent>

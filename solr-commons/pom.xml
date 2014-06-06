@@ -4,7 +4,6 @@
 
     <groupId>org.flamingo-mc.solr-commons</groupId>
     <artifactId>solr-commons</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 	
     <parent>
