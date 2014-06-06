@@ -519,6 +519,7 @@ Ext.define('viewer.LayoutManager', {
             if(continueFunction != undefined){
                 continueFunction();
             }
+            viewerController.resizeComponents(false);
             viewerController.mapComponent.getMap().updateSize();
         },200);
     }
