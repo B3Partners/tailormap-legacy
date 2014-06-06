@@ -464,7 +464,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         var logger = this.viewerController.logger;
         
         var wfsLayer = new OpenLayers.Layer.Vector("WFS", {
-            strategies: [new OpenLayers.Strategy.BBOX()],
+            strategies: [new OpenLayers.Strategy.Fixed()],
             protocol: new OpenLayers.Protocol.WFS({
                 // When the SERVICE=WMS parameter is present in the WMS URL, the WFS request will be
                 // interpreted as a WMS request instead, so this needs to be changed.
@@ -486,7 +486,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
                     }
                     wfsLayer.setVisibility(false);
                     frameworkMap.removeLayer(wfsLayer);
-                    }
+                }
             }
         });
         
