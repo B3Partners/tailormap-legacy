@@ -4,7 +4,6 @@
 
     <groupId>org.flamingo-mc.viewer</groupId>
     <artifactId>viewer</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>war</packaging>
 	
     <parent>
@@ -21,167 +20,107 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.3</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
-            <version>1.12</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
-            <version>${geotools.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-render</artifactId>
-            <version>${geotools.version}</version>
-            <type>jar</type>
         </dependency>       
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20090211</version>
-            <type>jar</type>
         </dependency>
         <!-- Stripes -->
         <dependency>
             <groupId>net.sourceforge.stripes</groupId>
             <artifactId>stripes</artifactId>
-            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>org.stripesstuff</groupId>
             <artifactId>stripersist</artifactId>
-            <version>1.0.3</version>
         </dependency>
         
         <dependency>
             <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
             <artifactId>viewer-config-persistence</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc.solr-commons</groupId>
             <artifactId>solr-commons</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.1</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
         </dependency>
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
-            <version>3.0.5</version>
         </dependency>
             
         <!-- nl b3p csw-->
         <dependency>
             <groupId>nl.b3p</groupId>
             <artifactId>b3p-commons-csw</artifactId>
-            <version>2.0</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>
-            <version>rr2079.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.2</version>
         </dependency>
         <!-- geozet openls -->
         <dependency>
             <groupId>nl.geozet</groupId>
             <artifactId>openls-databinding</artifactId>
-            <version>0.3</version>
         </dependency>
                 <!-- lucene for csw advanced searching -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>4.6.0</version>
         </dependency>
         <!-- Solr dependencies for indexing and searching -->
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-core</artifactId>
-            <version>4.6.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jsp-api</artifactId>
-                    <groupId>javax.servlet.jsp</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org.restlet</artifactId>
-                    <groupId>org.restlet.jee</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>org.restlet.ext.servlet</artifactId>
-                    <groupId>org.restlet.jee</groupId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-analyzers</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
                 <dependency>
                <artifactId>solr-solrj</artifactId>
                <groupId>org.apache.solr</groupId>
-               <version>4.6.0</version>
-               <type>jar</type>
-               <scope>compile</scope>
         </dependency>
     </dependencies>
     
