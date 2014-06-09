@@ -480,6 +480,24 @@ Ext.onReady(function() {
                 }
             }
         });
+        Ext.get('global_layout_switch').on('click', function(e) {
+            e.preventDefault();
+            Ext.get('global_layout').toggle(false);
+        });
+        if (globalLayout) {
+            Ext.get('app_max_width').set({value: globalLayout.maxWidth || ''});
+            Ext.get('app_max_height').set({value: globalLayout.maxHeight || ''});
+            Ext.get('app_margin').set({value: globalLayout.margin || ''});
+            Ext.get('app_background_color').set({value: globalLayout.backgroundColor || ''});
+            Ext.get('app_background_image').set({value: globalLayout.backgroundImage || ''});
+            var bgRepeat = Ext.get('app_background_repeat');
+            Ext.each(bgRepeat.dom.options, function(item, index) {
+                if (item.value === (globalLayout.backgroundRepeat || ''))
+                    bgRepeat.dom.selectedIndex = index;
+            });
+            Ext.get('app_background_position').set({value: globalLayout.backgroundPosition || ''});
+            Ext.get('app_extracss').dom.value = globalLayout.extraCss || '';
+        }
     }
     
     function checkDropAllowed(layoutRegion, data) {
