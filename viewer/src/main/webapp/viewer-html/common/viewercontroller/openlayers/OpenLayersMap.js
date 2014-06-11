@@ -465,10 +465,10 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         
         var wfsLayer = new OpenLayers.Layer.Vector("WFS", {
             strategies: [new OpenLayers.Strategy.Fixed()],
-            protocol: new OpenLayers.Protocol.WFS({
+            protocol: new OpenLayers.Protocol.WFS.v1_1_0.Get({
                 // When the SERVICE=WMS parameter is present in the WMS URL, the WFS request will be
                 // interpreted as a WMS request instead, so this needs to be changed.
-                url: wmsBasedProtocol.url.replace("SERVICE=WMS", "SERVICE=WFS"),
+                url: wmsBasedProtocol.url.replace("SERVICE=WMS&",""),
                 featureType: wmsBasedProtocol.featureType,
                 featureNS: wmsBasedProtocol.featureNS,
                 srsName: wmsBasedProtocol.srsName,
