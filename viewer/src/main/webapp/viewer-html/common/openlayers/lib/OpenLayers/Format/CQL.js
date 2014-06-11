@@ -27,7 +27,8 @@ OpenLayers.Format.CQL = (function() {
         COMPARISON: /^(=|<>|<=|<|>=|>|LIKE)/i,
         COMMA: /^,/,
         LOGICAL: /^(AND|OR)/i,
-        VALUE: /^('\w+'|\d+(\.\d*)?|\.\d+)/,
+        // Use value pattern from current (2014-06) OpenLayers version
+        VALUE: /^('([^']|'')*'|\d+(\.\d*)?|\.\d+)/,
         LPAREN: /^\(/,
         RPAREN: /^\)/,
         SPATIAL: /^(BBOX|INTERSECTS|DWITHIN|WITHIN|CONTAINS)/i,
