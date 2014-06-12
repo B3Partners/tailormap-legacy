@@ -230,7 +230,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var console = {};
                 console.log = function(logmsg) {
                     //alert(logmsg);
-                }
+                };
             }
             
             var contextPath = "${contextPath}";
