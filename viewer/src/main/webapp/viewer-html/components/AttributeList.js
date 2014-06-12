@@ -23,6 +23,7 @@ Ext.define ("viewer.components.AttributeList",{
     extend: "viewer.components.Component",
     grids: null,
     pagers: null,
+    downloadForm:null,
     config: {
         layers:null,
         title:null,
@@ -116,9 +117,7 @@ Ext.define ("viewer.components.AttributeList",{
                     pack:'end'
                 },
                 items: [
-                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', handler: function() {
-                             // Download that shit
-                    }},
+                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:false, componentCls: 'mobileLarge', scope:this, handler:this.download},
                     {
                         xtype: "flamingocombobox",
                         disabled:true,
@@ -137,7 +136,18 @@ Ext.define ("viewer.components.AttributeList",{
                 ]
             }]
         });
-              
+        this.downloadForm = Ext.create('Ext.form.Panel', {            
+            renderTo: me.getContentDiv(),
+            url: actionBeans["download"],
+            border: 0,
+            visible: false,
+            standardSubmit: true,
+            items: [{
+                xtype: "hidden",
+                name: "params",
+                id: 'formParams'
+            }]
+        });
         var config = {
             viewerController : this.viewerController,
             restriction: "attribute",
@@ -434,6 +444,18 @@ Ext.define ("viewer.components.AttributeList",{
             });
             this.pagers[gridId]=p;
         }
+    },
+    download : function(){
+        var type;
+        var filter;
+            var properties ={};// this.getProperties();
+       // properties.action=action;
+        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
+        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
+        this.downloadForm.submit({            
+            target: '_blank'
+        });
+        //alert(" asdf");
     }
 });
 
