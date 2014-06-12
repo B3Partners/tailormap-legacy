@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
@@ -42,9 +43,12 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 
 /**
@@ -81,7 +85,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
     private boolean debug;
     @Validate
     private boolean noCache;
-    
     
      //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
@@ -176,6 +179,12 @@ public class DownloadFeaturesActionBean implements ActionBean {
             unauthorized = true;
         }
     }
+    
+    @After(stages=LifecycleStage.BindingAndValidation)
+    public void loadLayer() {
+        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
+    }
+    
     public Resolution download() throws JSONException {
         JSONObject json = new JSONObject();
         
@@ -226,6 +235,29 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
         return new StreamingResolution("");
     }
+    
+   /* private void getFeatures() {
+        FeatureIterator<SimpleFeature> it = null;
+        JSONArray features = new JSONArray();
+        try {
+            it = fs.getFeatures(q).features();
+            int featureIndex = 0;
+            while (it.hasNext()) {
+                SimpleFeature feature = it.next();
+       
+                if (offsetSupported || featureIndex >= start) {
+                    JSONObject j = this.toJSONFeature(new JSONObject(), feature, ft, al, propertyNames, attributeAliases, 0);
+                    features.put(j);
+                }
+                featureIndex++;
+            }
+        } finally {
+            if (it != null) {
+                it.close();
+            }
+            fs.getDataStore().dispose();
+        }
+    }*/
 
     private void setFilter(Query q,SimpleFeatureType ft) throws Exception {
         if(filter != null && filter.trim().length() > 0) {

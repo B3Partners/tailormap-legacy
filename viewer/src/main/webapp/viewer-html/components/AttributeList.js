@@ -446,8 +446,18 @@ Ext.define ("viewer.components.AttributeList",{
         }
     },
     download : function(){
+        var appLayer = this.appLayer;
         var type;
         var filter;
+        
+        var filter = "";
+        if(appLayer.filter){
+            filter=appLayer.filter.getCQL();
+        }
+        var featureType="";
+        if (featureTypeId){
+            featureType="&featureType="+featureTypeId;
+        }
             var properties ={};// this.getProperties();
        // properties.action=action;
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
