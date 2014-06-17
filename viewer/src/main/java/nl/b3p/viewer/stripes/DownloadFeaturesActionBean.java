@@ -31,11 +31,11 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.activation.MimetypesFileTypeMap;
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
+import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
@@ -72,7 +72,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -107,11 +106,9 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
     @Validate
     private boolean debug;
-    @Validate
-    private boolean noCache;
 
     @Validate
-    private String params;
+    private String type;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
@@ -188,55 +185,36 @@ public class DownloadFeaturesActionBean implements ActionBean {
         this.debug = debug;
     }
 
-    public boolean isNoCache() {
-        return noCache;
+    public String getType() {
+        return type;
     }
 
-    public void setNoCache(boolean noCache) {
-        this.noCache = noCache;
+    public void setType(String type) {
+        this.type = type;
     }
-
-    public String getParams() {
-        return params;
-    }
-
-    public void setParams(String params) {
-        this.params = params;
-    }
-
     // </editor-fold>
-    public boolean checkAuthorization() {
-        if (application == null || appLayer == null
+    
+    @After(stages=LifecycleStage.BindingAndValidation)
+    public void loadLayer() {
+        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
+    }
+    
+    @Before(stages=LifecycleStage.EventHandling)
+    public void checkAuthorization() {
+        
+        if(application == null || appLayer == null 
                 || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
             unauthorized = true;
         }
-        return unauthorized;
     }
+    
 
     public Resolution download() throws JSONException, FileNotFoundException {
         JSONObject json = new JSONObject();
-        JSONObject jsonParams = new JSONObject(params);
-        EntityManager em = Stripersist.getEntityManager();
-        if (jsonParams.has("appLayer")) {
-            appLayer = em.find(ApplicationLayer.class, jsonParams.getLong("appLayer"));
-        }
-
-        if (jsonParams.has("application")) {
-            application = em.find(Application.class, jsonParams.getLong("application"));
-        }
-
-        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
-        if (checkAuthorization()) {
+        if (unauthorized) {
             json.put("success", false);
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
-        }
-        if (jsonParams.has("filter")) {
-            filter = jsonParams.getString("filter");
-        }
-        String type = "SHP";
-        if(jsonParams.has("type")){
-            type = jsonParams.getString("type");
         }
         File output = null;
         try {
@@ -258,9 +236,9 @@ public class DownloadFeaturesActionBean implements ActionBean {
                 final Query q = new Query(fs.getName().toString());
                 //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
-               // setFilter(q, ft);
+                setFilter(q, ft);
 
-                q.setMaxFeatures(Math.min(limit, FeatureToJson.MAX_FEATURES));
+//                q.setMaxFeatures(Math.min(limit, FeatureToJson.MAX_FEATURES));
                 output = convert(ft, fs, q, null,null, type);
                 json.put("success", true);
             }
@@ -312,7 +290,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
          */ else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()) {
             setSortBy(q, propertyNames.get(0), dir);
         }
-        FeatureCollection fc = fs.getFeatures();
+        FeatureCollection fc = fs.getFeatures(q);
         File f = null;
         try {
             if( type.equalsIgnoreCase("SHP")){

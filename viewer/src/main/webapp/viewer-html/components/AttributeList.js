@@ -146,10 +146,26 @@ Ext.define ("viewer.components.AttributeList",{
             visible: false,
             standardSubmit: true,
             items: [{
-                xtype: "hidden",
-                name: "params",
-                id: 'formParams'
-            }]
+                    xtype: "hidden",
+                    name: "filter",
+                    id: 'filter'
+                },
+                {
+                    xtype: "hidden",
+                    name: "appLayer",
+                    id: 'appLayer'
+                },
+                {
+                    xtype: "hidden",
+                    name: "application",
+                    id: "application"
+                },
+                {
+                    xtype: "hidden",
+                    name: "type",
+                    id: "type"
+                }
+            ]
         });
         var config = {
             viewerController : this.viewerController,
@@ -461,14 +477,10 @@ Ext.define ("viewer.components.AttributeList",{
         if (featureTypeId){
             featureType="&featureType="+featureTypeId;
         }*/
-            var properties ={
-                appLayer : appLayer.id,
-                application: appId,
-                filter: filter,
-                type: Ext.getCmp("downloadType").getValue()
-            };// this.getProperties();
-       // properties.action=action;
-        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
+        Ext.getCmp('appLayer').setValue(appLayer.id);
+        Ext.getCmp('application').setValue(appId);
+        Ext.getCmp('filter').setValue(filter);
+        Ext.getCmp('type').setValue(Ext.getCmp("downloadType").getValue());
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
         this.downloadForm.submit({            
             target: '_blank'
