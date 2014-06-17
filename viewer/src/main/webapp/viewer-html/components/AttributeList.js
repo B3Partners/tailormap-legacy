@@ -117,11 +117,14 @@ Ext.define ("viewer.components.AttributeList",{
                     pack:'end'
                 },
                 items: [
-                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:false, componentCls: 'mobileLarge', scope:this, handler:this.download},
+                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:false, componentCls: 'mobileLarge', scope:this, handler:function(){
+                             this.download();
+                     }},
                     {
                         xtype: "flamingocombobox",
                         disabled:true,
                         id:"downloadType",
+                        value: 'SHP',
                         queryMode: 'local',
                         displayField: 'label',
                         name:"test",
@@ -454,11 +457,16 @@ Ext.define ("viewer.components.AttributeList",{
         if(appLayer.filter){
             filter=appLayer.filter.getCQL();
         }
-        var featureType="";
+      /*  var featureType="";
         if (featureTypeId){
             featureType="&featureType="+featureTypeId;
-        }
-            var properties ={};// this.getProperties();
+        }*/
+            var properties ={
+                appLayer : appLayer.id,
+                application: appId,
+                filter: filter,
+                type: Ext.getCmp("downloadType").getValue()
+            };// this.getProperties();
        // properties.action=action;
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        

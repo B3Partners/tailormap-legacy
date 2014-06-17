@@ -16,13 +16,26 @@
  */
 package nl.b3p.viewer.stripes;
 
+import org.apache.commons.lang.RandomStringUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.activation.MimetypesFileTypeMap;
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
-import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
@@ -33,23 +46,33 @@ import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
+import org.geotools.data.Transaction;
+import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.text.cql2.CQL;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.sort.SortOrder;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -58,35 +81,39 @@ import org.opengis.filter.Filter;
 @UrlBinding("/action/downloadfeatures")
 @StrictBinding
 public class DownloadFeaturesActionBean implements ActionBean {
+
     private static final Log log = LogFactory.getLog(DownloadFeaturesActionBean.class);
 
     private ActionBeanContext context;
 
     private boolean unauthorized;
-      
+
     @Validate
     private Application application;
-    
+
     @Validate
     private ApplicationLayer appLayer;
-    
+
     @Validate
     private SimpleFeatureType featureType;
-    
+
     private Layer layer = null;
-    
+
     @Validate
     private int limit;
-    
+
     @Validate
     private String filter;
-    
+
     @Validate
     private boolean debug;
     @Validate
     private boolean noCache;
-    
-     //<editor-fold defaultstate="collapsed" desc="getters and setters">
+
+    @Validate
+    private String params;
+
+    //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
     public void setContext(ActionBeanContext abc) {
         this.context = abc;
@@ -169,104 +196,287 @@ public class DownloadFeaturesActionBean implements ActionBean {
         this.noCache = noCache;
     }
 
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
+    }
+
     // </editor-fold>
-    
-    @Before(stages=LifecycleStage.EventHandling)
-    public void checkAuthorization() {
-        
-        if(application == null || appLayer == null 
+    public boolean checkAuthorization() {
+        if (application == null || appLayer == null
                 || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
             unauthorized = true;
         }
+        return unauthorized;
     }
-    
-    @After(stages=LifecycleStage.BindingAndValidation)
-    public void loadLayer() {
-        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
-    }
-    
-    public Resolution download() throws JSONException {
+
+    public Resolution download() throws JSONException, FileNotFoundException {
         JSONObject json = new JSONObject();
-        
-        if(unauthorized) {
+        JSONObject jsonParams = new JSONObject(params);
+        EntityManager em = Stripersist.getEntityManager();
+        if (jsonParams.has("appLayer")) {
+            appLayer = em.find(ApplicationLayer.class, jsonParams.getLong("appLayer"));
+        }
+
+        if (jsonParams.has("application")) {
+            application = em.find(Application.class, jsonParams.getLong("application"));
+        }
+
+        layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
+        if (checkAuthorization()) {
             json.put("success", false);
             json.put("message", "Not authorized");
-            return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
+            return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
-        
+        if (jsonParams.has("filter")) {
+            filter = jsonParams.getString("filter");
+        }
+        String type = "SHP";
+        if(jsonParams.has("type")){
+            type = jsonParams.getString("type");
+        }
+        File output = null;
         try {
-            if(featureType!=null || (layer != null && layer.getFeatureType() != null)) {
+            if (featureType != null || (layer != null && layer.getFeatureType() != null)) {
                 FeatureSource fs;
                 SimpleFeatureType ft = featureType;
-                if (ft==null){
-                    ft=layer.getFeatureType();
+                if (ft == null) {
+                    ft = layer.getFeatureType();
                 }
-                if(isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
+                if (isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
-                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
+                    fs = ((WFSFeatureSource) ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
                 } else {
-                    
+
                     fs = ft.openGeoToolsFeatureSource();
                 }
-                
+
                 final Query q = new Query(fs.getName().toString());
                 //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
-                setFilter(q,ft);
-                
-                q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
-                
+               // setFilter(q, ft);
+
+                q.setMaxFeatures(Math.min(limit, FeatureToJson.MAX_FEATURES));
+                output = convert(ft, fs, q, null,null, type);
                 json.put("success", true);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.error("Error loading features", e);
-            
+
             json.put("success", false);
-            
+
             String message = "Fout bij ophalen features: " + e.toString();
             Throwable cause = e.getCause();
-            while(cause != null) {
+            while (cause != null) {
                 message += "; " + cause.toString();
                 cause = cause.getCause();
             }
             json.put("message", message);
         }
+        final FileInputStream fis = new FileInputStream(output);
+         StreamingResolution res = new StreamingResolution(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(output)) {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
 
-        return new StreamingResolution("");
+                OutputStream out = response.getOutputStream();
+
+                
+                IOUtils.copy(fis, out);
+                fis.close();
+            }
+        };            
+        res.setFilename(output.getName());       
+        res.setAttachment(true);
+        return res;
     }
-    
-   /* private void getFeatures() {
-        FeatureIterator<SimpleFeature> it = null;
-        JSONArray features = new JSONArray();
+
+    private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir, String type) throws IOException {
+        Map<String, String> attributeAliases = new HashMap<String, String>();
+        for (AttributeDescriptor ad : ft.getAttributes()) {
+            if (ad.getAlias() != null) {
+                attributeAliases.put(ad.getName(), ad.getAlias());
+            }
+        }
+        List<String> propertyNames = new ArrayList<String>();
+        for (AttributeDescriptor ad : ft.getAttributes()) {
+            propertyNames.add(ad.getName());
+        }
+        if (sort != null) {
+            setSortBy(q, sort, dir);
+        } /* Use the first property as sort field, otherwise geotools while give a error when quering
+         * a JDBC featureType without a primary key.
+         */ else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()) {
+            setSortBy(q, propertyNames.get(0), dir);
+        }
+        FeatureCollection fc = fs.getFeatures();
+        File f = null;
         try {
-            it = fs.getFeatures(q).features();
-            int featureIndex = 0;
-            while (it.hasNext()) {
-                SimpleFeature feature = it.next();
-       
-                if (offsetSupported || featureIndex >= start) {
-                    JSONObject j = this.toJSONFeature(new JSONObject(), feature, ft, al, propertyNames, attributeAliases, 0);
-                    features.put(j);
-                }
-                featureIndex++;
+            if( type.equalsIgnoreCase("SHP")){
+                f = convertToShape(fc);
+            }else{
+                throw new IllegalArgumentException("No suitable type given: " + type);
             }
-        } finally {
-            if (it != null) {
-                it.close();
-            }
+        } catch(IOException ex){
+            log.error("Cannot create outputfile: ",ex);
+        }finally {
             fs.getDataStore().dispose();
         }
-    }*/
+        return f;
+    }
 
-    private void setFilter(Query q,SimpleFeatureType ft) throws Exception {
-        if(filter != null && filter.trim().length() > 0) {
+    private File convertToShape(FeatureCollection fc) throws IOException {
+        String uniqueName = RandomStringUtils.randomAlphanumeric(8);
+        File dir = new File(System.getProperty("java.io.tmpdir"),uniqueName);
+        dir.mkdir();
+        File shape = File.createTempFile("shp", ".shp", dir);
+        // create a new shapefile data store
+        DataStore newShapefileDataStore = new ShapefileDataStore(shape.toURI().toURL());
+
+        // create the schema based on the original shapefile
+        newShapefileDataStore.createSchema(( org.opengis.feature.simple.SimpleFeatureType)fc.getSchema());
+
+        // grab the feature source from the new shapefile data store
+        FeatureSource newFeatureSource = newShapefileDataStore.getFeatureSource(fc.getSchema().getName());
+
+        // downcast FeatureSource to specific implementation of FeatureStore
+        FeatureStore newFeatureStore = (FeatureStore) newFeatureSource;
+
+        // accquire a transaction to create the shapefile from FeatureStore
+        Transaction t = newFeatureStore.getTransaction();
+
+        // add features got from the query (FeatureReader)
+        newFeatureStore.addFeatures(fc);
+
+        // filteredReader is now exhausted and closed, commit the changes
+        t.commit();
+        t.close();
+        File zip = File.createTempFile("downloadshp", ".zip");
+        zipDirectory(dir, zip);
+        
+        return zip;
+    }
+    
+     /**
+     * This method zips the directory
+     * @param dir
+     * @param zipDirName
+     */
+    private void zipDirectory(File dir, File zip) {
+        try {
+            List<String> filesListInDir = new ArrayList<String>();
+            populateFilesList(dir,filesListInDir);
+            //now zip files one by one
+            //create ZipOutputStream to write to the zip file
+            FileOutputStream fos = new FileOutputStream(zip);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+            for(String filePath : filesListInDir){
+                System.out.println("Zipping "+filePath);
+                //for ZipEntry we need to keep only relative file path, so we used substring on absolute path
+                ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length()+1, filePath.length()));
+                zos.putNextEntry(ze);
+                //read the file and write to ZipOutputStream
+                FileInputStream fis = new FileInputStream(filePath);
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = fis.read(buffer)) > 0) {
+                    zos.write(buffer, 0, len);
+                }
+                zos.closeEntry();
+                fis.close();
+            }
+            zos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+     
+    /**
+     * This method populates all the files in a directory to a List
+     * @param dir
+     * @throws IOException
+     */
+    private void populateFilesList(File dir,List<String> filesListInDir) throws IOException {
+        File[] files = dir.listFiles();
+        for(File file : files){
+            if(file.isFile()) filesListInDir.add(file.getAbsolutePath());
+            else populateFilesList(file,filesListInDir);
+        }
+    }
+
+    private void convertToExcel(FeatureCollection fc) {
+        /*        JSONArray features = new JSONArray();
+         try {
+         it = fs.getFeatures(q).features();
+         int featureIndex = 0;
+         while (it.hasNext()) {
+         SimpleFeature feature = it.next();*/
+        /* if offset not supported and there are more features returned then
+         * only get the features after index >= start*/
+                //JSONObject j = this.toJSONFeature(new JSONObject(), feature, ft, al, propertyNames, attributeAliases, 0);
+        //features.put(j);
+                /*featureIndex++;
+         }
+         } finally {
+         if (it != null) {
+         it.close();
+         }
+         fs.getDataStore().dispose();
+         }*/
+    }
+
+    /* private void getFeatures() {
+     FeatureIterator<SimpleFeature> it = null;
+     JSONArray features = new JSONArray();
+     try {
+     it = fs.getFeatures(q).features();
+     int featureIndex = 0;
+     while (it.hasNext()) {
+     SimpleFeature feature = it.next();
+       
+     if (offsetSupported || featureIndex >= start) {
+     JSONObject j = this.toJSONFeature(new JSONObject(), feature, ft, al, propertyNames, attributeAliases, 0);
+     features.put(j);
+     }
+     featureIndex++;
+     }
+     } finally {
+     if (it != null) {
+     it.close();
+     }
+     fs.getDataStore().dispose();
+     }
+     }*/
+    private void setFilter(Query q, SimpleFeatureType ft) throws Exception {
+        if (filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);
-            f = (Filter)f.accept(new RemoveDistanceUnit(), null);
-            f = (Filter)f.accept(new ChangeMatchCase(false), null);
-            f = FeatureToJson.reformatFilter(f,ft);
+            f = (Filter) f.accept(new RemoveDistanceUnit(), null);
+            f = (Filter) f.accept(new ChangeMatchCase(false), null);
+            f = FeatureToJson.reformatFilter(f, ft);
             q.setFilter(f);
         }
     }
-    
+
+    /**
+     * Set sort on query
+     *
+     * @param q the query on which the sort is added
+     * @param sort the name of the sort column
+     * @param dir sorting direction DESC or ASC
+     */
+    private void setSortBy(Query q, String sort, String dir) {
+        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+
+        if (sort != null) {
+            q.setSortBy(new SortBy[]{
+                ff2.sort(sort, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
+            });
+        }
+
+    }
+
 }
