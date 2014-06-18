@@ -48,6 +48,7 @@ import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
+import nl.b3p.viewer.features.ExcelDownloader;
 import nl.b3p.viewer.features.FeatureDownloader;
 import nl.b3p.viewer.features.ShapeDownloader;
 import nl.b3p.viewer.util.ChangeMatchCase;
@@ -303,10 +304,12 @@ public class DownloadFeaturesActionBean implements ActionBean {
         FeatureDownloader downloader = null;
         if (type.equalsIgnoreCase("SHP")) {
             downloader = new ShapeDownloader();
+        } else if (type.equalsIgnoreCase("XLS")) {
+            downloader = new ExcelDownloader();
         } else {
             throw new IllegalArgumentException("No suitable type given: " + type);
         }
-       
+
         try {
             downloader.init((SimpleFeatureSource) fs, featureTypeAttributes, attributes);
 
@@ -350,28 +353,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
         }
         return featureTypeAttributes;
     }
-   
-    private void convertToExcel(FeatureCollection fc) {
-        /*        JSONArray features = new JSONArray();
-         try {
-         it = fs.getFeatures(q).features();
-         int featureIndex = 0;
-         while (it.hasNext()) {
-         SimpleFeature feature = it.next();*/
-        /* if offset not supported and there are more features returned then
-         * only get the features after index >= start*/
-                //JSONObject j = this.toJSONFeature(new JSONObject(), feature, ft, al, propertyNames, attributeAliases, 0);
-        //features.put(j);
-                /*featureIndex++;
-         }
-         } finally {
-         if (it != null) {
-         it.close();
-         }
-         fs.getDataStore().dispose();
-         }*/
-    }
-
+    
     private void setFilter(Query q, SimpleFeatureType ft) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);

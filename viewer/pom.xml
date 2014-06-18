@@ -126,6 +126,15 @@
                <artifactId>solr-solrj</artifactId>
                <groupId>org.apache.solr</groupId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     
     <repositories>
