@@ -45,8 +45,10 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
+import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
@@ -56,18 +58,25 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
@@ -238,8 +247,12 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
                 setFilter(q, ft);
 
+                Map<String, AttributeDescriptor> featureTypeAttributes = new HashMap<String, AttributeDescriptor>();
+                featureTypeAttributes = makeAttributeDescriptorList(ft);
+                List<ConfiguredAttribute> attributes =  appLayer.getAttributes();
+
 //                q.setMaxFeatures(Math.min(limit, FeatureToJson.MAX_FEATURES));
-                output = convert(ft, fs, q, null,null, type);
+                output = convert(ft, fs, q, null,null, type, attributes,featureTypeAttributes);
                 json.put("success", true);
             }
         } catch (Exception e) {
@@ -272,7 +285,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
         return res;
     }
 
-    private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir, String type) throws IOException {
+    private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir, String type, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
         Map<String, String> attributeAliases = new HashMap<String, String>();
         for (AttributeDescriptor ad : ft.getAttributes()) {
             if (ad.getAlias() != null) {
@@ -290,11 +303,11 @@ public class DownloadFeaturesActionBean implements ActionBean {
          */ else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()) {
             setSortBy(q, propertyNames.get(0), dir);
         }
-        FeatureCollection fc = fs.getFeatures(q);
+        SimpleFeatureCollection fc =(SimpleFeatureCollection) fs.getFeatures(q);
         File f = null;
         try {
             if( type.equalsIgnoreCase("SHP")){
-                f = convertToShape(fc);
+                f = convertToShape(fc, fs,attributes,featureTypeAttributes);
             }else{
                 throw new IllegalArgumentException("No suitable type given: " + type);
             }
@@ -306,7 +319,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
         return f;
     }
 
-    private File convertToShape(FeatureCollection fc) throws IOException {
+    private File convertToShape(SimpleFeatureCollection fc, FeatureSource fs, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
         String uniqueName = RandomStringUtils.randomAlphanumeric(8);
         File dir = new File(System.getProperty("java.io.tmpdir"),uniqueName);
         dir.mkdir();
@@ -315,19 +328,36 @@ public class DownloadFeaturesActionBean implements ActionBean {
         DataStore newShapefileDataStore = new ShapefileDataStore(shape.toURI().toURL());
 
         // create the schema based on the original shapefile
-        newShapefileDataStore.createSchema(( org.opengis.feature.simple.SimpleFeatureType)fc.getSchema());
+        org.opengis.feature.simple.SimpleFeatureType sft = createNewFeatureType((SimpleFeatureSource)fs,attributes,featureTypeAttributes);
+        newShapefileDataStore.createSchema(sft);
 
         // grab the feature source from the new shapefile data store
-        FeatureSource newFeatureSource = newShapefileDataStore.getFeatureSource(fc.getSchema().getName());
+        FeatureSource newFeatureSource = newShapefileDataStore.getFeatureSource(sft.getName());
 
         // downcast FeatureSource to specific implementation of FeatureStore
         FeatureStore newFeatureStore = (FeatureStore) newFeatureSource;
 
         // accquire a transaction to create the shapefile from FeatureStore
         Transaction t = newFeatureStore.getTransaction();
-
-        // add features got from the query (FeatureReader)
-        newFeatureStore.addFeatures(fc);
+        SimpleFeatureIterator it = fc.features();
+        List<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
+        
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(sft);
+        try {
+             while( it.hasNext() ){
+                  SimpleFeature feature = it.next();
+                  SimpleFeature newFeature = createFeature(feature, featureBuilder, attributes);
+                  // verander de feature
+                  featureList.add(newFeature);
+                  System.out.println( feature.getID() );
+             }
+         }
+         finally {
+             it.close();
+         }
+        SimpleFeatureCollection newFc = DataUtilities.collection(featureList);
+        
+        newFeatureStore.addFeatures(newFc);
 
         // filteredReader is now exhausted and closed, commit the changes
         t.commit();
@@ -336,6 +366,61 @@ public class DownloadFeaturesActionBean implements ActionBean {
         zipDirectory(dir, zip);
         
         return zip;
+    }
+    
+    private SimpleFeature createFeature(SimpleFeature oldFeature,SimpleFeatureBuilder featureBuilder, List<ConfiguredAttribute> configuredAttributes){
+        for (ConfiguredAttribute configuredAttribute : configuredAttributes) {
+            if(configuredAttribute.isVisible()){
+                featureBuilder.add(oldFeature.getAttribute(configuredAttribute.getAttributeName()));
+            }
+        }
+        featureBuilder.add(oldFeature.getDefaultGeometry());
+        SimpleFeature feature = featureBuilder.buildFeature(null);
+        return feature;
+    }
+    
+    private org.opengis.feature.simple.SimpleFeatureType createNewFeatureType(SimpleFeatureSource sfs,List<ConfiguredAttribute> configuredAttributes,Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
+        org.opengis.feature.simple.SimpleFeatureType oldSft = sfs.getSchema();
+        SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
+
+        b.setName(sfs.getName());
+        for (ConfiguredAttribute configuredAttribute : configuredAttributes) {
+            if(configuredAttribute.isVisible()){
+                AttributeDescriptor ad = featureTypeAttributes.get(configuredAttribute.getFullName());
+                b.add(configuredAttribute.getAttributeName(),ad.getType().getClass());
+            }
+        }
+
+//add a geometry property
+        b.setCRS(oldSft.getGeometryDescriptor().getCoordinateReferenceSystem());
+        b.add(oldSft.getGeometryDescriptor().getLocalName(),oldSft.getGeometryDescriptor().getType().getBinding()); // then add geometry
+
+//build the type
+        org.opengis.feature.simple.SimpleFeatureType nieuwFt = b.buildFeatureType();
+        
+        return nieuwFt;
+    }
+    
+      /**
+     * Makes a list of al the attributeDescriptors of the given FeatureType and
+     * all the child FeatureTypes (related by join/relate)
+     */
+    private Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft) {
+        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
+        for(AttributeDescriptor ad: ft.getAttributes()) {
+            String name=ft.getId()+":"+ad.getName();
+            //stop when already added. Stop a infinite configurated loop
+            if (featureTypeAttributes.containsKey(name)){
+                return featureTypeAttributes;
+            }
+            featureTypeAttributes.put(name, ad);
+        }
+        if (ft.getRelations()!=null){
+            for (FeatureTypeRelation rel : ft.getRelations()){
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));                
+            }
+        }
+        return featureTypeAttributes;
     }
     
      /**
