@@ -42,16 +42,19 @@ import org.opengis.feature.simple.SimpleFeature;
  * An implementation to export the features as an excel file
  * @author Meine Toonen
  */
-public class ExcelDownloader implements FeatureDownloader{
+public class ExcelDownloader extends FeatureDownloader{
+   
     private Workbook wb;
     private Sheet sheet;
     private int currentRow = -1;
-    private List<ConfiguredAttribute> attributes;
     private Map<String, CellStyle> styles;
+
+    public ExcelDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes) {
+        super(attributes, fs, featureTypeAttributes);
+    }
     
     @Override
-    public void init(SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, List<ConfiguredAttribute> attributes) throws IOException {
-        this.attributes = attributes;
+    public void init() throws IOException {
         wb =  new XSSFWorkbook();
 
         styles = createStyles(wb);

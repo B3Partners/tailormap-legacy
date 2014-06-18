@@ -303,15 +303,15 @@ public class DownloadFeaturesActionBean implements ActionBean {
         
         FeatureDownloader downloader = null;
         if (type.equalsIgnoreCase("SHP")) {
-            downloader = new ShapeDownloader();
+            downloader = new ShapeDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes);
         } else if (type.equalsIgnoreCase("XLS")) {
-            downloader = new ExcelDownloader();
+            downloader = new ExcelDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes);
         } else {
             throw new IllegalArgumentException("No suitable type given: " + type);
         }
 
         try {
-            downloader.init((SimpleFeatureSource) fs, featureTypeAttributes, attributes);
+            downloader.init();
 
             SimpleFeatureIterator it = fc.features();
             try {

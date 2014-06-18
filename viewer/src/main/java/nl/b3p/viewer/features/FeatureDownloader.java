@@ -30,9 +30,19 @@ import org.opengis.feature.simple.SimpleFeature;
  * This interface describes which methods should be implemented when a new way of downloading (new filetype) is implemented
  * @author Meine Toonen
  */
-public interface FeatureDownloader {
-    public void init(SimpleFeatureSource fs,  Map<String, AttributeDescriptor> featureTypeAttributes,List<ConfiguredAttribute> attributes) throws IOException;
-    public void processFeature(SimpleFeature oldFeature);
-    public File write() throws IOException;
+public abstract class FeatureDownloader {
+    protected List<ConfiguredAttribute> attributes;
+    protected SimpleFeatureSource fs;
+    protected Map<String, AttributeDescriptor> featureTypeAttributes;
+            
+    public FeatureDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes){
+        this.attributes = attributes;
+        this.fs = fs;
+        this.featureTypeAttributes = featureTypeAttributes;
+    }
+   
+    public abstract void init() throws IOException;
+    public abstract void processFeature(SimpleFeature oldFeature);
+    public abstract File write() throws IOException;
     
 }

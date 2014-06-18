@@ -48,21 +48,22 @@ import org.opengis.feature.simple.SimpleFeature;
  *
  * @author Meine Toonen
  */
-public class ShapeDownloader implements FeatureDownloader {
+public class ShapeDownloader extends FeatureDownloader {
     private static final Log log = LogFactory.getLog(ShapeDownloader.class);
 
-    private List<ConfiguredAttribute> attributes;
     private SimpleFeatureBuilder featureBuilder;
     private List<SimpleFeature> featureList;
     private Transaction t;
     private File dir;
     private FeatureStore newFeatureStore;
 
-    @Override
-    public void init(SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, List<ConfiguredAttribute> attributes) throws IOException {
-        try {
-            this.attributes = attributes;
+    public ShapeDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes) {
+        super(attributes, fs, featureTypeAttributes);
+    }
 
+    @Override
+    public void init() throws IOException {
+        try {
             String uniqueName = RandomStringUtils.randomAlphanumeric(8);
             dir = new File(System.getProperty("java.io.tmpdir"), uniqueName);
             dir.mkdir();
