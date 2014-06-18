@@ -132,9 +132,9 @@ public class ShapeDownloader implements FeatureDownloader {
         b.setCRS(oldSft.getGeometryDescriptor().getCoordinateReferenceSystem());
         b.add(oldSft.getGeometryDescriptor().getLocalName(), oldSft.getGeometryDescriptor().getType().getBinding()); // then add geometry
 
-        org.opengis.feature.simple.SimpleFeatureType nieuwFt = b.buildFeatureType();
+        org.opengis.feature.simple.SimpleFeatureType newFeatureType = b.buildFeatureType();
 
-        return nieuwFt;
+        return newFeatureType;
     }
 
     /**
@@ -143,7 +143,7 @@ public class ShapeDownloader implements FeatureDownloader {
      * @param dir
      * @param zipDirName
      */
-    private void zipDirectory(File dir, File zip) {
+    private void zipDirectory(File dir, File zip) throws IOException {
         try {
             List<String> filesListInDir = new ArrayList<String>();
             populateFilesList(dir, filesListInDir);
@@ -152,7 +152,6 @@ public class ShapeDownloader implements FeatureDownloader {
             FileOutputStream fos = new FileOutputStream(zip);
             ZipOutputStream zos = new ZipOutputStream(fos);
             for (String filePath : filesListInDir) {
-                System.out.println("Zipping " + filePath);
                 //for ZipEntry we need to keep only relative file path, so we used substring on absolute path
                 ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
                 zos.putNextEntry(ze);
@@ -169,7 +168,8 @@ public class ShapeDownloader implements FeatureDownloader {
             zos.close();
             fos.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Could not write zipfile. Exiting.",e);
+            throw e;
         }
     }
 

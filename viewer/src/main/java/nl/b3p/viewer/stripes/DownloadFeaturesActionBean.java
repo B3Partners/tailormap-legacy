@@ -214,6 +214,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
             json.put("message", "Not authorized");
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
+        
         File output = null;
         try {
             if (featureType != null || (layer != null && layer.getFeatureType() != null)) {
@@ -222,6 +223,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
                 if (ft == null) {
                     ft = layer.getFeatureType();
                 }
+                
                 if (isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
@@ -237,10 +239,11 @@ public class DownloadFeaturesActionBean implements ActionBean {
 
                 Map<String, AttributeDescriptor> featureTypeAttributes = new HashMap<String, AttributeDescriptor>();
                 featureTypeAttributes = makeAttributeDescriptorList(ft);
+                
                 List<ConfiguredAttribute> attributes =  appLayer.getAttributes();
 
-//                q.setMaxFeatures(Math.min(limit, FeatureToJson.MAX_FEATURES));
-                output = convert(ft, fs, q, null,null, type, attributes,featureTypeAttributes);
+                output = convert(ft, fs, q, type, attributes,featureTypeAttributes);
+                
                 json.put("success", true);
             }
         } catch (Exception e) {
@@ -256,24 +259,27 @@ public class DownloadFeaturesActionBean implements ActionBean {
             }
             json.put("message", message);
         }
-        final FileInputStream fis = new FileInputStream(output);
-         StreamingResolution res = new StreamingResolution(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(output)) {
-            @Override
-            public void stream(HttpServletResponse response) throws Exception {
+        
+        if(json.getBoolean("success")){
+            final FileInputStream fis = new FileInputStream(output);
 
-                OutputStream out = response.getOutputStream();
-
-                
-                IOUtils.copy(fis, out);
-                fis.close();
-            }
-        };            
-        res.setFilename(output.getName());       
-        res.setAttachment(true);
-        return res;
+            StreamingResolution res = new StreamingResolution(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(output)) {
+                @Override
+                public void stream(HttpServletResponse response) throws Exception {
+                    OutputStream out = response.getOutputStream();
+                    IOUtils.copy(fis, out);
+                    fis.close();
+                }
+            };            
+            res.setFilename(output.getName());       
+            res.setAttachment(true);
+            return res;
+        }else{
+            return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        }
     }
 
-    private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir, String type, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
+    private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String type, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
         Map<String, String> attributeAliases = new HashMap<String, String>();
         for (AttributeDescriptor ad : ft.getAttributes()) {
             if (ad.getAlias() != null) {
@@ -284,12 +290,12 @@ public class DownloadFeaturesActionBean implements ActionBean {
         for (AttributeDescriptor ad : ft.getAttributes()) {
             propertyNames.add(ad.getName());
         }
-        if (sort != null) {
-            setSortBy(q, sort, dir);
-        } /* Use the first property as sort field, otherwise geotools while give a error when quering
+        
+        /* Use the first property as sort field, otherwise geotools while give a error when quering
          * a JDBC featureType without a primary key.
-         */ else if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()) {
-            setSortBy(q, propertyNames.get(0), dir);
+         */ 
+        if (fs instanceof org.geotools.jdbc.JDBCFeatureSource && !propertyNames.isEmpty()) {
+            setSortBy(q, propertyNames.get(0));
         }
         SimpleFeatureCollection fc =(SimpleFeatureCollection) fs.getFeatures(q);
         File f = null;
@@ -316,12 +322,14 @@ public class DownloadFeaturesActionBean implements ActionBean {
             f = downloader.write();
         } catch (IOException ex) {
             log.error("Cannot create outputfile: ", ex);
+            throw ex;
         } finally {
             fs.getDataStore().dispose();
         }
         return f;
     }
-      /**
+    
+    /**
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)
      */
@@ -364,28 +372,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
          }*/
     }
 
-    /* private void getFeatures() {
-     FeatureIterator<SimpleFeature> it = null;
-     JSONArray features = new JSONArray();
-     try {
-     it = fs.getFeatures(q).features();
-     int featureIndex = 0;
-     while (it.hasNext()) {
-     SimpleFeature feature = it.next();
-       
-     if (offsetSupported || featureIndex >= start) {
-     JSONObject j = this.toJSONFeature(new JSONObject(), feature, ft, al, propertyNames, attributeAliases, 0);
-     features.put(j);
-     }
-     featureIndex++;
-     }
-     } finally {
-     if (it != null) {
-     it.close();
-     }
-     fs.getDataStore().dispose();
-     }
-     }*/
     private void setFilter(Query q, SimpleFeatureType ft) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);
@@ -403,14 +389,13 @@ public class DownloadFeaturesActionBean implements ActionBean {
      * @param sort the name of the sort column
      * @param dir sorting direction DESC or ASC
      */
-    private void setSortBy(Query q, String sort, String dir) {
+    private void setSortBy(Query q, String sort) {
         FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         if (sort != null) {
             q.setSortBy(new SortBy[]{
-                ff2.sort(sort, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
+                ff2.sort(sort, SortOrder.ASCENDING)
             });
         }
     }
-
 }
