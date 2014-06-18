@@ -18,6 +18,12 @@
 package nl.b3p.viewer.features;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 
 /**
@@ -25,8 +31,8 @@ import org.opengis.feature.simple.SimpleFeature;
  * @author Meine Toonen
  */
 public interface FeatureDownloader {
-    public void init();
+    public void init(SimpleFeatureSource fs,  Map<String, AttributeDescriptor> featureTypeAttributes,List<ConfiguredAttribute> attributes) throws IOException;
     public void processFeature(SimpleFeature oldFeature);
-    public File write();
+    public File write() throws IOException;
     
 }

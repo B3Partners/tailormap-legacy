@@ -16,11 +16,9 @@
  */
 package nl.b3p.viewer.stripes;
 
-import org.apache.commons.lang.RandomStringUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -28,8 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.ActionBean;
@@ -52,18 +48,15 @@ import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
+import nl.b3p.viewer.features.FeatureDownloader;
+import nl.b3p.viewer.features.ShapeDownloader;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
-import org.geotools.data.Transaction;
-import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -71,8 +64,6 @@ import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -210,13 +201,11 @@ public class DownloadFeaturesActionBean implements ActionBean {
     
     @Before(stages=LifecycleStage.EventHandling)
     public void checkAuthorization() {
-        
         if(application == null || appLayer == null 
                 || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
             unauthorized = true;
         }
     }
-    
 
     public Resolution download() throws JSONException, FileNotFoundException {
         JSONObject json = new JSONObject();
@@ -243,7 +232,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
                 }
 
                 final Query q = new Query(fs.getName().toString());
-                //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
                 setFilter(q, ft);
 
@@ -305,102 +293,34 @@ public class DownloadFeaturesActionBean implements ActionBean {
         }
         SimpleFeatureCollection fc =(SimpleFeatureCollection) fs.getFeatures(q);
         File f = null;
+        
+        FeatureDownloader downloader = null;
+        if (type.equalsIgnoreCase("SHP")) {
+            downloader = new ShapeDownloader();
+        } else {
+            throw new IllegalArgumentException("No suitable type given: " + type);
+        }
+       
         try {
-            if( type.equalsIgnoreCase("SHP")){
-                f = convertToShape(fc, fs,attributes,featureTypeAttributes);
-            }else{
-                throw new IllegalArgumentException("No suitable type given: " + type);
+            downloader.init((SimpleFeatureSource) fs, featureTypeAttributes, attributes);
+
+            SimpleFeatureIterator it = fc.features();
+            try {
+                while (it.hasNext()) {
+                    SimpleFeature feature = it.next();
+                    downloader.processFeature(feature);
+                }
+            } finally {
+                it.close();
             }
-        } catch(IOException ex){
-            log.error("Cannot create outputfile: ",ex);
-        }finally {
+            f = downloader.write();
+        } catch (IOException ex) {
+            log.error("Cannot create outputfile: ", ex);
+        } finally {
             fs.getDataStore().dispose();
         }
         return f;
     }
-
-    private File convertToShape(SimpleFeatureCollection fc, FeatureSource fs, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
-        String uniqueName = RandomStringUtils.randomAlphanumeric(8);
-        File dir = new File(System.getProperty("java.io.tmpdir"),uniqueName);
-        dir.mkdir();
-        File shape = File.createTempFile("shp", ".shp", dir);
-        // create a new shapefile data store
-        DataStore newShapefileDataStore = new ShapefileDataStore(shape.toURI().toURL());
-
-        // create the schema based on the original shapefile
-        org.opengis.feature.simple.SimpleFeatureType sft = createNewFeatureType((SimpleFeatureSource)fs,attributes,featureTypeAttributes);
-        newShapefileDataStore.createSchema(sft);
-
-        // grab the feature source from the new shapefile data store
-        FeatureSource newFeatureSource = newShapefileDataStore.getFeatureSource(sft.getName());
-
-        // downcast FeatureSource to specific implementation of FeatureStore
-        FeatureStore newFeatureStore = (FeatureStore) newFeatureSource;
-
-        // accquire a transaction to create the shapefile from FeatureStore
-        Transaction t = newFeatureStore.getTransaction();
-        SimpleFeatureIterator it = fc.features();
-        List<SimpleFeature> featureList = new ArrayList<SimpleFeature>();
-        
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(sft);
-        try {
-             while( it.hasNext() ){
-                  SimpleFeature feature = it.next();
-                  SimpleFeature newFeature = createFeature(feature, featureBuilder, attributes);
-                  // verander de feature
-                  featureList.add(newFeature);
-                  System.out.println( feature.getID() );
-             }
-         }
-         finally {
-             it.close();
-         }
-        SimpleFeatureCollection newFc = DataUtilities.collection(featureList);
-        
-        newFeatureStore.addFeatures(newFc);
-
-        // filteredReader is now exhausted and closed, commit the changes
-        t.commit();
-        t.close();
-        File zip = File.createTempFile("downloadshp", ".zip");
-        zipDirectory(dir, zip);
-        
-        return zip;
-    }
-    
-    private SimpleFeature createFeature(SimpleFeature oldFeature,SimpleFeatureBuilder featureBuilder, List<ConfiguredAttribute> configuredAttributes){
-        for (ConfiguredAttribute configuredAttribute : configuredAttributes) {
-            if(configuredAttribute.isVisible()){
-                featureBuilder.add(oldFeature.getAttribute(configuredAttribute.getAttributeName()));
-            }
-        }
-        featureBuilder.add(oldFeature.getDefaultGeometry());
-        SimpleFeature feature = featureBuilder.buildFeature(null);
-        return feature;
-    }
-    
-    private org.opengis.feature.simple.SimpleFeatureType createNewFeatureType(SimpleFeatureSource sfs,List<ConfiguredAttribute> configuredAttributes,Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
-        org.opengis.feature.simple.SimpleFeatureType oldSft = sfs.getSchema();
-        SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
-
-        b.setName(sfs.getName());
-        for (ConfiguredAttribute configuredAttribute : configuredAttributes) {
-            if(configuredAttribute.isVisible()){
-                AttributeDescriptor ad = featureTypeAttributes.get(configuredAttribute.getFullName());
-                b.add(configuredAttribute.getAttributeName(),ad.getType().getClass());
-            }
-        }
-
-//add a geometry property
-        b.setCRS(oldSft.getGeometryDescriptor().getCoordinateReferenceSystem());
-        b.add(oldSft.getGeometryDescriptor().getLocalName(),oldSft.getGeometryDescriptor().getType().getBinding()); // then add geometry
-
-//build the type
-        org.opengis.feature.simple.SimpleFeatureType nieuwFt = b.buildFeatureType();
-        
-        return nieuwFt;
-    }
-    
       /**
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)
@@ -422,55 +342,7 @@ public class DownloadFeaturesActionBean implements ActionBean {
         }
         return featureTypeAttributes;
     }
-    
-     /**
-     * This method zips the directory
-     * @param dir
-     * @param zipDirName
-     */
-    private void zipDirectory(File dir, File zip) {
-        try {
-            List<String> filesListInDir = new ArrayList<String>();
-            populateFilesList(dir,filesListInDir);
-            //now zip files one by one
-            //create ZipOutputStream to write to the zip file
-            FileOutputStream fos = new FileOutputStream(zip);
-            ZipOutputStream zos = new ZipOutputStream(fos);
-            for(String filePath : filesListInDir){
-                System.out.println("Zipping "+filePath);
-                //for ZipEntry we need to keep only relative file path, so we used substring on absolute path
-                ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length()+1, filePath.length()));
-                zos.putNextEntry(ze);
-                //read the file and write to ZipOutputStream
-                FileInputStream fis = new FileInputStream(filePath);
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = fis.read(buffer)) > 0) {
-                    zos.write(buffer, 0, len);
-                }
-                zos.closeEntry();
-                fis.close();
-            }
-            zos.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-     
-    /**
-     * This method populates all the files in a directory to a List
-     * @param dir
-     * @throws IOException
-     */
-    private void populateFilesList(File dir,List<String> filesListInDir) throws IOException {
-        File[] files = dir.listFiles();
-        for(File file : files){
-            if(file.isFile()) filesListInDir.add(file.getAbsolutePath());
-            else populateFilesList(file,filesListInDir);
-        }
-    }
-
+   
     private void convertToExcel(FeatureCollection fc) {
         /*        JSONArray features = new JSONArray();
          try {
@@ -539,7 +411,6 @@ public class DownloadFeaturesActionBean implements ActionBean {
                 ff2.sort(sort, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
             });
         }
-
     }
 
 }
