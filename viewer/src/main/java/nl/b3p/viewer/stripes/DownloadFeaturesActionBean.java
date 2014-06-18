@@ -48,6 +48,7 @@ import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
+import nl.b3p.viewer.features.CSVDownloader;
 import nl.b3p.viewer.features.ExcelDownloader;
 import nl.b3p.viewer.features.FeatureDownloader;
 import nl.b3p.viewer.features.ShapeDownloader;
@@ -306,7 +307,9 @@ public class DownloadFeaturesActionBean implements ActionBean {
             downloader = new ShapeDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes);
         } else if (type.equalsIgnoreCase("XLS")) {
             downloader = new ExcelDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes);
-        } else {
+        } else if (type.equals("CSV")){
+            downloader = new CSVDownloader(attributes, (SimpleFeatureSource)fs, featureTypeAttributes);
+        }else {
             throw new IllegalArgumentException("No suitable type given: " + type);
         }
 
