@@ -27,10 +27,15 @@ import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -78,11 +83,22 @@ public class ExcelDownloader extends FeatureDownloader{
         Row headerRow = sheet.createRow(0);
         headerRow.setHeightInPoints(15f);
         int colNum = 0;
+        Drawing drawing = sheet.createDrawingPatriarch();
+
+        CreationHelper factory = wb.getCreationHelper();
+        // When the comment box is visible, have it show in a 1x3 space
+        ClientAnchor anchor = factory.createClientAnchor();
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
                 Cell cell = headerRow.createCell(colNum);
                 String alias = attributeAliases.get(configuredAttribute.getAttributeName());
                 cell.setCellValue(alias);
+                if(!alias.equals(configuredAttribute.getAttributeName())){
+                    Comment comment = drawing.createCellComment(anchor);
+                    RichTextString str = factory.createRichTextString(configuredAttribute.getAttributeName());
+                    comment.setString(str);
+                    cell.setCellComment(comment);
+                }
                 cell.setCellStyle(styles.get("header"));
                 sheet.autoSizeColumn(colNum);
                 colNum++;
