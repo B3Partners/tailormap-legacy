@@ -289,6 +289,8 @@ public class DownloadFeaturesActionBean implements ActionBean {
         for (AttributeDescriptor ad : ft.getAttributes()) {
             if (ad.getAlias() != null) {
                 attributeAliases.put(ad.getName(), ad.getAlias());
+            }else{
+                attributeAliases.put(ad.getName(), ad.getName());
             }
         }
         List<String> propertyNames = new ArrayList<String>();
@@ -307,11 +309,11 @@ public class DownloadFeaturesActionBean implements ActionBean {
         
         FeatureDownloader downloader = null;
         if (type.equalsIgnoreCase("SHP")) {
-            downloader = new ShapeDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes);
+            downloader = new ShapeDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes,attributeAliases);
         } else if (type.equalsIgnoreCase("XLS")) {
-            downloader = new ExcelDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes);
+            downloader = new ExcelDownloader(attributes,(SimpleFeatureSource) fs, featureTypeAttributes,attributeAliases);
         } else if (type.equals("CSV")){
-            downloader = new CSVDownloader(attributes, (SimpleFeatureSource)fs, featureTypeAttributes);
+            downloader = new CSVDownloader(attributes, (SimpleFeatureSource)fs, featureTypeAttributes,attributeAliases);
         }else {
             throw new IllegalArgumentException("No suitable type given: " + type);
         }

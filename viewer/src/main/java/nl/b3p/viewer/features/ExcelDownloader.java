@@ -49,8 +49,8 @@ public class ExcelDownloader extends FeatureDownloader{
     private int currentRow = -1;
     private Map<String, CellStyle> styles;
 
-    public ExcelDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes) {
-        super(attributes, fs, featureTypeAttributes);
+    public ExcelDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases) {
+        super(attributes, fs, featureTypeAttributes,attributeAliases);
     }
     
     @Override
@@ -81,7 +81,8 @@ public class ExcelDownloader extends FeatureDownloader{
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
                 Cell cell = headerRow.createCell(colNum);
-                cell.setCellValue(configuredAttribute.getAttributeName());
+                String alias = attributeAliases.get(configuredAttribute.getAttributeName());
+                cell.setCellValue(alias);
                 cell.setCellStyle(styles.get("header"));
                 sheet.autoSizeColumn(colNum);
                 colNum++;

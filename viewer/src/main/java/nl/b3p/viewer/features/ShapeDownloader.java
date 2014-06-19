@@ -57,8 +57,8 @@ public class ShapeDownloader extends FeatureDownloader {
     private File dir;
     private FeatureStore newFeatureStore;
 
-    public ShapeDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes) {
-        super(attributes, fs, featureTypeAttributes);
+    public ShapeDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases) {
+        super(attributes, fs, featureTypeAttributes,attributeAliases);
     }
 
     @Override
@@ -126,7 +126,8 @@ public class ShapeDownloader extends FeatureDownloader {
         for (ConfiguredAttribute configuredAttribute : configuredAttributes) {
             if (configuredAttribute.isVisible()) {
                 AttributeDescriptor ad = featureTypeAttributes.get(configuredAttribute.getFullName());
-                b.add(configuredAttribute.getAttributeName(), ad.getType().getClass());
+                String alias = attributeAliases.get(configuredAttribute.getAttributeName());
+                b.add(alias, ad.getType().getClass());
             }
         }
 

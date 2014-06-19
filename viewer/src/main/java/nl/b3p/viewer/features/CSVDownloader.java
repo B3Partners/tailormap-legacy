@@ -38,8 +38,8 @@ public class CSVDownloader extends FeatureDownloader{
     private char separator = ';';
     private PrintWriter pw;
     private File f;
-    public CSVDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes) {
-        super(attributes, fs, featureTypeAttributes);
+    public CSVDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases) {
+        super(attributes, fs, featureTypeAttributes,attributeAliases);
     }
 
     @Override
@@ -49,7 +49,8 @@ public class CSVDownloader extends FeatureDownloader{
         List<String> header = new ArrayList<String>();
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
-                header.add(configuredAttribute.getAttributeName());
+                String alias = attributeAliases.get(configuredAttribute.getAttributeName());
+                header.add(alias);
             }
         }
         writeRow(header);

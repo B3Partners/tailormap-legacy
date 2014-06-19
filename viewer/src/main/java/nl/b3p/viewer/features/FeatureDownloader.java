@@ -34,11 +34,13 @@ public abstract class FeatureDownloader {
     protected List<ConfiguredAttribute> attributes;
     protected SimpleFeatureSource fs;
     protected Map<String, AttributeDescriptor> featureTypeAttributes;
+    protected Map<String, String> attributeAliases;
             
-    public FeatureDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes){
+    public FeatureDownloader(List<ConfiguredAttribute> attributes,SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases){
         this.attributes = attributes;
         this.fs = fs;
         this.featureTypeAttributes = featureTypeAttributes;
+        this.attributeAliases = attributeAliases;
     }
    
     public abstract void init() throws IOException;
