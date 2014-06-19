@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 package nl.b3p.viewer.stripes;
 
 import java.io.*;
@@ -66,13 +69,25 @@ import org.stripesstuff.stripersist.Stripersist;
 public class PrintActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5_Landscape = "A5_Landscape.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5_Portrait = "A5_Portrait.xsl";
     public static final String A4_Landscape = "A4_Landscape.xsl";
     public static final String A4_Portrait = "A4_Portrait.xsl";
     public static final String A3_Landscape = "A3_Landscape.xsl";
     public static final String A3_Portrait = "A3_Portrait.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0_Landscape = "A0_Landscape.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0_Portrait = "A0_Portrait.xsl";
     public static final String DEFAULT_TEMPLATE_PATH = "/WEB-INF/xsl/print/";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5 = "a5";
     public static final String A4 = "a4";
     public static final String A3 = "a3";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0 = "a0";
     public static final String LANDSCAPE = "landscape";
     public static final String PORTRAIT = "portrait";
     public static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", new Locale("NL"));
@@ -143,6 +158,31 @@ public class PrintActionBean implements ActionBean {
             //because the map viewport is rotated the actual map rotation is negative
             angle = 360-angle;
             info.setAngle(angle);
+        }
+        
+        // 2014, Eddy Scheper, ARIS B.V. - Added.
+        // The json structure is:
+        // extra: {
+        //    info: ["info1","info2"]
+        // }
+        if(jRequest.has("extra")){
+            
+            if(log.isDebugEnabled()) {
+                log.debug("Print Parse 'extra'");
+            }
+            
+            JSONArray jarray=null;
+            Object o = jRequest.get("extra");
+            if (o instanceof JSONArray){
+                jarray= (JSONArray)o;
+            }else if (o instanceof String){
+                jarray = new JSONArray();
+                jarray.put(o);
+            }
+            for (int i=0; i < jarray.length();i++){
+                String extraStr = jarray.getString(i);
+                info.getExtra().add(extraStr);
+            }
         }
         
         final String mimeType;
@@ -351,13 +391,22 @@ public class PrintActionBean implements ActionBean {
         }
     }
     
+    // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
     private String getTemplateName(String pageFormat, String orientation) {
-        if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+        if (A5.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A5_Landscape;
+        }else if (A5.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A5_Portrait;
+        }else if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A4_Landscape;
         }else if (A3.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
             return A3_Portrait;
         }else if (A3.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A3_Landscape;
+        }else if (A0.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A0_Portrait;
+        }else if (A0.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A0_Landscape;
         }else{
             return A4_Portrait;
         }       
