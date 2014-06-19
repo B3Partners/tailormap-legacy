@@ -117,7 +117,7 @@ Ext.define ("viewer.components.AttributeList",{
                     pack:'end'
                 },
                 items: [
-                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:false, componentCls: 'mobileLarge', scope:this, handler:function(){
+                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
                              this.download();
                      }},
                     {
@@ -466,26 +466,17 @@ Ext.define ("viewer.components.AttributeList",{
     },
     download : function(){
         var appLayer = this.appLayer;
-        var type;
-        var filter;
-        
         var filter = "";
         if(appLayer.filter){
             filter=appLayer.filter.getCQL();
         }
-      /*  var featureType="";
-        if (featureTypeId){
-            featureType="&featureType="+featureTypeId;
-        }*/
         Ext.getCmp('appLayer').setValue(appLayer.id);
         Ext.getCmp('application').setValue(appId);
         Ext.getCmp('filter').setValue(filter);
         Ext.getCmp('type').setValue(Ext.getCmp("downloadType").getValue());
-        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
         this.downloadForm.submit({            
             target: '_blank'
         });
-        //alert(" asdf");
     }
 });
 
