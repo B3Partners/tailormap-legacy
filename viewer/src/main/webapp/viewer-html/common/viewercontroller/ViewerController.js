@@ -248,7 +248,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 // Determine the extent to zoom to, using the first (and only) map of the map component
                 // Access to map: this.mapComponent.frameworkMap
                 // Access to layer: this.selectionLayer.frameworkLayer
-                this.mapComponent.maps[0].zoomToSelection(this.selectionLayer, this.app.wmsSelection.cqlFilter);
+                var map = this.mapComponent.maps[0];
+                map.zoomToSelection(this.selectionLayer, this.app.wmsSelection.cqlFilter);
+                map.setLayerVisible(this.selectionLayer, true);
             }
             
             this.layersInitialized=true;
