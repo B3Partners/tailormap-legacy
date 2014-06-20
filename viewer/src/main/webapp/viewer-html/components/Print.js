@@ -19,6 +19,9 @@
  * Creates a AttributeList component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 Ext.define ("viewer.components.Print",{
     extend: "viewer.components.Component",  
     panel: null,
@@ -372,7 +375,8 @@ Ext.define ("viewer.components.Print",{
                                 xtype: "flamingocombobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
-                                store: [['a4','A4'],['a3','A3']],
+                                // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
+                                store: [['a5','A5'],['a4','A4'],['a3','A3'],['a0','A0']],
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
