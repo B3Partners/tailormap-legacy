@@ -31,6 +31,7 @@ Ext.define ("viewer.components.Print",{
     minWidth: 550,
     combineImageService: null,
     legends:null,
+    extraInfoCallbacks:null,
     config:{
         name: "Print",
         title: "",
@@ -71,7 +72,7 @@ Ext.define ("viewer.components.Print",{
                 label: me.label
             });
         }
-        
+        this.extraInfoCallbacks = new Array();
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
@@ -683,6 +684,18 @@ Ext.define ("viewer.components.Print",{
     submitSettings: function(action){        
         var properties = this.getProperties();
         properties.action=action;
+        // Process registred extra info callbacks
+        var extraInfos = new Array();
+        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){
+            var entry = this.extraInfoCallbacks[i];
+            var extraInfo ={
+                class: entry.component.$className,
+                componentName: entry.component.name,
+                info: entry.callback()
+            };
+            extraInfos.push(extraInfo);
+        }
+        properties.extra = extraInfos;
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
         this.printForm.submit({            
@@ -843,6 +856,22 @@ Ext.define ("viewer.components.Print",{
             }
         }
         return config;
+    },
+    registerExtraInfo: function(component, callback){
+        var entry = {
+            component:component,
+            callback: callback
+        };
+        this.extraInfoCallbacks.push(entry);
+    },
+    unregisterExtraInfo: function (component){
+        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){
+            if(this.extraInfoCallbacks[i].component.name === component.name ){
+                this.extraInfoCallbacks.splice(i, 1);
+                break;
+            }
+        }
+        var a = 0;
     },
     getOverviews : function(){
       return this.viewerController.getComponentsByClassName("viewer.components.Overview");  
