@@ -264,21 +264,24 @@ public class DownloadFeaturesActionBean implements ActionBean {
         
         if(json.getBoolean("success")){
             final FileInputStream fis = new FileInputStream(output);
-
-            StreamingResolution res = new StreamingResolution(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(output)) {
-                @Override
-                public void stream(HttpServletResponse response) throws Exception {
-                    OutputStream out = response.getOutputStream();
-                    IOUtils.copy(fis, out);
-                    fis.close();
-                }
-            };          
-            String name = output.getName();
-            String extension = name.substring(name.lastIndexOf("."));
-            String newName = "Download-"+ appLayer.getDisplayName() + "-"+type + extension;
-            res.setFilename(newName);
-            res.setAttachment(true);
-            return res;
+            try{
+                StreamingResolution res = new StreamingResolution(MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(output)) {
+                    @Override
+                    public void stream(HttpServletResponse response) throws Exception {
+                        OutputStream out = response.getOutputStream();
+                        IOUtils.copy(fis, out);
+                        fis.close();
+                    }
+                };          
+                String name = output.getName();
+                String extension = name.substring(name.lastIndexOf("."));
+                String newName = "Download-"+ appLayer.getDisplayName() + "-"+type + extension;
+                res.setFilename(newName);
+                res.setAttachment(true);
+                return res;
+            }finally{
+                output.delete();
+            }
         }else{
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
