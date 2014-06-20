@@ -27,6 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,7 +115,7 @@ public class ShapeDownloader extends FeatureDownloader {
         t.close();
         File zip = File.createTempFile("downloadshp", ".zip");
         zipDirectory(dir, zip);
-
+        FileUtils.deleteDirectory(dir);
         return zip;
     }
 
