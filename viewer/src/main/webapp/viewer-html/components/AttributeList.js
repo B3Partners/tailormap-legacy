@@ -23,6 +23,7 @@ Ext.define ("viewer.components.AttributeList",{
     extend: "viewer.components.Component",
     grids: null,
     pagers: null,
+    downloadForm:null,
     config: {
         layers:null,
         title:null,
@@ -116,13 +117,56 @@ Ext.define ("viewer.components.AttributeList",{
                     pack:'end'
                 },
                 items: [
+                     {xtype: 'button', id:"downloadButton",text: 'Download',disabled:true, componentCls: 'mobileLarge', scope:this, handler:function(){
+                             this.download();
+                     }},
+                    {
+                        xtype: "flamingocombobox",
+                        disabled:true,
+                        id:"downloadType",
+                        value: 'SHP',
+                        queryMode: 'local',
+                        displayField: 'label',
+                        name:"test",
+                        valueField: 'type',
+                        store:  Ext.create('Ext.data.Store', {
+                                fields: ['type','label'], data : [{type:"CSV", label:"csv" },{type:"XLS", label:"Excel" },{type:"SHP", label:"Shape" }] 
+                            })
+                    },
                     {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
                         me.popup.hide();
                     }}
                 ]
             }]
         });
-              
+        this.downloadForm = Ext.create('Ext.form.Panel', {            
+            renderTo: me.getContentDiv(),
+            url: actionBeans["download"],
+            border: 0,
+            visible: false,
+            standardSubmit: true,
+            items: [{
+                    xtype: "hidden",
+                    name: "filter",
+                    id: 'filter'
+                },
+                {
+                    xtype: "hidden",
+                    name: "appLayer",
+                    id: 'appLayer'
+                },
+                {
+                    xtype: "hidden",
+                    name: "application",
+                    id: "application"
+                },
+                {
+                    xtype: "hidden",
+                    name: "type",
+                    id: "type"
+                }
+            ]
+        });
         var config = {
             viewerController : this.viewerController,
             restriction: "attribute",
@@ -157,9 +201,11 @@ Ext.define ("viewer.components.AttributeList",{
         this.appLayer = appLayer;
         
         var me = this;
-        
+        var downloadButton = Ext.getCmp("downloadButton");
+        var downloadType = Ext.getCmp("downloadType");
         if(this.appLayer != null) {
-            
+            downloadButton.setDisabled(false);
+            downloadType.setDisabled(false);
             this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
             
             // check if featuretype was loaded
@@ -170,6 +216,9 @@ Ext.define ("viewer.components.AttributeList",{
             } else {
                 this.initGrid(me.appLayer);
             }    
+        }else{
+            downloadButton.setDisabled(true);
+            downloadType.setDisabled(true);
         }
     },
     // Called when the layerSelector was changed. 
@@ -414,6 +463,20 @@ Ext.define ("viewer.components.AttributeList",{
             });
             this.pagers[gridId]=p;
         }
+    },
+    download : function(){
+        var appLayer = this.appLayer;
+        var filter = "";
+        if(appLayer.filter){
+            filter=appLayer.filter.getCQL();
+        }
+        Ext.getCmp('appLayer').setValue(appLayer.id);
+        Ext.getCmp('application').setValue(appId);
+        Ext.getCmp('filter').setValue(filter);
+        Ext.getCmp('type').setValue(Ext.getCmp("downloadType").getValue());
+        this.downloadForm.submit({            
+            target: '_blank'
+        });
     }
 });
 
