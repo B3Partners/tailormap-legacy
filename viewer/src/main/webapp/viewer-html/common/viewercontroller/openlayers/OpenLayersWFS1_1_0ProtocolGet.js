@@ -88,7 +88,8 @@ OpenLayers.Protocol.WFS.v1_1_0.Get = OpenLayers.Class(OpenLayers.Protocol.WFS.v1
             url: options.url,
             callback: this.createCallback(this.handleRead, response, options),
             params: options.params,
-            headers: options.headers
+            headers: options.headers,
+            proxy: contextPath+"/action/proxy/wfs?url="
         });
 
         return response;
