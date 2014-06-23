@@ -19,6 +19,9 @@
  * Creates a AttributeList component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 Ext.define ("viewer.components.Print",{
     extend: "viewer.components.Component",  
     panel: null,
@@ -28,6 +31,7 @@ Ext.define ("viewer.components.Print",{
     minWidth: 550,
     combineImageService: null,
     legends:null,
+    extraInfoCallbacks:null,
     config:{
         name: "Print",
         title: "",
@@ -68,7 +72,7 @@ Ext.define ("viewer.components.Print",{
                 label: me.label
             });
         }
-        
+        this.extraInfoCallbacks = new Array();
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
@@ -372,7 +376,8 @@ Ext.define ("viewer.components.Print",{
                                 xtype: "flamingocombobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
-                                store: [['a4','A4'],['a3','A3']],
+                                // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
+                                store: [['a5','A5'],['a4','A4'],['a3','A3'],['a0','A0']],
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
@@ -679,6 +684,18 @@ Ext.define ("viewer.components.Print",{
     submitSettings: function(action){        
         var properties = this.getProperties();
         properties.action=action;
+        // Process registred extra info callbacks
+        var extraInfos = new Array();
+        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){
+            var entry = this.extraInfoCallbacks[i];
+            var extraInfo = {
+                class: entry.component.$className,
+                componentName: entry.component.name,
+                info: entry.callback() // Produces an JSONObject
+            };
+            extraInfos.push(extraInfo);
+        }
+        properties.extra = extraInfos;
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
         this.printForm.submit({            
@@ -839,6 +856,30 @@ Ext.define ("viewer.components.Print",{
             }
         }
         return config;
+    },
+    /**
+     * Register the calling component for retrieving extra information to add to the print.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the print component
+     */
+    registerExtraInfo: function(component, callback){
+        var entry = {
+            component:component,
+            callback: callback
+        };
+        this.extraInfoCallbacks.push(entry);
+    },
+    /**
+     * Unregister the given component for retrieving extra info for printing.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    unregisterExtraInfo: function (component){
+        for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
+            if(this.extraInfoCallbacks[i].component.name === component.name ){
+                this.extraInfoCallbacks.splice(i, 1);
+            }
+        }
     },
     getOverviews : function(){
       return this.viewerController.getComponentsByClassName("viewer.components.Overview");  

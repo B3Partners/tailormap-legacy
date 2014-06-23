@@ -14,15 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 package nl.b3p.viewer.stripes;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
@@ -40,6 +43,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.print.Legend;
+import nl.b3p.viewer.print.PrintExtraInfo;
 import nl.b3p.viewer.print.PrintInfo;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -66,13 +70,25 @@ import org.stripesstuff.stripersist.Stripersist;
 public class PrintActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5_Landscape = "A5_Landscape.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5_Portrait = "A5_Portrait.xsl";
     public static final String A4_Landscape = "A4_Landscape.xsl";
     public static final String A4_Portrait = "A4_Portrait.xsl";
     public static final String A3_Landscape = "A3_Landscape.xsl";
     public static final String A3_Portrait = "A3_Portrait.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0_Landscape = "A0_Landscape.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0_Portrait = "A0_Portrait.xsl";
     public static final String DEFAULT_TEMPLATE_PATH = "/WEB-INF/xsl/print/";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5 = "a5";
     public static final String A4 = "a4";
     public static final String A3 = "a3";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0 = "a0";
     public static final String LANDSCAPE = "landscape";
     public static final String PORTRAIT = "portrait";
     public static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", new Locale("NL"));
@@ -150,6 +166,33 @@ public class PrintActionBean implements ActionBean {
             mimeType=MimeConstants.MIME_RTF;
         }else{
             mimeType=MimeConstants.MIME_PDF;
+        }
+        
+        // The json structure is:
+//            [{
+//                class: <String> entry.component.$className,
+//                componentName: <String>entry.component.name,
+//                info: <JSONObject> info in JSONObject
+//            }]
+        if(jRequest.has("extra")){
+            
+            log.debug("Print Parse 'extra'");
+            
+            JSONArray jarray = jRequest.getJSONArray("extra");
+            List<PrintExtraInfo> peis = new ArrayList<PrintExtraInfo>();
+            for (int i=0; i < jarray.length();i++){
+                JSONObject extraObj = jarray.getJSONObject(i);
+                PrintExtraInfo pei = new PrintExtraInfo();
+                String className = extraObj.getString("class");
+                String componentName = extraObj.getString("componentName");
+                JSONObject infoString = extraObj.getJSONObject("info");
+
+                pei.setClassName(className);
+                pei.setComponentName(componentName);
+                pei.setInfoText(infoString);
+                peis.add(pei);
+            }
+            info.setExtra(peis);
         }
         
         //determine the correct template
@@ -351,13 +394,22 @@ public class PrintActionBean implements ActionBean {
         }
     }
     
+    // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
     private String getTemplateName(String pageFormat, String orientation) {
-        if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+        if (A5.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A5_Landscape;
+        }else if (A5.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A5_Portrait;
+        }else if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A4_Landscape;
         }else if (A3.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
             return A3_Portrait;
         }else if (A3.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A3_Landscape;
+        }else if (A0.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A0_Portrait;
+        }else if (A0.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A0_Landscape;
         }else{
             return A4_Portrait;
         }       
