@@ -18,6 +18,9 @@
  * Custom configuration object for AttributeList configuration
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId,configObject){
@@ -58,8 +61,10 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "default_format",
                 emptyText:'Maak uw keuze',
                 store: [
+                    ["a5","A5"],
                     ["a4","A4"],
-                    ["a3","A3"]
+                    ["a3","A3"],
+                    ["a0","A0"]
                 ],
                 width : 75
             },{
