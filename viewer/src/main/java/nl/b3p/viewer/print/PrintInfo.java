@@ -49,7 +49,6 @@ import org.apache.commons.logging.LogFactory;
 
 @XmlRootElement(name="info")
 // 2014, Eddy Scheper, ARIS B.V. - Modified.
-//@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle","overviewUrl"})
 @XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle","overviewUrl","extra"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
@@ -62,8 +61,7 @@ public class PrintInfo {
     private String remark;
     private int quality;
     private int angle;
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
-    private List<String> extra = new ArrayList();
+    private List<PrintExtraInfo> extra = new ArrayList();
     private List<Legend> legendUrls = new ArrayList();
     
     private List<File> tempFiles = new ArrayList();
@@ -162,15 +160,14 @@ public class PrintInfo {
     public void setOverviewUrl(String overviewUrl) {
         this.overviewUrl = overviewUrl;
     }
-    
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
-    @XmlAnyElement
-    public List<String> getExtra() {
+
+    @XmlElementWrapper(name="extra")
+    @XmlElement(name="info")
+    public List<PrintExtraInfo> getExtra() {
         return extra;
     }
 
-    // 2014, Eddy Scheper, ARIS B.V. - Added.
-    public void setExtra(List<String> extra) {
+    public void setExtra(List<PrintExtraInfo> extra) {
         this.extra = extra;
     }
 

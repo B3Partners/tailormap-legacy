@@ -21,11 +21,11 @@ package nl.b3p.viewer.stripes;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
@@ -43,6 +43,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.print.Legend;
+import nl.b3p.viewer.print.PrintExtraInfo;
 import nl.b3p.viewer.print.PrintInfo;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -167,27 +168,31 @@ public class PrintActionBean implements ActionBean {
             mimeType=MimeConstants.MIME_PDF;
         }
         
-        // 2014, Eddy Scheper, ARIS B.V. - Added.
         // The json structure is:
-        // extra: {
-        //    info: ["info1","info2"]
-        // }
+//            [{
+//                class: <String> entry.component.$className,
+//                componentName: <String>entry.component.name,
+//                info: <JSONObject> info in JSONObject
+//            }]
         if(jRequest.has("extra")){
             
             log.debug("Print Parse 'extra'");
             
-            JSONArray jarray=null;
-            Object o = jRequest.get("extra");
-            if (o instanceof JSONArray){
-                jarray= (JSONArray)o;
-            }else if (o instanceof String){
-                jarray = new JSONArray();
-                jarray.put(o);
-            }
+            JSONArray jarray = jRequest.getJSONArray("extra");
+            List<PrintExtraInfo> peis = new ArrayList<PrintExtraInfo>();
             for (int i=0; i < jarray.length();i++){
-                String extraStr = jarray.getString(i);
-                info.getExtra().add(extraStr);
+                JSONObject extraObj = jarray.getJSONObject(i);
+                PrintExtraInfo pei = new PrintExtraInfo();
+                String className = extraObj.getString("class");
+                String componentName = extraObj.getString("componentName");
+                JSONObject infoString = extraObj.getJSONObject("info");
+
+                pei.setClassName(className);
+                pei.setComponentName(componentName);
+                pei.setInfoText(infoString);
+                peis.add(pei);
             }
+            info.setExtra(peis);
         }
         
         //determine the correct template

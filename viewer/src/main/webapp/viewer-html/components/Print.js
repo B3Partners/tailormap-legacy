@@ -688,10 +688,10 @@ Ext.define ("viewer.components.Print",{
         var extraInfos = new Array();
         for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){
             var entry = this.extraInfoCallbacks[i];
-            var extraInfo ={
+            var extraInfo = {
                 class: entry.component.$className,
                 componentName: entry.component.name,
-                info: entry.callback()
+                info: entry.callback() // Produces an JSONObject
             };
             extraInfos.push(extraInfo);
         }
@@ -857,6 +857,11 @@ Ext.define ("viewer.components.Print",{
         }
         return config;
     },
+    /**
+     * Register the calling component for retrieving extra information to add to the print.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the print component
+     */
     registerExtraInfo: function(component, callback){
         var entry = {
             component:component,
@@ -864,14 +869,17 @@ Ext.define ("viewer.components.Print",{
         };
         this.extraInfoCallbacks.push(entry);
     },
+    /**
+     * Unregister the given component for retrieving extra info for printing.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
     unregisterExtraInfo: function (component){
-        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){
+        for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
             if(this.extraInfoCallbacks[i].component.name === component.name ){
                 this.extraInfoCallbacks.splice(i, 1);
-                break;
             }
         }
-        var a = 0;
     },
     getOverviews : function(){
       return this.viewerController.getComponentsByClassName("viewer.components.Overview");  
