@@ -509,6 +509,7 @@ public class Authorizations {
     public static ApplicationCache getApplicationCache(Application app) {
         synchronized(LOCK) {        
             ApplicationCache cache = applicationCache.get(app.getId());
+            Date allServicesAuthLastChanged = null;
 
             if(cache != null) {
                 // Check if the data was not cached before the authorizations 
@@ -523,9 +524,9 @@ public class Authorizations {
                         // checking only services used is not worth it because the
                         // authorizations for services should only change infrequently)
                         
-                        Date allServicesAuthLastChanged = (Date)Stripersist.getEntityManager().createQuery("select max(authorizationsModified) from GeoService").getSingleResult();
+                        allServicesAuthLastChanged = (Date)Stripersist.getEntityManager().createQuery("select max(authorizationsModified) from GeoService").getSingleResult();
                         
-                        if(allServicesAuthLastChanged != null && allServicesAuthLastChanged.before(cache.modified)) {
+                        if(allServicesAuthLastChanged != null && !cache.modified.before(allServicesAuthLastChanged)) {
                             return cache;
                         }
                     } catch(NoResultException nre) {
@@ -536,7 +537,11 @@ public class Authorizations {
 
             cache = new ApplicationCache();
             applicationCache.put(app.getId(), cache);
-            cache.modified = app.getAuthorizationsModified();
+            if(allServicesAuthLastChanged != null ){
+                cache.modified = allServicesAuthLastChanged.after(app.getAuthorizationsModified() ) ? allServicesAuthLastChanged : app.getAuthorizationsModified();
+            }else{
+                cache.modified = app.getAuthorizationsModified();
+            }
             cache.protectedLevels = new HashMap();
             cache.protectedAppLayers = new HashMap();
                         
