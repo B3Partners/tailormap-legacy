@@ -37,7 +37,7 @@ public class PrintExtraInfo {
     private Node info;
 
     
-    @XmlAttribute
+    @XmlAttribute(name="classname")
     public String getClassName() {
         return className;
     }
@@ -46,7 +46,7 @@ public class PrintExtraInfo {
         this.className = className;
     }
     
-    @XmlAttribute
+    @XmlAttribute(name ="componentname")
     public String getComponentName() {
         return componentName;
     }
