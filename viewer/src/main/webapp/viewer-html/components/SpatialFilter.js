@@ -50,11 +50,37 @@ Ext.define ("viewer.components.SpatialFilter",{
         };
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
      
-   
         this.loadWindow(); 
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
+
+
+    showWindow : function(){
+        if(this.vectorLayer == null){
+            this.createVectorLayer();
+        }
+        this.layerSelector.initLayers();
+        this.popup.popupWin.setTitle(this.title);
+        this.popup.show();
+    },
+    
+    // <editor-fold desc="Event handlers" defaultstate="collapsed">
+    layerChanged : function (appLayer,afterLoadAttributes,scope){
+       /* if(appLayer != null){
+            this.vectorLayer.removeAllFeatures();
+            this.mode=null;
+            this.viewerController.mapComponent.getMap().removeMarker("edit");
+            if(appLayer.details && appLayer.details["editfunction.title"]){
+                this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
+            }
+          
+            this.loadAttributes(appLayer,afterLoadAttributes,scope);
+        }else{
+            this.cancel();
+        }*/
+    },
+       
     selectedContentChanged : function (){
        /* if(this.vectorLayer == null){
             this.createVectorLayer();
@@ -62,29 +88,8 @@ Ext.define ("viewer.components.SpatialFilter",{
             this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }*/
     },
-    createVectorLayer : function (){
-        /* this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
-            name: this.name + 'VectorLayer',
-            geometrytypes:["Circle","Polygon","MultiPolygon","Point", "LineString"],
-            showmeasures:false,
-            viewerController : this.viewerController,
-            style: {
-                fillcolor: "FF0000",
-                fillopacity: 50,
-                strokecolor: "FF0000",
-                strokeopacity: 50
-            }
-        });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);*/
-    },
-    showWindow : function(){
-       /* if(this.vectorLayer == null){
-            this.createVectorLayer();
-        }
-        this.layerSelector.initLayers();
-        this.popup.popupWin.setTitle(this.title);*/
-        this.popup.show();
-    },
+    // </editor-fold>
+    // <editor-fold desc="Initialization methods" defaultstate="collapsed">
     loadWindow : function (){
         var me =this;
         var drawingItems = [
@@ -145,6 +150,9 @@ Ext.define ("viewer.components.SpatialFilter",{
                 xtype: "container",
                 autoScroll: true,
                 width: '100%',
+                layout:{
+                    type: "vbox"
+                },
                 flex: 1,
                 items: drawingItems
             },{
@@ -179,28 +187,26 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
-            
-    layerChanged : function (appLayer,afterLoadAttributes,scope){
-       /* if(appLayer != null){
-            this.vectorLayer.removeAllFeatures();
-            this.mode=null;
-            this.viewerController.mapComponent.getMap().removeMarker("edit");
-            if(appLayer.details && appLayer.details["editfunction.title"]){
-                this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
+    createVectorLayer : function (){
+         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+            name: this.name + 'VectorLayer',
+            geometrytypes:["Circle","Polygon"],
+            showmeasures:false,
+            viewerController : this.viewerController,
+            style: {
+                fillcolor: "FF0000",
+                fillopacity: 50,
+                strokecolor: "FF0000",
+                strokeopacity: 50
             }
-          
-            this.loadAttributes(appLayer,afterLoadAttributes,scope);
-        }else{
-            this.cancel();
-        }*/
+        });
+        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
+    
+    //</editor-fold>
+   
+    
     resetForm : function (){
-        Ext.getCmp(this.name +"editButton").setDisabled(true);
-        Ext.getCmp(this.name +"newButton").setDisabled(true);
-        this.mode=null;
-        this.layerSelector.combobox.select(null);
-        Ext.getCmp( this.name +"geomLabel").setText("");
-        this.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
     },
     getExtComponents: function() {
