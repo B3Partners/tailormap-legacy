@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2014 3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Edit component
+ * Spatial Filter component
+ * This component adds the functionality of creating a spatial filter: a filter based on a drawn geometry (polygon, rectangle, circle or freeform). All features must
+ * be in or partly in the drawn geometry (ie. intersects).
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.SpatialFilter",{
@@ -55,9 +57,8 @@ Ext.define ("viewer.components.SpatialFilter",{
         return this;
     },
 
-
     showWindow : function(){
-        if(this.vectorLayer == null){
+        if(this.vectorLayer === null){
             this.createVectorLayer();
         }
         this.layerSelector.initLayers();
