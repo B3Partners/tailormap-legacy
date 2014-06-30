@@ -24,6 +24,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     extend: "viewer.components.Component",
     layerSelector:null,
     drawingButtonIds:null,
+    vectorLayer:null,
     iconPath:null,
     config:{
         title: "",
@@ -72,11 +73,15 @@ Ext.define ("viewer.components.SpatialFilter",{
     drawCircle: function(){
         this.vectorLayer.drawFeature("Circle");
     },
+    
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     layerChanged : function (appLayer,afterLoadAttributes,scope){
+        var buttons = Ext.getCmp(this.name +"filterButtons");
         if(appLayer !== null){
+            buttons.setDisabled(false);
             this.vectorLayer.removeAllFeatures();
         }else{
+            buttons.setDisabled(true);
             this.cancel();
         }
     },
@@ -96,7 +101,6 @@ Ext.define ("viewer.components.SpatialFilter",{
     loadWindow : function (){
         var me =this;
         var drawingItems = [
-        
         {
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
@@ -151,6 +155,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             },{
                 id: this.name + 'filterButtons',
                 xtype: "container",
+                disabled:true,
                 autoScroll: true,
                 width: '100%',
                 layout:{
@@ -191,7 +196,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
     createVectorLayer : function (){
-         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+         this.vectorLayer = this.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes:["Circle","Polygon"],
             showmeasures:false,
