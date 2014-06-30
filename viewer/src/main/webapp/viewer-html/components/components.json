@@ -852,5 +852,17 @@
         restrictions: ["left_menu"],        
         type: "popup",
         showHelp: true
+    },
+    {
+        className: "viewer.components.SpatialFilter",
+        name: "Spatial Filter",
+        shortName: "Sf",
+        group: "Component",
+        sources: ["SpatialFilter.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","SpatialFilter-config.js"],
+        restrictions: ["left_menu"],        
+        type: "popup",
+        singleton: true,
+        showHelp: true
     }
 ]
