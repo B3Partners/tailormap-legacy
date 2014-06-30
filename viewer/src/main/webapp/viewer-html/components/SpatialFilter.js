@@ -65,22 +65,24 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.popup.show();
     },
     
+    drawPolygon: function(){
+        this.vectorLayer.drawFeature("Polygon");
+    },
+    drawCircle: function(){
+        this.vectorLayer.drawFeature("Circle");
+    },
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     layerChanged : function (appLayer,afterLoadAttributes,scope){
-       /* if(appLayer != null){
+        if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
-            this.mode=null;
-            this.viewerController.mapComponent.getMap().removeMarker("edit");
-            if(appLayer.details && appLayer.details["editfunction.title"]){
-                this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
-            }
-          
-            this.loadAttributes(appLayer,afterLoadAttributes,scope);
         }else{
             this.cancel();
-        }*/
+        }
     },
-       
+      
+    featureAdded : function (obj, feature){
+        var a = 0;
+    },
     selectedContentChanged : function (){
        /* if(this.vectorLayer == null){
             this.createVectorLayer();
@@ -201,6 +203,8 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
         });
         this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        
+        this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.featureAdded,this);
     },
     
     //</editor-fold>
