@@ -32,6 +32,7 @@ Ext.define ("viewer.components.Print",{
     combineImageService: null,
     legends:null,
     extraInfoCallbacks:null,
+    extraLayerCallbacks:null,
     config:{
         name: "Print",
         title: "",
@@ -73,6 +74,8 @@ Ext.define ("viewer.components.Print",{
             });
         }
         this.extraInfoCallbacks = new Array();
+        this.extraLayerCallbacks = new Array();
+        
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
@@ -800,6 +803,35 @@ Ext.define ("viewer.components.Print",{
                 }
             }
         }
+        
+        for(var j = 0 ; j < this.extraLayerCallbacks.length;j++){
+            var printLayer = new Object();
+            var layerInfos = this.extraLayerCallbacks[j].callback();
+            for(var k = 0 ; k < layerInfos.length; k++){
+                var layerInfo = layerInfos[k];
+                printLayer.url= layerInfo.url;
+                var beginChar = layerInfo.url.indexOf("?") === -1 ? "?" : "&";
+                printLayer.url += beginChar + "LAYERS=" + layerInfo.layers;
+                printLayer.url += "&FORMAT=" + layerInfo.format;
+                printLayer.url += "&TRANSPARENT=" + layerInfo.transparent;
+                printLayer.url += "&SRS=" + layerInfo.srs;
+                if(printLayer.url.toLowerCase().indexOf("bbox") === -1){
+                    printLayer.url += "&bbox=-1,-1,-1,-1";
+                }
+                
+                if(printLayer.url.toLowerCase().indexOf("width") === -1){
+                    printLayer.url += "&WIDTH=-1&HEIGHT=-1";
+                }
+                
+                if(printLayer.url.toLowerCase().indexOf("request") === -1){
+                    printLayer.url += "&REQUEST=Getmap";
+                }
+                
+                printLayer.alpha=layerInfo.alpha; 
+                printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
+                printLayers.push(printLayer);           
+            }
+        }
         values.requests=printLayers;        
         var bbox=this.viewerController.mapComponent.getMap().getExtent();
         if (bbox){
@@ -878,6 +910,29 @@ Ext.define ("viewer.components.Print",{
         for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
             if(this.extraInfoCallbacks[i].component.name === component.name ){
                 this.extraInfoCallbacks.splice(i, 1);
+            }
+        }
+    },
+    /**
+     * Register a component which can add extra layers to the print.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the print component
+     */
+    registerExtraLayers : function (component, callback){
+        this.extraLayerCallbacks.push({
+            component:component,
+            callback: callback
+        });
+    },  
+    /**
+     * Unregister the given component for retrieving extra info for printing.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    unregisterExtraLayers: function (component){
+        for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
+            if(this.extraLayerCallbacks[i].component.name === component.name ){
+                this.extraLayerCallbacks.splice(i, 1);
             }
         }
     },
