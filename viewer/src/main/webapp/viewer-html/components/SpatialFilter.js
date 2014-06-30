@@ -73,7 +73,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     layerChanged : function (appLayer,afterLoadAttributes,scope){
-        if(appLayer != null){
+        if(appLayer !== null){
             this.vectorLayer.removeAllFeatures();
         }else{
             this.cancel();
@@ -84,11 +84,11 @@ Ext.define ("viewer.components.SpatialFilter",{
         var a = 0;
     },
     selectedContentChanged : function (){
-       /* if(this.vectorLayer == null){
+        if(this.vectorLayer === null){
             this.createVectorLayer();
         }else{
             this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        }*/
+        }
     },
     // </editor-fold>
     // <editor-fold desc="Initialization methods" defaultstate="collapsed">
