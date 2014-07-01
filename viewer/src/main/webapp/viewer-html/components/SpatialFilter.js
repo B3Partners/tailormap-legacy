@@ -35,6 +35,12 @@ Ext.define ("viewer.components.SpatialFilter",{
         label: ""
     },
     constructor: function (conf){        
+        if(conf.details.width === undefined){
+            conf.details.width = 330;
+        }
+        if(conf.details.height === undefined){
+            conf.details.height = 250;
+        }
         viewer.components.SpatialFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
         var me = this;
@@ -105,10 +111,8 @@ Ext.define ("viewer.components.SpatialFilter",{
                 Ext.MessageBox.alert("Error", e);
             });
         }else{
-            //var radius = this.getRadius();
             var geomAttr = appLayer.geometryAttribute; 
             if (geomAttr !== undefined){
-                //var filter="DWITHIN(\""+geomAttr+"\", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
                 var filter = "";
                 if(geometry.length > 0){
                     filter = "INTERSECTS(" + geomAttr + ", " + geometry + ")";
@@ -152,7 +156,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
     },
     // </editor-fold>
-    // 
+     
     // <editor-fold desc="Initialization methods" defaultstate="collapsed">
     loadWindow : function (){
         var me =this;
