@@ -73,7 +73,32 @@ Ext.define ("viewer.components.SpatialFilter",{
     drawCircle: function(){
         this.vectorLayer.drawFeature("Circle");
     },
-    
+    setFilter: function(geometry){
+        var appLayer = this.layerSelector.getSelectedAppLayer();
+        var me = this;          
+        if(appLayer.attributes === undefined || appLayer.attributes === null) {   
+            this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
+                me.setFilter(geometry);
+            },function(e){
+                Ext.MessageBox.alert("Error", e);
+            });
+        }else{
+            //var radius = this.getRadius();
+            var geomAttr = appLayer.geometryAttribute; 
+            if (geomAttr !== undefined){
+                //var filter="DWITHIN(\""+geomAttr+"\", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
+                var filter = "INTERSECTS(" + geomAttr + ", " + geometry + ")";
+                this.viewerController.setFilter(
+                    Ext.create("viewer.components.CQLFilterWrapper",{
+                        id: "filter_"+this.getName(),
+                        cql: filter,
+                        operator : "AND",
+                        type: "GEOMETRY"
+                    }),appLayer);
+            }            
+        }
+       
+    },
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     layerChanged : function (appLayer,afterLoadAttributes,scope){
         var buttons = Ext.getCmp(this.name +"filterButtons");
@@ -87,7 +112,8 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
       
     featureAdded : function (obj, feature){
-        var a = 0;
+        this.setFilter(feature.wktgeom);
+        this.toggleAll(false);
     },
     selectedContentChanged : function (){
         if(this.vectorLayer === null){
@@ -155,7 +181,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             },{
                 id: this.name + 'filterButtons',
                 xtype: "container",
-                disabled:true,
+                //disabled:true,
                 autoScroll: true,
                 width: '100%',
                 layout:{
@@ -215,6 +241,14 @@ Ext.define ("viewer.components.SpatialFilter",{
     
     //</editor-fold>
    
+    // Some helper functions here
+    toggleAll : function(state){
+        for ( var key in this.drawingButtonIds){
+            var el = this.drawingButtonIds[key];
+            var button = Ext.getCmp(el);
+            button.toggle(state);
+        }
+    },
     
     resetForm : function (){
         this.vectorLayer.removeAllFeatures();
