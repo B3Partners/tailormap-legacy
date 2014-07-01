@@ -67,7 +67,9 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.drawingButtonIds = {
             'polygon': Ext.id(),
             'circle': Ext.id(),
-            'box': Ext.id()
+            'box': Ext.id(),
+            'freehand': Ext.id()
+            
         };
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
      
@@ -203,6 +205,23 @@ Ext.define ("viewer.components.SpatialFilter",{
                     }
                 }
             }
+        },
+        {
+            xtype: 'button',
+            id: this.drawingButtonIds.freehand,
+            icon: this.iconPath+"freehand.png",
+            componentCls: 'mobileLarge',
+            tooltip: "Teken een vrije vorm",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: function(){
+                        me.drawGeometry("Freehand");
+                    }
+                }
+            }
         }];
         if(!MobileManager.isMobile()) {
             drawingItems.push({
@@ -260,7 +279,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             },{
                 id: this.name + 'filterButtons',
                 xtype: "container",
-                //disabled:true,
+                disabled:true,
                 autoScroll: true,
                 width: '100%',
                 layout:{

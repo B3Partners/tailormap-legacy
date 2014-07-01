@@ -29,6 +29,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     polygon:null,
     circle: null,
     box:null,
+    freehand:null,
     drawFeatureControls:null,
     modifyFeature:null,
     constructor : function (config){
@@ -76,6 +77,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
                 irregular: true
             }
         });
+        
+        this.freehand = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Polygon, {
+            displayClass: 'olControlDrawFeaturePolygon',
+            handlerOptions: {
+              freehand: true
+            }
+        });
             
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
@@ -83,6 +91,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.line);
         this.drawFeatureControls.push(this.point);
         this.drawFeatureControls.push(this.box);
+        this.drawFeatureControls.push(this.freehand);
         
         // The modifyfeature control allows us to edit and select features.
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : true,vertexRenderIntent: "select"});
@@ -93,6 +102,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.polygon);
         map.addControl(this.circle);
         map.addControl(this.box);
+        map.addControl(this.freehand);
         map.addControl(this.modifyFeature);
         
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
@@ -204,6 +214,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.circle.activate();
         }else if(type === "Box"){
             this.box.activate();
+        }else if(type === "Freehand"){
+            this.freehand.activate();
         }else {
            this.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
@@ -228,6 +240,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }if (this.box.active){
             this.box.cancel();
             this.box.deactivate();
+        }if (this.freehand.active){
+            this.freehand.cancel();
+            this.freehand.deactivate();
         }
     },
     
