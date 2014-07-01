@@ -20,13 +20,33 @@
  */
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        if (configObject === null){
-            configObject = {};
+    constructor: function (parentId,config){
+        if (config === null){
+            config = {};
         }
-        configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
+        config.showLabelconfig =true;
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,config);        
         this.createCheckBoxes(this.configObject.layers,{filterable: true});
+        var me = this;
+        this.form.add([{
+                xtype: 'checkbox',
+                fieldLabel: 'Filter direct na tekenen aanzetten',
+                inputValue: true,
+                name: 'applyDirect',
+                checked: config.applyDirect!==undefined? config.applyDirect : true,
+                value: true,
+                labelWidth:me.labelWidth
+            },
+            {
+                xtype: 'checkbox',
+                fieldLabel: 'Meerdere geometrieën in één filter',
+                inputValue: true,
+                name: 'multiGeometries',
+                checked: config.multiGeometries!==undefined? config.multiGeometries : false,
+                value: false,
+                labelWidth:me.labelWidth
+            }
+            ]);
     }
 });
 

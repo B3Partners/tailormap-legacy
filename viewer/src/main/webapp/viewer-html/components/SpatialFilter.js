@@ -32,6 +32,8 @@ Ext.define ("viewer.components.SpatialFilter",{
         iconUrl: "",
         tooltip: "",
         layers:null,
+        applyDirect:null,
+        multiGeometries:null,
         label: ""
     },
     constructor: function (conf){        
@@ -40,6 +42,13 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
         if(conf.details.height === undefined){
             conf.details.height = 250;
+        }
+        if(conf.applyDirect === undefined){
+            conf.applyDirect = true;
+        }
+        
+        if(conf.multiGeometries === undefined){
+            conf.multiGeometries = true;
         }
         viewer.components.SpatialFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
@@ -218,16 +227,16 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: "checkbox",
             boxLabel: 'Meerdere geometriën als filter',
             name: 'appendFilter',
-            inputValue: true,
-            checked: false,
+            inputValue: this.multiGeometries,
+            checked: this.multiGeometries,
             id: this.name + 'AppendFilter'
         },
         {
             xtype: "checkbox",
             boxLabel: 'Filter direct toepassen',
             name: 'applyDirect',
-            inputValue: true,
-            checked: true,
+            inputValue: this.applyDirect,
+            checked: this.applyDirect,
             id: this.name + 'ApplyDirect'
         });
         this.maincontainer = Ext.create('Ext.container.Container', {
