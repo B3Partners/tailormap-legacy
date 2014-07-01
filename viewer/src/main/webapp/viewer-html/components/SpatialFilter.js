@@ -129,7 +129,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         {
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
-            icon: this.iconPath+"shape_square_red.png",
+            icon: this.iconPath+"shape_polygon_red.png",
             componentCls: 'mobileLarge',
             tooltip: "Teken een polygoon",
             enableToggle: true,
