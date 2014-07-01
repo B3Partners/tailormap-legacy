@@ -71,7 +71,6 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     drawGeometry: function(type){
-        
         var appendFilter = Ext.getCmp (this.name + 'AppendFilter')
         if(!appendFilter.getValue()){
             this.vectorLayer.removeAllFeatures();
