@@ -26,6 +26,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     drawingButtonIds:null,
     vectorLayer:null,
     iconPath:null,
+    features:null,
     config:{
         title: "",
         iconUrl: "",
@@ -37,6 +38,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         viewer.components.SpatialFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
         var me = this;
+        this.features = new Array();
         this.renderButton({
             handler: function(){
                 me.showWindow();
@@ -69,8 +71,27 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     drawGeometry: function(type){
-        this.vectorLayer.removeAllFeatures();
+        
+        var appendFilter = Ext.getCmp (this.name + 'AppendFilter')
+        if(!appendFilter.getValue()){
+            this.vectorLayer.removeAllFeatures();
+            this.features = new Array();
+        }
         this.vectorLayer.drawFeature(type);
+    },
+    applyFilter : function(){
+        var features = this.features;;
+        var multi = "MULTIPOLYGON (";
+        for(var i = 0 ; i < features.length ;i++){
+            var feature = features[i];
+            var coords = feature.replace("POLYGON","");
+            if(i > 0 ){
+                multi += ",";
+            }
+            multi += coords;
+        }
+        multi += ")";
+        this.setFilter(multi);
     },
     setFilter: function(geometry){
         var appLayer = this.layerSelector.getSelectedAppLayer();
@@ -111,7 +132,11 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
       
     featureAdded : function (obj, feature){
-        this.setFilter(feature.wktgeom);
+        var applyDirect = Ext.getCmp (this.name + 'ApplyDirect')
+        this.features.push(feature.wktgeom);
+        if(applyDirect.getValue()){
+            this.applyFilter();
+        }
         this.toggleAll(false);
     },
     selectedContentChanged : function (){
@@ -173,13 +198,28 @@ Ext.define ("viewer.components.SpatialFilter",{
                     click:{
                         scope: me,
                         fn: function(){
-                            me.drawGeometry("Circle")
+                            me.drawGeometry("Circle");
                         }
                     }
                 }
             });
         }
-        
+        drawingItems.push({
+            xtype: "checkbox",
+            boxLabel: 'Meerdere geometriën als filter',
+            name: 'appendFilter',
+            inputValue: true,
+            checked: false,
+            id: this.name + 'AppendFilter'
+        },
+        {
+            xtype: "checkbox",
+            boxLabel: 'Filter direct toepassen',
+            name: 'applyDirect',
+            inputValue: true,
+            checked: true,
+            id: this.name + 'ApplyDirect'
+        });
         this.maincontainer = Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
@@ -222,6 +262,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                     pack:'end'
                 },
                 items: [
+                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', handler: this.applyFilter},
                     {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
                         me.popup.hide();
                     }}
