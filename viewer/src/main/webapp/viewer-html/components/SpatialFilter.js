@@ -67,11 +67,9 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.popup.show();
     },
     
-    drawPolygon: function(){
-        this.vectorLayer.drawFeature("Polygon");
-    },
-    drawCircle: function(){
-        this.vectorLayer.drawFeature("Circle");
+    drawGeometry: function(type){
+        this.vectorLayer.removeAllFeatures();
+        this.vectorLayer.drawFeature(type);
     },
     setFilter: function(geometry){
         var appLayer = this.layerSelector.getSelectedAppLayer();
@@ -138,7 +136,9 @@ Ext.define ("viewer.components.SpatialFilter",{
             listeners: {
                 click:{
                     scope: me,
-                    fn: me.drawPolygon
+                    fn: function(){
+                        me.drawGeometry("Polygon");
+                    }
                 }
             }
         }];
@@ -154,7 +154,9 @@ Ext.define ("viewer.components.SpatialFilter",{
                 listeners: {
                     click:{
                         scope: me,
-                        fn: me.drawCircle
+                        fn: function(){
+                            me.drawGeometry("Circle")
+                        }
                     }
                 }
             });
