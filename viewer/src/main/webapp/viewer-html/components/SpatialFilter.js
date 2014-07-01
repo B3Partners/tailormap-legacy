@@ -81,16 +81,19 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     applyFilter : function(){
         var features = this.features;;
-        var multi = "MULTIPOLYGON (";
-        for(var i = 0 ; i < features.length ;i++){
-            var feature = features[i];
-            var coords = feature.replace("POLYGON","");
-            if(i > 0 ){
-                multi += ",";
+        var multi = "";
+        if (features.length > 0) {
+            multi += "MULTIPOLYGON (";
+            for (var i = 0; i < features.length; i++) {
+                var feature = features[i];
+                var coords = feature.replace("POLYGON", "");
+                if (i > 0) {
+                    multi += ",";
+                }
+                multi += coords;
             }
-            multi += coords;
+            multi += ")";
         }
-        multi += ")";
         this.setFilter(multi);
     },
     setFilter: function(geometry){
@@ -107,7 +110,10 @@ Ext.define ("viewer.components.SpatialFilter",{
             var geomAttr = appLayer.geometryAttribute; 
             if (geomAttr !== undefined){
                 //var filter="DWITHIN(\""+geomAttr+"\", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
-                var filter = "INTERSECTS(" + geomAttr + ", " + geometry + ")";
+                var filter = "";
+                if(geometry.length > 0){
+                    filter = "INTERSECTS(" + geomAttr + ", " + geometry + ")";
+                }
                 this.viewerController.setFilter(
                     Ext.create("viewer.components.CQLFilterWrapper",{
                         id: "filter_"+this.getName(),
@@ -147,6 +153,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
     },
     // </editor-fold>
+    // 
     // <editor-fold desc="Initialization methods" defaultstate="collapsed">
     loadWindow : function (){
         var me =this;
@@ -262,8 +269,14 @@ Ext.define ("viewer.components.SpatialFilter",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', handler: this.applyFilter},
+                    {xtype: 'button', text: 'Reset', componentCls: 'mobileLarge', handler: function(){
+                        me.resetForm();
+                    }},
+                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', handler: function(){
+                        me.applyFilter();
+                    }},
                     {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
+                        me.resetForm();
                         me.popup.hide();
                     }}
                 ]
@@ -312,7 +325,9 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     resetForm : function (){
+        this.features = new Array();
         this.vectorLayer.removeAllFeatures();
+        this.applyFilter();
     },
     getExtComponents: function() {
         return [ this.maincontainer.getId() ];
