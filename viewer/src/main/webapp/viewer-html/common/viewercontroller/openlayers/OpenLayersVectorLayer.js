@@ -28,6 +28,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     line:null,
     polygon:null,
     circle: null,
+    box:null,
     drawFeatureControls:null,
     modifyFeature:null,
     constructor : function (config){
@@ -69,11 +70,19 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             handlerOptions: {
                 sides: 40}
         });
+        this.box = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.RegularPolygon, {
+            handlerOptions: {
+                sides: 4,
+                irregular: true
+            }
+        });
+            
         this.drawFeatureControls = new Array();
         this.drawFeatureControls.push(this.circle);
         this.drawFeatureControls.push(this.polygon);
         this.drawFeatureControls.push(this.line);
         this.drawFeatureControls.push(this.point);
+        this.drawFeatureControls.push(this.box);
         
         // The modifyfeature control allows us to edit and select features.
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : true,vertexRenderIntent: "select"});
@@ -83,6 +92,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.line);
         map.addControl(this.polygon);
         map.addControl(this.circle);
+        map.addControl(this.box);
         map.addControl(this.modifyFeature);
         
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
@@ -184,15 +194,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     drawFeature : function(type){
-        if(type == "Point"){
+        if(type === "Point"){
             this.point.activate();
         }else if(type == "LineString"){
             this.line.activate();
-        }else if(type == "Polygon"){
+        }else if(type === "Polygon"){
             this.polygon.activate();
-        }else if(type == "Circle"){
+        }else if(type === "Circle"){
             this.circle.activate();
-        }else{
+        }else if(type === "Box"){
+            this.box.activate();
+        }else {
            this.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
     },
@@ -213,6 +225,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }if (this.circle.active){
             this.circle.cancel();
             this.circle.deactivate();
+        }if (this.box.active){
+            this.box.cancel();
+            this.box.deactivate();
         }
     },
     

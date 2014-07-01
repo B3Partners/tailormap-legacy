@@ -49,7 +49,8 @@ Ext.define ("viewer.components.SpatialFilter",{
         // Needed to untoggle the buttons when drawing is finished
         this.drawingButtonIds = {
             'polygon': Ext.id(),
-            'circle': Ext.id()
+            'circle': Ext.id(),
+            'box': Ext.id()
         };
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
      
@@ -138,6 +139,23 @@ Ext.define ("viewer.components.SpatialFilter",{
                     scope: me,
                     fn: function(){
                         me.drawGeometry("Polygon");
+                    }
+                }
+            }
+        },
+        {
+            xtype: 'button',
+            id: this.drawingButtonIds.box,
+            icon: this.iconPath+"shape_square_red.png",
+            componentCls: 'mobileLarge',
+            tooltip: "Teken een vierkant",
+            enableToggle: true,
+            toggleGroup: 'drawingTools',
+            listeners: {
+                click:{
+                    scope: me,
+                    fn: function(){
+                        me.drawGeometry("Box");
                     }
                 }
             }
