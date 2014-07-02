@@ -59,7 +59,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 me.showWindow();
             },
             text: me.title,
-            icon: me.iconUrl,
+            icon: "/viewer/viewer-html/components/resources/images/spatialFilter/spatialFilterButton.png",
             tooltip: me.tooltip,
             label: me.label
         });
