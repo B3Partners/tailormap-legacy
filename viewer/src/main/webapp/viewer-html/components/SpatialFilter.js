@@ -41,7 +41,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             conf.details.width = 330;
         }
         if(conf.details.height === undefined){
-            conf.details.height = 250;
+            conf.details.height = 290;
         }
         if(conf.applyDirect === undefined){
             conf.applyDirect = true;
@@ -139,6 +139,49 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
        
     },
+    buffer : function(){
+        var features = this.features;
+        var distance = Ext.getCmp(this.name + "BufferDistance").getValue();
+        if(distance === null || distance === 0){
+            return;
+        }
+        var requestParams = {
+            features: features, 
+            buffer : distance
+        };
+        Ext.Ajax.request({
+            url: actionBeans["buffergeom"],
+            params: requestParams,
+            method:  "POST",
+            scope:this,
+            success: function(result, request) {
+                var response = Ext.JSON.decode(result.responseText);
+                if(response.success){
+                    this.features = [];
+                    var features = response.features;
+                    var featureObjs = [];
+                    for(var i = 0 ; i < features.length ;i++){
+                        var feature = Ext.create("viewer.viewercontroller.controller.Feature",{
+                            wktgeom:features[i]
+                        });
+                        featureObjs.push(feature);
+                    }
+                    this.vectorLayer.removeAllFeatures();
+                    this.vectorLayer.addFeatures(featureObjs);
+                }else{
+                    Ext.MessageBox.alert("Foutmelding", response.errorMessage);
+                }
+            },
+            failure: function(result, request) {
+                var response = Ext.JSON.decode(result.responseText);
+                Ext.MessageBox.alert("Foutmelding", response.error);
+            }
+        });
+    },
+    bufferReturned : function(){
+        
+    },
+    
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     layerChanged : function (appLayer,afterLoadAttributes,scope){
         var buttons = Ext.getCmp(this.name +"filterButtons");
@@ -171,7 +214,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     // <editor-fold desc="Initialization methods" defaultstate="collapsed">
     loadWindow : function (){
         var me =this;
-        var drawingItems = [
+        var formItems = [
         {
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
@@ -224,7 +267,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
         }];
         if(!MobileManager.isMobile()) {
-            drawingItems.push({
+            formItems.push({
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
@@ -242,7 +285,35 @@ Ext.define ("viewer.components.SpatialFilter",{
                 }
             });
         }
-        drawingItems.push({
+        formItems.push(
+        {
+            xtype: "container",
+            width: "100%",
+            layout: {
+                type: 'hbox'
+            },
+            items: [
+                {
+                    id: this.name + "BufferDistance",
+                    name: this.name + "BufferDistance",
+                    xtype: "numberfield",
+                    fieldLabel: "Bufferafstand",
+                    minValue: 0,
+                    labelWidth: 75,
+                    width: 170
+
+                },{
+                    xtype: "button",
+                    text: "Buffer",
+                    listeners:{
+                        click:{
+                            scope:this,
+                            fn:this.buffer
+                        }
+                    }
+                }]
+        },
+        {
             xtype: "checkbox",
             boxLabel: 'Meerdere geometriën als filter',
             name: 'appendFilter',
@@ -286,7 +357,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                     type: "vbox"
                 },
                 flex: 1,
-                items: drawingItems
+                items: formItems
             },{
                 id: this.name + 'ClosingPanel',
                 xtype: "container",
