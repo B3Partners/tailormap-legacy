@@ -33,6 +33,7 @@ Ext.define ("viewer.components.Search",{
     searchRequestId: 0,
     onlyUrlConfig:null,
     currentSeachId:null,
+    dynamicSearchEntries:null,
     config:{
         title: null,
         iconUrl: null,
@@ -59,6 +60,7 @@ Ext.define ("viewer.components.Search",{
         }
         this.searchconfigs = notUrlConfigs; 
         this.currentSeachId = this.searchconfigs.length > 0 ? this.searchconfigs[0].id : null; 
+        this.dynamicSearchEntries = new Array();
         this.loadWindow();
         return this;
     },
@@ -326,7 +328,24 @@ Ext.define ("viewer.components.Search",{
         }        
     },
     executeSearch: function(searchText, searchName) {
-        var requestPath=  contextPath+"/action/search"; 
+        var requestPath=  contextPath+"/action/search";
+        this.searchResult = new Array();
+        for(var i = 0 ; i < this.dynamicSearchEntries.length; i++){
+            var entry = this.dynamicSearchEntries[i];
+            var returnValue = entry.callback(searchText, this.searchRequestId);
+            if(returnValue.success){
+                var results = returnValue.results;
+                for(var j = 0 ; j < results.length ; j++){
+                    var result = results[j];
+                    if(result){
+                        result.searchType = "Dynamic";
+                        this.searchResult.push(result);
+                    }
+                }
+            }else{
+                this.viewerController.logger.warning("Search component yielded error: " + returnValue.errorMessage);
+            }
+        }
         if (this.getCurrentSearchType() === "simplelist") {
             this.simpleListSearch(searchText);
         } else {
@@ -346,11 +365,11 @@ Ext.define ("viewer.components.Search",{
                 params: requestParams,
                 success: function(result, request) {
                     var response = Ext.JSON.decode(result.responseText);
-                    me.searchResult = response.results;
                     if (response.error) {
                         Ext.MessageBox.alert("Foutmelding", response.error);
                     }
                     if (me.searchRequestId === parseInt(response.request.searchRequestId)) {
+                        me.searchResult = me.searchResult.concat(response.results);
                         me.showSearchResults();
                         if (response.limitReached) {
                             me.results.setTitle(me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
@@ -477,20 +496,20 @@ Ext.define ("viewer.components.Search",{
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.form.getChildByElement("removePin"+ this.name).setVisible(false);
     },
-    handleSearchResult : function(config){
+    handleSearchResult : function(result){
 
-        config.x = (config.location.maxx + config.location.minx) / 2;
-        config.y = (config.location.maxy + config.location.miny) / 2;
-        this.viewerController.mapComponent.getMap().zoomToExtent(config.location);
+        result.x = (result.location.maxx + result.location.minx) / 2;
+        result.y = (result.location.maxy + result.location.miny) / 2;
+        this.viewerController.mapComponent.getMap().zoomToExtent(result.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
-        this.viewerController.mapComponent.getMap().setMarker("searchmarker",config.x,config.y,"marker");
+        this.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y,"marker");
         
-        var type = this.getCurrentSearchType();
+        var type = this.getCurrentSearchType(result);
         if(type === "solr"){
             
             var searchconfig = this.getCurrentSearchconfig();
             if(searchconfig ){
-                var solrConfig = searchconfig.solrConfig[config.searchConfig];
+                var solrConfig = searchconfig.solrConfig[result.searchConfig];
                 var switchOnLayers = solrConfig.switchOnLayers;
                 if(switchOnLayers){
                     var selectedContentChanged = false;
@@ -560,9 +579,11 @@ Ext.define ("viewer.components.Search",{
             this.searchConfigChanged(this.searchconfigs[0].id);
         }
     },
-    getCurrentSearchType: function() {
+    getCurrentSearchType: function(clickedResult) {
         var config = this.getCurrentSearchconfig();
-        if (config) {
+        if(clickedResult && clickedResult.searchType){
+            return clickedResult.searchType;
+        }else if (config) {
             return config.type;
         } else {
             return null;
@@ -619,7 +640,7 @@ Ext.define ("viewer.components.Search",{
             }
         }
 
-        this.searchResult = results;
+        this.searchResult = this.searchResult.concat(results);
         this.showSearchResults();
         Ext.getCmp(this.name + 'ContentPanel').setLoading(false);
     },
@@ -642,6 +663,30 @@ Ext.define ("viewer.components.Search",{
             }
         }, this);
         return;
+    },
+    /**
+     * Register the calling component for providing extra searchentries.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the search component
+     */
+    addDynamicSearchEntry : function(component, callback){
+        var entry = {
+            component:component,
+            callback: callback
+        };
+        this.dynamicSearchEntries.push(entry);
+    },
+    /**
+     * Remove the given component for providing dynamic search sentries
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    removeDynamicSearchEntry: function (component){
+        for (var i = this.dynamicSearchEntries.length -1 ; i >= 0 ; i--){
+            if(this.dynamicSearchEntries[i].component.name === component.name ){
+                this.dynamicSearchEntries.splice(i, 1);
+            }
+        }
     }
 });
 
