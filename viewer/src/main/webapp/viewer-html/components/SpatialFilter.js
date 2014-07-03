@@ -140,6 +140,7 @@ Ext.define ("viewer.components.SpatialFilter",{
        
     },
     buffer : function(){
+        Ext.getCmp(this.name + "BufferContainer").setLoading("Buffer berekenen...");
         var features = this.features;
         var distance = Ext.getCmp(this.name + "BufferDistance").getValue();
         if(distance === null || distance === 0){
@@ -171,15 +172,14 @@ Ext.define ("viewer.components.SpatialFilter",{
                 }else{
                     Ext.MessageBox.alert("Foutmelding", response.errorMessage);
                 }
+                Ext.getCmp(this.name + "BufferContainer").setLoading(false);
             },
             failure: function(result, request) {
+                Ext.getCmp(this.name + "BufferContainer").setLoading(false);
                 var response = Ext.JSON.decode(result.responseText);
                 Ext.MessageBox.alert("Foutmelding", response.error);
             }
         });
-    },
-    bufferReturned : function(){
-        
     },
     
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
@@ -287,6 +287,8 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
         formItems.push(
         {
+            id: this.name + "BufferContainer",
+            name: this.name + "BufferContainer",
             xtype: "container",
             width: "100%",
             layout: {
