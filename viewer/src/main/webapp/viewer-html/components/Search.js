@@ -493,20 +493,20 @@ Ext.define ("viewer.components.Search",{
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.form.getChildByElement("removePin"+ this.name).setVisible(false);
     },
-    handleSearchResult : function(config){
+    handleSearchResult : function(result){
 
-        config.x = (config.location.maxx + config.location.minx) / 2;
-        config.y = (config.location.maxy + config.location.miny) / 2;
-        this.viewerController.mapComponent.getMap().zoomToExtent(config.location);
+        result.x = (result.location.maxx + result.location.minx) / 2;
+        result.y = (result.location.maxy + result.location.miny) / 2;
+        this.viewerController.mapComponent.getMap().zoomToExtent(result.location);
         this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
-        this.viewerController.mapComponent.getMap().setMarker("searchmarker",config.x,config.y,"marker");
+        this.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y,"marker");
         
-        var type = this.getCurrentSearchType();
+        var type = this.getCurrentSearchType(result);
         if(type === "solr"){
             
             var searchconfig = this.getCurrentSearchconfig();
             if(searchconfig ){
-                var solrConfig = searchconfig.solrConfig[config.searchConfig];
+                var solrConfig = searchconfig.solrConfig[result.searchConfig];
                 var switchOnLayers = solrConfig.switchOnLayers;
                 if(switchOnLayers){
                     var selectedContentChanged = false;
@@ -576,9 +576,11 @@ Ext.define ("viewer.components.Search",{
             this.searchConfigChanged(this.searchconfigs[0].id);
         }
     },
-    getCurrentSearchType: function() {
+    getCurrentSearchType: function(clickedResult) {
         var config = this.getCurrentSearchconfig();
-        if (config) {
+        if(clickedResult && clickedResult.searchType){
+            return clickedResult.searchType;
+        }else if (config) {
             return config.type;
         } else {
             return null;
