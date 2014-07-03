@@ -41,7 +41,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             conf.details.width = 330;
         }
         if(conf.details.height === undefined){
-            conf.details.height = 290;
+            conf.details.height = 270;
         }
         if(conf.applyDirect === undefined){
             conf.applyDirect = true;
