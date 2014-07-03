@@ -332,15 +332,18 @@ Ext.define ("viewer.components.Search",{
         this.searchResult = new Array();
         for(var i = 0 ; i < this.dynamicSearchEntries.length; i++){
             var entry = this.dynamicSearchEntries[i];
-            var result = entry.callback(searchText, this.searchRequestId);
-            if(result.success){
-                var results = result.results;
+            var returnValue = entry.callback(searchText, this.searchRequestId);
+            if(returnValue.success){
+                var results = returnValue.results;
                 for(var j = 0 ; j < results.length ; j++){
-                    results[j].searchType = "Dynamic";
-                    this.searchResult.push(results[j]);
+                    var result = results[j];
+                    if(result){
+                        result.searchType = "Dynamic";
+                        this.searchResult.push(result);
+                    }
                 }
             }else{
-                this.viewerController.logger.warning("Search component yielded error: " + result.errorMessage);
+                this.viewerController.logger.warning("Search component yielded error: " + returnValue.errorMessage);
             }
         }
         if (this.getCurrentSearchType() === "simplelist") {
