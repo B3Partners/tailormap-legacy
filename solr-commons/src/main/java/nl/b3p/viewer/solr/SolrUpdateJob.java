@@ -56,6 +56,7 @@ public class SolrUpdateJob implements Job {
     private static final Log log = LogFactory.getLog(SolrUpdateJob.class);
     private SolrServer server;
     public static int MAX_FEATURES = 5000;
+    public static int BATCH_SIZE = 5000;
 
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException {
@@ -121,32 +122,74 @@ public class SolrUpdateJob implements Job {
             if (solrServer == null) {
                 throw new Exception("No solr server initialized.");
             }
-            status.setCurrentAction("Features ophalen");
+            status.setCurrentAction("Initialiseren...");
 
             status.setProgress(10);
+            
+            List<AttributeDescriptor> indexAttributesConfig = config.getIndexAttributes();
+            List<AttributeDescriptor> resultAttributesConfig = config.getResultAttributes();
+            
             SimpleFeatureType sft = config.getSimpleFeatureType();
             fs = sft.openGeoToolsFeatureSource();
 
             Query q = new Query();
-            if (sft.getFeatureSource() instanceof WFSFeatureSource) {
-                q.setMaxFeatures(MAX_FEATURES);
-            }
-            
             if(filter != null){
                 q.setFilter(filter);
             }
             
-            FeatureCollection fc = fs.getFeatures(q);
-            List<AttributeDescriptor> indexAttributesConfig = config.getIndexAttributes();
-            List<AttributeDescriptor> resultAttributesConfig = config.getResultAttributes();
+            if (sft.getFeatureSource() instanceof WFSFeatureSource) {
+                q.setMaxFeatures(MAX_FEATURES);
+                FeatureCollection fc = fs.getFeatures(q);
+                FeatureIterator<SimpleFeature> iterator = fc.features();
+                processFeatures(iterator, indexAttributesConfig, resultAttributesConfig, config.getId(),solrServer, status, 70);
+            }else{
+                
+                status.setCurrentAction("Aantal features berekenen...");
 
+                status.setProgress(15);
+                FeatureCollection fc = fs.getFeatures(q);
+                int total = fc.size();
+                status.setCurrentAction("Begin toevoegen");
+
+                status.setProgress(20);
+                int numIterations = (int)Math.ceil((double)total/BATCH_SIZE);
+                double percentagePerBatch = (double)70/numIterations;
+                int currentProgress = 20;
+                for (int i = 0; i < numIterations; i++) {
+                    int start = i * BATCH_SIZE;
+                    q.setStartIndex(start);
+                    int max = (i+1)*BATCH_SIZE > total ? total : BATCH_SIZE;
+                    q.setMaxFeatures(max);
+                    
+                    status.setCurrentAction("Bezig met verwerken features " + start + " - " + max + " van de " + total);
+                    currentProgress += percentagePerBatch;
+                    status.setProgress(currentProgress);
+                    fc = fs.getFeatures(q);
+                    processFeatures(fc.features(), indexAttributesConfig, resultAttributesConfig, config.getId(),solrServer, status, percentagePerBatch);
+                }
+            }
+            
+            Date now = new Date();
+            config.setLastUpdated(now);
+            em.persist(config);
+            status.setProgress(100);
+            status.setFinished(true);
+        } catch (Exception ex) {
+            log.error("Cannot add configuration to index", ex);
+            status.setCurrentAction("Mislukt.");
+        } finally {
+            if (fs != null && fs.getDataStore() != null) {
+                fs.getDataStore().dispose();
+            }
+        }
+    }
+    
+
+    private static void processFeatures( FeatureIterator<SimpleFeature> iterator,List<AttributeDescriptor> indexAttributesConfig,
+            List<AttributeDescriptor> resultAttributesConfig, Long id, SolrServer solrServer, WaitPageStatus status, double percentage ) {
+        try {
+            
             List<SolrInputDocument> docs = new ArrayList();
-
-            FeatureIterator<SimpleFeature> iterator = fc.features();
-            double size = fc.size();
-            double percentagesForAdding = 50;
-            double intervalPerDoc = percentagesForAdding / size;
-            Double total = (double) status.getProgress();
             try {
                 while (iterator.hasNext()) {
                     SimpleFeature feature = iterator.next();
@@ -159,11 +202,11 @@ public class SolrUpdateJob implements Job {
                         if (col != null) {
                             doc.addField("columns", attributeName);
                             doc.addField(field, col);
-                        }else{
+                        } else {
                             hasAllRequiredFields = false;
                         }
                     }
-                    if(!hasAllRequiredFields){
+                    if (!hasAllRequiredFields) {
                         continue;
                     }
                     for (AttributeDescriptor attributeDescriptor : resultAttributesConfig) {
@@ -179,56 +222,27 @@ public class SolrUpdateJob implements Job {
                     Geometry g = (Geometry) obj;
                     if (g != null) {
                         Envelope env = featureToEnvelope(g);
-
+                        
                         doc.addField("minx", env.getMinX());
                         doc.addField("miny", env.getMinY());
                         doc.addField("maxx", env.getMaxX());
                         doc.addField("maxy", env.getMaxY());
                     }
-
+                    
                     doc.addField("id", feature.getID());
-                    doc.addField("searchConfig", config.getId());
+                    doc.addField("searchConfig", id);
                     docs.add(doc);
-                    total += intervalPerDoc;
-                    status.setProgress(total.intValue());
                 }
             } finally {
                 iterator.close();
             }
-            status.setProgress(60);
-            status.setCurrentAction("Features toevoegen aan solr index");
 
-            if(docs.size() > MAX_FEATURES){
-                double percentagesForCommitting = 30;
-                int numIterations = (int)Math.ceil(size/ MAX_FEATURES);
-                double percentagePerIteration = percentagesForCommitting / numIterations;
-                total = (double) status.getProgress();
-                for (int i = 0; i < numIterations; i++) {
-                    int begin = i * MAX_FEATURES;
-                    int end = Math.min((i+1) * MAX_FEATURES, docs.size());
-                    List<SolrInputDocument> sublist = docs.subList(begin, end);
-                    
-                    solrServer.add(sublist);
-                    solrServer.commit();
-                    total += percentagePerIteration;
-                    status.setProgress(total.intValue());
-                }
-            }else{
-                solrServer.add(docs);
-                solrServer.commit();
-            }
-            Date now = new Date();
-            config.setLastUpdated(now);
-            em.persist(config);
-            status.setProgress(100);
-            status.setFinished(true);
-        } catch (Exception ex) {
+            solrServer.add(docs);
+            solrServer.commit();
+        }   catch (SolrServerException ex) {
             log.error("Cannot add configuration to index", ex);
-            status.setCurrentAction("Mislukt.");
-        } finally {
-            if (fs != null && fs.getDataStore() != null) {
-                fs.getDataStore().dispose();
-            }
+        } catch (IOException ex) {
+            log.error("Cannot add configuration to index", ex);
         }
     }
 
