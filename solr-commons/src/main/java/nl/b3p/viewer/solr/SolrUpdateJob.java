@@ -58,7 +58,7 @@ public class SolrUpdateJob implements Job {
     private static final Log log = LogFactory.getLog(SolrUpdateJob.class);
     private SolrServer server;
     public static int MAX_FEATURES = 5000;
-    public static int BATCH_SIZE = 50;
+    public static int BATCH_SIZE = 5000;
 
     @Override
     public void execute(JobExecutionContext jec) throws JobExecutionException {
@@ -124,7 +124,7 @@ public class SolrUpdateJob implements Job {
             if (solrServer == null) {
                 throw new Exception("No solr server initialized.");
             }
-            status.setCurrentAction("Features ophalen");
+            status.setCurrentAction("Initialiseren...");
 
             status.setProgress(10);
             
@@ -143,20 +143,31 @@ public class SolrUpdateJob implements Job {
                 q.setMaxFeatures(MAX_FEATURES);
                 FeatureCollection fc = fs.getFeatures(q);
                 FeatureIterator<SimpleFeature> iterator = fc.features();
-                processFeatures(iterator, indexAttributesConfig, resultAttributesConfig, config.getId(),solrServer, status);
+                processFeatures(iterator, indexAttributesConfig, resultAttributesConfig, config.getId(),solrServer, status, 70);
             }else{
                 
+                status.setCurrentAction("Aantal features berekenen...");
+
+                status.setProgress(15);
                 FeatureCollection fc = fs.getFeatures(q);
                 int total = fc.size();
+                status.setCurrentAction("Begin toevoegen");
+
+                status.setProgress(20);
                 int numIterations = (int)Math.ceil((double)total/BATCH_SIZE);
+                double percentagePerBatch = (double)70/numIterations;
+                int currentProgress = 20;
                 for (int i = 0; i < numIterations; i++) {
                     int start = i * BATCH_SIZE;
                     q.setStartIndex(start);
-                    int max = Math.min(total,i* BATCH_SIZE + BATCH_SIZE);
+                    int max = (i+1)*BATCH_SIZE > total ? total : BATCH_SIZE;
                     q.setMaxFeatures(max);
                     
+                    status.setCurrentAction("Bezig met verwerken features " + start + " - " + max + " van de " + total);
+                    currentProgress += percentagePerBatch;
+                    status.setProgress(currentProgress);
                     fc = fs.getFeatures(q);
-                    processFeatures(fc.features(), indexAttributesConfig, resultAttributesConfig, config.getId(),solrServer, status);
+                    processFeatures(fc.features(), indexAttributesConfig, resultAttributesConfig, config.getId(),solrServer, status, percentagePerBatch);
                 }
             }
             
@@ -177,12 +188,11 @@ public class SolrUpdateJob implements Job {
     
 
     private static void processFeatures( FeatureIterator<SimpleFeature> iterator,List<AttributeDescriptor> indexAttributesConfig,
-            List<AttributeDescriptor> resultAttributesConfig, Long id, SolrServer solrServer, WaitPageStatus status ) {
+            List<AttributeDescriptor> resultAttributesConfig, Long id, SolrServer solrServer, WaitPageStatus status, double percentage ) {
         try {
             
             List<SolrInputDocument> docs = new ArrayList();
             try {
-                
                 while (iterator.hasNext()) {
                     SimpleFeature feature = iterator.next();
                     SolrInputDocument doc = new SolrInputDocument();
@@ -224,15 +234,11 @@ public class SolrUpdateJob implements Job {
                     doc.addField("id", feature.getID());
                     doc.addField("searchConfig", id);
                     docs.add(doc);
-                 //   total += intervalPerDoc;
-                   // status.setProgress(total.intValue());
                 }
             } finally {
                 iterator.close();
             }
 
-            status.setCurrentAction("Features toevoegen aan solr index");
-            
             solrServer.add(docs);
             solrServer.commit();
         }   catch (SolrServerException ex) {
