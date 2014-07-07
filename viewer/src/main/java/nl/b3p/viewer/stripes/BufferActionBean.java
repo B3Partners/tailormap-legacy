@@ -18,14 +18,19 @@ package nl.b3p.viewer.stripes;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.operation.buffer.BufferOp;
+import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -45,9 +50,11 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
 import org.opengis.filter.Filter;
 import org.geotools.geometry.jts.WKTReader2;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**
@@ -76,6 +83,9 @@ public class BufferActionBean implements ActionBean {
     private Integer maxFeatures = 250;
     @Validate
     private String color;
+    
+    @Validate
+    private String[] features;
     
     @Validate
     private String filter;
@@ -163,6 +173,13 @@ public class BufferActionBean implements ActionBean {
         this.filter = filter;
     }
 
+    public String[] getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(String[] features) {
+        this.features = features;
+    }
     //</editor-fold>
     
     @DefaultHandler
@@ -208,6 +225,31 @@ public class BufferActionBean implements ActionBean {
         return res;
     }
 
+    public Resolution bufferGeometry() throws JSONException{
+        JSONObject json = new JSONObject();
+        JSONArray featureArray = new JSONArray();
+        json.put("success", Boolean.FALSE);
+        json.put("features", featureArray);
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
+        WKTReader reader = new WKTReader2(gf);
+        Geometry geom;
+        try {
+            for (String feature : features) {
+
+                geom = reader.read(feature);
+                Geometry buffered = geom.buffer(buffer);
+                featureArray.put(buffered.toText());
+            }
+            json.put("success",Boolean.TRUE);
+        } catch (ParseException ex) {
+            log.error("could not parse: ", ex);
+            json.put("errorMessage",ex.getLocalizedMessage());
+        }  
+        
+        return new StreamingResolution("application/json", new StringReader(json.toString()));  
+    }
+    
     private List<CombineImageWkt> getFeatures(Bbox bbox) throws Exception {
         List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
         GeoService gs = Stripersist.getEntityManager().find(GeoService.class, serviceId);
