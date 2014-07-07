@@ -323,11 +323,11 @@ Ext.define ("viewer.components.TOC",{
             }
         }
         if(this.groupCheck) {
-            var tristate = this.updateTriStateClass(null, childsChecked, totalChilds);
-            if(tristate === 1) {
+            var tristateClass = this.updateTriStateClass(null, childsChecked, totalChilds);
+            if(tristateClass === 1) {
                 treeNodeLayer.checked = true;
             }
-            else if (tristate === 0) {
+            else if (tristateClass === 0) {
                 treeNodeLayer.cls = 'tristatenode';
             }
         }
@@ -338,7 +338,7 @@ Ext.define ("viewer.components.TOC",{
         treeNodeLayer.expanded = expand;
         var node = {
             node: treeNodeLayer,
-            tristate: tristate
+            tristate: triState
         };
         if(level.background){
             this.addToBackground(node);
