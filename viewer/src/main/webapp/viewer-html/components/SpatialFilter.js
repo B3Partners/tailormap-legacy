@@ -214,7 +214,14 @@ Ext.define ("viewer.components.SpatialFilter",{
     // <editor-fold desc="Initialization methods" defaultstate="collapsed">
     loadWindow : function (){
         var me =this;
-        var formItems = [
+        var formItems = [];
+        var formButtons = [
+        {
+            xtype: 'container',
+            html: 'Teken: ',
+            padding: '3 0 0 0',
+            width: 105
+        },
         {
             xtype: 'button',
             id: this.drawingButtonIds.polygon,
@@ -223,6 +230,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             tooltip: "Teken een polygoon",
             enableToggle: true,
             toggleGroup: 'drawingTools',
+            margin: '0 3 0 0',
             listeners: {
                 click:{
                     scope: me,
@@ -240,6 +248,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             tooltip: "Teken een vierkant",
             enableToggle: true,
             toggleGroup: 'drawingTools',
+            margin: '0 3 0 0',
             listeners: {
                 click:{
                     scope: me,
@@ -257,6 +266,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             tooltip: "Teken een vrije vorm",
             enableToggle: true,
             toggleGroup: 'drawingTools',
+            margin: '0 3 0 0',
             listeners: {
                 click:{
                     scope: me,
@@ -267,7 +277,7 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
         }];
         if(!MobileManager.isMobile()) {
-            formItems.push({
+            formButtons.push({
                 xtype: 'button',
                 id: this.drawingButtonIds.circle,
                 icon: this.iconPath+"shape_circle_red.png",
@@ -275,6 +285,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 tooltip: "Teken een cirkel",
                 enableToggle: true,
                 toggleGroup: 'drawingTools',
+                margin: '0 3 0 0',
                 listeners: {
                     click:{
                         scope: me,
@@ -285,12 +296,22 @@ Ext.define ("viewer.components.SpatialFilter",{
                 }
             });
         }
+        formItems.push({
+            xtype: 'container',
+            width: "100%",
+            layout: {
+                type: 'hbox'
+            },
+            padding: '0 10 10 0',
+            items: formButtons
+        });
         formItems.push(
         {
             id: this.name + "BufferContainer",
             name: this.name + "BufferContainer",
             xtype: "container",
             width: "100%",
+            height: 30,
             layout: {
                 type: 'hbox'
             },
@@ -301,9 +322,9 @@ Ext.define ("viewer.components.SpatialFilter",{
                     xtype: "numberfield",
                     fieldLabel: "Bufferafstand",
                     minValue: 0,
-                    labelWidth: 75,
-                    width: 170
-
+                    labelWidth: 100,
+                    width: 200,
+                    margin: '0 3 0 0'
                 },{
                     xtype: "button",
                     text: "Buffer",
@@ -342,13 +363,13 @@ Ext.define ("viewer.components.SpatialFilter",{
             style: {
                 backgroundColor: 'White'
             },
+            padding: 4,
             renderTo: this.getContentDiv(),
             items: [{
                 id: this.name + 'LayerSelectorPanel',
                 xtype: "container",
-                padding: "4px",
                 width: '100%',
-                height: 36
+                height: 30
             },{
                 id: this.name + 'filterButtons',
                 xtype: "container",
@@ -373,10 +394,10 @@ Ext.define ("viewer.components.SpatialFilter",{
                     pack:'end'
                 },
                 items: [
-                    {xtype: 'button', text: 'Reset', componentCls: 'mobileLarge', handler: function(){
+                    {xtype: 'button', text: 'Reset', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
                         me.resetForm();
                     }},
-                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', handler: function(){
+                    {xtype: 'button', text: 'Toepassen', componentCls: 'mobileLarge', margin: '0 1 0 0', handler: function(){
                         me.applyFilter();
                     }},
                     {xtype: 'button', text: 'Sluiten', componentCls: 'mobileLarge', handler: function() {
