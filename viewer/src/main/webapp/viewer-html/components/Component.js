@@ -304,7 +304,8 @@ Ext.define("viewer.components.Component",{
                 'viewercomponentsRelatedDocuments': 12,
                 'viewercomponentsAttributeList': 13,
                 'viewercomponentsPrint': 15,
-                'viewercomponentstoolsDownloadMap': 16
+                'viewercomponentstoolsDownloadMap': 16,
+                'viewercomponentsSpatialFilter': 17
             },
             menuIconPosition: {
                 x: 561

@@ -59,7 +59,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 me.showWindow();
             },
             text: me.title,
-            icon: "/viewer/viewer-html/components/resources/images/spatialFilter/spatialFilterButton.png",
+            icon: "",//"/viewer/viewer-html/components/resources/images/spatialFilter/spatialFilterButton.png",
             tooltip: me.tooltip,
             label: me.label
         });
@@ -96,7 +96,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.vectorLayer.drawFeature(type);
     },
     applyFilter : function(){
-        var features = this.features;;
+        var features = this.features;
         var multi = "";
         if (features.length > 0) {
             multi += "MULTIPOLYGON (";
@@ -449,8 +449,12 @@ Ext.define ("viewer.components.SpatialFilter",{
         }
     },
     
-    resetForm : function (){
-        this.features = new Array();
+    resetForm : function () {
+        var appLayer = this.layerSelector.getSelectedAppLayer();
+        if(!appLayer) {
+            return;
+        }
+        this.features = [];
         this.vectorLayer.removeAllFeatures();
         this.applyFilter();
     },
