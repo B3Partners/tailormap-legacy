@@ -79,6 +79,13 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.markers=new Object();
         this.getFeatureInfoControl = null;
         this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved, this);
+        
+        // Prevents the markerlayer to "disappear" beneath all the layers
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function(){
+            if(this.markerLayer){
+                this.frameworkMap.setLayerIndex(this.markerLayer, this.frameworkMap.getNumLayers());
+            }
+        },this);
         return this;
     },
     
