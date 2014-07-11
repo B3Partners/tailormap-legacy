@@ -195,7 +195,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     **/
     zoomToExtent : function(extent){
         var bounds=this.utils.createBounds(extent)
-        this.getFrameworkMap().zoomToExtent(bounds);
+        this.getFrameworkMap().zoomToExtent(bounds,true);
     },
     
     /**
