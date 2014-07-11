@@ -37,10 +37,15 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 import org.geotools.data.Query;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.sort.SortOrder;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -147,6 +152,15 @@ public class SolrUpdateJob implements Job {
                 status.setCurrentAction("Aantal features berekenen...");
 
                 status.setProgress(15);
+                if (fs instanceof org.geotools.jdbc.JDBCFeatureSource ) {
+                    List<String> propertyNames = new ArrayList<String>();
+                    for (AttributeDescriptor ad : sft.getAttributes()) {
+                        propertyNames.add(ad.getName());
+                    }
+                    if(!propertyNames.isEmpty()){
+                        setSortBy(q, propertyNames.get(0));
+                    }
+                }
                 FeatureCollection fc = fs.getFeatures(q);
                 int total = fc.size();
                 status.setCurrentAction("Begin toevoegen");
@@ -261,5 +275,22 @@ public class SolrUpdateJob implements Job {
             env = g.getEnvelopeInternal();
         }
         return env;
+    }
+    
+        /**
+     * Set sort on query
+     *
+     * @param q the query on which the sort is added
+     * @param sort the name of the sort column
+     * @param dir sorting direction DESC or ASC
+     */
+    private static void setSortBy(Query q, String sort) {
+        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+
+        if (sort != null) {
+            q.setSortBy(new SortBy[]{
+                ff2.sort(sort, SortOrder.ASCENDING)
+            });
+        }
     }
 }
