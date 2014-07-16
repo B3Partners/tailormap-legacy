@@ -23,7 +23,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
         viewerController:null
     },
     constructor: function (conf){        
-        this.initConfig(conf);
+        // this.initConfig(conf);
         
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
     },

@@ -24,14 +24,14 @@ Ext.define('select.TreeNode', {
     extend: 'Ext.data.Model',
     fields: [
         {name: 'id', type: 'string'},
-        {name: 'children', type: 'array'},
+        // {name: 'children', type: 'array'},
         {name: 'name', type: 'string'},
         {name: 'type',  type: 'string'},
         {name: 'status', type: 'string'},
         {name: 'class', type: 'string'},
         {name: 'parentid', type: 'string'},
         {name: 'isLeaf', type: 'boolean'},
-        {name: 'checkedlayers', type: 'array'},
+        // {name: 'checkedlayers', type: 'array'},
         // Text is used by tree, mapped to name
         {name: 'text', type: 'string', mapping: 'name'}
     ],
