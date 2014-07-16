@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.services.SolrConf;
 import nl.b3p.viewer.solr.SolrInitializer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -43,6 +43,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * @author Meine Toonen
  */
 public class SolrSearchClient extends SearchClient {
+    private static final Log log = LogFactory.getLog(SolrSearchClient.class);  
 
     private JSONObject config;
     private List<Long> visibleLayers;
@@ -84,9 +85,9 @@ public class SolrSearchClient extends SearchClient {
            
 
         } catch (SolrServerException ex) {
-            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
         } catch (JSONException ex) {
-            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
         } 
         
         return result;
@@ -116,7 +117,7 @@ public class SolrSearchClient extends SearchClient {
             SolrDocumentList list = rsp.getResults();
 
             for (SolrDocument solrDocument : list) {
-                JSONObject doc = solrDocumentToAutosuggest(solrDocument);
+                JSONObject doc = solrDocumentToResult(solrDocument);
                 if(doc != null){
                     respDocs.put(doc);
                 }
@@ -124,7 +125,7 @@ public class SolrSearchClient extends SearchClient {
             response.put("docs", respDocs);
             return respDocs;
         } catch (SolrServerException ex) {
-            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
         }
         return respDocs;
     }
@@ -168,33 +169,6 @@ public class SolrSearchClient extends SearchClient {
       
     }
     
-    
-    private JSONObject solrDocumentToAutosuggest(SolrDocument doc){
-        JSONObject result = null;
-        try {
-            Collection<Object> resultValues = doc.getFieldValues("values");
-            if (resultValues != null) {
-                result = new JSONObject();
-                String resultLabel = "";
-                List<String> labels = new ArrayList(resultValues);
-                for (String label : labels) {
-                    if (!resultLabel.isEmpty()) {
-                        resultLabel += ", ";
-                    }
-                    resultLabel += label;
-                }
-                result.put("label", resultLabel);
-              
-                result.put("searchConfig", doc.getFieldValue("searchConfig"));
-                String naam = getConfigurationNaam((Integer)doc.getFieldValue("searchConfig"));
-                result.put("type", naam);
-            }
-        } catch (JSONException ex) {
-            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return result;
-    }
-    
     private JSONObject solrDocumentToResult(SolrDocument doc){
         JSONObject result = null;
         try {
@@ -222,7 +196,7 @@ public class SolrSearchClient extends SearchClient {
                 result.put("type", naam);
             }
         } catch (JSONException ex) {
-            Logger.getLogger(SolrSearchClient.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
         }
         return result;
     }
