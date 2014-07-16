@@ -205,18 +205,18 @@ Ext.define ("viewer.components.Search",{
                     listConfig:{
                         listeners:{
                             itemclick:function(list, node){
-                                var data = node.data !== undefined ? node.data : node.raw;
-                                var label = data.label;
-                                me.searchField.setValue(label);
-                                me.search();
+                                this.searchHighlightedSuggestion(node);
                             },
-                        scope:me
+                            scope:me
                         }
                     },
                     listeners: {
                         specialkey: function(field, e){
                             if (e.getKey() === e.ENTER) {
-                                me.search();
+                                var item = field.picker.pickerField.listKeyNav.boundList.highlightedItem;
+                                if(!item){
+                                    me.search();
+                                }
                             }
                         },
                         beforeQuery : function(request){
@@ -235,12 +235,13 @@ Ext.define ("viewer.components.Search",{
                     store:this.autosuggestStore
                 });
                 Ext.view.BoundListKeyNav.override({
-                    selectHighlighted: function(e) {
+                    selectHighlighted: function() {
                         var item = this.boundList.highlightedItem;
-                        if (item) {
-                            this.callOverridden(e); // If an item is selected, the user did that. So use that for searching. Otherwise search with the user typed string
+                        //If an item is selected, the user did that. So go directly to that result. Otherwise search with the user typed string
+                        if (item) { 
+                            var node = this.boundList.getRecord(item);
+                            me.searchHighlightedSuggestion(node);
                         }
-                        me.search();
                     }
                 });
                 
@@ -300,6 +301,11 @@ Ext.define ("viewer.components.Search",{
             
         });
         return itemList;
+    },
+    searchHighlightedSuggestion: function(node){
+        var data = node.raw !== undefined ? node.raw : node.data;
+        this.searchField.setValue(data.label);
+        this.handleSearchResult(data);
     },
     hideWindow : function(){
         this.searchField.collapse();
