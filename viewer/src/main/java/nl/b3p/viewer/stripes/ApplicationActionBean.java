@@ -241,6 +241,7 @@ public class ApplicationActionBean implements ActionBean {
             String key = keys.next();
             this.globalLayout.put(key, layout.get(key));
         }
+        context.getResponse().addHeader("X-UA-Compatible", "IE=edge");
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
     

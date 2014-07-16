@@ -230,7 +230,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var console = {};
                 console.log = function(logmsg) {
                     //alert(logmsg);
-                }
+                };
             }
             
             var contextPath = "${contextPath}";
@@ -258,7 +258,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "datastorespinup":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DataStoreSpinupActionBean"/></js:quote>,
                 "autosuggest":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SearchActionBean" event="autosuggest"/></js:quote>,
                 "componentresource":  <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ComponentResourceActionBean"/></js:quote>,
-                "css":                 <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>
+                "css":                 <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>,
+                "download":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>
             };
             
             <c:if test="${actionBean.viewerType == 'openlayers'}">            
@@ -317,7 +318,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     if(!MobileManager.isMobile() || MobileManager.isAndroid() || window.onorientationchange === undefined) {
                         // Android devices seem to react better to window.resize than window.orientationchange, probably timing issue
                         Ext.EventManager.onWindowResize(function () {
-                            viewerController.resizeComponents();
+                            viewerController.resizeComponents(true);
                         });
                     } else {
                         window.onorientationchange = function(){

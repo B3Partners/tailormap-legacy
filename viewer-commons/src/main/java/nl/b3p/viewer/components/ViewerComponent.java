@@ -29,13 +29,15 @@ public class ViewerComponent {
     private File[] sources;
     private File[] configSources;
     private JSONObject metadata;
+    private String group;
 
-    public ViewerComponent(String path, String className, File[] sources, File[] configSources, JSONObject metadata) {
+    public ViewerComponent(String path, String className, File[] sources, File[] configSources, JSONObject metadata, String group) {
         this.path = path;
         this.className = className;
         this.sources = sources;
         this.configSources = configSources;
         this.metadata = metadata;
+        this.group = group;
     }
 
     public String getClassName() {
@@ -56,5 +58,13 @@ public class ViewerComponent {
     
     public File[] getConfigSources(){
         return configSources;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 }

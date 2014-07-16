@@ -1,12 +1,12 @@
 package nl.b3p.viewer.image;
 
 import java.net.URL;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Class to store a image request. Extend this to overwrite functions. This class
- * is typical used for WMS requests
+ * Class to store a image request. Extend this to overwrite functions. 
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  * Created on 20-okt-2009, 10:30:38
  */
@@ -36,39 +36,6 @@ public abstract class CombineImageUrl {
     public CombineImageUrl(URL realUrl, Float alpha) {
         setRealUrl(realUrl);
         setAlpha(alpha);
-    }
-    /**
-     * Returned a url with changed param     
-     * @param key the param name
-     * @param newValue the new value
-     * @return the changed url
-     *
-     */
-    protected void changeParameter(String key,String newValue) {
-        String lowerUrl = url.toLowerCase();
-        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
-            int beginIndex = 0;
-            int endIndex = lowerUrl.length();
-            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
-                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
-            } else {
-                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
-            }
-            if (lowerUrl.indexOf("&", beginIndex) > 0) {
-                endIndex = lowerUrl.indexOf("&", beginIndex);
-            }
-            if (beginIndex < endIndex) {
-                String newUrl="";
-                if (beginIndex>0){
-                    newUrl+=url.substring(0,beginIndex);
-                }
-                newUrl+=newValue;
-                if (endIndex < url.length()){
-                    newUrl+=url.substring(endIndex,url.length());
-                }
-                url=newUrl;
-            }
-        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters and setters">
@@ -135,5 +102,5 @@ public abstract class CombineImageUrl {
     }    
     //</editor-fold>
 
-    public abstract CombineImageUrl calculateNewUrl(ImageBbox imbbox);
+    public abstract List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox);
 }

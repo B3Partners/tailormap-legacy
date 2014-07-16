@@ -282,6 +282,13 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             }
         });
     }
+    
+    public Resolution attributes() throws JSONException{
+        
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName());
+        makeAttributeJSONArray(layer.getFeatureType());
+        return new StreamingResolution("application/json", new StringReader(attributesJSON.toString()));
+    }
 
     private void makeAttributeJSONArray(final SimpleFeatureType layerSft) throws JSONException {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();

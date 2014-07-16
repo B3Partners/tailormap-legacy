@@ -1,34 +1,35 @@
 /*
- * Copyright (C) 2013 B3Partners B.V.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package nl.b3p.viewer.image;
 
 import java.awt.Color;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
  * @author Roy
  */
 public class CombineImageSettings {
-
     private static final Log log = LogFactory.getLog(CombineImageSettings.class);
+    
+    public static final String WMS_PROTOCOL = "WMS";
+    public static final String ARCIMS_PROTOCOL = "ARCIMS";
+    public static final String ARCSERVER_PROTOCOL = "ARCSERVER";
+    public static final String ARCSERVERREST_PROTOCOL = "ARCSERVERREST";
+    public static final String IMAGE_PROTOCOL="IMAGE";
+    public static final String WMSC_PROTOCOL="WMSC";
+    public static final String TMS_PROTOCOL="TMS";
+    
     private List<CombineImageUrl> urls = null;
     private List<CombineImageWkt> wktGeoms = null;
     private Bbox bbox = null;
@@ -38,7 +39,6 @@ public class CombineImageSettings {
     private Integer angle = null;
     private Color defaultWktGeomColor= Color.RED;
     private String mimeType="image/png";
-    private List<TileServerSettings> tileServices =null;
     
     // bbox + ";"+ resolutions + ";" + tileSize + ";" + serviceUrl;
     
@@ -67,26 +67,9 @@ public class CombineImageSettings {
                 
         for (int i=0; i < oldList.size(); i++){
             CombineImageUrl ciu = (CombineImageUrl) oldList.get(i);
-            returnValue.add(ciu.calculateNewUrl(imBBox));
-        }
-        if (tileServices!=null){
-            for (TileServerSettings tss : tileServices){
-                try{
-                    List<CombineImageUrl> images=tss.getTilingImages(this);
-                    if (images!=null){
-                        returnValue.addAll(images);
-                    }
-                }catch(Exception e){
-                    log.error("Error while creating tiling images",e);
-                }
-            }
-        }
-        
-        if (returnValue.size()==oldList.size()){
-            return returnValue;
-        }else{
-            return oldList;
-        }
+            returnValue.addAll(ciu.calculateNewUrl(imBBox));
+        }        
+        return returnValue;
     }
     /**
      * Corrects the BBOX to the ratio of the height / width.
@@ -152,7 +135,7 @@ public class CombineImageSettings {
             }
         }
         return bb;
-    }    
+    }
     /**
      * Try to resolve the width and height from the CombineImageUrl's
      * @return Array of int's width is the first in the array, height second
@@ -182,9 +165,9 @@ public class CombineImageSettings {
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
-    /*public List getUrls() {
+    public List<CombineImageUrl> getUrls() {
         return urls;
-    }*/
+    }
     public void setUrls(List<CombineImageUrl> urls) {
         this.urls = urls;
     }
@@ -244,21 +227,7 @@ public class CombineImageSettings {
     public void setAngle(Integer angle) {
         this.angle = angle;
     }
-    
-    public List<TileServerSettings> getTileServices() {
-        return tileServices;
-    }
-
-    public void setTileServices(List<TileServerSettings> tileServices) {
-        this.tileServices = tileServices;
-    }
-    
-    public void addTileService(TileServerSettings tss){
-        if (this.tileServices==null){
-            this.tileServices = new ArrayList<TileServerSettings>();
-        }
-        this.tileServices.add(tss);
-    }
+   
     //</editor-fold>   
     /**
      * Create a new BBOX that covers the original and the rotated bbox
@@ -340,5 +309,159 @@ public class CombineImageSettings {
         }
         return new ImageBbox(correctedBbox,reqWidth,reqHeight);
     }
+    /**
+     * @settings a JSONObject in the following format:
+     * {            
+     *      requests: [
+     *          {
+     *              protocol: "",
+     *              extent: "", //if extent is other then the given bbox.
+     *              url: "",
+     *              alpha: "",
+     *              body: "",
+     *              tileWidth: "", //default 256, for tiling
+     *              tileHeight: "", //default 256, for tiling
+     *              serverExtent: "" //server extent, for tiling
+     *          }
+     *      ],
+     *      geometries: [
+     *          wktgeom: "",
+     *          color: ""
+     *      ],
+     *      bbox: "",
+     *      width: "",
+     *      height: "",
+     *      srid: "",
+     *      angle: "",
+     *      quality: ""
+     *  }
+     */
+    public static CombineImageSettings fromJson(JSONObject settings) throws JSONException, Exception{        
+        JSONObject jResponse = new JSONObject();
+       
+        CombineImageSettings cis = new CombineImageSettings();            
+        //get the requests
+        if (settings.has("requests")){
+            JSONArray requests = settings.getJSONArray("requests");
+            for (int r=0; r < requests.length(); r++){
+                CombineImageUrl ciu = null;
+                JSONObject request=requests.getJSONObject(r);
 
+                String protocol = null;
+                if (request.has("protocol")){
+                    protocol=request.getString("protocol");
+                }
+                if (ARCSERVER_PROTOCOL.equals(protocol)){
+                    ciu= new CombineArcServerUrl();
+                }else if (ARCIMS_PROTOCOL.equals(protocol)){
+                    ciu= new CombineArcIMSUrl();
+                }else if (WMS_PROTOCOL.equals(protocol)){
+                    ciu = new CombineWmsUrl();
+                }else if (IMAGE_PROTOCOL.equals(protocol)) {                            
+                    CombineStaticImageUrl csiu = new CombineStaticImageUrl();
+                    if (request.has("extent")){
+                        csiu.setBbox(new Bbox(request.getString("extent")));                                
+                    }
+                    ciu=csiu;
+                }else if (WMSC_PROTOCOL.equals(protocol)){
+                    CombineWmscUrl cwu = new CombineWmscUrl();
+                    if (request.has("serverExtent")){
+                        cwu.setServiceBbox(new Bbox(request.getString("serverExtent")));
+                    }if (request.has("tileWidth")){
+                        cwu.setTileWidth(request.getInt("tileWidth"));
+                    }if (request.has("tileHeight")){
+                        cwu.setTileHeight(request.getInt("tileHeight"));                        
+                    }if (request.has("resolutions")){
+                        String resolutions = request.getString("resolutions");
+                        String[] tokens = resolutions.split(",");
+                        Double[] res = new Double[tokens.length];
+                        for (int i=0; i < tokens.length; i++){
+                            res[i] = new Double(tokens[i]);
+                        }                            
+                        cwu.setResolutions(res);
+                    }
+                    ciu = cwu;
+                } else if (TMS_PROTOCOL.equals(protocol)) {
+                    CombineTMSUrl ctu = new CombineTMSUrl();
+                    if (request.has("serverExtent")) {
+                        ctu.setServiceBbox(new Bbox(request.getString("serverExtent")));
+                    }
+                    if (request.has("tileWidth")) {
+                        ctu.setTileWidth(request.getInt("tileWidth"));
+                    }
+                    if (request.has("tileHeight")) {
+                        ctu.setTileHeight(request.getInt("tileHeight"));
+                    }
+                    if (request.has("extension")) {
+                        ctu.setExtension(request.getString("extension"));
+                    }
+                    if (request.has("resolutions")) {
+                        String resolutions = request.getString("resolutions");
+                        String[] tokens = resolutions.split(",");
+                        Double[] res = new Double[tokens.length];
+                        for (int i = 0; i < tokens.length; i++) {
+                            res[i] = new Double(tokens[i]);
+                        }
+                        ctu.setResolutions(res);
+                    }
+                    ciu = ctu;
+                }else if (ARCSERVERREST_PROTOCOL.equals(protocol)){
+                    CombineArcServerRestUrl casr = new CombineArcServerRestUrl();
+                    ciu = casr;
+                }else{
+                    throw new IllegalArgumentException( "Illegal servicetype: " + protocol);
+                }
+                ciu.setUrl(request.getString("url"));
+                if (request.has("alpha")){
+                    Double alpha=request.getDouble("alpha");
+                    //divide by 100 (number between 0 and 1)
+                    ciu.setAlpha(alpha.floatValue()/100);
+                }
+                if (request.has("body")){
+                    ciu.setBody(request.getString("body"));  
+                }
+                cis.addUrl(ciu);
+            }
+        }
+        if (settings.has("geometries")){
+            JSONArray geometries = settings.getJSONArray("geometries");
+            List<CombineImageWkt> wkts = new ArrayList<CombineImageWkt>();
+            for (int g=0; g < geometries.length(); g++){
+                JSONObject geom = geometries.getJSONObject(g);
+                if (geom.has("wktgeom")){
+                    CombineImageWkt ciw = new CombineImageWkt(geom.getString("wktgeom"));
+                    if (geom.has("color") && !geom.isNull("color")){
+                        ciw.setColor(geom.getString("color"));
+                    }
+                    if (geom.has("label") && !geom.isNull("label")){
+                        ciw.setLabel(geom.getString("label"));
+                    }
+                    wkts.add(ciw);
+                }
+            }
+            cis.setWktGeoms(wkts);
+        }
+        if (settings.has("bbox")){
+            cis.setBbox(settings.getString("bbox"));                
+        }if (settings.has("width")){
+            cis.setWidth(settings.getInt("width"));
+        }if (settings.has("height")){
+            cis.setHeight(settings.getInt("height"));
+        }if (settings.has("srid")){
+            cis.setSrid(settings.getInt("srid"));
+        }if (settings.has("angle")){
+            cis.setAngle(settings.getInt("angle"));
+        }
+        if (settings.has("quality")){
+            Integer quality = settings.getInt("quality");
+            if (cis.getWidth() > cis.getHeight()){
+                cis.setHeight(Math.round(cis.getHeight() * quality/cis.getWidth()));
+                cis.setWidth(quality);
+            }else{
+                cis.setWidth(Math.round(cis.getWidth() * quality/cis.getHeight()));
+                cis.setHeight(quality);
+            }
+        }
+        return cis;
+    }
 }

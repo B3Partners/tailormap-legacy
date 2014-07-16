@@ -188,23 +188,26 @@ Ext.define('Ext.ux.RowExpander', {
         }
     },
 
-    toggleRow: function(rowIdx) {
-        var rowNode = this.view.getNode(rowIdx),
+    toggleRow: function(rowIdx,view,recordIndex) {
+        var rowNode = view.getNode(rowIdx),
             row = Ext.get(rowNode),
             nextBd = Ext.get(row).down(this.rowBodyTrSelector),
-            record = this.view.getRecord(rowNode),
+            record = view.getRecord(rowNode),
             grid = this.getCmp();
-
+           
+        if(!record){
+            return;
+        }
         if (row.hasCls(this.rowCollapsedCls)) {
             row.removeCls(this.rowCollapsedCls);
             nextBd.removeCls(this.rowBodyHiddenCls);
             this.recordsExpanded[record.internalId] = true;
-            this.view.fireEvent('expandbody', rowNode, record, nextBd.dom);
+            view.fireEvent('expandbody', rowNode, record, nextBd.dom,recordIndex);
         } else {
             row.addCls(this.rowCollapsedCls);
             nextBd.addCls(this.rowBodyHiddenCls);
             this.recordsExpanded[record.internalId] = false;
-            this.view.fireEvent('collapsebody', rowNode, record, nextBd.dom);
+            view.fireEvent('collapsebody', rowNode, record, nextBd.dom,recordIndex);
         }
 
 
@@ -212,7 +215,7 @@ Ext.define('Ext.ux.RowExpander', {
         if (!grid.isFixedHeight()) {
             grid.doComponentLayout();
         }
-        this.view.up('gridpanel').invalidateScroller();
+        view.up('gridpanel').invalidateScroller();
     },
 
     onDblClick: function(view, cell, rowIdx, cellIndex, e) {
@@ -242,7 +245,7 @@ Ext.define('Ext.ux.RowExpander', {
             processEvent: function(type, view, cell, recordIndex, cellIndex, e) {
                 if (type == "mousedown" && e.getTarget('.x-grid-row-expander')) {
                     var row = e.getTarget('.x-grid-row');
-                    toggleRow(row);
+                    toggleRow(row,view,recordIndex);
                     return selectRowOnExpand;
                 }
             }

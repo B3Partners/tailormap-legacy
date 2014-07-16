@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,10 @@
  */
 package nl.b3p.viewer.image;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Roy Braam
@@ -29,7 +33,9 @@ public class CombineStaticImageUrl extends CombineImageUrl{
     private Integer height;
 
     public CombineStaticImageUrl(){}
-    
+    public CombineStaticImageUrl(URL url, Float alpha){
+        super(url, alpha);
+    }
     private CombineStaticImageUrl(CombineStaticImageUrl csiu) {        
         super(csiu);
         this.bbox= new Bbox(csiu.bbox);
@@ -40,7 +46,7 @@ public class CombineStaticImageUrl extends CombineImageUrl{
     }
     
     @Override
-    public CombineImageUrl calculateNewUrl(ImageBbox imbbox) {
+    public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox) {
         CombineStaticImageUrl csiu = new CombineStaticImageUrl(this);
         double unitsX =imbbox.getUnitsPixelX();
         double unitsY =imbbox.getUnitsPixelY();
@@ -50,7 +56,10 @@ public class CombineStaticImageUrl extends CombineImageUrl{
         
         csiu.x= (int)Math.round((csiu.getBbox().getMinx()-imbbox.getBbox().getMinx())/unitsX);
         csiu.y= (int)Math.round((imbbox.getBbox().getMaxy()-csiu.getBbox().getMaxy())/unitsY);
-        return csiu;
+        
+        List<CombineImageUrl> list= new ArrayList<CombineImageUrl>();
+        list.add(csiu);
+        return list;
     }
     
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">

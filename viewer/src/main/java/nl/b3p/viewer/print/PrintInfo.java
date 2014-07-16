@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* Modified: 2014, Eddy Scheper ARIS B.V.
+ *           - Support for extra info added.
+*/
 package nl.b3p.viewer.print;
 
 /**
@@ -34,6 +37,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+// 2014, Eddy Scheper, ARIS B.V. - Added.
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -43,7 +48,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 @XmlRootElement(name="info")
-@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle","overviewUrl"})
+// 2014, Eddy Scheper, ARIS B.V. - Modified.
+@XmlType(propOrder = {"title","subtitle","date","imageUrl","legendUrls","bbox","remark","quality","angle","overviewUrl","extra"})
 public class PrintInfo {
     private static final Log log = LogFactory.getLog(PrintInfo.class);
     
@@ -55,6 +61,7 @@ public class PrintInfo {
     private String remark;
     private int quality;
     private int angle;
+    private List<PrintExtraInfo> extra = new ArrayList();
     private List<Legend> legendUrls = new ArrayList();
     
     private List<File> tempFiles = new ArrayList();
@@ -153,7 +160,17 @@ public class PrintInfo {
     public void setOverviewUrl(String overviewUrl) {
         this.overviewUrl = overviewUrl;
     }
-    
+
+    @XmlElementWrapper(name="extra")
+    @XmlElement(name="info")
+    public List<PrintExtraInfo> getExtra() {
+        return extra;
+    }
+
+    public void setExtra(List<PrintExtraInfo> extra) {
+        this.extra = extra;
+    }
+
     public void cacheLegendImagesAndReadDimensions() {
         for(Legend l: legendUrls) {
             for(LegendPart lp: l.getLegendParts()) {

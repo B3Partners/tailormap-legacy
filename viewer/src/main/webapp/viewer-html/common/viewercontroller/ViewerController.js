@@ -1604,22 +1604,39 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return top;
     },
-        
-    resizeComponents: function() {
+      /**
+       * Entrypoint for updating the components. 
+       * @param Boolean informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will 
+       * not be updated). Used to prevent endless calling of functions
+       *  @returns {boolean} Always true
+       */
+    resizeComponents: function(informLayoutmanager) {
         var me = this;
-        me.layoutManager.resizeLayout(function(){
-            // Openlayers needs to be manually resized and has a resize function
-            if(me.mapComponent.doResize) {
-                me.mapComponent.doResize();
-            }
-            // We are execturing the doResize function manually on all components, instead of
-            // firing an event, because all components are required execute this function
-            for(var name in me.components) {
-                var component = me.components[name];
-                component.instance.resizeScreenComponent();
-            }
-            return true;
-        });
+        if(informLayoutmanager){
+            me.layoutManager.resizeLayout(function(){
+                return me.resizeComponentsImpl();
+            });
+        }else{
+            return this.resizeComponentsImpl();
+        }
+    },
+    /**
+     * Actual calling the resize functions of all the components
+     * @returns {Boolean}
+     */
+    resizeComponentsImpl: function(){
+        var me = this;
+         // Openlayers needs to be manually resized and has a resize function
+        if(me.mapComponent.doResize) {
+            me.mapComponent.doResize();
+        }
+        // We are execturing the doResize function manually on all components, instead of
+        // firing an event, because all components are required execute this function
+        for(var name in me.components) {
+            var component = me.components[name];
+            component.instance.resizeScreenComponent();
+        }
+        return true;
     },
     /**
      *Utility functions

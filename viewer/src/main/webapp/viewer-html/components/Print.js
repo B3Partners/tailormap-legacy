@@ -19,6 +19,9 @@
  * Creates a AttributeList component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 Ext.define ("viewer.components.Print",{
     extend: "viewer.components.Component",  
     panel: null,
@@ -28,6 +31,8 @@ Ext.define ("viewer.components.Print",{
     minWidth: 550,
     combineImageService: null,
     legends:null,
+    extraInfoCallbacks:null,
+    extraLayerCallbacks:null,
     config:{
         name: "Print",
         title: "",
@@ -68,6 +73,8 @@ Ext.define ("viewer.components.Print",{
                 label: me.label
             });
         }
+        this.extraInfoCallbacks = new Array();
+        this.extraLayerCallbacks = new Array();
         
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
@@ -372,7 +379,8 @@ Ext.define ("viewer.components.Print",{
                                 xtype: "flamingocombobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
-                                store: [['a4','A4'],['a3','A3']],
+                                // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
+                                store: [['a5','A5'],['a4','A4'],['a3','A3'],['a0','A0']],
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
@@ -679,6 +687,18 @@ Ext.define ("viewer.components.Print",{
     submitSettings: function(action){        
         var properties = this.getProperties();
         properties.action=action;
+        // Process registred extra info callbacks
+        var extraInfos = new Array();
+        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){
+            var entry = this.extraInfoCallbacks[i];
+            var extraInfo = {
+                class: Ext.getClass(entry.component).getName(),
+                componentName: entry.component.name,
+                info: entry.callback() // Produces an JSONObject
+            };
+            extraInfos.push(extraInfo);
+        }
+        properties.extra = extraInfos;
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
         this.printForm.submit({            
@@ -738,7 +758,7 @@ Ext.define ("viewer.components.Print",{
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.getVisible()){
-                if (layer.getType()== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
+                if (layer.getType()=== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
                     var features=layer.getAllFeatures();
                     for (var f =0; f < features.length; f++){
                         var feature=features[f];
@@ -746,6 +766,23 @@ Ext.define ("viewer.components.Print",{
                             wktGeoms.push(feature);
                         }
                     }
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol == "TMS" || layer.protocol == "WMSC")){
+                    var printLayer = new Object();
+                    printLayer.url=layer.config.url; 
+                    printLayer.alpha=layer.alpha; 
+                    printLayer.extension=layer.extension; 
+                    printLayer.protocol=layer.protocol ;
+                    printLayer.serverExtent = layer.serviceEnvelope;
+                    printLayer.tileWidth = layer.tileWidth;
+                    printLayer.tileHeight = layer.tileHeight;
+                    printLayer.resolutions= layer.resolutions.toString();
+                    printLayers.push(printLayer);                                
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.WMS_TYPE ){
+                    var printLayer = new Object();
+                    printLayer.url=layer.getLastMapRequest()[0].url; 
+                    printLayer.alpha=layer.alpha; 
+                    printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
+                    printLayers.push(printLayer);                                
                 }else{
                     var requests=layer.getLastMapRequest();                
                     for (var r in requests){
@@ -760,13 +797,39 @@ Ext.define ("viewer.components.Print",{
                             if (request.extent){
                                 request.extent=request.extent.toString();
                             }
-                            //TODO tiling is now added as images, needs te be added as a tiling server
-                            if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE){
-                                request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;                                
-                            }
+                          
                         }
                     }
                 }
+            }
+        }
+        
+        for(var j = 0 ; j < this.extraLayerCallbacks.length;j++){
+            var printLayer = new Object();
+            var layerInfos = this.extraLayerCallbacks[j].callback();
+            for(var k = 0 ; k < layerInfos.length; k++){
+                var layerInfo = layerInfos[k];
+                printLayer.url= layerInfo.url;
+                var beginChar = layerInfo.url.indexOf("?") === -1 ? "?" : "&";
+                printLayer.url += beginChar + "LAYERS=" + layerInfo.layers;
+                printLayer.url += "&FORMAT=" + layerInfo.format;
+                printLayer.url += "&TRANSPARENT=" + layerInfo.transparent;
+                printLayer.url += "&SRS=" + layerInfo.srs;
+                if(printLayer.url.toLowerCase().indexOf("bbox") === -1){
+                    printLayer.url += "&bbox=-1,-1,-1,-1";
+                }
+                
+                if(printLayer.url.toLowerCase().indexOf("width") === -1){
+                    printLayer.url += "&WIDTH=-1&HEIGHT=-1";
+                }
+                
+                if(printLayer.url.toLowerCase().indexOf("request") === -1){
+                    printLayer.url += "&REQUEST=Getmap";
+                }
+                
+                printLayer.alpha=layerInfo.alpha; 
+                printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
+                printLayers.push(printLayer);           
             }
         }
         values.requests=printLayers;        
@@ -825,6 +888,53 @@ Ext.define ("viewer.components.Print",{
             }
         }
         return config;
+    },
+    /**
+     * Register the calling component for retrieving extra information to add to the print.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the print component
+     */
+    registerExtraInfo: function(component, callback){
+        var entry = {
+            component:component,
+            callback: callback
+        };
+        this.extraInfoCallbacks.push(entry);
+    },
+    /**
+     * Unregister the given component for retrieving extra info for printing.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    unregisterExtraInfo: function (component){
+        for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
+            if(this.extraInfoCallbacks[i].component.name === component.name ){
+                this.extraInfoCallbacks.splice(i, 1);
+            }
+        }
+    },
+    /**
+     * Register a component which can add extra layers to the print.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the print component
+     */
+    registerExtraLayers : function (component, callback){
+        this.extraLayerCallbacks.push({
+            component:component,
+            callback: callback
+        });
+    },  
+    /**
+     * Unregister the given component for retrieving extra info for printing.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    unregisterExtraLayers: function (component){
+        for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
+            if(this.extraLayerCallbacks[i].component.name === component.name ){
+                this.extraLayerCallbacks.splice(i, 1);
+            }
+        }
     },
     getOverviews : function(){
       return this.viewerController.getComponentsByClassName("viewer.components.Overview");  

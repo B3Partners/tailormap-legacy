@@ -180,6 +180,15 @@ Ext.define ("viewer.components.Maptip",{
 
         this.requestManager.request(requestId, options, radius, inScaleLayers,  function(data) {
             options.data = data;
+            var curExtent = me.viewerController.mapComponent.getMap().getExtent();
+            if (curExtent.equals(me.requestExtent)){
+                for( var i = 0 ; i < data.length ;i++){
+                    var data = data[i];
+                    var layer = me.viewerController.getLayer(data.appLayer);
+                    layer.fireEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, data.appLayer,data);
+                }
+            }
+            
             me.onMapData(null, options);
         }, this.onFailure);
     },

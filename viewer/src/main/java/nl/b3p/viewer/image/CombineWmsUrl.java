@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.image;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,6 +27,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class CombineWmsUrl extends CombineImageUrl{
     private static final Log log = LogFactory.getLog(CombineWmsUrl.class);
+    
+    private Integer maxTileWidth = 2048;
+    private Integer maxTileHeight= 2048;
+    
     private CombineWmsUrl(CombineWmsUrl cwu) {
         super(cwu);
     }
@@ -33,12 +39,60 @@ public class CombineWmsUrl extends CombineImageUrl{
         super();
     }
     
-    public CombineWmsUrl calculateNewUrl(ImageBbox bbox) {
+    public List<CombineImageUrl> calculateNewUrl(ImageBbox bbox) {
         CombineWmsUrl ciu = new CombineWmsUrl(this);
-        ciu.changeParameter("bbox", bbox.getBbox().toString());
-        ciu.changeParameter("width", bbox.getWidth().toString());
-        ciu.changeParameter("height", bbox.getHeight().toString());        
-        return ciu;
+        Integer width = bbox.getWidth();
+        Integer height = bbox.getHeight();
+        List<CombineImageUrl> list= new ArrayList<CombineImageUrl>();
+        //if bigger then max size, then split image in smaller parts.
+        if (width > this.maxTileWidth || height > this.maxTileHeight){
+            Bbox newBbox = bbox.getBbox();
+
+            Double resolutionWidth = bbox.getUnitsPixelX();
+            Double resolutionHeight = bbox.getUnitsPixelY();
+
+            for (int beginX = 0; beginX < width; beginX += this.maxTileWidth) {
+                for (int endY = height; endY >= 0; endY -= this.maxTileHeight) {
+
+                    Integer endX = beginX + this.maxTileWidth;
+                    if (endX > width) {
+                        endX = width;
+                    }
+
+                    Integer beginY = endY-this.maxTileHeight;
+                    if (beginY < 0) {
+                        beginY = 0;
+                    }
+                    
+                    Bbox curBbox = new Bbox(
+                            newBbox.getMinx() + beginX * resolutionWidth,
+                            newBbox.getMiny() + (height-endY) * resolutionHeight,
+                            newBbox.getMinx() + endX * resolutionWidth,
+                            newBbox.getMiny() + (height-beginY) * resolutionHeight);
+
+                    CombineWmsUrl newCiu = new CombineWmsUrl(this);                
+                    newCiu.changeParameter("bbox", curBbox.toString());
+                    newCiu.changeParameter("width", "" + (endX-beginX));
+                    newCiu.changeParameter("height", "" + (endY-beginY));
+
+                    CombineStaticImageUrl csiu = new CombineStaticImageUrl();
+                    csiu.setX(beginX);
+                    csiu.setY(beginY);
+                    csiu.setBbox(curBbox);
+                    csiu.setUrl(newCiu.getUrl());
+                    csiu.setHeight(endY-beginY);
+                    csiu.setWidth(endX-beginX);
+
+                    list.add(csiu);
+                }
+            }
+        }else{
+            ciu.changeParameter("bbox", bbox.getBbox().toString());
+            ciu.changeParameter("width", bbox.getWidth().toString());
+            ciu.changeParameter("height", bbox.getHeight().toString());
+            list.add(ciu);
+        }
+        return list;
     }
     
     /**
@@ -98,7 +152,40 @@ public class CombineWmsUrl extends CombineImageUrl{
         } else {
             return null;
         }
-    }    
+    }
+    /**
+     * Returned a url with changed param     
+     * @param key the param name
+     * @param newValue the new value
+     * @return the changed url
+     *
+     */
+    private void changeParameter(String key,String newValue) {
+        String lowerUrl = url.toLowerCase();
+        if (lowerUrl.indexOf("?" + key + "=") >= 0 || lowerUrl.indexOf("&" + key + "=") >= 0) {
+            int beginIndex = 0;
+            int endIndex = lowerUrl.length();
+            if (lowerUrl.indexOf("?" + key + "=") >= 0) {
+                beginIndex = lowerUrl.indexOf("?" + key + "=") + key.length() + 2;
+            } else {
+                beginIndex = lowerUrl.indexOf("&" + key + "") + key.length() + 2;
+            }
+            if (lowerUrl.indexOf("&", beginIndex) > 0) {
+                endIndex = lowerUrl.indexOf("&", beginIndex);
+            }
+            if (beginIndex < endIndex) {
+                String newUrl="";
+                if (beginIndex>0){
+                    newUrl+=url.substring(0,beginIndex);
+                }
+                newUrl+=newValue;
+                if (endIndex < url.length()){
+                    newUrl+=url.substring(endIndex,url.length());
+                }
+                url=newUrl;
+            }
+        }
+    }
     /**
       * Get a parameter from this url.      
       * @param key

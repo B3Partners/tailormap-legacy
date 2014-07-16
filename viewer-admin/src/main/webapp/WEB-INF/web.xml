@@ -60,7 +60,7 @@
             the solr configuration and index will be located.
         </description>
         <param-name>flamingo.data.dir</param-name>
-        <param-value>/opt/flamingo_data</param-value>
+        <param-value>PATH/TO/DATA/DIRECTORY</param-value>
     </context-param>
     <context-param>
         <description>
@@ -76,14 +76,14 @@
             Comment out this parameter or set to -1 to disable.
         </description>
         <param-name>flamingo.solr.schedule</param-name>
-        <param-value>0 10 4 ? * *</param-value>
+        <param-value>-1</param-value>
     </context-param>
     <context-param>
         <description>
             The url on where the solr server is to be found.
         </description>
         <param-name>flamingo.solr.url</param-name>
-        <param-value>http://webkaart.b3p.nl/solr/</param-value>
+        <param-value>http://SERVER/solr</param-value>
     </context-param>
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>

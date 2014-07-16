@@ -169,6 +169,7 @@ public class ConfiguredAttribute {
         o.put("defaultValue", defaultValue);
         if (featureType!=null){
             o.put("featureType",featureType.getId());
+            o.put("longname",featureType.getTypeName() + "." + attributeName);
         }
         return o;
     }
