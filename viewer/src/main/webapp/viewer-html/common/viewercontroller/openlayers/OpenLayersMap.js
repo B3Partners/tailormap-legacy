@@ -46,7 +46,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         }else if (maxBounds){
             config.center = maxBounds.getCenterLonLat();
         }else{
-            this.viewerController.logger.error("No bounds found, can't center viewport");
+            this.config.viewerController.logger.error("No bounds found, can't center viewport");
         }
         
         config.restrictedExtent = maxBounds;
@@ -56,7 +56,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         var me=this;
         
         //Overwrite default OpenLayers tools,don't set any mouse controls
-        config.controls=[
+        config.controls = [
             new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.Navigation()
         ];
@@ -126,7 +126,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         try{
             map.addLayer(l);
         }catch(exception){
-            this.viewerController.logger.error(exception);
+            this.config.viewerController.logger.error(exception);
         }
     },
     

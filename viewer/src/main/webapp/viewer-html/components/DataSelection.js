@@ -63,14 +63,14 @@ Ext.define ("viewer.components.DataSelection",{
             handler: function(){
                 me.showWindow();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
-        if(!this.layers || this.layers.length == 0){
+        if(!this.config.layers || this.config.layers.length == 0){
             this.allLayers = true;
-            this.layers = [];
+            this.config.layers = [];
         }else{
             this.allLayers = false;
         }
@@ -113,7 +113,7 @@ Ext.define ("viewer.components.DataSelection",{
             },
             {
                 xtype: 'tabpanel',
-                id: this.name + 'TabPanel',
+                id: this.config.name + 'TabPanel',
                 flex: 1,
                 width: '100%',
                 hideMode: 'offsets',
@@ -133,16 +133,16 @@ Ext.define ("viewer.components.DataSelection",{
                 },
                 items: [{
                     xtype: 'panel',
-                    id: this.name + 'FilterTab',
+                    id: this.config.name + 'FilterTab',
                     title: 'Filter',
                     hideMode: 'offsets'
                 },{
                     xtype: 'panel',
-                    id: this.name + "DataTab",
+                    id: this.config.name + "DataTab",
                     title: 'Dataselectie',
                     hideMode: 'offsets'
                 }],
-                activeTab : this.name + "DataTab"
+                activeTab : this.config.name + "DataTab"
             },
             {
                 xtype: 'container',
@@ -185,22 +185,22 @@ Ext.define ("viewer.components.DataSelection",{
             renderTo: this.getContentDiv()
         });
         this.layerSelector = Ext.create("viewer.components.LayerSelector", {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             div: layerSelectorId,
-            layers : this.layers,
+            layers : this.config.layers,
             restriction: "filterable"
         });
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
-        this.tabPanel = Ext.getCmp(this.name + 'TabPanel');
-        this.dataTab = Ext.getCmp(this.name + 'DataTab');
-        this.filterTab = Ext.getCmp(this.name + 'FilterTab')
+        this.tabPanel = Ext.getCmp(this.config.name + 'TabPanel');
+        this.dataTab = Ext.getCmp(this.config.name + 'DataTab');
+        this.filterTab = Ext.getCmp(this.config.name + 'FilterTab')
         this.createFilterTab();
     },
     createDataTab : function (appLayer){
         var attributes = appLayer.attributes;
-        var dataSelectieAttributes = new Array();
-        this.uniqueValuesAttributes = new Array();
-        var minMaxAttrs = new Array();
+        var dataSelectieAttributes = [];
+        this.uniqueValuesAttributes = [];
+        var minMaxAttrs = [];
         
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
@@ -450,7 +450,7 @@ Ext.define ("viewer.components.DataSelection",{
             attributes: this.attributes,
             logicOperator: logicOperator,
             parentMainContainer: this.filterTab,
-            maxFeatures:this.maxFeatures,
+            maxFeatures:this.config.maxFeatures,
             parentComponent: this
         });
         this.filters.push(filter);
@@ -506,7 +506,7 @@ Ext.define ("viewer.components.DataSelection",{
                 type: "ATTRIBUTE"
             });
 
-            this.viewerController.setFilter(filterWrapper,layer);
+            this.config.viewerController.setFilter(filterWrapper,layer);
         }
         
     //console.log("CQL: " + layer.filter.getCQL());
@@ -540,7 +540,7 @@ Ext.define ("viewer.components.DataSelection",{
         var appLayer = this.layerSelector.getValue();
         if(appLayer){
             var filterId = this.name + appLayer.layerName;
-            this.viewerController.removeFilter(filterId,appLayer);
+            this.config.viewerController.removeFilter(filterId,appLayer);
         }
         this.layerSelector.setValue();
         this.resetForm();
@@ -552,7 +552,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.appLayer = item;
         
         if(this.appLayer != null){
-            this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
             var me = this;
             // check if featuretype was loaded
             if(this.appLayer.attributes == undefined) {
@@ -566,14 +566,14 @@ Ext.define ("viewer.components.DataSelection",{
         
         if(prev != undefined){
             if(this.appLayer){
-                var prevLayer = this.viewerController.getLayer(this.appLayer);
+                var prevLayer = this.config.viewerController.getLayer(this.appLayer);
                 prevLayer.setQuery(null);
             }
         }
     },
     // Change the comboboxes of the attributefilters. Happens when a new layer is chosen.
     changeAttributes : function (appLayer){
-        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer,null,true);
+        var attributes = this.config.viewerController.getAttributesFromAppLayer(appLayer,null,true);
         var attributeList = new Array();
         for(var i= 0 ; i < attributes.length ;i++){
             var attribute = attributes[i];
@@ -594,7 +594,7 @@ Ext.define ("viewer.components.DataSelection",{
         this.createDataTab(appLayer);
     },
     hasAppLayerConfigured : function (appLayer){
-        return Ext.Array.contains(this.layers, appLayer.id);
+        return Ext.Array.contains(this.config.layers, appLayer.id);
     },
     getExtComponents: function() {
         return [

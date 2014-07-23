@@ -25,7 +25,7 @@ Ext.define ("viewer.components.Twitter",{
             text: "Haal Tweets op!",
             listeners: {
                 click: function(button) {
-                    this.doSearch(this.search);
+                    this.doSearch(this.config.search);
                 }, 
                 scope: this
             }
@@ -43,7 +43,7 @@ Ext.define ("viewer.components.Twitter",{
         
         var me = this;
         setTimeout(function(){
-            me.doSearch(me.search);
+            me.doSearch(me.config.search);
         }, me.interval);
     },
     doSearch : function (term){
@@ -68,7 +68,7 @@ Ext.define ("viewer.components.Twitter",{
         }
         var me = this;
         setTimeout(function(){
-            me.doSearch(me.search);
+            me.doSearch(me.config.search);
         }, me.interval);
     },
     processTweet : function (tweet){

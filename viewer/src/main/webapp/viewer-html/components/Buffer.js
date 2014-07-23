@@ -38,26 +38,26 @@ Ext.define ("viewer.components.Buffer",{
     constructor: function (conf){
         viewer.components.Buffer.superclass.constructor.call(this, conf);
         this.initConfig(conf);     
-        if(this.maxFeatures == null){
-            this.maxFeatures = 50;
+        if(this.config.maxFeatures == null){
+            this.config.maxFeatures = 50;
         }
         var me = this;
         this.renderButton({
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });      
         this.imageLayers = new Array();
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
     selectedContentChanged : function (){
         for(var i = 0 ;i < this.imageLayers.length ;i++){
-            this.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.imageLayers[i]);
         }
     },
     buttonClick : function (){ 
@@ -138,10 +138,10 @@ Ext.define ("viewer.components.Buffer",{
         
         
         this.layerSelector = Ext.create("viewer.components.LayerSelector",{
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             div: layerSelectorId,
             id: this.name + "LayerSelector",
-            layers : this.layers,
+            layers : this.config.layers,
             restriction: "bufferable"
         });
     },
@@ -154,11 +154,11 @@ Ext.define ("viewer.components.Buffer",{
             if(layer.filter){
                 filterParams = "&filter=" + encodeURIComponent(layer.filter.getCQL());
             }
-            var bbox = this.viewerController.mapComponent.getMap().getExtent();
-            var width = this.viewerController.mapComponent.getMap().getWidth();
-            var height = this.viewerController.mapComponent.getMap().getHeight();
+            var bbox = this.config.viewerController.mapComponent.getMap().getExtent();
+            var width = this.config.viewerController.mapComponent.getMap().getWidth();
+            var height = this.config.viewerController.mapComponent.getMap().getHeight();
             var url = absoluteURIPrefix + contextPath + "/action/Buffer";
-            var attrs ="?bbox="+ bbox.toString() + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.maxFeatures;
+            var attrs ="?bbox="+ bbox.toString() + "&serviceId="+ layer.serviceId+"&layerName="+ layer.layerName +"&width="+ width+"&height="+height+"&buffer="+radius+"&maxFeatures="+ this.config.maxFeatures;
             if(this.color != null){
                     attrs += "&color="+this.color;
             }
@@ -167,19 +167,19 @@ Ext.define ("viewer.components.Buffer",{
                 var filterUrl = url + filterParams;
                 url = filterUrl;
                 if(filterUrl.length > 1024){
-                    this.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
+                    this.config.viewerController.logger.warning("Buffertool generates url with filters that has more than 1024 characters, which can produce faulty requests in some browsers");
                 }
             }
-            var imageLayer = this.viewerController.mapComponent.createImageLayer(this.name + "_" + layer.id, url, bbox);
+            var imageLayer = this.config.viewerController.mapComponent.createImageLayer(this.name + "_" + layer.id, url, bbox);
             this.imageLayers.push(imageLayer);
-            this.viewerController.mapComponent.getMap().addLayer(imageLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(imageLayer);
             if(MobileManager.isMobile()) {
                 this.popup.hide();
             }            
         }
     },
     removeBuffer : function(){
-        var map = this.viewerController.mapComponent.getMap();
+        var map = this.config.viewerController.mapComponent.getMap();
         var layer = this.layerSelector.getValue();
         if(layer != null){
             var bufferId = this.name + "_" + layer.id;

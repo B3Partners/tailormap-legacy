@@ -51,7 +51,7 @@ Ext.define ("viewer.components.AttributeFilter",{
             value:'=',
             width:50,
             valueField: 'id',
-            data: this.initData
+            data: this.config.initData
         });
         this.valueStore = Ext.create('Ext.data.ArrayStore', {
             fields: ['value']
@@ -71,7 +71,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     getUI : function (){
 		if(this.container === null) {
 			var items = [];
-			if(!this.first){
+			if(!this.config.first){
 				var logicStore = Ext.create('Ext.data.Store', {
 					fields: ['id','title'],
 					data : [{
@@ -97,7 +97,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 			items.push(this.value);
 
 			this.container =  Ext.create("Ext.container.Container",{
-				id:"attributeFilter-"+this.id+"-"+this.number,
+				id:"attributeFilter-"+this.config.id+"-"+this.config.number,
 				layout: {
 					type: 'hbox'
 				},
@@ -110,7 +110,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     },
     getCQL : function (){
         var cql = " " ;
-        if(!this.first){
+        if(!this.config.first){
             cql += this.logicOperator.getValue() + " ";
         }
         cql += "\"" +  this.attribute + "\"";

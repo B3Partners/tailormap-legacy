@@ -49,24 +49,24 @@ Ext.define ("viewer.components.RelatedDocuments",{
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.titlebarIcon,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.titlebarIcon,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });        
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.reinit,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.reinit,this);
         return this;
     },
     /**
      *When the button is clicked
      */
     buttonClick: function (){
-        //console.log("!!!"+this.viewerController);
+        //console.log("!!!"+this.config.viewerController);
         var me = this;
         if(this.contentId === '') {
             this.contentId = Ext.id();
             Ext.create('Ext.container.Container', {
-                id: this.name + 'Container',
+                id: this.config.name + 'Container',
                 width: '100%',
                 height: '100%',
                 layout: {
@@ -78,14 +78,14 @@ Ext.define ("viewer.components.RelatedDocuments",{
                 },
                 renderTo: this.getContentDiv(),
                 items: [{
-                    id: this.name + 'GridPanel',
+                    id: this.config.name + 'GridPanel',
                     xtype: "container",
                     autoScroll: true,
                     width: '100%',
                     flex: 1,
                     html: '<div id="' + me.contentId + '" style="width: 100%; height: 100%;"></div>'
                 },{
-                    id: this.name + 'ClosingPanel',
+                    id: this.config.name + 'ClosingPanel',
                     xtype: "container",
                     width: '100%',
                     height: MobileManager.isMobile() ? 45 : 25,
@@ -127,15 +127,15 @@ Ext.define ("viewer.components.RelatedDocuments",{
      */
     getDocuments: function(){
         var documents = new Object();
-        for ( var i = 0 ; i < this.viewerController.app.selectedContent.length ; i ++){
-            var contentItem = this.viewerController.app.selectedContent[i];
+        for ( var i = 0 ; i < this.config.viewerController.app.selectedContent.length ; i ++){
+            var contentItem = this.config.viewerController.app.selectedContent[i];
             var parentDocuments = new Object();
             if(contentItem.type ==  "level"){
-                parentDocuments=this.viewerController.getDocumentsInLevel(this.viewerController.app.levels[contentItem.id]);
+                parentDocuments=this.config.viewerController.getDocumentsInLevel(this.config.viewerController.app.levels[contentItem.id]);
             }else if(contentItem.type == "appLayer"){
-                var parentLevel = this.viewerController.getAppLayerParent(contentItem.id);
+                var parentLevel = this.config.viewerController.getAppLayerParent(contentItem.id);
                 if(parentLevel != null){
-                    parentDocuments=this.viewerController.getDocumentsInLevel(parentLevel);    
+                    parentDocuments=this.config.viewerController.getDocumentsInLevel(parentLevel);    
                 }
             }
             Ext.apply(documents,parentDocuments);
@@ -201,7 +201,7 @@ Ext.define ("viewer.components.RelatedDocuments",{
     },
     getExtComponents: function() {
         var c = [];
-        if(this.contentId !== '') c.push(this.name + 'Container');
+        if(this.contentId !== '') c.push(this.config.name + 'Container');
         return c;
     }
     

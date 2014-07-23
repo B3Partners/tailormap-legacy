@@ -34,8 +34,8 @@ Ext.define ("viewer.components.Coordinates",{
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.COORDINATES;
         
-        var comp = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(comp);
+        var comp = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(comp);
         
         return this;
     },

@@ -23,22 +23,21 @@ Ext.define ("viewer.components.DataSelectionChecker",{
         viewerController:null
     },
     constructor: function (conf){        
-        // this.initConfig(conf);
-        
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
+        this.initConfig(conf);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
     },
     init : function (){
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);    
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerVisibilityChanged,this);    
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);    
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerVisibilityChanged,this);    
     },
     layerVisibilityChanged : function (map,object){
         var layer = object.layer;
-        var appLayer= this.viewerController.getAppLayerById(layer.appLayerId);
+        var appLayer= this.config.viewerController.getAppLayerById(layer.appLayerId);
         if(appLayer && appLayer.checked){
             this.hasLayerDataSelectionAttributes(appLayer, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
                     setTimeout(function(){
-                        this.viewerController.setLayerVisible(appLayer,false)
+                        this.config.viewerController.setLayerVisible(appLayer,false)
                         }, 100);
                 }
             });
@@ -46,7 +45,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
     },
     hasLayerDataSelectionAttributes : function(appLayer,callBack){       
         if(appLayer){
-            var featureService = this.viewerController.getAppLayerFeatureService(appLayer);
+            var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
             if(appLayer != null){
                 var me = this;
                 // check if featuretype was loaded
@@ -73,9 +72,9 @@ Ext.define ("viewer.components.DataSelectionChecker",{
         var selectableAttributes = this.hasSelectableAttributes(appLayer);
         if( selectableAttributes >= 0 && (appLayer.filter == undefined || appLayer.filter == null)){
             var layerName = appLayer.alias || appLayer.layerName;
-            var dsArray = this.viewerController.getComponentsByClassName("viewer.components.DataSelection");
+            var dsArray = this.config.viewerController.getComponentsByClassName("viewer.components.DataSelection");
             if( dsArray.length == 0){
-                this.viewerController.logger.warning( 'Dataselectiemodule niet beschikbaar, kaartlaag "' + layerName + '" kan niet weergegeven worden.');
+                this.config.viewerController.logger.warning( 'Dataselectiemodule niet beschikbaar, kaartlaag "' + layerName + '" kan niet weergegeven worden.');
                 return false;
             }else{
                 var appLayerConfigured = false;
@@ -84,9 +83,9 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                     var me = appLayer;
                     if(ds.allLayers || ds.hasAppLayerConfigured(appLayer)){
                         appLayerConfigured = true;
-                        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
+                        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,function (filter,layer){
                             if(me.serviceId == layer.serviceId && me.layerName == layer.layerName){
-                                this.viewerController.setLayerVisible(me, true);
+                                this.config.viewerController.setLayerVisible(me, true);
                                 ds.removeForcedLayer(appLayer);
 
                             }
@@ -101,7 +100,7 @@ Ext.define ("viewer.components.DataSelectionChecker",{
                     }
                 }
                 if(!appLayerConfigured){
-                    this.viewerController.logger.warning( 'Kaartlaag "' + layerName+'" niet geconfigureerd bij een dataselectiecomponent.');
+                    this.config.viewerController.logger.warning( 'Kaartlaag "' + layerName+'" niet geconfigureerd bij een dataselectiecomponent.');
                     return false;
                 }else{
                     return false;

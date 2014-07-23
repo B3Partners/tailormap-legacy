@@ -42,12 +42,12 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
         //set type to correct tool type.
         this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
         //get the map.
-        this.map=this.viewerController.mapComponent.getMap();
+        this.map=this.config.viewerController.mapComponent.getMap();
         
         //single map click
         this.mapClick=new viewer.viewercontroller.openlayers.ToolMapClick({
             id: "mapclick_"+this.id,
-            viewerController: this.viewerController,
+            viewerController: this.config.viewerController,
             handler: {
                     fn: this.handleClick,
                     scope: this

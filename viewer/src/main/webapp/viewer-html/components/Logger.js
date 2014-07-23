@@ -38,18 +38,18 @@ Ext.define ("viewer.components.Logger",{
         this.initConfig(conf);
         this.messages = new Array();  
         var me = this;
-        Ext.EventManager.onWindowResize(function(){
+        Ext.on('resize', function(){
             me.onResize();            
         }, this);
     },
     error: function(message){
-        if (this.logLevel <= viewer.components.Logger.LEVEL_ERROR){
+        if (this.config.logLevel <= viewer.components.Logger.LEVEL_ERROR){
             this.message(message, viewer.components.LogMessage.ERROR);
             console.log(message);
         }
     },
     warning: function(message){
-        if (this.logLevel <= viewer.components.Logger.LEVEL_WARNING){
+        if (this.config.logLevel <= viewer.components.Logger.LEVEL_WARNING){
             this.message(message, viewer.components.LogMessage.WARNING);
         }
     },
@@ -57,7 +57,7 @@ Ext.define ("viewer.components.Logger",{
         this.warning.call(this, message);
     },
     info: function(message){
-        if (this.logLevel <= viewer.components.Logger.LEVEL_INFO){
+        if (this.config.logLevel <= viewer.components.Logger.LEVEL_INFO){
             this.message(message, viewer.components.LogMessage.INFO);
         }
     },
@@ -66,7 +66,7 @@ Ext.define ("viewer.components.Logger",{
      * console to show it: viewerController.logger.show();
      */
     debug:function(message){
-        if(this.logLevel <= viewer.components.Logger.LEVEL_DEBUG){
+        if(this.config.logLevel <= viewer.components.Logger.LEVEL_DEBUG){
             this.message(message, viewer.components.LogMessage.DEBUG);
         }
     }, 

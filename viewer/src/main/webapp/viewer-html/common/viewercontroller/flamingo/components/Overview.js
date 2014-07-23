@@ -47,9 +47,9 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
     toXML : function (){
         var extent = this.lox +"," +this.loy +"," +this.rbx +"," +this.rby;
         var xml ="<fmc:Map id='Map"+this.name+"'  width='"+this.width+"' height='"+this.height+"' clear='true' ";
-        xml += "extent='"+ this.viewerController.mapComponent.getMap().getExtent().toString()+"' fullextent='"+ this.viewerController.mapComponent.getMap().getMaxExtent().toString()+ "'";
-        xml += "listento='"+this.viewerController.mapComponent.getMap().getId() +"'>";
-        xml +="<fmc:LayerOverview xmlns:fmc='fmc' id='LayerOverview"+ this.name + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "' color='#76B6D1'";
+        xml += "extent='"+ this.config.viewerController.mapComponent.getMap().getExtent().toString()+"' fullextent='"+ this.config.viewerController.mapComponent.getMap().getMaxExtent().toString()+ "'";
+        xml += "listento='"+this.config.viewerController.mapComponent.getMap().getId() +"'>";
+        xml +="<fmc:LayerOverview xmlns:fmc='fmc' id='LayerOverview"+ this.name + "' listento='"+this.config.viewerController.mapComponent.getMap().getId() + "' color='#76B6D1'";
         
         if(this.followZoom !== undefined && this.followZoom !== null && this.followZoom ===false){
             xml += " followfactor='10000'/>";
@@ -57,26 +57,26 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
             xml += " followfactor='200'/>";
         }
         xml += "<fmc:LayerImage id='layerimageoverview"+this.name+"' imageurl='"+this.url + "'";
-        xml+=" extent='"+extent + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "'/>";
+        xml+=" extent='"+extent + "' listento='"+this.config.viewerController.mapComponent.getMap().getId() + "'/>";
         xml +="</fmc:Map>";
         var position = "";
         if(this.position == 'upperleft'){
-            var topMenuLayout=this.viewerController.getLayout('top_menu');
+            var topMenuLayout=this.config.viewerController.getLayout('top_menu');
             position = "left = 'left 0' top = '" + topMenuLayout.height;
             position += topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
             position += "'";
         }else if(this.position == 'upperright'){
-            var topMenuLayout=this.viewerController.getLayout('top_menu');
+            var topMenuLayout=this.config.viewerController.getLayout('top_menu');
             position = "right = 'right 0' top = '" + topMenuLayout.height;
             position += topMenuLayout.heightmeasure == "px" ? "" : topMenuLayout.heightmeasure;
             position += "'";
         }else if(this.position == 'lowerleft'){
-            var contentBottomLayout=this.viewerController.getLayout('content_bottom');
+            var contentBottomLayout=this.config.viewerController.getLayout('content_bottom');
             position = "left = 'left 0' bottom = 'bottom -" + contentBottomLayout.height;
             position += contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
             position += "'";
         }else if(this.position == 'lowerright'){
-            var contentBottomLayout=this.viewerController.getLayout('content_bottom');
+            var contentBottomLayout=this.config.viewerController.getLayout('content_bottom');
             position = "right = 'right 0' bottom = 'bottom -" + contentBottomLayout.height;
             position += contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
             position += "'";
@@ -96,7 +96,7 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
 
         conf.left = this.picLeft;
         conf.top = this.picTop;
-        conf.viewerController = this.viewerController;
+        conf.viewerController = this.config.viewerController;
         conf.tooltip = "Open/sluit de overzichtskaart";
         this.showButton = Ext.create("viewer.components.tools.JSButton", conf);
         var me = this;
@@ -115,6 +115,6 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
         return [];
     },
     showOverview : function (open){
-        this.viewerController.mapComponent.viewerObject.callMethod( this.name + 'windowcontainer','setVisible',open);  
+        this.config.viewerController.mapComponent.viewerObject.callMethod( this.name + 'windowcontainer','setVisible',open);  
     }
 });

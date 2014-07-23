@@ -48,7 +48,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         Ext.select(".olControlPanPanel").setStyle("top","0px");
         
         var me = this;
-        Ext.EventManager.onWindowResize(function (){
+        Ext.on('resize', function (){
             me.resizeOnceAfter(100);
         });
         this.resize();
@@ -86,7 +86,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
         this.north.setStyle("left",halfwayWidth+"px");
         
         //set width of top panel if the border nav is added. Otherwise the panel is on top of the north button.
-        Ext.get(this.viewerController.mapComponent.contentTop).setStyle("width",halfwayWidth+"px");
+        Ext.get(this.config.viewerController.mapComponent.contentTop).setStyle("width",halfwayWidth+"px");
         
         this.south.setStyle("top",height-this.buttonSize+"px");
         this.south.setStyle("left",halfwayWidth+"px");

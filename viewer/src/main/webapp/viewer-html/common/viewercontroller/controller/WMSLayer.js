@@ -34,7 +34,7 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
         // XXX service may not support GETLEGENDGRAPHIC
         var name=this.id;
         if (this.appLayerId){
-            var appLayer=this.viewerController.getAppLayerById(this.appLayerId);
+            var appLayer=this.config.viewerController.getAppLayerById(this.appLayerId);
             name=appLayer.alias;
         }
         success({

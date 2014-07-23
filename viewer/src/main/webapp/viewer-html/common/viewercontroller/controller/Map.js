@@ -30,15 +30,6 @@ Ext.define("viewer.viewercontroller.controller.Map",{
     constructor: function(config){
         viewer.viewercontroller.controller.Map.superclass.constructor.call(this, config);
         this.initConfig(config);
-        
-        this.addEvents(
-            viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE,
-            viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,
-            viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,
-            viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA,
-            viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
-            viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED);
-            
         return this;
     },
     
@@ -136,7 +127,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         
         var index=this.getLayerIndex(layer);
         if (index==-1){
-            this.viewerController.logger.warning("Map.removeLayer(): Layer not available in map!");
+            this.config.viewerController.logger.warning("Map.removeLayer(): Layer not available in map!");
         }else{            
             this.layers.splice(index,1);
         }
@@ -175,7 +166,7 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      * Sets a layer visible/invisible
      */
     setLayerVisible : function (layer, visible){
-        this.viewerController.app.appLayers[layer.appLayerId].checked = visible;
+        this.config.viewerController.app.appLayers[layer.appLayerId].checked = visible;
     },
 
     /*****************These functions need to be overwritten*****************/

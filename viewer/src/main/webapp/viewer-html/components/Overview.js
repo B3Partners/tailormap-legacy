@@ -27,8 +27,8 @@ Ext.define ("viewer.components.Overview",{
         conf.id=conf.name;
         conf.type = viewer.viewercontroller.controller.Component.OVERVIEW;
         
-        this.overview = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(this.overview);
+        this.overview = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(this.overview);
         
         return this;
     },

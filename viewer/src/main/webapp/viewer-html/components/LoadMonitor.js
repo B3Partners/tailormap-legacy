@@ -34,8 +34,8 @@ Ext.define ("viewer.components.LoadMonitor",{
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.LOADMONITOR;
         
-        this.loadMonitor = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(this.loadMonitor);
+        this.loadMonitor = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(this.loadMonitor);
         
         return this;
     },

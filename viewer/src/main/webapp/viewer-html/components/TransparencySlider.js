@@ -41,14 +41,14 @@ Ext.define ("viewer.components.TransparencySlider",{
         
         var me = this;
         var title = "";
-        if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
         var tools = [];
         // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
         if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
             tools = [{
                 type:'help',
                 handler: function(event, toolEl, panel){
-                    me.viewerController.showHelp(me.config);
+                    me.config.viewerController.showHelp(me.config);
                 }
             }];
         }
@@ -61,20 +61,20 @@ Ext.define ("viewer.components.TransparencySlider",{
         });
         conf.sliderContainer = this.name + 'slidersContainer';
         
-        for(var i = 0 ; i < this.sliders.length ; i ++){
+        for(var i = 0 ; i < this.config.sliders.length ; i ++){
             
-            var config = Ext.Object.merge(conf, this.sliders[i]);
+            var config = Ext.Object.merge(conf, this.config.sliders[i]);
             var slider =Ext.create("viewer.components.Slider", config);
             this.sliderObjects.push(slider);
         }
         
-        if(this.sliderForUserAdded){
+        if(this.config.sliderForUserAdded){
             var me =this;
             var c = {
                 selectedLayers:[],
-                initSelectedContent: JSON.parse(JSON.stringify( this.viewerController.app.selectedContent)),
-                name: this.sliderForUserAddedText ? this.sliderForUserAddedText :"Overige",
-                initialTransparency: this.sliderForUserAddedInitTransparency
+                initSelectedContent: JSON.parse(JSON.stringify( this.config.viewerController.app.selectedContent)),
+                name: this.config.sliderForUserAddedText ? this.config.sliderForUserAddedText :"Overige",
+                initialTransparency: this.config.sliderForUserAddedInitTransparency
             }
             c = Ext.Object.merge(conf, c);
             var s =Ext.create("viewer.components.NonInitLayerSlider", c);                        

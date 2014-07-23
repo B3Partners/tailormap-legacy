@@ -44,7 +44,7 @@ Ext.define ("viewer.components.Edit",{
         this.initConfig(conf);     
         var me = this;
         
-        Ext.util.Observable.capture(this.viewerController.mapComponent.getMap(), function(event) {
+        Ext.util.Observable.capture(this.config.viewerController.mapComponent.getMap(), function(event) {
             if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO
             || event == viewer.viewercontroller.controller.Event.ON_MAPTIP) {
                 if(me.mode == "new" || me.mode == "edit") {
@@ -54,8 +54,8 @@ Ext.define ("viewer.components.Edit",{
             return true;
         });
         
-        if (this.layers!=null){
-            this.layers = Ext.Array.filter(this.layers, function(layerId) {
+        if (this.config.layers!=null){
+            this.config.layers = Ext.Array.filter(this.config.layers, function(layerId) {
                 // XXX must check editAuthorized in appLayer
                 // cannot get that from this layerId
                 return true;            
@@ -65,39 +65,39 @@ Ext.define ("viewer.components.Edit",{
             handler: function(){
                 me.showWindow();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
         
-        this.toolMapClick =  this.viewerController.mapComponent.createTool({
+        this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
         
         this.loadWindow(); 
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
     selectedContentChanged : function (){
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }else{
-            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
     },
     createVectorLayer : function (){
-         this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes:["Circle","Polygon","MultiPolygon","Point", "LineString"],
             showmeasures:false,
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
                 fillopacity: 50,
@@ -105,14 +105,14 @@ Ext.define ("viewer.components.Edit",{
                 strokeopacity: 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     showWindow : function(){
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }
         this.layerSelector.initLayers();
-        this.popup.popupWin.setTitle(this.title);
+        this.popup.popupWin.setTitle(this.config.title);
         this.popup.show();
     },
     loadWindow : function (){
@@ -232,10 +232,10 @@ Ext.define ("viewer.components.Edit",{
     },
     createLayerSelector: function(){
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             restriction : "editable",
             id : this.name + "layerSelector",
-            layers: this.layers,
+            layers: this.config.layers,
             div: this.name + 'LayerSelectorPanel'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
@@ -246,7 +246,7 @@ Ext.define ("viewer.components.Edit",{
         if(appLayer != null){
             this.vectorLayer.removeAllFeatures();
             this.mode=null;
-            this.viewerController.mapComponent.getMap().removeMarker("edit");
+            this.config.viewerController.mapComponent.getMap().removeMarker("edit");
             if(appLayer.details && appLayer.details["editfunction.title"]){
                 this.popup.popupWin.setTitle(appLayer.details["editfunction.title"]);
             }
@@ -267,7 +267,7 @@ Ext.define ("viewer.components.Edit",{
         }
         if(this.appLayer != null) {
             
-            this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
             
             // check if featuretype was loaded
             if(this.appLayer.attributes == undefined) {
@@ -442,12 +442,12 @@ Ext.define ("viewer.components.Edit",{
         var y = coords.y;
         
         var layer = this.layerSelector.getValue();
-        this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
+        this.config.viewerController.mapComponent.getMap().setMarker("edit",x,y);
         var featureInfo = Ext.create("viewer.FeatureInfo", {
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
         var me =this;
-        featureInfo.editFeatureInfo(x,y,this.viewerController.mapComponent.getMap().getResolution() * 4,layer, function (features){
+        featureInfo.editFeatureInfo(x,y,this.config.viewerController.mapComponent.getMap().getResolution() * 4,layer, function (features){
             me.featuresReceived(features);
         },function(msg){
             me.failed(msg);});
@@ -485,7 +485,7 @@ Ext.define ("viewer.components.Edit",{
     createNew : function(){
         this.vectorLayer.removeAllFeatures();
         this.inputContainer.getForm().reset()
-        this.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         if(this.newGeomType != null && this.geometryEditable){
             this.vectorLayer.drawFeature(this.newGeomType);
@@ -497,7 +497,7 @@ Ext.define ("viewer.components.Edit",{
         this.activateMapClick();
     },
     activateMapClick: function(){
-        this.deActivatedTools = this.viewerController.mapComponent.deactivateTools();
+        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function(){
@@ -527,9 +527,9 @@ Ext.define ("viewer.components.Edit",{
             return;
         }
         
-        me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
+        me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         })
         .edit(
             me.editingLayer,
@@ -549,9 +549,9 @@ Ext.define ("viewer.components.Edit",{
             me.failed(e);
             return;
         }
-        me.editingLayer = this.viewerController.getLayer(this.layerSelector.getValue());
+        me.editingLayer = this.config.viewerController.getLayer(this.layerSelector.getValue());
         Ext.create("viewer.EditFeature", {
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         })
         .remove(
             me.editingLayer,
@@ -600,7 +600,7 @@ Ext.define ("viewer.components.Edit",{
         this.layerSelector.combobox.select(null);
         Ext.getCmp( this.name +"geomLabel").setText("");
         this.inputContainer.removeAll();
-        this.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
     },
     getExtComponents: function() {

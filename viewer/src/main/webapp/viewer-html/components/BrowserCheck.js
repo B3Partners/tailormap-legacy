@@ -37,8 +37,8 @@ Ext.define("viewer.components.BrowserCheck", {
         if((this.config.test || this.unsupported) && this.config.showPopup) {
             Ext.MessageBox.show({
                 buttons: Ext.Msg.OK,
-                msg: this.message,
-                title: this.title,
+                msg: this.config.message,
+                title: this.config.title,
                 icon: Ext.window.MessageBox.WARNING
             });
         }

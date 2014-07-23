@@ -36,8 +36,8 @@ Ext.define ("viewer.components.NavigationPanel",{
         conf.id=conf.name;
         conf.type=viewer.viewercontroller.controller.Component.NAVIGATIONPANEL;
         
-        var comp = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(comp);
+        var comp = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(comp);
         
         return this;
     },

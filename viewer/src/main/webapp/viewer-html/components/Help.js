@@ -42,7 +42,7 @@ Ext.define ("viewer.components.Help",{
         }
         viewer.components.Help.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_HELP, this.showHelp, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_HELP, this.showHelp, this);
         this.renderWindow(null);
         return this;
     },

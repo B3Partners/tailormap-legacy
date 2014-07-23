@@ -74,7 +74,6 @@ Ext.define("viewer.components.Legend", {
     padding: {0};\
     width: 100%;\
     height: 100%;\
-    overflow: auto;\
 }\
 \
 .legend .layer {\
@@ -95,18 +94,18 @@ Ext.define("viewer.components.Legend", {
     line-height: 31px; /* center single-line label vertically to align to image */\
     white-space: nowrap;\
 }";
-        css = Ext.String.format(css, this.margin);
+        css = Ext.String.format(css, this.config.margin);
         Ext.util.CSS.createStyleSheet(css, "legend");
         
         var title = "";
-        if(this.config.title && !this.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
+        if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
         var tools = [];
         // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
         if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
             tools = [{
                 type:'help',
                 handler: function(event, toolEl, panel){
-                    me.viewerController.showHelp(me.config);
+                    me.config.viewerController.showHelp(me.config);
                 }
             }];
         }
@@ -115,14 +114,15 @@ Ext.define("viewer.components.Legend", {
             title: title,
             height: "100%",
             html: '<div id="' + this.name + 'legendContainer" class="legend"></div>',
-            tools: tools
+            tools: tools,
+            autoScroll: true
         });
         
         this.legendContainer = document.getElementById(this.name + 'legendContainer');
         
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChange,this);
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.onLayersInitialized,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.onSelectedContentChange,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
         
         return this;
     },
@@ -190,7 +190,7 @@ Ext.define("viewer.components.Legend", {
 
         var index = 0;
         
-        this.viewerController.traverseSelectedContent(
+        this.config.viewerController.traverseSelectedContent(
             Ext.emptyFn,
             function(appLayer) {
                 me.legends[appLayer.id] = {
@@ -212,7 +212,7 @@ Ext.define("viewer.components.Legend", {
     createLegendForAppLayer: function(appLayer) {
         var me = this;
 
-        if(!this.showBackground && appLayer.background 
+        if(!this.config.showBackground && appLayer.background 
         || !appLayer.checked) {
             return;
         }
@@ -231,7 +231,7 @@ Ext.define("viewer.components.Legend", {
         // starvation of HTTP requests for map requests which should have 
         // priority
         
-        this.viewerController.getLayerLegendInfo(
+        this.config.viewerController.getLayerLegendInfo(
             appLayer,
             function(appLayer, legendInfo) {
                 me.onLayerLegendInfo(appLayer, legendInfo);

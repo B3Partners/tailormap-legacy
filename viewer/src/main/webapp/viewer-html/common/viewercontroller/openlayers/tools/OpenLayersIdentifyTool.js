@@ -48,11 +48,11 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
         };        
         var frameworkTool= new OpenLayers.Control(frameworkOptions);
         viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool.superclass.constructor.call(this,conf,frameworkTool);
-        this.map=this.viewerController.mapComponent.getMap();
+        this.map=this.config.viewerController.mapComponent.getMap();
         
         this.mapClick=new viewer.viewercontroller.openlayers.ToolMapClick({
             id: "mapclick_"+this.id,
-            viewerController: this.viewerController,
+            viewerController: this.config.viewerController,
             handler: {
                     fn: this.handleClick,
                     scope: this
@@ -125,8 +125,8 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                 !Ext.isEmpty(details["summary.title"]))){
             var doClientWms=true;
             if (mapLayer.appLayerId){
-                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-                var confServiceLayer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+                var confServiceLayer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
                 //do server side getFeature.
                 if (confServiceLayer.hasFeatureType){
                     doClientWms=false;

@@ -33,7 +33,7 @@ Ext.define ("viewer.viewercontroller.flamingo.ToolMapClick",{
         this.id = conf.id + "_toolMapClick";
         this.enabledEvents = new Object();
         this.initConfig(conf);
-        this.mapComponent = this.viewerController.mapComponent;
+        this.mapComponent = this.config.viewerController.mapComponent;
         this.frameworkObject = this.viewerController.mapComponent.viewerObject;
         this.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.handler.scope);
         //this.mixins.flamingoTool.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.handler.scope);
@@ -68,11 +68,11 @@ Ext.define ("viewer.viewercontroller.flamingo.ToolMapClick",{
     addListener : function(event,handler,scope){
         viewer.viewercontroller.flamingo.ToolMapClick.superclass.addListener.call(this,event,handler,scope);
         //enable flamingo event broadcasting
-        var flamEvent=this.viewerController.mapComponent.eventList[event];
+        var flamEvent=this.config.viewerController.mapComponent.eventList[event];
         if (flamEvent!=undefined){
             //if not enabled yet, enable
             if (this.enabledEvents[flamEvent]==undefined){
-                this.frameworkObject.callMethod(this.viewerController.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                this.frameworkObject.callMethod(this.config.viewerController.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
                 this.enabledEvents[flamEvent]=true;
             }
         }     

@@ -57,7 +57,7 @@ Ext.define ("viewer.components.Print",{
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
-        this.legends=[];
+        this.config.legends=[];
         
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
@@ -67,18 +67,18 @@ Ext.define ("viewer.components.Print",{
                 handler: function(){
                     me.buttonClick();
                 },
-                text: me.title,
-                icon: me.titlebarIcon,
-                tooltip: me.tooltip,
-                label: me.label
+                text: me.config.title,
+                icon: me.config.titlebarIcon,
+                tooltip: me.config.tooltip,
+                label: me.config.label
             });
         }
         this.extraInfoCallbacks = new Array();
         this.extraLayerCallbacks = new Array();
         
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
         
         return this;
     },
@@ -118,14 +118,14 @@ Ext.define ("viewer.components.Print",{
      * @param layer the map layer of type viewer.viewerController.controller.Layer
      */
     loadLegend : function (layer){
-        var appLayer = this.viewerController.getAppLayerById(layer.appLayerId);
+        var appLayer = this.config.viewerController.getAppLayerById(layer.appLayerId);
         if (appLayer==undefined || appLayer==null){
             return;
         }
         //make the var ready, so we now it's loading.
-        this.legends[appLayer.id]={};
+        this.config.legends[appLayer.id]={};
         var me = this;
-        this.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){
+        this.config.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){
                 me.addLegend(appLayer,legendObject)
             },
             function(appLayer){
@@ -138,13 +138,13 @@ Ext.define ("viewer.components.Print",{
                 id: layer.appLayerId,
                 name: layerTitle
             };
-            this.legends.push(legend);
+            this.config.legends.push(legend);
         }*/
     },
     
     removeLegend: function (layer){
         if (layer!=null){
-            delete this.legends[layer.appLayerId];
+            delete this.config.legends[layer.appLayerId];
         }
         if (!this.legendLoading()){
             this.createLegendSelector();
@@ -154,8 +154,8 @@ Ext.define ("viewer.components.Print",{
      * when Legend is succesfully loaded, add it to the legend object.
      */
     addLegend: function (appLayer,legendObject){
-        if (this.legends[appLayer.id]!=undefined){           
-            this.legends[appLayer.id]= legendObject;            
+        if (this.config.legends[appLayer.id]!=undefined){           
+            this.config.legends[appLayer.id]= legendObject;            
         }
         if (!this.legendLoading()){
             this.createLegendSelector();
@@ -165,7 +165,7 @@ Ext.define ("viewer.components.Print",{
      * When getting the legend failed, remove the var.
      */
     failLegend: function(appLayer){
-        delete this.legends[appLayer.id];
+        delete this.config.legends[appLayer.id];
         if (!this.legendLoading()){
             this.createLegendSelector();
         }
@@ -175,9 +175,9 @@ Ext.define ("viewer.components.Print",{
      * @return true if legends are loaded and false if loading legend finished.
      */
     legendLoading: function (){
-        for (var key in this.legends){
+        for (var key in this.config.legends){
             //if there is a var for the legend, it's not yet succesfully loaded nor it failed
-            if (this.legends[key]==null){
+            if (this.config.legends[key]==null){
                 return true;
             }
         }
@@ -298,13 +298,13 @@ Ext.define ("viewer.components.Print",{
                         },{
                             xtype: 'container',
                             layout: {
-                                type: 'column'
+                                type: 'hbox'
                             },
                             width: '100%',
                             items: [{
                                 xtype: 'container',
                                 html: '<div id="' + qualitySliderId + '"></div>',
-                                columnWidth: 1
+                                flex: 1
                             },{
                                 xtype: 'button',
                                 text: '<',
@@ -313,12 +313,11 @@ Ext.define ("viewer.components.Print",{
                                 listeners: {
                                     click:{
                                         scope: this,
-                                        fn: function (){
+                                        fn: function() {
                                             this.qualitySlider.setValue(this.getMapQuality());
                                         }
                                     }
-                                }  
-                                //todo handle reset
+                                }
                             }]
                         }]
                     },{
@@ -422,7 +421,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
-                    hidden: !this.showPrintRtf,
+                    hidden: !this.config.showPrintRtf,
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -462,7 +461,7 @@ Ext.define ("viewer.components.Print",{
             value: 11,
             increment: 1,
             minValue: me.minQuality,
-            maxValue: me.max_imagesize,
+            maxValue: me.config.max_imagesize,
             width: Ext.get(qualitySliderId).getWidth(),
             listeners: {
                 changecomplete: {
@@ -529,15 +528,15 @@ Ext.define ("viewer.components.Print",{
                 xtype: "label",
                 text: "Opnemen in legenda:"
             });
-            for (var key  =0 ; key < this.legends.length ;key++){
-                if(this.legends.hasOwnProperty(key)){
-                    var appLayer =this.viewerController.getAppLayerById(key);
+            for (var key  =0 ; key < this.config.legends.length ;key++){
+                if(this.config.legends.hasOwnProperty(key)){
+                    var appLayer =this.config.viewerController.getAppLayerById(key);
                     var title = appLayer.alias;
                     checkboxes.push({
                         xtype: "checkbox",
                         boxLabel: title,
                         name: 'legendUrl',
-                        inputValue: Ext.JSON.encode(this.legends[key]),
+                        inputValue: Ext.JSON.encode(this.config.legends[key]),
                         id: 'legendCheckBox'+key,
                         checked: true
                     });
@@ -560,13 +559,13 @@ Ext.define ("viewer.components.Print",{
      *@return the 'quality' of the map (the biggest dimension: height or width)
      */
     getMapQuality: function(){
-        var width = this.viewerController.mapComponent.getMap().getWidth();
-        var height = this.viewerController.mapComponent.getMap().getHeight();
+        var width = this.config.viewerController.mapComponent.getMap().getWidth();
+        var height = this.config.viewerController.mapComponent.getMap().getHeight();
         return width > height? width : height;
     },
     shouldAddOverview : function(){
         var overviews = this.getOverviews();
-        if(this.overview && overviews.length > 0){
+        if(this.config.overview && overviews.length > 0){
             return true;
         }else{
             return false;
@@ -609,10 +608,10 @@ Ext.define ("viewer.components.Print",{
     getMaxQualityWithAngle: function(angle){
         //only if a rotation must be done.
         if (angle==0 || angle==360)
-            return this.max_imagesize;
+            return this.config.max_imagesize;
         
-        var width = this.viewerController.mapComponent.getMap().getWidth();
-        var height = this.viewerController.mapComponent.getMap().getHeight();
+        var width = this.config.viewerController.mapComponent.getMap().getWidth();
+        var height = this.config.viewerController.mapComponent.getMap().getHeight();
         var sliderQuality = this.qualitySlider.getValue();
         var ratio = width/height;
         //calculate the new widht and height with the quality
@@ -659,8 +658,8 @@ Ext.define ("viewer.components.Print",{
         var maxQuality = newWidth > newHeight ? newWidth : newHeight;
         
         //if the quality is bigger then the max allowed the original quality would be lower.
-        if (maxQuality > this.max_imagesize){
-            maxQuality = (this.max_imagesize*this.max_imagesize)/maxQuality;
+        if (maxQuality > this.config.max_imagesize){
+            maxQuality = (this.config.max_imagesize*this.config.max_imagesize)/maxQuality;
         }        
         //because its in pixels floor.
         return Math.floor(maxQuality);
@@ -741,7 +740,7 @@ Ext.define ("viewer.components.Print",{
         var properties = this.getValuesFromContainer(this.panel);
         properties.angle = this.rotateSlider.getValue();
         properties.quality = this.qualitySlider.getValue();
-        properties.appId = this.viewerController.app.id;
+        properties.appId = this.config.viewerController.app.id;
         var mapProperties=this.getMapValues();        
         Ext.apply(properties, mapProperties);
         return properties;
@@ -754,7 +753,7 @@ Ext.define ("viewer.components.Print",{
         var printLayers = new Array();
         var wktGeoms= new Array();
         //get last getmap request from all layers
-        var layers=this.viewerController.mapComponent.getMap().getLayers();        
+        var layers=this.config.viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.getVisible()){
@@ -833,12 +832,12 @@ Ext.define ("viewer.components.Print",{
             }
         }
         values.requests=printLayers;        
-        var bbox=this.viewerController.mapComponent.getMap().getExtent();
+        var bbox=this.config.viewerController.mapComponent.getMap().getExtent();
         if (bbox){
             values.bbox = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
         }
-        values.width = this.viewerController.mapComponent.getMap().getWidth();
-        values.height = this.viewerController.mapComponent.getMap().getHeight();
+        values.width = this.config.viewerController.mapComponent.getMap().getWidth();
+        values.height = this.config.viewerController.mapComponent.getMap().getHeight();
         values.geometries = wktGeoms;
         return values;
     },
@@ -937,7 +936,7 @@ Ext.define ("viewer.components.Print",{
         }
     },
     getOverviews : function(){
-      return this.viewerController.getComponentsByClassName("viewer.components.Overview");  
+      return this.config.viewerController.getComponentsByClassName("viewer.components.Overview");  
     },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];

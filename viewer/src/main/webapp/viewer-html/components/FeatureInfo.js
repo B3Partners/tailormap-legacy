@@ -33,7 +33,7 @@ Ext.define ("viewer.components.FeatureInfo",{
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloonFeatureInfo",this.width,this.height);
         //set the offset of the map
-        var mapTopOffset=this.viewerController.getLayoutHeight('top_menu');
+        var mapTopOffset=this.config.viewerController.getLayoutHeight('top_menu');
         if (mapTopOffset<0){
             mapTopOffset=0;
         }
@@ -48,9 +48,9 @@ Ext.define ("viewer.components.FeatureInfo",{
             me.setMaptipEnabled(true);
         }
         //if topmenu height is in % then recalc on every resize.        
-        var topMenuLayout=this.viewerController.getLayout('top_menu');
+        var topMenuLayout=this.config.viewerController.getLayout('top_menu');
         if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
-            Ext.EventManager.onWindowResize(function(){
+            Ext.on('resize', function(){
                 me.onResize();            
             }, this);
         }
@@ -80,13 +80,13 @@ Ext.define ("viewer.components.FeatureInfo",{
         }
         if(this.isSummaryLayer(mapLayer)){   
             //Store the current map extent for every maptip request.            
-            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
+            this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,function(map,options){
                 this.setRequestExtent(map.getExtent());
             },this); 
             
             if (mapLayer.appLayerId){
-                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
 
                 //do server side getFeature.
                 if (layer.hasFeatureType){
@@ -108,8 +108,8 @@ Ext.define ("viewer.components.FeatureInfo",{
             return;        
         if(this.isSummaryLayer(mapLayer)){ 
             if (mapLayer.appLayerId){
-                var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
-                var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+                var layer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
                 if (layer.hasFeatureType && this.serverRequestLayers){
                     Ext.Array.remove(this.serverRequestLayers, appLayer);
                 }
@@ -126,9 +126,9 @@ Ext.define ("viewer.components.FeatureInfo",{
     addLayerInServerRequest: function (appLayer){ 
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
-            this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
-            //this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
-            this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController}), this.viewerController);
+            this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
+            //this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.config.viewerController});
+            this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.config.viewerController}), this.config.viewerController);
             
             this.serverRequestEnabled = true;
         }
@@ -182,7 +182,7 @@ Ext.define ("viewer.components.FeatureInfo",{
      * 
      */
      setMaptipEnabled: function (enable){        
-        var maptips= this.viewerController.getComponentsByClassName("viewer.components.Maptip");
+        var maptips= this.config.viewerController.getComponentsByClassName("viewer.components.Maptip");
         for (var i =0; i < maptips.length;i++){
             if (typeof maptips[i].setEnabled == 'function'){
                 maptips[i].setEnabled(enable);

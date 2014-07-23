@@ -107,9 +107,9 @@ Ext.define ("viewer.components.Presentation",{
      */
     addAllImages: function(){        
         for (var i=0; i < this.images.length; i++){
-            var layer= this.viewerController.mapComponent.createImageLayer(this.getName()+"_"+i,this.images[i].imageUrl,this.images[i].extent);
+            var layer= this.config.viewerController.mapComponent.createImageLayer(this.getName()+"_"+i,this.images[i].imageUrl,this.images[i].extent);
             this.imageLayers.push(layer);
-            this.viewerController.mapComponent.getMap().addLayer(layer);
+            this.config.viewerController.mapComponent.getMap().addLayer(layer);
         }
     },
     /**
@@ -130,7 +130,7 @@ Ext.define ("viewer.components.Presentation",{
             this.nextButton.setVisible(true);
         }        
         var newExtent=this.path[this.index].extent;
-        this.viewerController.mapComponent.getMap().zoomToExtent(newExtent);
+        this.config.viewerController.mapComponent.getMap().zoomToExtent(newExtent);
     },
     createGui: function (){
         var me = this;

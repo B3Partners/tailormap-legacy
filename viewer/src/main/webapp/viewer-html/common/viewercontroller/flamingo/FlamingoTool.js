@@ -118,7 +118,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
      * @see viewer.viewercontroller.controller.Tool#activate
      */
     activate: function(){
-        this.getFrameworkTool().callMethod(this.viewerController.mapComponent.toolGroupId,"setTool",this.getId());
+        this.getFrameworkTool().callMethod(this.config.viewerController.mapComponent.toolGroupId,"setTool",this.getId());
     },
     /**
      * @see viewer.viewercontroller.controller.Tool#deactivate

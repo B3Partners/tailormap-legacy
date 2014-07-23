@@ -43,11 +43,11 @@ Ext.define ("viewer.components.LayerSwitch",{
         this.initConfig(conf);
         this.loadComponent();
         
-        this.viewerController.on(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function() {
+        this.config.viewerController.on(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function() {
             this.loadComponent();
         }, this);
         
-        this.viewerController.mapComponent.getMap().on(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, 
+        this.config.viewerController.mapComponent.getMap().on(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, 
             this.layerVisibilityChanged, this);
         
         return this;
@@ -79,7 +79,7 @@ Ext.define ("viewer.components.LayerSwitch",{
             }
         });
         this.button.zIndexManager.bringToFront(this.button);
-        this.button.setPosition(Number(this.left), Number(this.top));
+        this.button.setPosition(Number(this.config.left), Number(this.config.top));
     },
     
     levelItemId: function(level) {
@@ -104,7 +104,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         
         // Find out which background levels are in the selected content
         me.selectedBackgroundLevels = [];
-        this.viewerController.traverseSelectedContent(function(level) {
+        this.config.viewerController.traverseSelectedContent(function(level) {
             if(level && level.background) {
                 me.selectedBackgroundLevels.push(level);
             }
@@ -132,7 +132,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         var foundLevel = null;
         Ext.each(this.selectedBackgroundLevels, function(level) {
             Ext.each(level.layers, function(appLayerId) {
-                if(me.viewerController.getAppLayerById(appLayerId).checked) {
+                if(me.config.viewerController.getAppLayerById(appLayerId).checked) {
                     foundLevel = level;
                     return false;
                 }
@@ -147,13 +147,13 @@ Ext.define ("viewer.components.LayerSwitch",{
         var me = this;
         // XXX either change background when layers initialized or only enable
         // control when layers initialized
-        if(this.viewerController.layersInitialized) {
+        if(this.config.viewerController.layersInitialized) {
             var selectedLevel = me.levelFromItemId(item.id);
             Ext.each(this.selectedBackgroundLevels, function(level) {
                 var checked = level == selectedLevel;
                 Ext.each(level.layers, function(appLayerId) {
-                    var appLayer = me.viewerController.getAppLayerById(appLayerId);
-                    me.viewerController.setLayerVisible(appLayer, checked);                    
+                    var appLayer = me.config.viewerController.getAppLayerById(appLayerId);
+                    me.config.viewerController.setLayerVisible(appLayer, checked);                    
                 });
             });
         }
@@ -161,7 +161,7 @@ Ext.define ("viewer.components.LayerSwitch",{
     
     layerVisibilityChanged: function(map, event) {
 
-        var eventLevel = this.viewerController.getAppLayerParent(event.layer.id);
+        var eventLevel = this.config.viewerController.getAppLayerParent(event.layer.id);
         var backgroundLevel = null;
         Ext.each(this.selectedBackgroundLevels, function(level) {
             if(level == eventLevel) {

@@ -30,8 +30,8 @@ Ext.define("viewer.components.BorderNavigation",{
         conf.id = conf.name;
         conf.type = viewer.viewercontroller.controller.Component.BORDER_NAVIGATION;
 
-        this.bordernavigation = this.viewerController.mapComponent.createComponent(conf);
-        this.viewerController.mapComponent.addComponent(this.bordernavigation);
+        this.bordernavigation = this.config.viewerController.mapComponent.createComponent(conf);
+        this.config.viewerController.mapComponent.addComponent(this.bordernavigation);
 
         return this;
     },

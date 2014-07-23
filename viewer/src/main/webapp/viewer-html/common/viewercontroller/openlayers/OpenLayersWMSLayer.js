@@ -92,7 +92,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
     },
     setQuery : function (filter){
         if(filter && filter.getCQL() != ""){
-            var service = this.viewerController.app.services[this.serviceId];
+            var service = this.config.viewerController.app.services[this.serviceId];
             var layer = service.layers[this.options.name];
             if(layer.details != undefined){
                 var filterable =layer.details["filterable"];

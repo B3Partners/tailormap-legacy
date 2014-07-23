@@ -55,11 +55,11 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
         this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_UP,function () {
             me.startMeasure(false);
         }, this); 
-        this.vectorLayer = this.viewerController.mapComponent.createVectorLayer({
+        this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name:'measureAreaVector',
             geometrytypes:["Polygon"],
             showmeasures:true,
-            viewerController: this.viewerController,
+            viewerController: this.config.viewerController,
             style: {
                 'fillcolor': 'FF0000',
                 'fillopacity': 50,
@@ -67,14 +67,14 @@ Ext.define ("viewer.components.tools.FlamingoMeasureArea",{
                 'strokeopacity': 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         
         this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,function(){
             this.startMeasure(false);
         }, this);
-        this.mapComponent = this.viewerController.mapComponent;
-        this.frameworkObject = this.viewerController.mapComponent.viewerObject;
-        this.viewerController.mapComponent.addTool(this);
+        this.mapComponent = this.config.viewerController.mapComponent;
+        this.frameworkObject = this.config.viewerController.mapComponent.viewerObject;
+        this.config.viewerController.mapComponent.addTool(this);
         return this;
     },
     startMeasure:function(on){

@@ -38,10 +38,10 @@ Ext.define ("viewer.components.BufferLayer",{
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
+            text: me.config.title,
+            icon: me.config.iconUrl,
             tooltip: me.tooltip,
-            label: me.label
+            label: me.config.label
         });      
         this.loadWindow();
         return this;
@@ -51,8 +51,8 @@ Ext.define ("viewer.components.BufferLayer",{
     },
     loadWindow : function(){
         var layers = [];
-        for( var i = 0 ; i < this.layers.length;i++){
-            var layer = this.viewerController.getLayerByLayerId(this.layers[i]);
+        for( var i = 0 ; i < this.config.layers.length;i++){
+            var layer = this.config.viewerController.getLayerByLayerId(this.config.layers[i]);
             layers.push({
                 id: layer.serviceId+"_"+layer.options.name,
                 title: layer.options.name,

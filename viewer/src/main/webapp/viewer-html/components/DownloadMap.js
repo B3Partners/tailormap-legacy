@@ -36,20 +36,20 @@ Ext.define ("viewer.components.tools.DownloadMap",{
             var me = this;
             this.renderButton({
                 text: me.title,
-                tooltip: me.tooltip,
+                tooltip: me.config.tooltip,
                 label: me.label,
                 handler: function() {
                     me.buttonDown();
                 }
             });
         }else{
-            this.button= this.viewerController.mapComponent.createTool({
+            this.button= this.config.viewerController.mapComponent.createTool({
                 type: viewer.viewercontroller.controller.Tool.BUTTON,
                 displayClass: "downloadMap",
-                tooltip: this.tooltip || null,
-                viewerController: this.viewerController
+                tooltip: this.config.tooltip || null,
+                viewerController: this.config.viewerController
             });
-            this.viewerController.mapComponent.addTool(this.button);
+            this.config.viewerController.mapComponent.addTool(this.button);
 
             this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
         }
@@ -75,7 +75,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
         var properties = {};
         /*properties.angle = this.rotateSlider.getValue();
         properties.quality = this.qualitySlider.getValue();*/
-        properties.appId = this.viewerController.app.id;
+        properties.appId = this.config.viewerController.app.id;
         var mapProperties = this.getMapValues();
         Ext.apply(properties, mapProperties);
         return properties;

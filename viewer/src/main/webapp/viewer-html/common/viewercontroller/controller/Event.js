@@ -198,6 +198,12 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * param3: the layerselector itself
          */
         ON_LAYERSELECTOR_CHANGE                 : "ON_LAYERSELECTOR_CHANGE",
+        /**
+         * Thrown when a layerSelector had loaded the layers
+         * param1: the store with layers
+         * param2: the layerselector itself
+         */
+        ON_LAYERSELECTOR_INITLAYERS             : "ON_LAYERSELECTOR_INITLAYERS",
         ON_COMPONENTS_FINISHED_LOADING           : "ON_COMPONENTS_FINISHED_LOADING",
         ON_SELECTEDCONTENT_CHANGE             : "ON_SELECTEDCONTENT_CHANGE",
         ON_MAP_CLICKED                        :  "ON_MAP_CLICKED",

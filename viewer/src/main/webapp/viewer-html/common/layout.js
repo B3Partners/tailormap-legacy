@@ -38,9 +38,25 @@ Ext.define('viewer.LayoutManager', {
     autoRender: true,
     tabComponents: {},
     popupWin: null,
+    layout: {},
     
     constructor: function(config) {
-        Ext.apply(this, config || {});
+        // Ext.apply(this, config || {});
+        // Apply options
+        if(config) {
+            if(config.layout) {
+                this.layout = config.layout;
+            }
+            if(config.configuredComponents) {
+                this.configuredComponents = config.configuredComponents;
+            }
+            if(config.maxHeight) {
+                this.maxHeight = config.maxHeight;
+            }
+            if(config.wrapperId) {
+                this.wrapperId = config.wrapperId;
+            }
+        }
         if(this.autoRender) {
             this.createLayout();
         }
@@ -95,7 +111,10 @@ Ext.define('viewer.LayoutManager', {
         var viewportItems = [];
         var me = this;
         Ext.Object.each(regionList, function(region, value) {
-            viewportItems.push(me.getLayoutRegion(region, value));
+            var layoutRegion = me.getLayoutRegion(region, value);
+            if(layoutRegion !== null) {
+                viewportItems.push(layoutRegion);
+            }
         });
         return viewportItems;
     },
@@ -230,7 +249,7 @@ Ext.define('viewer.LayoutManager', {
                 me.popupWin = Ext.create('viewer.components.ScreenPopup', popupWindowConfig);
             }
         }
-        return {};
+        return null;
     },
     
     getCollapseConfig: function(regionLayout, columnOrientation) {

@@ -233,6 +233,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 };
             }
             
+            /* Override util class OpenLayers to comply to ExtJS id regex */
+            OpenLayers.Util.createUniqueID = function(prefix) {
+                if (prefix == null) {
+                    prefix = "id_";
+                }
+                OpenLayers.Util.lastSeqID += 1;
+                // Added this replace, to make sure there are no dots in the ID
+                return prefix.replace(/\./g, '_') + OpenLayers.Util.lastSeqID;        
+            };
+            
             var contextPath = "${contextPath}";
             var absoluteURIPrefix = "${absoluteURIPrefix}";
 
@@ -317,7 +327,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     viewerController = new viewer.viewercontroller.ViewerController(viewerType, null, config, listeners,mapConfig);
                     if(!MobileManager.isMobile() || MobileManager.isAndroid() || window.onorientationchange === undefined) {
                         // Android devices seem to react better to window.resize than window.orientationchange, probably timing issue
-                        Ext.EventManager.onWindowResize(function () {
+                        Ext.on('resize', function () {
                             viewerController.resizeComponents(true);
                         });
                     } else {

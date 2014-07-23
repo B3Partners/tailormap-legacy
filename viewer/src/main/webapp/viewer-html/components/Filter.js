@@ -48,7 +48,7 @@ Ext.define ("viewer.components.Filter",{
 		this.attributeFilters = [];
         this.attributeStore = Ext.create('Ext.data.Store', {
             fields: ['id', 'title', 'value'],
-            data : this.attributes
+            data : this.config.attributes
         });
         this.attributeCombobox = Ext.create('viewer.components.FlamingoCombobox', {
             fieldLabel: '',
@@ -104,7 +104,7 @@ Ext.define ("viewer.components.Filter",{
     setNewAttributeList : function (list){
         this.attributeStore.loadData(list,false);
         this.attributeCombobox.clearValue();
-        this.attributes = list;
+        this.config.attributes = list;
     },
     attributeComboboxChanged: function(el,val,prevVal){
         this.uniqueList=[];
@@ -120,7 +120,7 @@ Ext.define ("viewer.components.Filter",{
      * Get the attribute from the selected AppLayer by name.
      */
     getAppLayerAttributeByName: function (name){
-        var appLayer = this.parentComponent.appLayer;
+        var appLayer = this.config.parentComponent.appLayer;
         if(appLayer && appLayer.attributes){
             for (var i=0; i < appLayer.attributes.length; i++){
                 var attribute = appLayer.attributes[i]
@@ -132,9 +132,9 @@ Ext.define ("viewer.components.Filter",{
         return null;
     },
     getAttributeUniques : function (attributeName,ft){
-        var appLayer = this.parentComponent.layerSelector.getValue();
+        var appLayer = this.config.parentComponent.layerSelector.getValue();
         if(attributeName){
-            this.parentMainContainer.setLoading("Laad unieke waardes...");
+            this.config.parentMainContainer.setLoading("Laad unieke waardes...");
             Ext.Ajax.request({ 
                 url: actionBeans.unique, 
                 timeout: 240000,
@@ -142,7 +142,7 @@ Ext.define ("viewer.components.Filter",{
                 params: { 
                     attributes: [attributeName],
                     applicationLayer: appLayer.id,
-                    maxFeatures:this.maxFeatures,
+                    maxFeatures:this.config.maxFeatures,
                     featureType: ft
                 }, 
                 success: function ( result, request ) { 
@@ -155,12 +155,12 @@ Ext.define ("viewer.components.Filter",{
                         this.handleUniqueValues(values);
                     }else{
                         Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + res.msg);   
-                        this.parentMainContainer.setLoading(false);
+                        this.config.parentMainContainer.setLoading(false);
                     }
                 }, 
                 failure: function ( result, request) {
                     Ext.MessageBox.alert('Foutmelding', "Kan geen unieke waardes ophalen: " + result.responseText);   
-                    this.parentMainContainer.setLoading(false);
+                    this.config.parentMainContainer.setLoading(false);
                 } 
             });
         }
@@ -172,7 +172,7 @@ Ext.define ("viewer.components.Filter",{
         values =  this.transformUniqueValuesToStore(values);    
         this.uniqueList=values;
         this.setUniqueListOnAttributeFilters(values);        
-        this.parentMainContainer.setLoading(false);
+        this.config.parentMainContainer.setLoading(false);
     },
     /**
      * 
@@ -233,7 +233,7 @@ Ext.define ("viewer.components.Filter",{
         this.container.add(filterContainer);
         this.attributeFilters.push(attributeFilter);
         attributeFilter.setUniqueList(this.uniqueList);
-        if(this.parentMainContainer) this.parentMainContainer.doLayout();
+        if(this.config.parentMainContainer) this.config.parentMainContainer.doLayout();
     },
     removeAttributeFilter : function (attributeFilter, filterContainer){
         for ( var i = 0 ; i < this.attributeFilters.length;i++){
@@ -254,8 +254,8 @@ Ext.define ("viewer.components.Filter",{
      */
     getCQL : function (){
         var cql ="";
-        if(this.logicOperator != null){
-            cql += " " + this.logicOperator.getValue() + " ";
+        if(this.config.logicOperator != null){
+            cql += " " + this.config.logicOperator.getValue() + " ";
         }
         cql += "(";
 		var attribute = this.attributeCombobox.getValue();
@@ -272,8 +272,8 @@ Ext.define ("viewer.components.Filter",{
         return cql;
     },
     getAttributeType : function (name){
-        for(var i = 0 ; i < this.attributes.length ;i++){
-            var attr = this.attributes[i];
+        for(var i = 0 ; i < this.config.attributes.length ;i++){
+            var attr = this.config.attributes[i];
             if(attr.value == name){
                 return attr.type;
             }

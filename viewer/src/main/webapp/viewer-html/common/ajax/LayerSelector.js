@@ -33,15 +33,17 @@ Ext.define ("viewer.components.LayerSelector",{
         restriction : null,
         layers:null
     }, 
-    constructor: function (conf){        
-        this.initConfig(conf);   
+    constructor: function (conf){
+        viewer.components.LayerSelector.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+        
         this.forcedLayers = new Array();
         var layers = Ext.create('Ext.data.Store', {
             fields: ['id', 'title','layer'],
             data : []
         });
 
-        this.combobox = Ext.create('viewer.components.FlamingoCombobox', {
+        var comboboxConfig = {
             fieldLabel: 'Kies kaartlaag',
             emptyText:'Maak uw keuze',
             store: layers,
@@ -53,17 +55,22 @@ Ext.define ("viewer.components.LayerSelector",{
                     fn: this.changed,
                     scope: this
                 }
-            },
-            renderTo: this.div
-        });
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE);
+            }
+        };
+        if(this.config.div) {
+            comboboxConfig.renderTo = this.config.div;
+        }
+        if(this.config.padding) {
+            comboboxConfig.padding = this.config.padding;
+        }
+        this.combobox = Ext.create('viewer.components.FlamingoCombobox', comboboxConfig);
         var requestPath= actionBeans["layerlist"];
         var requestParams = {};
-        requestParams[this.restriction]= true;
+        requestParams[this.config.restriction]= true;
         requestParams["appId"]= appId;
             var me = this;
-        if(this.layers != null && this.layers.length > 0){
-            requestParams["layers"]= this.layers;
+        if(this.config.layers != null && this.config.layers.length > 0){
+            requestParams["layers"]= this.config.layers;
             requestParams["hasConfiguredLayers"]= true;    
         }
         
@@ -78,7 +85,7 @@ Ext.define ("viewer.components.LayerSelector",{
                 Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
             }
         });
-        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
         return this;
     },
     /**
@@ -105,7 +112,7 @@ Ext.define ("viewer.components.LayerSelector",{
     },
     initLayers : function (){
         this.layerArray = new Array();
-        var visibleLayers = this.viewerController.getVisibleLayers();
+        var visibleLayers = this.config.viewerController.getVisibleLayers();
         for(var i = 0 ; i < this.forcedLayers.length; i++){
             visibleLayers.push(this.forcedLayers[i].id);
         }
@@ -116,7 +123,7 @@ Ext.define ("viewer.components.LayerSelector",{
             for (var i = 0 ; i < this.layerList.length ;i++){
                 var l = this.layerList[i];
                 for ( var j = 0 ; j < visibleLayers.length ;j++){
-                    //var appLayer = this.viewerController.getAppLayerById(visibleLayers[j]);                    
+                    //var appLayer = this.config.viewerController.getAppLayerById(visibleLayers[j]);                    
                     if (visibleLayers[j] == l.id || visibleLayers[j] == (""+l.id)){                
                         store.add({
                             id: l.id,
@@ -130,19 +137,21 @@ Ext.define ("viewer.components.LayerSelector",{
             }
         }
         if(addedLayers === 0) {
-            this.combobox.inputEl.dom.placeholder='Geen kaartlagen beschikbaar';
+            // this.combobox.inputEl.dom.placeholder='Geen kaartlagen beschikbaar';
             this.combobox.setDisabled(true);
         } else {
-            this.combobox.inputEl.dom.placeholder='Maak uw keuze';
+            // this.combobox.inputEl.dom.placeholder='Maak uw keuze';
             this.combobox.setDisabled(false);
         }
+        
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_INITLAYERS,store,this);
     },
     changed :function (combobox,appLayer,previousSelected){
-        // Retrieve appLayer from viewerController. Because the applayers in the comboBox are not the same as in the viewercontroller but copies. So by retrieving the ones
+        // Retrieve appLayer from config.viewerController. Because the applayers in the comboBox are not the same as in the viewercontroller but copies. So by retrieving the ones
         // from the ViewerController you get the correct appLayer
         var al = null;
         if(appLayer){
-            al = this.viewerController.getAppLayerById(appLayer.id);
+            al = this.config.viewerController.getAppLayerById(appLayer.id);
         }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,al,previousSelected,this);
         
@@ -155,7 +164,7 @@ Ext.define ("viewer.components.LayerSelector",{
         // from the ViewerController you get the correct appLayer
         var val = this.combobox.getValue();
         if(val){
-            var al = this.viewerController.getAppLayerById(val.id);
+            var al = this.config.viewerController.getAppLayerById(val.id);
             return al;
         }else{
             return null;

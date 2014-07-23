@@ -97,7 +97,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
      * If the event is thrown by the OpenLayers Layer, the given handlers are called.
      */
     addListener : function(event,handler,scope){
-        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        var olSpecificEvent = this.config.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
@@ -125,7 +125,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
      * are no listeners anymore.     
      */
     removeListener : function (event,handler,scope){
-        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        var olSpecificEvent = this.config.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
@@ -156,7 +156,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersLayer",{
         var options = new Object();
         options.layer = this.map.getLayerByOpenLayersId(event.element.id);
         options.feature = this.fromOpenLayersFeature(event.feature);
-        var eventName = this.viewerController.mapComponent.getGenericEventName(event.type);
+        var eventName = this.config.viewerController.mapComponent.getGenericEventName(event.type);
         if(!eventName){
             eventName = event;
         }

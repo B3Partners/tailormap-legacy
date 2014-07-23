@@ -102,7 +102,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
      * If the event is thrown by the OpenLayers Tool, the given handlers are called.
      */
     addListener : function(event,handler,scope){
-        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        var olSpecificEvent = this.config.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
@@ -129,7 +129,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
      * are no listeners anymore.     
      */
     removeListener : function (event,handler,scope){
-        var olSpecificEvent = this.viewerController.mapComponent.getSpecificEventName(event);
+        var olSpecificEvent = this.config.viewerController.mapComponent.getSpecificEventName(event);
         if(olSpecificEvent){
             if(!scope){
                 scope = this;
@@ -152,7 +152,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTool",{
      * And make use of the ext framework to fire the event.
      */
     handleEvent : function (event){
-        var eventName = this.viewerController.mapComponent.getGenericEventName(event.type);
+        var eventName = this.config.viewerController.mapComponent.getGenericEventName(event.type);
         if(!eventName){
             eventName = event;
         }

@@ -48,12 +48,12 @@ Ext.define ("viewer.components.AttributeList",{
                 me.showWindow();                
                 me.layerSelector.initLayers();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         }); 
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_ACTIVATED,this.filterChanged,this);
         return this;
     },
     getExtComponents: function() {
@@ -168,9 +168,9 @@ Ext.define ("viewer.components.AttributeList",{
             ]
         });
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             restriction: "attribute",
-            layers: this.layers,
+            layers: this.config.layers,
             div: this.name + 'LayerSelectorPanel'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
@@ -206,7 +206,7 @@ Ext.define ("viewer.components.AttributeList",{
         if(this.appLayer != null) {
             downloadButton.setDisabled(false);
             downloadType.setDisabled(false);
-            this.featureService = this.viewerController.getAppLayerFeatureService(this.appLayer);
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.appLayer);
             
             // check if featuretype was loaded
             if(this.appLayer.attributes == undefined) {
@@ -328,7 +328,7 @@ Ext.define ("viewer.components.AttributeList",{
         }
 
         //var attributes = appLayer.attributes;
-        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer,featureTypeId);
+        var attributes = this.config.viewerController.getAttributesFromAppLayer(appLayer,featureTypeId);
         var attributeList = new Array();
         var columns = new Array();
         var index = 0;

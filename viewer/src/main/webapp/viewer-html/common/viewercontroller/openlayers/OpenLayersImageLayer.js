@@ -32,8 +32,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersImageLayer",{
         
         this.type=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;
         
-        var width = this.viewerController.mapComponent.getMap().getWidth();
-        var height = this.viewerController.mapComponent.getMap().getHeight();
+        var width = this.config.viewerController.mapComponent.getMap().getWidth();
+        var height = this.config.viewerController.mapComponent.getMap().getHeight();
         
         if (this.options==null){
             this.options={};

@@ -53,16 +53,16 @@ Ext.define ("viewer.components.Influence",{
         this.removeButton=this.form.getChildByElement(this.name+"_remove")
         this.removeButton.setVisible(false);
         
-        this.toolMapClick = this.viewerController.mapComponent.createTool({
+        this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
-        Ext.util.Observable.capture(this.viewerController.mapComponent.getMap(), function(event) {
+        Ext.util.Observable.capture(this.config.viewerController.mapComponent.getMap(), function(event) {
             if(event == viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO) {
                 if(me.mapClickActivated) {
                     return false;
@@ -72,9 +72,9 @@ Ext.define ("viewer.components.Influence",{
         });        
         
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             restriction : "influence",
-            layers: this.layers,
+            layers: this.config.layers,
             div: this.name + 'LayerSelectorPanel'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);        
@@ -151,9 +151,9 @@ Ext.define ("viewer.components.Influence",{
         this.removeFromMap();
         this.removeButton.setVisible(false);
         this.location=null;
-        this.viewerController.mapComponent.getMap().removeMarker(this.markerId);
+        this.config.viewerController.mapComponent.getMap().removeMarker(this.markerId);
         if (this.getSelectedAppLayer()){
-            this.viewerController.removeFilter("filter_"+this.getName(),this.getSelectedAppLayer());
+            this.config.viewerController.removeFilter("filter_"+this.getName(),this.getSelectedAppLayer());
         }
     },    
     /**
@@ -198,7 +198,7 @@ Ext.define ("viewer.components.Influence",{
         var radius = this.getRadius();
         //radius ==null if no layer is selected
         if (radius!=null){
-            this.viewerController.mapComponent.getMap().setMarker(this.markerId,loc.x,loc.y);
+            this.config.viewerController.mapComponent.getMap().setMarker(this.markerId,loc.x,loc.y);
             var zoomInRadius=radius*1.5;
             var extent = {
                 minx: loc.x-zoomInRadius,
@@ -222,7 +222,7 @@ Ext.define ("viewer.components.Influence",{
         var appLayer=this.getSelectedAppLayer(); 
         var me = this;          
         if(appLayer.attributes == undefined) {   
-            this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
+            this.config.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
                 me.setFilter();                
             },function(e){
                 Ext.MessageBox.alert("Error", e);
@@ -232,7 +232,7 @@ Ext.define ("viewer.components.Influence",{
             var geomAttr= appLayer.geometryAttribute; 
             if (geomAttr!=undefined){
                 var filter="DWITHIN(\""+geomAttr+"\", POINT("+this.location.x+" "+this.location.y+"), "+radius+", meters)";
-                this.viewerController.setFilter(
+                this.config.viewerController.setFilter(
                     Ext.create("viewer.components.CQLFilterWrapper",{
                         id: "filter_"+this.getName(),
                         cql: filter,
@@ -243,7 +243,7 @@ Ext.define ("viewer.components.Influence",{
         }
         if (extent){
             setTimeout(function (){
-                me.viewerController.mapComponent.getMap().zoomToExtent(extent);
+                me.config.viewerController.mapComponent.getMap().zoomToExtent(extent);
             },1000);
         }
     },

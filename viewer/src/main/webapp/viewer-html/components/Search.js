@@ -343,7 +343,7 @@ Ext.define ("viewer.components.Search",{
                     }
                 }
             }else{
-                this.viewerController.logger.warning("Search component yielded error: " + returnValue.errorMessage);
+                this.config.viewerController.logger.warning("Search component yielded error: " + returnValue.errorMessage);
             }
         }
         if (this.getCurrentSearchType() === "simplelist") {
@@ -493,16 +493,16 @@ Ext.define ("viewer.components.Search",{
         this.results.destroy();
     },
     removePin: function(){
-        this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
+        this.config.viewerController.mapComponent.getMap().removeMarker("searchmarker");
         this.form.getChildByElement("removePin"+ this.name).setVisible(false);
     },
     handleSearchResult : function(result){
 
         result.x = (result.location.maxx + result.location.minx) / 2;
         result.y = (result.location.maxy + result.location.miny) / 2;
-        this.viewerController.mapComponent.getMap().zoomToExtent(result.location);
-        this.viewerController.mapComponent.getMap().removeMarker("searchmarker");
-        this.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y,"marker");
+        this.config.viewerController.mapComponent.getMap().zoomToExtent(result.location);
+        this.config.viewerController.mapComponent.getMap().removeMarker("searchmarker");
+        this.config.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y,"marker");
         
         var type = this.getCurrentSearchType(result);
         if(type === "solr"){
@@ -515,28 +515,28 @@ Ext.define ("viewer.components.Search",{
                     var selectedContentChanged = false;
                     for(var i = 0 ; i <switchOnLayers.length ;i++){
                         var appLayerId = switchOnLayers[i];
-                        var appLayer = this.viewerController.app.appLayers[appLayerId];
+                        var appLayer = this.config.viewerController.app.appLayers[appLayerId];
                         // Suppress logmessages for non-existing layers
-                        var logLevel = this.viewerController.logger.logLevel;
-                        this.viewerController.logger.logLevel = viewer.components.Logger.LEVEL_ERROR;
-                        var layer = this.viewerController.getLayer(appLayer);
-                        this.viewerController.logger.logLevel = logLevel;
+                        var logLevel = this.config.viewerController.logger.logLevel;
+                        this.config.viewerController.logger.logLevel = viewer.components.Logger.LEVEL_ERROR;
+                        var layer = this.config.viewerController.getLayer(appLayer);
+                        this.config.viewerController.logger.logLevel = logLevel;
                         if(!layer){
-                            var level = this.viewerController.getAppLayerParent(appLayerId);
-                            if(!this.viewerController.doesLevelExist(level)){ 
-                                this.viewerController.app.selectedContent.push({
+                            var level = this.config.viewerController.getAppLayerParent(appLayerId);
+                            if(!this.config.viewerController.doesLevelExist(level)){ 
+                                this.config.viewerController.app.selectedContent.push({
                                     id: level.id,
                                     type: "level"
                                 });
                             }
                             selectedContentChanged = true;
-                            layer = this.viewerController.createLayer(appLayer);
+                            layer = this.config.viewerController.createLayer(appLayer);
                         }
-                        this.viewerController.setLayerVisible(appLayer,true);
+                        this.config.viewerController.setLayerVisible(appLayer,true);
                         
                     }
                     if(selectedContentChanged){
-                        this.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
+                        this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
                     }
                 }
             }
@@ -610,12 +610,12 @@ Ext.define ("viewer.components.Search",{
     setVisibleLayers: function() {
         var proxy = this.searchField.getStore().getProxy();
         var params = proxy.extraParams;
-        var appLayers = this.viewerController.getVisibleLayers();
+        var appLayers = this.config.viewerController.getVisibleLayers();
         params["visibleLayers"] = appLayers.join(", ");
     },
     getExtraRequestParams:function(params, type){
         if(this.getCurrentSearchType() === "solr"){
-            var appLayers = this.viewerController.getVisibleLayers();
+            var appLayers = this.config.viewerController.getVisibleLayers();
             params["visibleLayers"] = appLayers.join(", ");
         }else{
             // Nothing to do here
@@ -656,7 +656,7 @@ Ext.define ("viewer.components.Search",{
             this.searchConfigChanged(searchConfigId);
         }
         var me = this;
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function() {
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function() {
             me.executeSearch(term, config.id);
             if (config.urlOnly) {
                 me.searchName.setValue("");

@@ -40,7 +40,6 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         this.initConfig(config);
         this.initEvents();
         this.viewerController=viewerController;
-        this.addEvents(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);    
         return this;
     },
        

@@ -30,7 +30,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor
     constructor: function (conf){        
         viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor.superclass.constructor.call(this, conf);
         // Make the control and add it to the openlayersmap
-        var map = this.viewerController.mapComponent.getMap().getFrameworkMap();
+        var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         this.frameworkObject = new OpenLayers.Control.LoadingPanel({
             minimizeTimeoutDelay: this.timeout
         });

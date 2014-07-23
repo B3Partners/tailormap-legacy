@@ -36,13 +36,13 @@ Ext.define("viewer.components.Slider",{
         var me = this;
         this.initConfig(conf);
         this.layers=new Array();
-        this.currentSliderValue = this.initialTransparency;
+        this.currentSliderValue = this.config.initialTransparency;
 
         this.slider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
             width: MobileManager.isMobile() ? '100%' : 200,
-            value: this.initialTransparency,
+            value: this.config.initialTransparency,
             increment: 10,
-            fieldLabel: this.name,
+            fieldLabel: this.config.name,
             labelAlign: "top",
             minValue: 0,
             maxValue: 100,
@@ -64,9 +64,9 @@ Ext.define("viewer.components.Slider",{
         var mapLayer=options.layer;  
         //only if configured with a applayer
         if (mapLayer.appLayerId){
-            var appLayer = this.viewerController.app.appLayers[mapLayer.appLayerId];
+            var appLayer = this.config.viewerController.app.appLayers[mapLayer.appLayerId];
             //check if this slider needs to change values for the layer
-            if (Ext.Array.contains(this.selectedLayers,appLayer.id)){            
+            if (Ext.Array.contains(this.config.selectedLayers,appLayer.id)){            
                 this.layers.push(mapLayer);
                 if(this.currentSliderValue) {
                     this.applySlider(mapLayer,this.currentSliderValue);

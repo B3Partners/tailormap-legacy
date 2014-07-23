@@ -47,8 +47,8 @@ Ext.define ("viewer.components.Drawing",{
     constructor: function (conf){        
         viewer.components.Drawing.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        if(this.color === ""){
-            this.color = "ff0000";
+        if(this.config.color === ""){
+            this.config.color = "ff0000";
         }
         this.features = new Object();
         var me = this;
@@ -56,10 +56,10 @@ Ext.define ("viewer.components.Drawing",{
             handler: function(){
                 me.showWindow();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
         
         // Needed to untoggle the buttons when drawing is finished
@@ -71,7 +71,7 @@ Ext.define ("viewer.components.Drawing",{
         };
         
        
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         return this;
@@ -80,30 +80,30 @@ Ext.define ("viewer.components.Drawing",{
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }  
-        this.viewerController.mapComponent.deactivateTools()
+        this.config.viewerController.mapComponent.deactivateTools()
         this.popup.show();
     },
     selectedContentChanged : function (){
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }else{
-            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
     },
     createVectorLayer : function (){
-        this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+        this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
             name:'drawingVectorLayer',
             geometrytypes:["Circle","Polygon","Point","LineString"],
             showmeasures:false,
-            viewerController: this.viewerController,
+            viewerController: this.config.viewerController,
             style: {
-                'fillcolor': this.color || 'FF0000',
+                'fillcolor': this.config.color || 'FF0000',
                 'fillopacity': 50,
-                'strokecolor': this.color ||"FF0000",
+                'strokecolor': this.config.color ||"FF0000",
                 'strokeopacity': 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
 
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
@@ -124,7 +124,7 @@ Ext.define ("viewer.components.Drawing",{
             },
             name: 'color',
             id:'color',
-            value: this.color ? this.color : 'FF0000',
+            value: this.config.color ? this.config.color : 'FF0000',
             listeners :{
                 select : {
                     fn: this.colorChanged,
@@ -133,7 +133,7 @@ Ext.define ("viewer.components.Drawing",{
             }
         });
         
-        this.label = Ext.create("Ext.form.field.Text",{
+        this.labelField = Ext.create("Ext.form.field.Text",{
             name: 'labelObject',
             fieldLabel: 'Label geselecteerd object',
             labelWidth: MobileManager.isMobile() ? 200 : 150,
@@ -282,7 +282,7 @@ Ext.define ("viewer.components.Drawing",{
                 },
                 layout:'hbox',
                 items: [
-                this.label,
+                this.labelField,
                 {
                     xtype: 'button',
                     icon: this.iconPath+"delete.png",
@@ -301,7 +301,7 @@ Ext.define ("viewer.components.Drawing",{
         });
         
         // Convience accessor
-        this.title = Ext.create("Ext.form.field.Text",{
+        this.titleField = Ext.create("Ext.form.field.Text",{
             fieldLabel: 'Titel',
             name: 'title',
             allowBlank:false,
@@ -327,7 +327,7 @@ Ext.define ("viewer.components.Drawing",{
                     xtype: 'label',
                     text: 'Op de kaart getekende objecten opslaan'
                 },
-                this.title,
+                this.titleField,
                 this.description,
                 {
                     xtype: 'hiddenfield',
@@ -439,16 +439,16 @@ Ext.define ("viewer.components.Drawing",{
     activeFeatureChanged : function (vectorLayer,feature){
         this.toggleSelectForm(true);
         if(this.features[feature.id] == undefined){
-            feature.color = this.color;
+            feature.color = this.config.color;
             this.features[feature.id] = feature;
         }else{
             var color = this.features[feature.id].color;
          //   color = color.substring(2);
             this.colorPicker.setColor(color);
-            this.color = color;
+            this.config.color = color;
         }
         this.activeFeature = this.features[feature.id];
-        this.label.setValue(this.activeFeature.label);
+        this.labelField.setValue(this.activeFeature.label);
     },
     //update the wkt of the active feature with the completed feature
     activeFeatureFinished : function (vectorLayer,feature){
@@ -459,12 +459,12 @@ Ext.define ("viewer.components.Drawing",{
         });
     },
     colorChanged : function (hexColor){
-        this.color = hexColor;
-        this.vectorLayer.style.fillcolor = this.color;
-        this.vectorLayer.style.strokecolor = this.color;
+        this.config.color = hexColor;
+        this.vectorLayer.style.fillcolor = this.config.color;
+        this.vectorLayer.style.strokecolor = this.config.color;
         this.vectorLayer.adjustStyle();
         if(this.activeFeature != null){
-            this.activeFeature.color = this.color;
+            this.activeFeature.color = this.config.color;
             var feature = this.vectorLayer.getFeatureById(this.activeFeature.getId());
             this.activeFeature.wktgeom = feature.wktgeom;
             delete this.features[this.activeFeature.id];
@@ -502,8 +502,8 @@ Ext.define ("viewer.components.Drawing",{
                     this.vectorLayer.removeAllFeatures();
                     this.toggleSelectForm(false);
                     this.features = {};
-                    this.label.setValue("");
-                    this.title.setValue("");
+                    this.labelField.setValue("");
+                    this.titleField.setValue("");
                     this.description.setValue("");
                     if (this.activeFeature != null) {
                         this.activeFeature = null;
@@ -526,7 +526,7 @@ Ext.define ("viewer.components.Drawing",{
         if(this.activeFeature != null){
             this.activeFeature=null;
         }
-        this.label.setValue("");
+        this.labelField.setValue("");
     },
     saveFile: function(){       
         var form = this.formsave.getForm();
@@ -554,13 +554,13 @@ Ext.define ("viewer.components.Drawing",{
                 waitTitle: "Even wachten...",
                 success: function(fp, o) {
                     var json = Ext.JSON.decode(o.result.content);
-                    this.title.setValue( json.title);
+                    this.titleField.setValue( json.title);
                     this.description.setValue(json.description);
                     var features = Ext.JSON.decode(json.features);
                     this.loadFeatures(features);
                     if(features.length > 0){
                         var extent = o.result.extent;
-                        this.viewerController.mapComponent.getMap().zoomToExtent(extent);
+                        this.config.viewerController.mapComponent.getMap().zoomToExtent(extent);
                     }
                 },
                 failure: function (){
@@ -583,7 +583,7 @@ Ext.define ("viewer.components.Drawing",{
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
             this.vectorLayer.style.fillcolor = featureObject.color;
             this.vectorLayer.style.strokecolor = featureObject.color;
-            //this.color = featureObject.color;
+            //this.config.color = featureObject.color;
             this.vectorLayer.adjustStyle();
             this.vectorLayer.addFeature(featureObject);
         }
@@ -609,7 +609,7 @@ Ext.define ("viewer.components.Drawing",{
             this.loadFeatures(state.features);
         }
         if (state.extent){
-            this.viewerController.mapComponent.getMap().zoomToExtent(state.extent);
+            this.config.viewerController.mapComponent.getMap().zoomToExtent(state.extent);
         }
     },
     
@@ -617,10 +617,10 @@ Ext.define ("viewer.components.Drawing",{
         var compIds = [
             this.mainContainer.getId(),
             this.colorPicker.getId(),
-            this.label.getId(),
+            this.labelField.getId(),
             this.formdraw.getId(),
             this.formselect.getId(),
-            this.title.getId(),
+            this.titleField.getId(),
             this.description.getId()
         ];
         if(!MobileManager.isMobile()) {

@@ -35,34 +35,34 @@ Ext.define ("viewer.components.BufferObject",{
         viewer.components.BufferObject.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         
-        this.tmc =this.viewerController.mapComponent.createTool({
+        this.tmc =this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name,
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
         var me = this;
         this.renderButton({
             handler: function(){
                 me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
+            text: me.config.title,
+            icon: me.config.iconUrl,
             tooltip: me.tooltip,
-            label: me.label
+            label: me.config.label
         });
         this.loadWindow();
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
     selectedContentChanged : function (){
         if(this.vectorLayer == null){
             this.createVectorLayer();
         }else{
-            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
     },
     buttonClick : function (){
@@ -73,7 +73,7 @@ Ext.define ("viewer.components.BufferObject",{
         this.popup.show();
     },
     createVectorLayer : function(){
-        this.vectorLayer=this.viewerController.mapComponent.createVectorLayer({
+        this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
               id: 'boVectorLayer',
               name:'boVectorLayer',
               geometrytypes:["Circle","Polygon"],
@@ -85,14 +85,14 @@ Ext.define ("viewer.components.BufferObject",{
                   strokeopacity: 100
               }
           });
-          this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+          this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     loadWindow : function(){
         
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             div: this.getContentDiv(),
-            layers : this.layers,
+            layers : this.config.layers,
             restriction: "bufferable"
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);

@@ -17,7 +17,7 @@
 
 Ext.define("viewer.DirectFeatureService", {
     config: {
-        actionBeanUrl: null,
+        actionbeanUrl: null,
         appLayer: null,
         protocol: null,
         url: null
@@ -33,7 +33,7 @@ Ext.define("viewer.DirectFeatureService", {
         
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {getLayerFeatureType: true, protocol: this.protocol, layer: this.appLayer.layerName},
+            params: {getLayerFeatureType: true, protocol: this.config.protocol, layer: this.config.appLayer.layerName},
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
@@ -74,7 +74,7 @@ Ext.define("viewer.AppLayerService", {
             Ext.Ajax.request({
                 url: this.config.actionbeanUrl,
                 timeout: 120000,
-                params: {attributes: true, application: this.appId, appLayer: this.appLayer.id},
+                params: {attributes: true, application: this.config.appId, appLayer: this.config.appLayer.id},
                 success: function(result) {
                     var response = Ext.JSON.decode(result.responseText);
 
@@ -104,7 +104,7 @@ Ext.define("viewer.AppLayerService", {
     },
     getStoreUrl: function() {
         var url = this.getActionbeanUrl();
-        return Ext.urlAppend(url, "store=1&application=" + this.appId + "&appLayer=" + this.appLayer.id + (this.debug ? "&debug=true" : ""));
+        return Ext.urlAppend(url, "store=1&application=" + this.config.appId + "&appLayer=" + this.config.appLayer.id + (this.config.debug ? "&debug=true" : ""));
     },
     
     loadFeatures: function(appLayer, successFunction, failureFunction,options,scope) {
@@ -117,7 +117,7 @@ Ext.define("viewer.AppLayerService", {
             if (options === undefined || options === null){
                 options={};
             }
-            options.application = this.appId;
+            options.application = this.config.appId;
             options.appLayer = appLayerId;
             options.filter = filter;
             Ext.Ajax.request({

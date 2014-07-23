@@ -35,7 +35,6 @@ Ext.define ("viewer.components.MobileSlider", {
         var me = this;
         this.initConfig(conf);
         this.render();
-        this.addEvents('change', 'changecomplete');
         this.listeners = conf.listeners;
         this.callParent(arguments);
     },

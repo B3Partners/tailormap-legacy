@@ -65,10 +65,10 @@ Ext.define ("viewer.components.Bookmark",{
     renderButton: function() {
         var me = this;
         this.superclass.renderButton.call(this,{
-            text: me.title,
-            icon: me.titlebarIcon,
-            tooltip: me.tooltip,
-            label: me.label,
+            text: me.config.title,
+            icon: me.config.titlebarIcon,
+            tooltip: me.config.tooltip,
+            label: me.config.label,
             handler: function() {
                 me.showWindow();
             }
@@ -76,7 +76,7 @@ Ext.define ("viewer.components.Bookmark",{
     },
     loadWindow : function(){
         var socialButtons=[];
-        if(this.shareEmail){
+        if(this.config.shareEmail){
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
@@ -91,7 +91,7 @@ Ext.define ("viewer.components.Bookmark",{
                     }
                 }            
             });
-        }if (this.shareTwitter){ 
+        }if (this.config.shareTwitter){ 
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
@@ -106,7 +106,7 @@ Ext.define ("viewer.components.Bookmark",{
                     }
                 }            
             });
-        }if (this.shareLinkedIn){
+        }if (this.config.shareLinkedIn){
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
@@ -121,7 +121,7 @@ Ext.define ("viewer.components.Bookmark",{
                     }
                 }            
             });
-        }if (this.shareGooglePlus){
+        }if (this.config.shareGooglePlus){
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
@@ -136,7 +136,7 @@ Ext.define ("viewer.components.Bookmark",{
                     }
                 }            
             });           
-        }if (this.shareFacebook){
+        }if (this.config.shareFacebook){
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
@@ -154,10 +154,10 @@ Ext.define ("viewer.components.Bookmark",{
         }
         var formItems=[];
         
-        if (this.showFullUrl){
+        if (this.config.showFullUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel: this.showLabels ? 'Bookmark' : '',
+                fieldLabel: this.config.showLabels ? 'Bookmark' : '',
                 name: 'bookmark',
                 anchor: '100%',
                 id: 'bookmark',
@@ -165,10 +165,10 @@ Ext.define ("viewer.components.Bookmark",{
                 value: this.url
             });
         }
-        if (this.showShortUrl){
+        if (this.config.showShortUrl){
             formItems.push({ 
                 xtype: 'textarea',
-                fieldLabel:this.showLabels ? 'Compact link' : '',
+                fieldLabel:this.config.showLabels ? 'Compact link' : '',
                 name: 'compactlink',
                 rows:3,
                 anchor: '100%',
@@ -220,7 +220,7 @@ Ext.define ("viewer.components.Bookmark",{
         });
     },
     showWindow : function(){
-        var paramJSON = this.viewerController.getBookmarkUrl();
+        var paramJSON = this.config.viewerController.getBookmarkUrl();
         var parameters = "";
         
         for ( var i = 0 ; i < paramJSON["params"].length ; i ++){
@@ -253,7 +253,7 @@ Ext.define ("viewer.components.Bookmark",{
         
         var componentParams="";
         //get all the params from components that need to be added to the bookmark
-        var components = this.viewerController.getComponents();
+        var components = this.config.viewerController.getComponents();
         for (var i=0; i < components.length; i++){
             var state = components[i].getBookmarkState(false);
             if (!Ext.isEmpty(state)){
@@ -267,7 +267,7 @@ Ext.define ("viewer.components.Bookmark",{
         if (componentParams.length!=0){
             this.url+=componentParams;
         }
-        if (this.showShortUrl){
+        if (this.config.showShortUrl){
             //get all the states of the components for the short url
             for (var i=0; i < components.length; i++){
                 var state = components[i].getBookmarkState(true);
@@ -284,24 +284,24 @@ Ext.define ("viewer.components.Bookmark",{
                 function(code){me.succesCompactUrl(code);},
                 function(code){me.failureCompactUrl(code);}
             );
-        }else if (this.showFullUrl){
+        }else if (this.config.showFullUrl){
             this.form.getChildByElement("bookmark").setValue(this.url);
             this.popup.show();
         }
     },
     succesCompactUrl : function(code){
         this.compUrl = this.baseUrl+"bookmark="+code;
-        if(this.showShortUrl){
+        if(this.config.showShortUrl){
             this.form.getChildByElement("compactlink").setValue(this.compUrl);
         }
-        if(this.showFullUrl){
+        if(this.config.showFullUrl){
             this.form.getChildByElement("bookmark").setValue(this.url);
         }
         this.popup.show();
     },
     failureCompactUrl : function(code){
         // TODO: error message?
-        this.viewerController.logger.error(code);
+        this.config.viewerController.logger.error(code);
     },
     hideWindow : function(){
         this.popup.hide();
@@ -310,7 +310,7 @@ Ext.define ("viewer.components.Bookmark",{
         if(Ext.firefoxVersion != 0){
             alert("This browser doesn't support this function.");
         }else if(Ext.ieVersion != 0){
-            window.external.AddFavorite(this.compUrl, this.title);
+            window.external.AddFavorite(this.compUrl, this.config.title);
         }else if(Ext.chromeVersion != 0){
             alert("This browser doesn't support this function.");
         }else if(Ext.operaVersion != 0){
@@ -329,10 +329,10 @@ Ext.define ("viewer.components.Bookmark",{
             url=url.replace("[url]",encodeURIComponent(bookmarkUrl));
         }
         if (url.indexOf("[text]")!=-1){
-            url = url.replace("[text]",encodeURIComponent(this.shareText));
+            url = url.replace("[text]",encodeURIComponent(this.config.shareText));
         }
         if (url.indexOf("[title]")!=-1){
-            url = url.replace("[title]",encodeURIComponent(this.shareTitle));
+            url = url.replace("[title]",encodeURIComponent(this.config.shareTitle));
         }
         console.log(url);
         window.open(url);

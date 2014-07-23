@@ -57,14 +57,14 @@ Ext.define("viewer.components.NonInitLayerSlider",{
      *@return true if in the original/init selected content
      */
     isInitSelectedContent: function(appLayerId){
-        if (this.initSelectedContent){
-            for (var i=0; i < this.initSelectedContent.length; i++){
-                if (this.initSelectedContent[i].type=="appLayer"){
-                    if (this.initSelectedContent[i].id==appLayerId){
+        if (this.config.initSelectedContent){
+            for (var i=0; i < this.config.initSelectedContent.length; i++){
+                if (this.config.initSelectedContent[i].type=="appLayer"){
+                    if (this.config.initSelectedContent[i].id==appLayerId){
                         return true;
                     }
                 }else {
-                    if(this.checkInitSelectedLevel(this.initSelectedContent[i].id,appLayerId)){
+                    if(this.checkInitSelectedLevel(this.config.initSelectedContent[i].id,appLayerId)){
                         return true;
                     }                    
                 }
@@ -80,7 +80,7 @@ Ext.define("viewer.components.NonInitLayerSlider",{
      * @return true if its in, otherwise falso
      */
     checkInitSelectedLevel: function(levelId,appLayerId){
-        var level = this.viewerController.app.levels[levelId];
+        var level = this.config.viewerController.app.levels[levelId];
         if (level.layers){
             for (var i=0; i < level.layers.length; i++){
                 if (level.layers[i]==appLayerId){

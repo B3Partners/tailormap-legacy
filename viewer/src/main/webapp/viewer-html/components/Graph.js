@@ -40,40 +40,41 @@ Ext.define("viewer.components.Graph", {
             handler: function() {
                  me.buttonClick();
             },
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
         // Make hook for Returned feature infos
         // Stub for development
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initialize, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initialize, this);
         return this;
     },
     initialize: function() {
         this.initialized = true;
             
-        this.toolMapClick =  this.viewerController.mapComponent.createTool({
+        this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
-            id: this.name + "toolMapClick",
+            id: this.config.name + "toolMapClick",
             handler:{
                 fn: this.mapClicked,
                 scope:this
             },
-            viewerController: this.viewerController
+            viewerController: this.config.viewerController
         });
         
         this.layers = [];
-        for (var i = 0 ; i < this.graphs.length ;i ++){
-            var graph = this.graphs[i];
+        for (var i = 0 ; i < this.config.graphs.length ;i ++){
+            var graph = this.config.graphs[i];
             this.layers.push(graph.layer);
         }
         this.loadWindow();
     },
      loadWindow : function (){
         var me =this;
+        this.createLayerSelector();
         this.maincontainer = Ext.create('Ext.container.Container', {
-            id: this.name + 'Container',
+            id: this.config.name + 'Container',
             width: '100%',
             height: '100%',
             autoScroll: true,
@@ -86,12 +87,7 @@ Ext.define("viewer.components.Graph", {
             },
             renderTo: this.getContentDiv(),
             items: [
-                {
-                    id: this.name + 'LayerSelectorPanel',
-                    xtype: "container",
-                    padding: 4,
-                    height: 36
-                },
+                this.layerSelector.combobox,
                 {
                     xtype: "container",
                     items: [{
@@ -107,29 +103,26 @@ Ext.define("viewer.components.Graph", {
                     height: 25
                 },
                  {
-                    id: this.name + 'graphPanel',
-                    xtype: this.graphs.length > 1 ? "tabpanel" : "container",
+                    id: this.config.name + 'graphPanel',
+                    xtype: this.config.graphs.length > 1 ? "tabpanel" : "container",
                     padding: 4,
                     flex: 1,
                     layout: 'fit'
                 }
             ]
         });
-        this.createLayerSelector();
     },
     createLayerSelector: function(){
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             restriction : "attribute",
-            id : this.name + "layerSelector",
+            id : this.config.name + "layerSelector",
             layers: this.layers,
-            div: this.name + 'LayerSelectorPanel'
+            padding: 4
+            // div: this.config.name + 'LayerSelectorPanel'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
-        if(this.layers.length === 1){
-            this.layerSelector.setValue(this.layers[0]);
-        }
+        // this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
     },
     layerChanged : function (layer){
       var a = 0;  
@@ -143,7 +136,7 @@ Ext.define("viewer.components.Graph", {
         var y = coords.y;
         
         var appLayer = this.layerSelector.getValue();
-        if(appLayer === null) {
+        if(appLayer === null || typeof appLayer === 'undefined') {
             Ext.Msg.alert('Let op', 'Selecteer eerst een kaartlaag');
             return;
         }
@@ -153,7 +146,7 @@ Ext.define("viewer.components.Graph", {
             return;
         }
         var me = this;
-        var graphPanel = Ext.getCmp(this.name + 'graphPanel');
+        var graphPanel = Ext.getCmp(this.config.name + 'graphPanel');
         graphPanel.removeAll();
         // We create placeholders to be able to insert graphs in correct order in the tabpanel
         if(graphConfig.length > 1) {
@@ -177,11 +170,11 @@ Ext.define("viewer.components.Graph", {
                     attributesToInclude : attributes,
                     graph:true
                 };
-                this.viewerController.mapComponent.getMap().setMarker("edit",x,y);
+                me.config.viewerController.mapComponent.getMap().setMarker("edit",x,y);
                 var featureInfo = Ext.create("viewer.FeatureInfo", {
-                    viewerController: me.viewerController
+                    viewerController: me.config.viewerController
                 });
-                featureInfo.editFeatureInfo(x,y,me.viewerController.mapComponent.getMap().getResolution() * 4,appLayer, function (features){
+                featureInfo.editFeatureInfo(x,y,me.config.viewerController.mapComponent.getMap().getResolution() * 4,appLayer, function (features){
                     me.featuresReceived(features, attributes, configId);
                 },function(msg){me.failed(msg);},extraParams);
             })(graphConfig[i], i);
@@ -260,12 +253,12 @@ Ext.define("viewer.components.Graph", {
                 this.loadData(appLayer);
             }
         } else {
-            this.viewerController.logger.error("No featureservice available for layer " + appLayer.alias);
+            this.config.viewerController.logger.error("No featureservice available for layer " + appLayer.alias);
         }
 
     },
     createGraph : function (appLayer,  data, configId){
-        var gco = this.graphs[configId];//this.getConfigByAppLayer(appLayer.id);
+        var gco = this.config.graphs[configId];//this.getConfigByAppLayer(appLayer.id);
         var me = this;
         var fields = this.getAttributeName(appLayer,gco.serieAttribute);
         fields.push(this.getAttributeName(appLayer,gco.categoryAttribute));
@@ -376,7 +369,7 @@ Ext.define("viewer.components.Graph", {
             title: gco.title,
             legend: true
         });
-        var graphPanel = Ext.getCmp(this.name + 'graphPanel');
+        var graphPanel = Ext.getCmp(this.config.name + 'graphPanel');
         // remove placeholder
         graphPanel.remove('placeholderContainer' + configId, true);
         // add graph in placeholder place
@@ -391,7 +384,7 @@ Ext.define("viewer.components.Graph", {
         var visCols = {
             "AANTAL_HH":true
         };
-        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer);
+        var attributes = this.config.viewerController.getAttributesFromAppLayer(appLayer);
         var attributeList = [];
         var columns = [];
         var index = 0;
@@ -484,7 +477,7 @@ Ext.define("viewer.components.Graph", {
     },
     
     activateMapClick: function(){
-        this.deActivatedTools = this.viewerController.mapComponent.deactivateTools();
+        this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.toolMapClick.activateTool();
     },
     deactivateMapClick: function(){
@@ -496,9 +489,9 @@ Ext.define("viewer.components.Graph", {
     },
     getConfigByAppLayer : function (appLayerId) {
         var configs = [];
-        for (var i = 0 ; i < this.graphs.length ;i++){
-            if(this.graphs[i].layer === appLayerId){
-                configs.push(this.graphs[i]);
+        for (var i = 0 ; i < this.config.graphs.length ;i++){
+            if(this.config.graphs[i].layer === appLayerId){
+                configs.push(this.config.graphs[i]);
             }
         }
         if(!configs.length) return null;

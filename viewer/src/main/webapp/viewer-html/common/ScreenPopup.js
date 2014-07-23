@@ -41,23 +41,23 @@ Ext.define ("viewer.components.ScreenPopup",{
         var me = this;
         this.initConfig(conf);
         var config = {
-            title: this.title || 'Titel',
+            title: this.config.title || 'Titel',
             closable: true,
             closeAction: 'hide',
             hideMode: 'offsets',
-            width: parseInt(this.details.width),
-            height: parseInt(this.details.height),
-            resizable: "true" == ""+this.details.changeableSize,
-            draggable: "true" == ""+this.details.changeablePosition,
+            width: parseInt(this.config.details.width),
+            height: parseInt(this.config.details.height),
+            resizable: "true" == ""+this.config.details.changeableSize,
+            draggable: "true" == ""+this.config.details.changeablePosition,
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
             autoScroll: true
         };
-        if(this.details.position == 'fixed' && !MobileManager.isMobile()) {
+        if(this.config.details.position == 'fixed' && !MobileManager.isMobile()) {
             var wrapper = Ext.get('wrapper');
-            config.x = parseInt(this.details.x) + wrapper.getX();
-            config.y = parseInt(this.details.y) + wrapper.getY();
+            config.x = parseInt(this.config.details.x) + wrapper.getX();
+            config.y = parseInt(this.config.details.y) + wrapper.getY();
         }
         
         if(MobileManager.isMobile()) {
@@ -69,8 +69,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             this.currentOrientation = MobileManager.getOrientation();
         }
 		
-        if(this.details.items){
-            config.items = this.details.items;
+        if(this.config.details.items){
+            config.items = this.config.details.items;
             config.bodyStyle= { background: '#fff'};
         }else{
             var con = document.createElement('div');
@@ -102,7 +102,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             };
         }
         this.popupWin = Ext.create('Ext.window.Window', config);
-        if(this.showOnStartup){
+        if(this.config.showOnStartup){
             this.popupWin.show();
         }
         if(config.draggable){

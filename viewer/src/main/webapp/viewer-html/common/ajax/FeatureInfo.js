@@ -27,7 +27,7 @@ Ext.define("viewer.FeatureInfo", {
         }        
     },
     getVisibleAppLayers: function() {
-        var visibleLayerIds = this.viewerController.getVisibleLayers();
+        var visibleLayerIds = this.config.viewerController.getVisibleLayers();
         
         var visibleAppLayers = {};
         
@@ -43,7 +43,7 @@ Ext.define("viewer.FeatureInfo", {
     },
     featureInfoInternal: function(params, successFunction, failureFunction,scope) {
         var me = this;
-        params = Ext.apply(params, { application: this.viewerController.app.id });
+        params = Ext.apply(params, { application: this.config.viewerController.app.id });
         return Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: params,
@@ -55,9 +55,9 @@ Ext.define("viewer.FeatureInfo", {
                 for(var i in response) {
                     var r = response[i];
                     if(r.request.appLayer) {
-                        r.appLayer = me.viewerController.app.appLayers[r.request.appLayer];
+                        r.appLayer = me.config.viewerController.app.appLayers[r.request.appLayer];
                     } else if(r.request.service) {
-                        r.service = me.viewerController.app.services[r.request.service];
+                        r.service = me.config.viewerController.app.services[r.request.service];
                     }
                 }
                 successFunction(response);
@@ -74,7 +74,7 @@ Ext.define("viewer.FeatureInfo", {
         
         var queries = [];
         for(var id in visibleAppLayers) {
-            var appLayer = this.viewerController.app.appLayers[id];
+            var appLayer = this.config.viewerController.app.appLayers[id];
             var query = { appLayer: appLayer.id };
             if(appLayer.filter) {
                 query.filter = appLayer.filter.getCQL();
@@ -117,7 +117,7 @@ Ext.define("viewer.FeatureInfo", {
     },    
     editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams) {
         var query = [{appLayer: appLayer.id}];
-        var params ={application: this.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};
+        var params ={application: this.config.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};
         if(extraParams){
             Ext.merge(params, extraParams);
         }
