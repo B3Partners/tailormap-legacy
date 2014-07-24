@@ -23,6 +23,7 @@
 Ext.define('select.TreeNode', {
     extend: 'Ext.data.Model',
     fields: [
+        {name: 'id', type: 'string'},
         // {name: 'children', type: 'array'},
         {name: 'name', type: 'string'},
         {name: 'type',  type: 'string'},
