@@ -23,7 +23,6 @@
 Ext.define('select.TreeNode', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id', type: 'string'},
         // {name: 'children', type: 'array'},
         {name: 'name', type: 'string'},
         {name: 'type',  type: 'string'},
@@ -31,30 +30,26 @@ Ext.define('select.TreeNode', {
         {name: 'class', type: 'string'},
         {name: 'parentid', type: 'string'},
         {name: 'isLeaf', type: 'boolean'},
-        // {name: 'checkedlayers', type: 'array'},
         // Text is used by tree, mapped to name
-        {name: 'text', type: 'string', mapping: 'name'}
-    ],
-    get: function(fieldName) {
-        var nodeType = '';
-        if(fieldName == "icon") {
-            nodeType = this.get('type');
-            if(nodeType == "category" || nodeType == "level" || nodeType == "cswresult") return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
-            if(nodeType == "maplevel") return contextPath + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
-            if(nodeType == "layer" || nodeType == "appLayer") return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
-            if(nodeType == "service") return contextPath + '/viewer-html/components/resources/images/selectionModule/serviceok.png';
-        }
-        if(fieldName == "leaf") {
-            return this.get('isLeaf');
-        }
-        // Return default value, taken from ExtJS source
-        return this.data[fieldName];
-    }
+        {name: 'text', type: 'string', mapping:'name'},
+        // Added convert function to icon
+        {name: 'icon', type: 'string', convert: function(fieldName, record) {
+            var nodeType = record.get('type');
+            if(nodeType === "category" || nodeType === "level" || nodeType === "cswresult") return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
+            if(nodeType === "maplevel") return contextPath + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
+            if(nodeType === "layer" || nodeType === "appLayer") return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
+            if(nodeType === "service") return contextPath + '/viewer-html/components/resources/images/selectionModule/serviceok.png';    
+        }},
+        // leaf mapped to isLeaf
+        {name: 'leaf', type: 'boolean', mapping: 'isLeaf'}
+        // {name: 'checkedlayers', type: 'array'},
+        
+    ]
 });
 
 // Override van TreeStore to fix load function, used to refresh tree node
 Ext.define('Ext.ux.b3p.TreeStore', {
-    extend: 'Ext.data.TreeStore',
+    extend: '',
     /* load: function(options) {
         options = options || {};
         options.params = options.params || {};
