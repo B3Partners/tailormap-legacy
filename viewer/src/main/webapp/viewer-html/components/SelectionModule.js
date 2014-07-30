@@ -21,7 +21,7 @@
  */
 
 Ext.define('select.TreeNode', {
-    extend: 'Ext.data.Model',
+    extend: 'Ext.data.TreeModel',
     fields: [
         {name: 'id', type: 'string'},
         // {name: 'children', type: 'array'},
@@ -46,34 +46,6 @@ Ext.define('select.TreeNode', {
         // {name: 'checkedlayers', type: 'array'},
         
     ]
-});
-
-// Override van TreeStore to fix load function, used to refresh tree node
-Ext.define('Ext.ux.b3p.TreeStore', {
-    extend: '',
-    /* load: function(options) {
-        options = options || {};
-        options.params = options.params || {};
-        var me = this,
-            node = options.node || me.tree.getRootNode(),
-            root;
-        if (!node) {
-            node = me.setRootNode({
-                expanded: true
-            });
-        }
-        if (me.clearOnLoad) {
-            node.removeAll(false);
-        }
-        Ext.applyIf(options, {
-            node: node
-        });
-        options.params[me.nodeParam] = node ? node.getId() : 'root';
-        if (node) {
-            node.set('loading', true);
-        }
-        return me.callParent([options]);
-    } */
 });
 
 Ext.define ("viewer.components.SelectionModule",{
@@ -147,11 +119,11 @@ Ext.define ("viewer.components.SelectionModule",{
         var minwidth = 600;
         if(conf.details.width < minwidth || !Ext.isDefined(conf.details.width)) conf.details.width = minwidth;
         if (Ext.isEmpty(conf.selectGroups)){
-            conf.selectGroups=true;
+            conf.selectGroups = true;
         }if (Ext.isEmpty(conf.selectLayers)){
-            conf.selectLayers=true;
+            conf.selectLayers = true;
         }if (Ext.isEmpty(conf.selectOwnServices)){
-            conf.selectOwnServices=true;
+            conf.selectOwnServices = true;
         } if(Ext.isEmpty(conf.selectCsw)){
             conf.selectCsw = true;
         } if(Ext.isEmpty(conf.showWhenOnlyBackground)){
@@ -281,7 +253,7 @@ Ext.define ("viewer.components.SelectionModule",{
             treeContainer.style.display = 'block';
         });
     },
-    
+
     getActiveTreePanels: function() {
         var me = this;
         var panels = [];
@@ -361,7 +333,6 @@ Ext.define ("viewer.components.SelectionModule",{
         var activePanels = me.getActiveTreePanels();
         for(var i = 0; i < activePanels.length; i++) {
             activePanels[i].getView().panel.doLayout();
-            // activePanels[i].getView().panel.getLayout().layout();
         }
     },
     initViewerControllerData: function() {
@@ -459,15 +430,43 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var radioControls = [];
         // Add only if config option is set to true
-        if(me.config.selectGroups) radioControls.push({id: 'radioApplication', checked: true, name: 'layerSource', boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : 'Kaart', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+        if(me.config.selectGroups) {
+            radioControls.push({
+                id: 'radioApplication',
+                checked: true,
+                name: 'layerSource',
+                boxLabel: me.config.hasOwnProperty('labelGroups') ? me.config.labelGroups : 'Kaart',
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+            });
+        }
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
-        if(me.config.selectLayers) radioControls.push({id: 'radioRegistry', checked: (radioControls.length === 0), name: 'layerSource', boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : 'Kaartlaag', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+        if(me.config.selectLayers) {
+            radioControls.push({
+                id: 'radioRegistry',
+                checked: (radioControls.length === 0),
+                name: 'layerSource',
+                boxLabel: me.config.hasOwnProperty('labelLayers') ? me.config.labelLayers : 'Kaartlaag',
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+            });
+        }
         // Add only if config option is set to true, if this is the first that is added (so the previous was not added) set checked to true
         if(me.config.selectOwnServices) {
-            radioControls.push({id: 'radioCustom', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : 'Eigen service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+            radioControls.push({
+                id: 'radioCustom',
+                name: 'layerSource',
+                checked: (radioControls.length === 0),
+                boxLabel: me.config.hasOwnProperty('labelOwnServices') ? me.config.labelOwnServices : 'Eigen service',
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+            });
         }
         if(me.config.selectCsw){
-            radioControls.push({id: 'radioCSW', name: 'layerSource', checked: (radioControls.length === 0), boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : 'CSW service', listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}});
+            radioControls.push({
+                id: 'radioCSW',
+                name:'layerSource',
+                checked: (radioControls.length === 0),
+                boxLabel: me.config.hasOwnProperty('labelCsw') ? me.config.labelCsw : 'CSW service',
+                listeners: {change: function(field, newval) {me.handleSourceChange(field.id, newval)}}
+            });
         }
         
         // If there is only 1 control, do not add any
@@ -479,9 +478,10 @@ Ext.define ("viewer.components.SelectionModule",{
         var items = [{
             xtype: 'container',
             flex: 1,
-            width: '100%',
-            html: '<div id="treeSelectionContainer" style="width: 100%; height: 100%;"></div>',
-            id: 'selectionModuleTreeContentContainer'
+            // width: '100%',
+            // html: '<div id="treeSelectionContainer" style="width: 100%; height: 100%;"></div>',
+            id: 'selectionModuleTreeContentContainer',
+            layout: 'fit'
         },
         {
             // Form above the trees with radiobuttons and textfields
@@ -500,7 +500,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     }}
             ],
             height: 35,
-            padding: '5px',
+            padding: 5,
             border: 0,
             id: 'selectionModuleSaveFormContainer'
         }];
@@ -516,7 +516,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     fields: ['label', 'value'],
                     data : this.config.advancedValueConfigs
                 });
-                var combo = Ext.create(Ext.form.field.ComboBox,{
+                var combo = Ext.create('Ext.form.ComboBox', {
                     store:store,
                     queryMode: "local",
                     displayField: 'label',
@@ -526,35 +526,26 @@ Ext.define ("viewer.components.SelectionModule",{
                 });
                 items.unshift({
                         // Form above the trees with radiobuttons and textfields
-                        xtype: 'form',
-                        items: [{
-                            xtype: 'fieldcontainer',
-                            id: 'selectionModuleCustomFormFieldContainer',
-                            layout:{
-                                type: 'vbox',
-                                align:"stretch"
-                            },
-                            border: 0,
-                            defaults: {
-                                xtype: 'textfield',
-                                style: {
-                                    marginRight: '5px'
-                                }
-                            },
-                            height: '100%',
-                            defaultType: 'textfield',
-                            items: [{
-                                xtype: 'fieldcontainer',
+                        xtype: 'container',
+                        height: MobileManager.isMobile() ? 50 : 0,
+                        padding: 5,
+                        border: 0,
+                        id: 'selectionModuleCustomFormContainer',
+                        layout: 'auto',
+                        items: [
+                            {
+                                xtype: 'panel',
                                 id: 'customServicesTextfields',
+                                border: false,
+                                header: false,
                                 layout: 'hbox',
-                                border: 0,
                                 defaults: {
                                     xtype: 'textfield',
                                     style: {
                                         marginRight: '5px'
                                     }
                                 },
-                              //  flex: 1,
+                                height: 25,
                                 width: '100%',
                                 defaultType: 'textfield',
                                 items: [
@@ -576,19 +567,19 @@ Ext.define ("viewer.components.SelectionModule",{
                                 ]
                             },
                             {
-                                xtype:'panel',
+                                xtype: 'panel',
                                 id: 'cswAdvancedSearchField',
-                                columnWidth: 0.5,
-                                title: 'Geavanceerd zoeken',
+                                header: { 
+                                    title: 'Geavanceerd zoeken'
+                                },
                                 collapsible: true,
-                                collapsed:!this.config.alwaysShow,
+                                collapsed: !this.config.alwaysShow,
                                 height: 65,
+                                width: '100%',
                                 bodyPadding: 5,
-                                hidden:true,
-                                defaultType: 'textfield',
-                                defaults: {anchor: '100%'},
-                                layout: 'anchor',
-                                items :[combo],
+                                hidden: true,
+                                items: [ combo ],
+                                layout: 'fit',
                                 listeners: {
                                     beforecollapse: function() {
                                         me.handleSourceChange('radioCSW', true);
@@ -599,12 +590,6 @@ Ext.define ("viewer.components.SelectionModule",{
                                 }
                             }
                         ]
-                        }
-                        ],
-                        height: MobileManager.isMobile() ? 50 : 0,
-                        padding: '5px',
-                        border: 0,
-                        id: 'selectionModuleCustomFormContainer'
                     });
                 }
                 items.unshift({
@@ -621,15 +606,14 @@ Ext.define ("viewer.components.SelectionModule",{
                                 marginRight: '5px'
                             }
                         },
-                        width: '100%',
-                        height: '100%',
                         defaultType: 'radio',
                         items: radioControls
                     }],
                     height: radioControls.length === 0 ? 0 : MobileManager.isMobile() ? 40 : 30,
-                    padding: '5px',
+                    padding: '0 5px 5px 5px',
                     border: 0,
-                    id: 'selectionModuleFormContainer'
+                    id: 'selectionModuleFormContainer',
+                    layout: 'fit'
             });
         }
         
@@ -657,7 +641,8 @@ Ext.define ("viewer.components.SelectionModule",{
                 {
                     xtype: 'container',
                     flex: 1,
-                    html: '<div id="selectionTreeContainer" class="selectionModuleTreeContainer" style="width: 100%; height: 100%; visibility: visible;"></div>'
+                    id: 'selectionTreeContainer',
+                    layout: 'fit'
                 },
                 {xtype: 'container', width: 30, layout: {type: 'vbox', align: 'center'}, items: [
                     {xtype: 'container', html: '<div></div>', flex: 1},
@@ -737,7 +722,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 ] }
             );
         }
-        Ext.create('Ext.container.Container', {
+        var treeContainer = Ext.create('Ext.container.Container', {
             layout: {
                 type: 'hbox',
                 align: 'stretch'
@@ -745,9 +730,9 @@ Ext.define ("viewer.components.SelectionModule",{
             width: '100%',
             height: '100%',
             id: 'selectionModuleTreesContainer',
-            items: items,
-            renderTo: 'treeSelectionContainer'
+            items: items
         });
+        Ext.getCmp('selectionModuleTreeContentContainer').add(treeContainer);
     },
     
     fixButtonLayout: function(button) {
@@ -819,7 +804,7 @@ Ext.define ("viewer.components.SelectionModule",{
         
         if(me.config.selectLayers) {
             var serviceStore = Ext.create("Ext.data.TreeStore", {
-                autoLoad: true,
+                //autoLoad: true,
                 proxy: {
                     type: 'ajax',
                     url: actionBeans["geoserviceregistry"]
@@ -892,7 +877,6 @@ Ext.define ("viewer.components.SelectionModule",{
         me.treePanels.selectionTree.treePanel = Ext.create('Ext.tree.Panel', Ext.apply(defaultTreeConfig, {
             treePanelType: 'selectionTree',
             store: me.treePanels.selectionTree.treeStore,
-            renderTo: 'selectionTreeContainer',
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.removeSelectedNodes();
@@ -900,6 +884,7 @@ Ext.define ("viewer.components.SelectionModule",{
             },
             tbar: null
         }));
+        Ext.getCmp('selectionTreeContainer').add(me.treePanels.selectionTree.treePanel);
     },
     
     filterRemote: function(tree, textvalue) {
@@ -1646,7 +1631,6 @@ Ext.define ("viewer.components.SelectionModule",{
         extComponents.push('selectionModuleSaveFormContainer');
         extComponents.push('selectionModuleTreesContainer');
         extComponents.push('selectionModuleFormFieldContainer');
-        extComponents.push('selectionModuleCustomFormFieldContainer');
         return Ext.Array.merge(extComponents, me.getActiveTreePanelIds());
     }
 });
