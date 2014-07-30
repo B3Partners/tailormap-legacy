@@ -67,6 +67,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     
     constructor: function (config){
         this.initConfig(config);
+        viewer.viewercontroller.controller.Tool.superclass.constructor.call(this, config);
         this.events = [];
         return this;
     },
@@ -75,6 +76,9 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
      * @deprecated use getFrameworkObject
      */
     getFrameworkTool : function(){
+        return this.frameworkObject;
+    },
+    getFrameworkObject: function() {
         return this.frameworkObject;
     },
     /**

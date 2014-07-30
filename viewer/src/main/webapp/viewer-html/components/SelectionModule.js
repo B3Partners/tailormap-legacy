@@ -23,7 +23,7 @@
 Ext.define('select.TreeNode', {
     extend: 'Ext.data.TreeModel',
     fields: [
-        {name: 'id', type: 'string'},
+        {name: 'nodeid', type: 'string'},
         // {name: 'children', type: 'array'},
         {name: 'name', type: 'string'},
         {name: 'type',  type: 'string'},
@@ -907,7 +907,7 @@ Ext.define ("viewer.components.SelectionModule",{
             me.setAllNodesVisible(true, treePanelType);
         } else {
             me.setAllNodesVisible(true, treePanelType);
-            var re = new RegExp(Ext.escapeRe(textvalue), 'i');
+            var re = new RegExp(Ext.String.escapeRegex(textvalue), 'i');
             var visibleParents = [];
             var filter = function(node) {// descends into child nodes
                 var addParents = function(node) {
@@ -1024,7 +1024,6 @@ Ext.define ("viewer.components.SelectionModule",{
     },
 
     addLevel: function(levelId, showChildren, showLayers, showBackgroundLayers, childrenIdsToShow,descriptions) {
-
         var me = this;
         if(!Ext.isDefined(me.levels[levelId])) {
             return null;
@@ -1039,7 +1038,8 @@ Ext.define ("viewer.components.SelectionModule",{
         // Create a leaf node when a level has layers (even if it has children)
         if(Ext.isDefined(level.layers)) {
             treeNodeLayer.type = 'maplevel';
-            treeNodeLayer.id = 'm' + level.id;
+            treeNodeLayer.nodeid = 'm' + level.id;
+            treeNodeLayer.leaf = true;
             showChildren = false;
         }
         if(showChildren) {
@@ -1060,7 +1060,7 @@ Ext.define ("viewer.components.SelectionModule",{
                     nodes.push(me.addLayer(level.layers[j]));
                 }
             }
-            treeNodeLayer.children = nodes;
+            treeNodeLayer.origData.children = nodes;
         }
         return treeNodeLayer;
     },
@@ -1107,7 +1107,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var node =  {
             text: nodetext,
             name: nodetext,
-            id: nodeid,
+            nodeid: nodeid,
             expanded: expanded,
             expandable:!leaf,
             leaf: leaf,
@@ -1123,11 +1123,34 @@ Ext.define ("viewer.components.SelectionModule",{
     },
 
     insertTreeNode: function(node, root, autoExpand) {
-        var me = this;
+        if(Ext.isArray(node)) {
+            for(var i = 0; i < node.length; i++) {
+                this.appendNode(node[i], root, autoExpand);
+            }
+        } else {
+            this.appendNode(node, root, autoExpand);
+        }
+    },
+            
+    appendNode: function(node, root, autoExpand) {
         if(typeof autoExpand == "undefined") autoExpand = true;
-        var addedNode = root.appendChild(node);
+        var addedNode = this.insertNode(root, node);
         if(autoExpand) root.expand();
         return addedNode;
+    },
+            
+    // Appending the whole tree at once gave issues in ExtJS 4.2.1
+    // when there where sub-sub-childs present. Looping over childs,
+    // and adding them manually seems to fix this
+    insertNode: function(parentNode, insertNode) {
+        var me = this,
+            newParentNode = parentNode.appendChild(insertNode);
+        if(insertNode.origData && insertNode.origData.children) {
+            Ext.Array.each(insertNode.origData.children, function(childNode) {
+                me.insertNode(newParentNode, childNode);
+            });
+        }
+        return newParentNode;
     },
     
     handleSourceChange: function(field, newval, height) {
@@ -1214,7 +1237,7 @@ Ext.define ("viewer.components.SelectionModule",{
         me.userServices[userServiceId] = userService;
         var serviceNode = me.createNode('s' + userServiceId, userService.name, null, false);
         serviceNode.type = 'service';
-        serviceNode.children = me.createCustomNodesList(userService.topLayer, userServiceId, true);
+        serviceNode.origData.children = me.createCustomNodesList(userService.topLayer, userServiceId, true);
         me.insertTreeNode(serviceNode, node, autoExpand);
     },
     
@@ -1296,7 +1319,7 @@ Ext.define ("viewer.components.SelectionModule",{
             if(isTopLayer && node.virtual) {
                 return childnodes;
             }
-            treeNode.children = childnodes;
+            treeNode.origData.children = childnodes;
         }
         return treeNode;
     },

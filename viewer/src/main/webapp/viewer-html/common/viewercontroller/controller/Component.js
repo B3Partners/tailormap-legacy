@@ -61,6 +61,10 @@ Ext.define("viewer.viewercontroller.controller.Component",{
     destroy: function(){
         this.clearListeners();
         viewer.viewercontroller.controller.Component.superclass.destroy.call(this);
+    },
+            
+    getFrameworkObject: function() {
+        return this.frameworkObject;
     }
 });
 

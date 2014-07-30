@@ -668,16 +668,19 @@ Ext.define ("viewer.components.TOC",{
             if(record != null){
                 var extElement = Ext.fly(record);
                 //if(this.isInScale(scale, layer.minScale, layer.maxScale)){
-                var spanEl = Ext.get("span_"+layerObj.nodeId);
+                var spanEl = document.getElementById("span_"+layerObj.nodeId);
+                if(spanEl === null) {
+                    return;
+                }
                 if (this.config.viewerController.isWithinScale(layerObj.appLayer,scale)){
                     extElement.removeCls("toc-outofscale");
                     extElement.addCls("toc-inscale");
-                    spanEl.parent().removeCls('toc-zoomtoscale');
+                    spanEl.parentNode.className.replace('toc-zoomtoscale', '');
                 }else{
                     extElement.removeCls("toc-inscale");
                     extElement.addCls( "toc-outofscale");
                     if (child.data.checked){
-                        var parent =spanEl.parent();
+                        var parent = Ext.get(spanEl.parentNode);
                         parent.addCls('toc-zoomtoscale');    
                         var ztsId= ("span_"+child.data.id+"_zoomtoscale").replace(/\./g, '_');
                         var zts=Ext.get(ztsId);

@@ -266,7 +266,6 @@ Ext.define ("viewer.components.Print",{
                         text: "Titel"
                     },{
                         xtype: 'textfield',
-                        width: '100%',                        
                         name: 'title',
                         value: ""
                     },{                        
@@ -335,16 +334,18 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'radiogroup',
                                 name: "orientation", 
                                 width: MobileManager.isMobile() ? 185 : 125,
+                                height: 25,
                                 items: [{
                                     boxLabel: 'Liggend', 
                                     name: 'orientation', 
                                     inputValue: 'landscape', 
-                                    checked: me.getOrientation()=='landscape'
+                                    checked: me.getOrientation() === 'landscape',
+                                    margin: '0 5px 0 0'
                                 },{
                                     boxLabel: 'Staand', 
                                     name: 'orientation', 
                                     inputValue: 'portrait', 
-                                    checked: !(me.getOrientation()=='landscape') 
+                                    checked: me.getOrientation() !== 'landscape'
                                 }]                            
                             },{
                                 xtype: 'checkbox',
