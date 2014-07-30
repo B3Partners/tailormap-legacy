@@ -122,27 +122,23 @@ Ext.define ("viewer.components.Buffer",{
             }
         });
         
-        var layerSelectorId = Ext.id();
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",{
+            viewerController : this.config.viewerController,
+            layers : this.config.layers,
+            restriction: "bufferable"
+        });
+        
         this.panel = Ext.create ("Ext.container.Container",{
             id: this.name +"Container",
             renderTo : this.getContentDiv(),
             margin: '0px 0px 0px 10px',
             items:[
-                { xtype: 'container', html: '<div id="' + layerSelectorId + '"></div>' },
+                this.layerSelector.combobox,
                 this.radius,
                 this.colorPicker,
                 this.buffer,
                 this.remove
             ]
-        });
-        
-        
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",{
-            viewerController : this.config.viewerController,
-            div: layerSelectorId,
-            id: this.name + "LayerSelector",
-            layers : this.config.layers,
-            restriction: "bufferable"
         });
     },
     buffer : function (){

@@ -97,7 +97,14 @@ Ext.define ("viewer.components.DataSelection",{
     },
     loadWindow : function(){
         this.itemsLoaded = 0;
-        var layerSelectorId = Ext.id();
+
+        this.layerSelector = Ext.create("viewer.components.LayerSelector", {
+            viewerController : this.config.viewerController,
+            layers : this.config.layers,
+            restriction: "filterable"
+        });
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
+
         this.mainContent = Ext.create('Ext.container.Container', {
             width: '100%',
             height: '100%',
@@ -106,11 +113,7 @@ Ext.define ("viewer.components.DataSelection",{
                 align: 'stretch'
             },
             items: [
-            {
-                xtype: 'container',
-                height: 30,
-                html: '<div id="' + layerSelectorId + '" style="width: 100%; height: 100%;"></div>'
-            },
+            this.layerSelector.combobox,
             {
                 xtype: 'tabpanel',
                 id: this.config.name + 'TabPanel',
@@ -184,13 +187,6 @@ Ext.define ("viewer.components.DataSelection",{
             ],
             renderTo: this.getContentDiv()
         });
-        this.layerSelector = Ext.create("viewer.components.LayerSelector", {
-            viewerController : this.config.viewerController,
-            div: layerSelectorId,
-            layers : this.config.layers,
-            restriction: "filterable"
-        });
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
         this.tabPanel = Ext.getCmp(this.config.name + 'TabPanel');
         this.dataTab = Ext.getCmp(this.config.name + 'DataTab');
         this.filterTab = Ext.getCmp(this.config.name + 'FilterTab')

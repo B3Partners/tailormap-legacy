@@ -128,7 +128,10 @@ Ext.define ("viewer.components.AttributeFilter",{
     /**
      * Set the unique list of values.
      */
-    setUniqueList: function(list){  
+    setUniqueList: function(list){
+        if(list === null) {
+            return;
+        }
         if (list.length>0){
             this.value.setHideTrigger(false);
         }else{

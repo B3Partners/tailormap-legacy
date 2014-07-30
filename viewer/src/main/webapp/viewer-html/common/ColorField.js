@@ -17,14 +17,22 @@
 
 
 Ext.define('Ext.ux.ColorField', {
-    extend: 'Ext.form.field.Trigger',
+    extend: 'Ext.form.field.Text',
     alias: 'widget.colorfield',    
-    requires: ['Ext.form.field.VTypes', 'Ext.layout.component.field.Text'],
+    requires: ['Ext.form.field.VTypes'],
 
     lengthText: "Hexadecimale Kleurwaarde moet of 3 of 6 karakters bevatten.",
     blankText: "Moet een hexacecimale waarden hebben in het format ABCDEF.",
     
     regex: /^[0-9a-f]{3,6}$/i,
+    
+    triggers: {
+        color: {
+            handler: function(colorField, trigger, e) {
+                colorField.onTriggerClick(e);
+            }
+        }
+    },
     
     validateValue : function(value){
         if(this.showText != undefined && !this.showText){
