@@ -607,7 +607,7 @@
         name: "Attributen Lijst",
         group: "Component",
         shortName: "AL",
-        sources: ["../common/plugins/RowExpander.js","AttributeList.js"],
+        sources: ["AttributeList.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","AttributeList-config.js"],
         restrictions: ["left_menu"] , 
         singleton: true,       

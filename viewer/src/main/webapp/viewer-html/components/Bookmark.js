@@ -160,6 +160,7 @@ Ext.define ("viewer.components.Bookmark",{
                 fieldLabel: this.config.showLabels ? 'Bookmark' : '',
                 name: 'bookmark',
                 anchor: '100%',
+                height: 50,
                 id: 'bookmark',
                 readOnly:true,
                 value: this.url
@@ -170,8 +171,8 @@ Ext.define ("viewer.components.Bookmark",{
                 xtype: 'textarea',
                 fieldLabel:this.config.showLabels ? 'Compact link' : '',
                 name: 'compactlink',
-                rows:3,
                 anchor: '100%',
+                height: 50,
                 readOnly:true,
                 id: 'compactlink'
             });

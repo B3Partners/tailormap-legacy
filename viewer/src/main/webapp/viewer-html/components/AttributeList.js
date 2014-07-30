@@ -75,6 +75,16 @@ Ext.define ("viewer.components.AttributeList",{
     },
     loadWindow : function(){
         var me = this;
+        
+        // create layerselector
+        var config = {
+            viewerController : this.config.viewerController,
+            restriction: "attribute",
+            layers: this.config.layers
+        };
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
+        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
+        
         this.topContainer=Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
@@ -92,7 +102,10 @@ Ext.define ("viewer.components.AttributeList",{
                 xtype: "container",
                 padding: "4px",
                 width: '100%',
-                height: 36
+                height: 36,
+                items: [
+                    this.layerSelector.combobox
+                ]
             },{
                 id: this.name + 'mainGridPanel',
                 xtype: "container",
@@ -167,15 +180,6 @@ Ext.define ("viewer.components.AttributeList",{
                 }
             ]
         });
-        var config = {
-            viewerController : this.config.viewerController,
-            restriction: "attribute",
-            layers: this.config.layers,
-            div: this.name + 'LayerSelectorPanel'
-        };
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
-
     },
     showWindow : function (){
         if (this.topContainer==null){
@@ -447,9 +451,9 @@ Ext.define ("viewer.components.AttributeList",{
                         }
                     }
                 }
-            },
-            renderTo: name + 'GridPanel'
+            }
         });
+        Ext.getCmp(name + 'GridPanel').add(g);
         this.grids[gridId]=g;
         if(addPager){
             var p = Ext.create('Ext.PagingToolbar', {
@@ -458,9 +462,9 @@ Ext.define ("viewer.components.AttributeList",{
                 displayInfo: true,
                 displayMsg: 'Feature {0} - {1} van {2}',
                 emptyMsg: "Geen features om weer te geven",
-                renderTo: name + 'PagerPanel',
                 height: 30
             });
+            Ext.getCmp(name + 'PagerPanel').add(p);
             this.pagers[gridId]=p;
         }
     },
