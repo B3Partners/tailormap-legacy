@@ -30,6 +30,7 @@ Ext.define ("viewer.components.LayerSwitch",{
     items: null,
     selectedBackgroundLevels: null,
     control: null,
+    container: null,
     
     config: {
         top:null,
@@ -55,18 +56,22 @@ Ext.define ("viewer.components.LayerSwitch",{
     
     loadComponent : function (){
         this.loadItems();
+        if(this.container === null) {
+            this.container = Ext.create('Ext.container.Container', {
+                renderTo:  this.div,
+                floating: true,
+                border: false,
+                shadow: false,
+                top:  '30px'
+            });
+            this.container.zIndexManager.bringToFront(this.container, true);
+            this.container.setPosition(Number(this.config.left), Number(this.config.top));
+        }
         if(this.button) {
             this.button.destroy();
         }
         this.button = Ext.create('Ext.button.Cycle', {
             showText: true,
-            renderTo:  Ext.get(this.div).parent(),
-           // width: "100%",
-            top:  '30px',
-            style: {
-                marginBottom: '10px'
-            },
-            floating: true,
             menu: {
                 id: 'view-type-menu',
                 items: this.items
@@ -78,8 +83,7 @@ Ext.define ("viewer.components.LayerSwitch",{
                 }
             }
         });
-        this.button.zIndexManager.bringToFront(this.button);
-        this.button.setPosition(Number(this.config.left), Number(this.config.top));
+        this.container.add(this.button);
     },
     
     levelItemId: function(level) {
@@ -183,6 +187,6 @@ Ext.define ("viewer.components.LayerSwitch",{
     },
     
     getExtComponents: function() {
-        return [this.button];
+        return [ this.container ];
     }
 });
