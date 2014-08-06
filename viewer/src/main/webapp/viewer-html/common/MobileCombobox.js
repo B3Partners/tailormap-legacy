@@ -63,16 +63,16 @@ Ext.define ("viewer.components.MobileCombobox", {
         emptyCls: 'x-form-empty-field'
     },
     constructor: function(conf){
-        // init config
-        this.initConfig(conf);
         // set id
-        if(this.id === '') this.id = Ext.id();
+        if(!conf.id) conf.id = Ext.id();
         // bind listeners
         this.listeners = conf.listeners;
         // bind the store, get config back
         conf = this.bindStore(conf);
         // call parent with provided arguments
         this.callParent(arguments);
+        // init config
+        this.initConfig(conf);
         // bind change event
         this.bindChangeEvent();
         // set render complete
@@ -83,35 +83,35 @@ Ext.define ("viewer.components.MobileCombobox", {
      */
     bindStore: function(conf) {
         var me = this;
-        if(Ext.isArray(me.store)) {
-            var fields = [ me.valueField, me.displayField ];
+        if(Ext.isArray(conf.store)) {
+            var fields = [ conf.valueField, conf.displayField ];
             // store can be a 1-or-2-dimensional array, so create store from array
-            if(me.store.length > 0 && !Ext.isArray(me.store[0])) {
+            if(conf.store.length > 0 && !Ext.isArray(conf.store[0])) {
                 // if the store is a 1-dimensional array, make display and value field the same
                 // and add convert function (needed by Ext to support 1-dimensional arrays)
-                me.displayField = me.valueField;
-                fields = [ {name: me.valueField, convert: function(value, record) {
-                    return record.raw;
+                conf.displayField = conf.valueField;
+                fields = [ {name: conf.valueField, convert: function(value, record) {
+                    return record.data;
                 }} ];
             }
             // store is now always a 2-dimensional array so we can create a store from it
-            me.store = Ext.create('Ext.data.ArrayStore', {
+            conf.store = Ext.create('Ext.data.ArrayStore', {
                 fields: fields,
-                data: me.store
+                data: me.config.store
             });
-        } else if(!(me.store instanceof Ext.data.AbstractStore)) {
+        } else if(!(conf.store instanceof Ext.data.AbstractStore)) {
             // provided store can also be a store config object, create store from it
-            me.store = Ext.create('Ext.data.ArrayStore', me.store);
+            conf.store = Ext.create('Ext.data.ArrayStore', conf.store);
         }
         // update the selectbox when the array store changes
-        me.store.on('datachanged', function() {
+        conf.store.on('datachanged', function() {
             me.updateSelect();
         });
         // create options from the loaded store
-        me.createOptionsFromStore();
+        me.createOptionsFromStore(conf);
         // we have to set the conf store to our newly created store (in case of arrays)
         // to provide the parent with the right store
-        conf.store = me.store;
+        // conf.store = me.config.store;
         return conf;
     },
     /**
@@ -119,17 +119,17 @@ Ext.define ("viewer.components.MobileCombobox", {
      */
     afterRender: function() {
         var me = this;
-        if(me.width) {
-            me.inputEl.setWidth(me.width);
+        if(me.config.width) {
+            me.inputEl.setWidth(me.config.width);
         }
-        if(me.style && !me.style.width) {
-            me.inputEl.setStyle(me.style);
+        if(me.config.style && !me.config.style.width) {
+            me.inputEl.setStyle(me.config.style);
         }
-        if(me.disabled) {
-            me.setDisabled(me.disabled);
+        if(me.config.disabled) {
+            me.setDisabled(me.config.disabled);
         }
-        if(me.hidden) {
-            me.inputEl.setVisible(!me.hidden);
+        if(me.config.hidden) {
+            me.inputEl.setVisible(!me.config.hidden);
         }
     },
     onFocus: function() {
@@ -151,22 +151,25 @@ Ext.define ("viewer.components.MobileCombobox", {
      * Iterate over the store and create option fields from it
      * @return array options
      */
-    createOptionsFromStore: function() {
+    createOptionsFromStore: function(conf) {
         var me = this, counter = 0, currentValue = me.getValue();
         me.options = [];
+        if(!conf) {
+            conf = this.config;
+        }
         // if there is an emptytext specified, add emptytext as first option
-        if(me.emptyText) {
+        if(conf.emptyText) {
             me.emptyIndex = counter;
             me.options.push({
                 index: counter++,
-                display: me.emptyText,
+                display: conf.emptyText,
                 value: '',
-                html: '<option value="" class="'+this.emptyCls+'">' + me.emptyText + '</option>'
+                html: '<option value="" class="' + conf.emptyCls + '">' + conf.emptyText + '</option>'
             });
         }
         // iterate over store and create options item for each value
-        me.store.each(function(record) {
-            var value = record.get(me.valueField), display = record.get(me.displayField), htmlValue = Ext.isObject(value) ? Ext.id() : value;
+        conf.store.each(function(record) {
+            var value = record.get(conf.valueField), display = record.get(conf.displayField), htmlValue = Ext.isObject(value) ? Ext.id() : value;
             me.options.push({
                 index: counter++,
                 display: display,
@@ -198,8 +201,8 @@ Ext.define ("viewer.components.MobileCombobox", {
         var me = this, inputId = me.getInputId();
         return {
             id: inputId,
-            cmpId: me.id,
-            name: this.name || '',
+            cmpId: me.config.id,
+            name: this.config.name || '',
             tabIdx: this.tabIndex || null,
             fieldCls: '',
             typeCls: '',
@@ -218,13 +221,13 @@ Ext.define ("viewer.components.MobileCombobox", {
      * @return Ext.data.Store
      */
     getStore: function() {
-        return this.store;
+        return this.config.store;
     },
     /**
      * Set the value of the selectbox. If the value is not present in one of the
      * options, nothing happens
      */
-    setValue: function(value) {
+    setValue: function(value, preventEvent) {
         if(value == null){
             this.clearValue();
         }else{
@@ -232,7 +235,7 @@ Ext.define ("viewer.components.MobileCombobox", {
             for(var i in me.options) {
                 if(me.options[i].value == value) me.inputEl.dom.selectedIndex = me.options[i].index;
             }
-            if(this.rendered) me.fireChangeEvent();
+            if(this.rendered && !preventEvent) me.fireChangeEvent();
         }
     },
     /**
@@ -282,13 +285,14 @@ Ext.define ("viewer.components.MobileCombobox", {
      * @return string id
      */
     getId: function() {
-        return this.sliderid;
+        return this.config.id;
     },
     /**
      * Set the element visible
      */
     setVisible: function(visible) {
         viewer.components.MobileCombobox.superclass.setVisible.call(this, visible);
-        this.inputEl.setVisible(visible);
+        //console.log(this);
+        this.inputEl && this.inputEl.setVisible && this.inputEl.setVisible(visible);
     }
 });

@@ -373,10 +373,11 @@ Ext.define ("viewer.components.DataSelection",{
         var combobox = Ext.getCmp (attribute);
         if(combobox){   // In case there are more than one layer with dataselection fields. This method can be called with an attribute of layer 1, when layer 2 is initialized
             combobox.setDisabled(false);
-            var store = combobox.getStore();
+            var store = combobox.getStore(), records = [];
             for(var i = 0; i < values.length; i++) {
-                store.add({ 'id': values[i] });
+                records.push({ 'id': values[i] });
             }
+            store.add(records);
         }
     },
     
@@ -434,7 +435,7 @@ Ext.define ("viewer.components.DataSelection",{
     },
     selectAppLayer : function (appLayer){
         if(appLayer){
-            this.layerSelector.setValue(appLayer);
+            this.layerSelector.setValue(appLayer, /*preventEvent=*/true);
         }
     },
     isDatatabLoaded : function(){

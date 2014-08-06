@@ -100,7 +100,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoWMSLayer",{
     },
 
     getLayers : function(){
-        return this.getFrameworkLayer().getLayers();   
+        return this.getFrameworkLayer().options.layers;   
     },
     /**
      *Implement for: 

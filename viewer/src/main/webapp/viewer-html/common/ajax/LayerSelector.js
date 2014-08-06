@@ -170,8 +170,8 @@ Ext.define ("viewer.components.LayerSelector",{
             return null;
         }
     },
-    setValue : function (appLayer){
-        this.combobox.setValue(appLayer);
+    setValue : function (appLayer, preventEvent){
+        this.combobox.setValue(appLayer, preventEvent);
     },
     /**
      * @deprecated use getValue()
