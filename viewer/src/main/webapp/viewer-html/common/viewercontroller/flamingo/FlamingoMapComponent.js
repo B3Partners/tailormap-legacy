@@ -27,8 +27,8 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
      */
     constructor :function (viewerController, domId, config){
         viewer.viewercontroller.FlamingoMapComponent.superclass.constructor.call(this, viewerController,domId,config);   
-        if (this.swfPath==null){
-            this.swfPath="flamingo/flamingo.swf";            
+        if (this.config.swfPath==null){
+            this.config.swfPath="flamingo/flamingo.swf";            
         }
         var me = this;
         this.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,function (){
@@ -42,7 +42,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
                 me.viewerObject.callMethod("flamingo",'setSprite',spriteUrl);
             }
         },this);
-        var so = new SWFObject(this.swfPath+"?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
+        var so = new SWFObject(this.config.swfPath+"?config=config.xml", this.flamingoId, "100%", "100%", "8", "#FFFFFF");
         so.addParam("wmode", "transparent");
         so.write(domId);
         this.viewerObject = document.getElementById("flamingo");
@@ -94,12 +94,12 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
     createMap : function(id,options){
         options.id=id;
         options.mapComponent=this;
-        if (this.resolutions!=null && this.resolutions != ""){
-            options.options.resolutions = this.resolutions;
-        }if (this.movetime!=null && this.movetime!=""){
-            options.options.movetime=this.movetime;
-        }if (this.movesteps!=null && this.movesteps!=""){
-            options.options.movesteps=this.movesteps;
+        if (this.config.resolutions!=null && this.config.resolutions != ""){
+            options.options.resolutions = this.config.resolutions;
+        }if (this.config.movetime!=null && this.config.movetime!=""){
+            options.options.movetime=this.config.movetime;
+        }if (this.config.movesteps!=null && this.config.movesteps!=""){
+            options.options.movesteps=this.config.movesteps;
         }        
         var map = new viewer.viewercontroller.flamingo.FlamingoMap(options);
         

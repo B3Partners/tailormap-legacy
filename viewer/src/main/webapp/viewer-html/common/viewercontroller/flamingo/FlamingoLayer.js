@@ -19,6 +19,7 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
             config.id = this.id;
         }
         this.enabledEvents=new Object();
+        this.map = this.viewerController ? this.viewerController.mapComponent.getMap() : null;
         return this;
     },
     /**
@@ -87,11 +88,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoLayer",{
      */
     addListener : function(event,handler,scope){
         //enable flamingo event broadcasting
-        var flamEvent=this.map.mapComponent.eventList[event];
+        var flamEvent=this.viewerController.mapComponent.eventList[event];
         if (flamEvent!=undefined){
             //if not enabled yet, add it
             if (this.enabledEvents[flamEvent]==undefined){
-               this.map.getFrameworkMap().callMethod(this.map.mapComponent.getId(),"addAllowExternalInterface",this.getFrameworkId()+"."+flamEvent);
+               this.map.getFrameworkMap().callMethod(this.viewerController.mapComponent.getId(),"addAllowExternalInterface",this.getFrameworkId()+"."+flamEvent);
                this.enabledEvents[flamEvent]=true;
             }
         }

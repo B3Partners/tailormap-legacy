@@ -133,11 +133,11 @@ Ext.define("viewer.viewercontroller.flamingo.FlamingoTool",{
     addListener : function(event,handler,scope){
         viewer.viewercontroller.flamingo.FlamingoTool.superclass.addListener.call(this,event,handler,scope);
         //enable flamingo event broadcasting
-        var flamEvent=this.mapComponent.eventList[event];
+        var flamEvent=(this.mapComponent ? this.mapComponent : this.viewerController.mapComponent).eventList[event];
         if (flamEvent!=undefined){
             //if not enabled yet, enable
             if (this.enabledEvents[flamEvent]==undefined){
-                this.getFrameworkTool().callMethod(this.mapComponent.getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
+                this.getFrameworkTool().callMethod((this.mapComponent ? this.mapComponent : this.viewerController.mapComponent).getId(),"addAllowExternalInterface",this.getId()+"."+flamEvent);
                 this.enabledEvents[flamEvent]=true;
             }
         }     

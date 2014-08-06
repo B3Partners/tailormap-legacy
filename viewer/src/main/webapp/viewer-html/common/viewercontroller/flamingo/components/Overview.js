@@ -39,8 +39,8 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
         followZoom:null
     },
     constructor: function (conf){
-        viewer.viewercontroller.flamingo.Overview.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        viewer.viewercontroller.flamingo.Overview.superclass.constructor.call(this, conf);
         this.events = [];
         return this;
     },

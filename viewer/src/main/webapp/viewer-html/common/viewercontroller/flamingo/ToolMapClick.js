@@ -34,7 +34,7 @@ Ext.define ("viewer.viewercontroller.flamingo.ToolMapClick",{
         this.enabledEvents = new Object();
         this.initConfig(conf);
         this.mapComponent = this.config.viewerController.mapComponent;
-        this.frameworkObject = this.viewerController.mapComponent.viewerObject;
+        this.frameworkObject = this.config.viewerController.mapComponent.viewerObject;
         this.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.handler.scope);
         //this.mixins.flamingoTool.addListener(viewer.viewercontroller.controller.Event.ON_MAP_CLICKED,conf.handler.fn,conf.handler.scope);
         this.addTool();

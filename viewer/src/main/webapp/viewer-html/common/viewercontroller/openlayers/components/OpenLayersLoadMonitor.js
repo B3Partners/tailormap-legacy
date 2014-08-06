@@ -32,12 +32,12 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersLoadMonitor
         // Make the control and add it to the openlayersmap
         var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         this.frameworkObject = new OpenLayers.Control.LoadingPanel({
-            minimizeTimeoutDelay: this.timeout
+            minimizeTimeoutDelay: this.config.timeout
         });
         map.addControl(this.frameworkObject);
 
-        if(this.left && this.top){
-            this.setPosition(this.top, this.left);
+        if(this.config.left && this.config.top){
+            this.setPosition(this.config.top, this.config.left);
         }
         
         return this;

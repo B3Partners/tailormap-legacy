@@ -42,7 +42,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         this.width= 300;
         viewer.viewercontroller.openlayers.components.OpenLayersOverview.superclass.constructor.call(this, conf);
         
-        if (Ext.isEmpty(this.url)){
+        if (Ext.isEmpty(this.config.url)){
             throw new Error("No URL set for Overview component, unable to load component");
         }
         var maxBounds =this.config.viewerController.mapComponent.getMap().frameworkMap.maxExtent;
@@ -56,7 +56,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         var size=new OpenLayers.Size(""+this.width,""+this.height);
         var layer =  new OpenLayers.Layer.Image(
             "OverviewLaag", 
-            this.url,
+            this.config.url,
             bounds,
             size
         );
@@ -71,7 +71,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
             size: size,
             layers: [layer]
         });
-        if(this.followZoom !== undefined && this.followZoom !== null && this.followZoom ===false){
+        if(this.config.followZoom !== undefined && this.config.followZoom !== null && this.config.followZoom ===false){
             this.frameworkObject.maxRatio= 999999;
         }
 
