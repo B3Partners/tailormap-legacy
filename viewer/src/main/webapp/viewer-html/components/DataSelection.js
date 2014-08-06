@@ -232,14 +232,7 @@ Ext.define ("viewer.components.DataSelection",{
                     emptyText:'Maak uw keuze',
                     store: {
                         fields: [{
-                            name:'id',
-                            convert:function(v,row){
-                                if(row.raw){
-                                    return row.raw;
-                                }else{
-                                    return "";
-                                }
-                            }
+                            name:'id'
                         }],
                         data : []
                     }
@@ -380,24 +373,10 @@ Ext.define ("viewer.components.DataSelection",{
         var combobox = Ext.getCmp (attribute);
         if(combobox){   // In case there are more than one layer with dataselection fields. This method can be called with an attribute of layer 1, when layer 2 is initialized
             combobox.setDisabled(false);
-            var SingleArray = Ext.define('SingleArray', {
-                extend: 'Ext.data.Model',
-                fields: [{
-                    name: 'id'  , 
-                    convert:function(v,row){
-                        if(row.raw){
-                            return row.raw;
-                        }else{
-                            return "";
-                        }
-                    }
-                }]
-            });
-            var myReader = new Ext.data.reader.Array({
-                model: 'SingleArray'
-            }, SingleArray);
-            var rs =  myReader.read(values);
-            combobox.getStore().add(rs.records);
+            var store = combobox.getStore();
+            for(var i = 0; i < values.length; i++) {
+                store.add({ 'id': values[i] });
+            }
         }
     },
     
@@ -496,16 +475,15 @@ Ext.define ("viewer.components.DataSelection",{
         var layer = this.layerSelector.getValue();
         if(layer){
             var filterWrapper =  Ext.create("viewer.components.CQLFilterWrapper",{
-                id: this.name + this.layerSelector.getValue().layerName,
+                id: this.name + layer.layerName,
                 cql: cql,
                 operator : "AND",
                 type: "ATTRIBUTE"
             });
-
             this.config.viewerController.setFilter(filterWrapper,layer);
         }
         
-    //console.log("CQL: " + layer.filter.getCQL());
+        // console.log("CQL: " + layer.filter.getCQL());
     },
     getDataTabCQL : function (){
         var items = this.dataTab.items.items;

@@ -46,7 +46,7 @@ Ext.define ("viewer.components.Influence",{
         }else{
             conf.searchconfigs=[];
         }
-        conf.formHeight = MobileManager.isMobile() ? 160 : 150;
+        conf.formHeight = MobileManager.isMobile() ? 140 : 130;
         viewer.components.Influence.superclass.constructor.call(this, conf);
         var me = this;
         
@@ -74,10 +74,10 @@ Ext.define ("viewer.components.Influence",{
         var config = {
             viewerController : this.config.viewerController,
             restriction : "influence",
-            layers: this.config.layers,
-            div: this.name + 'LayerSelectorPanel'
+            layers: this.config.layers
         };
-        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);        
+        this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
+        Ext.getCmp(this.name + 'LayerSelectorPanel').add(this.layerSelector.combobox);
         return this;
     },
     /**
@@ -88,12 +88,15 @@ Ext.define ("viewer.components.Influence",{
         var itemList=viewer.components.Influence.superclass.getFormItems.call(this);
         //the items that must be placed before the search items.
         var formItemsBefore = new Array();
-       
         formItemsBefore.push({
             id: this.name + 'LayerSelectorPanel',
             xtype: "container",
             width: '100%',
-            height: 50
+            height: 30,
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            }
         });
         itemList= formItemsBefore.concat(itemList);
         //only if there is a search button add the or label

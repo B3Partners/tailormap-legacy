@@ -34,8 +34,8 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         this.initConfig(config);
         this.filters = [];
         this.logicOperators = ["AND","OR"];
-        if(!this.type){
-            this.type = "ATTRIBUTE";
+        if(!this.config.type){
+            this.config.type = "ATTRIBUTE";
         }
     },
     getCQL : function (){
@@ -62,9 +62,9 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     },
     getInternalCQLWithoutType : function (type){
         var returnValue = "";
-        if(this.type != type){
-            if(this.cql != ""){
-                returnValue = " " + this.operator + " " + this.cql;
+        if(this.config.type != type){
+            if(this.config.cql != ""){
+                returnValue = " " + this.config.operator + " " + this.config.cql;
             }
         }
         for(var i = 0 ; i < this.filters.length;i++){
@@ -78,8 +78,8 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     getInternalCQL : function (){
         var returnValue = "";
             
-        if(this.cql != ""){
-            returnValue = " " + this.operator + " " + this.cql;
+        if(this.config.cql != ""){
+            returnValue = " " + this.config.operator + " " + this.config.cql;
         }
         for(var i = 0 ; i < this.filters.length;i++){
             var f = this.filters[i];

@@ -117,6 +117,7 @@ Ext.define ("viewer.components.Edit",{
     },
     loadWindow : function (){
         var me =this;
+        this.createLayerSelector();
         this.maincontainer = Ext.create('Ext.container.Container', {
             id: this.name + 'Container',
             width: '100%',
@@ -129,13 +130,7 @@ Ext.define ("viewer.components.Edit",{
                 backgroundColor: 'White'
             },
             renderTo: this.getContentDiv(),
-            items: [{
-                id: this.name + 'LayerSelectorPanel',
-                xtype: "container",
-                padding: "4px",
-                width: '100%',
-                height: 36
-            },
+            items: [this.layerSelector.combobox,
             {
                 id: this.name + 'ButtonPanel',
                 xtype: "container",
@@ -227,8 +222,6 @@ Ext.define ("viewer.components.Edit",{
             ]
         });
         this.inputContainer =  Ext.getCmp(this.name + 'InputPanel');
-        
-        this.createLayerSelector();
     },
     createLayerSelector: function(){
         var config = {
@@ -236,7 +229,7 @@ Ext.define ("viewer.components.Edit",{
             restriction : "editable",
             id : this.name + "layerSelector",
             layers: this.config.layers,
-            div: this.name + 'LayerSelectorPanel'
+            width: '100%'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  

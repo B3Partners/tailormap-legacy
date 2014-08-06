@@ -19,6 +19,23 @@
  * Creates a AttributeList component
  * @author <a href="mailto:geertplaisier@b3partners.nl">Roy Braam</a>
  */
+
+/**
+ * In debug mode this definition triggers an error from Ext,
+ * seems like a bug that has been solved but maybe not in the GPL version of Ext yet
+ * http://www.sencha.com/forum/showthread.php?283775-Cannot-subclass-a-Model-properly
+ * For now we used the 'fields' config option in the store instead of a model
+
+Ext.define('Doc', {
+    extend: 'Ext.data.Model',
+    fields: [
+        { name: 'label', type: 'string' },
+        { name: 'searchConfig', type: 'integer' }
+    ]
+});
+
+ */
+
 Ext.define ("viewer.components.Search",{
     extend: "viewer.components.Component",
     form: null,
@@ -29,7 +46,7 @@ Ext.define ("viewer.components.Search",{
     searchField:null,
     searchName:null,
     resultPanelId: '',
-    defaultFormHeight: MobileManager.isMobile() ? 80 : 70,
+    defaultFormHeight: MobileManager.isMobile() ? 100 : 90,
     searchRequestId: 0,
     onlyUrlConfig:null,
     currentSeachId:null,
@@ -105,7 +122,7 @@ Ext.define ("viewer.components.Search",{
                 id: this.name + 'ContentPanel',
                 xtype: "container",
                 autoScroll: true,
-                width: '100%',
+                // width: '100%',
                 flex: 1,
                 html: '<div id="' + me.resultPanelId + '" style="width: 100%; height: 100%; padding: 0px 10px 0px 10px;"></div>'
             }]
@@ -152,7 +169,7 @@ Ext.define ("viewer.components.Search",{
                 hidden: this.searchconfigs.length === 1,
                 displayField: 'name',
                 valueField: 'id',
-                margin:"10 100 0 0 ",
+                margin:"0 5 5 0 ",
                 anchor: '100%',
                 emptyText: 'Maak uw keuze',
                 id: 'searchName' + this.name,
@@ -176,16 +193,17 @@ Ext.define ("viewer.components.Search",{
                     extraParams["appId"]=appId;
                     extraParams["componentName"]=this.name;
                 }
-                this.autosuggestStore = Ext.create(Ext.data.Store,  {
+                this.autosuggestStore = Ext.create('Ext.data.Store',  {
                     autoLoad: false,
-                    model: 'Doc',
+                    fields: ['label', 'searchConfig'],
+                    // model: 'Doc',
                     proxy: {
                         type: 'ajax',
                         url: actionBeans["autosuggest"],
                         extraParams: extraParams,
                         reader: {
                             type: 'json',
-                            root: 'results'
+                            rootProperty: 'results'
                         }
                     }
                 });
@@ -688,18 +706,4 @@ Ext.define ("viewer.components.Search",{
             }
         }
     }
-});
-
-Ext.define('Doc', {
-    extend: 'Ext.data.Model',
-        fields: [
-            {name: 'label', type: 'string'},
-            {name: 'searchConfig', type: 'integer'}
-        ]
-});
-Ext.define('Response', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'docs', type: 'Doc'}
-    ]
 });

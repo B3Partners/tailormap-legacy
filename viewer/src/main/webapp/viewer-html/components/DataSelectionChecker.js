@@ -31,14 +31,15 @@ Ext.define ("viewer.components.DataSelectionChecker",{
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerVisibilityChanged,this);    
     },
     layerVisibilityChanged : function (map,object){
+        var me = this;
         var layer = object.layer;
         var appLayer= this.config.viewerController.getAppLayerById(layer.appLayerId);
         if(appLayer && appLayer.checked){
             this.hasLayerDataSelectionAttributes(appLayer, function (hasSelectableAttributes){
                 if(!hasSelectableAttributes){
                     setTimeout(function(){
-                        this.config.viewerController.setLayerVisible(appLayer,false)
-                        }, 100);
+                        me.config.viewerController.setLayerVisible(appLayer,false)
+                    }, 100);
                 }
             });
         }

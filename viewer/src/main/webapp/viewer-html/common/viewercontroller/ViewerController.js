@@ -176,7 +176,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         this.configCompleted = true;
 
-        // try {
+        try {
             //if there is a height set for the top_menu start the map lower.
             var topMenuLayout=this.getLayout('top_menu');
             var mapTop= topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0;
@@ -228,9 +228,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             this.layersInitialized=true;
             this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
-        //} catch(e) {
-        //    this.logger.error(e);
-        //}  
+        } catch(e) {
+            this.logger.error(e);
+        }
     },
     
     /** Constructs all components defined in the app configuration object. To be 
@@ -269,7 +269,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         config.name=name;
         config.details=details;
                
-        //try{
+        try{
             var instance = Ext.create(className, config);
 
             if(instance.config.hasSharedPopup){
@@ -279,7 +279,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 className: className,
                 instance: instance
             };
-        /*} catch(e) {
+        } catch(e) {
             
             this.logger.error("Error creating component with className " + className + ": error "+e+ " with config"+ config);
             
@@ -291,7 +291,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     }
                 }
             }
-        }*/
+        }
 
         return instance;
     },
@@ -719,7 +719,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         var layerObj = null;
         
-        //try {
+        try {
             if(service.protocol =="wms" ){
                 var layerUrl = service.url;
 
@@ -826,7 +826,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
                 layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
             }
-        /*} catch(e) {
+        } catch(e) {
             var msg = Ext.String.format("Error creating layer object for appLayer #{0} ({1} {2} layer {3}: {4}",
                 id,
                 service.protocol,
@@ -845,7 +845,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }            
             
             return null;
-        }*/
+        }
             
         layerObj.serviceId = appLayer.serviceId;
         layerObj.appLayerId = appLayer.id;
@@ -1099,7 +1099,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     getLayerLegendInfo: function(appLayer, success, failure) {
         
-        // try {
+        try {
             
             // Check override for appLayer by service admin
             if(appLayer.details != undefined && appLayer.details.legendImageUrl != undefined) {
@@ -1181,10 +1181,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 failure(appLayer);
             }
         
-        /*} catch(e) {
+        } catch(e) {
             this.logger.error("Error creating legend info for appLayerId " + appLayer.id + ": " + e);
             failure(appLayer);
-        } */       
+        }
     },
     
     getLayerMetadata : function (serviceId, layerName){  

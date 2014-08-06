@@ -251,13 +251,10 @@ Ext.define ("viewer.components.Drawing",{
                         border: 0
                     },
                     layout:{
-                        type:'hbox',
-                        defaultMargins:{
-                            top: 5, 
-                            right: 5, 
-                            bottom: 5, 
-                            left: 0
-                        }
+                        type: 'hbox'
+                    },
+                    defaults: {
+                        margin: '5 5 5 0'
                     },
                     items: drawingItems
                 }
