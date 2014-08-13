@@ -456,7 +456,7 @@ Ext.define ("viewer.components.Print",{
             }]
         });
         
-        this.qualitySlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
+        this.qualitySlider = Ext.create('Ext.slider.Single', {
             renderTo: qualitySliderId,
             name: "quality",
             value: 11,
@@ -474,7 +474,7 @@ Ext.define ("viewer.components.Print",{
             }
         });
         
-        this.rotateSlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
+        this.rotateSlider = Ext.create('Ext.slider.Single', {
             renderTo: rotateSliderId,
             name: 'angle',
             value: 0,

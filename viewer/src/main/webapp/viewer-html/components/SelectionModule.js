@@ -499,7 +499,7 @@ Ext.define ("viewer.components.SelectionModule",{
                         me.saveSelection();
                     }}
             ],
-            height: 35,
+            // height: 35,
             padding: 5,
             border: 0,
             id: 'selectionModuleSaveFormContainer'
@@ -527,7 +527,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 items.unshift({
                         // Form above the trees with radiobuttons and textfields
                         xtype: 'container',
-                        height: MobileManager.isMobile() ? 50 : 0,
+                        height: 0,
                         padding: 5,
                         border: 0,
                         id: 'selectionModuleCustomFormContainer',
@@ -545,7 +545,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                         marginRight: '5px'
                                     }
                                 },
-                                height: 25,
+                                height: MobileManager.isMobile() ? 35 : 25,
                                 width: '100%',
                                 defaultType: 'textfield',
                                 items: [
@@ -574,7 +574,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 },
                                 collapsible: true,
                                 collapsed: !this.config.alwaysShow,
-                                height: 65,
+                                height: MobileManager.isMobile() ? 85 : 65,
                                 width: '100%',
                                 bodyPadding: 5,
                                 hidden: true,
@@ -585,7 +585,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                         me.handleSourceChange('radioCSW', true);
                                     },
                                     beforeexpand: function() {
-                                        me.handleSourceChange('radioCSW', true, 120);
+                                        me.handleSourceChange('radioCSW', true, MobileManager.isMobile() ? 140 : 120);
                                     }
                                 }
                             }
@@ -644,38 +644,16 @@ Ext.define ("viewer.components.SelectionModule",{
                     id: 'selectionTreeContainer',
                     layout: 'fit'
                 },
-                {xtype: 'container', width: 30, layout: {type: 'vbox', align: 'center'}, items: [
-                    {xtype: 'container', html: '<div></div>', flex: 1},
-                    {
-                        xtype: 'button',
-                        icon: me.moveUpIcon,
-                        width: 23,
-                        height: 22,
-                        handler: function() {
-                            me.moveNode('up');
-                        },
-                        listeners: {
-                            afterrender: function(button) {
-                                me.fixButtonLayout(button);
-                            }
-                        }
+                this.createMoveButtons({
+                    iconTop: me.moveUpIcon,
+                    iconBottom: me.moveDownIcon,
+                    handlerTop: function() {
+                        me.moveNode('up');
                     },
-                    {
-                        xtype: 'button',
-                        icon: me.moveDownIcon,
-                        width: 23,
-                        height: 22,
-                        handler: function() {
-                            me.moveNode('down');
-                        },
-                        listeners: {
-                            afterrender: function(button) {
-                                me.fixButtonLayout(button);
-                            }
-                        }
-                    },
-                    {xtype: 'container', html: '<div></div>', flex: 1}
-                ]}
+                    handlerBottom: function() {
+                        me.moveNode('down');
+                    }
+                })
             ];
         // when there is one or more left trees configured, add left interface (left tree and move from/to tree buttons)
         if(me.hasLeftTrees())
@@ -688,38 +666,16 @@ Ext.define ("viewer.components.SelectionModule",{
                           '<div id="registryTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>' + 
                           '<div id="customTreeContainer" class="selectionModuleTreeContainer" style="position: absolute; width: 100%; height: 100%; visibility: hidden;"></div>'
                 },
-                {xtype: 'container', width: 30, layout: {type: 'vbox', align: 'center'}, items: [
-                    {xtype: 'container', html: '<div></div>', flex: 1},
-                    {
-                        xtype: 'button',
-                        icon: me.moveRightIcon,
-                        width: 23,
-                        height: 22,
-                        handler: function() {
-                            me.addSelectedLayers();
-                        },
-                        listeners: {
-                            afterrender: function(button) {
-                                me.fixButtonLayout(button);
-                            }
-                        }
+                this.createMoveButtons({
+                    iconTop: me.moveRightIcon,
+                    iconBottom: me.moveLeftIcon,
+                    handlerTop: function() {
+                        me.addSelectedLayers();
                     },
-                    {
-                        xtype: 'button',
-                        icon: me.moveLeftIcon,
-                        width: 23,
-                        height: 22,
-                        handler: function() {
-                            me.removeSelectedNodes();
-                        },
-                        listeners: {
-                            afterrender: function(button) {
-                                me.fixButtonLayout(button);
-                            }
-                        }
-                    },
-                    {xtype: 'container', html: '<div></div>', flex: 1}
-                ] }
+                    handlerBottom: function() {
+                        me.removeSelectedNodes();
+                    }
+                })
             );
         }
         var treeContainer = Ext.create('Ext.container.Container', {
@@ -735,13 +691,31 @@ Ext.define ("viewer.components.SelectionModule",{
         Ext.getCmp('selectionModuleTreeContentContainer').add(treeContainer);
     },
     
-    fixButtonLayout: function(button) {
-        // Dirty hack to fix icon problem
-        if(Ext.isIE9) {
-            Ext.Array.each(Ext.fly(button.el).query('.x-btn-inner'), function(obj) {
-                obj.className = '';
-            });
-        }
+    createMoveButtons: function(config) {
+        return {
+            xtype: 'container',
+            width: MobileManager.isMobile() ? undefined : 30,
+            padding: MobileManager.isMobile() ? '0 2px' : undefined,
+            layout: { type: 'vbox', align: 'center' },
+            items: [
+                { xtype: 'container', html: '<div></div>', flex: 1 },
+                {
+                    xtype: 'button',
+                    icon: config.iconTop,
+                    width: MobileManager.isMobile() ? undefined : 23,
+                    height: MobileManager.isMobile() ? undefined : 22,
+                    handler: config.handlerTop
+                },
+                {
+                    xtype: 'button',
+                    icon: config.iconBottom,
+                    width: MobileManager.isMobile() ? undefined : 23,
+                    height: MobileManager.isMobile() ? undefined : 22,
+                    handler: config.handlerBottom
+                },
+                { xtype: 'container', html: '<div></div>', flex: 1 }
+            ]
+        };
     },
     
     initTrees: function() {
@@ -1195,7 +1169,7 @@ Ext.define ("viewer.components.SelectionModule",{
                 customServiceUrlTextfield.setVisible(true);
                 customServiceUrlSelect.setVisible(true);
                 customServiceUrlButton.setVisible(true);
-                this.setTopHeight(60);
+                this.setTopHeight(MobileManager.isMobile() ? 70 : 60);
             }
             if(field == 'radioCSW') {
                 me.customServiceType = 'csw';
@@ -1206,9 +1180,9 @@ Ext.define ("viewer.components.SelectionModule",{
                 cswServiceUrlButton.setVisible(true);
                 cswAdvancedSearchField.setVisible(this.config.advancedFilter);
                 if(this.config.advancedFilter){
-                    height = height || this.config.alwaysShow ? 120 : 80;
+                    height = height || this.config.alwaysShow ? MobileManager.isMobile() ? 140 : 120 : MobileManager.isMobile() ? 90 : 80;
                 }else{
-                    height = height || 40;
+                    height = height || MobileManager.isMobile() ? 50 : 40;
                 }
                 this.setTopHeight(height);
             }

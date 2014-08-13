@@ -39,7 +39,7 @@ Ext.define ("viewer.components.LayerSelector",{
         
         this.forcedLayers = new Array();
         var layers = Ext.create('Ext.data.Store', {
-            fields: ['id', 'title','layer'],
+            fields: ['layerId', 'title','layer'],
             data : []
         });
 
@@ -126,7 +126,7 @@ Ext.define ("viewer.components.LayerSelector",{
                     //var appLayer = this.config.viewerController.getAppLayerById(visibleLayers[j]);                    
                     if (visibleLayers[j] == l.id || visibleLayers[j] == (""+l.id)){                
                         store.add({
-                            id: l.id,
+                            layerId: l.id,
                             title: l.alias || l.layerName,
                             layer: l
                         });

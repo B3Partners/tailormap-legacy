@@ -87,7 +87,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 					store: logicStore,
 					queryMode: 'local',
 					displayField: 'title',
-					width: 50,
+					width: MobileManager.isMobile() ? 70 : 50,
 					value:'OR',
 					valueField: 'id'
 				});
@@ -99,11 +99,12 @@ Ext.define ("viewer.components.AttributeFilter",{
 			this.container =  Ext.create("Ext.container.Container",{
 				id:"attributeFilter-"+this.config.id+"-"+this.config.number,
 				layout: {
-					type: 'hbox'
+					type: 'hbox',
+                                        align: 'stretch'
 				},
 				width: 320,
 				items:  items,
-				height: MobileManager.isMobile() ? 30 : 25
+				height: MobileManager.isMobile() ? 35 : 25
 			});
 		}
         return this.container;

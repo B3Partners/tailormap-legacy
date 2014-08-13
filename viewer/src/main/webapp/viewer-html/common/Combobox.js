@@ -18,10 +18,16 @@
 Ext.define ("viewer.components.FlamingoCombobox", {
     alias: 'widget.flamingocombobox',
     constructor: function(conf) {
+        /*
+         * For now we are using the ExtJS combobox, because it has been updated
+         * for mobile usage in ExtJS 5
+         * 
         if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
             return Ext.create('viewer.components.MobileCombobox', conf);
         } else {
             return Ext.create('Ext.form.ComboBox', conf);
         }
+        */
+       return Ext.create('Ext.form.ComboBox', conf);
     }
 });

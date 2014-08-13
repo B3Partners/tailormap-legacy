@@ -60,6 +60,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-panel-header-default-top {
                     box-shadow: 0 1px 0 0 ${steunkleur1} inset;
                 }
+                
+                /* Tool icon background */
+                .x-tool-img {
+                    background-color: ${steunkleur1} !important;
+                }
 
                 /* When using user-defined colors, disable header image in IE */
                 .x-nlg .x-panel-header-default-top, /* Panel headers */
@@ -89,10 +94,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-panel-default {
                     border-color: ${steunkleur1};
                 }
-                
                 /* Textcolor */
                 .x-panel-header-text-default /* Panel headers */,
-                .x-window-header-text-default /* Popup header */ {
+                .x-window-header-text-default /* Popup header */,
+                .x-panel-header-title-default /* Panel headers */,
+                .x-window-header-title-default /* Popup headers */ {
                     color: ${steunkleur2};
                 }
                 

@@ -128,16 +128,11 @@ Ext.define ("viewer.components.ScreenPopup",{
                     me.currentOrientation = MobileManager.getOrientation();
                     setTimeout(function() { me.component.resizeScreenComponent() }, 0);
                 }
-                if(config.modal) MobileManager.closePopupOnTapMask(me.popupWin);
+                me.popupWin.mon(Ext.getBody(), 'click', function(el, e){
+                    me.popupWin.close();
+                }, me, { delegate: '.x-mask' });
             }
         });
-		if(MobileManager.isMobile() && MobileManager.hasHammer()) {
-			// Hide the window on double tapping the header
-			var hammer = new Hammer(document.getElementById(me.popupWin.header.id));
-			hammer.ondoubletap = function(ev) {
-				me.hide();
-			};
-		}
         return this;
     },
     setComponent: function(component) {

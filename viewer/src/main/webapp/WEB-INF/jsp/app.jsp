@@ -32,7 +32,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var ios = /ip(ad|hone|od)/i.test(navigator.userAgent);
                 var android = /android/i.test(navigator.userAgent);
                 var currentPopup = null;
-                var hammerMask = null;
                 var closePopup = function() {
                     currentPopup.hide();
                 };
@@ -40,26 +39,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     isMobile: function() { return mobile${param.mobile == true ? ' || true' : ''}; },
                     isIOS: function() { return ios; },
                     isAndroid: function() { return android; },
-                    getOrientation: function() { return (ios ? ( window.orientation == 90 || window.orientation == -90 ) : ( screen.width > screen.height )) ? 'landscape' : 'portrait'; },
-					hasHammer: function () { return (typeof Hammer !== "undefined"); },
-                    closePopupOnTapMask: function(popupWin) {
-                        var me = this;
-                        if(!me.hasHammer()) return;
-                        currentPopup = popupWin;
-                        if(hammerMask === null) {
-                            hammerMask = new Hammer(document.getElementById(popupWin.zIndexManager.mask.id), { prevent_default: true });
-                            hammerMask.ontap = function(ev) {
-                                closePopup();
-                            };
-                        }
-                    }
+                    getOrientation: function() { return (ios ? ( window.orientation == 90 || window.orientation == -90 ) : ( screen.width > screen.height )) ? 'landscape' : 'portrait'; }
                 };
             }();
-			if(!MobileManager.isMobile()) {
-				document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-gray.css">');
-			} else {
-				document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/ext-all-mobile.css">');
-			}
+                    if(!MobileManager.isMobile()) {
+                            document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/crisp/ext-theme-crisp-all.css">');
+                    } else {
+                            // IOS7 on iPad has an issue with height of the html/body
+                            // http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
+                            // To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
+                            if (navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i) && !window.navigator.standalone) {
+                                document.documentElement.className += ' ipad ios7';
+                                document.ontouchmove = function(event){
+                                    event.preventDefault();
+                                };
+                            }
+                            document.documentElement.className += ' mobile-mode';
+                            document.write('<link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/touch-crisp/ext-theme-crisp-touch-all.css">');
+                    }
 		</script>
         
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
@@ -71,7 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
         
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
-        <script type="text/javascript" src="${contextPath}/extjs/locale/ext-lang-nl.js"></script>
+        <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>
         
         <script type="text/javascript" src="${contextPath}/viewer-html/common/proj4js-compressed.js"></script>
         
@@ -111,7 +108,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
-                <script type="text/javascript" src="${contextPath}/viewer-html/common/MobileSlider.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/Combobox.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/MobileCombobox.js"></script>
                 
@@ -210,8 +206,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				document.write('<meta name="MobileOptimized" content="width=device-width; height=device-height; user-scalable=no; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0">');
 				document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">');
 				document.write('<meta http-equiv="cleartype" content="on">');
-				document.write('<script type="text/javascript" src="${contextPath}/resources/js/hammer.js"></' + 'script>');
-				document.write('<link href="${contextPath}/resources/css/mobile.css" rel="stylesheet">');
 			}
 		</script>
         <script type="text/javascript" src="${contextPath}/viewer-html/common/layout.js"></script>
@@ -330,8 +324,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             viewerController.resizeComponents(true);
                         });
                     } else {
-                        window.onorientationchange = function(){
-                            viewerController.resizeComponents();
+                        // Listen for orientation changes
+                        if(window.addEventListener) {
+                            window.addEventListener("orientationchange", function() {
+                                viewerController.resizeComponents(true);
+                            }, false);
                         }
                     }
                 });

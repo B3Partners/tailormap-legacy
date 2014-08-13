@@ -263,7 +263,6 @@
                                 <param>${viewerhtml.path}/common/overrides.js</param>
                                 <param>${viewerhtml.path}/common/ScreenPopup.js</param>
                                 <param>${viewerhtml.path}/common/CQLFilterWrapper.js</param>
-                                <param>${viewerhtml.path}/common/MobileSlider.js</param>
                                 <param>${viewerhtml.path}/common/Combobox.js</param>
                                 <param>${viewerhtml.path}/common/MobileCombobox.js</param>
                                 <!-- Server side Ajax Wrappers -->

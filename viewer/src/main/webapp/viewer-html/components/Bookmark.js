@@ -184,7 +184,7 @@ Ext.define ("viewer.components.Bookmark",{
             },
             items: socialButtons
         });
-        if(Ext.ieVersion != 0){
+        if(Ext.browser.is.IE){
             formItems.push({ 
                 xtype: 'button',
                 componentCls: 'mobileLarge',
@@ -308,15 +308,9 @@ Ext.define ("viewer.components.Bookmark",{
         this.popup.hide();
     },
     addToFavorites : function(){
-        if(Ext.firefoxVersion != 0){
-            alert("This browser doesn't support this function.");
-        }else if(Ext.ieVersion != 0){
+        if(Ext.browser.is.IE) {
             window.external.AddFavorite(this.compUrl, this.config.title);
-        }else if(Ext.chromeVersion != 0){
-            alert("This browser doesn't support this function.");
-        }else if(Ext.operaVersion != 0){
-            alert("This browser doesn't support this function.");
-        }else if(Ext.safariVersion != 0){
+        } else {
             alert("This browser doesn't support this function.");
         }
     },
@@ -335,7 +329,6 @@ Ext.define ("viewer.components.Bookmark",{
         if (url.indexOf("[title]")!=-1){
             url = url.replace("[title]",encodeURIComponent(this.config.shareTitle));
         }
-        console.log(url);
         window.open(url);
     },
     getExtComponents: function() {

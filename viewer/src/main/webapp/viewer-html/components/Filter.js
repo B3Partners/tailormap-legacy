@@ -84,7 +84,7 @@ Ext.define ("viewer.components.Filter",{
 		});
         var firstContainer =  Ext.create('Ext.container.Container', {
 			width: 400,
-			height: MobileManager.isMobile() ? 30 : 25,
+			height: this.getRowHeight(),
 			layout: {
 				type: 'hbox',
 				align:'stretch'
@@ -99,6 +99,9 @@ Ext.define ("viewer.components.Filter",{
 			items: [ firstContainer ]
         });
         return this;
+    },
+    getRowHeight: function() {
+        return MobileManager.isMobile() ? 35 : 25;
     },
     // Called when a new layer is chosen from the upper combobox
     setNewAttributeList : function (list){
@@ -202,14 +205,14 @@ Ext.define ("viewer.components.Filter",{
         var me = this;
 		var filterContainer = Ext.create('Ext.container.Container', {
 			width: 400,
-			height: MobileManager.isMobile() ? 30 : 25,
+			height: this.getRowHeight(),
 			layout: {
 				type: 'hbox',
 				align:'stretch'
 			},
 			items:  [
 				// left = leftwidth - 50 (or/and combobox of attributefilter)
-				{ xtype: 'container', width: (this.leftWidth - 50) }
+				{ xtype: 'container', width: (this.leftWidth - (MobileManager.isMobile() ? 70 : 50)) }
 			]
 		});
 		var attributeFilter = Ext.create("viewer.components.AttributeFilter",{

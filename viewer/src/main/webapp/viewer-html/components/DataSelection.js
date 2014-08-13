@@ -85,7 +85,7 @@ Ext.define ("viewer.components.DataSelection",{
      * @param layer the application Layer
      */
     showAndForceLayer : function (layer){
-        if(this.allLayers){
+        if(this.allLayers && this.layerSelector.layerList){
             this.layerSelector.layerList.push(layer);
         }
         this.layerSelector.addForcedLayer(layer);
@@ -149,10 +149,9 @@ Ext.define ("viewer.components.DataSelection",{
             },
             {
                 xtype: 'container',
-                height: 30,
                 defaultType: 'button',
                 style: {
-                    paddingTop: '5px'
+                    padding: '5px 0 2px 0'
                 },
                 layout: {
                     type: 'hbox',
