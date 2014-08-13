@@ -51,6 +51,13 @@ Ext.define ("viewer.components.LayerSwitch",{
         this.config.viewerController.mapComponent.getMap().on(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, 
             this.layerVisibilityChanged, this);
         
+        this.config.viewerController.on(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, function() {
+            if(this.container) {
+                console.log('ToFRONT-after-components-load');
+                this.container.zIndexManager.bringToFront(this.container, true);
+            }
+        }, this);
+        
         return this;
     },
     
@@ -62,9 +69,12 @@ Ext.define ("viewer.components.LayerSwitch",{
                 floating: true,
                 border: false,
                 shadow: false,
-                top:  '30px'
+                top:  '30px',
+                style: {
+                    'zIndex': 1002
+                }
             });
-            this.container.zIndexManager.bringToFront(this.container, true);
+            // this.container.zIndexManager.bringToFront(this.container, true);
             this.container.setPosition(Number(this.config.left), Number(this.config.top));
         }
         if(this.button) {
