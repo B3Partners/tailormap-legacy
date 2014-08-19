@@ -864,5 +864,22 @@
         type: "popup",
         singleton: true,
         showHelp: true
+    },
+    {
+        className: "viewer.components.tools.Keyboard",
+        name: "Keyboard navigation",
+        shortName: "Kn",
+        group: "Tools",
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+        sources: ["tools/Tool.js","tools/Keyboard.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Keyboard navigation"}
+        }
     }
 ]
