@@ -110,14 +110,14 @@ Ext.define ("viewer.components.SpatialFilter",{
             }
             multi += ")";
         }
-        this.setFilter(multi);
-    },
-    setFilter: function(geometry){
         var appLayer = this.layerSelector.getSelectedAppLayer();
+        this.setFilter(multi, appLayer);
+    },
+    setFilter: function(geometry, appLayer){
         var me = this;          
         if(appLayer.attributes === undefined || appLayer.attributes === null) {   
             this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
-                me.setFilter(geometry);
+                me.setFilter(geometry, appLayer);
             },function(e){
                 Ext.MessageBox.alert("Error", e);
             });
