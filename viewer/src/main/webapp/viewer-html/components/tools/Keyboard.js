@@ -29,7 +29,7 @@ Ext.define ("viewer.components.tools.Keyboard",{
     constructor: function (conf){        
         viewer.components.tools.Keyboard.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.Keyboard;        
+        conf.type = viewer.viewercontroller.controller.Tool.KEYBOARD;        
         this.initTool(conf);
         return this;
     }
