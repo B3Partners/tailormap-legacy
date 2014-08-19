@@ -88,7 +88,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
     
     drawGeometry: function(type){
-        var appendFilter = Ext.getCmp (this.name + 'AppendFilter')
+        var appendFilter = Ext.getCmp (this.name + 'AppendFilter');
         if(!appendFilter.getValue()){
             this.vectorLayer.removeAllFeatures();
             this.features = new Array();
@@ -195,7 +195,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
       
     featureAdded : function (obj, feature){
-        var applyDirect = Ext.getCmp (this.name + 'ApplyDirect')
+        var applyDirect = Ext.getCmp (this.name + 'ApplyDirect');
         this.features.push(feature.wktgeom);
         if(applyDirect.getValue()){
             this.applyFilter();
