@@ -67,8 +67,11 @@ Ext.define ("viewer.components.Search",{
         this.renderButton(); 
         var notUrlConfigs = new Array();
         this.onlyUrlConfig = new Array();
-        for(var i = 0 ; i < this.searchconfigs.length ;i++){
-            var config = this.searchconfigs[i];
+        if(this.config.searchconfigs === null) {
+            this.config.searchconfigs = [];
+        }
+        for(var i = 0 ; i < this.config.searchconfigs.length ;i++){
+            var config = this.config.searchconfigs[i];
             if(Ext.isDefined(config.urlOnly) && config.urlOnly ){
                 this.onlyUrlConfig.push(config);
             }else{
