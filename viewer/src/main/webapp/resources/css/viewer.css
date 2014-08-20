@@ -189,6 +189,12 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     background-image: none;
     background-color: #f5f5f5;
 }
+.x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/crisp/checkbox.png);
+}
+.x-btn-wrap-default-small.x-btn-split-right:after {
+    background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
+}
 /* End Override ExtJS style */
 
 /* 
@@ -207,4 +213,11 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 }
 .mobile-mode .tristatenode .x-tree-checkbox {
     background-position: 0 -44px;
+}
+/* ExtJS override images */
+.mobile-mode .x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/touch-crisp/checkbox.png);
+}
+.mobile-mode .x-btn-wrap-default-small.x-btn-split-right:after {
+    background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
 }

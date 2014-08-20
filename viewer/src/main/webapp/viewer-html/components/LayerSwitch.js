@@ -131,7 +131,7 @@ Ext.define ("viewer.components.LayerSwitch",{
             me.items.push({
                 id: me.levelItemId(level),
                 text: level.name,
-                iconCls: 'view-text',
+                // iconCls: 'view-text',
                 checked: level == checkedBackgroundLevel
             });
         });
