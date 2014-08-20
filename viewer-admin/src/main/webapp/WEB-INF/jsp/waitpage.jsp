@@ -40,9 +40,10 @@ function update() {
         success: function(response, opts) {
             var obj = Ext.decode(response.responseText);
             progress.updateProgress(obj.progress / 100, obj.currentAction);
-
             if(!obj.finished) {
-                setTimeout("update()",0);
+                setTimeout(function() {
+                    update();
+                }, 0);
             } else {
                 window.location.reload();
             }
@@ -51,9 +52,10 @@ function update() {
             console.log('server-side failure with status code ' + response.status);
         }
     });
-    
 }
-setTimeout("update()",0);
+setTimeout(function() {
+    update();
+}, 0);
 
 
         </script>

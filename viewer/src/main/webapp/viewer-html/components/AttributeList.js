@@ -260,7 +260,7 @@ Ext.define ("viewer.components.AttributeList",{
     },
     onExpandRow: function(rowNode,record,expandRow,recordIndex,eOpts){
         var store=record.store;
-        var rawData = store.data.items[recordIndex].raw;
+        var rawData = store.data.items[recordIndex].data || store.data.items[recordIndex].raw;
         if (rawData.related_featuretypes){
             var childGridIds=[];
             for (var i=0; i < rawData.related_featuretypes.length; i++){

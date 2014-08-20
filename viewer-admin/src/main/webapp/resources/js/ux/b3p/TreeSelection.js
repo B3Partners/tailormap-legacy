@@ -51,20 +51,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         if(this.autoShow) {
             this.show();
         }
-        this.applyTreeScrollFix();
-    },
-    
-    /**
-     *  Apply fixes to the trees for ExtJS scrolling issues
-     */
-    applyTreeScrollFix: function() {
-        var views = [];
-        views.push(this.tree.getView());
-        views.push(this.selectedlayers.getView());
-        
-        for(var i in views) {
-            applyTreeScrollFix(views[i]);
-        }
     },
 
     show: function() {
@@ -206,12 +192,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             icon: me.moveRightIcon,
             width: 23,
             height: 22,
+            cls: 'plain-button',
             listeners: {
                 click: function() {
                     me.addSelectedLayers()
-                },
-                afterrender: function(button) {
-                    me.fixButtonLayout(button);
                 }
             }
         });
@@ -221,12 +205,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             icon: me.moveLeftIcon,
             width: 23,
             height: 22,
+            cls: 'plain-button',
             listeners: {
                 click: function() {
                     me.removeLayers();
-                },
-                afterrender: function(button) {
-                    me.fixButtonLayout(button);
                 }
             }
         });
@@ -236,12 +218,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             width: 23,
             height: 22,
             renderTo: me.layerMoveButtons,
+            cls: 'plain-button',
             listeners: {
                 click: function() {
                     me.moveNode('up');
-                },
-                afterrender: function(button) {
-                    me.fixButtonLayout(button);
                 }
             }
         });
@@ -251,12 +231,10 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             width: 23,
             height: 22,
             renderTo: me.layerMoveButtons,
+            cls: 'plain-button',
             listeners: {
                 click: function() {
                     me.moveNode('down');
-                },
-                afterrender: function(button) {
-                    me.fixButtonLayout(button);
                 }
             }
         });
@@ -266,15 +244,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         var me = this;
         me.moveUpButton.setDisabled(disable);
         me.moveDownButton.setDisabled(disable);
-    },
-
-    fixButtonLayout: function(button) {
-        // Dirty hack to fix icon problem
-        if(Ext.isIE9) {
-            Ext.Array.each(Ext.fly(button.el).query('.x-btn-inner'), function(obj) {
-                obj.className = '';
-            });
-        }
     },
 
     handleLayerCheckChange: function(record, recordid, checked) {

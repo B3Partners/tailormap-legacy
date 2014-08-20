@@ -158,45 +158,7 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
        {
            this.setStateful(grid.statefulHeaderFilters);
        }
-        
-        this.grid.addEvents(
-      /**
-        * @event headerfilterchange
-        * <b>Event enabled on the Grid</b>: fired when at least one filter is updated after apply.
-        * @param {Ext.grid.Panel} grid The grid
-        * @param {Ext.util.MixedCollection} filters The applied filters (after apply). Ext.util.Filter objects.
-        * @param {Ext.util.MixedCollection} prevFilters The old applied filters (before apply). Ext.util.Filter objects.
-        * @param {Number} active Number of active filters (not empty)
-        * @param {Ext.data.Store} store Current grid store
-        */    
-        'headerfilterchange',
-        /**
-         * @event headerfiltersrender
-         * <b>Event enabled on the Grid</b>: fired when filters are rendered
-         * @param {Ext.grid.Panel} grid The grid
-         * @param {Object} fields The filter fields rendered. The object has for keys the filters names and for value Ext.form.field.Field objects.
-         * @param {Object} filters Current header filters. The object has for keys the filters names and for value the filters values.
-        */
-            'headerfiltersrender',
-            /**
-         * @event beforeheaderfiltersapply
-         * <b>Event enabled on the Grid</b>: fired before filters are confirmed. If the handler returns false no filter apply occurs.
-         * @param {Ext.grid.Panel} grid The grid
-         * @param {Object} filters Current header filters. The object has for keys the filters names and for value the filters values.
-         * @param {Ext.data.Store} store Current grid store
-         */
-        'beforeheaderfiltersapply',
-        /**
-         * @event headerfiltersapply
-         *<b>Event enabled on the Grid</b>: fired when filters are confirmed.
-         * @param {Ext.grid.Panel} grid The grid
-         * @param {Object} filters Current header filters. The object has for keys the filters names and for value the filters values.
-         * @param {Number} active Number of active filters (not empty)
-         * @param {Ext.data.Store} store Current grid store
-         */
-        'headerfiltersapply'
-        );
-        
+
         this.grid.on({
             scope: this,
             afterrender: this.renderFilters,
@@ -328,7 +290,7 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
         var storeFilters = this.parseStoreFilters();
         filters = Ext.apply(storeFilters, filters);
         
-        var columns = this.grid.headerCt.getGridColumns(true);
+        var columns = this.grid.headerCt.getGridColumns();
         for(var c=0; c < columns.length; c++)
         {
             var column = columns[c];
@@ -467,7 +429,7 @@ Ext.define('Ext.ux.grid.GridHeaderFilters',{
     adjustFilterWidth: function() 
     {        
         if(this.containers == null) return;
-        var columns = this.grid.headerCt.getGridColumns(true);        
+        var columns = this.grid.headerCt.getGridColumns();        
         for(var c=0; c < columns.length; c++) 
         {           
             var column = columns[c];            

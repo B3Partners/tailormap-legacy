@@ -51,9 +51,9 @@ Ext.onReady(function() {
             {name: 'className', type: 'string'},
             {name: 'name', type: 'string'},
             {name: 'shortName', type: 'string'},
-            {name: 'restrictions', type: 'array'},
+            {name: 'restrictions', type: 'auto'},
             {name: 'singleton', type: 'boolean'},
-            {name: 'notInCombinationWith', type: 'array'}
+            {name: 'notInCombinationWith', type: 'auto'}
         ]
     });
     
@@ -65,7 +65,7 @@ Ext.onReady(function() {
             {name: 'htmlId', type: 'string'},
             {name: 'useShortName', type: 'boolean'},
             {name: 'floatComponents', type: 'boolean'},
-            {name: 'addedComponents', type: 'array'},
+            {name: 'addedComponents', type: 'auto'},
             {name: 'width', type: 'string', defaultValue:''},
             {name: 'widthmeasure', type: 'string', defaultValue:'px'},
             {name: 'maxwidth', type: 'string', defaultValue:''},

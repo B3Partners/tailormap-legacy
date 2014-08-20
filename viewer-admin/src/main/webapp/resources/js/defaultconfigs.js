@@ -41,24 +41,10 @@ function appendPanel(header, content, container) {
             width: '100%',
             renderTo: panelContainer
         });
-        Ext.EventManager.onWindowResize(function () {
+        Ext.on('resize', function () {
             panel.doLayout();
         });
     }
-}
-
-/**
-*  Apply fixes to the trees for ExtJS scrolling issues
-*/
-function applyTreeScrollFix(view) {
-    view.getEl().setStyle({
-        overflow: 'auto',
-        overflowX: 'auto'
-    });
-    // From ext-all-debug, r77661 & r77663
-    // Seems to recalculate body and applies correct heights so scrollbars can be shown
-    view.panel.doComponentLayout();
-    view.panel.getLayout().layout();
 }
 
 var helpController = null,
@@ -68,7 +54,7 @@ Ext.onReady(function() {
     helpController = Ext.create('Ext.b3p.HelpController', {
         helppath: helppath
     });
-    var helpLinks = Ext.select('.helplink');
+    var helpLinks = Ext.select('.helplink', true);
     if(helpLinks.getCount() > 0) {
         helpLinks.on('click', function(evt, htmlel, eOpts) {
             helpController.showHelp(htmlel);
@@ -156,6 +142,7 @@ var defaultImageUploadConfig = {
     dragResize: false,
     dragWheel: false,
     disableServerSideEdit: true,
+    iframeCss: csspath + 'iframe_styles.css',
     lang: {
         'Display': 'Weergave',
         'By Default': 'Standaard',

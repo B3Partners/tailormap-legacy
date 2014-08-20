@@ -49,11 +49,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var type = Ext.query("input:checked[name='sldType']")[0].value;
             Ext.fly('external').setVisibilityMode(Ext.Element.DISPLAY).setVisible(type == "external");
             Ext.fly('body').setVisibilityMode(Ext.Element.DISPLAY).setVisible(type == "body");
-            Ext.EventManager.fireResize();   
         }
-        Ext.onReady(checkType);
-        
         Ext.onReady(function() {
+            checkType();
             appendPanel('headertext', 'formcontent');
         });
     </script>

@@ -33,6 +33,7 @@ Ext.onReady(function() {
     var filterPanelItems = [
         Ext.create('Ext.container.Container', { html: '<a href="#Dataselectie_Filterfunctie_Per_Kaartlaag_Help" title="Help" class="helplink" onclick="helpController.showHelp(this); return false;"></a>' })
     ];
+    Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
     var defaults = {
         width: '100%',
         animCollapse: false,
@@ -138,7 +139,7 @@ Ext.onReady(function() {
             var defaultValueHidden = !(attribute.selectable || false);
             filterPanelItems.push(Ext.create('Ext.form.Panel', Ext.apply(defaults, {
                 id: 'filter' + attribute.id,
-                height: 160,
+                height: 180,
                 title: name + (isEnabled ? ' (&times;)' : ''),
                 iconCls: "edit-icon-bw",
                 collapsed: collapsed,
@@ -265,7 +266,9 @@ Ext.onReady(function() {
                                         id: 'defaultVal' + attribute.id,
                                         fieldLabel: 'Defaultwaarde',
                                         emptyText:'Maak uw keuze',
-                                        value: attribute.defaultValue
+                                        value: attribute.defaultValue,
+                                        displayField: 'id',
+                                        valueField: 'id'
                                     },
                                     { xtype: 'button', text: 'DB', style: { marginLeft: '10px' },hideMode: 'visibility', listeners: {
                                             click: {fn: function() {getDBValues(attribute.name,attribute.id, "dataselection");},scope:this}}
@@ -451,7 +454,7 @@ hier niet op gecontroleerd.'
         if(htmlEditor) {
             Ext.get('context_textarea').dom.value = htmlEditor.getValue();
         }
-        if (Ext.get('details_editfeature_usernameAttribute')){
+        if (Ext.get('details_editfeature_usernameAttribute') && Ext.getCmp('ext_editfeature_usernameAttribute')){
             Ext.get('details_editfeature_usernameAttribute').dom.value= Ext.getCmp('ext_editfeature_usernameAttribute').getValue();
         }
     });
@@ -509,6 +512,7 @@ function getJson() {
 
 function getDBValues(attribute,id, tab) {
     if(getDBValuesUrl != '') {
+        Ext.getCmp("defaultVal" + id).setLoading(true);
         Ext.Ajax.request({ 
             url: getDBValuesUrl, 
             params: { 
@@ -533,28 +537,17 @@ function getDBValues(attribute,id, tab) {
     }
 }
 
-function dbValuesToDataselection(values,id){
-                    
-    var attributeStore = Ext.create('Ext.data.Store', {
-        fields: [{name:'id',convert:function(v,row){if(row.raw){return row.raw;}else{return "";}}}],
-        data : values
+function dbValuesToDataselection(values,id) {
+    var records = [];
+    for(var i = 0; i < values.length; i++) {
+        records.push({ id: values[i] });
+    };
+    var store = Ext.create('Ext.data.Store', {
+        fields: [ { name: 'id' } ],
+        data : records
     });
-
-    var prevCombobox = Ext.get("defaultVal" + id);
-    prevCombobox.destroy();
-
-    var uv = Ext.create('Ext.form.ComboBox', {
-        fieldLabel: 'Default waarde',
-        store: attributeStore,
-        queryMode: 'local',
-        value:'',
-        id: 'defaultVal' + id,
-        displayField: 'id',
-        valueField: 'id'
-    });
-    
-    var container = Ext.getCmp("defaultList" + id);
-    container.insert(0,uv);
+    Ext.getCmp("defaultVal" + id).setStore(store);
+    Ext.getCmp("defaultVal" + id).setLoading(false);
 }
 
 function dbValuesToEdit(values,id){

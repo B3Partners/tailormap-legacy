@@ -305,7 +305,7 @@ function showHelp() {
 }
 
 Ext.onReady(function() {
-    Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-display');   
+    Ext.select('.tabdiv', true).removeCls('tabdiv').setVisibilityMode(Ext.dom.Element.OFFSETS).setVisible(false);
     var tabs = [], htmlEditorRendered = false;
     tabs = [{
         contentEl:'config', 

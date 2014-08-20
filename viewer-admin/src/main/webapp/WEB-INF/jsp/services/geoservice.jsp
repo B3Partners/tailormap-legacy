@@ -247,7 +247,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <c:if test="${actionBean.protocol == 'wms'}">
     <script type="text/javascript">
         Ext.onReady(function() {
-
             var panel = Ext.create('Ext.panel.Panel', {
                 width: '100%',
                 renderTo: Ext.getBody(),
@@ -255,11 +254,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 padding: '10 0 0 0',
                 contentEl: Ext.getDom('sldcontent')
             });
-
-            Ext.EventManager.onWindowResize(function () {
+            Ext.on('resize', function () {
                 panel.doLayout();
             });                
-            Ext.EventManager.fireResize();            
+            panel.doLayout();
         });
     </script>
     <div id="sldcontent" class="insidePanel" style="margin: 5px">

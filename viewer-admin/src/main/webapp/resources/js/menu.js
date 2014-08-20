@@ -16,7 +16,7 @@
  */
 
 Ext.onReady(function() {
-    var menu = Ext.select('.menu-level1');
+    var menu = Ext.select('.menu-level1', true);
     if(menu) {
         menu.on('click', function(e, el, o) {
             Ext.select('.menu-level1').removeCls('menuclicked');
@@ -32,7 +32,7 @@ Ext.onReady(function() {
                 menuItem.findParent('.menu-level1', 10, true).addCls('menuclicked');
                 var parent = menuItem.parent().parent();
                 if(parent && parent.hasCls('dropdownmenu')) {
-                    Ext.fly('dropdownmenulink').addCls('active');
+                    Ext.get('dropdownmenulink').addCls('active');
                 }
             }
         }

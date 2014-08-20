@@ -24,22 +24,26 @@ featuretypeSelect
 foreignFeaturetypeSelect
 */
 Ext.onReady(function(){
-    Ext.get('featureSourceSelect').on('change', function() {
+    var featureSourceSelect = Ext.get('featureSourceSelect');
+    featureSourceSelect && featureSourceSelect.on('change', function() {
         attributes=[];
         featureSourceChanged(this,Ext.get('featuretypeSelect'));
     });                
 
-    Ext.get('foreignFeatureSourceSelect').on('change', function(){
+    var foreignFeatureSourceSelect = Ext.get('foreignFeatureSourceSelect');
+    foreignFeatureSourceSelect && foreignFeatureSourceSelect.on('change', function(){
         foreignAttributes=[];
         featureSourceChanged(this, Ext.get('foreignFeaturetypeSelect'));
     });
     
-    Ext.get('featuretypeSelect').on('change', function(){
+    var featuretypeSelect = Ext.get('featuretypeSelect');
+    featuretypeSelect && featuretypeSelect.on('change', function(){
         attributes=[];
         featureTypeChanged(this, setAttributes);
     });
     
-    Ext.get('foreignFeaturetypeSelect').on('change', function(){
+    var foreignFeaturetypeSelect = Ext.get('foreignFeaturetypeSelect');
+    foreignFeaturetypeSelect && foreignFeaturetypeSelect.on('change', function(){
         foreignAttributes=[];
         featureTypeChanged(this, setForeignAttributes);
     });

@@ -41,6 +41,7 @@ Ext.onReady(function(){
         model: 'TableRow',
         remoteSort: true,
         remoteFilter: true,
+        sorters: 'id',
         proxy: {
             type: 'ajax',
             url: gridurl,            
@@ -113,13 +114,7 @@ Ext.onReady(function(){
                 enableTooltip: false
             })
         ],
-        renderTo: 'grid-container',
-        listeners: {
-            afterrender: function(grid) {
-                // Default sort on first column
-                grid.columns[0].setSortState('ASC');
-            }
-        }
+        renderTo: 'grid-container'
     }));
 });
 

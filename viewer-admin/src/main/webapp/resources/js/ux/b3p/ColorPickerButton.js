@@ -52,6 +52,20 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
     },
     renderColorpicker: function() {
         var me = this;
+        me.button = Ext.create('Ext.button.Button', {
+            text: ' ',
+            width: 20,
+            height: 20,
+            style: {
+                margin: '4px 1px 1px 3px',
+                backgroundColor: '#f3f3f3',
+                border: '1px solid #9d9d9d'
+            },
+            renderTo: me.renderTo,
+            handler: function() {
+                me.colorPicker.setVisible(!me.colorPicker.isVisible());
+            }
+        });
         me.colorPicker = Ext.create('Ext.picker.Color', {
             renderTo: me.renderTo,
             hidden: true,
@@ -68,24 +82,10 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
                     me.textField.set({
                         'value': '#' + selColor
                     });
-                    Ext.get(me.buttonId).setStyle({
+                    me.button.btnWrap.setStyle({
                         backgroundColor: '#' + selColor
                     });
                 }
-            }
-        });
-        me.button = Ext.create('Ext.button.Button', {
-            text: ' ',
-            width: 20,
-            height: 20,
-            style: {
-                margin: '1px',
-                marginLeft: '3px'
-            },
-            html: '<div id="' + me.buttonId + '" style="background-color: ' + me.currentColor + '; width: 100%; height: 100%;"></div>',
-            renderTo: me.renderTo,
-            handler: function() {
-                me.colorPicker.setVisible(!me.colorPicker.isVisible());
             }
         });
     },
@@ -95,7 +95,7 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
             var color = me.textField.getValue();
             var selColor = me.currentColor;
             if(me.regex.test(color)) selColor = color;
-            Ext.get(me.buttonId).setStyle({
+            me.button.btnWrap.setStyle({
                 backgroundColor: selColor
             });
         });
