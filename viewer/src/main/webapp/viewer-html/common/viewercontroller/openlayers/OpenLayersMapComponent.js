@@ -565,6 +565,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
                 frameworkOptions.displayClass ="olButton_"+conf.id;
             }            
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
+        }else if(conf.type === viewer.viewercontroller.controller.Tool.KEYBOARD){
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.KeyboardDefaults(frameworkOptions));
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");
         }

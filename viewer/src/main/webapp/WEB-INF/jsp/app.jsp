@@ -253,7 +253,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "autosuggest":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SearchActionBean" event="autosuggest"/></js:quote>,
                 "componentresource":  <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ComponentResourceActionBean"/></js:quote>,
                 "css":                 <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>,
-                "download":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>
+                "download":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
+                "buffergeom":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>
             };
             
             <c:if test="${actionBean.viewerType == 'openlayers'}">            

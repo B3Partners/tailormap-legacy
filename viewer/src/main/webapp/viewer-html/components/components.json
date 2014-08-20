@@ -852,5 +852,48 @@
         restrictions: ["left_menu"],        
         type: "popup",
         showHelp: true
+    },
+    {
+        className: "viewer.components.SpatialFilter",
+        name: "Spatial Filter",
+        shortName: "Sf",
+        group: "Component",
+        sources: ["SpatialFilter.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","SpatialFilter-config.js"],
+        restrictions: ["left_menu"],        
+        type: "popup",
+        singleton: true,
+        showHelp: true
+    },
+    {
+        className: "viewer.components.tools.Keyboard",
+        name: "Keyboard navigation",
+        shortName: "Kn",
+        group: "Tools",
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+        sources: ["tools/Tool.js","tools/Keyboard.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["top_menu"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Keyboard navigation"}
+        }
+    },
+    {
+        className: "viewer.components.ExtentFilter",
+        name: "Extent Filter",
+        shortName: "Ef",
+        group: "Component",
+        sources: ["SpatialFilter.js","ExtentFilter.js"],
+        restrictions: ["content"],        
+        singleton: true,
+        showHelp: true,
+        extPropertyGridConfigs: {
+            propertyNames: {},
+            source: {}
+        }
     }
 ]

@@ -105,27 +105,6 @@
         <int name="xsltCacheLifetimeSeconds">5</int>
     </queryResponseWriter>
 
-    <searchComponent class="solr.SpellCheckComponent" name="suggest">
-        <str name="queryAnalyzerFieldType">text_general</str>
-        <lst name="spellchecker">
-            <str name="name">suggest</str>
-            <str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
-            <str name="lookupImpl">org.apache.solr.spelling.suggest.tst.TSTLookup</str>
-            <!-- Alternatives to lookupImpl: 
-                 org.apache.solr.spelling.suggest.fst.FSTLookup   [finite state automaton]
-                 org.apache.solr.spelling.suggest.fst.WFSTLookupFactory [weighted finite state automaton]
-                 org.apache.solr.spelling.suggest.jaspell.JaspellLookup [default, jaspell-based]
-                 org.apache.solr.spelling.suggest.tst.TSTLookup   [ternary trees]
-            -->
-            <str name="field">autosuggestValues</str>  <!-- the indexed field to derive suggestions from -->
-            <!--float name="threshold">0.005</float-->
-            <str name="buildOnCommit">true</str>
-            <!--
-                  <str name="sourceLocation">american-english</str>
-            -->
-        </lst>
-    </searchComponent>
-    
     <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/suggest">
         <lst name="defaults">
             <str name="spellcheck">true</str>

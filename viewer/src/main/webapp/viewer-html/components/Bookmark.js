@@ -48,14 +48,14 @@ Ext.define ("viewer.components.Bookmark",{
         viewer.components.Bookmark.superclass.constructor.call(this, conf);
         this.initConfig(conf);
        
-        imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/"
+        imagePath=contextPath+"/viewer-html/components/resources/images/bookmark/";
         this.shareUrls ={
             email: "mailto:%20?subject=[title]&body=[text]%20[url]",
             twitter: "http://twitter.com/share?url=[url]&text=[text]",
             linkedin: "http://www.linkedin.com/shareArticle?mini=true&url=[url]&summary=[text]&title=[title]",
             googleplus: "https://plus.google.com/share?url=[url]&text=[text]",
             facebook: "https://www.facebook.com/sharer.php?u=[url]&text=[text]"
-        }
+        };
         
         this.renderButton();
         this.loadWindow();
