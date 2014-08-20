@@ -19,6 +19,20 @@
  * Creates a Table of comtents Component
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
+
+Ext.define('Maps', {
+    extend: 'Ext.data.TreeModel',
+    fields: [
+        // Added convert function to icon
+        {name: 'icon', type: 'string', convert: function(fieldName, record) {
+            if(record.get('leaf')) {
+                return contextPath + '/viewer-html/components/resources/images/selectionModule/map.png';
+            }
+            return contextPath + '/viewer-html/components/resources/images/selectionModule/folder.png';
+        }}
+    ]
+});
+
 Ext.define ("viewer.components.TOC",{
     extend: "viewer.components.Component",
     panel: null,
@@ -77,6 +91,7 @@ Ext.define ("viewer.components.TOC",{
         Ext.QuickTips.init();
         this.qtips = new Array();
         var store = Ext.create('Ext.data.TreeStore', {
+            model: 'Maps',
             root: {
                 text: 'Root',
                 expanded: me.config.expandOnStartup,
