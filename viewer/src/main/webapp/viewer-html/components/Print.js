@@ -376,7 +376,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'label',  
                                 text: "Pagina formaat"  
                             },{
-                                xtype: "flamingocombobox",                                
+                                xtype: "combobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.

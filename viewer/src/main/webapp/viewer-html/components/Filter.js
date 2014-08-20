@@ -50,7 +50,7 @@ Ext.define ("viewer.components.Filter",{
             fields: ['id', 'title', 'value'],
             data : this.config.attributes
         });
-        this.attributeCombobox = Ext.create('viewer.components.FlamingoCombobox', {
+        this.attributeCombobox = Ext.create('Ext.form.ComboBox', {
             fieldLabel: '',
             store: this.attributeStore,
             queryMode: 'local',

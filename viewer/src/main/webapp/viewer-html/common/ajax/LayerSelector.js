@@ -63,7 +63,7 @@ Ext.define ("viewer.components.LayerSelector",{
         if(this.config.padding) {
             comboboxConfig.padding = this.config.padding;
         }
-        this.combobox = Ext.create('viewer.components.FlamingoCombobox', comboboxConfig);
+        this.combobox = Ext.create('Ext.form.ComboBox', comboboxConfig);
         var requestPath= actionBeans["layerlist"];
         var requestParams = {};
         requestParams[this.config.restriction]= true;

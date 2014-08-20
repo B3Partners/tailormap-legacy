@@ -212,7 +212,7 @@ Ext.define ("viewer.components.DataSelection",{
                     }
                 }
                 dataSelectieAttributes.push({
-                    xtype: "flamingocombobox",
+                    xtype: "combobox",
                     id: attribute.name,
                     queryMode : 'local',
                     disabled: true,
@@ -402,7 +402,7 @@ Ext.define ("viewer.components.DataSelection",{
         });
         var logicOperator = null;
         if(this.filters.length != 0) {
-            logicOperator = Ext.create('viewer.components.FlamingoCombobox', {
+            logicOperator = Ext.create('Ext.form.ComboBox', {
                 store: [ ['OR', 'of'], ['AND', 'en'] ],
                 width: 50,
                 value: 'OR'

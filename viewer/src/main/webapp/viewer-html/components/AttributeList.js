@@ -134,7 +134,7 @@ Ext.define ("viewer.components.AttributeList",{
                              this.download();
                      }},
                     {
-                        xtype: "flamingocombobox",
+                        xtype: "combobox",
                         disabled:true,
                         id:"downloadType",
                         value: 'SHP',

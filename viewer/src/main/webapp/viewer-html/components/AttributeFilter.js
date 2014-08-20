@@ -43,7 +43,7 @@ Ext.define ("viewer.components.AttributeFilter",{
     },
     constructor: function(config){
         this.initConfig(config);
-        this.operator = Ext.create('viewer.components.FlamingoCombobox', {
+        this.operator = Ext.create('Ext.form.ComboBox', {
             fieldLabel: '',
             store: this.numericOperators,
             queryMode: 'local',
@@ -56,7 +56,7 @@ Ext.define ("viewer.components.AttributeFilter",{
         this.valueStore = Ext.create('Ext.data.ArrayStore', {
             fields: ['value']
         });
-        this.value= Ext.create('viewer.components.FlamingoCombobox', {
+        this.value= Ext.create('Ext.form.ComboBox', {
             fieldLabel: '',
             store: this.valueStore,
             queryMode: 'local',
@@ -82,7 +82,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 						title:"en"
 					}]
 				});
-				this.logicOperator = Ext.create('viewer.components.FlamingoCombobox', {
+				this.logicOperator = Ext.create('Ext.form.ComboBox', {
 					fieldLabel: '',
 					store: logicStore,
 					queryMode: 'local',

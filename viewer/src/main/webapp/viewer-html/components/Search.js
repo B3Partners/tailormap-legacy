@@ -165,7 +165,7 @@ Ext.define ("viewer.components.Search",{
                 fields: ['id', 'name', 'url'],
                 data: this.searchconfigs
             });
-            this.searchName = Ext.create('viewer.components.FlamingoCombobox',{
+            this.searchName = Ext.create('Ext.form.ComboBox',{
                 fieldLabel: 'Zoek op',
                 store: configs,
                 queryMode: 'local',

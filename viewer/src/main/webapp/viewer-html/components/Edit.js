@@ -404,7 +404,7 @@ Ext.define ("viewer.components.Edit",{
                             data : values
                         });
 
-                        input = Ext.create('viewer.components.FlamingoCombobox', {
+                        input = Ext.create('Ext.form.ComboBox', {
                             fieldLabel: attribute.editAlias || attribute.name,
                             store: valueStore,
                             queryMode: 'local',
