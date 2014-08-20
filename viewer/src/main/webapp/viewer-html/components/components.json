@@ -881,5 +881,19 @@
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Keyboard navigation"}
         }
+    },
+    {
+        className: "viewer.components.ExtentFilter",
+        name: "Extent Filter",
+        shortName: "Ef",
+        group: "Component",
+        sources: ["SpatialFilter.js","ExtentFilter.js"],
+        restrictions: ["content"],        
+        singleton: true,
+        showHelp: true,
+        extPropertyGridConfigs: {
+            propertyNames: {},
+            source: {}
+        }
     }
 ]
