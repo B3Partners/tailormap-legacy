@@ -433,7 +433,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
-                    hidden: !this.showPrintRtf,
+                    hidden: !this.showPrintRtf || this.config.mailPrint,
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -450,6 +450,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan via PDF'  ,
+                    hidden: this.config.mailPrint,
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -465,7 +466,7 @@ Ext.define ("viewer.components.Print",{
                     }                    
                 },{
                     xtype: 'button',
-                    text: 'Mail',
+                    text: 'Verstuur per mail',
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
