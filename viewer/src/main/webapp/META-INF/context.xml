@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
+  <Parameter name="print.mail.from.email" value="no-reply@b3partners.nl" override="false"/>
+  <Parameter name="print.mail.from.name" value="Printmiep Juffrouw Jannie" override="false"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>
@@ -24,6 +26,7 @@
     -->
   <!-- Tomcat resource link -->
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
+  <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
   <!-- Optional: use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
   <Realm className="org.apache.catalina.realm.CombinedRealm">
     <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>

@@ -44,7 +44,11 @@ Ext.define ("viewer.components.Print",{
         max_imagesize: "2048",
         showPrintRtf:null,
         label: "",
-        overview:null
+        overview:null,
+        mailprints:null,
+        fromaddress:null,
+        toaddress:null,
+        subject: null
     },
     /**
      * @constructor
@@ -53,7 +57,7 @@ Ext.define ("viewer.components.Print",{
     constructor: function (conf){  
         //set minwidth:
         if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
-        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true 
+        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true;
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
@@ -390,6 +394,14 @@ Ext.define ("viewer.components.Print",{
                         }]
                     }]                        
                 }]
+            },{                        
+                xtype: "label",
+                text: "Mailadres"
+            },{
+                xtype: 'textfield',
+                name: 'mailTo',
+                width: "10%",
+                value: ""
             },{
                  xtype: 'label',
                  style: {
@@ -415,7 +427,7 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.popup.hide()
+                                this.popup.hide();
                             }
                         }
                     }  
@@ -432,7 +444,7 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("saveRTF")
+                                this.submitSettings("saveRTF");
                             }
                         }
                     }                  
@@ -448,7 +460,38 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("savePDF")
+                                this.submitSettings("savePDF");
+                            }
+                        }
+                    }                    
+                },{
+                    xtype: 'button',
+                    text: 'Mail'  ,
+                    componentCls: 'mobileLarge',
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                var props = this.getAllProperties("mailPDF");
+                                Ext.Ajax.request({
+                                    url: actionBeans["print"],
+                                    params: {
+                                        params: Ext.JSON.encode(props)
+                                    },
+                                    success: function(result) {
+                                        var response = Ext.JSON.decode(result.responseText);
+
+                                        var a =0;
+                                    },
+                                    failure: function(result) {
+                                       var b = 0;
+                                    }
+                                });
+                            //    this.submitSettings("mailPDF");
                             }
                         }
                     }                    
@@ -685,6 +728,14 @@ Ext.define ("viewer.components.Print",{
     * Called when a button is clicked and the form must be submitted.
     */
     submitSettings: function(action){        
+        var properties = this.getAllProperties(action);
+        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
+        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
+        this.printForm.submit({            
+            target: '_blank'
+        });
+    },
+    getAllProperties : function(action){
         var properties = this.getProperties();
         properties.action=action;
         // Process registred extra info callbacks
@@ -699,11 +750,7 @@ Ext.define ("viewer.components.Print",{
             extraInfos.push(extraInfo);
         }
         properties.extra = extraInfos;
-        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
-        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
-        this.printForm.submit({            
-            target: '_blank'
-        });
+        return properties;
     },
     /**
      *Called when the imageUrl is succesfully returned
