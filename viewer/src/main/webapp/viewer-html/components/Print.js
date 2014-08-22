@@ -483,15 +483,13 @@ Ext.define ("viewer.components.Print",{
                                         params: Ext.JSON.encode(props)
                                     },
                                     success: function(result) {
-                                        var response = Ext.JSON.decode(result.responseText);
-
-                                        var a =0;
+                                        var response = result.responseText;
+                                        Ext.MessageBox.alert('Info', "Print wordt gemaakt en wordt via de mail verzonden. Dit kan enige minuten duren");
                                     },
                                     failure: function(result) {
-                                       var b = 0;
+                                       Ext.MessageBox.alert('Fout', "Print mislukt.");
                                     }
                                 });
-                            //    this.submitSettings("mailPDF");
                             }
                         }
                     }                    
@@ -770,7 +768,7 @@ Ext.define ("viewer.components.Print",{
                 var preview = document.getElementById('previewImg');
                 preview.innerHTML = '';
                 preview.appendChild(img);
-            }
+            };
             image.src = imageUrl;
         }
     },
