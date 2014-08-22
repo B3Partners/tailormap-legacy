@@ -32,7 +32,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.mail.Mailer;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.print.Legend;
@@ -54,6 +53,8 @@ import org.stripesstuff.stripersist.Stripersist;
 /**
  *
  * @author Roy Braam
+ * @author Meine Toonen
+ * @author Eddy Scheper
  */
 @UrlBinding("/action/print")
 @StrictBinding
