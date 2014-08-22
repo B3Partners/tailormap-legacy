@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
-  <Parameter name="print.mail.from.email" value="no-reply@b3partners.nl" override="false"/>
-  <Parameter name="print.mail.from.name" value="Printmiep Juffrouw Jannie" override="false"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>

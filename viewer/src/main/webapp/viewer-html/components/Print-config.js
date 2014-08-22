@@ -103,6 +103,26 @@ Ext.define("viewer.components.CustomConfiguration",{
                 checked: me.configObject.overview ? me.configObject.overview : false,
                 boxLabel: "Neem de overzichtskaart op als de overzichtskaart aanwezig is"
             }
+            ,{
+                xtype: "label",
+                text: "Mail",
+                style: "font-weight: bold;"                
+            },{
+                xtype: "checkbox",
+                name: "mailPrint",
+                checked: me.configObject.mailPrint ? me.configObject.mailPrint : false,
+                boxLabel: "Prints kunnen alleen gemail worden"
+            },{
+                xtype: "textfield",
+                name: "fromAddress",
+                value: me.configObject.fromAddress ? me.configObject.fromAddress :"",
+                fieldLabel: "Van-adres"
+            },{
+                xtype: "textfield",
+                name: "fromName",
+                value: me.configObject.fromName ? me.configObject.fromName :"Flamingo Printservice",
+                fieldLabel: "Van-naam"
+            }
         ]);
                  
     }
