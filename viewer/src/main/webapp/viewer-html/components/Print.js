@@ -45,10 +45,9 @@ Ext.define ("viewer.components.Print",{
         showPrintRtf:null,
         label: "",
         overview:null,
-        mailprints:null,
-        fromaddress:null,
-        toaddress:null,
-        subject: null
+        mailprint:null,
+        fromAddress:null,
+        fromName:null
     },
     /**
      * @constructor
@@ -466,7 +465,7 @@ Ext.define ("viewer.components.Print",{
                     }                    
                 },{
                     xtype: 'button',
-                    text: 'Mail'  ,
+                    text: 'Mail',
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -477,19 +476,25 @@ Ext.define ("viewer.components.Print",{
                             scope: this,
                             fn: function (){
                                 var props = this.getAllProperties("mailPDF");
-                                Ext.Ajax.request({
-                                    url: actionBeans["print"],
-                                    params: {
-                                        params: Ext.JSON.encode(props)
-                                    },
-                                    success: function(result) {
-                                        var response = result.responseText;
-                                        Ext.MessageBox.alert('Info', "Print wordt gemaakt en wordt via de mail verzonden. Dit kan enige minuten duren");
-                                    },
-                                    failure: function(result) {
-                                       Ext.MessageBox.alert('Fout', "Print mislukt.");
-                                    }
-                                });
+                                if(props.mailTo !== undefined && props.mailTo !== null && props.mailTo !== ""){
+                                    props.fromAddress = this.config.fromAddress;
+                                    props.fromName = this.config.fromName;
+                                    Ext.Ajax.request({
+                                        url: actionBeans["print"],
+                                        params: {
+                                            params: Ext.JSON.encode(props)
+                                        },
+                                        success: function(result) {
+                                            var response = result.responseText;
+                                            Ext.MessageBox.alert('Info', "Print wordt gemaakt en wordt via de mail verzonden. Dit kan enige minuten duren");
+                                        },
+                                        failure: function(result) {
+                                           Ext.MessageBox.alert('Fout', "Print mislukt.");
+                                        }
+                                    });
+                                }else{
+                                    Ext.MessageBox.alert('Fout', "Vul een geldig e-mailadres in.");
+                                }
                             }
                         }
                     }                    
