@@ -391,7 +391,6 @@ public class EditFeatureActionBean  implements ActionBean {
      */
     private void addAuditTrailLog() {
         try{
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
             String username = context.getRequest().getRemoteUser(); 
             Query query = new Query("dummy", CQL.toFilter(store.getSchema().getAttributeDescriptors().get(0).getLocalName() + "= 'username is " +username + "'"));
             store.getCount(query); // execute the query
