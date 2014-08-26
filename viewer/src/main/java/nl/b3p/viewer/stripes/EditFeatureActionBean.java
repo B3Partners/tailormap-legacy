@@ -37,10 +37,12 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.identity.FeatureIdImpl;
+import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -147,7 +149,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
                 store = (SimpleFeatureStore)fs;
-                
+                addAuditTrailLog();
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
                      error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
@@ -381,5 +383,21 @@ public class EditFeatureActionBean  implements ActionBean {
             }
         }
         return true;
+    }
+    
+    /**
+     * Method to query the datastore with a dummy query, containing the username. This is used for an audittrail.
+     * A query is composed using the fire attribute from the type, and constructing a Query with it: <firstattribute> = 'username is <username'.
+     */
+    private void addAuditTrailLog() {
+        try{
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+            String username = context.getRequest().getRemoteUser(); 
+            Query query = new Query("dummy", CQL.toFilter(store.getSchema().getAttributeDescriptors().get(0).getLocalName() + "= 'username is " +username + "'"));
+            store.getCount(query); // execute the query
+        }catch(Exception ex){
+            // Swallow all exceptions, because this inheretly fails. It's only use is to log the application username, so it can be matched (via the database process id
+            // to the following insert/update/delete statement.
+        }
     }
 }
