@@ -14,12 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.admin.monitoring;
+package nl.b3p.mail;
 
+import java.io.File;
 import java.util.Date;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -50,4 +56,32 @@ public class Mailer {
         Transport.send(msg);
     }       
     
+    public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, File attachment, String filename) throws Exception {
+    
+        Address from = new InternetAddress(fromEmail, fromName);
+        Message msg = new MimeMessage(getMailSession());
+        msg.setFrom(from);
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        msg.setSubject(subject);
+        msg.setSentDate(new Date());        
+        
+        // Create the message part
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setText(mailContent);
+        
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+
+        // Part two is attachment
+        messageBodyPart = new MimeBodyPart();
+        DataSource source = new FileDataSource(attachment);
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName(filename);
+        multipart.addBodyPart(messageBodyPart);
+
+        // Send the complete message parts
+        msg.setContent(multipart);
+         
+        Transport.send(msg);
+    }
 }

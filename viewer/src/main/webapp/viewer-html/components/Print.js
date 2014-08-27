@@ -44,7 +44,10 @@ Ext.define ("viewer.components.Print",{
         max_imagesize: "2048",
         showPrintRtf:null,
         label: "",
-        overview:null
+        overview:null,
+        mailprint:null,
+        fromAddress:null,
+        fromName:null
     },
     /**
      * @constructor
@@ -53,7 +56,7 @@ Ext.define ("viewer.components.Print",{
     constructor: function (conf){  
         //set minwidth:
         if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
-        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true 
+        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true;
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
@@ -390,6 +393,16 @@ Ext.define ("viewer.components.Print",{
                         }]
                     }]                        
                 }]
+            },{                        
+                xtype: "label",
+                hidden:this.config.mailPrint === "cantMail",
+                text: "Mailadres"
+            },{
+                xtype: 'textfield',
+                name: 'mailTo',
+                hidden:this.config.mailPrint === "cantMail",
+                width: "10%",
+                value: ""
             },{
                  xtype: 'label',
                  style: {
@@ -415,14 +428,14 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.popup.hide()
+                                this.popup.hide();
                             }
                         }
                     }  
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
-                    hidden: !this.showPrintRtf,
+                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -432,13 +445,14 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("saveRTF")
+                                this.submitSettings("saveRTF");
                             }
                         }
                     }                  
                 },{
                     xtype: 'button',
                     text: 'Opslaan via PDF'  ,
+                    hidden: this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -448,7 +462,43 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("savePDF")
+                                this.submitSettings("savePDF");
+                            }
+                        }
+                    }                    
+                },{
+                    xtype: 'button',
+                    text: 'Verstuur per mail',
+                    componentCls: 'mobileLarge',
+                    hidden:this.config.mailPrint === "cantMail",
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                var props = this.getAllProperties("mailPDF");
+                                if(props.mailTo !== undefined && props.mailTo !== null && props.mailTo !== ""){
+                                    props.fromAddress = this.config.fromAddress;
+                                    props.fromName = this.config.fromName;
+                                    Ext.Ajax.request({
+                                        url: actionBeans["print"],
+                                        params: {
+                                            params: Ext.JSON.encode(props)
+                                        },
+                                        success: function(result) {
+                                            var response = result.responseText;
+                                            Ext.MessageBox.alert('Info', "Print wordt gemaakt en wordt via de mail verzonden. Dit kan enige minuten duren");
+                                        },
+                                        failure: function(result) {
+                                           Ext.MessageBox.alert('Fout', "Print mislukt.");
+                                        }
+                                    });
+                                }else{
+                                    Ext.MessageBox.alert('Fout', "Vul een geldig e-mailadres in.");
+                                }
                             }
                         }
                     }                    
@@ -685,6 +735,14 @@ Ext.define ("viewer.components.Print",{
     * Called when a button is clicked and the form must be submitted.
     */
     submitSettings: function(action){        
+        var properties = this.getAllProperties(action);
+        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
+        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
+        this.printForm.submit({            
+            target: '_blank'
+        });
+    },
+    getAllProperties : function(action){
         var properties = this.getProperties();
         properties.action=action;
         // Process registred extra info callbacks
@@ -699,11 +757,7 @@ Ext.define ("viewer.components.Print",{
             extraInfos.push(extraInfo);
         }
         properties.extra = extraInfos;
-        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
-        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
-        this.printForm.submit({            
-            target: '_blank'
-        });
+        return properties;
     },
     /**
      *Called when the imageUrl is succesfully returned
@@ -723,7 +777,7 @@ Ext.define ("viewer.components.Print",{
                 var preview = document.getElementById('previewImg');
                 preview.innerHTML = '';
                 preview.appendChild(img);
-            }
+            };
             image.src = imageUrl;
         }
     },

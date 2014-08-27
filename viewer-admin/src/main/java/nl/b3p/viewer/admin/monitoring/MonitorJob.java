@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.admin.monitoring;
 
+import nl.b3p.mail.Mailer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.EntityManager;
