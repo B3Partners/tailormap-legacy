@@ -116,13 +116,13 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
                 border: '0px'
             }
         }];
-        Ext.create('Ext.container.Container', {
-            renderTo: me.renderTo,
+        var container = Ext.create('Ext.container.Container', {
             items: fields,
             height: '100%',
             width: '100%',
             layout: 'vbox'
         });
+        Ext.getCmp(me.renderTo).add(container);
         if(me.labelClick !== null) {
             Ext.get(containerId).addListener('click', function(evt, target) {
                 me.labelClick(evt, target);

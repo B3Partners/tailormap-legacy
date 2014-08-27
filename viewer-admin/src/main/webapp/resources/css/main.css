@@ -451,7 +451,7 @@ input[type="submit"]:hover,
 }
 #layout-container #layout-center #center_left,
 #layout-container #layout-center #center_right {
-  width: 150px;
+  width: 180px;
   float: left;
   margin-right: 10px;
 }
@@ -519,12 +519,12 @@ input[type="submit"]:hover,
 .main-slider-container .slider-container .sliderbox {
   text-align: center;
   float: left;
-  width: 60px;
+  width: 65px;
 }
 #sliderheader-container .sliderheader {
   text-align: center;
   float: left;
-  width: 60px;
+  width: 65px;
 }
 .appSettingsRight {
   float: left;

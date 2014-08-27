@@ -51,7 +51,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             },{
                 xtype: 'container',
                 flex: 1,
-                html: '<div id="selectionGridContainer" style="width: 100%; height: 100%;"></div>'
+                layout: 'fit',
+                id: 'selectionGridContainer'
             },{
                     xtype: 'checkbox',
                     name: 'sliderForUserAdded',

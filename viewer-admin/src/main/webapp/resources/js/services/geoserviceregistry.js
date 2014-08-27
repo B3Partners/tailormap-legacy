@@ -147,7 +147,7 @@ Ext.onReady(function() {
         renderTo: 'tree-container',
         width: 330,
         height: 600,
-        scroll: false,
+        scroll: 'both',
         listeners: {
             itemcontextmenu: function(view, record, item, index, event, eOpts) {
                 console.log(categoryMenu, editMenu);

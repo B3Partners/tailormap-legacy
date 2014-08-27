@@ -114,7 +114,7 @@ Ext.onReady(function() {
         id: 'applicationtree',
         store: treeStore,
         rootVisible: true,
-        scroll: false,
+        scroll: 'both',
         useArrows: true,
         frame: true,
         renderTo: 'tree-container',

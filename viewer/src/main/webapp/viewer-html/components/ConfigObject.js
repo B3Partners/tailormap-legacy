@@ -89,6 +89,7 @@ Ext.define("viewer.components.ConfigObject",{
             style: {
                 marginTop: "10px"
             },
+            layout: 'fit',
             frame: false,
             bodyPadding: me.formPadding,
             width: me.formWidth,
@@ -98,7 +99,7 @@ Ext.define("viewer.components.ConfigObject",{
         this.checkBoxes=Ext.create("Ext.ux.b3p.FilterableCheckboxes",{
             requestUrl: me.requestPath,
             requestParams: requestParams,
-            renderTo: "layerListContainer-body",
+            renderTo: "layerListContainer",
             checked: checkedIds,
             layerFilter: me.configObject.layerFilter
         });   

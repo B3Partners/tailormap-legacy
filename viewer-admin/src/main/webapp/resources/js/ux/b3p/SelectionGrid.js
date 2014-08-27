@@ -127,8 +127,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
             width: '100%',
             border: 1
         }];
-        Ext.create('Ext.panel.Panel', {
-            renderTo: me.renderTo,
+        var panel = Ext.create('Ext.panel.Panel', {
             items: fields,
             height: '100%',
             width: '100%',
@@ -180,6 +179,7 @@ Ext.define('Ext.ux.b3p.SelectionGrid', {
                 }
             }]
         });
+        Ext.getCmp(me.renderTo).add(panel);
         if(me.sliders.length > 0) {
             me.appendSliders();
             me.initHeaders();

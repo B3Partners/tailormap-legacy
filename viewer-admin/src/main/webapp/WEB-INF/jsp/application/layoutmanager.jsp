@@ -88,31 +88,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
 
-        <script type="text/javascript">            
+        <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="config">
+            <c:if test="${param.debug}"><stripes:param name="debug" value="true"/></c:if>
+        </stripes:url>
+        <script type="text/javascript">
             var activelink = 'menu_layout';
-            var components = ${actionBean.components};
-            <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="config">
-                <c:if test="${param.debug}"><stripes:param name="debug" value="true"/></c:if>
-            </stripes:url>
-            var configPageLink = <js:quote value="${url}"/>;
-            var layoutSaveUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>';
-            var removeComponentUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="removeComponent"/>';
-            <c:choose>    
-                <c:when test="${!empty actionBean.application.layout}">
-                    var layoutJson = ${actionBean.application.layout};
-                </c:when>
-                <c:otherwise>
-                    var layoutJson = {};
-                </c:otherwise>
-            </c:choose>
-            <c:choose>    
-                <c:when test="${!empty actionBean.application.globalLayout}">
-                    var globalLayout = ${actionBean.application.globalLayout};
-                </c:when>
-                <c:otherwise>
-                    var globalLayout = {};
-                </c:otherwise>
-            </c:choose>
+            Ext.onReady(function() {
+                
+                <c:choose>    
+                    <c:when test="${!empty actionBean.application.layout}">
+                        var layoutJson = ${actionBean.application.layout};
+                    </c:when>
+                    <c:otherwise>
+                        var layoutJson = {};
+                    </c:otherwise>
+                </c:choose>
+                <c:choose>    
+                    <c:when test="${!empty actionBean.application.globalLayout}">
+                        var globalLayout = ${actionBean.application.globalLayout};
+                    </c:when>
+                    <c:otherwise>
+                        var globalLayout = {};
+                    </c:otherwise>
+                </c:choose>
+
+                Ext.create('LayoutManager', {
+                    layoutJson: layoutJson,
+                    globalLayout: globalLayout,
+                    components: ${actionBean.components},
+                    configPageLink: <js:quote value="${url}"/>,
+                    layoutSaveUrl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>',
+                    removeComponentUrl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="removeComponent"/>'
+                });
+            });
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/b3p/ColorPickerButton.js"></script>
         <script type="text/javascript" src="${contextPath}/resources/js/layoutmanager/layoutmanager.js"></script>

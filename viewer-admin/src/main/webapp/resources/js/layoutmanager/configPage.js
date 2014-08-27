@@ -57,9 +57,12 @@ Ext.onReady(function(){
                 title: 'Pas de instellingen aan',
                 renderTo: "config",
                 hideHeaders:true,
-                nameColumnWidth: 300,
+                scroll: 'vertical',
+                nameColumnWidth: 290,
+                columnWidth: 450,
                 source: extConfigSource,
-                propertyNames: propertyNames
+                propertyNames: propertyNames,
+                width: 740
             });
         }
     
@@ -309,7 +312,8 @@ Ext.onReady(function() {
     var tabs = [], htmlEditorRendered = false;
     tabs = [{
         contentEl:'config', 
-        title: 'Configuratie'
+        title: 'Configuratie',
+        autoScroll: true
     },{
         contentEl:'rights', 
         title: 'Rechten'
