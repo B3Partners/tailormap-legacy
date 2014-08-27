@@ -395,10 +395,12 @@ Ext.define ("viewer.components.Print",{
                 }]
             },{                        
                 xtype: "label",
+                hidden:this.config.mailPrint === "cantMail",
                 text: "Mailadres"
             },{
                 xtype: 'textfield',
                 name: 'mailTo',
+                hidden:this.config.mailPrint === "cantMail",
                 width: "10%",
                 value: ""
             },{
@@ -433,7 +435,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
-                    hidden: !this.showPrintRtf || this.config.mailPrint,
+                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -450,7 +452,7 @@ Ext.define ("viewer.components.Print",{
                 },{
                     xtype: 'button',
                     text: 'Opslaan via PDF'  ,
-                    hidden: this.config.mailPrint,
+                    hidden: this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -468,6 +470,7 @@ Ext.define ("viewer.components.Print",{
                     xtype: 'button',
                     text: 'Verstuur per mail',
                     componentCls: 'mobileLarge',
+                    hidden:this.config.mailPrint === "cantMail",
                     style: {
                         "float": "right",
                         marginLeft: '5px'
