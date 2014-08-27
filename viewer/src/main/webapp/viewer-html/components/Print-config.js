@@ -115,7 +115,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 emptyText:'Maak uw keuze',
                 store: [
                     ["canAlsoMail","Prints kunnen ook gemaild worden"],
-                    ["cantMail","Prints kunenn niet gemaild worden"],
+                    ["cantMail","Prints kunnen niet gemaild worden"],
                     ["canOnlyMail","Prints kunnen alleen gemaild worden"]
                 ],
                 listeners:{
