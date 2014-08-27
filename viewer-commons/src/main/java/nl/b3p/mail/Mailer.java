@@ -32,6 +32,7 @@ import javax.naming.InitialContext;
 /**
  *
  * @author Matthijs Laan
+ * @author Meine Toonen
  */
 public class Mailer {
 
@@ -55,7 +56,17 @@ public class Mailer {
 
         Transport.send(msg);
     }       
-    
+    /**
+     * Sends a mail with an attachment enclosed
+     * @param fromName The name which should be display as the sender.
+     * @param fromEmail The replyaddress
+     * @param email To which address the mail should be sent
+     * @param subject Subject of the mail
+     * @param mailContent The content of the message
+     * @param attachment The attachment to be sent
+     * @param filename Give that attachment a naem.
+     * @throws Exception 
+     */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, File attachment, String filename) throws Exception {
     
         Address from = new InternetAddress(fromEmail, fromName);
