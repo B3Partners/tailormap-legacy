@@ -108,20 +108,48 @@ Ext.define("viewer.components.CustomConfiguration",{
                 text: "Mail",
                 style: "font-weight: bold;"                
             },{
-                xtype: "checkbox",
+                xtype: "combo",
+                fields: ['value','text'],
+                value: me.configObject.mailPrint ? me.configObject.mailPrint : "cantMail",
                 name: "mailPrint",
-                checked: me.configObject.mailPrint ? me.configObject.mailPrint : false,
-                boxLabel: "Prints kunnen alleen gemail worden"
-            },{
+                emptyText:'Maak uw keuze',
+                store: [
+                    ["canAlsoMail","Prints kunnen ook gemaild worden"],
+                    ["cantMail","Prints kunenn niet gemaild worden"],
+                    ["canOnlyMail","Prints kunnen alleen gemaild worden"]
+                ],
+                listeners:{
+                    change:{
+                        scope: this,
+                        fn: function(obj, newValue) {
+                            var enable = newValue !== "cantMail";
+                            if (enable) {
+                                Ext.getCmp("fromAddress").show();
+                                Ext.getCmp("fromName").show();
+                            } else {
+                                Ext.getCmp("fromAddress").hide();
+                                Ext.getCmp("fromName").hide();
+
+                            }
+                        }
+                    }
+                },
+                width : 254
+            },
+           {
                 xtype: "textfield",
                 name: "fromAddress",
+                id: "fromAddress",
                 value: me.configObject.fromAddress ? me.configObject.fromAddress :"",
-                fieldLabel: "Van-adres"
+                fieldLabel: "Van-adres",
+                hidden: me.configObject.mailPrint === "cantMail"
             },{
                 xtype: "textfield",
                 name: "fromName",
+                id: "fromName",
                 value: me.configObject.fromName ? me.configObject.fromName :"Flamingo Printservice",
-                fieldLabel: "Van-naam"
+                fieldLabel: "Van-naam",
+                hidden: me.configObject.mailPrint === "cantMail"
             }
         ]);
                  
