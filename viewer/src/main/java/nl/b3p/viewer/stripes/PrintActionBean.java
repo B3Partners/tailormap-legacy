@@ -206,8 +206,8 @@ public class PrintActionBean implements ActionBean {
             templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
         }
         final String toMail = jRequest.getString("mailTo");
-        final String fromMail = jRequest.getString("fromAddress");
-        final String fromName = jRequest.getString("fromName");
+        final String fromMail = jRequest.has("fromAddress") ? jRequest.getString("fromAddress") : "";
+        final String fromName = jRequest.has("fromName") ? jRequest.getString("fromName") : "";
         
         StreamingResolution res = new StreamingResolution(mimeType) {
             @Override
