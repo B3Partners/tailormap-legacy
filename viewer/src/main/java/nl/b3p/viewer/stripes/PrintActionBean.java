@@ -206,6 +206,8 @@ public class PrintActionBean implements ActionBean {
             templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
         }
         final String toMail = jRequest.getString("mailTo");
+        final String fromMail = jRequest.getString("fromAddress");
+        final String fromName = jRequest.getString("fromName");
         
         StreamingResolution res = new StreamingResolution(mimeType) {
             @Override
@@ -233,8 +235,6 @@ public class PrintActionBean implements ActionBean {
                         if(useMailer){
                             this.setAttachment(false);
                             response.setContentType("plain/text");
-                            String fromMail = context.getServletContext().getInitParameter("print.mail.from.email");
-                            String fromName = context.getServletContext().getInitParameter("print.mail.from.name");
                             Thread t = new Thread(new PrintGenerator(info, mimeType, f, filename,fromName, fromMail, toMail));
                             t.start();
                             response.getWriter().println("success");
