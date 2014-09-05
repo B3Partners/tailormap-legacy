@@ -391,10 +391,27 @@ public class EditFeatureActionBean  implements ActionBean {
      */
     private void addAuditTrailLog() {
         try{
-            String username = context.getRequest().getRemoteUser(); 
-            Query query = new Query("dummy", CQL.toFilter(store.getSchema().getAttributeDescriptors().get(0).getLocalName() + "= 'username is " +username + "'"));
-            store.getCount(query); // execute the query
-        }catch(Exception ex){
+            List<AttributeDescriptor> attributeDescriptors = store.getSchema().getAttributeDescriptors();
+            String typeName = null;
+            for (AttributeDescriptor ad : attributeDescriptors) {
+                // Get an attribute of type string. This because the username is almost always a string, and passing it to a Integer/Double will result in a invalid 
+                // query which will not log the passed values (possibly because the use of geotools).
+                if (ad.getType().getBinding() == String.class) {
+                    typeName = ad.getLocalName();
+                    break;
+                }
+            }
+
+            if (typeName == null) {
+                typeName = store.getSchema().getAttributeDescriptors().get(0).getLocalName();
+                log.warn("Audittrail: cannot find attribute of type double/integer or string. Take the first attribute.");
+            }
+            String username = context.getRequest().getRemoteUser();
+            String[] dummyValues = new String[]{"a", "b"}; // use these values for creating a statement which will always fail: attribute1 = a AND attribute1 = b.
+            String valueToInsert = "username = " + username;
+            store.modifyFeatures(typeName, valueToInsert, CQL.toFilter(typeName + " = '" + dummyValues[0] + "' and " + typeName + " = '" + dummyValues[1] + "'"));
+
+        } catch (Exception ex) {
             // Swallow all exceptions, because this inheretly fails. It's only use is to log the application username, so it can be matched (via the database process id
             // to the following insert/update/delete statement.
         }
