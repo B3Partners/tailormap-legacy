@@ -190,7 +190,7 @@ Ext.define("viewer.components.Graph", {
             json = feature;
             if(json.related_featuretypes){
                 for (var j = 0 ; j < json.related_featuretypes.length ;j++){
-                    var linked = this.getLinkedData(json.related_featuretypes[i], attributes, configId);
+                    var linked = this.getLinkedData(json.related_featuretypes[j], attributes, configId);
                     json.linkedData = linked;
                     break;
                 }
@@ -272,7 +272,7 @@ Ext.define("viewer.components.Graph", {
                             if(graphType === 'bar' || graphType === 'column') {
                                 this.setTitle(item.value[0] + ': ' + item.value[1]);
                             } else {
-                                this.setTitle(storeItem.get(me.getAttributeName(appLayer,gco.categoryAttribute)) + ': ' + storeItem.get(me.getAttributeName(appLayer,serieAttribute)));
+                                this.setTitle(storeItem.get(me.getAttributeTitle(appLayer,gco.categoryAttribute)) + ': ' + storeItem.get(me.getAttributeTitle(appLayer,serieAttribute)));
                             }
                         }
                     },
@@ -317,7 +317,7 @@ Ext.define("viewer.components.Graph", {
             {
                 type: 'Numeric',
                 position: 'left',
-                fields: this.getAttributeName(appLayer, gco.serieAttribute),
+                fields: this.getAttributeTitle(appLayer, gco.serieAttribute),
                 label: {
                     renderer: Ext.util.Format.numberRenderer('0,0')
                 },
@@ -327,7 +327,7 @@ Ext.define("viewer.components.Graph", {
             },{
                 type: 'Category',
                 position: 'bottom',
-                fields: [this.getAttributeName(appLayer,gco.categoryAttribute)],
+                fields: [this.getAttributeTitle(appLayer,gco.categoryAttribute)],
                 title: this.getAttributeTitle(appLayer,gco.categoryAttribute)
             }
         ];
@@ -382,9 +382,6 @@ Ext.define("viewer.components.Graph", {
             }
         }
         return null;
-    },
-    getAttributeName: function(appLayer, attributeId) {
-        return this.getAttributeTitleName(appLayer, attributeId, false);
     },
     getAttributeTitle: function(appLayer, attributeId) {
         return this.getAttributeTitleName(appLayer, attributeId, true);
