@@ -195,6 +195,18 @@ Ext.define("viewer.components.CustomConfiguration", {
                        valueField: 'id',
                        value: config.serieAttribute || null,
                        width: 400
+                   },
+                   {
+                       fieldLabel: 'x-as label',
+                       name: 'xlabel',
+                       value: config.xlabel,
+                       id: 'xlabel'+config.id
+                   },
+                   {
+                       fieldLabel: 'y-as label',
+                       name: 'ylabel',
+                       value: config.ylabel,
+                       id: 'ylabel'+config.id
                    }
             ],
             tbar: ["->", {
@@ -287,7 +299,9 @@ Ext.define("viewer.components.CustomConfiguration", {
             type: Ext.getCmp( "type"+id ).getValue(),
             layer: Ext.getCmp("layer"+id ).getValue(),
             categoryAttribute: Ext.getCmp( "categoryAttribute"+id ).getValue(),
-            serieAttribute: Ext.getCmp( "serieAttribute"+id ).getValue()
+            serieAttribute: Ext.getCmp( "serieAttribute"+id ).getValue(),
+            xlabel : Ext.getCmp( "xlabel"+id ).getValue(),
+            ylabel: Ext.getCmp( "ylabel"+id ).getValue()
         };
     }
 });

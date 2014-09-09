@@ -321,14 +321,14 @@ Ext.define("viewer.components.Graph", {
                 label: {
                     renderer: Ext.util.Format.numberRenderer('0,0')
                 },
-                title: this.isArray(gco.serieAttribute) ? '' : this.getAttributeTitle(appLayer,gco.serieAttribute),
+                title: gco.ylabel,
                 grid: true,
                 minimum: 0
             },{
                 type: 'Category',
                 position: 'bottom',
                 fields: [this.getAttributeTitle(appLayer,gco.categoryAttribute)],
-                title: this.getAttributeTitle(appLayer,gco.categoryAttribute)
+                title: gco.xlabel
             }
         ];
         if(graphType === 'bar') {
