@@ -232,8 +232,11 @@ Ext.define("viewer.components.Graph", {
     createGraph : function (appLayer,  data, configId){
         var gco = this.graphs[configId];
         var me = this;
-        var fields = this.getAttributeName(appLayer,gco.serieAttribute);
-        fields.push(this.getAttributeName(appLayer,gco.categoryAttribute));
+        var fields = this.getAttributeTitle(appLayer,gco.serieAttribute);
+        if(!(fields instanceof Array)){
+            fields = [fields];
+        }
+        fields.push(this.getAttributeTitle(appLayer,gco.categoryAttribute));
         var store = Ext.create('Ext.data.JsonStore', {
             fields: fields,
             data: data
@@ -253,8 +256,8 @@ Ext.define("viewer.components.Graph", {
                 series.push({
                     type: graphType,
                     axis: 'left',
-                    xField: me.getAttributeName(appLayer, gco.categoryAttribute),
-                    yField: me.getAttributeName(appLayer, serieAttribute),
+                    xField: me.getAttributeTitle(appLayer, gco.categoryAttribute),
+                    yField: me.getAttributeTitle(appLayer, serieAttribute),
                     markerConfig: {
                         type: 'circle',
                         size: 4,
@@ -347,7 +350,9 @@ Ext.define("viewer.components.Graph", {
         // add graph in placeholder place
         graphPanel.insert(configId, chart);
         // Always select first tab
-        graphPanel.setActiveTab(0);
+        if(graphPanel.setActiveTab){
+            graphPanel.setActiveTab(0);
+        }
     },
     activateMapClick: function(){
         this.deActivatedTools = this.viewerController.mapComponent.deactivateTools();
