@@ -45,8 +45,6 @@ Ext.define("viewer.components.Graph", {
             tooltip: me.tooltip,
             label: me.label
         });
-        // Make hook for Returned feature infos
-        // Stub for development
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, this.initialize, this);
         return this;
     },
@@ -126,15 +124,10 @@ Ext.define("viewer.components.Graph", {
             div: this.name + 'LayerSelectorPanel'
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);
         if(this.layers.length === 1){
             this.layerSelector.setValue(this.layers[0]);
         }
     },
-    layerChanged : function (layer){
-      var a = 0;  
-    },
-            
     mapClicked : function(tool, comp){
        this.deactivateMapClick();
         //Ext.get(this.getContentDiv()).mask("Haalt features op...")
@@ -203,7 +196,6 @@ Ext.define("viewer.components.Graph", {
                 }
             }
         }
-        var a =0;
     },
     getLinkedData : function (related_feature,attributes, configId){
         var appLayer = this.layerSelector.getValue();
@@ -228,44 +220,17 @@ Ext.define("viewer.components.Graph", {
                 var response = Ext.JSON.decode(result.responseText);
                 var features = response.features;
                 this.createGraph(appLayer, features, configId);
-                var a =0;
             },
             failure: function(result) {
-               var b =0;
+               this.viewerController.logger.error(result);
             }
         });
     },
     buttonClick: function(){
         this.popup.show();
     },
-    featureInfoReturned: function(layer, options) {
-        this.loadGraph(layer);
-    },
-    loadGraph: function(appLayer) {
-        this.popup.show();
-        this.popup.setWindowTitle(appLayer.alias);
-        var featureService = appLayer.featureService;
-        if (featureService) {
-
-            // Create store
-            // Create graph
-            //  loadFeatures: function(appLayer, successFunction, failureFunction,options,scope) {
-            var filter;
-            var me = this;
-            if (appLayer.attributes === undefined) {
-                featureService.loadAttributes(me.appLayer, function(attributes) {
-                    me.loadData(appLayer);
-                });
-            } else {
-                this.loadData(appLayer);
-            }
-        } else {
-            this.viewerController.logger.error("No featureservice available for layer " + appLayer.alias);
-        }
-
-    },
     createGraph : function (appLayer,  data, configId){
-        var gco = this.graphs[configId];//this.getConfigByAppLayer(appLayer.id);
+        var gco = this.graphs[configId];
         var me = this;
         var fields = this.getAttributeName(appLayer,gco.serieAttribute);
         fields.push(this.getAttributeName(appLayer,gco.categoryAttribute));
@@ -367,7 +332,7 @@ Ext.define("viewer.components.Graph", {
             axes[0]['position'] = 'bottom';
             axes[1]['position'] = 'left';
         }
-        var a = Ext.create('Ext.chart.Chart', {
+        var chart = Ext.create('Ext.chart.Chart', {
             //theme: 'Flamingo',
             animate: true,
             store: store,
@@ -380,109 +345,10 @@ Ext.define("viewer.components.Graph", {
         // remove placeholder
         graphPanel.remove('placeholderContainer' + configId, true);
         // add graph in placeholder place
-        graphPanel.insert(configId, a);
+        graphPanel.insert(configId, chart);
         // Always select first tab
         graphPanel.setActiveTab(0);
     },
-    loadData: function(appLayer) {
-        var featureService = appLayer.featureService;
-        /*
-        var modelName = 'Masdfodel';
-        var visCols = {
-            "AANTAL_HH":true
-        };
-        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer);
-        var attributeList = [];
-        var columns = [];
-        var index = 0;
-        for(var i= 0 ; i < attributes.length ;i++){
-            var attribute = attributes[i];
-            var colName = attribute.alias != undefined ? attribute.alias : attribute.name;
-            if(visCols.hasOwnProperty(colName)){
-                
-                var attIndex = index++;
-                
-                attributeList.push({
-                    name: "c" + attIndex,
-                    type : 'string'
-                });
-                columns.push({
-                    id: "c"+name+ +attIndex,
-                    header:colName,
-                    dataIndex: "c" + attIndex,
-                    flex: 1,
-                    filter: {
-                        xtype: 'textfield'
-                    }
-                });
-            }
-        }
-        var name = appLayer.alias;
-        var modelName= name + 'Model';
-        Ext.define(modelName, {
-            extend: 'Ext.data.Model',
-            fields: attributeList
-        });
-        
-        var filter = "";
-        
-        if (appLayer.filter){
-            filter=appLayer.filter.getCQL();
-        }
-        var featureType = "";
-       
-
-        var store = Ext.create('Ext.data.Store', {
-            storeId: name + "Store",
-            pageSize: 10,
-            model: modelName,
-            remoteSort: true,
-            remoteFilter: true,
-            proxy: {
-                type: 'ajax',
-                timeout: 40000,
-                url: appLayer.featureService.getStoreUrl() + "&arrays=1" + featureType + filter,
-                reader: {
-                    type: 'json',
-                    root: 'features',
-                    totalProperty: 'total'
-                },
-                simpleSortMode: true,
-                listeners: {
-                    exception: function(store, response, op) {
-
-                        msg = response.responseText;
-                        if (response.status == 200) {
-                            try {
-                                var j = Ext.JSON.decode(response.responseText);
-                                if (j.message) {
-                                    msg = j.message;
-                                }
-                            } catch (e) {
-                            }
-                        }
-
-                        if (msg == null) {
-                            if (response.timedout) {
-                                msg = "Request timed out";
-                            } else if (response.statusText != null && response.statusText != "") {
-                                msg = response.statusText;
-                            } else {
-                                msg = "Unknown error";
-                            }
-                        }
-
-                        Ext.getCmp(me.name + "mainGrid").getStore().removeAll();
-
-                        Ext.MessageBox.alert("Foutmelding", msg);
-
-                    }
-                }
-            },
-            autoLoad: true
-        });*/
-    },
-    
     activateMapClick: function(){
         this.deActivatedTools = this.viewerController.mapComponent.deactivateTools();
         this.toolMapClick.activateTool();
