@@ -27,6 +27,7 @@ import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
@@ -333,6 +334,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().persist(copy);
             Stripersist.getEntityManager().persist(copy);
             Stripersist.getEntityManager().flush();
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE);
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
