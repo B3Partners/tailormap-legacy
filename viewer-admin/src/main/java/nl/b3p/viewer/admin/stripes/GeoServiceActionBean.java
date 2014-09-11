@@ -471,7 +471,12 @@ public class GeoServiceActionBean implements ActionBean {
             }else if (l.getDetails().containsKey("image_extension")){
                 l.getDetails().remove("image_extension");
             }
-
+            
+            // For the moment only for tiled services, the caches of the applictions which use the service are worth invalidating
+            List<Application> apps = findApplications();
+            for (Application application : apps) {
+                SelectedContentCache.setApplicationCacheDirty(application, true);
+            }
         }
         
         if (service instanceof WMSService) {
