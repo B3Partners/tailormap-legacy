@@ -48,6 +48,8 @@ public class ImageManager {
     private List<ImageCollector> ics = new ArrayList<ImageCollector>();
     private int maxResponseTime = 10000;
     private int MAX_TREADS = 8;
+    private ExecutorService threadPool;
+    private CompletionService<ImageCollector> pool;
     
     protected static final String host = AuthScope.ANY_HOST;
     protected static final int port = AuthScope.ANY_PORT;
@@ -57,6 +59,10 @@ public class ImageManager {
     }
 
     public ImageManager(List<CombineImageUrl> urls, int maxResponseTime, String uname, String pw) {
+        
+        threadPool = Executors.newFixedThreadPool(MAX_TREADS);
+        pool = new ExecutorCompletionService<ImageCollector>(threadPool);
+        
         this.maxResponseTime = maxResponseTime;
         if (urls == null || urls.size() <= 0) {
             return;
@@ -89,8 +95,6 @@ public class ImageManager {
     }
 
     public void process() throws Exception {
-        ExecutorService threadPool=Executors.newFixedThreadPool(MAX_TREADS);
-        CompletionService<ImageCollector> pool = new ExecutorCompletionService<ImageCollector>(threadPool);
         for (ImageCollector ic : ics){
             if (ic.getStatus() == ImageCollector.NEW) {
                 pool.submit(ic);
@@ -100,6 +104,10 @@ public class ImageManager {
         for (int i = 0; i < ics.size(); i++) {
             pool.poll(5, TimeUnit.MINUTES).get();            
         }             
+    }
+    
+    public void shutdown(){
+        threadPool.shutdown();
     }
     /**
      * Combine all the images recieved

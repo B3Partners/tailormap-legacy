@@ -49,6 +49,7 @@ public class CombineImagesHandler {
             ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);        
             try {
                 im.process();
+                im.shutdown();
                 refImages = im.getCombinedImages();
             } catch (Exception e) {
                 throw e;
