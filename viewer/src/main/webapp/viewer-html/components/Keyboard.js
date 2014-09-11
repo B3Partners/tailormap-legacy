@@ -21,16 +21,17 @@
  * This tool enables the usage of the keyboard for navigation.
  * @author <a href="mailto:meinetoonen.nl">Meine Toonen</a>
  */
-Ext.define ("viewer.components.tools.Keyboard",{
-    extend: "viewer.components.tools.Tool",
+Ext.define ("viewer.components.Keyboard",{
+    extend: "viewer.components.Component",
+    keyboardTool:null,
     config:{
         name: "keyboard"
     },
     constructor: function (conf){        
-        viewer.components.tools.Keyboard.superclass.constructor.call(this, conf);
+        viewer.components.Keyboard.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        conf.type = viewer.viewercontroller.controller.Tool.KEYBOARD;        
-        this.initTool(conf);
+        this.keyboardTool = new OpenLayers.Control.KeyboardDefaults();
+        this.viewerController.mapComponent.getMap().getFrameworkMap().addControl(this.keyboardTool);
         return this;
     }
 });
