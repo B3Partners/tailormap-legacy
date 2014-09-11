@@ -167,7 +167,7 @@ public class PrintActionBean implements ActionBean {
         
         // The json structure is:
 //            [{
-//                class: <String> entry.component.$className,
+//                className: <String> entry.component.$className,
 //                componentName: <String>entry.component.name,
 //                info: <JSONObject> info in JSONObject
 //            }]
@@ -180,7 +180,7 @@ public class PrintActionBean implements ActionBean {
             for (int i=0; i < jarray.length();i++){
                 JSONObject extraObj = jarray.getJSONObject(i);
                 PrintExtraInfo pei = new PrintExtraInfo();
-                String className = extraObj.getString("class");
+                String className = extraObj.getString("className");
                 String componentName = extraObj.getString("componentName");
                 JSONObject infoString = extraObj.getJSONObject("info");
 

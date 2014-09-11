@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
+     <!--Parameter name="componentregistry.path" value="/viewer-html/components,/PATH/TO/3RD/PARTY/COMPONENT" override="false"/--> 
   <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>
