@@ -724,7 +724,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var layerUrl = service.url;
 
                 var ogcOptions={
-                    exceptions: "application/vnd.ogc.se_inimage",
+                    exceptions: service.exception_type ? service.exception_type : "application/vnd.ogc.se_inimage",
                     srs: "EPSG:28992",
                     version: "1.1.1",
                     layers:layer.name,

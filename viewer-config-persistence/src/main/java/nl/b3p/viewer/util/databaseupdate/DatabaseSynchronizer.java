@@ -84,6 +84,9 @@ public class DatabaseSynchronizer implements Servlet {
         
         updates.put("3", new ArrayList());
         updates.get("3").add("add_url_level.sql");
+        
+        updates.put("4", new ArrayList());
+        updates.get("4").add("configure_exception_layer.sql");
     }
     /**
      * Function is called in init() of servlet.
