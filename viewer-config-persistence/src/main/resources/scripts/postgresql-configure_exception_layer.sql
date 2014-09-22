@@ -1,1 +1,1 @@
-    alter table layer add column exception_type varchar(255);
+    alter table geo_service add column exception_type varchar(255);

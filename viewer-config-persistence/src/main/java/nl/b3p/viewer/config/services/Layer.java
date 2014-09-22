@@ -143,9 +143,6 @@ public class Layer implements Cloneable {
     @JoinTable(joinColumns=@JoinColumn(name="layer"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
-    
-    @Enumerated(EnumType.STRING)
-    private WMSExceptionType exception_type = WMSExceptionType.Inimage;
 
     public Layer() {
     }
@@ -621,14 +618,6 @@ public class Layer implements Cloneable {
 
     public void setBoundingBoxes(Map<CoordinateReferenceSystem, BoundingBox> boundingBoxes) {
         this.boundingBoxes = boundingBoxes;
-    }
-    
-    public WMSExceptionType getException_type() {
-        return exception_type;
-    }
-
-    public void setException_type(WMSExceptionType exception_type) {
-        this.exception_type = exception_type;
     }
     
     //</editor-fold>

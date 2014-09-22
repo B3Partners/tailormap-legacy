@@ -1,2 +1,2 @@
-alter table layer add exception_type varchar2(255 char);
+alter table geo_service add exception_type varchar2(255 char);
 
