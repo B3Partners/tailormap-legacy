@@ -62,6 +62,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </td>
                     </tr>
                     <tr>     
+                        <td>Exceptiontype:</td>
+                        <td>
+                            <stripes:select name="layer.exception_type" value="Inimage"  id="exception_type">
+                                <stripes:option value="-1">Kies..</stripes:option>
+                                <stripes:options-enumeration enum="nl.b3p.viewer.config.services.WMSExceptionType"  />
+                            </stripes:select>
+                        </td>
+                    </tr>
+                    <tr>     
                         <td>Metadata stylesheet:</td> <%-- XXX wordt in TOC niet zo gebruikt, moet metadata.url zijn? --%>
                         <td><stripes:text name="details['metadata.stylesheet']" maxlength="255" size="30"/></td>
                     </tr>
