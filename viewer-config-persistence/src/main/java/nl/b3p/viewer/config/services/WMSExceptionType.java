@@ -18,4 +18,8 @@ public enum WMSExceptionType {
     WMSExceptionType(String description) {
         this.description = description;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }

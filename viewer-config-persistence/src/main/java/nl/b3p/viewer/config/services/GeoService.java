@@ -354,6 +354,11 @@ public abstract class GeoService {
         o.put("url", url);
         o.put("protocol", getProtocol());
         
+        if(this instanceof WMSService){
+            WMSExceptionType extype = ((WMSService)this).getException_type() != null ? ((WMSService)this).getException_type() : WMSExceptionType.Inimage;
+            o.put("exception_type", extype.getDescription());
+        }
+        
         if (!validXmlTags){
             JSONObject jStyleLibraries = new JSONObject();
             for(StyleLibrary sld: getStyleLibraries()) {
