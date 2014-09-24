@@ -149,7 +149,8 @@ Ext.onReady(function() {
                 }
 
                 // Expand tree on click
-                record.set("isLeaf", false);
+                record.set('leaf', false);
+                record.set('isLeaf', false);
                 record.expand(false);
             }
         },
@@ -162,7 +163,7 @@ Ext.onReady(function() {
 
 // Function for adding a node, should not be called directly, but trough the
 // addCategory or addServiceNode functions
-function addNode(node, parentid) {
+function addNode(node, parentid, callback) {
     var record = null;
     var tree = Ext.getCmp('applicationtree');
     if(parentid == rootId || parentid == 'n'+rootId) {
@@ -174,8 +175,13 @@ function addNode(node, parentid) {
         if(record.isLeaf()) {
             // If the parent is currently a Leaf, then setting it to false
             // and expanding it will load the added childnode from backend
+            record.set('leaf', false);
             record.set('isLeaf', false);
-            record.expand(false);
+            record.expand(/*recursive=*/false, function() {
+                if(callback) {
+                    callback();
+                }
+            });
         } else {
             // If it has childnodes then just append the new node
             // First expand, then append child, otherwise childnodes are replaced?
@@ -200,6 +206,9 @@ function addNode(node, parentid) {
                     }
                 } else {
                     //console.log("child already exists even though parent was a leaf!");
+                }
+                if(callback) {
+                    callback();
                 }
             });
         }
@@ -232,8 +241,9 @@ function addSublevel(record) {
                         var objData = Ext.JSON.decode(result.responseText);
                         objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                         var newNode = Ext.create('AppLevelTreeModel', objData);
-                        addNode(newNode, objData.parentid);
-                        Ext.getCmp("applicationtree").fireEvent("itemclick", null, newNode);
+                        addNode(newNode, objData.parentid, function() {
+                            Ext.getCmp("applicationtree").fireEvent("itemclick", null, newNode);
+                        });
                     },
                     failure: function ( result, request) {
                         Ext.MessageBox.alert('Failed', result.responseText);
@@ -340,6 +350,7 @@ function refreshNode(nodeid) {
     var record = treeStore.getNodeById(nodeid)
     // Set isLeaf false so if node did not have children before, it would
     // correctly expand when children are added
+    record.set('leaf', false);
     record.set('isLeaf', false);
     treeStore.load({
         node: record,
