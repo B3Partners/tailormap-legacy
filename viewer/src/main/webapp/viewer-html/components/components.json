@@ -847,7 +847,7 @@
         shortName: "Gr",
         group: "Component",
         singleton: true,
-        sources: ["Graph.js"],
+        sources: ["../../extjs/packages/sencha-charts/sencha-charts.js", "Graph.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js"],
         restrictions: ["left_menu"],        
         type: "popup",
