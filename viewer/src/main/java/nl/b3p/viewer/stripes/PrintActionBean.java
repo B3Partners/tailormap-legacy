@@ -20,7 +20,6 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,29 +30,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.util.JAXBSource;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.print.Legend;
 import nl.b3p.viewer.print.PrintExtraInfo;
+import nl.b3p.viewer.print.PrintGenerator;
 import nl.b3p.viewer.print.PrintInfo;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
 import org.apache.log4j.Logger;
 import org.apache.xmlgraphics.util.MimeConstants;
 import org.json.JSONArray;
@@ -64,6 +53,8 @@ import org.stripesstuff.stripersist.Stripersist;
 /**
  *
  * @author Roy Braam
+ * @author Meine Toonen
+ * @author Eddy Scheper
  */
 @UrlBinding("/action/print")
 @StrictBinding
@@ -97,7 +88,9 @@ public class PrintActionBean implements ActionBean {
     
     private ActionBeanContext context;
     
+    @DefaultHandler
     public Resolution print() throws JSONException, Exception {
+        boolean mailprint=false;
         JSONObject jRequest = new JSONObject(params);
         
         //get the appId:
@@ -152,7 +145,6 @@ public class PrintActionBean implements ActionBean {
             info.cacheLegendImagesAndReadDimensions();
         }
         
-        
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;
@@ -164,13 +156,18 @@ public class PrintActionBean implements ActionBean {
         final String mimeType;
         if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
             mimeType=MimeConstants.MIME_RTF;
-        }else{
+        }else if(jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("savePDF")){
             mimeType=MimeConstants.MIME_PDF;
+        }else if(jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("mailPDF")){
+            mimeType=MimeConstants.MIME_PDF;
+            mailprint=true;
+        }else{
+            throw new Exception("Unidentified action: " + jRequest.getString("action"));
         }
         
         // The json structure is:
 //            [{
-//                class: <String> entry.component.$className,
+//                className: <String> entry.component.$className,
 //                componentName: <String>entry.component.name,
 //                info: <JSONObject> info in JSONObject
 //            }]
@@ -183,7 +180,7 @@ public class PrintActionBean implements ActionBean {
             for (int i=0; i < jarray.length();i++){
                 JSONObject extraObj = jarray.getJSONObject(i);
                 PrintExtraInfo pei = new PrintExtraInfo();
-                String className = extraObj.getString("class");
+                String className = extraObj.getString("className");
                 String componentName = extraObj.getString("componentName");
                 JSONObject infoString = extraObj.getJSONObject("info");
 
@@ -200,21 +197,31 @@ public class PrintActionBean implements ActionBean {
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PORTRAIT;
         final String templateName= getTemplateName(pageFormat,orientation);
         
-        
         final String templateUrl;
+        final boolean useMailer = mailprint;
         if (app!=null && app.getDetails()!=null && app.getDetails().get("stylesheetPrint")!=null){            
-            //templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
             ClobElement ce = app.getDetails().get("stylesheetPrint");
             templateUrl=ce.getValue()+templateName;
         }else{
             templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
         }
+        final String toMail = jRequest.getString("mailTo");
+        final String fromMail = jRequest.has("fromAddress") ? jRequest.getString("fromAddress") : "";
+        final String fromName = jRequest.has("fromName") ? jRequest.getString("fromName") : "";
         
         StreamingResolution res = new StreamingResolution(mimeType) {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
+                /* Set filename and extension */
+                String filename = "Kaart_" + info.getDate();
+
+                if (mimeType.equals(MimeConstants.MIME_PDF)) {
+                    filename += ".pdf";
+                } else if (mimeType.equals(MimeConstants.MIME_RTF)) {
+                    filename += ".rtf";
+                }
                 if (templateUrl.toLowerCase().startsWith("http://") || templateUrl.toLowerCase().startsWith("ftp://")){
-                    createOutput(info,mimeType, new URL(templateUrl),true,response);
+                    PrintGenerator.createOutput(info,mimeType, new URL(templateUrl),true,response,filename);
                 }else{
                     File f = new File(templateUrl);
                     if (!f.exists()){
@@ -225,7 +232,17 @@ public class PrintActionBean implements ActionBean {
                         f= new File(context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName));
                     }
                     try {
-                        createOutput(info,mimeType, f,true,response);
+                        if(useMailer){
+                            this.setAttachment(false);
+                            response.setContentType("plain/text");
+                            Thread t = new Thread(new PrintGenerator(info, mimeType, f, filename,fromName, fromMail, toMail));
+                            t.start();
+                            response.getWriter().println("success");
+                            response.getWriter().close();
+                            response.getWriter().flush();
+                        }else{
+                            PrintGenerator.createOutput(info,mimeType, f,true,response,filename);
+                        }
                     } finally {
                         info.removeLegendImagesCache();
                     }
@@ -234,110 +251,7 @@ public class PrintActionBean implements ActionBean {
             }
         };
         return res;
-        
     }    
-    
-    private void createOutput(PrintInfo info, String mimeType, File xslFile,
-            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
-
-        String path = new File(xslFile.getParent()).toURI().toString();
-        createOutput(info, mimeType, new FileInputStream(xslFile), path, addJavascript, response);
-    }
-    private void createOutput(PrintInfo info, String mimeType, URL xslUrl,
-            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
-
-        String path = xslUrl.toString().substring(0, xslUrl.toString().lastIndexOf("/")+1);
-        createOutput(info, mimeType, xslUrl.openStream(), path, addJavascript, response);
-    }
-    /**
-     * Create the output pdf.
-     * @param info the print info
-     * @param mimeType mimeType of the result
-     * @param xslIs inputstream for xsl sheet
-     * @param basePath the base path of that sheet
-     * @param addJavascript addJavascript?
-     * @param response the response for the outputstream
-     * @throws MalformedURLException
-     * @throws IOException 
-     */
-    private void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath,
-            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
-
-        /* Setup fopfactory */
-        FopFactory fopFactory = FopFactory.newInstance();
-
-        /* Set BaseUrl so that fop knows paths to images etc... */
-        fopFactory.setBaseURL(basePath);
-
-        /* Setup output stream */
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try {
-            /* Construct fop */
-            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            foUserAgent.setCreator("Flamingo");
-            foUserAgent.setProducer("Flamingo");
-
-            Date now = new Date();
-            foUserAgent.setCreationDate(now);
-            foUserAgent.setTitle("Kaart");
-
-            Fop fop = fopFactory.newFop(mimeType, foUserAgent, out);
-
-            //String s=printInfoToString(info);
-            /* Setup Jaxb */
-            JAXBContext jc = JAXBContext.newInstance(PrintInfo.class);
-            JAXBSource src = new JAXBSource(jc, info);
-            
-            JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
-            if(log.isDebugEnabled()) {
-                StringWriter sw = new StringWriter();
-                jaxbContext.createMarshaller().marshal(info, sw);
-                log.debug("Print XML: " + sw.toString());
-            }
-            /* Setup xslt */
-            Source xsltSrc = new StreamSource(xslIs);
-            xsltSrc.setSystemId(basePath);
-
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(xsltSrc);
-
-            Result res = new SAXResult(fop.getDefaultHandler());
-
-            transformer.transform(src, res);
-
-            /* Setup response */
-            response.setContentType(mimeType);
-            response.setContentLength(out.size());
-			
-            /* Set filename and extension */
-            String filename = "Kaart_" + info.getDate();
-
-            if (mimeType.equals(MimeConstants.MIME_PDF)) {
-                filename += ".pdf";
-            } else if (mimeType.equals(MimeConstants.MIME_RTF)) {
-                filename += ".rtf";
-            }
-
-            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-
-            //TODO: Postprocess pages to add javascript print
-            /* use postprocessing with itext to add Javascript to output 
-            if (addJavascript) {
-                addJsToPdfOutput(out, response);
-            } else {
-                response.getOutputStream().write(out.toByteArray());
-            }*/
-            response.getOutputStream().write(out.toByteArray());
-            
-            response.getOutputStream().flush();
-
-        } catch (Exception ex) {
-            log.error("Fout tijdens print output: ", ex);
-        } finally {
-            out.close();
-        }
-    }      
     
     private String getOverviewUrl(String params) throws JSONException, Exception{
         JSONObject info = new JSONObject(params);

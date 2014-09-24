@@ -521,3 +521,106 @@ function buildWMSOptions(url, layers, clickPosition, format) {
         scope: this
     };
 }
+
+// https://github.com/openlayers/openlayers/issues/929#issuecomment-28795011       
+OpenLayers.Layer.Grid.prototype.initGriddedTiles = function(bounds) {
+    this.clearTileQueue();
+
+    // work out mininum number of rows and columns; this is the number of
+    // tiles required to cover the viewport plus at least one for panning
+
+    var viewSize = this.map.getSize();
+    var minRows = Math.ceil(viewSize.h/this.tileSize.h) + 
+                  Math.max(1, 2 * this.buffer);
+    var minCols = Math.ceil(viewSize.w/this.tileSize.w) +
+                  Math.max(1, 2 * this.buffer);
+
+    var origin = this.getTileOrigin();
+    var resolution = this.getServerResolution();
+
+    var tileLayout = this.calculateGridLayout(bounds, origin, resolution);
+
+    var tileoffsetx = Math.round(tileLayout.tileoffsetx); // heaven help us
+    var tileoffsety = Math.round(tileLayout.tileoffsety);
+
+    var tileoffsetlon = tileLayout.tileoffsetlon;
+    var tileoffsetlat = tileLayout.tileoffsetlat;
+
+    var tilelon = tileLayout.tilelon;
+    var tilelat = tileLayout.tilelat;
+
+    var startX = tileoffsetx; 
+    var startLon = tileoffsetlon;
+
+    var rowidx = 0;
+
+    var layerContainerDivLeft = parseInt(this.map.layerContainerDiv.style.left);
+    var layerContainerDivTop = parseInt(this.map.layerContainerDiv.style.top);
+
+    var tileData = [], center = this.map.getCenter();
+    do {
+        var row = this.grid[rowidx++];
+        if (!row) {
+            row = [];
+            this.grid.push(row);
+        }
+
+        tileoffsetlon = startLon;
+        tileoffsetx = startX;
+        var colidx = 0;
+
+        do {
+            if(!colidx) tileoffsetlon = startLon;
+            var tileBounds = 
+                new OpenLayers.Bounds(tileoffsetlon, 
+                                      tileoffsetlat, 
+                                      tileoffsetlon + tilelon,
+                                      tileoffsetlat + tilelat);
+
+            var x = tileoffsetx;
+            x -= layerContainerDivLeft;
+
+            var y = tileoffsety;
+            y -= layerContainerDivTop;
+
+            var px = new OpenLayers.Pixel(x, y);
+            var tile = row[colidx++];
+            if (!tile) {
+                tile = this.addTile(tileBounds, px);
+                this.addTileMonitoringHooks(tile);
+                row.push(tile);
+            } else {
+                tile.moveTo(tileBounds, px, false);
+            }
+            var tileCenter = tileBounds.getCenterLonLat();
+            tileData.push({
+                tile: tile,
+                distance: Math.pow(tileCenter.lon - center.lon, 2) +
+                    Math.pow(tileCenter.lat - center.lat, 2)
+            });
+
+            tileoffsetlon += tilelon;       
+            tileoffsetx += this.tileSize.w;
+        } while ((tileoffsetlon <= bounds.right + tilelon * this.buffer)
+                 || colidx < minCols);
+         
+        tileoffsetlat -= tilelat;
+        tileoffsety += this.tileSize.h;
+    } while((tileoffsetlat >= bounds.bottom - tilelat * this.buffer)
+            || rowidx < minRows);
+
+    //shave off exceess rows and colums
+    this.removeExcessTiles(rowidx, colidx);
+
+    // store the resolution of the grid
+    this.gridResolution = this.getServerResolution();
+
+    //now actually draw the tiles
+    tileData.sort(function(a, b) {
+        return a.distance - b.distance; 
+    });
+    for (var i=0, ii=tileData.length; i<ii; ++i) {
+        tileData[i].tile.draw();
+    }                
+}    
+

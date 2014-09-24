@@ -44,7 +44,10 @@ Ext.define ("viewer.components.Print",{
         max_imagesize: "2048",
         showPrintRtf:null,
         label: "",
-        overview:null
+        overview:null,
+        mailprint:null,
+        fromAddress:null,
+        fromName:null
     },
     /**
      * @constructor
@@ -53,11 +56,11 @@ Ext.define ("viewer.components.Print",{
     constructor: function (conf){  
         //set minwidth:
         if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
-        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true 
+        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true;
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
-        this.config.legends=[];
+        this.legends=[];
         
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
@@ -67,18 +70,18 @@ Ext.define ("viewer.components.Print",{
                 handler: function(){
                     me.buttonClick();
                 },
-                text: me.config.title,
-                icon: me.config.titlebarIcon,
-                tooltip: me.config.tooltip,
-                label: me.config.label
+                text: me.title,
+                icon: me.titlebarIcon,
+                tooltip: me.tooltip,
+                label: me.label
             });
         }
         this.extraInfoCallbacks = new Array();
         this.extraLayerCallbacks = new Array();
         
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
+        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
+        this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
         
         return this;
     },
@@ -118,14 +121,14 @@ Ext.define ("viewer.components.Print",{
      * @param layer the map layer of type viewer.viewerController.controller.Layer
      */
     loadLegend : function (layer){
-        var appLayer = this.config.viewerController.getAppLayerById(layer.appLayerId);
+        var appLayer = this.viewerController.getAppLayerById(layer.appLayerId);
         if (appLayer==undefined || appLayer==null){
             return;
         }
         //make the var ready, so we now it's loading.
-        this.config.legends[appLayer.id]={};
+        this.legends[appLayer.id]={};
         var me = this;
-        this.config.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){
+        this.viewerController.getLayerLegendInfo(appLayer,function(appLayer,legendObject){
                 me.addLegend(appLayer,legendObject)
             },
             function(appLayer){
@@ -138,13 +141,13 @@ Ext.define ("viewer.components.Print",{
                 id: layer.appLayerId,
                 name: layerTitle
             };
-            this.config.legends.push(legend);
+            this.legends.push(legend);
         }*/
     },
     
     removeLegend: function (layer){
         if (layer!=null){
-            delete this.config.legends[layer.appLayerId];
+            delete this.legends[layer.appLayerId];
         }
         if (!this.legendLoading()){
             this.createLegendSelector();
@@ -154,8 +157,8 @@ Ext.define ("viewer.components.Print",{
      * when Legend is succesfully loaded, add it to the legend object.
      */
     addLegend: function (appLayer,legendObject){
-        if (this.config.legends[appLayer.id]!=undefined){           
-            this.config.legends[appLayer.id]= legendObject;            
+        if (this.legends[appLayer.id]!=undefined){           
+            this.legends[appLayer.id]= legendObject;            
         }
         if (!this.legendLoading()){
             this.createLegendSelector();
@@ -165,7 +168,7 @@ Ext.define ("viewer.components.Print",{
      * When getting the legend failed, remove the var.
      */
     failLegend: function(appLayer){
-        delete this.config.legends[appLayer.id];
+        delete this.legends[appLayer.id];
         if (!this.legendLoading()){
             this.createLegendSelector();
         }
@@ -175,9 +178,9 @@ Ext.define ("viewer.components.Print",{
      * @return true if legends are loaded and false if loading legend finished.
      */
     legendLoading: function (){
-        for (var key in this.config.legends){
+        for (var key in this.legends){
             //if there is a var for the legend, it's not yet succesfully loaded nor it failed
-            if (this.config.legends[key]==null){
+            if (this.legends[key]==null){
                 return true;
             }
         }
@@ -266,6 +269,7 @@ Ext.define ("viewer.components.Print",{
                         text: "Titel"
                     },{
                         xtype: 'textfield',
+                        width: '100%',                        
                         name: 'title',
                         value: ""
                     },{                        
@@ -297,13 +301,13 @@ Ext.define ("viewer.components.Print",{
                         },{
                             xtype: 'container',
                             layout: {
-                                type: 'hbox'
+                                type: 'column'
                             },
                             width: '100%',
                             items: [{
                                 xtype: 'container',
                                 html: '<div id="' + qualitySliderId + '"></div>',
-                                flex: 1
+                                columnWidth: 1
                             },{
                                 xtype: 'button',
                                 text: '<',
@@ -312,11 +316,12 @@ Ext.define ("viewer.components.Print",{
                                 listeners: {
                                     click:{
                                         scope: this,
-                                        fn: function() {
+                                        fn: function (){
                                             this.qualitySlider.setValue(this.getMapQuality());
                                         }
                                     }
-                                }
+                                }  
+                                //todo handle reset
                             }]
                         }]
                     },{
@@ -334,18 +339,16 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'radiogroup',
                                 name: "orientation", 
                                 width: MobileManager.isMobile() ? 185 : 125,
-                                height: 25,
                                 items: [{
                                     boxLabel: 'Liggend', 
                                     name: 'orientation', 
                                     inputValue: 'landscape', 
-                                    checked: me.getOrientation() === 'landscape',
-                                    margin: '0 5px 0 0'
+                                    checked: me.getOrientation()=='landscape'
                                 },{
                                     boxLabel: 'Staand', 
                                     name: 'orientation', 
                                     inputValue: 'portrait', 
-                                    checked: me.getOrientation() !== 'landscape'
+                                    checked: !(me.getOrientation()=='landscape') 
                                 }]                            
                             },{
                                 xtype: 'checkbox',
@@ -376,7 +379,7 @@ Ext.define ("viewer.components.Print",{
                                 xtype: 'label',  
                                 text: "Pagina formaat"  
                             },{
-                                xtype: "combobox",                                
+                                xtype: "flamingocombobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
@@ -390,6 +393,16 @@ Ext.define ("viewer.components.Print",{
                         }]
                     }]                        
                 }]
+            },{                        
+                xtype: "label",
+                hidden:this.config.mailPrint === "cantMail",
+                text: "Mailadres"
+            },{
+                xtype: 'textfield',
+                name: 'mailTo',
+                hidden:this.config.mailPrint === "cantMail",
+                width: "10%",
+                value: ""
             },{
                  xtype: 'label',
                  style: {
@@ -415,14 +428,14 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.popup.hide()
+                                this.popup.hide();
                             }
                         }
                     }  
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
-                    hidden: !this.config.showPrintRtf,
+                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -432,13 +445,14 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("saveRTF")
+                                this.submitSettings("saveRTF");
                             }
                         }
                     }                  
                 },{
                     xtype: 'button',
                     text: 'Opslaan via PDF'  ,
+                    hidden: this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -448,7 +462,43 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("savePDF")
+                                this.submitSettings("savePDF");
+                            }
+                        }
+                    }                    
+                },{
+                    xtype: 'button',
+                    text: 'Verstuur per mail',
+                    componentCls: 'mobileLarge',
+                    hidden:this.config.mailPrint === "cantMail",
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                var props = this.getAllProperties("mailPDF");
+                                if(props.mailTo !== undefined && props.mailTo !== null && props.mailTo !== ""){
+                                    props.fromAddress = this.config.fromAddress;
+                                    props.fromName = this.config.fromName;
+                                    Ext.Ajax.request({
+                                        url: actionBeans["print"],
+                                        params: {
+                                            params: Ext.JSON.encode(props)
+                                        },
+                                        success: function(result) {
+                                            var response = result.responseText;
+                                            Ext.MessageBox.alert('Info', "Print wordt gemaakt en wordt via de mail verzonden. Dit kan enige minuten duren");
+                                        },
+                                        failure: function(result) {
+                                           Ext.MessageBox.alert('Fout', "Print mislukt.");
+                                        }
+                                    });
+                                }else{
+                                    Ext.MessageBox.alert('Fout', "Vul een geldig e-mailadres in.");
+                                }
                             }
                         }
                     }                    
@@ -456,13 +506,13 @@ Ext.define ("viewer.components.Print",{
             }]
         });
         
-        this.qualitySlider = Ext.create('Ext.slider.Single', {
+        this.qualitySlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
             renderTo: qualitySliderId,
             name: "quality",
             value: 11,
             increment: 1,
             minValue: me.minQuality,
-            maxValue: me.config.max_imagesize,
+            maxValue: me.max_imagesize,
             width: Ext.get(qualitySliderId).getWidth(),
             listeners: {
                 changecomplete: {
@@ -474,7 +524,7 @@ Ext.define ("viewer.components.Print",{
             }
         });
         
-        this.rotateSlider = Ext.create('Ext.slider.Single', {
+        this.rotateSlider = Ext.create(MobileManager.isMobile() ? 'viewer.components.MobileSlider' : 'Ext.slider.Single', {
             renderTo: rotateSliderId,
             name: 'angle',
             value: 0,
@@ -529,15 +579,15 @@ Ext.define ("viewer.components.Print",{
                 xtype: "label",
                 text: "Opnemen in legenda:"
             });
-            for (var key  =0 ; key < this.config.legends.length ;key++){
-                if(this.config.legends.hasOwnProperty(key)){
-                    var appLayer =this.config.viewerController.getAppLayerById(key);
+            for (var key  =0 ; key < this.legends.length ;key++){
+                if(this.legends.hasOwnProperty(key)){
+                    var appLayer =this.viewerController.getAppLayerById(key);
                     var title = appLayer.alias;
                     checkboxes.push({
                         xtype: "checkbox",
                         boxLabel: title,
                         name: 'legendUrl',
-                        inputValue: Ext.JSON.encode(this.config.legends[key]),
+                        inputValue: Ext.JSON.encode(this.legends[key]),
                         id: 'legendCheckBox'+key,
                         checked: true
                     });
@@ -560,13 +610,13 @@ Ext.define ("viewer.components.Print",{
      *@return the 'quality' of the map (the biggest dimension: height or width)
      */
     getMapQuality: function(){
-        var width = this.config.viewerController.mapComponent.getMap().getWidth();
-        var height = this.config.viewerController.mapComponent.getMap().getHeight();
+        var width = this.viewerController.mapComponent.getMap().getWidth();
+        var height = this.viewerController.mapComponent.getMap().getHeight();
         return width > height? width : height;
     },
     shouldAddOverview : function(){
         var overviews = this.getOverviews();
-        if(this.config.overview && overviews.length > 0){
+        if(this.overview && overviews.length > 0){
             return true;
         }else{
             return false;
@@ -609,10 +659,10 @@ Ext.define ("viewer.components.Print",{
     getMaxQualityWithAngle: function(angle){
         //only if a rotation must be done.
         if (angle==0 || angle==360)
-            return this.config.max_imagesize;
+            return this.max_imagesize;
         
-        var width = this.config.viewerController.mapComponent.getMap().getWidth();
-        var height = this.config.viewerController.mapComponent.getMap().getHeight();
+        var width = this.viewerController.mapComponent.getMap().getWidth();
+        var height = this.viewerController.mapComponent.getMap().getHeight();
         var sliderQuality = this.qualitySlider.getValue();
         var ratio = width/height;
         //calculate the new widht and height with the quality
@@ -659,8 +709,8 @@ Ext.define ("viewer.components.Print",{
         var maxQuality = newWidth > newHeight ? newWidth : newHeight;
         
         //if the quality is bigger then the max allowed the original quality would be lower.
-        if (maxQuality > this.config.max_imagesize){
-            maxQuality = (this.config.max_imagesize*this.config.max_imagesize)/maxQuality;
+        if (maxQuality > this.max_imagesize){
+            maxQuality = (this.max_imagesize*this.max_imagesize)/maxQuality;
         }        
         //because its in pixels floor.
         return Math.floor(maxQuality);
@@ -685,25 +735,29 @@ Ext.define ("viewer.components.Print",{
     * Called when a button is clicked and the form must be submitted.
     */
     submitSettings: function(action){        
+        var properties = this.getAllProperties(action);
+        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
+        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
+        this.printForm.submit({            
+            target: '_blank'
+        });
+    },
+    getAllProperties : function(action){
         var properties = this.getProperties();
         properties.action=action;
         // Process registred extra info callbacks
         var extraInfos = new Array();
-        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){
+        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){ 
             var entry = this.extraInfoCallbacks[i];
             var extraInfo = {
-                class: Ext.getClass(entry.component).getName(),
+                className:   Ext.getClass(entry.component).getName(),
                 componentName: entry.component.name,
                 info: entry.callback() // Produces an JSONObject
             };
             extraInfos.push(extraInfo);
         }
         properties.extra = extraInfos;
-        Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
-        //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
-        this.printForm.submit({            
-            target: '_blank'
-        });
+        return properties;
     },
     /**
      *Called when the imageUrl is succesfully returned
@@ -723,7 +777,7 @@ Ext.define ("viewer.components.Print",{
                 var preview = document.getElementById('previewImg');
                 preview.innerHTML = '';
                 preview.appendChild(img);
-            }
+            };
             image.src = imageUrl;
         }
     },
@@ -741,7 +795,7 @@ Ext.define ("viewer.components.Print",{
         var properties = this.getValuesFromContainer(this.panel);
         properties.angle = this.rotateSlider.getValue();
         properties.quality = this.qualitySlider.getValue();
-        properties.appId = this.config.viewerController.app.id;
+        properties.appId = this.viewerController.app.id;
         var mapProperties=this.getMapValues();        
         Ext.apply(properties, mapProperties);
         return properties;
@@ -754,7 +808,7 @@ Ext.define ("viewer.components.Print",{
         var printLayers = new Array();
         var wktGeoms= new Array();
         //get last getmap request from all layers
-        var layers=this.config.viewerController.mapComponent.getMap().getLayers();        
+        var layers=this.viewerController.mapComponent.getMap().getLayers();        
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.getVisible()){
@@ -833,12 +887,12 @@ Ext.define ("viewer.components.Print",{
             }
         }
         values.requests=printLayers;        
-        var bbox=this.config.viewerController.mapComponent.getMap().getExtent();
+        var bbox=this.viewerController.mapComponent.getMap().getExtent();
         if (bbox){
             values.bbox = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
         }
-        values.width = this.config.viewerController.mapComponent.getMap().getWidth();
-        values.height = this.config.viewerController.mapComponent.getMap().getHeight();
+        values.width = this.viewerController.mapComponent.getMap().getWidth();
+        values.height = this.viewerController.mapComponent.getMap().getHeight();
         values.geometries = wktGeoms;
         return values;
     },
@@ -937,7 +991,7 @@ Ext.define ("viewer.components.Print",{
         }
     },
     getOverviews : function(){
-      return this.config.viewerController.getComponentsByClassName("viewer.components.Overview");  
+      return this.viewerController.getComponentsByClassName("viewer.components.Overview");  
     },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];

@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.4.5-SNAPSHOT</version>
+        <version>4.4.6-SNAPSHOT</version>
     </parent>
     <name>viewer-admin</name>
     
@@ -60,9 +60,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
+            <artifactId>javax.mail-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jstl</groupId>

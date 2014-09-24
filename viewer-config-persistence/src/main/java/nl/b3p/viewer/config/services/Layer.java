@@ -619,5 +619,6 @@ public class Layer implements Cloneable {
     public void setBoundingBoxes(Map<CoordinateReferenceSystem, BoundingBox> boundingBoxes) {
         this.boundingBoxes = boundingBoxes;
     }
+    
     //</editor-fold>
 }

@@ -37,10 +37,12 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.identity.FeatureIdImpl;
+import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -147,7 +149,7 @@ public class EditFeatureActionBean  implements ActionBean {
                     break;
                 }
                 store = (SimpleFeatureStore)fs;
-                
+                addAuditTrailLog();
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
                      error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
@@ -381,5 +383,37 @@ public class EditFeatureActionBean  implements ActionBean {
             }
         }
         return true;
+    }
+    
+    /**
+     * Method to query the datastore with a dummy query, containing the username. This is used for an audittrail.
+     * A query is composed using the fire attribute from the type, and constructing a Query with it: <firstattribute> = 'username is <username'.
+     */
+    private void addAuditTrailLog() {
+        try{
+            List<AttributeDescriptor> attributeDescriptors = store.getSchema().getAttributeDescriptors();
+            String typeName = null;
+            for (AttributeDescriptor ad : attributeDescriptors) {
+                // Get an attribute of type string. This because the username is almost always a string, and passing it to a Integer/Double will result in a invalid 
+                // query which will not log the passed values (possibly because the use of geotools).
+                if (ad.getType().getBinding() == String.class) {
+                    typeName = ad.getLocalName();
+                    break;
+                }
+            }
+
+            if (typeName == null) {
+                typeName = store.getSchema().getAttributeDescriptors().get(0).getLocalName();
+                log.warn("Audittrail: cannot find attribute of type double/integer or string. Take the first attribute.");
+            }
+            String username = context.getRequest().getRemoteUser();
+            String[] dummyValues = new String[]{"a", "b"}; // use these values for creating a statement which will always fail: attribute1 = a AND attribute1 = b.
+            String valueToInsert = "username = " + username;
+            store.modifyFeatures(typeName, valueToInsert, CQL.toFilter(typeName + " = '" + dummyValues[0] + "' and " + typeName + " = '" + dummyValues[1] + "'"));
+
+        } catch (Exception ex) {
+            // Swallow all exceptions, because this inheretly fails. It's only use is to log the application username, so it can be matched (via the database process id
+            // to the following insert/update/delete statement.
+        }
     }
 }

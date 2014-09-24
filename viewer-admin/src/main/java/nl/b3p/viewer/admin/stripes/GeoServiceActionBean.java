@@ -59,6 +59,7 @@ import nl.b3p.viewer.config.services.TileService;
 import nl.b3p.viewer.config.services.TileSet;
 import nl.b3p.viewer.config.services.Updatable;
 import nl.b3p.viewer.config.services.UpdateResult;
+import nl.b3p.viewer.config.services.WMSExceptionType;
 import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.web.WaitPageStatus;
@@ -129,6 +130,8 @@ public class GeoServiceActionBean implements ActionBean {
     private String crs;
     @Validate
     private Boolean useIntersect;
+    @Validate
+    private WMSExceptionType exception_type;
     
     private WaitPageStatus status;
     private JSONObject newService;
@@ -370,6 +373,16 @@ public class GeoServiceActionBean implements ActionBean {
     public void setUseIntersect(boolean useIntersect) {
         this.useIntersect = useIntersect;
     }
+
+    public WMSExceptionType getException_type() {
+        return exception_type;
+    }
+
+    public void setException_type(WMSExceptionType exception_type) {
+        this.exception_type = exception_type;
+    }
+    
+    
     //</editor-fold>
    
     
@@ -471,11 +484,17 @@ public class GeoServiceActionBean implements ActionBean {
             }else if (l.getDetails().containsKey("image_extension")){
                 l.getDetails().remove("image_extension");
             }
-
+            
+            // For the moment only for tiled services, the caches of the applictions which use the service are worth invalidating
+            List<Application> apps = findApplications();
+            for (Application application : apps) {
+                SelectedContentCache.setApplicationCacheDirty(application, true);
+            }
         }
         
         if (service instanceof WMSService) {
             ((WMSService)service).setOverrideUrl(overrideUrl);
+            ((WMSService)service).setException_type(exception_type);
         }
         
         if (useIntersect!=null){

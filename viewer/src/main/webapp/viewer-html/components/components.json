@@ -866,16 +866,16 @@
         showHelp: true
     },
     {
-        className: "viewer.components.tools.Keyboard",
+        className: "viewer.components.Keyboard",
         name: "Keyboard navigation",
         shortName: "Kn",
-        group: "Tools",
+        group: "Map",
         notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
-        sources: ["tools/Tool.js","tools/Keyboard.js"],
+        sources: ["Keyboard.js"],
         closureCompilerSafe: true,
 
         singleton: true,
-        restrictions: ["top_menu"],
+        restrictions: ["content"],
 
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},

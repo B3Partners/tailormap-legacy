@@ -92,6 +92,10 @@ public class WMSService extends GeoService implements Updatable {
      * Additional persistent property for this subclass, so type must be nullable.
      */
     private Boolean overrideUrl;
+    
+    
+    @Enumerated(EnumType.STRING)
+    private WMSExceptionType exception_type = WMSExceptionType.Inimage;
 
     /**
      * Whether to use the original URL the Capabilities was loaded with or the
@@ -108,6 +112,14 @@ public class WMSService extends GeoService implements Updatable {
 
     public void setOverrideUrl(Boolean overrideUrl) {
         this.overrideUrl = overrideUrl;
+    }
+    
+    public WMSExceptionType getException_type() {
+        return exception_type;
+    }
+
+    public void setException_type(WMSExceptionType exception_type) {
+        this.exception_type = exception_type;
     }
     
     @Override

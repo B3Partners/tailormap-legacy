@@ -121,6 +121,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </label>
             </td>
         </tr>
+        <tr id="useUrlTr">     
+            <td>Exceptiontype:</td>
+            <td>
+                <stripes:select name="exception_type" value="Inimage"  id="exception_type">
+                    <stripes:option value="-1">Kies..</stripes:option>
+                    <stripes:options-enumeration enum="nl.b3p.viewer.config.services.WMSExceptionType"  />
+                </stripes:select>
+            </td>
+        </tr>
         <tr id="serviceNameTr">
             <td>Service name *:</td>
             <td>

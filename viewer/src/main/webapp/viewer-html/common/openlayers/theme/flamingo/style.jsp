@@ -29,7 +29,7 @@ background: url("${sprite}") 514px 394px;
 }
 
 .olControlPanel .olControlDragPanItemActive {
-    background: url${sprite}) 0 422px;    
+    background: url("${sprite}") 0 422px;    
 }
 .olControlPanel .olControlDragPanItemInactive {
     background: url("${sprite}") 514px 422px;    

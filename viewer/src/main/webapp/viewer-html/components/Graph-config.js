@@ -195,6 +195,20 @@ Ext.define("viewer.components.CustomConfiguration", {
                        valueField: 'id',
                        value: config.serieAttribute || null,
                        width: 400
+                   },
+                   {
+                       fieldLabel: 'x-as label',
+                       name: 'xlabel',
+                       disabled:true,
+                       value: config.xlabel,
+                       id: 'xlabel'+config.id
+                   },
+                   {
+                       fieldLabel: 'y-as label',
+                       name: 'ylabel',
+                       value: config.ylabel,
+                       disabled:true,
+                       id: 'ylabel'+config.id
                    }
             ],
             tbar: ["->", {
@@ -233,6 +247,8 @@ Ext.define("viewer.components.CustomConfiguration", {
         var me = this;
         var category = Ext.getCmp("categoryAttribute" + configId);
         var serie = Ext.getCmp("serieAttribute" + configId);
+        var xLabel = Ext.getCmp("xlabel" + configId);
+        var yLabel = Ext.getCmp("ylabel" + configId);
         category.setLoading("Attributen ophalen");
         serie.setLoading("Attributen ophalen");
         category.getStore().removeAll();
@@ -260,6 +276,8 @@ Ext.define("viewer.components.CustomConfiguration", {
                 serie.setLoading(false);
                 serie.setValue(currentSerieValue);
                 category.setLoading(false);
+                xLabel.setDisabled(false);
+                yLabel.setDisabled(false);
             },
             failure: function() {
                 serie.setLoading(false);
@@ -287,7 +305,9 @@ Ext.define("viewer.components.CustomConfiguration", {
             type: Ext.getCmp( "type"+id ).getValue(),
             layer: Ext.getCmp("layer"+id ).getValue(),
             categoryAttribute: Ext.getCmp( "categoryAttribute"+id ).getValue(),
-            serieAttribute: Ext.getCmp( "serieAttribute"+id ).getValue()
+            serieAttribute: Ext.getCmp( "serieAttribute"+id ).getValue(),
+            xlabel : Ext.getCmp( "xlabel"+id ).getValue(),
+            ylabel: Ext.getCmp( "ylabel"+id ).getValue()
         };
     }
 });

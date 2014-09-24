@@ -47,8 +47,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         //button
         BUTTON                     : 24,
         //only one tool can be active, other are disabled
-        MAP_TOOL                   : 25,
-        KEYBOARD                   : 26
+        MAP_TOOL                   : 25
     },
     tool: null,    
     mapComponent: null,
