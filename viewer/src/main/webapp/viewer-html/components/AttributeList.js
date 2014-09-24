@@ -259,8 +259,8 @@ Ext.define ("viewer.components.AttributeList",{
         this.createGrid("main",document.getElementById(this.name + 'Container'), appLayer, null, filter,true,showExpand);
     },
     onExpandRow: function(rowNode,record,expandRow,recordIndex,eOpts){
+        var rawData = record.data || record.raw;
         var store=record.store;
-        var rawData = store.data.items[recordIndex].data || store.data.items[recordIndex].raw;
         if (rawData.related_featuretypes){
             var childGridIds=[];
             for (var i=0; i < rawData.related_featuretypes.length; i++){
@@ -384,7 +384,7 @@ Ext.define ("viewer.components.AttributeList",{
                 url: appLayer.featureService.getStoreUrl() + "&arrays=1"+featureType+filter,
                 reader: {
                     type: 'json',
-                    root: 'features',
+                    rootProperty: 'features',
                     totalProperty: 'total'
                 },
                 simpleSortMode: true,
