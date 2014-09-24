@@ -53,7 +53,7 @@ Ext.define ("viewer.components.LayerSwitch",{
         
         this.config.viewerController.on(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, function() {
             if(this.container) {
-                console.log('ToFRONT-after-components-load');
+                // console.log('ToFRONT-after-components-load');
                 this.container.zIndexManager.bringToFront(this.container, true);
             }
         }, this);
