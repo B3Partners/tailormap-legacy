@@ -84,6 +84,7 @@ Ext.define('LayoutManager', {
     ],
     layoutRegionsStore: null,
     popupWin: null,
+    tooltips: {},
     config: {
         layoutJson: {},
         globalLayout: {},
@@ -649,10 +650,10 @@ Ext.define('LayoutManager', {
            // then when re-adding the same component class it will reload the
            // config
             Ext.Ajax.request({ 
-                url: me.removeComponentUrl, 
+                url: me.config.removeComponentUrl, 
                 params: { 
                     name: componentName
-                } 
+                }
             });             
         }
 
@@ -689,6 +690,7 @@ Ext.define('LayoutManager', {
                 function(btnClicked) {
                     if(btnClicked === 'yes') {
                         Ext.get(data.sourceEl).removeCls("component-added");
+                        me.tooltips[itemId].destroy();
                         container.remove(itemId);
                         var addedComponents = layoutRegion.get('addedComponents');
                         if(!Ext.isEmpty(addedComponents) && Ext.isArray(addedComponents)) {
@@ -701,7 +703,6 @@ Ext.define('LayoutManager', {
                             layoutRegion.set('addedComponents', newAddedComponents);
                         }
                         me.resetWidthHeight(container, layoutRegion.get('floatComponents'));
-                        tooltip.destroy();
                         Ext.Ajax.request({ 
                             url: me.config.removeComponentUrl, 
                             params: { 
@@ -746,7 +747,7 @@ Ext.define('LayoutManager', {
     },
     
     addTooltip: function(id, name) {
-        Ext.create('Ext.tip.ToolTip', {
+        this.tooltips[id] = Ext.create('Ext.tip.ToolTip', {
             target: id,
             html: name,
             showDelay: 0,
