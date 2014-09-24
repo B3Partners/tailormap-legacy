@@ -58,10 +58,10 @@ Ext.define ("viewer.components.SpatialFilter",{
             handler: function(){
                 me.showWindow();
             },
-            text: me.title,
+            text: me.config.title,
             icon: "",//"/viewer/viewer-html/components/resources/images/spatialFilter/spatialFilterButton.png",
-            tooltip: me.tooltip,
-            label: me.label
+            tooltip: me.config.tooltip,
+            label: me.config.label
         });
         // Needed to untoggle the buttons when drawing is finished
         this.drawingButtonIds = {
@@ -74,7 +74,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         this.iconPath=contextPath+"/viewer-html/components/resources/images/drawing/";
      
         this.loadWindow(); 
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         return this;
     },
 
@@ -83,12 +83,12 @@ Ext.define ("viewer.components.SpatialFilter",{
             this.createVectorLayer();
         }
         this.layerSelector.initLayers();
-        this.popup.popupWin.setTitle(this.title);
+        this.popup.popupWin.setTitle(this.config.title);
         this.popup.show();
     },
     
     drawGeometry: function(type){
-        var appendFilter = Ext.getCmp (this.name + 'AppendFilter');
+        var appendFilter = Ext.getCmp (this.config.name + 'AppendFilter');
         if(!appendFilter.getValue()){
             this.vectorLayer.removeAllFeatures();
             this.features = new Array();
@@ -116,7 +116,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     setFilter: function(geometry, appLayer){
         var me = this;          
         if(appLayer.attributes === undefined || appLayer.attributes === null) {   
-            this.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
+            this.config.viewerController.getAppLayerFeatureService(appLayer).loadAttributes(appLayer,function(){
                 me.setFilter(geometry, appLayer);
             },function(e){
                 Ext.MessageBox.alert("Error", e);
@@ -128,7 +128,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 if(geometry.length > 0){
                     filter = "INTERSECTS(" + geomAttr + ", " + geometry + ")";
                 }
-                this.viewerController.setFilter(
+                this.config.viewerController.setFilter(
                     Ext.create("viewer.components.CQLFilterWrapper",{
                         id: "filter_"+this.getName(),
                         cql: filter,
@@ -140,9 +140,9 @@ Ext.define ("viewer.components.SpatialFilter",{
        
     },
     buffer : function(){
-        Ext.getCmp(this.name + "BufferContainer").setLoading("Buffer berekenen...");
+        Ext.getCmp(this.config.name + "BufferContainer").setLoading("Buffer berekenen...");
         var features = this.features;
-        var distance = Ext.getCmp(this.name + "BufferDistance").getValue();
+        var distance = Ext.getCmp(this.config.name + "BufferDistance").getValue();
         if(distance === null || distance === 0){
             return;
         }
@@ -172,10 +172,10 @@ Ext.define ("viewer.components.SpatialFilter",{
                 }else{
                     Ext.MessageBox.alert("Foutmelding", response.errorMessage);
                 }
-                Ext.getCmp(this.name + "BufferContainer").setLoading(false);
+                Ext.getCmp(this.config.name + "BufferContainer").setLoading(false);
             },
             failure: function(result, request) {
-                Ext.getCmp(this.name + "BufferContainer").setLoading(false);
+                Ext.getCmp(this.config.name + "BufferContainer").setLoading(false);
                 var response = Ext.JSON.decode(result.responseText);
                 Ext.MessageBox.alert("Foutmelding", response.error);
             }
@@ -184,7 +184,7 @@ Ext.define ("viewer.components.SpatialFilter",{
     
     // <editor-fold desc="Event handlers" defaultstate="collapsed">
     layerChanged : function (appLayer,afterLoadAttributes,scope){
-        var buttons = Ext.getCmp(this.name +"filterButtons");
+        var buttons = Ext.getCmp(this.config.name +"filterButtons");
         if(appLayer !== null){
             buttons.setDisabled(false);
             this.vectorLayer.removeAllFeatures();
@@ -195,8 +195,8 @@ Ext.define ("viewer.components.SpatialFilter",{
     },
       
     featureAdded : function (obj, feature){
-        var applyDirect = Ext.getCmp (this.name + 'ApplyDirect');
-        this.features.push(feature.wktgeom);
+        var applyDirect = Ext.getCmp (this.config.name + 'ApplyDirect');
+        this.features.push(feature.config.wktgeom);
         if(applyDirect.getValue()){
             this.applyFilter();
         }
@@ -206,7 +206,7 @@ Ext.define ("viewer.components.SpatialFilter",{
         if(this.vectorLayer === null){
             this.createVectorLayer();
         }else{
-            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
     },
     // </editor-fold>
@@ -307,8 +307,8 @@ Ext.define ("viewer.components.SpatialFilter",{
         });
         formItems.push(
         {
-            id: this.name + "BufferContainer",
-            name: this.name + "BufferContainer",
+            id: this.config.name + "BufferContainer",
+            name: this.config.name + "BufferContainer",
             xtype: "container",
             width: "100%",
             height: 30,
@@ -317,8 +317,8 @@ Ext.define ("viewer.components.SpatialFilter",{
             },
             items: [
                 {
-                    id: this.name + "BufferDistance",
-                    name: this.name + "BufferDistance",
+                    id: this.config.name + "BufferDistance",
+                    name: this.config.name + "BufferDistance",
                     xtype: "numberfield",
                     fieldLabel: "Bufferafstand",
                     minValue: 0,
@@ -340,20 +340,21 @@ Ext.define ("viewer.components.SpatialFilter",{
             xtype: "checkbox",
             boxLabel: 'Meerdere geometriën als filter',
             name: 'appendFilter',
-            inputValue: this.multiGeometries,
-            checked: this.multiGeometries,
-            id: this.name + 'AppendFilter'
+            inputValue: this.config.multiGeometries,
+            checked: this.config.multiGeometries,
+            id: this.config.name + 'AppendFilter'
         },
         {
             xtype: "checkbox",
             boxLabel: 'Filter direct toepassen',
             name: 'applyDirect',
-            inputValue: this.applyDirect,
-            checked: this.applyDirect,
-            id: this.name + 'ApplyDirect'
+            inputValue: this.config.applyDirect,
+            checked: this.config.applyDirect,
+            id: this.config.name + 'ApplyDirect'
         });
+        this.createLayerSelector();
         this.maincontainer = Ext.create('Ext.container.Container', {
-            id: this.name + 'Container',
+            id: this.config.name + 'Container',
             width: '100%',
             height: '100%',
             layout: {
@@ -365,13 +366,10 @@ Ext.define ("viewer.components.SpatialFilter",{
             },
             padding: 4,
             renderTo: this.getContentDiv(),
-            items: [{
-                id: this.name + 'LayerSelectorPanel',
-                xtype: "container",
-                width: '100%',
-                height: 30
-            },{
-                id: this.name + 'filterButtons',
+            items: [
+            this.layerSelector.combobox,
+            {
+                id: this.config.name + 'filterButtons',
                 xtype: "container",
                 disabled:true,
                 autoScroll: true,
@@ -382,7 +380,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 flex: 1,
                 items: formItems
             },{
-                id: this.name + 'ClosingPanel',
+                id: this.config.name + 'ClosingPanel',
                 xtype: "container",
                 width: '100%',
                 height: MobileManager.isMobile() ? 45 : 25,
@@ -407,25 +405,24 @@ Ext.define ("viewer.components.SpatialFilter",{
                 ]
             }]
         });
-        this.createLayerSelector();
     },
     createLayerSelector: function(){
         var config = {
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             restriction : "filterable",
-            id : this.name + "layerSelector",
-            layers: this.layers,
-            div: this.name + 'LayerSelectorPanel'
+            id : this.config.name + "layerSelector",
+            layers: this.config.layers,
+            padding: 4
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
         this.layerSelector.addListener(viewer.viewercontroller.controller.Event.ON_LAYERSELECTOR_CHANGE,this.layerChanged,this);  
     },
     createVectorLayer : function (){
-         this.vectorLayer = this.viewerController.mapComponent.createVectorLayer({
-            name: this.name + 'VectorLayer',
+         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: this.config.name + 'VectorLayer',
             geometrytypes:["Circle","Polygon"],
             showmeasures:false,
-            viewerController : this.viewerController,
+            viewerController : this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
                 fillopacity: 50,
@@ -433,7 +430,7 @@ Ext.define ("viewer.components.SpatialFilter",{
                 strokeopacity: 50
             }
         });
-        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.featureAdded,this);
     },
