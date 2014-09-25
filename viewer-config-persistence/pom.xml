@@ -12,13 +12,13 @@
         <version>4.4.6-SNAPSHOT</version>
     </parent>
     <name>viewer-config-persistence</name>
-    
-    <build>    
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>3.0</version>              
+                <version>3.0</version>
                 <executions>
                     <execution>
                         <id>schema-export</id>
@@ -26,9 +26,9 @@
                         <configuration>
                             <hibernatetool destdir="${project.build.outputDirectory}/scripts">
                                 <classpath>
-                                    <path location="target"/>                                    
+                                    <path location="target"/>
                                 </classpath>
-                                
+
                                 <hbm2ddl
                                     export="false"
                                     drop="false"
@@ -36,27 +36,27 @@
                                     outputfilename="oracle-schema-export.sql"
                                     format="true">
                                     <jpaconfiguration persistenceUnit="viewer-config-oracle"/>
-                                </hbm2ddl> 
-                                
-                                <hbm2ddl                                
+                                </hbm2ddl>
+
+                                <hbm2ddl
                                     export="false"
                                     drop="false"
                                     create="true"
                                     outputfilename="postgresql-schema-export.sql"
                                     format="true">
                                     <jpaconfiguration persistenceUnit="viewer-config-postgresql"/>
-                                </hbm2ddl>                                                                                             
+                                </hbm2ddl>
                             </hibernatetool>
                         </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
                     </execution>
-                </executions> 
-            </plugin>             
-        </plugins>         
+                </executions>
+            </plugin>
+        </plugins>
     </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
