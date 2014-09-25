@@ -128,7 +128,7 @@ public class GeoServiceActionBean implements ActionBean {
     @Validate
     private String crs;
     @Validate
-    private Boolean useIntersect;
+    private boolean useIntersect;
     @Validate
     private WMSExceptionType exception_type;
 
@@ -496,9 +496,7 @@ public class GeoServiceActionBean implements ActionBean {
             ((WMSService)service).setException_type(exception_type);
         }
 
-        if (useIntersect!=null){
-            service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(useIntersect.toString()));
-        }
+        service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
 
         service.setUsername(username);
         service.setPassword(password);
