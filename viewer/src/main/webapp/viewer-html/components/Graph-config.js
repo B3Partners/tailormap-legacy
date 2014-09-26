@@ -180,7 +180,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
-                       valueField: 'id',
+                       valueField: 'name',
                        value: config.categoryAttribute || null,
                        width: 400
                    },
@@ -195,7 +195,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
-                       valueField: 'id',
+                       valueField: 'name',
                        value: config.serieAttribute || null,
                        width: 400
                    },
