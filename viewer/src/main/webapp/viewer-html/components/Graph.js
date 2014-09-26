@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,9 @@ Ext.define("viewer.components.Graph", {
     constructor: function(conf) {
         viewer.components.Graph.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        if(this.config.layers !== null){
+            graph_layersArrayIndexesToAppLayerIds(conf);
+        }
         var me = this;
         this.renderButton({
             handler: function() {
@@ -50,7 +53,7 @@ Ext.define("viewer.components.Graph", {
     },
     initialize: function() {
         this.initialized = true;
-            
+
         this.toolMapClick =  this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
@@ -60,7 +63,7 @@ Ext.define("viewer.components.Graph", {
             },
             viewerController: this.viewerController
         });
-        
+
         this.layers = [];
         for (var i = 0 ; i < this.graphs.length ;i ++){
             var graph = this.graphs[i];
@@ -134,7 +137,7 @@ Ext.define("viewer.components.Graph", {
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
-        
+
         var appLayer = this.layerSelector.getValue();
         if(appLayer === null) {
             Ext.Msg.alert('Let op', 'Selecteer eerst een kaartlaag');
@@ -200,11 +203,11 @@ Ext.define("viewer.components.Graph", {
     getLinkedData : function (related_feature,attributes, configId){
         var appLayer = this.layerSelector.getValue();
         var options = {};
-         
+
         var filter = "&filter="+encodeURIComponent(related_feature.filter);
-        
+
         var featureType="&featureType="+related_feature.id;
-                
+
         options.application = this.appId;
         options.appLayer = appLayer.id;
         options.limit = 1000;
@@ -283,9 +286,9 @@ Ext.define("viewer.components.Graph", {
                 });
             })(serieAttributes[i]);
         }
-        /* 
+        /*
          * The setup for a Theme, we could use this in the future to control the color of the lines/bars
-         * 
+         *
          * Ext.define('Ext.chart.theme.Flamingo', {
             extend: 'Ext.chart.theme.Base',
             constructor: function(config) {
@@ -375,19 +378,19 @@ Ext.define("viewer.components.Graph", {
         if(!configs.length) return null;
         return configs;
     },
-    getAttribute : function (appLayer, attributeId){
+    getAttribute : function (appLayer, attributeName){
         for(var i = 0 ; i < appLayer.attributes.length;i++){
-            if(appLayer.attributes[i].id === attributeId){
+            if(appLayer.attributes[i].name === attributeName){
                 return appLayer.attributes[i];
             }
         }
         return null;
     },
-    getAttributeTitle: function(appLayer, attributeId) {
-        return this.getAttributeTitleName(appLayer, attributeId, true);
+    getAttributeTitle: function(appLayer, attributeName) {
+        return this.getAttributeTitleName(appLayer, attributeName, true);
     },
-    getAttributeTitleName: function(appLayer, attributeId, allowAlias) {
-        var attributes = this.wrapArray(attributeId),
+    getAttributeTitleName: function(appLayer, attributeName, allowAlias) {
+        var attributes = this.wrapArray(attributeName),
             attributeTitles = [],
             attribute = null;
         for(var i = 0; i < attributes.length; i++) {

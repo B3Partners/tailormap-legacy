@@ -1,35 +1,35 @@
 /* JSON metadata describing components for viewer and viewer-admin webapps
- * 
+ *
  * Parameters:
- * 
+ *
  * className: The component's classname
- * 
+ *
  * name: The name as used in the layoutmanager
- * 
+ *
  * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
- * 
+ *
  * restrictions: Array with region-ids to which the component can be dragged
  *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,content_bottom
  *   popupwindow,rightmargin_top,rightmargin_bottom,footer
- * 
+ *
  * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
- * 
+ *
  * notInCombinationWith: Array with the classNames of other components. If a component from that array has
  *                   already been added to a region, this component cannot be added to that region
- * 
+ *
  * showHelp: boolean value to show help configuration tab for component (default false)
- * group: string, indicates to which group this component belongs: used to indicate in which closable panel it should be rendered. 
+ * group: string, indicates to which group this component belongs: used to indicate in which closable panel it should be rendered.
  * Possible values: Map, Tools, Functionality. Defaults to "Rest"
  *
  * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
- *   
- * extPropertyGridConfigs.source: Set the object that must be configurable with defaults 
+ *
+ * extPropertyGridConfigs.source: Set the object that must be configurable with defaults
  * For example:
  *   {name: "a name", tooltip: "a tool tip", happy: true}
- *   
+ *
  * extPropertyGridConfigs.propertyNames: here you can set the labels for the object configured
  * in extPropertyGridConfigs.source *   l
- * For example: 
+ * For example:
  *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
  *
  */
@@ -75,9 +75,9 @@
         sources: ["StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
-        configSource: ["ConfigObject.js","StreetView-config.js"]   
+        configSource: ["ConfigObject.js","StreetView-config.js"]
     },
-    
+
     {
         className: "viewer.components.CurrentLocation",
         name: "Current Location",
@@ -87,13 +87,13 @@
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
-            propertyNames: { 
+            propertyNames: {
                 tooltip: 'Tooltip',
-                interval: 'Interval(ms)' 
+                interval: 'Interval(ms)'
             },
-            source: { 
+            source: {
                 tooltip: 'Huidge locatie',
-                interval: 0 
+                interval: 0
             }
         }
     },
@@ -105,7 +105,7 @@
         shortName: "ZI",
         sources: ["tools/Tool.js","tools/ZoomIn.js"],
         closureCompilerSafe: true,
-        singleton: true, 
+        singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
@@ -126,7 +126,7 @@
             source: {tooltip: "Zoom out", zoomBox : false}
         }
     },
-    {        
+    {
         className: "viewer.components.Maptip",
         name: "Maptip",
         shortName: "Mt",
@@ -135,7 +135,7 @@
         type : "popup",
         singleton: true,
         group: "Map",
-        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Maptip-config.js"]                   
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Maptip-config.js"]
     },
     {
         className: "viewer.components.FeatureInfo",
@@ -147,7 +147,7 @@
         group: "Map",
         singleton: true,
         restrictions: ["content"],
-        configSource: ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]   
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
     },
     {
         className: "viewer.components.tools.Identify",
@@ -196,7 +196,7 @@
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "SuperPan"}
         }
-    },  
+    },
     {
         className: "viewer.components.tools.Measure.Line",
         name: "Measure line",
@@ -224,7 +224,7 @@
                 nonSticky: false
             }
         }
-    },  
+    },
     {
         className: "viewer.components.tools.Measure.Area",
         name: "Measure area",
@@ -252,7 +252,7 @@
                 nonSticky: false
             }
         }
-    }, 
+    },
     {
         className: "viewer.components.tools.FullExtent",
         name: "Full Extent",
@@ -266,9 +266,9 @@
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Full extent"}
-        },                
+        },
         notInCombinationWith: ["OpenLayersMap"]
-    }, 
+    },
     {
         className: "viewer.components.tools.PreviousExtent",
         name: "Previous Extent",
@@ -283,9 +283,9 @@
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "PreviousExtent"},
             source: {tooltip: "Previous Extent"}
-        },      
+        },
         notInCombinationWith: ["OpenLayersMap"]
-    }, 
+    },
     {
         className: "viewer.components.tools.NextExtent",
         name: "Next Extent",
@@ -300,9 +300,9 @@
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "NextExtent"},
             source: {tooltip: "Next Extent"}
-        },                
+        },
         notInCombinationWith: ["OpenLayersMap"]
-    }, 
+    },
 
     {
         className: "viewer.components.BorderNavigation",
@@ -310,7 +310,7 @@
         group: "Tools",
         shortName: "bn",
         sources: ["BorderNavigation.js"],
-        closureCompilerSafe: true,        
+        closureCompilerSafe: true,
         singleton: true,
         restrictions: ["content"],
         extPropertyGridConfigs:{
@@ -335,7 +335,7 @@
         group: "Map",
         closureCompilerSafe: true,
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 units: "Units"
             },
             source: {
@@ -343,7 +343,7 @@
             }
         },
         singleton: true,
-        restrictions: ["content_bottom"]        
+        restrictions: ["content_bottom"]
     },
     {
         className: "viewer.components.Coordinates",
@@ -351,9 +351,9 @@
         shortName: "Coörd",
         sources: ["Coordinates.js"],
         group: "Map",
-        closureCompilerSafe: true,   
+        closureCompilerSafe: true,
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 decimals: "Decimalen"
             },
             source: {
@@ -361,8 +361,8 @@
             }
         },
         singleton: true,
-        restrictions: ["content_bottom"]        
-    }, 
+        restrictions: ["content_bottom"]
+    },
     {
         className: "viewer.components.FlamingoComponent",
         name: "Flamingo Component",
@@ -371,14 +371,14 @@
         closureCompilerSafe: true,
 
         singleton: true,
-        restrictions: ["content"],        
+        restrictions: ["content"],
         notInCombinationWith: ["OpenLayersMap"],
 
         extPropertyGridConfigs: {
             propertyNames: {xml: "Xml Configuratie"},
             source: {xml: ""}
         }
-    }, 
+    },
     {
         className: "viewer.components.TOC",
         name: "TOC",
@@ -396,8 +396,8 @@
         group: "Tools",
         sources: ["tools/Tool.js","tools/GoogleNavigation.js","NavigationPanel.js"],
         closureCompilerSafe: true,
-        extPropertyGridConfigs: {            
-            propertyNames: {            
+        extPropertyGridConfigs: {
+            propertyNames: {
                 navigationPanel: "Navigatiepaneel",
                 tooltip: "Tooltip tool",
                 //for navigation panel
@@ -413,7 +413,7 @@
                 top: "Positie vanaf boven",
                 zoomToFullIsStart: "Zoom naar maximale extent zoomt naar startextent"
             },
-            source: {          
+            source: {
                 navigationPanel: true,
                 tooltip: "Pan(slepen), zoom(dubbel klikken) en identify(enkele klik)",
                 //for navigation panel
@@ -431,19 +431,19 @@
             }
         },
         singleton: true,
-        restrictions: ["top_menu"]        
+        restrictions: ["top_menu"]
     },{
         className: "viewer.components.NavigationPanel",
         name: "Navigation Panel",
         group: "Tools",
         shortName: "np",
         sources: ["NavigationPanel.js"],
-        closureCompilerSafe: true,        
+        closureCompilerSafe: true,
         singleton: true,
         restrictions: ["content"],
         notInCombinationWith: ["Google Navigation"],
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 width: "Width",
                 height: "Height",
                 tooltip_pan_right: "Tooltip pan rechts",
@@ -455,7 +455,7 @@
                 left: "Positie vanaf links",
                 top: "Positie vanaf boven"
             },
-            source: {             
+            source: {
                 width: "",
                 height: "",
                 tooltip_pan_right: "Pan naar rechts",
@@ -477,7 +477,7 @@
         group: "Component",
         closureCompilerSafe: true,
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 title: "Titel",
                 showBackground: "Toon achtergrond kaarten",
                 margin: "Marge rond legenda (bijv. \"3px\")"
@@ -547,7 +547,7 @@
         configSource: ["ConfigObject.js","TransparencySlider-config.js","TransparencySliderLayerIds.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"],
         showHelp: true
-        
+
     },
     /*{
         className: "viewer.components.BufferLayer",
@@ -555,7 +555,7 @@
         shortName: "BL",
         sources: ["BufferLayer.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","BufferLayer-config.js"],
-        restrictions: ["left_menu"],            
+        restrictions: ["left_menu"],
         type: "popup"
     },
     {
@@ -564,7 +564,7 @@
         shortName: "BO",
         sources: ["BufferObject.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","BufferObject-config.js"],
-        restrictions: ["left_menu"],            
+        restrictions: ["left_menu"],
         type: "popup"
     },*/
     {
@@ -575,7 +575,7 @@
         singleton: true,
         sources: ["../common/ColorField.js","Buffer.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Buffer-config.js"],
-        restrictions: ["left_menu"],            
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -600,7 +600,7 @@
                 top: "50",
                 timeout: "60000"
             }
-        }             
+        }
     },
     {
         className: "viewer.components.AttributeList",
@@ -609,8 +609,8 @@
         shortName: "AL",
         sources: ["../common/plugins/RowExpander.js","AttributeList.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","AttributeList-config.js"],
-        restrictions: ["left_menu"] , 
-        singleton: true,       
+        restrictions: ["left_menu"] ,
+        singleton: true,
         type: "popup",
         showHelp: true
     },
@@ -621,7 +621,7 @@
         group: "Component",
         sources: ["Edit.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         singleton: true,
         showHelp: true
@@ -633,7 +633,7 @@
         shortName: "Te",
         sources: ["../common/ColorField.js","Drawing.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Drawing-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         singleton: true,
         showHelp: true
@@ -646,7 +646,7 @@
         singleton: true,
         sources: ["AttributeFilter.js","Filter.js","DataSelection.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","DataSelection-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -658,9 +658,9 @@
         group: "Component",
         sources: ["Search.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],        
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],
         type: "popup",
-        showHelp: true        
+        showHelp: true
      },
    /*  {
         className: "viewer.components.fmc.Window",
@@ -676,8 +676,8 @@
         shortName: "Igg",
         sources: ["Search.js","Influence.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
-        restrictions: ["left_menu"],        
-        type: "popup"         
+        restrictions: ["left_menu"],
+        type: "popup"
     },*/
     {
         className: "viewer.components.InfluenceImage",
@@ -687,7 +687,7 @@
         shortName: "Igi",
         sources: ["Search.js","Influence.js","InfluenceImage.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -710,7 +710,7 @@
         group: "Component",
         sources: ["Print.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Print-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -722,9 +722,9 @@
         group: "Component",
         sources: ["LayerContext.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","LayerContext-config.js"],
-        restrictions: ["content"],        
+        restrictions: ["content"],
         type: "popup",
-        showHelp: true        
+        showHelp: true
     },
     {
         className: "viewer.components.Help",
@@ -734,7 +734,7 @@
         group: "Component",
         sources: ["Help.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Help-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","content"],        
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","content"],
         type: "popup"
     },
     {
@@ -791,7 +791,7 @@
         singleton: true,
         sources: ["Presentation.js"],
         configSource: ["ConfigObject.js","Presentation_config.js"],
-        restrictions: ["footer"],            
+        restrictions: ["footer"],
         type: "popup"
     },*/
     {
@@ -847,9 +847,9 @@
         shortName: "Gr",
         group: "Component",
         singleton: true,
-        sources: ["Graph.js"],
-        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js"],
-        restrictions: ["left_menu"],        
+        sources: ["Graph.js", "GraphLayerIds.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js", "GraphLayerIds.js"],
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -860,7 +860,7 @@
         group: "Component",
         sources: ["SpatialFilter.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","SpatialFilter-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         singleton: true,
         showHelp: true
@@ -888,7 +888,7 @@
         shortName: "Ef",
         group: "Component",
         sources: ["SpatialFilter.js","ExtentFilter.js"],
-        restrictions: ["content"],        
+        restrictions: ["content"],
         singleton: true,
         showHelp: true,
         extPropertyGridConfigs: {
