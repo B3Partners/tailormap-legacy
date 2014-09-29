@@ -1218,7 +1218,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             //alert("do reformat filter!!!");
             Ext.create("viewer.SLD",{
                 actionbeanUrl : url
-            }).transformFilter(filter.getCQL(),appLayer.id,
+            }).transformFilter(appLayer.filter.getCQL(),appLayer.id,
                 function(newFilter){
                     //success
                     var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper",{
