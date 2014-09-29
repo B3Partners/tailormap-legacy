@@ -140,6 +140,23 @@ Ext.define("viewer.components.sf.Slider", {
                 }
             });
         } else {
+            this.slider = Ext.create('Ext.slider.Single', {
+                id: n + "_extSlider",
+                width: 160, // XXX
+                value: c.start,
+                increment: c.step,
+                minValue: c.min,
+                maxValue: c.max,
+                constrainThumbs: true,
+                renderTo: n + "_slider",
+                listeners: {
+                    change: {
+                        fn: this.sliderChange,
+                        buffer: filterChangeDelay,
+                        scope: this
+                    }
+                }
+            });
         }
     },
 
@@ -217,10 +234,16 @@ Ext.define("viewer.components.sf.Slider", {
         }), layer);
     },
     getCQL : function(){
-        var min = this.slider.getValue(0);
-        var max = this.slider.getValue(1);
+        var cql = "";
+        var sliderType = this.config.config.sliderType ;
+        if(sliderType === "range"){
+            var min = this.slider.getValue(0);
+            var max = this.slider.getValue(1);
 
-        var cql = this.config.attributeName + " > " + min + " AND " + this.config.attributeName + " < " + max;
+            cql = this.config.attributeName + " > " + min + " AND " + this.config.attributeName + " < " + max;
+        }else if (sliderType === "eq"){
+            cql = this.config.attributeName + " = " + this.slider.getValue();
+        }
         return cql;
     }
 });
