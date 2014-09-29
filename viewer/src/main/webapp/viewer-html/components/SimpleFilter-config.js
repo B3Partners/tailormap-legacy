@@ -210,6 +210,8 @@ Ext.define("viewer.components.CustomConfiguration",{
                         valueField: "type",
                         listeners: {
                             select: function (combo, records, eOpts) {
+
+                                me.resetConfig();
                                 var type = records[0].get("type");
                                 me.createFilterConfig(type,me);
                             }
@@ -334,7 +336,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                                         Ext.MessageBox.confirm('Weet u het zeker', 'Weet u zeker dat u de configuratie wilt verwijderen?', function(btn, text){
                                             if (btn === 'yes') {
                                                 me.removeConfig(id);
-                                                me.resetConfig();
+                                                me.resetConfig(true);
                                             }
                                         });
                                     }else{
@@ -390,7 +392,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
             return;
         }
-        this.resetConfig();
         this.filterConfigurer = Ext.create(configurerClass, {
             configObject: config,
             renderTo: "filterConfigFieldset"
@@ -416,7 +417,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             console.log("add: ", soort, description, filterControl);
             this.filterConfigs.push(filterControl);
             this.filterStore.add({soort: soort, description: description});
-            this.resetConfig();
+            this.resetConfig(true);
         }
     },
     removeConfig : function( id ){
@@ -435,14 +436,11 @@ Ext.define("viewer.components.CustomConfiguration",{
         var config = this.filterConfigs[this.currentEditIndex];
         var type = config.class.substring(config.class.lastIndexOf(".")+1).toLowerCase();
 
+        this.resetConfig(true);
         Ext.getCmp("layerCombo").setValue(config.appLayerId);
         Ext.getCmp("attributeCombo").setValue(config.attributeName);
         Ext.getCmp("filterType").setValue(type);
         this.createFilterConfig(type, config.config);
-    },
-    resetConfig: function () {
-        Ext.getCmp("filterConfigFieldset").removeAll();
-        this.filterConfigurer = null;
     },
     getConfiguration: function() {
         // Save possible open configs
@@ -476,6 +474,15 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         });
         return store;
+    },
+    resetConfig: function (alsoType) {
+        if(alsoType){
+            Ext.getCmp("filterType").setValue(null);
+        }
+        Ext.getCmp("layerCombo").setValue(null);
+        Ext.getCmp("attributeCombo").setValue(null);
+        Ext.getCmp("filterConfigFieldset").removeAll();
+        this.filterConfigurer = null;
     }
 });
 
