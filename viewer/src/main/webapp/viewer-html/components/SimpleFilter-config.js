@@ -149,7 +149,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
 
         this.filterStore = Ext.create("Ext.data.Store", {
-            fields: ["soort", "description"],
+            fields: ["soort", "description","id"],
             data: [
             ]
         });
@@ -164,7 +164,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
                 filter.appLayerId = appLayer.id;
                 me.filterConfigs.push(filter);
-                me.filterStore.add({soort: soort, description: (appLayer.alias || appLayer.layerName) + "." + filter.attributeName});
+                me.filterStore.add({soort: soort, description: (appLayer.alias || appLayer.layerName) + "." + filter.attributeName, id:filter.config.id});
             });
         }
 
@@ -313,7 +313,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         margin: '0 0 5 0',
                         listeners: {
                             click: {
-                                fn: me.addClick,
+                                fn: me.saveCurrentConfig,
                                 scope: me
                             }
                         }
@@ -375,7 +375,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         Ext.getCmp("filterConfigFieldset").doLayout();
     },
-    addClick: function(button, e, eOpts) {
+    saveCurrentConfig: function(button, e, eOpts) {
         console.log("addClick", this);
         if(this.filterConfigurer) {
             var filterConfigurerClass = this.filterConfigurer.self.getName();
@@ -385,12 +385,25 @@ Ext.define("viewer.components.CustomConfiguration",{
                 attributeName: Ext.getCmp("attributeCombo").getValue(),
                 config: this.filterConfigurer.getConfig()
             };
+
+            for( var i = 0 ; i < this.filterConfigs.length ;i++){
+                var config = this.filterConfigs[i];
+                if(config.config.id === filterControl.config.id){
+                    this.filterConfigs.splice(i,1);
+                    var record = this.filterStore.findRecord("id", filterControl.config.id);
+                    this.filterStore.remove(record);
+                    break;
+                }
+            }
+
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
             var appLayer = appConfig.appLayers[filterControl.appLayerId];
             var description = appLayer.alias + "." + filterControl.attributeName;
             console.log("add: ", soort, description, filterControl);
             this.filterConfigs.push(filterControl);
             this.filterStore.add({soort: soort, description: description});
+            Ext.getCmp("filterConfigFieldset").removeAll();
+            this.filterConfigurer = null;
         }
     },
 
@@ -406,6 +419,9 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
 
     getConfiguration: function() {
+        // Save possible open configs
+        this.saveCurrentConfig();
+
         var config = { filters: this.filterConfigs};
         config.layers = [];
         /* App layers must always be in the "layers" property so they can get
