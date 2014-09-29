@@ -210,7 +210,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                         valueField: "type",
                         listeners: {
                             select: function (combo, records, eOpts) {
-
                                 me.resetConfig();
                                 var type = records[0].get("type");
                                 me.createFilterConfig(type,me);
@@ -398,6 +397,17 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         Ext.getCmp("filterConfigFieldset").doLayout();
     },
+    gridSelect: function(grid, record, index, eOpts) {
+        this.currentEditIndex = index;
+        var config = this.filterConfigs[this.currentEditIndex];
+        var type = config.class.substring(config.class.lastIndexOf(".")+1).toLowerCase();
+
+        this.resetConfig(true);
+        Ext.getCmp("layerCombo").setValue(config.appLayerId);
+        Ext.getCmp("attributeCombo").setValue(config.attributeName);
+        Ext.getCmp("filterType").setValue(type);
+        this.createFilterConfig(type, config.config);
+    },
     saveCurrentConfig: function(button, e, eOpts) {
         console.log("addClick", this);
         if(this.filterConfigurer) {
@@ -430,17 +440,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 break;
             }
         }
-    },
-    gridSelect: function(grid, record, index, eOpts) {
-        this.currentEditIndex = index;
-        var config = this.filterConfigs[this.currentEditIndex];
-        var type = config.class.substring(config.class.lastIndexOf(".")+1).toLowerCase();
-
-        this.resetConfig(true);
-        Ext.getCmp("layerCombo").setValue(config.appLayerId);
-        Ext.getCmp("attributeCombo").setValue(config.attributeName);
-        Ext.getCmp("filterType").setValue(type);
-        this.createFilterConfig(type, config.config);
     },
     getConfiguration: function() {
         // Save possible open configs
