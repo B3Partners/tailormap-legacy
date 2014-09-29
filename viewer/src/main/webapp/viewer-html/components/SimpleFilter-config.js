@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2014 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 
 Ext.define("viewer.components.sf.SliderConfig", {
     configObject: null,
-    
+
     form: null,
 
     constructor: function(config) {
         this.configObject = config.configObject;
-        
+
         this.form = Ext.create("Ext.form.Panel", {
             title: 'Slider',
             width: 325,
@@ -35,7 +35,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             items: [{
                 fieldLabel: 'Label',
                 name: 'label'
-            },{ 
+            },{
                 fieldLabel: "Minimale waarde",
                 name: "min",
                 qtip: "Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt",
@@ -46,7 +46,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
                             text: c.qtip
                         });
                     }
-                }            
+                }
             },{
                 fieldLabel: "Maximale waarde",
                 name: "max",
@@ -58,7 +58,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
                             text: c.qtip
                         });
                     }
-                }            
+                }
             },{
                 fieldLabel: "Beginwaarde(s)",
                 name: "start",
@@ -71,7 +71,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
                             text: c.qtip
                         });
                     }
-                }            
+                }
             },{
                 fieldLabel: "Stap",
                 name: "step",
@@ -82,7 +82,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
                 name: "sliderType",
                 store: Ext.create("Ext.data.Store", {
                     fields: ["type", "label"],
-                    data: [ 
+                    data: [
                         {type: "eq", label: "Attribuut gelijk aan waarde slider"},
                         {type: "gt", label: "Attribuut groter dan waarde slider"},
                         {type: "lt", label: "Attribuut kleiner dan waarde slider"},
@@ -106,10 +106,10 @@ Ext.define("viewer.components.sf.SliderConfig", {
                             text: c.qtip
                         });
                     }
-                }            
+                }
             }]
         });
-        
+
         Ext.getCmp(config.renderTo).items.add(this.form);
     },
     getConfig: function() {
@@ -123,20 +123,20 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     filterStore: null,
     filterConfigs: null,
-    
+
     filterConfigurer: null,
-    
+
     currentEditIndex: null,
-    
+
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
         var title = config && config.title ? config.title : "";
-        
+
         Ext.tip.QuickTipManager.init();  // enable tooltips
-        
+
         var filterTypes = Ext.create("Ext.data.Store", {
             fields: ["type", "label"],
-            data: [ 
+            data: [
                 {type: "slider", label: "Slider"},
                 {type: "combo", label: "Selectielijst"},
                 {type: "checkbox", label: "Vinkvak"},
@@ -144,16 +144,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 {type: "reset", label: "Reset filter knop"}
             ]
         });
-        
+
         this.filterStore = Ext.create("Ext.data.Store", {
             fields: ["soort", "description"],
             data: [
             ]
         });
-        
+
         this.filterConfigs = [];
-        
-        if(config.filters) {
+
+        if(config && config.filters) {
             var me = this;
             Ext.Array.each(config.filters, function(filter) {
                 var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
@@ -163,11 +163,11 @@ Ext.define("viewer.components.CustomConfiguration",{
                 me.filterStore.add({soort: soort, description: (appLayer.alias || appLayer.layerName) + "." + filter.attributeName});
             });
         }
-        
+
         var layerStore = this.createLayerStore();
-        
+
         var me = this;
-        
+
         Ext.create('Ext.panel.Panel', {
             width: '95%',
             height: '95%',
@@ -194,10 +194,10 @@ Ext.define("viewer.components.CustomConfiguration",{
                     fieldDefaults: {
                         msgTarget: 'side',
                         labelWidth: 150
-                    },       
+                    },
                     items: [{
                         xtype: 'combo',
-                        fieldLabel: 'Soort filtergereedschap', 
+                        fieldLabel: 'Soort filtergereedschap',
                         store: filterTypes,
                         queryModes: "local",
                         displayField: "label",
@@ -207,7 +207,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             select: function(combo, records, eOpts) {
                                 var type = records[0].get("type");
                                 var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
-                                
+
                                 if(type !== "slider") {
                                     Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
                                     return;
@@ -242,15 +242,15 @@ Ext.define("viewer.components.CustomConfiguration",{
                             listeners: {
                                 select: function(combo, records, eOpts) {
                                     var layerId = records[0].get("id");
-                                    
+
                                     var appLayer = appConfig.appLayers[layerId];
-                                    
+
                                     var ac = Ext.getCmp("attributeCombo");
                                     ac.clearValue();
                                     var store = ac.getStore();
-                                    
+
                                     store.removeAll();
-                                    
+
                                     Ext.Array.each(appLayer.attributes, function(att) {
                                         store.add({
                                             name: att.name,
@@ -275,7 +275,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             listeners: {
                                 select: function(combo, records, eOpts) {
                                     var attributeName = records[0].get("name");
-                                    
+
                                     Ext.getCmp("attributeInfo").setValue("Type: " + records[0].get("type"));
                                 }
                             }
@@ -317,7 +317,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         xtype: 'button',
                         text: '+',
                         margin: '0 0 5 0',
-                        listeners: { 
+                        listeners: {
                             click: {
                                 fn: me.addClick,
                                 scope: me
@@ -355,7 +355,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }]
             }]
         });
-        
+
         /*this.titleField = Ext.create('Ext.form.field.Text', {
             fieldLabel: 'Titel (optioneel, wordt gebruikt voor tabbladen)',
             name: 'title',
@@ -367,7 +367,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.titleField.focus(false, true);*/
         return this;
     },
-    
+
     addClick: function(button, e, eOpts) {
         console.log("addClick", this);
         if(this.filterConfigurer) {
@@ -386,12 +386,12 @@ Ext.define("viewer.components.CustomConfiguration",{
             this.filterStore.add({soort: soort, description: description});
         }
     },
-    
+
     gridSelect: function(grid, record, index, eOpts) {
         this.currentEditIndex = index;
         Ext.MessageBox.alert("Concept", "Filtergereedschappen kunnen nog niet bewerkt worden...");
     },
-    
+
     getConfiguration: function() {
         var config = { filters: this.filterConfigs};
         config.layers = [];
@@ -409,12 +409,12 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         return config;
     },
-    
+
     createLayerStore: function() {
         var store = Ext.create("Ext.data.Store", {
             fields: ["id", "serviceId", "layerName", "alias"]
         });
-        
+
         Ext.Object.each(appConfig.appLayers, function(id, appLayer) {
             if(appLayer.attributes.length > 0) {
                 store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
