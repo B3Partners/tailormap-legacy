@@ -205,8 +205,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                         editable: false,
                         valueField: "type",
                         listeners: {
-                            change: function (combo, type, eOpts) {
-                                me.createFilterConfig(type);
+                            select: function (combo, records, eOpts) {
+                                var type = records[0].get("type");
+                                me.createFilterConfig(type,me);
                             }
                         }
                     },{
@@ -356,7 +357,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.titleField.focus(false, true);*/
         return this;
     },
-    createFilterConfig: function(type){
+    createFilterConfig: function(type,config){
         var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
 
         if (type !== "slider") {
@@ -365,7 +366,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
 
         this.filterConfigurer = Ext.create(configurerClass, {
-            configObject: this,
+            configObject: config,
             renderTo: "filterConfigFieldset"
         });
         Ext.getCmp("filterConfigFieldset").doLayout();
@@ -392,12 +393,12 @@ Ext.define("viewer.components.CustomConfiguration",{
     gridSelect: function(grid, record, index, eOpts) {
         this.currentEditIndex = index;
         var config = this.filterConfigs[this.currentEditIndex];
+        var type = config.class.substring(config.class.lastIndexOf(".")+1).toLowerCase();
 
         Ext.getCmp("layerCombo").setValue(appConfig.appLayers[configObject.layers[config.appLayerId]]);
         Ext.getCmp("attributeCombo").setValue(config.attributeName);
-
-        var type = config.class.substring(config.class.lastIndexOf(".")+1);
-        var soort = Ext.getCmp("filterType").setValue(type.toLowerCase());
+        Ext.getCmp("filterType").setValue(type);
+        this.createFilterConfig(type, config.config);
     },
 
     getConfiguration: function() {
