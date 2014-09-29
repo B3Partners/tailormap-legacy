@@ -202,7 +202,7 @@ Ext.define("viewer.components.sf.Slider", {
 
         var vc = this.config.simpleFilter.viewerController;
 
-        var layer = vc.getLayer({id: this.appLayerId});
+        var layer = vc.getAppLayerById( this.appLayerId);
 
         if(!layer) {
             return;
