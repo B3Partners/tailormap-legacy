@@ -430,6 +430,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
     },
+    /**
+     * Function to determine if the level does exist.
+     * @param {Level} level The level to be checked
+     */
+    doesLevelExist : function (levelToCheck){
+        var me = this;
+        me.found = false;
+        this.traverseSelectedContent(function(level){
+            me.found = level.id == levelToCheck.id || me.found;
+        }, Ext.emptyFn);
+        return me.found;
+    },
     
     getLevelAppLayerIds: function(level) {
         var appLayers = [];
@@ -510,7 +522,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /** Remove all layers
      */
     clearLayers: function() {
-        this.layers = [];
+        this.layers = {};
         this.mapComponent.getMap().removeAllLayers();
     },
     /**
@@ -713,7 +725,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var layerUrl = service.url;
 
                 var ogcOptions={
-                    exceptions: "application/vnd.ogc.se_inimage",
+                    exceptions: service.exception_type ? service.exception_type : "application/vnd.ogc.se_inimage",
                     srs: "EPSG:28992",
                     version: "1.1.1",
                     layers:layer.name,
@@ -893,10 +905,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getVisibleLayers : function (){
         var layers = this.layers;
         var layerArray = new Array();
-        for ( var i in layers){
-            var layer = layers[i];
-            if(layer.getVisible()){
-                layerArray.push(i);
+        for (var i in layers){
+            if (layers.hasOwnProperty(i)){
+                var layer = layers[i];
+                if(layer.getVisible()){
+                    layerArray.push(i);
+                }
             }
         }
         return layerArray;
@@ -1198,7 +1212,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         
         var mapLayer = this.getLayer(appLayer);
         
-        if (appLayer.relations && appLayer.relations.length > 0){
+        if (appLayer.relations && appLayer.relations.length > 0 && appLayer.filter && appLayer.filter.getCQL()){
             var me = this;
             var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
             //alert("do reformat filter!!!");
@@ -1591,22 +1605,39 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return top;
     },
-        
-    resizeComponents: function() {
+      /**
+       * Entrypoint for updating the components. 
+       * @param Boolean informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will 
+       * not be updated). Used to prevent endless calling of functions
+       *  @returns {boolean} Always true
+       */
+    resizeComponents: function(informLayoutmanager) {
         var me = this;
-        me.layoutManager.resizeLayout(function(){
-            // Openlayers needs to be manually resized and has a resize function
-            if(me.mapComponent.doResize) {
-                me.mapComponent.doResize();
-            }
-            // We are execturing the doResize function manually on all components, instead of
-            // firing an event, because all components are required execute this function
-            for(var name in me.components) {
-                var component = me.components[name];
-                component.instance.resizeScreenComponent();
-            }
-            return true;
-        });
+        if(informLayoutmanager){
+            me.layoutManager.resizeLayout(function(){
+                return me.resizeComponentsImpl();
+            });
+        }else{
+            return this.resizeComponentsImpl();
+        }
+    },
+    /**
+     * Actual calling the resize functions of all the components
+     * @returns {Boolean}
+     */
+    resizeComponentsImpl: function(){
+        var me = this;
+         // Openlayers needs to be manually resized and has a resize function
+        if(me.mapComponent.doResize) {
+            me.mapComponent.doResize();
+        }
+        // We are execturing the doResize function manually on all components, instead of
+        // firing an event, because all components are required execute this function
+        for(var name in me.components) {
+            var component = me.components[name];
+            component.instance.resizeScreenComponent();
+        }
+        return true;
     },
     /**
      *Utility functions

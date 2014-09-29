@@ -42,7 +42,7 @@ Ext.onReady(function(){
         pageSize: 10,
         model: 'SearchConfigTableRow',
         remoteSort: false,
-        remoteFilter: false,
+        remoteFilter: true,
         proxy: {
             type: 'ajax',
             url: gridurl,
@@ -77,10 +77,7 @@ Ext.onReady(function(){
                 id: 'featureSourceName',
                 text: "Bronnaam",
                 dataIndex: 'featureSourceName',
-                flex: 1,
-                filter: {
-                    xtype: 'textfield'
-                }
+                flex: 1
             },{
                 id: 'lastUpdated',
                 text: "Laatst geüpdatet",

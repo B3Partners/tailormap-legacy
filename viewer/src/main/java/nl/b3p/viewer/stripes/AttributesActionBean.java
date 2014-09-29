@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,26 +56,26 @@ import org.opengis.filter.Filter;
 @StrictBinding
 public class AttributesActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(AttributesActionBean.class);
-    
+
     private ActionBeanContext context;
-    
+
     @Validate
     private Application application;
-    
+
     @Validate
     private ApplicationLayer appLayer;
-    
+
     @Validate
     private SimpleFeatureType featureType;
-    
+
     private Layer layer = null;
-    
+
     @Validate
     private int limit;
     @Validate
     private int page;
     @Validate
-    private int start;    
+    private int start;
     @Validate
     private String dir;
     @Validate
@@ -85,19 +86,25 @@ public class AttributesActionBean implements ActionBean {
     private boolean edit=false;
     @Validate
     private String filter;
-    
+
     @Validate
     private boolean debug;
     @Validate
     private boolean noCache;
-    
+
     private boolean unauthorized;
-    
+
+    @Validate
+    private List<String> attributesToInclude = new ArrayList();
+
+    @Validate
+    private boolean graph = false;
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public ActionBeanContext getContext() {
         return context;
     }
-    
+
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
@@ -109,7 +116,7 @@ public class AttributesActionBean implements ActionBean {
     public void setApplication(Application application) {
         this.application = application;
     }
-    
+
     public ApplicationLayer getAppLayer() {
         return appLayer;
     }
@@ -189,15 +196,15 @@ public class AttributesActionBean implements ActionBean {
     public void setNoCache(boolean noCache) {
         this.noCache = noCache;
     }
-    
+
     public SimpleFeatureType getFeatureType(){
         return this.featureType;
     }
-    
+
     public void setFeatureType(SimpleFeatureType ft){
         this.featureType=ft;
     }
-    
+
     public boolean isEdit() {
         return edit;
     }
@@ -205,22 +212,38 @@ public class AttributesActionBean implements ActionBean {
     public void setEdit(boolean edit) {
         this.edit = edit;
     }
+
+    public List<String> getAttributesToInclude() {
+        return attributesToInclude;
+    }
+
+    public void setAttributesToInclude(List<String> attributesToInclude) {
+        this.attributesToInclude = attributesToInclude;
+    }
+
+    public boolean isGraph() {
+        return graph;
+    }
+
+    public void setGraph(boolean graph) {
+        this.graph = graph;
+    }
     //</editor-fold>
-    
+
     @After(stages=LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         layer = appLayer.getService().getSingleLayer(appLayer.getLayerName());
     }
-    
+
     @Before(stages=LifecycleStage.EventHandling)
     public void checkAuthorization() {
-        
-        if(application == null || appLayer == null 
+
+        if(application == null || appLayer == null
                 || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest())) {
             unauthorized = true;
         }
     }
-    
+
     public Resolution attributes() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -236,23 +259,23 @@ public class AttributesActionBean implements ActionBean {
             appLayer.addAttributesJSON(json, true);
             json.put("success", Boolean.TRUE);
         }
-        
+
         if(error != null) {
             json.put("error", error);
-        }      
-        
-        return new StreamingResolution("application/json", new StringReader(json.toString()));    
+        }
+
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
     private static final String CACHE_APPLAYER = "total_count_cache_applayer";
     private static final String CACHE_FILTER = "total_count_cache_filter";
     private static final String CACHE_TIME = "total_count_cache_time";
     private static final String CACHE_COUNT = "total_count_cache";
-    
-    private static final int CACHE_MAX_AGE = 60 * 1000;
-    
+
+    private static final int CACHE_MAX_AGE = 600 * 1000;
+
     /**
-     * Call this to clear the "total feature count" cached value when a new feature 
+     * Call this to clear the "total feature count" cached value when a new feature
      * is added to a feature source. Only clears the cache for the current session.
      */
     public static void clearTotalCountCache(ActionBeanContext context) {
@@ -262,10 +285,10 @@ public class AttributesActionBean implements ActionBean {
         sess.removeAttribute(CACHE_TIME);
         sess.removeAttribute(CACHE_COUNT);
     }
-    
+
     private int lookupTotalCountCache(Callable<Integer> countProducer) throws Exception {
         HttpSession session = context.getRequest().getSession();
-        
+
         Integer total = null;
         Long age = null;
         Long cacheAppLayerId = (Long)session.getAttribute(CACHE_APPLAYER);
@@ -281,7 +304,7 @@ public class AttributesActionBean implements ActionBean {
                 }
             }
         }
-        
+
         if(total != null) {
             log.debug(String.format("Returning cached total count value %d which was cached %s ms ago for app layer id %d",
                     total,
@@ -295,22 +318,22 @@ public class AttributesActionBean implements ActionBean {
                     total,
                     System.currentTimeMillis() - startTime,
                     appLayer.getId()));
-            
+
             // Maybe only cache if getting total took longer than threshold?
-            
-            // Now a new feature is only counted for all users after CACHE_MAX_AGE 
-            // If clearTotalCountCache() is called then the new feature will be 
+
+            // Now a new feature is only counted for all users after CACHE_MAX_AGE
+            // If clearTotalCountCache() is called then the new feature will be
             // counted for the current user/session).
-            
+
             session.setAttribute(CACHE_APPLAYER, appLayer.getId());
             session.setAttribute(CACHE_FILTER, filter);
             session.setAttribute(CACHE_TIME, System.currentTimeMillis());
             session.setAttribute(CACHE_COUNT, total);
-            
+
             return total;
         }
     }
-    
+
     private void setFilter(Query q,SimpleFeatureType ft) throws Exception {
         if(filter != null && filter.trim().length() > 0) {
             Filter f = CQL.toFilter(filter);
@@ -320,12 +343,12 @@ public class AttributesActionBean implements ActionBean {
             q.setFilter(f);
         }
     }
-    
+
     private static final int MAX_CACHE_SIZE = 50;
-/*    
+/*
     private static HTTPCache cache;
     private static synchronized HTTPCache getHTTPCache() {
-        
+
         if(cache != null) {
             if(cache.getStorage().size() > MAX_CACHE_SIZE) {
                 log.debug("Clearing HTTP cache after reaching max size of " + MAX_CACHE_SIZE);
@@ -343,29 +366,29 @@ public class AttributesActionBean implements ActionBean {
             }
             return cache;
         }
-           
+
         log.debug("Creating new HTTP cache");
         cache = new HTTPCache(
             new MemoryCacheStorage(), // XXX unchangeable capacity of 1000 is way too high
                                       // should cache based on body size...
                                       // So clear cache if size exceeds MAX_CACHE_SIZE
             HTTPClientResponseResolver.createMultithreadedInstance()
-        );                    
+        );
         return cache;
     }
-*/    
+*/
     public Resolution store() throws JSONException, Exception {
         JSONObject json = new JSONObject();
-        
+
         if(unauthorized) {
             json.put("success", false);
             json.put("message", "Not authorized");
-            return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
+            return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
-        
+
         try {
             int total = 0;
-            
+
             if(featureType!=null || (layer != null && layer.getFeatureType() != null)) {
                 FeatureSource fs;
                 SimpleFeatureType ft = featureType;
@@ -386,17 +409,17 @@ public class AttributesActionBean implements ActionBean {
                     }
                     fs = ((ArcGISFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
                 }*/ else {
-                    
+
                     fs = ft.openGeoToolsFeatureSource();
                 }
-                
+
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
                 final Query q = new Query(fs.getName().toString());
                 //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
                 setFilter(q,ft);
-                                
+
                 final FeatureSource fs2 = fs;
                 total = lookupTotalCountCache(new Callable<Integer>() {
                     public Integer call() throws Exception {
@@ -407,14 +430,14 @@ public class AttributesActionBean implements ActionBean {
                 if(total == -1) {
                     total = FeatureToJson.MAX_FEATURES;
                 }
-                
+
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
-                
-                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit);
-                
+
+                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, attributesToInclude);
+
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir);
-                
+
                 if (!startIndexSupported){
                     if (features.length() < limit){
                         //the end is reached..... Otherwise there would be a 'limit' number of features
@@ -427,9 +450,9 @@ public class AttributesActionBean implements ActionBean {
             json.put("total", total);
         } catch(Exception e) {
             log.error("Error loading features", e);
-            
+
             json.put("success", false);
-            
+
             String message = "Fout bij ophalen features: " + e.toString();
             Throwable cause = e.getCause();
             while(cause != null) {
@@ -439,7 +462,7 @@ public class AttributesActionBean implements ActionBean {
             json.put("message", message);
         }
 
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));    
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
 }

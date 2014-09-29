@@ -153,7 +153,7 @@ Ext.define ("viewer.components.ScreenPopup",{
     isVisible: function() {
         return this.popupWin.isVisible();
     },
-	resizePopup: function() {
+    resizePopup: function() {
         if(MobileManager.isMobile() && this.isVisible()) {
     		// Set size in pixels to 90%/90% of the viewportwidth / height
     		this.popupWin.setSize(Ext.Element.getViewportWidth() * .9, Ext.Element.getViewportHeight() * .9);
@@ -164,5 +164,8 @@ Ext.define ("viewer.components.ScreenPopup",{
 			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
 			this.currentOrientation = MobileManager.getOrientation();
         }
-	}
+    },
+    setWindowTitle : function(title){
+        this.popupWin.setTitle(title);
+    }
 });

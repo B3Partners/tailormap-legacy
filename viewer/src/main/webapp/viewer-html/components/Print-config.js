@@ -18,6 +18,9 @@
  * Custom configuration object for AttributeList configuration
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId,configObject){
@@ -58,8 +61,10 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "default_format",
                 emptyText:'Maak uw keuze',
                 store: [
+                    ["a5","A5"],
                     ["a4","A4"],
-                    ["a3","A3"]
+                    ["a3","A3"],
+                    ["a0","A0"]
                 ],
                 width : 75
             },{
@@ -80,10 +85,71 @@ Ext.define("viewer.components.CustomConfiguration",{
                 name: "max_imagesize",
                 value: me.configObject.max_imagesize ? me.configObject.max_imagesize :"2048"
             },{
+                xtype: "label",
+                text: "RTF-Knop",
+                style: "font-weight: bold;"                
+            },{
                 xtype: "checkbox",
                 name: "showPrintRtf",
                 checked: me.configObject.showPrintRtf ? me.configObject.showPrintRtf : true,
                 boxLabel: "Laat de print via RTF knop zien"
+            },{
+                xtype: "label",
+                text: "Overzichtskaart",
+                style: "font-weight: bold;"                
+            },{
+                xtype: "checkbox",
+                name: "overview",
+                checked: me.configObject.overview ? me.configObject.overview : false,
+                boxLabel: "Neem de overzichtskaart op als de overzichtskaart aanwezig is"
+            }
+            ,{
+                xtype: "label",
+                text: "Mail",
+                style: "font-weight: bold;"                
+            },{
+                xtype: "combo",
+                fields: ['value','text'],
+                value: me.configObject.mailPrint ? me.configObject.mailPrint : "cantMail",
+                name: "mailPrint",
+                emptyText:'Maak uw keuze',
+                store: [
+                    ["canAlsoMail","Prints kunnen ook gemaild worden"],
+                    ["cantMail","Prints kunnen niet gemaild worden"],
+                    ["canOnlyMail","Prints kunnen alleen gemaild worden"]
+                ],
+                listeners:{
+                    change:{
+                        scope: this,
+                        fn: function(obj, newValue) {
+                            var enable = newValue !== "cantMail";
+                            if (enable) {
+                                Ext.getCmp("fromAddress").show();
+                                Ext.getCmp("fromName").show();
+                            } else {
+                                Ext.getCmp("fromAddress").hide();
+                                Ext.getCmp("fromName").hide();
+
+                            }
+                        }
+                    }
+                },
+                width : 254
+            },
+           {
+                xtype: "textfield",
+                name: "fromAddress",
+                id: "fromAddress",
+                value: me.configObject.fromAddress ? me.configObject.fromAddress :"",
+                fieldLabel: "Van-adres",
+                hidden: me.configObject.mailPrint === "cantMail"
+            },{
+                xtype: "textfield",
+                name: "fromName",
+                id: "fromName",
+                value: me.configObject.fromName ? me.configObject.fromName :"Flamingo Printservice",
+                fieldLabel: "Van-naam",
+                hidden: me.configObject.mailPrint === "cantMail"
             }
         ]);
                  

@@ -26,6 +26,7 @@ Ext.define ("viewer.components.MobileSlider", {
         value: 0,
         increment: 1,
         fieldLabel: '',
+        labelSeparator: ':',
         minValue: 0,
         maxValue: 100,
         renderTo: ''
@@ -48,6 +49,9 @@ Ext.define ("viewer.components.MobileSlider", {
         label.id = me.labelid;
         if(me.config.fieldLabel !== '') {
             label.innerHTML = me.config.fieldLabel;
+        }
+        if(me.config.labelSeparator !== '') {
+            label.innerHTML += me.config.labelSeparator;
         }
         // Create the container
         var sliderContainer = document.createElement('div');
@@ -122,6 +126,9 @@ Ext.define ("viewer.components.MobileSlider", {
         var newText = '';
         if(me.config.fieldLabel !== '') {
             newText = me.config.fieldLabel + ' ';
+        }
+        if(me.config.labelSeparator !== '') {
+            text += me.config.labelSeparator;
         }
         document.getElementById(me.labelid).innerHTML = newText + text;
     },

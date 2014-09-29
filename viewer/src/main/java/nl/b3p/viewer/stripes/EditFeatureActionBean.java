@@ -18,6 +18,7 @@ package nl.b3p.viewer.stripes;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
+import java.io.IOException;
 import net.sourceforge.stripes.action.ActionBean;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -36,10 +37,12 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.identity.FeatureIdImpl;
+import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -108,8 +111,83 @@ public class EditFeatureActionBean  implements ActionBean {
         this.appLayer = appLayer;
     }
     //</editor-fold>
-
+    @DefaultHandler
     public Resolution edit() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        String error = null;
+    
+        FeatureSource fs = null;
+        try {
+            do {
+                if(appLayer == null) {
+                    error = "App layer or service not found";
+                    break;
+                }
+                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest())) {
+                    error = "U heeft geen rechten om deze kaartlaag te bewerken";
+                    break;
+                }
+                
+                layer = appLayer.getService().getLayer(appLayer.getLayerName());
+
+                if(layer == null) {
+                    error = "Layer not found";
+                    break;
+                }
+
+                if(layer.getFeatureType() == null) {
+                    error ="No feature type";
+                    break;
+                }
+
+                fs = layer.getFeatureType().openGeoToolsFeatureSource();
+                
+                if(!(fs instanceof SimpleFeatureStore)) {
+                    error = "Feature source does not support editing";
+                    break;
+                }
+                store = (SimpleFeatureStore)fs;
+                addAuditTrailLog();
+                jsonFeature = new JSONObject(feature);
+                if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
+                     error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                     break;
+                }
+                String fid = jsonFeature.optString(FID, null);
+
+                if(fid == null) {
+                    json.put(FID, addNewFeature());
+                } else {
+                    editFeature(fid);
+                    json.put(FID, fid);
+                }
+                
+                json.put("success", Boolean.TRUE);
+            } while(false);
+        } catch(Exception e) {
+            log.error(String.format("Exception editing feature", e));
+            
+            error = e.toString();
+            if(e.getCause() != null) {
+                error += "; cause: " + e.getCause().toString();
+            }
+        } finally {
+            if(fs != null) {
+                fs.getDataStore().dispose();
+            }
+        }
+                
+        if(error != null) {
+            json.put("error", error);
+            log.error("Returned error message editing feature: " + error);
+        }      
+        
+        return new StreamingResolution("application/json", new StringReader(json.toString(4)));            
+    }
+    
+    public Resolution delete() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
@@ -150,14 +228,15 @@ public class EditFeatureActionBean  implements ActionBean {
                 jsonFeature = new JSONObject(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
                      error = "U heeft geen rechten om deze feature toe te voegen en/of te wijzigen";
+                     break;
                 }
                 String fid = jsonFeature.optString(FID, null);
 
                 if(fid == null) {
-                    json.put(FID, addNewFeature());
+                    error = "Feature without FID can't be deleted";
+                    break;
                 } else {
-                    editFeature(fid);
-                    json.put(FID, fid);
+                    deleteFeature(fid);
                 }
                 
                 json.put("success", Boolean.TRUE);
@@ -221,6 +300,24 @@ public class EditFeatureActionBean  implements ActionBean {
         }               
     }
     
+    private void deleteFeature(String fid) throws IOException, Exception{
+        Transaction transaction = new DefaultTransaction("edit");
+        store.setTransaction(transaction);
+
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        Filter filter = ff.id(new FeatureIdImpl(fid));
+        
+        try {
+            store.removeFeatures(filter);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw e;
+        } finally {
+            transaction.close();
+        }
+    }
+    
     private void editFeature(String fid) throws Exception {
         Transaction transaction = new DefaultTransaction("edit");
         store.setTransaction(transaction);
@@ -268,8 +365,8 @@ public class EditFeatureActionBean  implements ActionBean {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
-            throw e;
-        } finally {
+            throw e; 
+       } finally {
             transaction.close();
         }                
     }
@@ -281,8 +378,42 @@ public class EditFeatureActionBean  implements ActionBean {
             String featureUsername=jsonFeature.optString(attr);
             if (featureUsername!=null && featureUsername.equals(request.getRemoteUser())){
                 return true;
+            }else{
+                return false;
             }
         }
-        return false;
+        return true;
+    }
+    
+    /**
+     * Method to query the datastore with a dummy query, containing the username. This is used for an audittrail.
+     * A query is composed using the fire attribute from the type, and constructing a Query with it: <firstattribute> = 'username is <username'.
+     */
+    private void addAuditTrailLog() {
+        try{
+            List<AttributeDescriptor> attributeDescriptors = store.getSchema().getAttributeDescriptors();
+            String typeName = null;
+            for (AttributeDescriptor ad : attributeDescriptors) {
+                // Get an attribute of type string. This because the username is almost always a string, and passing it to a Integer/Double will result in a invalid 
+                // query which will not log the passed values (possibly because the use of geotools).
+                if (ad.getType().getBinding() == String.class) {
+                    typeName = ad.getLocalName();
+                    break;
+                }
+            }
+
+            if (typeName == null) {
+                typeName = store.getSchema().getAttributeDescriptors().get(0).getLocalName();
+                log.warn("Audittrail: cannot find attribute of type double/integer or string. Take the first attribute.");
+            }
+            String username = context.getRequest().getRemoteUser();
+            String[] dummyValues = new String[]{"a", "b"}; // use these values for creating a statement which will always fail: attribute1 = a AND attribute1 = b.
+            String valueToInsert = "username = " + username;
+            store.modifyFeatures(typeName, valueToInsert, CQL.toFilter(typeName + " = '" + dummyValues[0] + "' and " + typeName + " = '" + dummyValues[1] + "'"));
+
+        } catch (Exception ex) {
+            // Swallow all exceptions, because this inheretly fails. It's only use is to log the application username, so it can be matched (via the database process id
+            // to the following insert/update/delete statement.
+        }
     }
 }

@@ -44,11 +44,12 @@ public class CombineImagesHandler {
         
         List<ReferencedImage> refImages = null;
         
-        if (urls.size() >0 ) {
+        if (urls!=null && urls.size() >0 ) {
             //Get the images by the urls
             ImageManager im = new ImageManager(urls, maxResponseTime, uname, pw);        
             try {
                 im.process();
+                im.shutdown();
                 refImages = im.getCombinedImages();
             } catch (Exception e) {
                 throw e;

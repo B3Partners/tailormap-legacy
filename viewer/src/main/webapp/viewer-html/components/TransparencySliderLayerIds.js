@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 function transparencySlider_layersArrayIndexesToAppLayerIds(config) {
     // In config.sliders the selectedLayers property for each slider
-    // is an index in the config.layers array which contains the 
+    // is an index in the config.layers array which contains the
     // app layer id (updated when app is copied).
-    // Change these indexes to the the app layer id's for the 
+    // Change these indexes to the the app layer id's for the
     // selection grid
 
     var layers = config.layers;

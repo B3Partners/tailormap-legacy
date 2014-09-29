@@ -129,7 +129,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
      */
     createMap : function(id, options){
         options = Ext.merge(this.mapOptions,options);
-        options["theme"]=OpenLayers._getScriptLocation()+'theme/'+this.getTheme()+'/style.css';        
+        options["theme"]= actionBeans["css"]+"?theme="+this.getTheme() + "&location="+  OpenLayers._getScriptLocation() + "&app="+this.viewerController.app.id;//+'theme/'+this.getTheme()+'/style.jsp';        
         options.mapComponent=this;   
         options.viewerController = this.viewerController;
         options.domId=this.domId;
@@ -444,6 +444,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         }else if(type == viewer.viewercontroller.controller.Tool.ZOOMIN_BOX){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomBox(frameworkOptions))
         }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BOX){//3,
+            frameworkOptions["out"] = true;
+            frameworkOptions["displayClass"] = "olControlZoomOut";
+            return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomBox(frameworkOptions));
+        }else if (type==viewer.viewercontroller.controller.Tool.ZOOMOUT_BUTTON){//6,
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control.ZoomOut(frameworkOptions));
         }else if (type==viewer.viewercontroller.controller.Tool.PAN){
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions))
@@ -547,11 +551,19 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.MAP_TOOL){
             frameworkOptions.type=OpenLayers.Control.TYPE_TOOL;
-            frameworkOptions.displayClass ="olTool_"+conf.id;
+            if (conf.displayClass) {
+                frameworkOptions.displayClass = conf.displayClass;
+            } else {
+                frameworkOptions.displayClass = "olButton_" + conf.id;
+            }  
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else if (conf.type == viewer.viewercontroller.controller.Tool.BUTTON){
             frameworkOptions.type=OpenLayers.Control.TYPE_BUTTON;
-            frameworkOptions.displayClass ="olButton_"+conf.id;            
+            if(conf.displayClass){
+                frameworkOptions.displayClass = conf.displayClass;
+            }else{
+                frameworkOptions.displayClass ="olButton_"+conf.id;
+            }            
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf, new OpenLayers.Control(frameworkOptions));
         }else{
             this.viewerController.logger.warning("Tool Type >" + type + "< not recognized. Please use existing type.");

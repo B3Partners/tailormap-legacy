@@ -26,6 +26,7 @@ import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.*;
@@ -323,8 +324,8 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().persist(copy);
             Stripersist.getEntityManager().persist(copy);
             Stripersist.getEntityManager().flush();
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE);
             Stripersist.getEntityManager().getTransaction().commit();
-
             getContext().getMessages().add(new SimpleMessage("Werkversie is gemaakt"));
             setApplication(copy);
 

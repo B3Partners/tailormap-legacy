@@ -52,6 +52,8 @@ public class UniqueValuesActionBean implements ActionBean {
     private String attribute;
     @Validate
     private String operator;
+    @Validate
+    private int maxFeatures = 250;
 
     // <editor-fold desc="Getters and Setters">
     public ActionBeanContext getContext() {
@@ -94,6 +96,14 @@ public class UniqueValuesActionBean implements ActionBean {
         this.operator = operator;
     }
 
+    public int getMaxFeatures() {
+        return maxFeatures;
+    }
+
+    public void setMaxFeatures(int maxFeatures) {
+        this.maxFeatures = maxFeatures;
+    }
+
     // </editor-fold>
     @DefaultHandler
     public Resolution getUniqueValues() throws JSONException {
@@ -111,7 +121,7 @@ public class UniqueValuesActionBean implements ActionBean {
             JSONObject uniqueValues = new JSONObject();
             for (int i = 0; i < attributes.length; i++) {
                 String attribute = attributes[i];
-                List<String> beh = this.featureType.calculateUniqueValues(attribute);
+                List<String> beh = this.featureType.calculateUniqueValues(attribute,maxFeatures);
 
                 uniqueValues.put(attribute, new JSONArray(beh));
                 json.put("success", Boolean.TRUE);

@@ -46,7 +46,7 @@ Ext.onReady(function() {
 
     Ext.define("DraggableViewerComponent",{
         extend: "Ext.data.Model",
-        idProperty: 'id',       
+        idProperty: 'id',
         fields: [
             {name: 'className', type: 'string'},
             {name: 'name', type: 'string'},
@@ -56,12 +56,7 @@ Ext.onReady(function() {
             {name: 'notInCombinationWith', type: 'array'}
         ]
     });
-    
-    var componentStore = Ext.create('Ext.data.Store', {
-        model: 'DraggableViewerComponent',
-        data: components
-    });
-    
+
     Ext.define('LayoutRegion', {
         extend: 'Ext.data.Model',
         idProperty: 'id',
@@ -89,67 +84,63 @@ Ext.onReady(function() {
             return isAdded;
         }
     });
-    
+
     var layoutRegionsStore = Ext.create('Ext.data.Store', {
         model: 'LayoutRegion',
         data: layoutRegions
     });
-    
-    Ext.create('Ext.view.View', {
-        cls: 'component-view',
-        tpl: '<tpl for=".">' +
-        '<div class="component-block">' +
-        '<div class="remove"></div>' +
-        '<div class="wrangler"></div>' +
-        '<span class="title">{name}</span>' +
-        '<div style="clear: both;"></div>' +
-        '</div>' +
-        '</tpl>',
-        itemSelector: 'div.component-block',
-        overItemCls: 'component-over',
-        selectedItemClass: 'component-selected',
-        singleSelect: true,
-        store: componentStore,
-        renderTo: 'component-container',
-        listeners: {
-            render: function(v) {
-                v.dragZone = Ext.create('Ext.dd.DragZone', v.getEl(), {
-                    getDragData: function(e) {
-                        var sourceEl = e.getTarget(v.itemSelector, 10);
-                        if (sourceEl && !Ext.fly(sourceEl).hasCls('component-added')) {
-                            var d = sourceEl.cloneNode(true);
-                            d.id = Ext.id();
-                            return v.dragData = {
-                                sourceEl: sourceEl,
-                                repairXY: Ext.fly(sourceEl).getXY(),
-                                ddel: d,
-                                componentData: v.getRecord(sourceEl).data
-                            };
-                        }
-                        return null;
-                    },
-                    getRepairXY: function() {
-                        return this.dragData.repairXY;
-                    },
-                    onStartDrag: function() {
-                        var data = v.dragData;
-                        layoutRegionsStore.each(function(region) {
-                            if(checkDropAllowed(region, data)) Ext.fly(region.get('htmlId')).addCls('dropallowed');
-                        });
-                    },
-                    endDrag: function() {
-                        layoutRegionsStore.each(function(region) {
-                            Ext.fly(region.get('htmlId')).removeCls('dropallowed');
-                        });
-                    }
-                });
-            },
-            viewready: function(view, e) {
-                initRegions();
-                initConfig(view);
-            }
+
+    initRegions();
+
+    var groups = {};
+    for(var i = 0 ; i < components.length;i++){
+        var component = components[i];
+        var group = component.group;
+        if(!groups.hasOwnProperty(group)){
+            groups[group] = {
+                childs : []
+            };
         }
+        groups[group].childs.push(component);
+    }
+    var panels = [Ext.create ("Ext.panel.Panel",{
+            xtype: 'panel', // << fake hidden panel
+            hidden: true,
+            collapsed: true
+    })];
+
+    for(var groupName in groups){
+        var group = groups[groupName];
+        var childs = group.childs;
+        panels.push(createComponentGroup(groupName, childs));
+    }
+
+    Ext.create("Ext.panel.Panel",{
+        name:"toolbox",
+        title:"Werkbank",
+        animCollapse: true,
+        autoScroll:true,
+        height: "100%",
+        width: 245,
+        minWidth: 0,
+        border: 0,
+        defaults: {
+            border: 0,
+            width: '100%'
+        },
+        layout: {
+            type: 'accordion',
+            align: 'stretch',
+            multi: true
+        },
+        renderTo:"component-container",
+        items:panels
     });
+
+    // open all panels, so the view is initialized (and all the previously configured components are rendered.
+    for(var i = 0 ; i < panels.length;i++){
+        panels[i].expand();
+    }
 
     function changeCaseFirstLetter(string, lowercase) {
         var firstChar = "";
@@ -161,6 +152,81 @@ Ext.onReady(function() {
         return firstChar + string.slice(1);
     }
 
+    function createComponentGroup(name,childs){
+        var groupedStore = Ext.create('Ext.data.Store', {
+            model: 'DraggableViewerComponent',
+            data: childs
+        });
+        var view = Ext.create('Ext.view.View', {
+            cls: 'component-view',
+            tpl: '<tpl for=".">' +
+            '<div class="component-block">' +
+            '<div class="remove"></div>' +
+            '<div class="wrangler"></div>' +
+            '<span class="title">{name}</span>' +
+            '<div style="clear: both;"></div>' +
+            '</div>' +
+            '</tpl>',
+            itemSelector: 'div.component-block',
+            overItemCls: 'component-over',
+            selectedItemClass: 'component-selected',
+            singleSelect: true,
+            store: groupedStore,
+            listeners: {
+                render: function(v) {
+                    v.dragZone = Ext.create('Ext.dd.DragZone', v.getEl(), {
+                        getDragData: function(e) {
+                            var sourceEl = e.getTarget(v.itemSelector, 10);
+                            if (sourceEl && !Ext.fly(sourceEl).hasCls('component-added')) {
+                                var d = sourceEl.cloneNode(true);
+                                d.id = Ext.id();
+                                return v.dragData = {
+                                    sourceEl: sourceEl,
+                                    repairXY: Ext.fly(sourceEl).getXY(),
+                                    ddel: d,
+                                    componentData: v.getRecord(sourceEl).data
+                                };
+                            }
+                            return null;
+                        },
+                        getRepairXY: function() {
+                            return this.dragData.repairXY;
+                        },
+                        onStartDrag: function() {
+                            var data = v.dragData;
+                            layoutRegionsStore.each(function(region) {
+                                if(checkDropAllowed(region, data)) Ext.fly(region.get('htmlId')).addCls('dropallowed');
+                            });
+                        },
+                        endDrag: function() {
+                            layoutRegionsStore.each(function(region) {
+                                Ext.fly(region.get('htmlId')).removeCls('dropallowed');
+                            });
+                        }
+                    });
+                },
+                viewready: function(view, e) {
+                    initConfig(view);
+                }
+            }
+        });
+        var groupPanel =Ext.create("Ext.panel.Panel", {
+            title: name,
+            id:'group-'+name,
+            autoScroll:true,
+            collapsible: true,
+            defaults: {
+                border: 0,
+                width: '100%'
+            },
+            style: {
+                padding: '0px 0px 10px 0px'
+            },
+            items: view
+        });
+        return groupPanel;
+    }
+
     function initRegions() {
         layoutRegionsStore.each(function(layoutRegion) {
             // TODO: make this better
@@ -170,81 +236,81 @@ Ext.onReady(function() {
                 var hasLayoutConfiguration = false;
                 if(layoutRegion.get('configureWidth')) {
                     hasLayoutConfiguration = true;
-                    layoutRegionConfigHtml += '<div class="widthconfig">' + 
-                                                    'Breedte:<br />' + 
+                    layoutRegionConfigHtml += '<div class="widthconfig">' +
+                                                    'Breedte:<br />' +
                                                     '<input type="text" id="' + layoutRegion.get('id') + '_width" />' +
                                                     '<select id="' + layoutRegion.get('id') + '_widthmeasure">' +
-                                                        '<option value="px">px</option>' + 
-                                                        '<option value="%">%</option>' + 
-                                                    '</select><br />' + 
-                                                    '<input type="text" id="' + layoutRegion.get('id') + '_maxwidth" /> ' + 
-                                                    'px, maximaal' + 
+                                                        '<option value="px">px</option>' +
+                                                        '<option value="%">%</option>' +
+                                                    '</select><br />' +
+                                                    '<input type="text" id="' + layoutRegion.get('id') + '_maxwidth" /> ' +
+                                                    'px, maximaal' +
                                                 '</div>';
                 }
                 if(layoutRegion.get('configureHeight')) {
                     hasLayoutConfiguration = true;
-                    layoutRegionConfigHtml += '<div class="heightconfig">' + 
-                                                    'Hoogte:<br />' + 
-                                                    '<input type="text" id="' + layoutRegion.get('id') + '_height" />' + 
-                                                    '<select id="' + layoutRegion.get('id') + '_heightmeasure">' + 
-                                                        '<option value="px">px</option>' + 
-                                                        '<option value="%">%</option>' + 
-                                                    '</select><br />' + 
-                                                    '<input type="text" id="' + layoutRegion.get('id') + '_maxheight" /> ' + 
-                                                    'px, maximaal' + 
+                    layoutRegionConfigHtml += '<div class="heightconfig">' +
+                                                    'Hoogte:<br />' +
+                                                    '<input type="text" id="' + layoutRegion.get('id') + '_height" />' +
+                                                    '<select id="' + layoutRegion.get('id') + '_heightmeasure">' +
+                                                        '<option value="px">px</option>' +
+                                                        '<option value="%">%</option>' +
+                                                    '</select><br />' +
+                                                    '<input type="text" id="' + layoutRegion.get('id') + '_maxheight" /> ' +
+                                                    'px, maximaal' +
                                                 '</div>';
                 }
                 if(layoutRegion.get('configureTabs')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' + 
-                                                    'Gebruik tabs bij meerdere componenten: ' + 
-                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_useTabs" />' + 
+                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
+                                                    'Gebruik tabs bij meerdere componenten: ' +
+                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_useTabs" />' +
                                                 '</div>';
                 }
                 if(layoutRegion.get('configureCollapsible')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' + 
-                                                    'Balk in/uit kunnen klappen : ' + 
-                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableCollapse" />' + 
+                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
+                                                    'Balk in/uit kunnen klappen : ' +
+                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableCollapse" />' +
                                                 '</div>';
                 }
                 if(layoutRegion.get('configureFloating')) {
-                    layoutRegionConfigHtml += '<div class="tabsconfig">' + 
-                                                    'Maak balk zwevend : ' + 
-                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableFloating" />' + 
+                    layoutRegionConfigHtml += '<div class="tabsconfig">' +
+                                                    'Maak balk zwevend : ' +
+                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableFloating" />' +
                                                 '</div>';
                 }
                 if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
                     layoutRegionConfigHtml += '<div class="tabsconfig">' +
-                                                    'Titel in/uitklapbare balk / zwevend paneel : ' + 
+                                                    'Titel in/uitklapbare balk / zwevend paneel : ' +
                                                     '<input type="text" id="' + layoutRegion.get('id') + '_panelTitle" style="width: 100%;" />' +
                                               '</div>';
                 }
                 if(layoutRegion.get('configurePosition')) {
-                    layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
-                                                'Startpositie (leeg = gecentreerd):<br />' + 
-                                                'x: <input type="text" id="' + layoutRegion.get('id') + '_posx" /> ' + 
-                                                'y: <input type="text" id="' + layoutRegion.get('id') + '_posy" />' + 
+                    layoutRegionConfigHtml +=   '<div class="tabsconfig">' +
+                                                'Startpositie (leeg = gecentreerd):<br />' +
+                                                'x: <input type="text" id="' + layoutRegion.get('id') + '_posx" /> ' +
+                                                'y: <input type="text" id="' + layoutRegion.get('id') + '_posy" />' +
                                             '</div>';
                 }
                 if(layoutRegion.get('configureTitle')) {
-                    layoutRegionConfigHtml +=   '<div class="tabsconfig" style="clear: left;">' + 
-                                                'Popup titel: ' + 
-                                                '<input type="text" id="' + layoutRegion.get('id') + '_title" style="width: 100%;" />' + 
+                    layoutRegionConfigHtml +=   '<div class="tabsconfig" style="clear: left;">' +
+                                                'Popup titel: ' +
+                                                '<input type="text" id="' + layoutRegion.get('id') + '_title" style="width: 100%;" />' +
                                             '</div>';
                 }
-                layoutRegionConfigHtml +=   '<div class="tabsconfig">' + 
-                                                '<div style="float: left;">Achtergrondkleur:</div>' + 
-                                                '<div style="float: left; clear: left; width: 90px;"><input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 60px; float: left;" /><div id="colorpicker_' + layoutRegion.get('id') + '_bgcolor" style="float: left;"></div></div>' + 
+                layoutRegionConfigHtml +=   '<div class="tabsconfig">' +
+                                                '<div style="float: left;">Achtergrondkleur:</div>' +
+                                                '<div style="float: left; clear: left; width: 90px;"><input type="text" id="' + layoutRegion.get('id') + '_bgcolor" style="width: 60px; float: left;" /><div id="colorpicker_' + layoutRegion.get('id') + '_bgcolor" style="float: left;"></div></div>' +
                                             '</div>';
-                                        
+
                 var layoutRegionTitle = layoutRegion.get('titleOverride') || changeCaseFirstLetter(layoutRegion.get('id').replace('_', ' '), false);
                 layoutRegionElement.insertHtml('beforeEnd',
                     '<div class="layout_title">' +
-                        '<strong class="layoutregion_title">' + layoutRegionTitle + '</strong><br />' + 
-                        '<div class="regionconfig" id="regionconfig_' + layoutRegion.get('id') + '">' + 
-                            '<u>Visuele configuratie</u><br />' + 
+                        '<strong class="layoutregion_title">' + layoutRegionTitle + '</strong><br />' +
+                        '<div class="regionconfig" id="regionconfig_' + layoutRegion.get('id') + '">' +
+                            '<u>Visuele configuratie</u><br />' +
                             layoutRegionConfigHtml +
-                        '</div>' + 
-                        '<div style="clear: both;"></div>' + 
+                        '</div>' +
+                        '<div style="clear: both;"></div>' +
                      '</div>', true
                 );
                 if(hasLayoutConfiguration) {
@@ -269,7 +335,7 @@ Ext.onReady(function() {
             var styleConfig = {
                 width: '100%',
                 minHeight: '25px'
-            }
+            };
             var renderTo = layoutRegion.get('htmlId');
             if(layoutRegion.get('floatComponents')) {
                 layoutType = 'hbox';
@@ -283,7 +349,7 @@ Ext.onReady(function() {
             }
             var regionContainer = Ext.create('Ext.container.Container', {
                 cls: 'component-container',
-                layout: { 
+                layout: {
                     type: layoutType,
                     shrinkToFit: false
                 },
@@ -341,9 +407,109 @@ Ext.onReady(function() {
                 }
             });
             layoutRegion.regionContainer = regionContainer;
+            var regionId = layoutRegion.get('id');
+            if(Ext.isDefined(layoutJson[regionId])) {
+                // Apply config
+                if(Ext.isDefined(layoutJson[regionId]['layout'])) {
+                    if(layoutRegion.get('configureWidth')) {
+                        Ext.fly(regionId + '_width').set({
+                            value:(layoutJson[regionId]['layout']['width'] || '')
+                        });
+                        var widthMeasureSelect = Ext.get(regionId + '_widthmeasure');
+                        Ext.each(widthMeasureSelect.dom.options, function(item, index){
+                            if(item.value === layoutJson[regionId]['layout']['widthmeasure']) widthMeasureSelect.dom.selectedIndex = index;
+                        });
+                        Ext.fly(regionId + '_maxwidth').set({
+                            value:(layoutJson[regionId]['layout']['maxwidth'] || '')
+                        });
+                    }
+                    if(layoutRegion.get('configureHeight')) {
+                        Ext.fly(regionId + '_height').set({
+                            value:(layoutJson[regionId]['layout']['height'] || '')
+                        });
+                        var heightMeasureSelect = Ext.get(regionId + '_heightmeasure');
+                        Ext.each(heightMeasureSelect.dom.options, function(item, index){
+                            if(item.value === layoutJson[regionId]['layout']['heightmeasure']) heightMeasureSelect.dom.selectedIndex = index;
+                        });
+                        Ext.fly(regionId + '_maxheight').set({
+                            value:(layoutJson[regionId]['layout']['maxheight'] || '')
+                        });
+                    }
+                    if(layoutRegion.get('configureTabs')) {
+                        var checked = false;
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['useTabs'])) {
+                            checked = layoutJson[regionId]['layout']['useTabs'];
+                        }
+                        Ext.fly(regionId + '_useTabs').dom.checked = checked;
+                    }
+                    if(layoutRegion.get('configureTitle')) {
+                        var title = '';
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['title'])) {
+                            bgcolor = layoutJson[regionId]['layout']['title'];
+                        }
+                        Ext.fly(regionId + '_title').set({
+                            value: title
+                        });
+                    }
+                    if(layoutRegion.get('configurePosition')) {
+                        Ext.fly(regionId + '_posx').set({
+                            value:(layoutJson[regionId]['layout']['posx'] || '')
+                        });
+                        Ext.fly(regionId + '_posy').set({
+                            value:(layoutJson[regionId]['layout']['posy'] || '')
+                        });
+                    }
+                    if(layoutRegion.get('configureCollapsible')) {
+                        var collapseChecked = false;
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['enableCollapse']) && layoutJson[regionId]['layout']['enableCollapse']) {
+                            collapseChecked = layoutJson[regionId]['layout']['enableCollapse'];
+                        }
+                        Ext.fly(regionId + '_enableCollapse').dom.checked = collapseChecked;
+                        Ext.fly(regionId + '_panelTitle').set({
+                            value:(layoutJson[regionId]['layout']['panelTitle'] || '')
+                        });
+                    }
+                    var bgcolor = '';
+                    if(Ext.isDefined(layoutJson[regionId]['layout']['bgcolor'])) {
+                        bgcolor = layoutJson[regionId]['layout']['bgcolor'];
+                    }
+                    Ext.fly(regionId + '_bgcolor').set({
+                        value: bgcolor
+                    });
+                    var openOnLeft = false;
+                    var openOnTop = false;
+                    if(regionId === 'rightmargin_top' || regionId === 'rightmargin_bottom') openOnLeft = true;
+                    if(regionId === 'footer') openOnTop = true;
+                    Ext.create('Ext.ux.b3p.ColorPickerButton', {
+                        startColor: bgcolor,
+                        renderTo: 'colorpicker_' + regionId + '_bgcolor',
+                        textfield: regionId + '_bgcolor',
+                        openOnLeft: openOnLeft,
+                        openOnTop: openOnTop
+                    });
+                }
+            }
         });
+        Ext.get('global_layout_switch').on('click', function(e) {
+            e.preventDefault();
+            Ext.get('global_layout').toggle(false);
+        });
+        if (globalLayout) {
+            Ext.get('app_max_width').set({value: globalLayout.maxWidth || ''});
+            Ext.get('app_max_height').set({value: globalLayout.maxHeight || ''});
+            Ext.get('app_margin').set({value: globalLayout.margin || ''});
+            Ext.get('app_background_color').set({value: globalLayout.backgroundColor || ''});
+            Ext.get('app_background_image').set({value: globalLayout.backgroundImage || ''});
+            var bgRepeat = Ext.get('app_background_repeat');
+            Ext.each(bgRepeat.dom.options, function(item, index) {
+                if (item.value === (globalLayout.backgroundRepeat || ''))
+                    bgRepeat.dom.selectedIndex = index;
+            });
+            Ext.get('app_background_position').set({value: globalLayout.backgroundPosition || ''});
+            Ext.get('app_extracss').dom.value = globalLayout.extraCss || '';
+        }
     }
-    
+
     function checkDropAllowed(layoutRegion, data) {
         var restrictions = data.componentData.restrictions;
         var notInCombinationWith = data.componentData.notInCombinationWith;
@@ -364,30 +530,14 @@ Ext.onReady(function() {
         }
         return false;
     }
-      
+
     // Initial config. Adds all previously added components to the right regions
     function initConfig(view) {
-        Ext.get('global_layout_switch').on('click', function(e) {
-            e.preventDefault();
-            Ext.get('global_layout').toggle(false);
-        });
-        if(globalLayout) {
-            Ext.get('app_max_width').set({ value: globalLayout.maxWidth || '' });
-            Ext.get('app_max_height').set({ value: globalLayout.maxHeight || ''});
-            Ext.get('app_margin').set({ value: globalLayout.margin || ''});
-            Ext.get('app_background_color').set({ value: globalLayout.backgroundColor || ''});
-            Ext.get('app_background_image').set({ value: globalLayout.backgroundImage || ''});
-            var bgRepeat = Ext.get('app_background_repeat');
-            Ext.each(bgRepeat.dom.options, function(item, index){
-                if(item.value === (globalLayout.backgroundRepeat || '')) bgRepeat.dom.selectedIndex = index;
-            });
-            Ext.get('app_background_position').set({ value: globalLayout.backgroundPosition || ''});
-            Ext.get('app_extracss').dom.value = globalLayout.extraCss || '';
-        }
         if(layoutJson && Ext.isDefined(layoutJson)) {
             layoutRegionsStore.each(function(layoutRegion){
                 var regionId = layoutRegion.get('id');
                 if(Ext.isDefined(layoutJson[regionId])) {
+/*<<<<<<< HEAD
                     // Apply config
                     if(Ext.isDefined(layoutJson[regionId]['layout'])) {
                         if(layoutRegion.get('configureWidth')) {
@@ -476,10 +626,12 @@ Ext.onReady(function() {
                             openOnTop: openOnTop
                         });
                     }
+=======
+>>>>>>> master*/
                     if(Ext.isDefined(layoutJson[regionId]['components'])) {
                         Ext.Array.each(layoutJson[regionId]['components'], function(componentref, index) {
-                            
-                            var component = componentStore.findRecord('className', componentref.componentClass);
+
+                            var component = view.getStore().findRecord('className', componentref.componentClass);
                             var sourceEl = view.getNode(component);
                             if(sourceEl && layoutRegion) {
                                 var d = sourceEl.cloneNode(true);
@@ -490,7 +642,7 @@ Ext.onReady(function() {
                                     ddel: d,
                                     componentData: component.data,
                                     componentName: componentref.name
-                                }
+                                };
                                 addComponentToRegion(layoutRegion.regionContainer, data, layoutRegion);
                             }
                         });
@@ -499,7 +651,7 @@ Ext.onReady(function() {
             });
         }
     }
-    
+
     function addComponentToRegion(container, data, layoutRegion) {
         if(Ext.isEmpty(data.componentData.componentsAdded)) {
             data.componentData.componentsAdded = 0;
@@ -519,21 +671,21 @@ Ext.onReady(function() {
         if(i != -1) {
             componentName = componentName.substring((i+1));
         }
-        componentName = changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);            
+        componentName = changeCaseFirstLetter(componentName, true) + (++data.componentData.componentsAdded);
         // used when loading existing conf
         if(Ext.isDefined(data.componentName) && !Ext.isEmpty(data.componentName)) {
             componentName = data.componentName;
         } else {
-           // Remove any dangling component config which remained after 
+           // Remove any dangling component config which remained after
            // adding a new component, saving it, but then not saving the layout
            // then when re-adding the same component class it will reload the
            // config
-            Ext.Ajax.request({ 
-                url: removeComponentUrl, 
-                params: { 
+            Ext.Ajax.request({
+                url: removeComponentUrl,
+                params: {
                     name: componentName
-                } 
-            });             
+                }
+            });
         }
         var addItem = {
             id: itemId,
@@ -594,20 +746,20 @@ Ext.onReady(function() {
                             container.setWidth(getTotalChildWidth(container, '.' + addItem.cls));
                         }
                         tooltip.destroy();
-                        Ext.Ajax.request({ 
-                            url: removeComponentUrl, 
-                            params: { 
+                        Ext.Ajax.request({
+                            url: removeComponentUrl,
+                            params: {
                                 name: componentName
-                            }, 
-                            success: function ( result, request ) { 
+                            },
+                            success: function ( result, request ) {
                                 Ext.MessageBox.alert("Gelukt", "Het component is verwijderd.");
                                 saveLayout(false);
-                            // doe wat met data 
-                            }, 
-                            failure: function ( result, request) { 
-                                Ext.MessageBox.alert('Foutmelding', result.responseText); 
-                            } 
-                        }); 
+                            // doe wat met data
+                            },
+                            failure: function ( result, request) {
+                                Ext.MessageBox.alert('Foutmelding', result.responseText);
+                            }
+                        });
                     }
                 }
                 );
@@ -624,12 +776,12 @@ Ext.onReady(function() {
         });
         layoutRegion.set('addedComponents', addComp);
     }
-    
+
     function getElementsFromContainer(container, childquery) {
         var rootEl = container.getEl();
         return rootEl.select(childquery);
     }
-    
+
     function getTotalChildHeight(container, childquery) {
         var children = getElementsFromContainer(container, childquery);
         var totalHeight = 0;
@@ -638,7 +790,7 @@ Ext.onReady(function() {
         });
         return totalHeight;
     }
-    
+
     function getTotalChildWidth(container, childquery, singleChildWidth) {
         // Get width of title (= contentwidth of parent)
         var containerParentWidth = container.getEl().parent().getWidth();
@@ -649,11 +801,11 @@ Ext.onReady(function() {
 
         return (containerParentWidth < totalWidth) ? totalWidth : containerParentWidth;
     }
-    
+
     Ext.get('savebutton').on('click', function() {
         saveLayout();
     });
-    
+
     var popupWin = Ext.create('Ext.window.Window', {
         title: 'Configuratie',
         closable: true,
@@ -676,7 +828,7 @@ Ext.onReady(function() {
             }
         }
     });
-    
+
     function editComponent(componentData) {
         var iframe = Ext.get('configPage');
         // Empty iframe so previously loaded content is invisible
@@ -695,7 +847,7 @@ Ext.onReady(function() {
         popupWin.setTitle('Configuratie ' + componentData.componentPrettyName);
         popupWin.show();
     }
-    
+
     function saveLayout(displaySuccessMessage){
         if(displaySuccessMessage == undefined){
             displaySuccessMessage = true;
@@ -773,20 +925,20 @@ Ext.onReady(function() {
             backgroundPosition: Ext.get('app_background_position').getValue() || "",
             extraCss: Ext.get('app_extracss').getValue() || ""
         };
-        Ext.Ajax.request({ 
-            url: layoutSaveUrl, 
-            params: { 
+        Ext.Ajax.request({
+            url: layoutSaveUrl,
+            params: {
                 layout: response,
                 globalLayout: Ext.JSON.encode(globalLayout)
-            }, 
-            success: function ( result, request ) { 
+            },
+            success: function ( result, request ) {
                 if(displaySuccessMessage){
                     Ext.MessageBox.alert("Gelukt", "De layout is opgeslagen.");
                 }
-            }, 
-            failure: function ( result, request) { 
-                Ext.MessageBox.alert('Foutmelding', result.responseText); 
-            } 
+            },
+            failure: function ( result, request) {
+                Ext.MessageBox.alert('Foutmelding', result.responseText);
+            }
         });
     }
 

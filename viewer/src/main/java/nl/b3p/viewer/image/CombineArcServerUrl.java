@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.image;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -65,7 +67,7 @@ public class CombineArcServerUrl extends CombineXMLBodyUrl{
      * @see CombineImageUrl#calculateNewUrl(java.lang.Integer, java.lang.Integer, nl.b3p.viewer.image.Bbox) 
      */    
     @Override
-    public CombineImageUrl calculateNewUrl(ImageBbox imbbox) {
+    public List<CombineImageUrl> calculateNewUrl(ImageBbox imbbox) {
         Integer width = imbbox.getWidth();
         Integer height = imbbox.getHeight();
         Bbox bbox = imbbox.getBbox();
@@ -104,7 +106,10 @@ public class CombineArcServerUrl extends CombineXMLBodyUrl{
         }catch(Exception e){
             log.warn("Error while changing body fragment", e);
         }
-        return ciu;
+        
+        List<CombineImageUrl> list= new ArrayList<CombineImageUrl>();
+        list.add(ciu);
+        return list;
     }
     
 }

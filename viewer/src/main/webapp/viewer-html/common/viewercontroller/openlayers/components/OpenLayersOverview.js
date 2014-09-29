@@ -33,7 +33,8 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
         lox: null,
         loy: null,
         rbx: null,
-        rby: null        
+        rby: null,
+        followZoom:null
     },
     
     constructor: function (conf){        
@@ -64,12 +65,16 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersOverview",{
             maximized: true,
             mapOptions: {
                 maxExtent: maxBounds,
-                projection: "EPSG:28992"
+                projection: "EPSG:28992",
+                theme: null
             },
             size: size,
             layers: [layer]
         });
-        
+        if(this.followZoom !== undefined && this.followZoom !== null && this.followZoom ===false){
+            this.frameworkObject.maxRatio= 999999;
+        }
+
         return this;
     },
     

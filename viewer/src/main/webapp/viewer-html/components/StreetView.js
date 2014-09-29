@@ -21,7 +21,7 @@
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  */
 Ext.define ("viewer.components.tools.StreetView",{
-    extend: "viewer.components.Component",
+    extend: "viewer.components.tools.Tool",
     config:{
         name: "Street View",
         width:null,
@@ -33,12 +33,6 @@ Ext.define ("viewer.components.tools.StreetView",{
         titlebarIcon : "",
         tooltip : ""
     },
-    /*this.roundImgPath=contextPath+"/viewer-html/components/resources/images/maptip/round.png";
-    this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";*/
-    iconUrl_up: null,
-    iconUrl_over: null,
-    iconUrl_sel: null,
-    iconUrl_dis: null,
     toolMapClick: null,
     markerName:null,
     button: null,
@@ -68,11 +62,6 @@ Ext.define ("viewer.components.tools.StreetView",{
 
         this.markerName = this.id + "MARKER";
         
-        this.iconUrl_up= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
-        this.iconUrl_over= contextPath+"/viewer-html/components/resources/images/streetview/streetview_over.png";
-        this.iconUrl_sel= contextPath+"/viewer-html/components/resources/images/streetview/streetview_down.png";
-        this.iconUrl_dis= contextPath+"/viewer-html/components/resources/images/streetview/streetview_up.png";
-        
         this.toolMapClick = this.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name,
@@ -90,11 +79,8 @@ Ext.define ("viewer.components.tools.StreetView",{
             type: viewer.viewercontroller.controller.Tool.MAP_TOOL,
             id:this.getName(),
             name: this.getName(),
-            iconUrl_up: this.iconUrl_up,
-            iconUrl_over: this.iconUrl_over,
-            iconUrl_sel: this.iconUrl_sel,
-            iconUrl_dis: this.iconUrl_dis,
             tooltip: this.config.tooltip || null,
+            displayClass : "streetView",
             viewerController: this.viewerController
         });
         this.viewerController.mapComponent.addTool(this.button);

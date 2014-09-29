@@ -19,6 +19,9 @@
  * Creates a AttributeList component
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 Ext.define ("viewer.components.Print",{
     extend: "viewer.components.Component",  
     panel: null,
@@ -28,6 +31,8 @@ Ext.define ("viewer.components.Print",{
     minWidth: 550,
     combineImageService: null,
     legends:null,
+    extraInfoCallbacks:null,
+    extraLayerCallbacks:null,
     config:{
         name: "Print",
         title: "",
@@ -38,7 +43,11 @@ Ext.define ("viewer.components.Print",{
         legend: null,
         max_imagesize: "2048",
         showPrintRtf:null,
-        label: ""
+        label: "",
+        overview:null,
+        mailprint:null,
+        fromAddress:null,
+        fromName:null
     },
     /**
      * @constructor
@@ -47,11 +56,11 @@ Ext.define ("viewer.components.Print",{
     constructor: function (conf){  
         //set minwidth:
         if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
-        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true 
+        if( !Ext.isDefined(conf.showPrintRtf)) conf.showPrintRtf= true;
         
         viewer.components.Print.superclass.constructor.call(this, conf);
         this.initConfig(conf);    
-        this.legends={};
+        this.legends=[];
         
         this.combineImageService = Ext.create("viewer.CombineImage",{});
         
@@ -67,6 +76,8 @@ Ext.define ("viewer.components.Print",{
                 label: me.label
             });
         }
+        this.extraInfoCallbacks = new Array();
+        this.extraLayerCallbacks = new Array();
         
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
@@ -353,6 +364,12 @@ Ext.define ("viewer.components.Print",{
                                         scope:this
                                     }
                                 }
+                            },{
+                                xtype: 'checkbox',
+                                name: 'includeOverview',
+                                hidden: !me.shouldAddOverview(),
+                                inputValue: true,
+                                boxLabel: 'Overzichtskaart toevoegen'
                             }]                        
                         },{
                             //(8)
@@ -365,7 +382,8 @@ Ext.define ("viewer.components.Print",{
                                 xtype: "flamingocombobox",                                
                                 name: 'pageformat',
                                 emptyText:'Maak uw keuze',
-                                store: [['a4','A4'],['a3','A3']],
+                                // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
+                                store: [['a5','A5'],['a4','A4'],['a3','A3'],['a0','A0']],
                                 width: 100,
                                 value: me.getDefault_format()? me.getDefault_format(): "a4"
                             },{
@@ -375,6 +393,16 @@ Ext.define ("viewer.components.Print",{
                         }]
                     }]                        
                 }]
+            },{                        
+                xtype: "label",
+                hidden:this.config.mailPrint === "cantMail",
+                text: "Mailadres"
+            },{
+                xtype: 'textfield',
+                name: 'mailTo',
+                hidden:this.config.mailPrint === "cantMail",
+                width: "10%",
+                value: ""
             },{
                  xtype: 'label',
                  style: {
@@ -400,14 +428,14 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.popup.hide()
+                                this.popup.hide();
                             }
                         }
                     }  
                 },{
                     xtype: 'button',
                     text: 'Opslaan als RTF'  ,
-                    hidden: !this.showPrintRtf,
+                    hidden: !this.showPrintRtf || this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -417,13 +445,14 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("saveRTF")
+                                this.submitSettings("saveRTF");
                             }
                         }
                     }                  
                 },{
                     xtype: 'button',
                     text: 'Opslaan via PDF'  ,
+                    hidden: this.config.mailPrint === "canOnlyMail",
                     componentCls: 'mobileLarge',
                     style: {
                         "float": "right",
@@ -433,7 +462,43 @@ Ext.define ("viewer.components.Print",{
                         click:{
                             scope: this,
                             fn: function (){
-                                this.submitSettings("savePDF")
+                                this.submitSettings("savePDF");
+                            }
+                        }
+                    }                    
+                },{
+                    xtype: 'button',
+                    text: 'Verstuur per mail',
+                    componentCls: 'mobileLarge',
+                    hidden:this.config.mailPrint === "cantMail",
+                    style: {
+                        "float": "right",
+                        marginLeft: '5px'
+                    },
+                    listeners: {
+                        click:{
+                            scope: this,
+                            fn: function (){
+                                var props = this.getAllProperties("mailPDF");
+                                if(props.mailTo !== undefined && props.mailTo !== null && props.mailTo !== ""){
+                                    props.fromAddress = this.config.fromAddress;
+                                    props.fromName = this.config.fromName;
+                                    Ext.Ajax.request({
+                                        url: actionBeans["print"],
+                                        params: {
+                                            params: Ext.JSON.encode(props)
+                                        },
+                                        success: function(result) {
+                                            var response = result.responseText;
+                                            Ext.MessageBox.alert('Info', "Print wordt gemaakt en wordt via de mail verzonden. Dit kan enige minuten duren");
+                                        },
+                                        failure: function(result) {
+                                           Ext.MessageBox.alert('Fout', "Print mislukt.");
+                                        }
+                                    });
+                                }else{
+                                    Ext.MessageBox.alert('Fout', "Vul een geldig e-mailadres in.");
+                                }
                             }
                         }
                     }                    
@@ -514,18 +579,21 @@ Ext.define ("viewer.components.Print",{
                 xtype: "label",
                 text: "Opnemen in legenda:"
             });
-            for (var key in this.legends){
-                var appLayer =this.viewerController.getAppLayerById(key);
-                var title = appLayer.alias;
-                checkboxes.push({
-                    xtype: "checkbox",
-                    boxLabel: title,
-                    name: 'legendUrl',
-                    inputValue: Ext.JSON.encode(this.legends[key]),
-                    id: 'legendCheckBox'+key,
-                    checked: true
-                });
-            } 
+            for (var key  =0 ; key < this.legends.length ;key++){
+                if(this.legends.hasOwnProperty(key)){
+                    var appLayer =this.viewerController.getAppLayerById(key);
+                    var title = appLayer.alias;
+                    checkboxes.push({
+                        xtype: "checkbox",
+                        boxLabel: title,
+                        name: 'legendUrl',
+                        inputValue: Ext.JSON.encode(this.legends[key]),
+                        id: 'legendCheckBox'+key,
+                        checked: true
+                    });
+                }
+            };
+       
             Ext.getCmp('legendContainer').removeAll();
             Ext.getCmp('legendContainer').add(checkboxes);        
             Ext.getCmp('legendContainer').doLayout();
@@ -545,6 +613,14 @@ Ext.define ("viewer.components.Print",{
         var width = this.viewerController.mapComponent.getMap().getWidth();
         var height = this.viewerController.mapComponent.getMap().getHeight();
         return width > height? width : height;
+    },
+    shouldAddOverview : function(){
+        var overviews = this.getOverviews();
+        if(this.overview && overviews.length > 0){
+            return true;
+        }else{
+            return false;
+        }
     },
     /**
      * Called when quality is changed.
@@ -659,13 +735,29 @@ Ext.define ("viewer.components.Print",{
     * Called when a button is clicked and the form must be submitted.
     */
     submitSettings: function(action){        
-        var properties = this.getProperties();
-        properties.action=action;
+        var properties = this.getAllProperties(action);
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);        
         this.printForm.submit({            
             target: '_blank'
         });
+    },
+    getAllProperties : function(action){
+        var properties = this.getProperties();
+        properties.action=action;
+        // Process registred extra info callbacks
+        var extraInfos = new Array();
+        for (var i = 0 ; i < this.extraInfoCallbacks.length ; i++){ 
+            var entry = this.extraInfoCallbacks[i];
+            var extraInfo = {
+                className:   Ext.getClass(entry.component).getName(),
+                componentName: entry.component.name,
+                info: entry.callback() // Produces an JSONObject
+            };
+            extraInfos.push(extraInfo);
+        }
+        properties.extra = extraInfos;
+        return properties;
     },
     /**
      *Called when the imageUrl is succesfully returned
@@ -685,7 +777,7 @@ Ext.define ("viewer.components.Print",{
                 var preview = document.getElementById('previewImg');
                 preview.innerHTML = '';
                 preview.appendChild(img);
-            }
+            };
             image.src = imageUrl;
         }
     },
@@ -720,7 +812,7 @@ Ext.define ("viewer.components.Print",{
         for (var i=0; i < layers.length; i ++){
             var layer = layers[i];
             if (layer.getVisible()){
-                if (layer.getType()== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
+                if (layer.getType()=== viewer.viewercontroller.controller.Layer.VECTOR_TYPE){
                     var features=layer.getAllFeatures();
                     for (var f =0; f < features.length; f++){
                         var feature=features[f];
@@ -728,6 +820,23 @@ Ext.define ("viewer.components.Print",{
                             wktGeoms.push(feature);
                         }
                     }
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.TILING_TYPE && (layer.protocol == "TMS" || layer.protocol == "WMSC")){
+                    var printLayer = new Object();
+                    printLayer.url=layer.config.url; 
+                    printLayer.alpha=layer.alpha; 
+                    printLayer.extension=layer.extension; 
+                    printLayer.protocol=layer.protocol ;
+                    printLayer.serverExtent = layer.serviceEnvelope;
+                    printLayer.tileWidth = layer.tileWidth;
+                    printLayer.tileHeight = layer.tileHeight;
+                    printLayer.resolutions= layer.resolutions.toString();
+                    printLayers.push(printLayer);                                
+                }else if (layer.getType()=== viewer.viewercontroller.controller.Layer.WMS_TYPE ){
+                    var printLayer = new Object();
+                    printLayer.url=layer.getLastMapRequest()[0].url; 
+                    printLayer.alpha=layer.alpha; 
+                    printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
+                    printLayers.push(printLayer);                                
                 }else{
                     var requests=layer.getLastMapRequest();                
                     for (var r in requests){
@@ -742,13 +851,39 @@ Ext.define ("viewer.components.Print",{
                             if (request.extent){
                                 request.extent=request.extent.toString();
                             }
-                            //TODO tiling is now added as images, needs te be added as a tiling server
-                            if (layer.getType()== viewer.viewercontroller.controller.Layer.TILING_TYPE){
-                                request.protocol=viewer.viewercontroller.controller.Layer.IMAGE_TYPE;                                
-                            }
+                          
                         }
                     }
                 }
+            }
+        }
+        
+        for(var j = 0 ; j < this.extraLayerCallbacks.length;j++){
+            var printLayer = new Object();
+            var layerInfos = this.extraLayerCallbacks[j].callback();
+            for(var k = 0 ; k < layerInfos.length; k++){
+                var layerInfo = layerInfos[k];
+                printLayer.url= layerInfo.url;
+                var beginChar = layerInfo.url.indexOf("?") === -1 ? "?" : "&";
+                printLayer.url += beginChar + "LAYERS=" + layerInfo.layers;
+                printLayer.url += "&FORMAT=" + layerInfo.format;
+                printLayer.url += "&TRANSPARENT=" + layerInfo.transparent;
+                printLayer.url += "&SRS=" + layerInfo.srs;
+                if(printLayer.url.toLowerCase().indexOf("bbox") === -1){
+                    printLayer.url += "&bbox=-1,-1,-1,-1";
+                }
+                
+                if(printLayer.url.toLowerCase().indexOf("width") === -1){
+                    printLayer.url += "&WIDTH=-1&HEIGHT=-1";
+                }
+                
+                if(printLayer.url.toLowerCase().indexOf("request") === -1){
+                    printLayer.url += "&REQUEST=Getmap";
+                }
+                
+                printLayer.alpha=layerInfo.alpha; 
+                printLayer.protocol=viewer.viewercontroller.controller.Layer.WMS_TYPE ;
+                printLayers.push(printLayer);           
             }
         }
         values.requests=printLayers;        
@@ -796,9 +931,68 @@ Ext.define ("viewer.components.Print",{
                 
             }
         }
+        if(config.includeOverview){
+            var overviews = this.getOverviews();
+            if(overviews.length > 0){
+                var overview = overviews[0];
+                var url = overview.config.url;
+                config.overview = new Object();
+                config.overview.overviewUrl = url;
+                config.overview.extent = overview.config.lox + "," + overview.config.loy + "," + overview.config.rbx + "," + overview.config.rby;
+            }
+        }
         return config;
     },
-
+    /**
+     * Register the calling component for retrieving extra information to add to the print.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the print component
+     */
+    registerExtraInfo: function(component, callback){
+        var entry = {
+            component:component,
+            callback: callback
+        };
+        this.extraInfoCallbacks.push(entry);
+    },
+    /**
+     * Unregister the given component for retrieving extra info for printing.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    unregisterExtraInfo: function (component){
+        for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
+            if(this.extraInfoCallbacks[i].component.name === component.name ){
+                this.extraInfoCallbacks.splice(i, 1);
+            }
+        }
+    },
+    /**
+     * Register a component which can add extra layers to the print.
+     * @param {type} component The object of the component ("this" at the calling method)
+     * @param {type} callback The callbackfunction which must be called by the print component
+     */
+    registerExtraLayers : function (component, callback){
+        this.extraLayerCallbacks.push({
+            component:component,
+            callback: callback
+        });
+    },  
+    /**
+     * Unregister the given component for retrieving extra info for printing.
+     * @param {type} component The component for which the callback must be removed.
+     * @returns {undefined}
+     */
+    unregisterExtraLayers: function (component){
+        for (var i = this.extraInfoCallbacks.length -1 ; i >= 0 ; i--){
+            if(this.extraLayerCallbacks[i].component.name === component.name ){
+                this.extraLayerCallbacks.splice(i, 1);
+            }
+        }
+    },
+    getOverviews : function(){
+      return this.viewerController.getComponentsByClassName("viewer.components.Overview");  
+    },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }

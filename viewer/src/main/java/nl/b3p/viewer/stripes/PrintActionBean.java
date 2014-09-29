@@ -14,42 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* Modified: 2014, Eddy Scheper, ARIS B.V.
+ *           - A5 and A0 pagesizes added.
+*/
 package nl.b3p.viewer.stripes;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.util.JAXBSource;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.print.Legend;
+import nl.b3p.viewer.print.PrintExtraInfo;
+import nl.b3p.viewer.print.PrintGenerator;
 import nl.b3p.viewer.print.PrintInfo;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
 import org.apache.log4j.Logger;
 import org.apache.xmlgraphics.util.MimeConstants;
 import org.json.JSONArray;
@@ -60,19 +53,33 @@ import org.stripesstuff.stripersist.Stripersist;
 /**
  *
  * @author Roy Braam
+ * @author Meine Toonen
+ * @author Eddy Scheper
  */
 @UrlBinding("/action/print")
 @StrictBinding
 public class PrintActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(PrintActionBean.class);     
     protected static Logger fopLogger = Logger.getLogger("org.apache.fop");
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5_Landscape = "A5_Landscape.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5_Portrait = "A5_Portrait.xsl";
     public static final String A4_Landscape = "A4_Landscape.xsl";
     public static final String A4_Portrait = "A4_Portrait.xsl";
     public static final String A3_Landscape = "A3_Landscape.xsl";
     public static final String A3_Portrait = "A3_Portrait.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0_Landscape = "A0_Landscape.xsl";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0_Portrait = "A0_Portrait.xsl";
     public static final String DEFAULT_TEMPLATE_PATH = "/WEB-INF/xsl/print/";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A5 = "a5";
     public static final String A4 = "a4";
     public static final String A3 = "a3";
+    // 2014, Eddy Scheper, ARIS B.V. - Added.
+    public static final String A0 = "a0";
     public static final String LANDSCAPE = "landscape";
     public static final String PORTRAIT = "portrait";
     public static SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", new Locale("NL"));
@@ -81,7 +88,9 @@ public class PrintActionBean implements ActionBean {
     
     private ActionBeanContext context;
     
+    @DefaultHandler
     public Resolution print() throws JSONException, Exception {
+        boolean mailprint=false;
         JSONObject jRequest = new JSONObject(params);
         
         //get the appId:
@@ -90,6 +99,7 @@ public class PrintActionBean implements ActionBean {
         
         //get the image url:
         String imageUrl= getImageUrl(params);
+        
         //get the form settings
         final PrintInfo info = new PrintInfo();
         if (jRequest.has("title")){
@@ -103,12 +113,18 @@ public class PrintActionBean implements ActionBean {
         if (jRequest.has("bbox")){
             info.setBbox(jRequest.getString("bbox"));
         }
+        
+        if (jRequest.has("overview")){
+            String url = getOverviewUrl(params);
+            info.setOverviewUrl(url);
+        }
         if (jRequest.has("extraTekst")){
             info.setRemark(jRequest.getString("extraTekst"));
         }
         if(jRequest.has("quality")){
             info.setQuality(jRequest.getInt("quality"));
         }
+        
         /* !!!!temp skip the legend, WIP*/
         if (jRequest.has("includeLegend") && jRequest.getBoolean("includeLegend")){
             if(jRequest.has("legendUrl")){
@@ -129,7 +145,6 @@ public class PrintActionBean implements ActionBean {
             info.cacheLegendImagesAndReadDimensions();
         }
         
-        
         if (jRequest.has("angle")){
             int angle = jRequest.getInt("angle");
             angle = angle % 360;
@@ -141,8 +156,40 @@ public class PrintActionBean implements ActionBean {
         final String mimeType;
         if (jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("saveRTF")){
             mimeType=MimeConstants.MIME_RTF;
-        }else{
+        }else if(jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("savePDF")){
             mimeType=MimeConstants.MIME_PDF;
+        }else if(jRequest.has("action") && jRequest.getString("action").equalsIgnoreCase("mailPDF")){
+            mimeType=MimeConstants.MIME_PDF;
+            mailprint=true;
+        }else{
+            throw new Exception("Unidentified action: " + jRequest.getString("action"));
+        }
+        
+        // The json structure is:
+//            [{
+//                className: <String> entry.component.$className,
+//                componentName: <String>entry.component.name,
+//                info: <JSONObject> info in JSONObject
+//            }]
+        if(jRequest.has("extra")){
+            
+            log.debug("Print Parse 'extra'");
+            
+            JSONArray jarray = jRequest.getJSONArray("extra");
+            List<PrintExtraInfo> peis = new ArrayList<PrintExtraInfo>();
+            for (int i=0; i < jarray.length();i++){
+                JSONObject extraObj = jarray.getJSONObject(i);
+                PrintExtraInfo pei = new PrintExtraInfo();
+                String className = extraObj.getString("className");
+                String componentName = extraObj.getString("componentName");
+                JSONObject infoString = extraObj.getJSONObject("info");
+
+                pei.setClassName(className);
+                pei.setComponentName(componentName);
+                pei.setInfoText(infoString);
+                peis.add(pei);
+            }
+            info.setExtra(peis);
         }
         
         //determine the correct template
@@ -150,21 +197,31 @@ public class PrintActionBean implements ActionBean {
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PORTRAIT;
         final String templateName= getTemplateName(pageFormat,orientation);
         
-        
         final String templateUrl;
+        final boolean useMailer = mailprint;
         if (app!=null && app.getDetails()!=null && app.getDetails().get("stylesheetPrint")!=null){            
-            //templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
             ClobElement ce = app.getDetails().get("stylesheetPrint");
             templateUrl=ce.getValue()+templateName;
         }else{
             templateUrl=context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName);
         }
+        final String toMail = jRequest.getString("mailTo");
+        final String fromMail = jRequest.has("fromAddress") ? jRequest.getString("fromAddress") : "";
+        final String fromName = jRequest.has("fromName") ? jRequest.getString("fromName") : "";
         
         StreamingResolution res = new StreamingResolution(mimeType) {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
+                /* Set filename and extension */
+                String filename = "Kaart_" + info.getDate();
+
+                if (mimeType.equals(MimeConstants.MIME_PDF)) {
+                    filename += ".pdf";
+                } else if (mimeType.equals(MimeConstants.MIME_RTF)) {
+                    filename += ".rtf";
+                }
                 if (templateUrl.toLowerCase().startsWith("http://") || templateUrl.toLowerCase().startsWith("ftp://")){
-                    createOutput(info,mimeType, new URL(templateUrl),true,response);
+                    PrintGenerator.createOutput(info,mimeType, new URL(templateUrl),true,response,filename);
                 }else{
                     File f = new File(templateUrl);
                     if (!f.exists()){
@@ -175,7 +232,17 @@ public class PrintActionBean implements ActionBean {
                         f= new File(context.getServletContext().getRealPath(DEFAULT_TEMPLATE_PATH+templateName));
                     }
                     try {
-                        createOutput(info,mimeType, f,true,response);
+                        if(useMailer){
+                            this.setAttachment(false);
+                            response.setContentType("plain/text");
+                            Thread t = new Thread(new PrintGenerator(info, mimeType, f, filename,fromName, fromMail, toMail));
+                            t.start();
+                            response.getWriter().println("success");
+                            response.getWriter().close();
+                            response.getWriter().flush();
+                        }else{
+                            PrintGenerator.createOutput(info,mimeType, f,true,response,filename);
+                        }
                     } finally {
                         info.removeLegendImagesCache();
                     }
@@ -184,110 +251,28 @@ public class PrintActionBean implements ActionBean {
             }
         };
         return res;
-        
     }    
     
-    private void createOutput(PrintInfo info, String mimeType, File xslFile,
-            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
-
-        String path = new File(xslFile.getParent()).toURI().toString();
-        createOutput(info, mimeType, new FileInputStream(xslFile), path, addJavascript, response);
+    private String getOverviewUrl(String params) throws JSONException, Exception{
+        JSONObject info = new JSONObject(params);
+        info.remove("requests"); // Remove old requests, to replace them with overview-only parameters
+        info.remove("geometries");
+        info.remove("quality");
+        
+        JSONObject overview = info.getJSONObject("overview");
+        info.put("bbox", overview.get("extent"));
+        JSONArray reqs = new JSONArray();
+        
+        JSONObject image = new JSONObject();
+        image.put("protocol", CombineImageActionBean.IMAGE);
+        image.put("url", overview.get("overviewUrl"));
+        image.put("extent", overview.get("extent"));
+        reqs.put(image);
+        info.put("requests", reqs);
+               
+        String overviewUrl = getImageUrl(info.toString());
+        return overviewUrl;
     }
-    private void createOutput(PrintInfo info, String mimeType, URL xslUrl,
-            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
-
-        String path = xslUrl.toString().substring(0, xslUrl.toString().lastIndexOf("/")+1);
-        createOutput(info, mimeType, xslUrl.openStream(), path, addJavascript, response);
-    }
-    /**
-     * Create the output pdf.
-     * @param info the print info
-     * @param mimeType mimeType of the result
-     * @param xslIs inputstream for xsl sheet
-     * @param basePath the base path of that sheet
-     * @param addJavascript addJavascript?
-     * @param response the response for the outputstream
-     * @throws MalformedURLException
-     * @throws IOException 
-     */
-    private void createOutput(PrintInfo info, String mimeType, InputStream xslIs, String basePath,
-            boolean addJavascript, HttpServletResponse response) throws MalformedURLException, IOException {
-
-        /* Setup fopfactory */
-        FopFactory fopFactory = FopFactory.newInstance();
-
-        /* Set BaseUrl so that fop knows paths to images etc... */
-        fopFactory.setBaseURL(basePath);
-
-        /* Setup output stream */
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try {
-            /* Construct fop */
-            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            foUserAgent.setCreator("Flamingo");
-            foUserAgent.setProducer("Flamingo");
-
-            Date now = new Date();
-            foUserAgent.setCreationDate(now);
-            foUserAgent.setTitle("Kaart");
-
-            Fop fop = fopFactory.newFop(mimeType, foUserAgent, out);
-
-            //String s=printInfoToString(info);
-            /* Setup Jaxb */
-            JAXBContext jc = JAXBContext.newInstance(PrintInfo.class);
-            JAXBSource src = new JAXBSource(jc, info);
-            
-            JAXBContext jaxbContext = JAXBContext.newInstance(PrintInfo.class);
-            if(log.isDebugEnabled()) {
-                StringWriter sw = new StringWriter();
-                jaxbContext.createMarshaller().marshal(info, sw);
-                log.debug("Print XML: " + sw.toString());
-            }
-            /* Setup xslt */
-            Source xsltSrc = new StreamSource(xslIs);
-            xsltSrc.setSystemId(basePath);
-
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(xsltSrc);
-
-            Result res = new SAXResult(fop.getDefaultHandler());
-
-            transformer.transform(src, res);
-
-            /* Setup response */
-            response.setContentType(mimeType);
-            response.setContentLength(out.size());
-			
-            /* Set filename and extension */
-            String filename = "Kaart_" + info.getDate();
-
-            if (mimeType.equals(MimeConstants.MIME_PDF)) {
-                filename += ".pdf";
-            } else if (mimeType.equals(MimeConstants.MIME_RTF)) {
-                filename += ".rtf";
-            }
-
-            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-
-            //TODO: Postprocess pages to add javascript print
-            /* use postprocessing with itext to add Javascript to output 
-            if (addJavascript) {
-                addJsToPdfOutput(out, response);
-            } else {
-                response.getOutputStream().write(out.toByteArray());
-            }*/
-            response.getOutputStream().write(out.toByteArray());
-            
-            response.getOutputStream().flush();
-
-        } catch (Exception ex) {
-            log.error("Fout tijdens print output: ", ex);
-        } finally {
-            out.close();
-        }
-    }      
     /**
      * Get the image url from the CombineImageAction
      * @param param the json as string with params needed to create the image
@@ -323,13 +308,22 @@ public class PrintActionBean implements ActionBean {
         }
     }
     
+    // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
     private String getTemplateName(String pageFormat, String orientation) {
-        if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+        if (A5.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A5_Landscape;
+        }else if (A5.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A5_Portrait;
+        }else if (A4.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A4_Landscape;
         }else if (A3.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
             return A3_Portrait;
         }else if (A3.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
             return A3_Landscape;
+        }else if (A0.equalsIgnoreCase(pageFormat) && PORTRAIT.equalsIgnoreCase(orientation)){
+            return A0_Portrait;
+        }else if (A0.equalsIgnoreCase(pageFormat) && LANDSCAPE.equalsIgnoreCase(orientation)){
+            return A0_Landscape;
         }else{
             return A4_Portrait;
         }       

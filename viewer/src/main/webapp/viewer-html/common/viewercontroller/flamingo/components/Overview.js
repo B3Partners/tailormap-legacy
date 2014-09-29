@@ -35,7 +35,8 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
         picOver:null,
         picNormal:null,
         picTop:null,
-        picLeft:null
+        picLeft:null,
+        followZoom:null
     },
     constructor: function (conf){
         viewer.viewercontroller.flamingo.Overview.superclass.constructor.call(this, conf);
@@ -49,7 +50,12 @@ Ext.define ("viewer.viewercontroller.flamingo.Overview",{
         xml += "extent='"+ this.viewerController.mapComponent.getMap().getExtent().toString()+"' fullextent='"+ this.viewerController.mapComponent.getMap().getMaxExtent().toString()+ "'";
         xml += "listento='"+this.viewerController.mapComponent.getMap().getId() +"'>";
         xml +="<fmc:LayerOverview xmlns:fmc='fmc' id='LayerOverview"+ this.name + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "' color='#76B6D1'";
-        xml += " followfactor='200'/>";
+        
+        if(this.followZoom !== undefined && this.followZoom !== null && this.followZoom ===false){
+            xml += " followfactor='10000'/>";
+        }else{
+            xml += " followfactor='200'/>";
+        }
         xml += "<fmc:LayerImage id='layerimageoverview"+this.name+"' imageurl='"+this.url + "'";
         xml+=" extent='"+extent + "' listento='"+this.viewerController.mapComponent.getMap().getId() + "'/>";
         xml +="</fmc:Map>";

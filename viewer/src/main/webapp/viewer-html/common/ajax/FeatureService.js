@@ -73,6 +73,7 @@ Ext.define("viewer.AppLayerService", {
         if(!isNaN(appLayerId) && this.config.actionbeanUrl){
             Ext.Ajax.request({
                 url: this.config.actionbeanUrl,
+                timeout: 120000,
                 params: {attributes: true, application: this.appId, appLayer: this.appLayer.id},
                 success: function(result) {
                     var response = Ext.JSON.decode(result.responseText);
@@ -121,6 +122,7 @@ Ext.define("viewer.AppLayerService", {
             options.filter = filter;
             Ext.Ajax.request({
                 url: this.getStoreUrl(),
+                timeout: 120000,
                 params: options,
                 scope: scope,
                 success: function(result) {

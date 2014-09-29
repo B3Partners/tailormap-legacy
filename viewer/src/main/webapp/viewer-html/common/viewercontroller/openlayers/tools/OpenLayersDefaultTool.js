@@ -43,9 +43,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
         this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
         //get the map.
         this.map=this.viewerController.mapComponent.getMap();
-        //navigation tool
-        this.navigationControl = new OpenLayers.Control.Navigation({autoActivate: false}); 
-        this.map.getFrameworkMap().addControls([this.navigationControl]);
         
         //single map click
         this.mapClick=new viewer.viewercontroller.openlayers.ToolMapClick({
@@ -80,7 +77,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
      */
     activate: function(){        
         this.active=true;
-        this.navigationControl.activate();
         this.mapClick.activateTool();
         this.getFrameworkObject().activate();
         if (this.wmsGetFeatureInfoControl!=null){
@@ -92,7 +88,6 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool",{
      */
     deactivate: function(){  
         this.active=false;
-        this.navigationControl.deactivate();  
         this.mapClick.deactivateTool();
         this.getFrameworkObject().deactivate();
         if (this.wmsGetFeatureInfoControl!=null){

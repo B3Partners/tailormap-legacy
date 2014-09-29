@@ -19,7 +19,9 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
@@ -147,6 +149,11 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
         String rawXml = org.json.XML.toString(root);
         
         this.xml = transformXml(rawXml);
+        Date nowDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+        sdf.applyPattern("HH-mm_dd-MM-yyyy");
+        String now = sdf.format(nowDate);
+        final String fileName = "UsageMatrix_" + now;
         if (output_format!=null || "XLS".equalsIgnoreCase(output_format)){
             final XSSFWorkbook workbook= createWorkBook(this.xml);
             return new StreamingResolution("application/vnd.ms-excel"){
@@ -157,7 +164,7 @@ public class ServiceUsageMatrixActionBean implements ActionBean {
                         log.error("Error while writing workbook",ioe);
                     }
                 }
-            };
+            }.setAttachment(true).setFilename(fileName + ".xls");
         }        
         return new ForwardResolution(JSP);
     }

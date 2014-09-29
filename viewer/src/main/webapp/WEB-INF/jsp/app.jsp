@@ -105,6 +105,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/Component.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/LogMessage.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/Logger.js"></script>
+                <script type="text/javascript" src="${contextPath}/viewer-html/components/RequestManager.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/DataSelectionChecker.js"></script>
                 
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
@@ -229,7 +230,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var console = {};
                 console.log = function(logmsg) {
                     //alert(logmsg);
-                }
+                };
             }
             
             var contextPath = "${contextPath}";
@@ -256,7 +257,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "proxy":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ProxyActionBean"/></js:quote>,
                 "datastorespinup":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DataStoreSpinupActionBean"/></js:quote>,
                 "autosuggest":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SearchActionBean" event="autosuggest"/></js:quote>,
-                "componentresource":  <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ComponentResourceActionBean"/></js:quote>
+                "componentresource":  <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ComponentResourceActionBean"/></js:quote>,
+                "css":                 <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>,
+                "download":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
+                "buffergeom":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>
             };
             
             <c:if test="${actionBean.viewerType == 'openlayers'}">            
@@ -315,7 +319,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     if(!MobileManager.isMobile() || MobileManager.isAndroid() || window.onorientationchange === undefined) {
                         // Android devices seem to react better to window.resize than window.orientationchange, probably timing issue
                         Ext.EventManager.onWindowResize(function () {
-                            viewerController.resizeComponents();
+                            viewerController.resizeComponents(true);
                         });
                     } else {
                         window.onorientationchange = function(){

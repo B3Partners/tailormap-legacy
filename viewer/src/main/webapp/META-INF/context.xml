@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
+  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components,/opt/flamingo_data/flamingo_3rdparty/dbk-component,/opt/flamingo_data/flamingo_3rdparty/ro-tercera-component"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
 
     <Server ...>
@@ -24,6 +25,7 @@
     -->
   <!-- Tomcat resource link -->
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.Datasource"/>
+  <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
   <!-- Optional: use LockoutRealm instead of CombinedRealm to prevent brute-forcing -->
   <Realm className="org.apache.catalina.realm.CombinedRealm">
     <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_"/>

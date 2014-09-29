@@ -27,6 +27,7 @@ import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
+import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
@@ -229,8 +230,8 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
 
         application.setName(name);
         application.setVersion(version);
-        
-        if(owner != null){
+
+        if (owner != null) {
             User appOwner = Stripersist.getEntityManager().find(User.class, owner);
             application.setOwner(appOwner);
         }
@@ -239,11 +240,17 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         application.setMaxExtent(maxExtent);
 
         application.setAuthenticatedRequired(authenticatedRequired);
-        details.put("isMashup",new ClobElement(application.isMashup().toString()));
+        Map<String, ClobElement> backupDetails = new HashMap();
+        for (Map.Entry<String, ClobElement> e : application.getDetails().entrySet()) {
+            if (Application.preventClearDetails.contains(e.getKey())) {
+                details.put(e.getKey(), e.getValue());
+            }
+        }
+        
         application.getDetails().clear();
-        application.getDetails().putAll(details);        
+        application.getDetails().putAll(details);
     }
-    
+
     @ValidationMethod(on="save")
     public void validate(ValidationErrors errors) throws Exception {
         if(name == null) {
@@ -327,6 +334,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             Stripersist.getEntityManager().persist(copy);
             Stripersist.getEntityManager().persist(copy);
             Stripersist.getEntityManager().flush();
+            SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE);
             Stripersist.getEntityManager().getTransaction().commit();
 
             getContext().getMessages().add(new SimpleMessage("Applicatie is gekopieerd"));
@@ -359,7 +367,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             Application mashup = application.deepCopy();
             Stripersist.getEntityManager().detach(application);
             mashup.setRoot(root);
-            mashup.getDetails().put("isMashup", new ClobElement(Boolean.TRUE + ""));
+            mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(Boolean.TRUE + ""));
             mashup.setName(mashup.getName() + "_" + mashupName);
             Stripersist.getEntityManager().persist(mashup);
             Stripersist.getEntityManager().getTransaction().commit();

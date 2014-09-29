@@ -303,13 +303,16 @@ Ext.define("viewer.components.Component",{
                 'viewercomponentsInfluenceImage': 11,
                 'viewercomponentsRelatedDocuments': 12,
                 'viewercomponentsAttributeList': 13,
-                'viewercomponentsPrint': 15
+                'viewercomponentsPrint': 15,
+                'viewercomponentstoolsDownloadMap': 16,
+                'viewercomponentsSpatialFilter': 17,
+                'viewercomponentsGraph': 18
             },
             menuIconPosition: {
                 x: 561
             },
             paddingCorrection: 3,
-            xOffset: 350
+            xOffset: 354
         };
         var styleContent  = '.applicationSpriteClass button { background-image: url(\'' + appSprite + '\') !important; width: 100%; height: 100%; } ';
             styleContent += '.applicationSpriteClassPopup { background-image: url(\'' + appSprite + '\') !important; } ';

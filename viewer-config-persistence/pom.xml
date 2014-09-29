@@ -4,22 +4,21 @@
 
     <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
     <artifactId>viewer-config-persistence</artifactId>
-    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>4.4.0-SNAPSHOT</version>
+        <version>4.4.6-SNAPSHOT</version>
     </parent>
     <name>viewer-config-persistence</name>
-    
-    <build>    
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>
-                <version>3.0</version>              
+                <version>3.0</version>
                 <executions>
                     <execution>
                         <id>schema-export</id>
@@ -27,9 +26,9 @@
                         <configuration>
                             <hibernatetool destdir="${project.build.outputDirectory}/scripts">
                                 <classpath>
-                                    <path location="target"/>                                    
+                                    <path location="target"/>
                                 </classpath>
-                                
+
                                 <hbm2ddl
                                     export="false"
                                     drop="false"
@@ -37,101 +36,90 @@
                                     outputfilename="oracle-schema-export.sql"
                                     format="true">
                                     <jpaconfiguration persistenceUnit="viewer-config-oracle"/>
-                                </hbm2ddl> 
-                                
-                                <hbm2ddl                                
+                                </hbm2ddl>
+
+                                <hbm2ddl
                                     export="false"
                                     drop="false"
                                     create="true"
                                     outputfilename="postgresql-schema-export.sql"
                                     format="true">
                                     <jpaconfiguration persistenceUnit="viewer-config-postgresql"/>
-                                </hbm2ddl>                                                                                             
+                                </hbm2ddl>
                             </hibernatetool>
                         </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
                     </execution>
-                </executions> 
-            </plugin>             
-        </plugins>         
+                </executions>
+            </plugin>
+        </plugins>
     </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils-core</artifactId>
-            <version>1.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20090211</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.stripesstuff</groupId>
             <artifactId>stripersist</artifactId>
-            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc.viewer-commons</groupId>
             <artifactId>viewer-commons</artifactId>
-            <version>${project.version} </version>
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc.web-commons</groupId>
             <artifactId>web-commons</artifactId>
-            <version>${project.version} </version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-wms</artifactId>
-            <version>${geotools.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-wfs</artifactId>
-            <version>${geotools.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-wfs</artifactId>
-            <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools.jdbc</groupId>
             <artifactId>gt-jdbc-oracle</artifactId>
-            <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools.jdbc</groupId>
             <artifactId>gt-jdbc-postgis</artifactId>
-            <version>${geotools.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>3.6.8.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.6.8.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -57,7 +57,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         
         //Overwrite default OpenLayers tools,don't set any mouse controls
         config.controls=[
-            new OpenLayers.Control.Attribution(),            
+            new OpenLayers.Control.Attribution(),
             new OpenLayers.Control.Navigation()
         ];
         this.frameworkMap=new OpenLayers.Map(config.domId,config);        
@@ -79,6 +79,13 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.markers=new Object();
         this.getFeatureInfoControl = null;
         this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved, this);
+        
+        // Prevents the markerlayer to "disappear" beneath all the layers
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, function(){
+            if(this.markerLayer){
+                this.frameworkMap.setLayerIndex(this.markerLayer, this.frameworkMap.getNumLayers());
+            }
+        },this);
         return this;
     },
     
@@ -188,7 +195,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     **/
     zoomToExtent : function(extent){
         var bounds=this.utils.createBounds(extent)
-        this.getFrameworkMap().zoomToExtent(bounds);
+        this.getFrameworkMap().zoomToExtent(bounds,true);
     },
     
     /**

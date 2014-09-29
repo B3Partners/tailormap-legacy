@@ -353,7 +353,8 @@ Ext.define("viewer.components.CustomConfiguration",{
      * Show Solr configuration options for searchConfig
      */
     addSolrconfig: function(searchconfigId) {
-        var solrConfigId = 'solrConfig' + searchconfigId, me = this;
+        var solrConfigId = 'solrConfig' + searchconfigId;
+        var me = this;
         if(!this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
             var searchConfig = me.getConfig(searchconfigId);
             var checked = [];
@@ -475,7 +476,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 // If any layers are selected, enable checkbox
                 checkbox.checked = true;
             }
-            me.saveSolrconfig(searchconfigId, requiredOn, switchOn);
+            var config = me.getConfig(searchconfigId);
+            config.solrConfig [solrConfigId] = {
+                    // Config id
+                    'solrConfigid': solrConfigId,
+                    // Layers that are required to be on
+                    'requiredLayers': requiredOn,
+                    // Layers that should be switched on
+                    'switchOnLayers': switchOn
+                };
+            me.saveSolrconfig(searchconfigId);
             me.layerSelectionWindow.hide();
         });
         me.requiredLayersOn.resetChecked(requiredLayersChecked);

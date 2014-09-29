@@ -96,10 +96,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </c:when>
                 <c:otherwise>
                     <script type="text/javascript">
-                    var frameParent = getParent();
-                    if(frameParent && frameParent.reloadGrid) {
-                        frameParent.reloadGrid();
-                    }
+                    Ext.onReady(function() {
+                        var frameParent = getParent();
+
+                        if(frameParent && frameParent.reloadGrid) {
+                            frameParent.reloadGrid();
+                        }
+                    });
                     </script>
                     <stripes:submit name="newSearchConfig" value="Nieuwe zoekbron"/>
 

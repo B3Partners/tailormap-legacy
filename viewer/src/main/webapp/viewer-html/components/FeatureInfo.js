@@ -127,7 +127,9 @@ Ext.define ("viewer.components.FeatureInfo",{
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
             this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,this.doServerRequest,this);
-            this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
+            //this.featureInfo=Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController});
+            this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController}), this.viewerController);
+            
             this.serverRequestEnabled = true;
         }
         if (this.serverRequestLayers ==null){
@@ -163,7 +165,6 @@ Ext.define ("viewer.components.FeatureInfo",{
             this.setMaptipEnabled(true);
         }
         this.callParent(arguments);        
-        this.viewerController.mapComponent.setCursor(false);
     },
     /**
      *Called when extent is changed, recalculate the position

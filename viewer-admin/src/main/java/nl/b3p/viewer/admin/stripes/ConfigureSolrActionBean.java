@@ -51,7 +51,9 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
@@ -82,7 +84,7 @@ public class ConfigureSolrActionBean implements ActionBean {
     @Validate
     @ValidateNestedProperties({
             @Validate(field= "simpleFeatureType"),
-            @Validate(field= "name")
+            @Validate(field= "name",required = true, on = "save")
     })
     private SolrConf solrConfiguration;
     
@@ -99,6 +101,18 @@ public class ConfigureSolrActionBean implements ActionBean {
     
     @Validate
     private String term;
+    
+    @Validate
+    private Integer page;
+    
+    @Validate
+    private Integer start;
+    
+    @Validate
+    private Integer limit;
+    
+    @Validate
+    private JSONArray filter;
     
     private Boolean solrInitialized = true;
     
@@ -183,6 +197,38 @@ public class ConfigureSolrActionBean implements ActionBean {
 
     public void setSolrInitialized(Boolean solrInitialized) {
         this.solrInitialized = solrInitialized;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
+
+    public JSONArray getFilter() {
+        return filter;
+    }
+
+    public void setFilter(JSONArray filter) {
+        this.filter = filter;
     }
     //</editor-fold>
     
@@ -273,19 +319,57 @@ public class ConfigureSolrActionBean implements ActionBean {
         return new ForwardResolution(EDIT_JSP);
     }
 
-    public Resolution getGridData() throws JSONException {
-        EntityManager em =Stripersist.getEntityManager();
-        List<SolrConf> configs = em.createQuery("FROM SolrConf").getResultList();
-        JSONArray gridRows = new JSONArray();
-        for (SolrConf solrConfig : configs) {
-            JSONObject config= solrConfig.toJSON();
-            gridRows.put(config);
+    public Resolution getGridData() throws JSONException {        
+        JSONArray jsonData = new JSONArray();
+
+        String filterName = "";
+        String lastUpdated = "";
+      
+        if (this.getFilter() != null) {
+            for (int k = 0; k < this.getFilter().length(); k++) {
+                JSONObject j = this.getFilter().getJSONObject(k);
+                String property = j.getString("property");
+                String value = j.getString("value");
+                if (property.equals("name")) {
+                    filterName = value;
+                }
+                if (property.equals("lastUpdated")) {
+                    lastUpdated = value;
+                }
+            }
         }
-        
-        JSONObject json = new JSONObject();
-        json.put("totalCount", configs.size());
-        json.put("gridrows", gridRows);
-        return new StreamingResolution("application/json", json.toString(4));
+
+        Session sess = (Session) Stripersist.getEntityManager().getDelegate();
+        Criteria c = sess.createCriteria(SolrConf.class);
+
+        if (filterName != null && filterName.length() > 0) {
+            Criterion nameCrit = Restrictions.ilike("name", filterName, MatchMode.ANYWHERE);
+            c.add(nameCrit);
+        }
+        if (lastUpdated != null && lastUpdated.length() > 0) {
+            Criterion lastUpdatedCrit = Restrictions.ilike("lastUpdated", lastUpdated, MatchMode.ANYWHERE);
+            c.add(lastUpdatedCrit);
+        }
+
+        int rowCount = c.list().size();
+
+        c.setMaxResults(limit);
+        c.setFirstResult(start);
+
+        List sources = c.list();
+
+        for (Iterator it = sources.iterator(); it.hasNext();) {
+            SolrConf config = (SolrConf) it.next();
+           
+            JSONObject j = config.toJSON();
+            jsonData.put(j);
+        }
+
+        final JSONObject grid = new JSONObject();
+        grid.put("totalCount", rowCount);
+        grid.put("gridrows", jsonData);
+
+        return new StreamingResolution("application/json", grid.toString());
     }
     
     public Resolution getSearchconfigData() throws JSONException {

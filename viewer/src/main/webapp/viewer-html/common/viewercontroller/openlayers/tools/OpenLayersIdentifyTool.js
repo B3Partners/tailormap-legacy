@@ -218,34 +218,39 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
     }, 
     //called when wms layers return data.           
     raiseOnDataEvent: function(evt){
-        var options = new Object();  
+        var options = new Object();
         options.x = evt.xy.x;
         options.y = evt.xy.y;
         var coord = new Object();
-        var c = this.map.pixelToCoordinate(options.x,options.y);
+        var c = this.map.pixelToCoordinate(options.x, options.y);
         coord.x = c.x;
-        coord.y = c.y;        
-        options.coord=coord;
+        coord.y = c.y;
+        options.coord = coord;
         var featuresByLayer = new Object();
-        for (var i=0; i< evt.features.length; i++){
-            
+        for (var i = 0; i < evt.features.length; i++) {
+
             var feature = evt.features[i];
-            var layerName = feature.type? feature.type : feature.layerNames;
-            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url,layerName);
+            var layerName = feature.type ? feature.type : feature.layerNames;
+            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url, layerName);
+            if (appLayer === null) {
+                // If appLayer is null, perhaps the OpenLayersWMSLayers has multiple layerNames in the layers parameter, so try it again with the layerNames
+                appLayer = this.getAppLayerByOpenLayersLayer(feature.url, feature.layerNames);
+            }
             if (!featuresByLayer.hasOwnProperty(appLayer.id)) {
                 featuresByLayer[appLayer.id] = new Object();
-                featuresByLayer[appLayer.id].appLayerObj = appLayer;             
             }
-            if (!featuresByLayer[appLayer.id].hasOwnProperty(layerName)){
+            if (!featuresByLayer[appLayer.id].hasOwnProperty(layerName)) {
                 featuresByLayer[appLayer.id][layerName] = new Object();
+                featuresByLayer[appLayer.id][layerName].appLayerObj = appLayer;
                 featuresByLayer[appLayer.id][layerName].features = new Array();
             }
             featuresByLayer[appLayer.id][layerName].features.push(feature.attributes);
         }
-        for(var applayer in featuresByLayer){
+        for (var applayer in featuresByLayer) {
             options.data = [];
             var groupedLayers = featuresByLayer[applayer];
-            for (var lName in groupedLayers){
+            var appLayer = null;
+            for (var lName in groupedLayers) {
                 var features = groupedLayers[lName].features;
                 var response = {
                     request: {
@@ -253,13 +258,13 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
                         serviceLayer: lName
                     },
                     features: features,
-                    appLayer: groupedLayers.applayerObj
-                }                
+                    appLayer: groupedLayers[lName].appLayerObj
+                }
+                appLayer = groupedLayers[lName].appLayerObj;
                 options.data.push(response);
             }
-            featuresByLayer[applayer].appLayerObj.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
+            appLayer.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
         }
-        
     },
     getAppLayerByOpenLayersLayer : function(url, layerNames){
         var layers = this.map.layers;
@@ -307,14 +312,18 @@ Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool",{
             featureIdentifier);
         var response = [];
         if (layerNodes) {
-            for (var i=0, len=layerNodes.length; i<len; ++i) {                
-                var featureNode = layerNodes[i].firstElementChild;                
-                var attributes = this.parseAttributes(featureNode);
-                var geomAttr = this.parseGeometry(featureNode);
-                var feature = new OpenLayers.Feature.Vector(geomAttr.geometry,
-                    attributes,null);
-                feature.type = featureNode.localName;
-                response.push(feature);
+            for (var i=0, len=layerNodes.length; i<len; ++i) {
+                if (layerNodes.hasOwnProperty(i)){
+                    var featureNode = layerNodes[i].firstElementChild || layerNodes[i].firstChild || layerNodes[i].children[0] ||{};
+                    if (featureNode){
+                        var attributes = this.parseAttributes(featureNode);
+                        var geomAttr = this.parseGeometry(featureNode);
+                        var feature = new OpenLayers.Feature.Vector(geomAttr.geometry,
+                            attributes,null);
+                        feature.type = featureNode.localName || featureNode.baseName;
+                        response.push(feature);
+                    }
+                }
             }
         }
         return response;

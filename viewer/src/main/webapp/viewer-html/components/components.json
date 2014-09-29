@@ -1,33 +1,35 @@
 /* JSON metadata describing components for viewer and viewer-admin webapps
- * 
+ *
  * Parameters:
- * 
+ *
  * className: The component's classname
- * 
+ *
  * name: The name as used in the layoutmanager
- * 
+ *
  * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
- * 
+ *
  * restrictions: Array with region-ids to which the component can be dragged
  *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,content_bottom
  *   popupwindow,rightmargin_top,rightmargin_bottom,footer
- * 
+ *
  * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
- * 
+ *
  * notInCombinationWith: Array with the classNames of other components. If a component from that array has
  *                   already been added to a region, this component cannot be added to that region
- * 
+ *
  * showHelp: boolean value to show help configuration tab for component (default false)
+ * group: string, indicates to which group this component belongs: used to indicate in which closable panel it should be rendered.
+ * Possible values: Map, Tools, Functionality. Defaults to "Rest"
  *
  * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
- *   
- * extPropertyGridConfigs.source: Set the object that must be configurable with defaults 
+ *
+ * extPropertyGridConfigs.source: Set the object that must be configurable with defaults
  * For example:
  *   {name: "a name", tooltip: "a tool tip", happy: true}
- *   
+ *
  * extPropertyGridConfigs.propertyNames: here you can set the labels for the object configured
  * in extPropertyGridConfigs.source *   l
- * For example: 
+ * For example:
  *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
  *
  */
@@ -37,7 +39,7 @@
         name: "Flamingo Map",
         shortName: "Fm",
         restrictions: ["content"],
-
+        group: "Map",
         singleton: true,
         notInCombinationWith: ["viewer.mapcomponents.OpenLayersMap"],
         extPropertyGridConfigs: {
@@ -49,13 +51,13 @@
         className: "viewer.mapcomponents.OpenLayersMap",
         name: "OpenLayers Map",
         shortName: "Om",
-
+        group: "Map",
         singleton: true,
         restrictions: ["content"],
         notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
         extPropertyGridConfigs: {
             propertyNames: {
-                resolutions: "Resoluties",
+                resolutions: "Resoluties (komma gescheiden)",
                 theme: "Theme ('flamingo' or 'default')"
             },
             source: {
@@ -68,28 +70,30 @@
     {
         className: "viewer.components.tools.StreetView",
         name: "Streetview",
+        group: "Tools",
         shortName: "Sv",
         sources: ["StreetView.js"],
         singleton: true,
         restrictions: ["top_menu"],
-        configSource: ["ConfigObject.js","StreetView-config.js"]   
+        configSource: ["ConfigObject.js","StreetView-config.js"]
     },
-    
+
     {
         className: "viewer.components.CurrentLocation",
         name: "Current Location",
         shortName: "LOC",
         sources: ["CurrentLocation.js"],
+        group: "Tools",
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
-            propertyNames: { 
+            propertyNames: {
                 tooltip: 'Tooltip',
-                interval: 'Interval(ms)' 
+                interval: 'Interval(ms)'
             },
-            source: { 
+            source: {
                 tooltip: 'Huidge locatie',
-                interval: 0 
+                interval: 0
             }
         }
     },
@@ -97,10 +101,11 @@
     {
         className: "viewer.components.tools.ZoomIn",
         name: "ZoomIn",
+        group: "Tools",
         shortName: "ZI",
         sources: ["tools/Tool.js","tools/ZoomIn.js"],
         closureCompilerSafe: true,
-        singleton: true, 
+        singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
@@ -110,17 +115,18 @@
     {
         className: "viewer.components.tools.ZoomOut",
         name: "ZoomOut",
+        group: "Tools",
         shortName: "ZO",
         sources: ["tools/Tool.js","tools/ZoomOut.js"],
         closureCompilerSafe: true,
         singleton: true,
         restrictions: ["top_menu"],
         extPropertyGridConfigs: {
-            propertyNames: {tooltip: "Tooltip"},
-            source: {tooltip: "Zoom out"}
+            propertyNames: {tooltip: "Tooltip", zoomBox: "Trek rechthoek voor uitzoomen"},
+            source: {tooltip: "Zoom out", zoomBox : false}
         }
     },
-    {        
+    {
         className: "viewer.components.Maptip",
         name: "Maptip",
         shortName: "Mt",
@@ -128,7 +134,8 @@
         restrictions: ["content"],
         type : "popup",
         singleton: true,
-        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Maptip-config.js"]                   
+        group: "Map",
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Maptip-config.js"]
     },
     {
         className: "viewer.components.FeatureInfo",
@@ -137,14 +144,16 @@
         sources: ["Maptip.js","FeatureInfo.js"],
         closureCompilerSafe: true,
         type : "popup",
+        group: "Map",
         singleton: true,
         restrictions: ["content"],
-        configSource: ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]   
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
     },
     {
         className: "viewer.components.tools.Identify",
         name: "Identify",
         shortName: "Id",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/Identify.js"],
         closureCompilerSafe: true,
 
@@ -160,6 +169,7 @@
         className: "viewer.components.tools.Pan",
         name: "Pan",
         shortName: "pa",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/Pan.js"],
         closureCompilerSafe: true,
 
@@ -175,6 +185,7 @@
         className: "viewer.components.tools.SuperPan",
         name: "SuperPan",
         shortName: "Sp",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/SuperPan.js"],
         closureCompilerSafe: true,
 
@@ -185,11 +196,12 @@
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "SuperPan"}
         }
-    },  
+    },
     {
         className: "viewer.components.tools.Measure.Line",
         name: "Measure line",
         shortName: "ML",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/Measure.js"],
         closureCompilerSafe: true,
 
@@ -212,11 +224,12 @@
                 nonSticky: false
             }
         }
-    },  
+    },
     {
         className: "viewer.components.tools.Measure.Area",
         name: "Measure area",
         shortName: "MA",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/Measure.js"],
         closureCompilerSafe: true,
 
@@ -239,11 +252,12 @@
                 nonSticky: false
             }
         }
-    }, 
+    },
     {
         className: "viewer.components.tools.FullExtent",
         name: "Full Extent",
         shortName: "fext",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/FullExtent.js"],
         closureCompilerSafe: true,
 
@@ -252,13 +266,14 @@
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "Tooltip"},
             source: {tooltip: "Full extent"}
-        },                
+        },
         notInCombinationWith: ["OpenLayersMap"]
-    }, 
+    },
     {
         className: "viewer.components.tools.PreviousExtent",
         name: "Previous Extent",
         shortName: "pExt",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/PreviousExtent.js"],
         closureCompilerSafe: true,
 
@@ -268,12 +283,13 @@
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "PreviousExtent"},
             source: {tooltip: "Previous Extent"}
-        },      
+        },
         notInCombinationWith: ["OpenLayersMap"]
-    }, 
+    },
     {
         className: "viewer.components.tools.NextExtent",
         name: "Next Extent",
+        group: "Tools",
         shortName: "nExt",
         sources: ["tools/Tool.js","tools/NextExtent.js"],
         closureCompilerSafe: true,
@@ -284,16 +300,17 @@
         extPropertyGridConfigs: {
             propertyNames: {tooltip: "NextExtent"},
             source: {tooltip: "Next Extent"}
-        },                
+        },
         notInCombinationWith: ["OpenLayersMap"]
-    }, 
+    },
 
     {
         className: "viewer.components.BorderNavigation",
         name: "Border Navigation",
+        group: "Tools",
         shortName: "bn",
         sources: ["BorderNavigation.js"],
-        closureCompilerSafe: true,        
+        closureCompilerSafe: true,
         singleton: true,
         restrictions: ["content"],
         extPropertyGridConfigs:{
@@ -315,9 +332,10 @@
         name: "ScaleBar",
         shortName: "sb",
         sources: ["ScaleBar.js"],
+        group: "Map",
         closureCompilerSafe: true,
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 units: "Units"
             },
             source: {
@@ -325,16 +343,17 @@
             }
         },
         singleton: true,
-        restrictions: ["content_bottom"]        
+        restrictions: ["content_bottom"]
     },
     {
         className: "viewer.components.Coordinates",
         name: "Coordinates",
         shortName: "Coörd",
         sources: ["Coordinates.js"],
-        closureCompilerSafe: true,   
+        group: "Map",
+        closureCompilerSafe: true,
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 decimals: "Decimalen"
             },
             source: {
@@ -342,8 +361,8 @@
             }
         },
         singleton: true,
-        restrictions: ["content_bottom"]        
-    }, 
+        restrictions: ["content_bottom"]
+    },
     {
         className: "viewer.components.FlamingoComponent",
         name: "Flamingo Component",
@@ -352,17 +371,18 @@
         closureCompilerSafe: true,
 
         singleton: true,
-        restrictions: ["content"],        
+        restrictions: ["content"],
         notInCombinationWith: ["OpenLayersMap"],
 
         extPropertyGridConfigs: {
             propertyNames: {xml: "Xml Configuratie"},
             source: {xml: ""}
         }
-    }, 
+    },
     {
         className: "viewer.components.TOC",
         name: "TOC",
+        group: "Component",
         sources: ["TOC.js"],
         configSource: ["ConfigObject.js","TOC-config.js"],
         singleton: true,
@@ -373,10 +393,11 @@
         className: "viewer.components.tools.GoogleNavigation",
         name: "Google Navigation",
         shortName: "Gn",
+        group: "Tools",
         sources: ["tools/Tool.js","tools/GoogleNavigation.js","NavigationPanel.js"],
         closureCompilerSafe: true,
-        extPropertyGridConfigs: {            
-            propertyNames: {            
+        extPropertyGridConfigs: {
+            propertyNames: {
                 navigationPanel: "Navigatiepaneel",
                 tooltip: "Tooltip tool",
                 //for navigation panel
@@ -392,7 +413,7 @@
                 top: "Positie vanaf boven",
                 zoomToFullIsStart: "Zoom naar maximale extent zoomt naar startextent"
             },
-            source: {          
+            source: {
                 navigationPanel: true,
                 tooltip: "Pan(slepen), zoom(dubbel klikken) en identify(enkele klik)",
                 //for navigation panel
@@ -410,18 +431,19 @@
             }
         },
         singleton: true,
-        restrictions: ["top_menu"]        
+        restrictions: ["top_menu"]
     },{
         className: "viewer.components.NavigationPanel",
         name: "Navigation Panel",
+        group: "Tools",
         shortName: "np",
         sources: ["NavigationPanel.js"],
-        closureCompilerSafe: true,        
+        closureCompilerSafe: true,
         singleton: true,
         restrictions: ["content"],
         notInCombinationWith: ["Google Navigation"],
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 width: "Width",
                 height: "Height",
                 tooltip_pan_right: "Tooltip pan rechts",
@@ -433,7 +455,7 @@
                 left: "Positie vanaf links",
                 top: "Positie vanaf boven"
             },
-            source: {             
+            source: {
                 width: "",
                 height: "",
                 tooltip_pan_right: "Pan naar rechts",
@@ -452,9 +474,10 @@
         name: "Legend",
         shortName: "Ln",
         sources: ["Legend.js"],
+        group: "Component",
         closureCompilerSafe: true,
         extPropertyGridConfigs: {
-            propertyNames: {               
+            propertyNames: {
                 title: "Titel",
                 showBackground: "Toon achtergrond kaarten",
                 margin: "Marge rond legenda (bijv. \"3px\")"
@@ -473,6 +496,7 @@
         className: "viewer.components.RelatedDocuments",
         name: "Gerelateerde documenten",
         shortName: "Rd",
+        group: "Component",
         sources: ["RelatedDocuments.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","RelatedDocuments-config.js"],
         singleton: true,
@@ -484,6 +508,7 @@
         className: "viewer.components.SelectionModule",
         name: "Selectie Module",
         shortName: "Sm",
+        group: "Component",
         sources: ["SelectionModule.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","SelectionModule-config.js"],
         singleton: true,
@@ -494,6 +519,7 @@
     {
         className: "viewer.components.Bookmark",
         name: "Bookmark",
+        group: "Component",
         shortName: "Bm",
         sources: ["Bookmark.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Bookmark-config.js"],
@@ -505,6 +531,7 @@
     {
         className: "viewer.components.HTML",
         name: "HTML",
+        group: "Component",
         shortName: "HTML",
         sources: ["HTML.js"],
         configSource: ["ConfigObject.js","HTML-config.js"],
@@ -514,12 +541,13 @@
     {
         className: "viewer.components.TransparencySlider",
         name: "Transparantie",
+        group: "Component",
         singleton: true,
         sources: ["Slider.js","NonInitLayerSlider.js","TransparencySlider.js","TransparencySliderLayerIds.js"],
         configSource: ["ConfigObject.js","TransparencySlider-config.js","TransparencySliderLayerIds.js"],
         restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom"],
         showHelp: true
-        
+
     },
     /*{
         className: "viewer.components.BufferLayer",
@@ -527,7 +555,7 @@
         shortName: "BL",
         sources: ["BufferLayer.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","BufferLayer-config.js"],
-        restrictions: ["left_menu"],            
+        restrictions: ["left_menu"],
         type: "popup"
     },
     {
@@ -536,17 +564,18 @@
         shortName: "BO",
         sources: ["BufferObject.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","BufferObject-config.js"],
-        restrictions: ["left_menu"],            
+        restrictions: ["left_menu"],
         type: "popup"
     },*/
     {
         className: "viewer.components.Buffer",
         name: "Buffer",
         shortName: "Bu",
+        group: "Component",
         singleton: true,
         sources: ["../common/ColorField.js","Buffer.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Buffer-config.js"],
-        restrictions: ["left_menu"],            
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -555,6 +584,7 @@
         name: "Load Monitor",
         shortName: "Mon",
         singleton: true,
+        group: "Tools",
         sources: ["LoadMonitor.js"],
         restrictions: ["content"],
         extPropertyGridConfigs: {
@@ -570,16 +600,17 @@
                 top: "50",
                 timeout: "60000"
             }
-        }             
+        }
     },
     {
         className: "viewer.components.AttributeList",
         name: "Attributen Lijst",
+        group: "Component",
         shortName: "AL",
         sources: ["../common/plugins/RowExpander.js","AttributeList.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","AttributeList-config.js"],
-        restrictions: ["left_menu"] , 
-        singleton: true,       
+        restrictions: ["left_menu"] ,
+        singleton: true,
         type: "popup",
         showHelp: true
     },
@@ -587,9 +618,10 @@
         className: "viewer.components.Edit",
         name: "Edit",
         shortName: "Ed",
+        group: "Component",
         sources: ["Edit.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         singleton: true,
         showHelp: true
@@ -597,10 +629,11 @@
     {
         className: "viewer.components.Drawing",
         name: "Tekenen",
+        group: "Component",
         shortName: "Te",
         sources: ["../common/ColorField.js","Drawing.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Drawing-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         singleton: true,
         showHelp: true
@@ -609,10 +642,11 @@
         className: "viewer.components.DataSelection",
         name: "Data Selectie",
         shortName: "DS",
+        group: "Component",
         singleton: true,
         sources: ["AttributeFilter.js","Filter.js","DataSelection.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","DataSelection-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -621,11 +655,12 @@
         name: "Search",
         singleton: true,
         shortName: "Se",
+        group: "Component",
         sources: ["Search.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Search-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],        
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","left_menu"],
         type: "popup",
-        showHelp: true        
+        showHelp: true
      },
    /*  {
         className: "viewer.components.fmc.Window",
@@ -641,17 +676,18 @@
         shortName: "Igg",
         sources: ["Search.js","Influence.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
-        restrictions: ["left_menu"],        
-        type: "popup"         
+        restrictions: ["left_menu"],
+        type: "popup"
     },*/
     {
         className: "viewer.components.InfluenceImage",
         name: "Invloedsgebied plaatje",
+        group: "Component",
         singleton: true,
         shortName: "Igi",
         sources: ["Search.js","Influence.js","InfluenceImage.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -660,6 +696,7 @@
         name: "Overzichtskaart",
         shortName: "Oz",
         sources: ["Overview.js"],
+        group: "Component",
         configSource: ["ConfigObject.js","Overview-config.js"],
         restrictions: ["content"],
         singleton: true,
@@ -670,9 +707,10 @@
         name: "Print",
         shortName: "Pr",
         singleton: true,
+        group: "Component",
         sources: ["Print.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Print-config.js"],
-        restrictions: ["left_menu"],        
+        restrictions: ["left_menu"],
         type: "popup",
         showHelp: true
     },
@@ -681,26 +719,29 @@
         name: "LayerContext",
         shortName: "LC",
         singleton: true,
+        group: "Component",
         sources: ["LayerContext.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","LayerContext-config.js"],
-        restrictions: ["content"],        
+        restrictions: ["content"],
         type: "popup",
-        showHelp: true        
+        showHelp: true
     },
     {
         className: "viewer.components.Help",
         name: "Help",
         shortName: "LC",
         singleton: true,
+        group: "Component",
         sources: ["Help.js"],
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","Help-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","content"],        
+        restrictions: ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","content"],
         type: "popup"
     },
     {
         className: "viewer.components.LayerSwitch",
         name: "LayerSwitch",
         shortName: "LS",
+        group: "Component",
         sources: ["LayerSwitch.js"],
         configSource: ["ConfigObject.js","LayerSwitch-config.js"],
         restrictions: ["content"],
@@ -730,6 +771,7 @@
     {
         className: "viewer.components.Twitter",
         name: "Twitter",
+        group: "Component",
         shortName: "Tw",
         sources: ["Twitter.js"],
         closureCompilerSafe: true,
@@ -749,13 +791,14 @@
         singleton: true,
         sources: ["Presentation.js"],
         configSource: ["ConfigObject.js","Presentation_config.js"],
-        restrictions: ["footer"],            
+        restrictions: ["footer"],
         type: "popup"
     },*/
     {
         className: "viewer.components.Divider",
         name: "Divider",
         shortName: "Dv",
+        group: "Component",
         sources: ["Divider.js"],
         configSource: ["ConfigObject.js","Divider-config.js"],
         closureCompilerSafe: true,
@@ -767,6 +810,7 @@
         name: "Download Map",
         shortName: "DM",
         restrictions: ["top_menu", "left_menu"],
+        group: "Component",
         sources: [ "Print.js","DownloadMap.js"],
         singleton: false,
         extPropertyGridConfigs: {
@@ -779,6 +823,7 @@
         name: "Browser check",
         shortName: "BC",
         restrictions: ["content"],
+        group: "Component",
         sources: ["BrowserCheck.js"],
         singleton: true,
         extPropertyGridConfigs: {
@@ -805,5 +850,61 @@
         sources: ["SimpleFilter.js"],
         singleton: false,
         configSource: ["ConfigObject.js","SimpleFilter-config.js"]
+    },
+    {
+        className: "viewer.components.Graph",
+        name: "Graph",
+        shortName: "Gr",
+        group: "Component",
+        singleton: true,
+        sources: ["Graph.js", "GraphLayerIds.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Graph-config.js", "GraphLayerIds.js"],
+        restrictions: ["left_menu"],
+        type: "popup",
+        showHelp: true
+    },
+    {
+        className: "viewer.components.SpatialFilter",
+        name: "Spatial Filter",
+        shortName: "Sf",
+        group: "Component",
+        sources: ["SpatialFilter.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","SpatialFilter-config.js"],
+        restrictions: ["left_menu"],
+        type: "popup",
+        singleton: true,
+        showHelp: true
+    },
+    {
+        className: "viewer.components.Keyboard",
+        name: "Keyboard navigation",
+        shortName: "Kn",
+        group: "Map",
+        notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+        sources: ["Keyboard.js"],
+        closureCompilerSafe: true,
+
+        singleton: true,
+        restrictions: ["content"],
+
+        extPropertyGridConfigs: {
+            propertyNames: {tooltip: "Tooltip"},
+            source: {tooltip: "Keyboard navigation"}
+        }
+    },
+    {
+        className: "viewer.components.ExtentFilter",
+        name: "Extent Filter",
+        shortName: "Ef",
+        group: "Component",
+        sources: ["SpatialFilter.js","ExtentFilter.js"],
+        restrictions: ["content"],
+        singleton: true,
+        showHelp: true,
+        extPropertyGridConfigs: {
+            propertyNames: {},
+            source: {}
+        }
+>>>>>>> master
     }
 ]
