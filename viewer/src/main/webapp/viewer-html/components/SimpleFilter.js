@@ -208,16 +208,20 @@ Ext.define("viewer.components.sf.Slider", {
             return;
         }
 
-        var min = this.slider.getValue(0);
-        var max = this.slider.getValue(1);
-
-        var cql = this.config.attributeName + " > " + min + " AND " + this.config.attributeName + " < " + max;
+        var cql = this.getCQL();
 
         viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
             id: this.config.name,
             cql: cql,
             operator: "AND"
         }), layer);
+    },
+    getCQL : function(){
+        var min = this.slider.getValue(0);
+        var max = this.slider.getValue(1);
+
+        var cql = this.config.attributeName + " > " + min + " AND " + this.config.attributeName + " < " + max;
+        return cql;
     }
 });
 
