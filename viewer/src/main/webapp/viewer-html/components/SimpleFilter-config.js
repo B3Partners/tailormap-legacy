@@ -17,11 +17,11 @@
 
 Ext.define("viewer.components.sf.SliderConfig", {
     configObject: null,
-
+    id: null,
     form: null,
     constructor: function(config) {
         this.configObject = config.configObject;
-
+        this.id = this.configObject.id ? this.configObject.id : Ext.id();
         this.form = Ext.create("Ext.form.Panel", {
             title: 'Slider',
             width: 325,
@@ -116,7 +116,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
     },
     getConfig: function() {
         var config = this.form.getValues();
-        config.type = this.type;
+        config.id = this.id;
         return config;
     }
 });
@@ -368,7 +368,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
             return;
         }
-
+        Ext.getCmp("filterConfigFieldset").removeAll();
         this.filterConfigurer = Ext.create(configurerClass, {
             configObject: config,
             renderTo: "filterConfigFieldset"
@@ -399,7 +399,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         var config = this.filterConfigs[this.currentEditIndex];
         var type = config.class.substring(config.class.lastIndexOf(".")+1).toLowerCase();
 
-        Ext.getCmp("layerCombo").setValue(appConfig.appLayers[configObject.layers[config.appLayerId]]);
+        Ext.getCmp("layerCombo").setValue(config.appLayerId);
         Ext.getCmp("attributeCombo").setValue(config.attributeName);
         Ext.getCmp("filterType").setValue(type);
         this.createFilterConfig(type, config.config);
