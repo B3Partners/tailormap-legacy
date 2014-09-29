@@ -157,6 +157,7 @@ Ext.define("viewer.components.sf.Slider", {
                     }
                 }
             });
+            this.sliderChange();
         }
     },
 
@@ -215,7 +216,7 @@ Ext.define("viewer.components.sf.Slider", {
         }
     },
 
-    sliderChange: function(slider, newValue, thumb, eOpts) {
+    sliderChange: function() {
 
         var vc = this.config.simpleFilter.viewerController;
 
@@ -227,7 +228,7 @@ Ext.define("viewer.components.sf.Slider", {
 
         var cql = this.getCQL();
 
-        viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
+        vc.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
             id: this.config.name,
             cql: cql,
             operator: "AND"
