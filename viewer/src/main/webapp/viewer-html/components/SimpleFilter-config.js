@@ -19,7 +19,6 @@ Ext.define("viewer.components.sf.SliderConfig", {
     configObject: null,
 
     form: null,
-
     constructor: function(config) {
         this.configObject = config.configObject;
 
@@ -114,6 +113,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
     },
     getConfig: function() {
         var config = this.form.getValues();
+        config.type = this.type;
         return config;
     }
 });
@@ -199,25 +199,15 @@ Ext.define("viewer.components.CustomConfiguration",{
                         xtype: 'combo',
                         fieldLabel: 'Soort filtergereedschap',
                         store: filterTypes,
+                        id: "filterType",
                         queryModes: "local",
                         displayField: "label",
                         editable: false,
                         valueField: "type",
                         listeners: {
-                            select: function(combo, records, eOpts) {
+                            select: function (combo, records, eOpts) {
                                 var type = records[0].get("type");
-                                var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
-
-                                if(type !== "slider") {
-                                    Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
-                                    return;
-                                }
-
-                                me.filterConfigurer = Ext.create(configurerClass, {
-                                    configObject: me,
-                                    renderTo: "filterConfigFieldset"
-                                });
-                                Ext.getCmp("filterConfigFieldset").doLayout();
+                                me.createFilterConfig(type);
                             }
                         }
                     },{
@@ -367,7 +357,20 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.titleField.focus(false, true);*/
         return this;
     },
+    createFilterConfig: function(type){
+        var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
 
+        if (type !== "slider") {
+            Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
+            return;
+        }
+
+        this.filterConfigurer = Ext.create(configurerClass, {
+            configObject: this,
+            renderTo: "filterConfigFieldset"
+        });
+        Ext.getCmp("filterConfigFieldset").doLayout();
+    },
     addClick: function(button, e, eOpts) {
         console.log("addClick", this);
         if(this.filterConfigurer) {
@@ -389,6 +392,13 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     gridSelect: function(grid, record, index, eOpts) {
         this.currentEditIndex = index;
+        var config = this.filterConfigs[this.currentEditIndex];
+
+        Ext.getCmp("layerCombo").setValue(appConfig.appLayers[configObject.layers[config.appLayerId]]);
+        Ext.getCmp("attributeCombo").setValue(config.attributeName);
+
+        var type = config.class.substring(config.class.lastIndexOf(".")+1);
+        var soort = Ext.getCmp("filterType").setValue(type.toLowerCase());
         Ext.MessageBox.alert("Concept", "Filtergereedschappen kunnen nog niet bewerkt worden...");
     },
 
