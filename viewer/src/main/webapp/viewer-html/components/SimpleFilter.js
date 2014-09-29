@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2014 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 
 Ext.define("viewer.components.sf.Slider", {
-    
+
     config: {
         name: null,
         appLayerId: null,
@@ -29,17 +29,17 @@ Ext.define("viewer.components.sf.Slider", {
         simpleFilter: null,
         slider: null
     },
-    
+
     constructor: function(conf) {
         this.initConfig(conf);
-        
+
         var filterChangeDelay = 500;
- 
+
         var c = this.config.config;
         var n = this.config.name;
 
         var autoMin = false, autoMax = false;
-        
+
         c.step = Number(c.step);
         if(c.min === "") {
             this.getMinMax("#MIN#");
@@ -55,11 +55,11 @@ Ext.define("viewer.components.sf.Slider", {
         } else {
             c.max = Number(c.max);
         }
-        
+
         this.autoMinStart = false;
         this.autoMaxStart = false;
         this.autoStart = false;
-        
+
         if(c.sliderType === "range") {
             c.start = c.start.split(",");
             if(c.start[0] === "min") {
@@ -81,8 +81,8 @@ Ext.define("viewer.components.sf.Slider", {
             } else {
                 c.start = Number(c.start);
             }
-        }        
-        
+        }
+
         var t =
             "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
             "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
@@ -107,7 +107,7 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
 
-        t += 
+        t +=
             "        </tr>" +
             "    </tbody>" +
             "  </table>" +
@@ -120,7 +120,7 @@ Ext.define("viewer.components.sf.Slider", {
             label: c.label,
             name: this.config.name
         });
-        
+
         if(c.sliderType === "range") {
             this.slider = Ext.create('Ext.slider.Multi', {
                 id: n + "_extSlider",
@@ -138,26 +138,26 @@ Ext.define("viewer.components.sf.Slider", {
                         scope: this
                     }
                 }
-            });        
+            });
         } else {
         }
     },
-    
+
     getMinMax: function(minOrMax) {
-        
+
         var startTime = new Date().getTime();
-        
+
         var me = this;
-        Ext.Ajax.request({ 
-            url: actionBeans.unique, 
+        Ext.Ajax.request({
+            url: actionBeans.unique,
             timeout: 10000,
-            params: { 
+            params: {
                 attribute: this.attributeName,
                 applicationLayer: this.appLayerId,
                 getMinMaxValue: 't',
                 operator: minOrMax
-            }, 
-            success: function ( result, request ) { 
+            },
+            success: function ( result, request ) {
                 var time = new Date().getTime() - startTime;
                 var res = Ext.JSON.decode(result.responseText);
                 if(res.success) {
@@ -166,20 +166,20 @@ Ext.define("viewer.components.sf.Slider", {
                 } else {
                     //Ext.MessageBox.alert('Foutmelding', "Kan geen min/max waardes ophalen: " + res.msg);
                 }
-            }, 
+            },
             failure: function ( result, request) {
                 //Ext.MessageBox.alert('Foutmelding', "Kan geen min/max waardes ophalen: " + result.responseText);
-            } 
-        });        
+            }
+        });
     },
-    
+
     updateMinMax: function(minOrMax, value) {
         if(minOrMax === "#MIN#") {
             this.slider.setMinValue(value);
         } else {
             this.slider.setMaxValue(value);
         }
-            
+
         if(this.config.config.sliderType === "range") {
             if(minOrMax === "#MIN#" && this.autoMinStart) {
                 this.slider.setValue(0, value, false);
@@ -197,22 +197,22 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
     },
-    
+
     sliderChange: function(slider, newValue, thumb, eOpts) {
 
         var vc = this.config.simpleFilter.viewerController;
-        
+
         var layer = vc.getLayer({id: this.appLayerId});
-        
+
         if(!layer) {
             return;
         }
 
         var min = this.slider.getValue(0);
         var max = this.slider.getValue(1);
-        
+
         var cql = this.config.attributeName + " > " + min + " AND " + this.config.attributeName + " < " + max;
-        
+
         viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
             id: this.config.name,
             cql: cql,
@@ -233,7 +233,7 @@ Ext.define("viewer.components.SimpleFilter", {
         viewer.components.SimpleFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var parentDiv = Ext.get(this.div);
-        
+
         this.container = Ext.create('Ext.container.Container', {
             id: this.config.name,
             width: '100%',
@@ -255,7 +255,7 @@ Ext.define("viewer.components.SimpleFilter", {
         });
         return this;
     },
-    
+
     getExtComponents: function() {
         return [ this.container.getId() ];
     }
