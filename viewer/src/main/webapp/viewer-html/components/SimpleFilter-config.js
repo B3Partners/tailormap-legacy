@@ -205,8 +205,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         editable: false,
                         valueField: "type",
                         listeners: {
-                            select: function (combo, records, eOpts) {
-                                var type = records[0].get("type");
+                            change: function (combo, type, eOpts) {
                                 me.createFilterConfig(type);
                             }
                         }
@@ -399,7 +398,6 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         var type = config.class.substring(config.class.lastIndexOf(".")+1);
         var soort = Ext.getCmp("filterType").setValue(type.toLowerCase());
-        Ext.MessageBox.alert("Concept", "Filtergereedschappen kunnen nog niet bewerkt worden...");
     },
 
     getConfiguration: function() {
