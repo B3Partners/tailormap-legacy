@@ -386,15 +386,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 config: this.filterConfigurer.getConfig()
             };
 
-            for( var i = 0 ; i < this.filterConfigs.length ;i++){
-                var config = this.filterConfigs[i];
-                if(config.config.id === filterControl.config.id){
-                    this.filterConfigs.splice(i,1);
-                    var record = this.filterStore.findRecord("id", filterControl.config.id);
-                    this.filterStore.remove(record);
-                    break;
-                }
-            }
+            this.removeConfig( filterControl.config.id );
 
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
             var appLayer = appConfig.appLayers[filterControl.appLayerId];
@@ -406,7 +398,17 @@ Ext.define("viewer.components.CustomConfiguration",{
             this.filterConfigurer = null;
         }
     },
-
+    removeConfig : function( id ){
+        for (var i = 0; i < this.filterConfigs.length; i++) {
+            var config = this.filterConfigs[i];
+            if (config.config.id === id) {
+                this.filterConfigs.splice(i, 1);
+                var record = this.filterStore.findRecord("id",id);
+                this.filterStore.remove(record);
+                break;
+            }
+        }
+    },
     gridSelect: function(grid, record, index, eOpts) {
         this.currentEditIndex = index;
         var config = this.filterConfigs[this.currentEditIndex];
