@@ -139,7 +139,7 @@ Ext.define("viewer.components.sf.Slider", {
                     }
                 }
             });
-        } else if(c.sliderType === "eq" || c.sliderType === "gt" )  {
+        } else if(c.sliderType === "eq" || c.sliderType === "gt" || c.sliderType === "lt" )  {
             this.slider = Ext.create('Ext.slider.Single', {
                 id: n + "_extSlider",
                 width: 160, // XXX
@@ -245,6 +245,8 @@ Ext.define("viewer.components.sf.Slider", {
             cql = this.config.attributeName + " = " + this.slider.getValue();
         }else if (sliderType === "gt"){
             cql = this.config.attributeName + " > " + this.slider.getValue();
+        }else if (sliderType === "lt"){
+            cql = this.config.attributeName + " < " + this.slider.getValue();
         }
         return cql;
     }
