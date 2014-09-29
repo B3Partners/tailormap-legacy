@@ -320,7 +320,20 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },{
                         xtype: 'button',
                         text: 'x',
-                        margin: '0 0 15 0'
+                        margin: '0 0 15 0',
+                        listeners:{
+                            click :{
+                                scope: me,
+                                fn:function(){
+                                    var grid = Ext.getCmp( "configuredFiltersGrid");
+                                    var id = grid.getSelectionModel().getSelection()[0].data.id;
+                                    //this.currentEditIndex = a;
+                                    //var config = this.filterConfigs[this.currentEditIndex];
+                                    this.removeConfig(id);
+                                    this.resetConfig();
+                                }
+                            }
+                        }
                     },{
                         xtype: 'button',
                         text: 'u',
@@ -368,7 +381,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
             return;
         }
-        Ext.getCmp("filterConfigFieldset").removeAll();
+        this.resetConfig();
         this.filterConfigurer = Ext.create(configurerClass, {
             configObject: config,
             renderTo: "filterConfigFieldset"
@@ -394,8 +407,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             console.log("add: ", soort, description, filterControl);
             this.filterConfigs.push(filterControl);
             this.filterStore.add({soort: soort, description: description});
-            Ext.getCmp("filterConfigFieldset").removeAll();
-            this.filterConfigurer = null;
+            this.resetConfig();
         }
     },
     removeConfig : function( id ){
@@ -419,7 +431,10 @@ Ext.define("viewer.components.CustomConfiguration",{
         Ext.getCmp("filterType").setValue(type);
         this.createFilterConfig(type, config.config);
     },
-
+    resetConfig: function () {
+        Ext.getCmp("filterConfigFieldset").removeAll();
+        this.filterConfigurer = null;
+    },
     getConfiguration: function() {
         // Save possible open configs
         this.saveCurrentConfig();
