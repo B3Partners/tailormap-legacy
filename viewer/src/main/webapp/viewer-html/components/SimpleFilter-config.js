@@ -33,11 +33,13 @@ Ext.define("viewer.components.sf.SliderConfig", {
             defaultType: 'textfield',
             items: [{
                 fieldLabel: 'Label',
-                name: 'label'
+                name: 'label',
+                value: this.configObject.label ? this.configObject.label : ""
             },{
                 fieldLabel: "Minimale waarde",
                 name: "min",
                 qtip: "Indien geen waarde ingevuld wordt kleinste attribuutwaarde uit de attribuutlijst gebruikt",
+                value: this.configObject.min ? this.configObject.min : "",
                 listeners: {
                     render: function(c) {
                         Ext.QuickTips.register({
@@ -49,6 +51,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             },{
                 fieldLabel: "Maximale waarde",
                 name: "max",
+                value: this.configObject.max ? this.configObject.max : "",
                 qtip: "Indien geen waarde ingevuld wordt grootste attribuutwaarde uit de attribuutlijst gebruikt",
                 listeners: {
                     render: function(c) {
@@ -61,7 +64,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             },{
                 fieldLabel: "Beginwaarde(s)",
                 name: "start",
-                value: "min,max",
+                value: this.configObject.start ? this.configObject.start : "min,max",
                 qtip: "Vul een vaste waarde in of 'min' of 'max'. Bij een slider voor een bereik geef twee waardes op gescheiden door een komma",
                 listeners: {
                     render: function(c) {
@@ -74,7 +77,7 @@ Ext.define("viewer.components.sf.SliderConfig", {
             },{
                 fieldLabel: "Stap",
                 name: "step",
-                value: 1
+                value: this.configObject.step ? this.configObject.step : "1"
             },{
                 xtype: 'combo',
                 fieldLabel: "Soort slider",
@@ -92,11 +95,11 @@ Ext.define("viewer.components.sf.SliderConfig", {
                 displayField: "label",
                 editable: false,
                 valueField: "type",
-                value: "eq"
+                value: this.configObject.sliderType ? this.configObject.sliderType : "eq"
             },{
                 fieldLabel: "Waarde format string",
                 name: "valueFormatString",
-                value: "",
+                value: this.configObject.valueFormatString ? this.configObject.valueFormatString : "",
                 qtip: "Laat leeg om geen waarde van de schuifjes te tonen. Voorbeelden format strings: '0' (alleen hele getallen), '0 m²' (met eenheid), '0.00' (twee decimalen), '0,000' (met duizendtalscheidingsteken), '€ 0,000.00' (bedrag)",
                 listeners: {
                     render: function(c) {
@@ -159,6 +162,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
                 var soort = filterTypes.findRecord("type", type).get("label");
                 var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
+                filter.appLayerId = appLayer.id;
                 me.filterConfigs.push(filter);
                 me.filterStore.add({soort: soort, description: (appLayer.alias || appLayer.layerName) + "." + filter.attributeName});
             });
