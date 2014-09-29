@@ -459,7 +459,14 @@ Ext.onReady(function() {
                             value:(layoutJson[regionId]['layout']['posy'] || '')
                         });
                     }
-                    if(layoutRegion.get('configureCollapsible')) {
+                    if(layoutRegion.get('configureFloating')) {
+                          var floatingChecked = false;
+                          if(Ext.isDefined(layoutJson[regionId]['layout']['enableFloating']) && layoutJson[regionId]['layout']['enableFloating']) {
+                              floatingChecked = layoutJson[regionId]['layout']['enableFloating'];
+                          }
+                          Ext.fly(regionId + '_enableFloating').dom.checked = floatingChecked;
+                    }
+                    if(layoutRegion.get('configureCollapsible')|| layoutRegion.get('configureFloating')) {
                         var collapseChecked = false;
                         if(Ext.isDefined(layoutJson[regionId]['layout']['enableCollapse']) && layoutJson[regionId]['layout']['enableCollapse']) {
                             collapseChecked = layoutJson[regionId]['layout']['enableCollapse'];
@@ -819,7 +826,7 @@ Ext.onReady(function() {
             layout[regionId] = {
                 "layout": layoutConfig,
                 "components": region.data.addedComponents
-            }
+            };
         });
         var response = {
             "layout": Ext.JSON.encode(layout)
