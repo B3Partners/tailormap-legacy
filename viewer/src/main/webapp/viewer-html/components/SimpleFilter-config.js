@@ -326,11 +326,20 @@ Ext.define("viewer.components.CustomConfiguration",{
                                 scope: me,
                                 fn:function(){
                                     var grid = Ext.getCmp( "configuredFiltersGrid");
-                                    var id = grid.getSelectionModel().getSelection()[0].data.id;
-                                    //this.currentEditIndex = a;
-                                    //var config = this.filterConfigs[this.currentEditIndex];
-                                    this.removeConfig(id);
-                                    this.resetConfig();
+                                    var record = grid.getSelectionModel().getSelection();
+
+                                    if(record.length > 0){
+                                        var id = record[0].data.id;
+                                        var me = this;
+                                        Ext.MessageBox.confirm('Weet u het zeker', 'Weet u zeker dat u de configuratie wilt verwijderen?', function(btn, text){
+                                            if (btn === 'yes') {
+                                                me.removeConfig(id);
+                                                me.resetConfig();
+                                            }
+                                        });
+                                    }else{
+                                        Ext.MessageBox.alert("Fout", "Selecteer filter");
+                                    }
                                 }
                             }
                         }
