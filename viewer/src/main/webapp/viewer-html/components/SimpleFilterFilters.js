@@ -16,6 +16,8 @@
  */
 Ext.define("viewer.compoents.sf.SimpleFilter",{
     ready: null,
+    minRetrieved: null,
+    maxRetrieved: null,
     config:{
         container: null,
         name: null,
@@ -28,8 +30,9 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
 
     constructor : function(conf){
         this.ready = false;
+        this.minRetrieved = false;
+        this.maxRetrieved = false;
         this.initConfig(conf);
-
 
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
     },
@@ -53,8 +56,13 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
     getCQL : function(){
         this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
     },
+    getUnique : function(){
 
+    },
     getMinMax: function(minOrMax) {
+        if( (minOrMax === "#MIN#" && this.minRetrieved) && (minOrMax === "#MAX#" && this.maxRetrieved)){
+            return;
+        }
         var me = this;
         Ext.Ajax.request({
             url: actionBeans.unique,
@@ -116,14 +124,13 @@ Ext.define("viewer.components.sf.Combo", {
 
         this.autoStart = false;
 
-
         if(config.start === "min" || config.start === "max") {
             this.autoStart = config.start;
+            this.getMinMax(config.start === "min" ? "#MIN#" : "#MAX#");
             config.start = config[config.start];
         } else {
             config.start = Number(config.start);
         }
-
 
         var t =
             "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
@@ -190,12 +197,14 @@ Ext.define("viewer.components.sf.Combo", {
                 };
                 data.push(entry);
             }
+        }else if (config.comboType === "unique"){
+
         }
         return data;
     },
 
-    updateMinMax: function(minOrMax, value) {
-        if(minOrMax === "#MIN#") {
+    updateMinMax: function(operator, value) {
+        if(operator === "#MIN#") {
             this.config.config.min = value;
         } else {
             this.config.config.max = value;
@@ -203,10 +212,10 @@ Ext.define("viewer.components.sf.Combo", {
         var data = this.getData();
         this.store.removeAll();
         this.store.add(data);
-        if (this.autoStart === "min" && minOrMax === "#MIN#") {
+        if (this.autoStart === "min" && operator === "#MIN#") {
             this.combo.setValue( value);
         }
-        if (this.autoStart === "max" && minOrMax === "#MAX#") {
+        if (this.autoStart === "max" && operator === "#MAX#") {
             this.combo.setValue(value);
         }
     },
