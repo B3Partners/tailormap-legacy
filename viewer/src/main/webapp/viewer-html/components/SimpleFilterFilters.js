@@ -29,12 +29,27 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
     constructor : function(conf){
         this.ready = false;
         this.initConfig(conf);
-    }
 
+
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
+    },
+
+    isReady : function(){
+        this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
+        this.ready = true;
+        this.applyFilter();
+    },
+
+    applyFilter : function(){
+        this.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
+    },
+    getCQL : function(){
+        this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
+    }
 });
+
 Ext.define("viewer.components.sf.Slider", {
     extend: "viewer.compoents.sf.SimpleFilter",
-    ready: null,
     config: {
         autoMinStart: null,
         autoMaxStart: null,
@@ -46,7 +61,6 @@ Ext.define("viewer.components.sf.Slider", {
         viewer.components.sf.Slider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
 
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
         var filterChangeDelay = 500;
 
         var c = this.config.config;
@@ -232,13 +246,9 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
     },
-
-    isReady : function(){
-        this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
-        this.ready = true;
+    applyFilter : function(){
         this.sliderChange();
     },
-
     sliderChange: function() {
         if(!this.ready){
             // This function will be called via eventlistener
