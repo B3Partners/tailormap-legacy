@@ -52,7 +52,33 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
     },
     getCQL : function(){
         this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
-    }
+    },
+
+    getMinMax: function(minOrMax) {
+        var me = this;
+        Ext.Ajax.request({
+            url: actionBeans.unique,
+            timeout: 10000,
+            scope: this,
+            params: {
+                attribute: this.attributeName,
+                applicationLayer: this.appLayerId,
+                getMinMaxValue: 't',
+                operator: minOrMax
+            },
+            success: function ( result, request ) {
+                var res = Ext.JSON.decode(result.responseText);
+                if(res.success) {
+                    me.updateMinMax(minOrMax, res.value);
+                } else {
+                    this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". Oorzaak: " + res.msg);
+                }
+            },
+            failure: function ( result, request) {
+                this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
+            }
+        });
+    },
 });
 
 
@@ -77,7 +103,6 @@ Ext.define("viewer.components.sf.Combo", {
 
         var autoMin = false, autoMax = false;
 
-        config.step = Number(config.step);
         if(config.min === "") {
             this.getMinMax("#MIN#");
             autoMin = true;
@@ -199,31 +224,6 @@ Ext.define("viewer.components.sf.Combo", {
         return data;
     },
 
-    getMinMax: function(minOrMax) {
-        var me = this;
-        Ext.Ajax.request({
-            url: actionBeans.unique,
-            timeout: 10000,
-            scope: this,
-            params: {
-                attribute: this.attributeName,
-                applicationLayer: this.appLayerId,
-                getMinMaxValue: 't',
-                operator: minOrMax
-            },
-            success: function ( result, request ) {
-                var res = Ext.JSON.decode(result.responseText);
-                if(res.success) {
-                    me.updateMinMax(minOrMax, res.value);
-                } else {
-                    this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". Oorzaak: " + res.msg);
-                }
-            },
-            failure: function ( result, request) {
-                this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
-            }
-        });
-    },
 
     updateMinMax: function(minOrMax, value) {
         if(minOrMax === "#MIN#") {
@@ -250,6 +250,10 @@ Ext.define("viewer.components.sf.Combo", {
         }
     },
     applyFilter : function(){
+        if(!this.ready){
+            // This function will be called via eventlistener
+            return;
+        }
         if (this.combo.getValue() !== null) {
             var layer = this.viewerController.getAppLayerById(this.appLayerId);
 
@@ -411,32 +415,6 @@ Ext.define("viewer.components.sf.Slider", {
         if(!this.autoStart){
             this.sliderChange();
         }
-    },
-
-    getMinMax: function(minOrMax) {
-        var me = this;
-        Ext.Ajax.request({
-            url: actionBeans.unique,
-            timeout: 10000,
-            scope: this,
-            params: {
-                attribute: this.attributeName,
-                applicationLayer: this.appLayerId,
-                getMinMaxValue: 't',
-                operator: minOrMax
-            },
-            success: function ( result, request ) {
-                var res = Ext.JSON.decode(result.responseText);
-                if(res.success) {
-                    me.updateMinMax(minOrMax, res.value);
-                } else {
-                    this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". Oorzaak: " + res.msg);
-                }
-            },
-            failure: function ( result, request) {
-                this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
-            }
-        });
     },
 
     updateMinMax: function(minOrMax, value) {
