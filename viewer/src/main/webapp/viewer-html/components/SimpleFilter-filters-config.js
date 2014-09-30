@@ -114,11 +114,13 @@ Ext.define("viewer.components.sf.ComboConfig", {
         {
             fieldLabel: "Minimale waarde",
             name: "min",
+            hidden: this.configObject.comboType && this.configObject.comboType !== "range",
             id: "min",
             value: this.configObject.min ? this.configObject.min : ""
         }, {
             fieldLabel: "Maximale waarde",
             name: "max",
+            hidden: this.configObject.comboType && this.configObject.comboType !== "range",
             id: "max",
             value: this.configObject.max ? this.configObject.max : ""
         }

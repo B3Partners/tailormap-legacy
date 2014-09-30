@@ -87,8 +87,6 @@ Ext.define("viewer.components.sf.Combo", {
     combo: null,
     store:null,
     config: {
-        autoMinStart: null,
-        autoMaxStart: null,
         simpleFilter: null
     },
 
@@ -98,22 +96,24 @@ Ext.define("viewer.components.sf.Combo", {
 
         var config = this.config.config;
         var name = this.config.name;
-
-        if(config.min === "") {
-            this.getMinMax("#MIN#");
+        if(config.comboType === "range"){
+            if(config.min === "") {
+                this.getMinMax("#MIN#");
+                config.min = -1;
+            } else {
+                config.min = Number(config.min);
+            }
+            if(config.max === "") {
+                this.getMinMax("#MAX#");
+                config.max = -1;
+            } else {
+                config.max = Number(config.max);
+            }
+        }else{
             config.min = -1;
-        } else {
-            config.min = Number(config.min);
-        }
-        if(config.max === "") {
-            this.getMinMax("#MAX#");
             config.max = -1;
-        } else {
-            config.max = Number(config.max);
         }
 
-        this.autoMinStart = false;
-        this.autoMaxStart = false;
         this.autoStart = false;
 
 
