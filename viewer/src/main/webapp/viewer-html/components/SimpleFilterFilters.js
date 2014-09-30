@@ -99,19 +99,15 @@ Ext.define("viewer.components.sf.Combo", {
         var config = this.config.config;
         var name = this.config.name;
 
-        var autoMin = false, autoMax = false;
-
         if(config.min === "") {
             this.getMinMax("#MIN#");
-            autoMin = true;
-            config.min = 0;
+            config.min = -1;
         } else {
             config.min = Number(config.min);
         }
         if(config.max === "") {
             this.getMinMax("#MAX#");
-            autoMax = true;
-            config.max = 1;
+            config.max = -1;
         } else {
             config.max = Number(config.max);
         }
@@ -180,24 +176,25 @@ Ext.define("viewer.components.sf.Combo", {
             fields: ['value'],
             data: data
         });
-        if (!this.combo) {
-            this.combo = Ext.create("Ext.form.field.ComboBox", {
-                store: this.store,
-                queryMode: 'local',
-                width: 160, // XXX
-                displayField: 'value',
-                valueField: 'value',
-                renderTo: this.config.name + "_slider",
-                value: this.config.config.start,
-                listeners: {
-                    change: {
-                        fn: this.applyFilter,
-                        buffer: filterChangeDelay,
-                        scope: this
-                    }
+        this.combo = Ext.create("Ext.form.field.ComboBox", {
+            store: this.store,
+            queryMode: 'local',
+            width: 160, // XXX
+            displayField: 'value',
+            valueField: 'value',
+            renderTo: this.config.name + "_slider",
+            listeners: {
+                change: {
+                    fn: this.applyFilter,
+                    buffer: filterChangeDelay,
+                    scope: this
                 }
-            });
+            }
+        });
+        if( this.config.config.start !== -1){
+            this.combo.setValue (this.config.config.start);
         }
+
     },
 
     getData : function(){
