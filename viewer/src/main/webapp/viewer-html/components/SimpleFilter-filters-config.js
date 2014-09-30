@@ -93,15 +93,33 @@ Ext.define("viewer.components.sf.ComboConfig", {
             displayField: "label",
             editable: false,
             valueField: "type",
-            value: this.configObject.comboType ? this.configObject.comboType : "unique"
+            value: this.configObject.comboType ? this.configObject.comboType : "unique",
+            listeners: {
+                change: {
+                    scope: this,
+                    fn: function(obj, newValue){
+                        var min = Ext.getCmp("min");
+                        var max = Ext.getCmp("max");
+                        if(newValue === "unique" || newValue === "own"){
+                            min.hide();
+                            max.hide();
+                        }else if (newValue === "range"){
+                            min.show();
+                            max.show();
+                        }
+                    }
+                }
+            }
         },
         {
             fieldLabel: "Minimale waarde",
             name: "min",
+            id: "min",
             value: this.configObject.min ? this.configObject.min : ""
         }, {
             fieldLabel: "Maximale waarde",
             name: "max",
+            id: "max",
             value: this.configObject.max ? this.configObject.max : ""
         }
         ]);

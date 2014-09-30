@@ -43,10 +43,231 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
     applyFilter : function(){
         this.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
     },
+    setFilter : function(layer,cql){
+        this.viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
+            id: this.config.name,
+            cql: cql,
+            operator: "AND"
+        }), layer);
+    },
     getCQL : function(){
         this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
     }
 });
+
+
+Ext.define("viewer.components.sf.Combo", {
+    extend: "viewer.compoents.sf.SimpleFilter",
+    combo: null,
+    store:null,
+    config: {
+        autoMinStart: null,
+        autoMaxStart: null,
+        simpleFilter: null
+    },
+
+    constructor: function(conf) {
+        viewer.components.sf.Slider.superclass.constructor.call(this, conf);
+        this.initConfig(conf);
+
+        var filterChangeDelay = 500;
+
+        var config = this.config.config;
+        var name = this.config.name;
+
+        var autoMin = false, autoMax = false;
+
+        config.step = Number(config.step);
+        if(config.min === "") {
+            this.getMinMax("#MIN#");
+            autoMin = true;
+            config.min = 0;
+        } else {
+            config.min = Number(config.min);
+        }
+        if(config.max === "") {
+            this.getMinMax("#MAX#");
+            autoMax = true;
+            config.max = 1;
+        } else {
+            config.max = Number(config.max);
+        }
+
+        this.autoMinStart = false;
+        this.autoMaxStart = false;
+        this.autoStart = false;
+
+        if(config.sliderType === "range") {
+            config.start = config.start.split(",");
+            if(config.start[0] === "min") {
+                this.autoMinStart = autoMin;
+                config.start[0] = config.min;
+            } else {
+                config.start[0] = Number(config.start[0]);
+            }
+            if(config.start[1] === "max") {
+                this.autoMaxStart = autoMax;
+                config.start[1] = config.max;
+            } else {
+                config.start[1] = Number(config.start[1]);
+            }
+        } else {
+            if(config.start === "min" || config.start === "max") {
+                this.autoStart = config.start;
+                config.start = config[config.start];
+            } else {
+                config.start = Number(config.start);
+            }
+        }
+
+        var t =
+            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
+            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
+            "  <table width=\"100%\">" +
+            "    <tbody>" +
+            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
+            "        <tr>" +
+            "            <td colspan=\"3\"><div id=\"{name}_slider\"></div></td>" +
+            "        </tr>";
+
+        if(!Ext.isEmpty(config.valueFormatString)) {
+            if(config.sliderType === "range") {
+                t += "        <tr>" +
+                    "            <td><span id=\"" + name + "_min\"></span></td>" +
+                    "            <td></td>" +
+                    "            <td align=\"right\"><span id=\"{name}_max\"></span></td>" +
+                    "        </tr>";
+            } else {
+                t += "        <tr>" +
+                    "            <td align=\"center\"><span id=\"{name}_value\"></span></td>" +
+                    "        </tr>";
+            }
+        }
+
+        t +=
+            "        </tr>" +
+            "    </tbody>" +
+            "  </table>" +
+            "</div>";
+
+        var vc = this.config.simpleFilter.viewerController;
+        new Ext.Template(t).append(this.config.simpleFilter.name, {
+            steunkleur1: vc.app.details.steunkleur1,
+            steunkleur2: vc.app.details.steunkleur2,
+            label: config.label,
+            name: this.config.name
+        });
+        var data = this.getData();
+        this.store = Ext.create('Ext.data.Store', {
+                fields: ['value'],
+                data: data
+            });
+
+        this.combo = Ext.create("Ext.form.field.ComboBox", {
+            store: this.store,
+            queryMode: 'local',
+            width: 160, // XXX
+            displayField: 'value',
+            valueField: 'value',
+            renderTo: name + "_slider",
+            value: config.start,
+            listeners: {
+                change: {
+                    fn: this.applyFilter,
+                    buffer: filterChangeDelay,
+                    scope: this
+                }
+            }
+        });
+        if(!this.autoStart){
+            this.applyFilter();
+        }
+    },
+
+    getData : function(){
+        var data = [];
+        var config = this.config.config;
+        if(config.comboType === "range") {
+            for(var i = config.min ; i <= config.max ; i++){
+                var entry = {
+                    value : i
+                };
+                data.push(entry);
+            }
+
+        }
+        return data;
+    },
+
+    getMinMax: function(minOrMax) {
+        var me = this;
+        Ext.Ajax.request({
+            url: actionBeans.unique,
+            timeout: 10000,
+            scope: this,
+            params: {
+                attribute: this.attributeName,
+                applicationLayer: this.appLayerId,
+                getMinMaxValue: 't',
+                operator: minOrMax
+            },
+            success: function ( result, request ) {
+                var res = Ext.JSON.decode(result.responseText);
+                if(res.success) {
+                    me.updateMinMax(minOrMax, res.value);
+                } else {
+                    this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". Oorzaak: " + res.msg);
+                }
+            },
+            failure: function ( result, request) {
+                this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
+            }
+        });
+    },
+
+    updateMinMax: function(minOrMax, value) {
+        if(minOrMax === "#MIN#") {
+            this.slider.setMinValue(value);
+        } else {
+            this.slider.setMaxValue(value);
+        }
+
+        if(this.config.config.sliderType === "range") {
+            if(minOrMax === "#MIN#" && this.autoMinStart) {
+                this.slider.setValue(0, value, false);
+            }
+            if(minOrMax === "#MAX#" && this.autoMaxStart) {
+                this.slider.setValue(0, this.slider.getValue(0), false);
+                this.slider.setValue(1, value, false);
+            }
+        } else {
+            if(this.autoStart === "min" && minOrMax === "#MIN#") {
+                this.slider.setValue(0, value, false);
+            }
+            if(this.autoStart === "max" && minOrMax === "#MAX#") {
+                this.slider.setValue(0, value, false);
+            }
+        }
+    },
+    applyFilter : function(){
+        if (this.combo.getValue() !== null) {
+            var layer = this.viewerController.getAppLayerById(this.appLayerId);
+
+            if (!layer) {
+                return;
+            }
+
+            var cql = this.getCQL();
+            this.setFilter(layer, cql);
+        }
+    },
+
+    getCQL : function(){
+        var cql = this.config.attributeName + " = " + this.combo.getValue();
+        return cql;
+    }
+});
+
 
 Ext.define("viewer.components.sf.Slider", {
     extend: "viewer.compoents.sf.SimpleFilter",
@@ -259,12 +480,7 @@ Ext.define("viewer.components.sf.Slider", {
         }
 
         var cql = this.getCQL();
-
-        vc.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
-            id: this.config.name,
-            cql: cql,
-            operator: "AND"
-        }), layer);
+        this.setFilter(layer, cql);
     },
     getCQL : function(){
         var cql = "";
