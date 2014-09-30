@@ -14,25 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-Ext.define("viewer.components.sf.Slider", {
+Ext.define("viewer.compoents.sf.SimpleFilter",{
     ready: null,
-    config: {
+    config:{
+        container: null,
         name: null,
         appLayerId: null,
         attributeName: null,
         config: null,
-        container: null,
-        autoMinStart: null,
-        autoMaxStart: null,
         autoStart: null,
-        simpleFilter: null,
-        slider: null,
         viewerController:null
     },
 
-    constructor: function(conf) {
+    constructor : function(conf){
         this.ready = false;
+        this.initConfig(conf);
+    }
+
+});
+Ext.define("viewer.components.sf.Slider", {
+    extend: "viewer.compoents.sf.SimpleFilter",
+    ready: null,
+    config: {
+        autoMinStart: null,
+        autoMaxStart: null,
+        simpleFilter: null,
+        slider: null
+    },
+
+    constructor: function(conf) {
+        viewer.components.sf.Slider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
 
         this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
