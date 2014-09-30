@@ -127,7 +127,9 @@ Ext.define("viewer.components.sf.Combo", {
             this.getValues("#UNIQUE#");
             config.min = -1;
             config.max = -1;
-        } else {
+        } else if (config.comboType === "own") {
+            this.ownValues = config.ownValues;
+        }else {
             config.min = -1;
             config.max = -1;
         }
@@ -207,10 +209,11 @@ Ext.define("viewer.components.sf.Combo", {
                 };
                 data.push(entry);
             }
-        }else if (config.comboType === "unique"){
-            for (var i = 0 ; i < this.uniqueValues.length ; i++){
+        }else if (config.comboType === "unique" || config.comboType === "own"){
+            var vals = config.comboType === "unique"? this.uniqueValues : this.ownValues.split(",");
+            for (var i = 0 ; i < vals.length ; i++){
                 var entry = {
-                    value : this.uniqueValues[i]
+                    value : vals[i]
                 };
                 data.push(entry);
             }
