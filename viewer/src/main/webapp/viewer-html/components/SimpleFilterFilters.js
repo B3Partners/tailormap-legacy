@@ -59,25 +59,29 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
     getUnique : function(){
 
     },
-    getMinMax: function(minOrMax) {
-        if( (minOrMax === "#MIN#" && this.minRetrieved) && (minOrMax === "#MAX#" && this.maxRetrieved)){
+    getValues: function(operator) {
+        if( (operator === "#MIN#" && this.minRetrieved) && (operator === "#MAX#" && this.maxRetrieved)){
             return;
         }
         var me = this;
+        var params = {
+            attribute: this.attributeName,
+            applicationLayer: this.appLayerId,
+            attributes: [this.attributeName],
+            operator: operator
+        };
+        if(operator !== "#UNIQUE#"){
+            params.getMinMaxValue = 't';
+        }
         Ext.Ajax.request({
             url: actionBeans.unique,
             timeout: 10000,
             scope: this,
-            params: {
-                attribute: this.attributeName,
-                applicationLayer: this.appLayerId,
-                getMinMaxValue: 't',
-                operator: minOrMax
-            },
+            params: params,
             success: function ( result, request ) {
                 var res = Ext.JSON.decode(result.responseText);
                 if(res.success) {
-                    me.updateMinMax(minOrMax, res.value);
+                    me.updateValues(operator, res);
                 } else {
                     this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". Oorzaak: " + res.msg);
                 }
@@ -94,30 +98,36 @@ Ext.define("viewer.components.sf.Combo", {
     extend: "viewer.compoents.sf.SimpleFilter",
     combo: null,
     store:null,
+    uniqueValues:null,
     config: {
         simpleFilter: null
     },
 
     constructor: function(conf) {
         viewer.components.sf.Slider.superclass.constructor.call(this, conf);
+        this.uniqueValues = [];
         this.initConfig(conf);
 
         var config = this.config.config;
         var name = this.config.name;
         if(config.comboType === "range"){
             if(config.min === "") {
-                this.getMinMax("#MIN#");
+                this.getValues("#MIN#");
                 config.min = -1;
             } else {
                 config.min = Number(config.min);
             }
             if(config.max === "") {
-                this.getMinMax("#MAX#");
+                this.getValues("#MAX#");
                 config.max = -1;
             } else {
                 config.max = Number(config.max);
             }
-        }else{
+        } else if (config.comboType === "unique") {
+            this.getValues("#UNIQUE#");
+            config.min = -1;
+            config.max = -1;
+        } else {
             config.min = -1;
             config.max = -1;
         }
@@ -126,7 +136,7 @@ Ext.define("viewer.components.sf.Combo", {
 
         if(config.start === "min" || config.start === "max") {
             this.autoStart = config.start;
-            this.getMinMax(config.start === "min" ? "#MIN#" : "#MAX#");
+            this.getValues(config.start === "min" ? "#MIN#" : "#MAX#");
             config.start = config[config.start];
         } else {
             config.start = Number(config.start);
@@ -198,16 +208,25 @@ Ext.define("viewer.components.sf.Combo", {
                 data.push(entry);
             }
         }else if (config.comboType === "unique"){
-
+            for (var i = 0 ; i < this.uniqueValues.length ; i++){
+                var entry = {
+                    value : this.uniqueValues[i]
+                };
+                data.push(entry);
+            }
         }
         return data;
     },
 
-    updateMinMax: function(operator, value) {
+    updateValues: function(operator, response) {
+        var value = response.value;
         if(operator === "#MIN#") {
             this.config.config.min = value;
-        } else {
+        } else if(operator === "#MAX#") {
             this.config.config.max = value;
+        }else if (operator === "#UNIQUE#"){
+            var values = response.uniqueValues[this.attributeName];
+            this.uniqueValues = values;
         }
         var data = this.getData();
         this.store.removeAll();
@@ -265,14 +284,14 @@ Ext.define("viewer.components.sf.Slider", {
 
         c.step = Number(c.step);
         if(c.min === "") {
-            this.getMinMax("#MIN#");
+            this.getValues("#MIN#");
             autoMin = true;
             c.min = 0;
         } else {
             c.min = Number(c.min);
         }
         if(c.max === "") {
-            this.getMinMax("#MAX#");
+            this.getValues("#MAX#");
             autoMax = true;
             c.max = 1;
         } else {
@@ -387,7 +406,8 @@ Ext.define("viewer.components.sf.Slider", {
         }
     },
 
-    updateMinMax: function(minOrMax, value) {
+    updateValues: function(minOrMax, response) {
+        var value = response.value;
         if(minOrMax === "#MIN#") {
             this.slider.setMinValue(value);
         } else {
