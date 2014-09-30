@@ -78,7 +78,7 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
                 this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
             }
         });
-    },
+    }
 });
 
 
@@ -95,8 +95,6 @@ Ext.define("viewer.components.sf.Combo", {
     constructor: function(conf) {
         viewer.components.sf.Slider.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-
-        var filterChangeDelay = 500;
 
         var config = this.config.config;
         var name = this.config.name;
@@ -122,28 +120,14 @@ Ext.define("viewer.components.sf.Combo", {
         this.autoMaxStart = false;
         this.autoStart = false;
 
-        if(config.sliderType === "range") {
-            config.start = config.start.split(",");
-            if(config.start[0] === "min") {
-                this.autoMinStart = autoMin;
-                config.start[0] = config.min;
-            } else {
-                config.start[0] = Number(config.start[0]);
-            }
-            if(config.start[1] === "max") {
-                this.autoMaxStart = autoMax;
-                config.start[1] = config.max;
-            } else {
-                config.start[1] = Number(config.start[1]);
-            }
+
+        if(config.start === "min" || config.start === "max") {
+            this.autoStart = config.start;
+            config.start = config[config.start];
         } else {
-            if(config.start === "min" || config.start === "max") {
-                this.autoStart = config.start;
-                config.start = config[config.start];
-            } else {
-                config.start = Number(config.start);
-            }
+            config.start = Number(config.start);
         }
+
 
         var t =
             "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
@@ -182,71 +166,68 @@ Ext.define("viewer.components.sf.Combo", {
             label: config.label,
             name: this.config.name
         });
-        var data = this.getData();
-        this.store = Ext.create('Ext.data.Store', {
-                fields: ['value'],
-                data: data
-            });
 
-        this.combo = Ext.create("Ext.form.field.ComboBox", {
-            store: this.store,
-            queryMode: 'local',
-            width: 160, // XXX
-            displayField: 'value',
-            valueField: 'value',
-            renderTo: name + "_slider",
-            value: config.start,
-            listeners: {
-                change: {
-                    fn: this.applyFilter,
-                    buffer: filterChangeDelay,
-                    scope: this
-                }
-            }
-        });
+        this.createCombo();
         if(!this.autoStart){
             this.applyFilter();
+        }
+    },
+
+    createCombo: function () {
+        var filterChangeDelay = 500;
+        var data= this.getData();
+        this.store = Ext.create('Ext.data.Store', {
+            fields: ['value'],
+            data: data
+        });
+        if (!this.combo) {
+            this.combo = Ext.create("Ext.form.field.ComboBox", {
+                store: this.store,
+                queryMode: 'local',
+                width: 160, // XXX
+                displayField: 'value',
+                valueField: 'value',
+                renderTo: this.config.name + "_slider",
+                value: this.config.config.start,
+                listeners: {
+                    change: {
+                        fn: this.applyFilter,
+                        buffer: filterChangeDelay,
+                        scope: this
+                    }
+                }
+            });
         }
     },
 
     getData : function(){
         var data = [];
         var config = this.config.config;
-        if(config.comboType === "range") {
-            for(var i = config.min ; i <= config.max ; i++){
+        if (config.comboType === "range") {
+            for (var i = config.min; i <= config.max; i++) {
                 var entry = {
-                    value : i
+                    value: i
                 };
                 data.push(entry);
             }
-
         }
         return data;
     },
 
-
     updateMinMax: function(minOrMax, value) {
         if(minOrMax === "#MIN#") {
-            this.slider.setMinValue(value);
+            this.config.config.min = value;
         } else {
-            this.slider.setMaxValue(value);
+            this.config.config.max = value;
         }
-
-        if(this.config.config.sliderType === "range") {
-            if(minOrMax === "#MIN#" && this.autoMinStart) {
-                this.slider.setValue(0, value, false);
-            }
-            if(minOrMax === "#MAX#" && this.autoMaxStart) {
-                this.slider.setValue(0, this.slider.getValue(0), false);
-                this.slider.setValue(1, value, false);
-            }
-        } else {
-            if(this.autoStart === "min" && minOrMax === "#MIN#") {
-                this.slider.setValue(0, value, false);
-            }
-            if(this.autoStart === "max" && minOrMax === "#MAX#") {
-                this.slider.setValue(0, value, false);
-            }
+        var data = this.getData();
+        this.store.removeAll();
+        this.store.add(data);
+        if (this.autoStart === "min" && minOrMax === "#MIN#") {
+            this.combo.setValue( value);
+        }
+        if (this.autoStart === "max" && minOrMax === "#MAX#") {
+            this.combo.setValue(value);
         }
     },
     applyFilter : function(){
