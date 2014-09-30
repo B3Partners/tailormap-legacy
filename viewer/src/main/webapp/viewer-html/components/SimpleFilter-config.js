@@ -130,6 +130,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                             valueField: "id",
                             listeners: {
                                 change: function(combo, id, eOpts) {
+                                    if(id === null){
+                                        return;
+                                    }
                                     var layerId = id;
 
                                     var appLayer = appConfig.appLayers[layerId];

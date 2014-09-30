@@ -100,12 +100,19 @@ Ext.define("viewer.components.sf.ComboConfig", {
                     fn: function(obj, newValue){
                         var min = Ext.getCmp("min");
                         var max = Ext.getCmp("max");
-                        if(newValue === "unique" || newValue === "own"){
+                        var ownValues = Ext.getCmp("ownValues");
+                        if(newValue === "unique" ){
                             min.hide();
                             max.hide();
+                            ownValues.hide();
                         }else if (newValue === "range"){
                             min.show();
                             max.show();
+                            ownValues.hide();
+                        }else if (newValue === "own"){
+                            min.hide();
+                            max.hide();
+                            ownValues.show();
                         }
                     }
                 }
@@ -114,15 +121,21 @@ Ext.define("viewer.components.sf.ComboConfig", {
         {
             fieldLabel: "Minimale waarde",
             name: "min",
-            hidden: this.configObject.comboType && this.configObject.comboType !== "range",
+            hidden: (this.configObject.comboType && this.configObject.comboType !== "range") || !this.configObject.comboType,
             id: "min",
             value: this.configObject.min ? this.configObject.min : ""
         }, {
             fieldLabel: "Maximale waarde",
             name: "max",
-            hidden: this.configObject.comboType && this.configObject.comboType !== "range",
+            hidden: ( this.configObject.comboType && this.configObject.comboType !== "range" ) || !this.configObject.comboType,
             id: "max",
             value: this.configObject.max ? this.configObject.max : ""
+        }, {
+            fieldLabel: "Eigen waardes",
+            name: "ownValues",
+            hidden: (this.configObject.comboType && this.configObject.comboType !== "own") || !this.configObject.comboType,
+            id: "ownValues",
+            value: this.configObject.ownValues ? this.configObject.ownValues : ""
         }
         ]);
         return items;
