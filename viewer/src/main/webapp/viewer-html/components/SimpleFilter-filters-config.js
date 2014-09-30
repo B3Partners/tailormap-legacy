@@ -58,8 +58,12 @@ Ext.define("viewer.components.sf.Config", {
         }];
 
         return items;
+    },
+    getConfig: function() {
+        var config = this.form.getValues();
+        config.id = this.id;
+        return config;
     }
-
 });
 
 Ext.define("viewer.components.sf.SliderConfig", {
@@ -132,10 +136,5 @@ Ext.define("viewer.components.sf.SliderConfig", {
             }
         }]);
         return items;
-    },
-    getConfig: function() {
-        var config = this.form.getValues();
-        config.id = this.id;
-        return config;
     }
 });
