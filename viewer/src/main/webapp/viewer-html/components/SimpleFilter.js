@@ -16,7 +16,7 @@
  */
 
 Ext.define("viewer.components.sf.Slider", {
-
+    ready: null,
     config: {
         name: null,
         appLayerId: null,
@@ -27,12 +27,15 @@ Ext.define("viewer.components.sf.Slider", {
         autoMaxStart: null,
         autoStart: null,
         simpleFilter: null,
-        slider: null
+        slider: null,
+        viewerController:null
     },
 
     constructor: function(conf) {
+        this.ready = false;
         this.initConfig(conf);
 
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
         var filterChangeDelay = 500;
 
         var c = this.config.config;
@@ -157,6 +160,9 @@ Ext.define("viewer.components.sf.Slider", {
                     }
                 }
             });
+        }
+
+        if(!this.autoStart){
             this.sliderChange();
         }
     },
@@ -216,8 +222,17 @@ Ext.define("viewer.components.sf.Slider", {
         }
     },
 
-    sliderChange: function() {
+    isReady : function(){
+        this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.isReady, this);
+        this.ready = true;
+        this.sliderChange();
+    },
 
+    sliderChange: function() {
+        if(!this.ready){
+            // This function will be called via eventlistener
+            return;
+        }
         var vc = this.config.simpleFilter.viewerController;
 
         var layer = vc.getAppLayerById( this.appLayerId);
@@ -282,7 +297,8 @@ Ext.define("viewer.components.SimpleFilter", {
                 config: filter.config,
                 container: me.container,
                 simpleFilter: me,
-                name: me.name + "_" + index
+                name: me.name + "_" + index,
+                viewerController: me.viewerController
             });
         });
         return this;
