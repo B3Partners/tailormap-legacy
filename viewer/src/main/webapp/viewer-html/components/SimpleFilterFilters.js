@@ -193,13 +193,11 @@ Ext.define("viewer.components.sf.Slider", {
     },
 
     getMinMax: function(minOrMax) {
-
-        var startTime = new Date().getTime();
-
         var me = this;
         Ext.Ajax.request({
             url: actionBeans.unique,
             timeout: 10000,
+            scope: this,
             params: {
                 attribute: this.attributeName,
                 applicationLayer: this.appLayerId,
@@ -207,17 +205,15 @@ Ext.define("viewer.components.sf.Slider", {
                 operator: minOrMax
             },
             success: function ( result, request ) {
-                var time = new Date().getTime() - startTime;
                 var res = Ext.JSON.decode(result.responseText);
                 if(res.success) {
-                    //console.log(minOrMax + " " + me.attributeName + ": " + res.value + ", time: " + (time/1000).toFixed(2));
                     me.updateMinMax(minOrMax, res.value);
                 } else {
-                    //Ext.MessageBox.alert('Foutmelding', "Kan geen min/max waardes ophalen: " + res.msg);
+                    this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". Oorzaak: " + res.msg);
                 }
             },
             failure: function ( result, request) {
-                //Ext.MessageBox.alert('Foutmelding', "Kan geen min/max waardes ophalen: " + result.responseText);
+                this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
             }
         });
     },
