@@ -132,24 +132,7 @@ Ext.define("viewer.components.sf.Combo", {
             "    <tbody>" +
             (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
             "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_slider\"></div></td>" +
-            "        </tr>";
-
-        if(!Ext.isEmpty(config.valueFormatString)) {
-            if(config.sliderType === "range") {
-                t += "        <tr>" +
-                    "            <td><span id=\"" + name + "_min\"></span></td>" +
-                    "            <td></td>" +
-                    "            <td align=\"right\"><span id=\"{name}_max\"></span></td>" +
-                    "        </tr>";
-            } else {
-                t += "        <tr>" +
-                    "            <td align=\"center\"><span id=\"{name}_value\"></span></td>" +
-                    "        </tr>";
-            }
-        }
-
-        t +=
+            "            <td colspan=\"3\"><div id=\"{name}_combo\"></div></td>" +
             "        </tr>" +
             "    </tbody>" +
             "  </table>" +
@@ -182,7 +165,7 @@ Ext.define("viewer.components.sf.Combo", {
             width: 160, // XXX
             displayField: 'value',
             valueField: 'value',
-            renderTo: this.config.name + "_slider",
+            renderTo: this.config.name + "_combo",
             listeners: {
                 change: {
                     fn: this.applyFilter,
