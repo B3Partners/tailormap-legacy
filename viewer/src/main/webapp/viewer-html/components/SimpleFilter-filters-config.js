@@ -45,7 +45,7 @@ Ext.define("viewer.components.sf.Config", {
         }, {
             fieldLabel: "Beginwaarde(s)",
             name: "start",
-            value: this.configObject.start ? this.configObject.start : "min,max",
+            value: this.configObject.start ? this.configObject.start : this.getDefaultStartValue(),
             qtip: "Vul een vaste waarde in of 'min' of 'max'. Bij een slider voor een bereik geef twee waardes op gescheiden door een komma",
             listeners: {
                 render: function (c) {
@@ -63,6 +63,52 @@ Ext.define("viewer.components.sf.Config", {
         var config = this.form.getValues();
         config.id = this.id;
         return config;
+    },
+    getDefaultStartValue : function(){
+        console.log("Error: getDefaultStartValue() not yet implemented");
+    }
+});
+
+
+Ext.define("viewer.components.sf.ComboConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor: function(config) {
+        viewer.components.sf.ComboConfig.superclass.constructor.call(this, config);
+    },
+    getFormItems : function(){
+        var items = this.callParent();
+        items = items.concat([ {
+            xtype: 'combo',
+            fieldLabel: "Waardes selectielijst",
+            name: "comboType",
+            store: Ext.create("Ext.data.Store", {
+                fields: ["type", "label"],
+                data: [
+                    {type: "unique", label: "Unieke waardes uit bron"},
+                    {type: "own", label: "Eigen waardes toevoegen"},
+                    {type: "range", label: "Numerieke waardes tussen bereik genereren."}
+                ]
+            }),
+            queryModes: "local",
+            displayField: "label",
+            editable: false,
+            valueField: "type",
+            value: this.configObject.comboType ? this.configObject.comboType : "unique"
+        },
+        {
+            fieldLabel: "Minimale waarde",
+            name: "min",
+            value: this.configObject.min ? this.configObject.min : ""
+        }, {
+            fieldLabel: "Maximale waarde",
+            name: "max",
+            value: this.configObject.max ? this.configObject.max : ""
+        }
+        ]);
+        return items;
+    },
+    getDefaultStartValue : function (){
+        return "max";
     }
 });
 
@@ -136,5 +182,9 @@ Ext.define("viewer.components.sf.SliderConfig", {
             }
         }]);
         return items;
+    },
+    getDefaultStartValue : function (){
+        return "min,max";
     }
+
 });

@@ -281,10 +281,6 @@ Ext.define("viewer.components.CustomConfiguration",{
     createFilterConfig: function(type,config){
         var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
 
-        if (type !== "slider") {
-            Ext.MessageBox.alert("Concept", "Alleen Slider is nu beschikbaar");
-            return;
-        }
         this.filterConfigurer = Ext.create(configurerClass, {
             configObject: config,
             renderTo: "filterConfigFieldset"
