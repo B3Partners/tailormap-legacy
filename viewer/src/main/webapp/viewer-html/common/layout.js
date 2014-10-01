@@ -533,7 +533,7 @@ Ext.define('viewer.LayoutManager', {
             // Webkit bug
             me.mainLayoutContainer.setHeight(me.getContainerheight());
         }
-        me.mainLayoutContainer.doLayout();
+        me.mainLayoutContainer.updateLayout();
         setTimeout(function(){
             if(continueFunction != undefined){
                 continueFunction();

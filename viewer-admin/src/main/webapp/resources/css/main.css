@@ -1,5 +1,5 @@
 .gridcontainer {
-  height: 315px;
+  height: 360px;
 }
 .status_ok {
   color: #00990f;
@@ -244,25 +244,25 @@ input[type="submit"]:hover,
   border: 0px none;
 }
 #grid-container {
-  min-height: 315px;
+  min-height: 360px;
 }
 #grid-container.attributesources {
-  height: 315px;
+  height: 360px;
 }
 #grid-container.documenten {
-  height: 315px;
+  height: 360px;
 }
 #grid-container.applicaties {
-  height: 315px;
+  height: 360px;
 }
 #grid-container.attribute {
-  height: 315px;
+  height: 360px;
 }
 #grid-container.groups {
-  height: 315px;
+  height: 360px;
 }
 #grid-container.user {
-  height: 315px;
+  height: 360px;
 }
 #layoutManagerTitle {
   width: 250px;

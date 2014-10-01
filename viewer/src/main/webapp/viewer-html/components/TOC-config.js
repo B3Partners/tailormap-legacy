@@ -29,6 +29,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             config.showAllLayersOff=config.showToggleAllLayers;
         }
         var me=this;
+        console.log(config);
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
@@ -49,40 +50,40 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Kaarten en kaartlaaggroepen krijgen een vinkvak',
                 inputValue: true,
                 name: 'groupCheck',
-                checked: config.groupCheck!==undefined? config.groupCheck : true,
-                value: true,
+                checked: config.groupCheck !== undefined ? config.groupCheck : true,
+                // value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Kaartlagen krijgen een vinkvak',
                 inputValue: true,
                 name: 'layersChecked',
-                checked: config.layersChecked!==undefined? config.layersChecked: true,
-                value: true,
+                checked: config.layersChecked !== undefined ? config.layersChecked: true,
+                // value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Achtergrondkaarten tonen',
                 inputValue: true,
                 name: 'showBaselayers',
-                checked: config.showBaselayers!==undefined? config.showBaselayers: true,
-                value: true,
+                checked: config.showBaselayers !== undefined ? config.showBaselayers: true,
+                // value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Algemeen icoon voor kaartlaag tonen',
                 inputValue: true,
                 name: 'showLeafIcon',
-                checked: config.showLeafIcon!==undefined? config.showLeafIcon:true,
-                value: true,
+                checked: config.showLeafIcon !== undefined ? config.showLeafIcon : true,
+                // value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Algemeen icoon voor kaart(groep) tonen',
                 inputValue: true,
                 name: 'showNodeIcon',
-                checked: config.showNodeIcon!==undefined? config.showNodeIcon:true,
-                value: true,
+                checked: config.showNodeIcon !== undefined ? config.showNodeIcon : true,
+                // value: true,
                 labelWidth:me.labelWidth
             },{ 
                 xtype: 'textfield',
@@ -95,16 +96,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Bij opstarten boom openklappen',
                 inputValue: true,
                 name: 'expandOnStartup',
-                checked: config.expandOnStartup!==undefined? config.expandOnStartup:true,
-                value: true,
+                checked: config.expandOnStartup !== undefined ? config.expandOnStartup : true,
+                // value: true,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'checkbox',
                 fieldLabel: 'Aangezette kaarten openklappen',
                 inputValue: false,
                 name: 'expandOnEnabledLayer',
-                checked: config.expandOnEnabledLayer!==undefined? config.expandOnEnabledLayer:false,
-                value: false,
+                checked: config.expandOnEnabledLayer !== undefined ? config.expandOnEnabledLayer : false,
+                // value: false,
                 labelWidth:me.labelWidth
             },{
                 xtype: 'container',
@@ -118,7 +119,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         name: 'showAllLayersOn',
                         inputValue: true,
                         checked: config.showAllLayersOn!==undefined? config.showAllLayersOn:false,
-                        value: true,
+                        // value: true,
                         labelWidth: me.labelWidth,
                         boxLabel: 'Toon \'alles aan\' knop'
                     },{
@@ -126,7 +127,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         name: 'showAllLayersOff',
                         inputValue: true,
                         checked: config.showAllLayersOff!==undefined? config.showAllLayersOff:false,
-                        value: true,
+                        // value: true,
                         boxLabel: 'Toon \'alles uit\' knop',
                         style: {
                             marginLeft: "20px"

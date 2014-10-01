@@ -232,11 +232,11 @@ Ext.define ("viewer.components.Filter",{
 			}
         });
 		filterContainer.add(attributeFilterUI);
-		filterContainer.doLayout();
+		filterContainer.updateLayout();
         this.container.add(filterContainer);
         this.attributeFilters.push(attributeFilter);
         attributeFilter.setUniqueList(this.uniqueList);
-        if(this.config.parentMainContainer) this.config.parentMainContainer.doLayout();
+        if(this.config.parentMainContainer) this.config.parentMainContainer.updateLayout();
     },
     removeAttributeFilter : function (attributeFilter, filterContainer){
         for ( var i = 0 ; i < this.attributeFilters.length;i++){

@@ -63,7 +63,7 @@ Ext.define ("viewer.components.Twitter",{
                 this.processTweet(tweet);
 
             }
-            this.panel.doLayout();
+            this.panel.updateLayout();
             this.first = false;
         }
         var me = this;
@@ -114,7 +114,7 @@ Ext.define ("viewer.components.Twitter",{
             border: 0
         });
         
-        tweetPanel.doLayout();
+        tweetPanel.updateLayout();
         if(this.first){
             this.panel.add(tweetPanel);
         }else{

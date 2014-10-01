@@ -56,10 +56,11 @@ Ext.define ("viewer.components.TransparencySlider",{
             renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            html: '<div id="' + this.name + 'slidersContainer" style="width: 100%; height: 100%; padding: 10px; overflow: auto;"></div>',
-            tools: tools
+            autoScroll: true,
+            tools: tools,
+            bodyPadding: 10
         });
-        conf.sliderContainer = this.name + 'slidersContainer';
+        conf.parentContainer = this.panel;
         
         for(var i = 0 ; i < this.config.sliders.length ; i ++){
             

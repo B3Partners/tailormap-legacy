@@ -735,6 +735,6 @@ Ext.define ("viewer.components.TOC",{
     // Override function so tree-scroll-fix can be applied
     doResize: function() {
         var me = this;
-        me.panel.doLayout();
+        me.panel.updateLayout();
     } 
 });

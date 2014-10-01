@@ -332,7 +332,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var activePanels = me.getActiveTreePanels();
         for(var i = 0; i < activePanels.length; i++) {
-            activePanels[i].getView().panel.doLayout();
+            activePanels[i].getView().panel.updateLayout();
         }
     },
     initViewerControllerData: function() {
@@ -1193,7 +1193,7 @@ Ext.define ("viewer.components.SelectionModule",{
             
     setTopHeight: function(height) {
         Ext.getCmp('selectionModuleCustomFormContainer').setHeight(height);
-        Ext.getCmp('selectionModuleTreesContainer').doLayout();
+        Ext.getCmp('selectionModuleTreesContainer').updateLayout();
     },
     
     populateCustomServiceTree: function(userService, node, autoExpand) {

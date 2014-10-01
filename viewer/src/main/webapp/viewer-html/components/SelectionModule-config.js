@@ -203,7 +203,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                                 fn:function(){
                                     var valueSet = Ext.getCmp("advancedFilterValues");
                                     valueSet.add(this.createRow('', ''));
-                                    valueSet.doLayout();
+                                    valueSet.updateLayout();
                                 },
                                 scope:this
                             }
@@ -256,7 +256,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     listeners:{
                         click: function(btn) {
                             Ext.getCmp('advancedFilterValues').remove(btn.up('.container'));
-                            Ext.getCmp("advancedFilterValues").doLayout();
+                            Ext.getCmp("advancedFilterValues").updateLayout();
                         }
                     }
                 }]

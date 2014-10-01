@@ -381,11 +381,13 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         if(((nodeType == "layer" || nodeType == "document") && !record.get('isVirtual')) || (me.allowLevelMove && nodeType == "level" && !me.onRootLevel(record, me.tree))) {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
-                var objData = record.raw;
+                var objData = record.data;
                 objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                 objData.isLeaf = true;
+                objData.leaf = true;
                 if(nodeType == "level") {
                     objData.isLeaf = false;
+                    objData.leaf = false;
                     objData.checkedlayers = [];
                 }
                 if(me.useCheckboxes && nodeType != "level") objData.checked = false;

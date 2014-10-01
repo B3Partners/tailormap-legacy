@@ -103,7 +103,7 @@ Ext.define('Ext.ux.ColorField', {
             autoShow : true
         });
         this.menu.alignTo(this.inputEl, 'tl-bl?');
-        this.menu.doLayout();
+        this.menu.updateLayout();
         
         this.menu.on(Ext.apply({}, this.menuListeners, {
             scope:this

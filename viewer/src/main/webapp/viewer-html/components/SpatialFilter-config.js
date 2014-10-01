@@ -34,7 +34,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 inputValue: true,
                 name: 'applyDirect',
                 checked: config.applyDirect!==undefined? config.applyDirect : true,
-                value: true,
+                //value: true,
                 labelWidth:me.labelWidth
             },
             {
@@ -43,7 +43,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 inputValue: true,
                 name: 'multiGeometries',
                 checked: config.multiGeometries!==undefined? config.multiGeometries : false,
-                value: false,
+                //value: false,
                 labelWidth:me.labelWidth
             }
             ]);

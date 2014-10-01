@@ -166,7 +166,7 @@ Ext.define ("viewer.components.ScreenPopup",{
 			// Reset position so popup remains centered
 			this.popupWin.setPosition(Ext.Element.getViewportWidth() * .05, Ext.Element.getViewportHeight() * .05);
     		// doLayout on the window
-            this.popupWin.doLayout();
+            this.popupWin.updateLayout();
 			// Set the current orientation so when closing and opening popup while maintaining orientation it is not resized again
 			this.currentOrientation = MobileManager.getOrientation();
         }

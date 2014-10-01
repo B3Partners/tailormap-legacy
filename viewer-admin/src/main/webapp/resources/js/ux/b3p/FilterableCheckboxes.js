@@ -45,6 +45,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     requestUrl: '',
     requestParams: {},
     renderTo: '',
+    parentContainer: null,
     valueField: 'id',
     titleField: 'label',
     checked: [],
@@ -59,6 +60,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
      * @param config.requestUrl the url that returns the layers
      * @param config.requestParam a object that has te request params that are sent to the .requestUrl
      * @param config.renderTo the DOM element that is used to render to
+     * @param config.parentContainer the Ext container to add to (configure this or renderTo setting)
      * @param config.valueField the field that is used for value in the checkboxes (from the layers)
      * @param config.titleField the field that is used for title in the checkboxes (from the layers)
      * @param config.checked a list of values that need to be checked when initialized
@@ -68,7 +70,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
      */
     constructor: function(config) {
         Ext.apply(this, config || {});
-        if(this.requestUrl != '' && this.renderTo != '') {
+        if(this.requestUrl != '' && (this.renderTo != '' || this.parentContainer)) {
             this.getList();
         }
     },
@@ -80,7 +82,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             item['htmlId'] = Ext.id();
             checkboxes += (me.createCheckbox(item['htmlId'], item[me.valueField], item[me.titleField]));
         });
-        var containerId = Ext.id();
+        // var containerId = Ext.id();
         var fields = [{
             xtype:'container',
             width: '100%',
@@ -106,7 +108,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             }]
         }, {
             xtype:'container',
-            id: containerId,
+            // itemId: containerId,
             autoScroll: true,
             html: checkboxes,
             border: 0,
@@ -114,6 +116,11 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             width: '100%',
             style: {
                 border: '0px'
+            },
+            listeners: {
+                click: function(evt, target) {
+                    me.labelClick !== null && me.labelClick(evt, target);
+                }
             }
         }];
         var container = Ext.create('Ext.container.Container', {
@@ -122,11 +129,10 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             width: '100%',
             layout: 'vbox'
         });
-        Ext.getCmp(me.renderTo).add(container);
-        if(me.labelClick !== null) {
-            Ext.get(containerId).addListener('click', function(evt, target) {
-                me.labelClick(evt, target);
-            });
+        if(me.parentContainer) {
+            me.parentContainer.add(container);
+        } else {
+            Ext.getCmp(me.renderTo).add(container);
         }
         me.setChecked();
     },

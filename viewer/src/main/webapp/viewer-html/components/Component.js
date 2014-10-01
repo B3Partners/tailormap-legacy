@@ -371,8 +371,8 @@ Ext.define("viewer.components.Component",{
                 var comp = Ext.getCmp(extComponents[i]);
                 if(comp!=undefined && comp != null) {
                     if(comp.updateLayout) comp.updateLayout();
-                    else if(comp.doLayout) comp.doLayout();
-                    else if(comp.forceComponentLayout) comp.forceComponentLayout();
+                    // else if(comp.updateLayout) comp.updateLayout();
+                    // else if(comp.forceComponentLayout) comp.forceComponentLayout();
                 }
             }
         } else {

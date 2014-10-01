@@ -38,7 +38,7 @@ Ext.define("viewer.components.Slider",{
         this.layers=new Array();
         this.currentSliderValue = this.config.initialTransparency;
 
-        this.slider = Ext.create('Ext.slider.Single', {
+        var sliderConfig = {
             width: MobileManager.isMobile() ? '100%' : 200,
             value: this.config.initialTransparency,
             increment: 10,
@@ -46,14 +46,20 @@ Ext.define("viewer.components.Slider",{
             labelAlign: "top",
             minValue: 0,
             maxValue: 100,
-            renderTo: conf.sliderContainer,
             listeners:{
                 change: {                    
                     fn: this.sliderChanged,
                     scope: this
                 }
             }
-        });
+        };
+        if(!conf.parentContainer) {
+            sliderConfig.renderTo = conf.sliderContainer;
+        }
+        this.slider = Ext.create('Ext.slider.Single', sliderConfig);
+        if(conf.parentContainer) {
+            conf.parentContainer.add(this.slider);
+        }
 
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);

@@ -202,10 +202,7 @@ Ext.define('LayoutManager', {
                         me.layoutRegionsStore.each(function(region) {
                             if(Ext.Array.contains(['content', 'content_bottom', 'popupwindow'], region.get('id'))) {
                                 if(region.regionContainer && region.regionContainer.items) {
-                                    var containerWidth = region.regionContainer.getWidth();
-                                    region.regionContainer.items.each(function(item) {
-                                        item.setWidth(containerWidth);
-                                    });
+                                    me.resetWidthHeight(region.regionContainer, region.get('floatComponents'));
                                 }
                             }
                         });
@@ -774,6 +771,9 @@ Ext.define('LayoutManager', {
             url += "?";
         }
         url += "name=" + componentData.componentName + "&className=" + componentData.componentClass;
+        if(viewer_admin_debug_mode) {
+            url += '&debug=true';
+        }
         iframe.dom.src = url;
         iframe.setStyle('display', 'block');
         this.popupWin.setTitle('Configuratie ' + componentData.componentPrettyName);
