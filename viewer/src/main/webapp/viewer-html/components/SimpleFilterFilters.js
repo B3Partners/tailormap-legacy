@@ -123,15 +123,14 @@ Ext.define("viewer.components.sf.Combo", {
             } else {
                 config.max = Number(config.max);
             }
-        } else if (config.comboType === "unique") {
-            this.getValues("#UNIQUE#");
+        } else {
             config.min = -1;
             config.max = -1;
-        } else if (config.comboType === "own") {
-            this.ownValues = config.ownValues;
-        }else {
-            config.min = -1;
-            config.max = -1;
+            if (config.comboType === "unique") {
+                this.getValues("#UNIQUE#");
+            } else if (config.comboType === "own") {
+                this.ownValues = config.ownValues;
+            }
         }
 
         this.autoStart = false;
