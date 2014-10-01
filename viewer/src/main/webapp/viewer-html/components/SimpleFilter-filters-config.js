@@ -123,19 +123,46 @@ Ext.define("viewer.components.sf.ComboConfig", {
             name: "min",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "range") || !this.configObject.comboType,
             id: "min",
-            value: this.configObject.min ? this.configObject.min : ""
+            qtip: "De minimale waarde voor de waardes in het bereik",
+            value: this.configObject.min ? this.configObject.min : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
         }, {
             fieldLabel: "Maximale waarde",
             name: "max",
             hidden: ( this.configObject.comboType && this.configObject.comboType !== "range" ) || !this.configObject.comboType,
+            qtip: "De maximale waarde voor de waardes in het bereik",
             id: "max",
-            value: this.configObject.max ? this.configObject.max : ""
+            value: this.configObject.max ? this.configObject.max : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
         }, {
             fieldLabel: "Eigen waardes",
             name: "ownValues",
             hidden: (this.configObject.comboType && this.configObject.comboType !== "own") || !this.configObject.comboType,
             id: "ownValues",
-            value: this.configObject.ownValues ? this.configObject.ownValues : ""
+            qtip: "Vul hier een lijst met eigen waardes in. De waardes moeten komma gescheiden zijn, bijvoorbeeld: 1,2,3",
+            value: this.configObject.ownValues ? this.configObject.ownValues : "",
+            listeners: {
+                render: function (c) {
+                    Ext.QuickTips.register({
+                        target: c.getEl(),
+                        text: c.qtip
+                    });
+                }
+            }
         }
         ]);
         return items;
