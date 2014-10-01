@@ -18,6 +18,7 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
 
+    filterTypes: null,
     filterStore: null,
     filterConfigs: null,
 
@@ -31,7 +32,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
-        var filterTypes = Ext.create("Ext.data.Store", {
+        this.filterTypes = Ext.create("Ext.data.Store", {
             fields: ["type", "label"],
             data: [
                 {type: "slider", label: "Slider"},
@@ -54,7 +55,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             var me = this;
             Ext.Array.each(config.filters, function(filter) {
                 var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
-                var soort = filterTypes.findRecord("type", type).get("label");
+                var soort = me.filterTypes.findRecord("type", type).get("label");
                 var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
                 filter.appLayerId = appLayer.id;
                 me.filterConfigs.push(filter);
@@ -96,7 +97,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     items: [{
                         xtype: 'combo',
                         fieldLabel: 'Soort filtergereedschap',
-                        store: filterTypes,
+                        store: this.filterTypes,
                         id: "filterType",
                         queryModes: "local",
                         displayField: "label",
@@ -319,7 +320,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             var description = appLayer.alias + "." + filterControl.attributeName;
             console.log("add: ", soort, description, filterControl);
             this.filterConfigs.push(filterControl);
-            this.filterStore.add({soort: soort, description: description});
+            var soortString = this.filterTypes.findRecord("type", soort).get("label");
+            this.filterStore.add({soort: soortString, description: description});
             this.resetConfig(true);
         }
     },
