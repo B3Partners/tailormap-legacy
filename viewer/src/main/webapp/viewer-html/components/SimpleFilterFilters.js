@@ -135,7 +135,13 @@ Ext.define("viewer.components.sf.Checkbox", {
                 name      : option.value,
                 inputValue: true,
                 xtype: "checkbox",
-                id        : this.config.name + option.id
+                id        : this.config.name + option.id,
+                listeners: {
+                    change: {
+                        scope: this,
+                        fn: this.applyFilter
+                    }
+                }
             };
             items.push(item);
         }
@@ -148,17 +154,37 @@ Ext.define("viewer.components.sf.Checkbox", {
                 type: 'vbox',
                 align: "left"
             },
-            //width: 400,
             renderTo: this.config.name + "_combo",
             items: items
         });
     },
 
     applyFilter : function(){
-        //this.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
+        if(!this.ready){
+            // This function will be called via eventlistener
+            return;
+        }
+        var layer = this.viewerController.getAppLayerById(this.appLayerId);
+
+        if (!layer) {
+            return;
+        }
+
+        var cql = this.getCQL();
+        if(cql.length > 0){
+            this.setFilter(layer, cql);
+        }
     },
     getCQL : function(){
-        this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
+        var cql = "";
+        for (var i = 0 ; i < this.options.length ;i++){
+            var checkbox = Ext.getCmp(this.config.name + this.options[i].id);
+            if(checkbox.getValue()){
+                cql += cql !== "" ? " AND " : "";
+                cql += this.config.attributeName +  " = " + checkbox.getName();
+            }
+        }
+        return cql;
     }
 });
 
@@ -263,7 +289,6 @@ Ext.define("viewer.components.sf.Combo", {
         if( this.config.config.start !== -1){
             this.combo.setValue (this.config.config.start);
         }
-
     },
 
     getData : function(){
