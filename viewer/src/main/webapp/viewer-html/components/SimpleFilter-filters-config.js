@@ -24,7 +24,7 @@ Ext.define("viewer.components.sf.Config", {
         this.id = this.configObject.id ? this.configObject.id : Ext.id();
         var items = this.getFormItems();
         this.form = Ext.create("Ext.form.Panel", {
-            title: 'Slider',
+            title: this.getTitle(),
             width: 325,
             bodyPadding: 5,
             layout: 'anchor',
@@ -66,9 +66,140 @@ Ext.define("viewer.components.sf.Config", {
     },
     getDefaultStartValue : function(){
         console.log("Error: getDefaultStartValue() not yet implemented");
+    },
+    getTitle : function(){
+        console.log("Error: getTitle() not yet implemented");
     }
 });
 
+
+Ext.define("viewer.components.sf.CheckboxConfig", {
+    extend: "viewer.components.sf.Config",
+    values: null,
+    constructor: function(config) {
+        this.values = [];
+        viewer.components.sf.CheckboxConfig.superclass.constructor.call(this, config);
+
+    },
+    getFormItems : function(){
+        var items = this.callParent();
+        items = items.concat([
+        {
+            name: "addOption",
+            xtype: "button",
+            id: "addOption",
+            text: "Voeg optie toe",
+            width: 10,
+            listeners: {
+                click: {
+                    fn: function (c) {
+                        var id = Ext.id();
+                        this.addOption({id:id});
+                    },
+                    scope: this
+                }
+            }
+        },
+        {
+            xtype: "panel",
+            border: 0,
+            id: "optionsPanel",
+            items : []
+        }
+        ]);
+        return items;
+    },
+    addOption: function(entry){
+        var panel = Ext.getCmp("optionsPanel");
+        var items = [{
+            name: "label",
+            flex:1,
+            id: "label" + entry.id,
+            value: entry.label
+        },
+        {
+            name: "value",
+            id: "value"+ entry.id,
+            flex:1,
+            value: entry.value
+        },
+        {
+            xtype: "button",
+            id: "remove" + entry.id,
+            name: "remove" + entry.id,
+            text: "X",
+            handler: function(){
+                alert (12);
+            }
+        }];
+        if (panel.items.length=== 0) {
+            var header = Ext.create("Ext.container.Container", {
+                layout: {
+                    type: 'hbox'
+                },
+                border: 0,
+                defaults: {
+                    flex: 1
+                },
+                defaultType: "textfield",
+                items:  [
+                    {
+                        xtype: 'label',
+                        forId: 'label' + entry.id,
+                        text: 'Label'
+                    },
+                    {
+                        xtype: 'label',
+                        forId: 'value' + entry.id,
+                        text: 'Waarde'
+                    },
+                    {
+                        xtype: 'label',
+                        forId: 'remove' + entry.id,
+                        text: 'Verwijder'
+                    }
+                ]
+            });
+            panel.add(header);
+        }
+        var item = Ext.create("Ext.container.Container", {
+            layout: {
+                type: 'hbox'
+            },
+            border: 0,
+            defaults: {
+                flex: 1
+            },
+            defaultType: "textfield",
+            items: items
+        });
+        panel.add(item);
+    },
+    getTitle : function (){
+        return "Vinkvak";
+    },
+    getDefaultStartValue : function (){
+        return "";
+    },
+    getConfig : function(){
+        var config = this.callParent();
+        var options = [];
+        var panel = Ext.getCmp("optionsPanel");
+        for(var i = 1 ; i < panel.items.items.length ; i++){
+            var item = panel.items.items[i];
+            var data =item.items.items;
+            var id = data[0].getId().substring(5);
+            var option = {
+                label: data[0].getValue(),
+                value: data[1].getValue(),
+                id: id
+            };
+            options.push(option);
+        }
+        config.options = options;
+        return config;
+    }
+});
 
 Ext.define("viewer.components.sf.ComboConfig", {
     extend: "viewer.components.sf.Config",
@@ -169,6 +300,9 @@ Ext.define("viewer.components.sf.ComboConfig", {
     },
     getDefaultStartValue : function (){
         return "max";
+    },
+    getTitle : function (){
+        return "Selectielijst";
     }
 });
 
@@ -245,6 +379,9 @@ Ext.define("viewer.components.sf.SliderConfig", {
     },
     getDefaultStartValue : function (){
         return "min,max";
+    },
+    getTitle : function(){
+        return "Slider";
     }
 
 });
