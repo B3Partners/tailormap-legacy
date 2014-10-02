@@ -13,6 +13,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Notice: This file was modified in 2014 by Vicrea Solutions B.V.
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -38,6 +40,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <td>Naam van layer bij service:</td>
                         <td><stripes:text name="layer.name" disabled="true" size="30"/></td>
                     </tr>
+					<tr>
+						<td>Layer ID:</td>
+						<td><stripes:text name="layer.id" disabled="true" size="30"/></td>
+					</tr>
                     <tr>     
                         <td>Titel:</td> 
                         <td><stripes:text name="layer.title" disabled="true" maxlength="255" size="30"/></td>

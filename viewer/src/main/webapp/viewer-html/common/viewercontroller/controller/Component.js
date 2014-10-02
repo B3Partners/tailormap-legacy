@@ -13,6 +13,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 /**
  * Abstract component to add to the MapComponent.
@@ -45,7 +47,8 @@ Ext.define("viewer.viewercontroller.controller.Component",{
         NAVIGATIONPANEL            : 5,
         MAPTIP                     : 6,
         LOADMONITOR                : 7,
-        OVERVIEW                   : 8
+        OVERVIEW                   : 8,
+        KEYBOARD_NAVIGATION        : 9
     },
     /**
      *Set the component visible/invisible or enabled/disabled

@@ -357,9 +357,11 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/ToolMapClick.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersComponent.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMapComponent.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersWFS1_1_0ProtocolGet.js</param>
                                 <!-- OpenLayers Components -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/LoadingPanel.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersBorderNavigation.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersKeyboardNavigation.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersLoadMonitor.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersOverview.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersMaptip.js</param>

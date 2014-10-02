@@ -13,6 +13,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 package nl.b3p.viewer.config.app;
 
@@ -345,6 +347,18 @@ public class Application {
                 if(Authorizations.isConfiguredComponentAuthorized(comp, request)) {
                     c.put(comp.getName(), comp.toJSON());
                 }
+            }
+        }
+       
+        if (!onlyServicesAndLayers){
+            String selectionLayerId = request.getParameter("selectionLayerId");
+            String cqlFilter = request.getParameter("cqlFilter");
+            
+            if (selectionLayerId != null && cqlFilter != null) {
+                JSONObject wmsSelection = new JSONObject();
+                o.put("wmsSelection", wmsSelection);
+                wmsSelection.put("cqlFilter", cqlFilter);
+                wmsSelection.put("selectionLayerId", selectionLayerId);
             }
         }
 

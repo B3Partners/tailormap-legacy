@@ -13,6 +13,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Notice: This file was modified in 2014 by Vicrea Solutions B.V.
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -167,6 +169,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <!-- The components -->
                         <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayersBorderNavigation.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/components/OpenLayersKeyboardNavigation.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayersLoadMonitor.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayersOverview.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OpenLayersMaptip.js"></script>

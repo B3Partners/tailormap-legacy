@@ -13,6 +13,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 package nl.b3p.viewer.admin.stripes;
 
@@ -76,6 +78,9 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
                 @Validate(field="maxy", maxlength=255)
     })
     private BoundingBox maxExtent;
+    
+    @Validate
+    private Double maxScale;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">
 
@@ -143,6 +148,17 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         this.mashupName = mashupName;
     }
     
+    public Double getMaxScale() {
+        return maxScale;
+    }
+    
+    public void setMaxScale(Double maxScale) {
+        this.maxScale = maxScale;
+        
+        // Also update the value in details, so that the info is persisted there
+        details.put("maxScale", new ClobElement(String.valueOf(maxScale)));
+    }
+    
     //</editor-fold>
     
     @DefaultHandler
@@ -158,6 +174,17 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             name = application.getName();
             version = application.getVersion();
             authenticatedRequired = application.isAuthenticatedRequired();
+        
+            if(details.get("maxScale") != null) {
+                String maxScaleValue = details.get("maxScale").getValue();
+                if(maxScaleValue != null) {
+                    try {
+                        setMaxScale(Double.parseDouble(maxScaleValue));
+                    } catch (NumberFormatException nfe) {
+                        // Ignore, max scale contains an invalid value
+                    }
+                }
+            }
         }
         // DEFAULT VALUES
         if(!details.containsKey("iconSprite")) {

@@ -13,6 +13,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 /**
  * @class 
@@ -51,6 +53,23 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         
         config.restrictedExtent = maxBounds;
         
+        if(config.options.maxScale){
+            config.maxScale = config.options.maxScale;
+            
+            // Adjust resolutions array
+            var minRes = OpenLayers.Util.getResolutionFromScale(config.maxScale, config.units);
+            for(var i = 0; i < config.resolutions.length; i++) {
+                if(config.resolutions[i] < minRes) {
+                    // Remove the rest of the array, since resolutions are sorted in descending order
+                    config.resolutions = config.resolutions.splice(0, i);
+                }
+            }
+            
+            // Add minRes
+            if(config.resolutions != minRes) {
+                config.resolutions.push(minRes);
+            }
+        }
         
         //create a click control that handles only single click     
         var me=this;
@@ -437,6 +456,50 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
         this.getFrameworkMap().updateSize();
     },
     
+    /**
+     * Zooms to the given selection at the maximum scale
+     * @param layer selection layer (with CQL filter) to zoom on
+     * @param cqlFilter CQL-filter to use to retrieve the feature(s) to zoom to
+     */
+    zoomToSelection : function(layer, cqlFilter){
+    
+        var wmsBasedProtocol = OpenLayers.Protocol.WFS.fromWMSLayer(layer.frameworkLayer);
+        
+        // Store some OpenLayersMap properties, because it won't be available in the loadend
+        // callback below anymore.
+        var frameworkMap = this.frameworkMap;
+        var logger = this.viewerController.logger;
+        
+        var wfsLayer = new OpenLayers.Layer.Vector("WFS", {
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol.WFS.v1_1_0.Get({
+                // When the SERVICE=WMS parameter is present in the WMS URL, the WFS request will be
+                // interpreted as a WMS request instead, so this needs to be changed.
+                url: wmsBasedProtocol.url.replace("SERVICE=WMS&",""),
+                featureType: wmsBasedProtocol.featureType,
+                featureNS: wmsBasedProtocol.featureNS,
+                srsName: wmsBasedProtocol.srsName,
+                // Force WFS version 1.1.0, otherwise the extent is compared to the (probably non-
+                // existant) property 'the_geom'.
+                version: "1.1.0"
+            }),
+            filter: new OpenLayers.Format.CQL().read(cqlFilter),
+            eventListeners: {
+                'loadend': function (evt) {
+                    if(wfsLayer.getDataExtent()) {
+                        frameworkMap.zoomToExtent(wfsLayer.getDataExtent());
+                    } else {
+                        logger.error("No result found for CQL filter to zoom to.");
+                    }
+                    wfsLayer.setVisibility(false);
+                    frameworkMap.removeLayer(wfsLayer);
+                }
+            }
+        });
+        
+        this.frameworkMap.addLayer(wfsLayer);
+    },
+
     /**
      * The OpenLayers ID can't be changed. With this function you can get the 
      * viewer.viewercontroller.openlayers.OpenLayersLayer with the openlayersid

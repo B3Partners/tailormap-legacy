@@ -13,6 +13,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Notice: This file was modified in 2014 by Vicrea Solutions B.V.
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -109,6 +111,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 rb-x <stripes:text name="maxExtent.maxx" maxlength="255" size="8"/>
                                 rb-y <stripes:text name="maxExtent.maxy" maxlength="255" size="8"/>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Maximale kaartschaal:</td>
+                            <td>1 : <stripes:text name="maxScale" maxlength="255" size="10"/></td>
                         </tr>
                         <tr>
                             <td colspan="2">

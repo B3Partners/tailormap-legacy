@@ -13,6 +13,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 /**
  * @class 
@@ -32,6 +34,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
         this.options.singleTile=true;
         this.options.transitionEffect = "resize";
         this.frameworkLayer = new OpenLayers.Layer.WMS(this.options.name,this.url,this.ogcParams,this.options);
+        
+        if(config.cqlFilter) {
+            this.frameworkLayer.mergeNewParams({cql_filter: config.cqlFilter});
+        }
                 
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
         

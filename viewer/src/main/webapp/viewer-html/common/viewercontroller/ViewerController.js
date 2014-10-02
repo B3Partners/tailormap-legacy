@@ -6,6 +6,8 @@
  * @param mapId The id of the div in which the map has to be shown.
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  */
 Ext.define("viewer.viewercontroller.ViewerController", {
     extend: "Ext.util.Observable", 
@@ -35,6 +37,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     dataSelectionChecker:null,
     /** Layers initialized?*/
     layersInitialized: false,
+    
+    /** Selection layer */
+    selectionLayer: null,
+    
     /**
      * Creates a ViewerController and initializes the map container. 
      * 
@@ -204,20 +210,31 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }else{
                 startExtent = Ext.create("viewer.viewercontroller.controller.Extent","12000,304000,280000,620000");
             }
+            
+            var mapOptions = {
+                left: 0,
+                top: mapTop,
+                width: "100%",
+                bottom: mapBottom,
+                visible: "true",
+                maxExtent : maxExtent,
+                startExtent: startExtent,
+                extenthistory: "10"
+            }
+            
+            if(this.app.details && this.app.details.maxScale) {
+                maxScale = parseFloat(this.app.details.maxScale);
+                if(maxScale !== 0) {
+                    mapOptions.maxScale = maxScale;
+                }
+            }
+             
             //xxx todo: remove specific flamingo things.
             var map = this.mapComponent.createMap("map", {
                 viewerController: this,
-                options: {
-                    left: 0,
-                    top: mapTop,
-                    width: "100%",
-                    bottom: mapBottom,
-                    visible: "true",
-                    maxExtent : maxExtent,
-                    startExtent: startExtent,
-                    extenthistory: "10"
-                }
+                options: mapOptions
             });
+            
             this.mapComponent.addMap(map);
             
             this.initializeConfiguredComponents();
@@ -226,6 +243,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if(!layersloaded){
                 this.initLayers();                
             }
+            
+            if(this.selectionLayer) {
+                // Determine the extent to zoom to, using the first (and only) map of the map component
+                // Access to map: this.mapComponent.frameworkMap
+                // Access to layer: this.selectionLayer.frameworkLayer
+                var map = this.mapComponent.maps[0];
+                map.zoomToSelection(this.selectionLayer, this.app.wmsSelection.cqlFilter);
+                map.setLayerVisible(this.selectionLayer, true);
+            }
+            
             this.layersInitialized=true;
             this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
         } catch(e) {
@@ -791,8 +818,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     ogcOptions.sld = sldUrl;
                     layerConfig.originalSldUrl = sldUrl;
                 }
+                
+                // CQL filtering option
+                if(this.app.wmsSelection) {
+                    if(this.app.wmsSelection.cqlFilter && this.app.wmsSelection.selectionLayerId == layer.id) {
+                        options.cqlFilter = this.app.wmsSelection.cqlFilter;
+                        this.selectionLayer = layer;
+                    }
+                }
 
                 layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
+                
+                // Switch selectionLayer with actual WMS layer
+                if(layer === this.selectionLayer) {
+                    this.selectionLayer = layerObj;
+                }
                 
                 Ext.apply(layerObj.config, layerConfig);
 

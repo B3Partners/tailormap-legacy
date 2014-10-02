@@ -5,6 +5,8 @@
  * Map object interface class
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ *
+ * Notice: This file was modified in 2014 by Vicrea Solutions B.V.
  **/
 Ext.define("viewer.viewercontroller.controller.Map",{
     extend: "Ext.util.Observable",
@@ -368,5 +370,13 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     updateSize : function(){
         Ext.Error.raise({msg: "Map.updateSize() Not implemented! Must be implemented in sub-class"});
+    },
+    /**
+     * Zooms to the given selection at the maximum scale
+     * @param layer selection layer (with CQL filter) to zoom on
+     * @param cqlFilter CQL-filter to use to retrieve the feature(s) to zoom to
+     */
+    zoomToSelection : function(layer, cqlFilter){
+        Ext.Error.raise({msg: "Map.zoomToSelection() Not implemented! Must be implemented in sub-class"});
     }
 });
