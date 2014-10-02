@@ -130,20 +130,7 @@ Ext.define("viewer.components.sf.Checkbox", {
         var items = [];
         for (var i = 0 ; i < this.options.length ;i++){
             var option = this.options[i];
-            var item = {
-                boxLabel  : option.label,
-                name      : option.value,
-                checked: this.config.config.start ? this.config.config.start === option.value : false,
-                inputValue: true,
-                xtype: "checkbox",
-                id        : this.config.name + option.id,
-                listeners: {
-                    change: {
-                        scope: this,
-                        fn: this.applyFilter
-                    }
-                }
-            };
+            var item = this.createElement(option);
             items.push(item);
         }
 
@@ -158,6 +145,24 @@ Ext.define("viewer.components.sf.Checkbox", {
             renderTo: this.config.name + "_checkbox",
             items: items
         });
+    },
+
+    createElement : function (option){
+        var item = {
+            boxLabel  : option.label,
+            name      : option.value,
+            checked: this.config.config.start ? this.config.config.start === option.value : false,
+            inputValue: true,
+            xtype: "checkbox",
+            id        : this.config.name + option.id,
+            listeners: {
+                change: {
+                    scope: this,
+                    fn: this.applyFilter
+                }
+            }
+         };
+         return item;
     },
 
     applyFilter : function(){
