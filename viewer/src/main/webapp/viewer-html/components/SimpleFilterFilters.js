@@ -46,18 +46,15 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
     applyFilter : function(){
         this.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
     },
+    getCQL : function(){
+        this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
+    },
     setFilter : function(layer,cql){
         this.viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
             id: this.config.name,
             cql: cql,
             operator: "AND"
         }), layer);
-    },
-    getCQL : function(){
-        this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
-    },
-    getUnique : function(){
-
     },
     getValues: function(operator) {
         if( (operator === "#MIN#" && this.minRetrieved) && (operator === "#MAX#" && this.maxRetrieved)){
@@ -93,6 +90,77 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
     }
 });
 
+Ext.define("viewer.components.sf.Checkbox", {
+    extend: "viewer.compoents.sf.SimpleFilter",
+    options:null,
+    config:{
+        simpleFilter:null
+    },
+    constructor: function(config){
+        viewer.components.sf.Checkbox.superclass.constructor.call(this, config);
+        this.initConfig(config);
+
+        var config = this.config.config;
+        this.options = config.options;
+        var t =
+            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
+            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
+            "  <table width=\"100%\">" +
+            "    <tbody>" +
+            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
+            "        <tr>" +
+            "            <td colspan=\"3\"><div id=\"{name}_combo\"></div></td>" +
+            "        </tr>" +
+            "    </tbody>" +
+            "  </table>" +
+            "</div>";
+
+        var vc = this.config.simpleFilter.viewerController;
+        new Ext.Template(t).append(this.config.simpleFilter.name, {
+            steunkleur1: vc.app.details.steunkleur1,
+            steunkleur2: vc.app.details.steunkleur2,
+            label: config.label,
+            name: this.config.name
+        });
+
+        this.createCheckboxes();
+
+    },
+    createCheckboxes : function(){
+        var items = [];
+        for (var i = 0 ; i < this.options.length ;i++){
+            var option = this.options[i];
+            var item = {
+                boxLabel  : option.label,
+                name      : option.value,
+                inputValue: true,
+                xtype: "checkbox",
+                id        : this.config.name + option.id
+            };
+            items.push(item);
+        }
+
+        Ext.create("Ext.container.Container", {
+            height: this.options.length * 22,
+            id: "checkboxcontainer" + this.config.name,
+            name: "checkboxcontainer" + this.config.name,
+            layout: {
+                type: 'vbox',
+                align: "left"
+            },
+            //width: 400,
+            renderTo: this.config.name + "_combo",
+            items: items
+        });
+    },
+
+    applyFilter : function(){
+        //this.viewerController.logger.error("SimpleFilter.applyFilter() not yet implemented in subclass");
+    },
+    getCQL : function(){
+        this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
+    }
+});
 
 Ext.define("viewer.components.sf.Combo", {
     extend: "viewer.compoents.sf.SimpleFilter",
@@ -104,7 +172,7 @@ Ext.define("viewer.components.sf.Combo", {
     },
 
     constructor: function(conf) {
-        viewer.components.sf.Slider.superclass.constructor.call(this, conf);
+        viewer.components.sf.Combo.superclass.constructor.call(this, conf);
         this.uniqueValues = [];
         this.initConfig(conf);
 
@@ -262,7 +330,6 @@ Ext.define("viewer.components.sf.Combo", {
         return cql;
     }
 });
-
 
 Ext.define("viewer.components.sf.Slider", {
     extend: "viewer.compoents.sf.SimpleFilter",

@@ -29,7 +29,8 @@ Ext.define("viewer.components.sf.Config", {
             bodyPadding: 5,
             layout: 'anchor',
             defaults: {
-                anchor: '100%'
+                anchor: '100%',
+                flex:1
             },
             defaultType: 'textfield',
             items: items
@@ -91,7 +92,6 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             xtype: "button",
             id: "addOption",
             text: "Voeg optie toe",
-            width: 10,
             listeners: {
                 click: {
                     fn: function (c) {
@@ -130,6 +130,8 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             id: "remove" + entry.id,
             name: "remove" + entry.id,
             text: "X",
+            width: 25,
+            flex:0,
             handler: function(){
                 alert (12);
             }
