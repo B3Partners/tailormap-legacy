@@ -73,16 +73,16 @@ Ext.define("viewer.components.sf.Config", {
     }
 });
 
-
 Ext.define("viewer.components.sf.CheckboxConfig", {
     extend: "viewer.components.sf.Config",
     constructor: function(config) {
         viewer.components.sf.CheckboxConfig.superclass.constructor.call(this, config);
-        for (var i = 0 ; i < config.configObject.options.length ; i++){
-            var option = config.configObject.options[i];
-            this.addOption(option);
+        if(config.configObject.options){
+            for (var i = 0 ; i < config.configObject.options.length ; i++){
+                var option = config.configObject.options[i];
+                this.addOption(option);
+            }
         }
-
     },
     getFormItems : function(){
         var items = this.callParent();
@@ -223,6 +223,17 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
         }
         config.options = options;
         return config;
+    }
+});
+
+Ext.define("viewer.components.sf.RadioConfig", {
+    extend: "viewer.components.sf.CheckboxConfig",
+    constructor : function (config){
+        viewer.components.sf.RadioConfig.superclass.constructor.call(this, config);
+
+    },
+    getTitle : function(){
+        return "Keuzerondje";
     }
 });
 
