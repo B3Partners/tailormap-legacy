@@ -180,7 +180,7 @@ Ext.define("viewer.components.sf.Checkbox", {
         for (var i = 0 ; i < this.options.length ;i++){
             var checkbox = Ext.getCmp(this.config.name + this.options[i].id);
             if(checkbox.getValue()){
-                cql += cql !== "" ? " AND " : "";
+                cql += cql !== "" ? " OR " : "";
                 cql += this.config.attributeName +  " = " + checkbox.getName();
             }
         }

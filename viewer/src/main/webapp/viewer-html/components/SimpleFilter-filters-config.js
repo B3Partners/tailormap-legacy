@@ -94,7 +94,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             text: "Voeg optie toe",
             listeners: {
                 click: {
-                    fn: function (c) {
+                    fn: function () {
                         this.addOption();
                     },
                     scope: this
