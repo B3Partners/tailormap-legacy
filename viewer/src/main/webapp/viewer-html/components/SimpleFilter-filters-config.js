@@ -132,8 +132,14 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             text: "X",
             width: 25,
             flex:0,
-            handler: function(){
-                alert (12);
+            listeners:{
+                click:{
+                    scope:this,
+                    fn:function (button) {
+                        var id = button.getId().substring("remove".length);
+                        this.removeOption(id);
+                    }
+                }
             }
         }];
         if (panel.items.length=== 0) {
@@ -167,6 +173,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             panel.add(header);
         }
         var item = Ext.create("Ext.container.Container", {
+            id: "optionContainer" + entry.id,
             layout: {
                 type: 'hbox'
             },
@@ -178,6 +185,11 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             items: items
         });
         panel.add(item);
+    },
+    removeOption : function(id){
+        var panel = Ext.getCmp("optionsPanel");
+        var container = Ext.getCmp("optionContainer" + id);
+        panel.remove(container);
     },
     getTitle : function (){
         return "Vinkvak";
