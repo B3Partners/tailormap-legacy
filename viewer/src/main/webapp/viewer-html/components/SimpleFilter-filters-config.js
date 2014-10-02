@@ -75,10 +75,12 @@ Ext.define("viewer.components.sf.Config", {
 
 Ext.define("viewer.components.sf.CheckboxConfig", {
     extend: "viewer.components.sf.Config",
-    values: null,
     constructor: function(config) {
-        this.values = [];
         viewer.components.sf.CheckboxConfig.superclass.constructor.call(this, config);
+        for (var i = 0 ; i < config.configObject.options.length ; i++){
+            var option = config.configObject.options[i];
+            this.addOption(option);
+        }
 
     },
     getFormItems : function(){
@@ -112,13 +114,13 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
     addOption: function(entry){
         var panel = Ext.getCmp("optionsPanel");
         var items = [{
-            name: "label",
+            name: "label" + entry.id,
             flex:1,
             id: "label" + entry.id,
             value: entry.label
         },
         {
-            name: "value",
+            name: "value" + entry.id,
             id: "value"+ entry.id,
             flex:1,
             value: entry.value
@@ -182,7 +184,12 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
         return "";
     },
     getConfig : function(){
-        var config = this.callParent();
+        var parentConfig = this.callParent();
+        var config = {
+            id: parentConfig.id,
+            label : parentConfig.label,
+            start: parentConfig.start
+        };
         var options = [];
         var panel = Ext.getCmp("optionsPanel");
         for(var i = 1 ; i < panel.items.items.length ; i++){
