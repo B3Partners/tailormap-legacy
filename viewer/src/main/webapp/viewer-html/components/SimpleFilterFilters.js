@@ -109,7 +109,7 @@ Ext.define("viewer.components.sf.Checkbox", {
             "    <tbody>" +
             (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
             "        <tr>" +
-            "            <td colspan=\"3\"><div id=\"{name}_combo\"></div></td>" +
+            "            <td colspan=\"3\"><div id=\"{name}_checkbox\"></div></td>" +
             "        </tr>" +
             "    </tbody>" +
             "  </table>" +
@@ -155,7 +155,7 @@ Ext.define("viewer.components.sf.Checkbox", {
                 type: 'vbox',
                 align: "left"
             },
-            renderTo: this.config.name + "_combo",
+            renderTo: this.config.name + "_checkbox",
             items: items
         });
     },
