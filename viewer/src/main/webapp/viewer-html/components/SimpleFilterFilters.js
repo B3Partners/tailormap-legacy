@@ -133,6 +133,7 @@ Ext.define("viewer.components.sf.Checkbox", {
             var item = {
                 boxLabel  : option.label,
                 name      : option.value,
+                checked: this.config.config.start ? this.config.config.start === option.value : false,
                 inputValue: true,
                 xtype: "checkbox",
                 id        : this.config.name + option.id,
