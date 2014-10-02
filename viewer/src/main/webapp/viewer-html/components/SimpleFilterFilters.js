@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define("viewer.compoents.sf.SimpleFilter",{
+Ext.define("viewer.components.sf.SimpleFilter",{
     ready: null,
     minRetrieved: null,
     maxRetrieved: null,
@@ -91,7 +91,7 @@ Ext.define("viewer.compoents.sf.SimpleFilter",{
 });
 
 Ext.define("viewer.components.sf.Checkbox", {
-    extend: "viewer.compoents.sf.SimpleFilter",
+    extend: "viewer.components.sf.SimpleFilter",
     options:null,
     config:{
         simpleFilter:null
@@ -194,8 +194,18 @@ Ext.define("viewer.components.sf.Checkbox", {
     }
 });
 
+
+Ext.define("viewer.components.sf.Radio", {
+    extend: "viewer.components.sf.Checkbox",
+    constructor : function(config){
+        viewer.components.sf.Radio.superclass.constructor.call(this, config);
+
+    }
+});
+
+
 Ext.define("viewer.components.sf.Combo", {
-    extend: "viewer.compoents.sf.SimpleFilter",
+    extend: "viewer.components.sf.SimpleFilter",
     combo: null,
     store:null,
     uniqueValues:null,
@@ -363,7 +373,7 @@ Ext.define("viewer.components.sf.Combo", {
 });
 
 Ext.define("viewer.components.sf.Slider", {
-    extend: "viewer.compoents.sf.SimpleFilter",
+    extend: "viewer.components.sf.SimpleFilter",
     config: {
         autoMinStart: null,
         autoMaxStart: null,
