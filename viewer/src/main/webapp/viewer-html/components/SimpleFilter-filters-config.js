@@ -95,8 +95,7 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
             listeners: {
                 click: {
                     fn: function (c) {
-                        var id = Ext.id();
-                        this.addOption({id:id});
+                        this.addOption();
                     },
                     scope: this
                 }
@@ -112,6 +111,11 @@ Ext.define("viewer.components.sf.CheckboxConfig", {
         return items;
     },
     addOption: function(entry){
+        if (!entry){
+            entry = {
+                id : Ext.id()
+            };
+        }
         var panel = Ext.getCmp("optionsPanel");
         var items = [{
             name: "label" + entry.id,
