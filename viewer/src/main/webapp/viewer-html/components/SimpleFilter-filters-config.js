@@ -46,7 +46,7 @@ Ext.define("viewer.components.sf.Config", {
         }, {
             fieldLabel: "Beginwaarde(s)",
             name: "start",
-            value: this.configObject.start ? this.configObject.start : this.getDefaultStartValue(),
+            value: Ext.isDefined(this.configObject.start) ? this.configObject.start : this.getDefaultStartValue(),
             qtip: "Vul een vaste waarde in of 'min' of 'max'. Bij een slider voor een bereik geef twee waardes op gescheiden door een komma",
             listeners: {
                 render: function (c) {

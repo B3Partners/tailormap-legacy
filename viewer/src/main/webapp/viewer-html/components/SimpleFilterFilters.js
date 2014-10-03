@@ -245,6 +245,14 @@ Ext.define("viewer.components.sf.Checkbox", {
             }
         }
         return cql;
+    },
+    reset : function(){
+        this.callParent();
+        for (var i = 0 ; i < this.options.length ;i++){
+            var checkbox = Ext.getCmp(this.config.name + this.options[i].id);
+            //checkbox.
+        }
+
     }
 });
 
@@ -333,7 +341,7 @@ Ext.define("viewer.components.sf.Combo", {
             this.getValues(config.start === "min" ? "#MIN#" : "#MAX#");
             config.start = config[config.start];
         } else {
-            config.start = Number(config.start);
+            config.start = config.start !== "" ? Number(config.start) : -1;
         }
 
         var t =
@@ -378,14 +386,14 @@ Ext.define("viewer.components.sf.Combo", {
             valueField: 'value',
             renderTo: this.config.name + "_combo",
             listeners: {
-                change: {
+                select: {
                     fn: this.applyFilter,
                     buffer: filterChangeDelay,
                     scope: this
                 }
             }
         });
-        if( this.config.config.start !== -1){
+        if( this.config.config.start !== -1 ){
             this.combo.setValue (this.config.config.start);
         }
     },
@@ -444,7 +452,7 @@ Ext.define("viewer.components.sf.Combo", {
     },
 
     getCQL : function(){
-        var cql = this.config.attributeName + " = " + this.combo.getValue();
+        var cql = this.config.attributeName + " = '" + this.combo.getValue() + "'";
         return cql;
     }
 });
