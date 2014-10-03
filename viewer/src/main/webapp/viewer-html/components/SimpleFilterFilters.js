@@ -49,7 +49,12 @@ Ext.define("viewer.components.sf.SimpleFilter",{
     getCQL : function(){
         this.viewerController.logger.error("SimpleFilter.getCQL() not yet implemented in subclass");
     },
-    setFilter : function(layer,cql){
+    setFilter : function(cql){
+        var layer = this.viewerController.getAppLayerById(this.appLayerId);
+
+        if (!layer) {
+            return;
+        }
         this.viewerController.setFilter(Ext.create("viewer.components.CQLFilterWrapper", {
             id: this.config.name,
             cql: cql,
@@ -170,15 +175,10 @@ Ext.define("viewer.components.sf.Checkbox", {
             // This function will be called via eventlistener
             return;
         }
-        var layer = this.viewerController.getAppLayerById(this.appLayerId);
-
-        if (!layer) {
-            return;
-        }
 
         var cql = this.getCQL();
         if(cql.length > 0){
-            this.setFilter(layer, cql);
+            this.setFilter(cql);
         }
     },
     getCQL : function(){
@@ -384,14 +384,8 @@ Ext.define("viewer.components.sf.Combo", {
             return;
         }
         if (this.combo.getValue() !== null) {
-            var layer = this.viewerController.getAppLayerById(this.appLayerId);
-
-            if (!layer) {
-                return;
-            }
-
             var cql = this.getCQL();
-            this.setFilter(layer, cql);
+            this.setFilter(cql);
         }
     },
 
@@ -578,16 +572,8 @@ Ext.define("viewer.components.sf.Slider", {
             // This function will be called via eventlistener
             return;
         }
-        var vc = this.config.simpleFilter.viewerController;
-
-        var layer = vc.getAppLayerById( this.appLayerId);
-
-        if(!layer) {
-            return;
-        }
-
         var cql = this.getCQL();
-        this.setFilter(layer, cql);
+        this.setFilter(cql);
     },
     getCQL : function(){
         var cql = "";
