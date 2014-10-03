@@ -233,6 +233,8 @@ Ext.define("viewer.components.sf.Checkbox", {
         var cql = this.getCQL();
         if(cql.length > 0){
             this.setFilter(cql);
+        }else{
+            this.reset();
         }
     },
     getCQL : function(){
@@ -247,12 +249,13 @@ Ext.define("viewer.components.sf.Checkbox", {
         return cql;
     },
     reset : function(){
-        this.callParent();
+        this.ready = false;
         for (var i = 0 ; i < this.options.length ;i++){
             var checkbox = Ext.getCmp(this.config.name + this.options[i].id);
-            //checkbox.
+            checkbox.reset();
         }
-
+        this.ready = true;
+        this.callParent();
     }
 });
 
@@ -454,6 +457,10 @@ Ext.define("viewer.components.sf.Combo", {
     getCQL : function(){
         var cql = this.config.attributeName + " = '" + this.combo.getValue() + "'";
         return cql;
+    },
+    reset : function(){
+        this.callParent();
+        this.combo.setValue(null);
     }
 });
 
