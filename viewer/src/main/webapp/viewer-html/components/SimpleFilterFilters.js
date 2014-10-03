@@ -200,6 +200,35 @@ Ext.define("viewer.components.sf.Radio", {
     constructor : function(config){
         viewer.components.sf.Radio.superclass.constructor.call(this, config);
 
+    },
+    createElement : function (option){
+        var item = {
+            boxLabel  : option.label,
+            name      :  this.config.name,
+            checked: this.config.config.start ? this.config.config.start === option.value : false,
+            inputValue: option.value,
+            xtype: "radio",
+            id        : this.config.name + option.id,
+            listeners: {
+                change: {
+                    scope: this,
+                    fn: function(radio, newValue){
+                        if(newValue){
+                            this.applyFilter();
+                        }
+                    }
+                }
+            }
+         };
+         return item;
+    },
+    getCQL: function () {
+        var checkbox = Ext.getCmp(this.config.name + this.options[0].id);
+        var cql = "";
+        if (checkbox.getGroupValue()) {
+            cql = this.config.attributeName + " = " + checkbox.getGroupValue();
+        }
+        return cql;
     }
 });
 
