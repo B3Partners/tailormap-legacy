@@ -618,13 +618,16 @@ Ext.define("viewer.components.sf.Slider", {
 
         if(this.config.config.sliderType === "range") {
             if(minOrMax === "#MIN#" && this.autoMinStart) {
+                this.config.config.start[0] = value;
                 this.slider.setValue(0, value, false);
             }
             if(minOrMax === "#MAX#" && this.autoMaxStart) {
+                this.config.config.start[1] = value;
                 this.slider.setValue(0, this.slider.getValue(0), false);
                 this.slider.setValue(1, value, false);
             }
         } else {
+            this.config.config.start = value;
             if(this.autoStart === "min" && minOrMax === "#MIN#") {
                 this.slider.setValue(0, value, false);
             }
@@ -660,5 +663,15 @@ Ext.define("viewer.components.sf.Slider", {
             cql = this.config.attributeName + " < " + this.slider.getValue();
         }
         return cql;
+    },
+    reset : function(){
+
+        if(this.config.config.sliderType === "range") {
+            this.slider.setValue(0, this.config.config.start[0]);
+            this.slider.setValue(1, this.config.config.start[1]);
+        }else{
+            this.slider.setValue(this.config.config.start);
+        }
+        this.callParent();
     }
 });
