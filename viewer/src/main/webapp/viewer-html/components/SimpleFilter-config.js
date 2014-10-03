@@ -247,7 +247,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                         listeners:{
                             click:{
                                 scope:me,
-                                fn: me.moveUp
+                                fn: function(){
+                                    me.move(-1);
+                                }
                             }
                         }
                     },{
@@ -256,7 +258,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                         listeners:{
                             click:{
                                 scope:me,
-                                fn: me.moveDown
+                                fn:  function(){
+                                    me.move(1);
+                                }
                             }
                         }
                     }]
@@ -361,25 +365,17 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         }
     },
-    moveUp : function(){
-        // haal geselecteerde record op
-        // haal bijbehorende filterconfig op
-        // haal positie van beiden op
-        // verwijder beiden
-        // voeg toe op plek  -1
+    move : function(moveAmount){
         var record = this.getSelectedRecord();
         var grid = Ext.getCmp("configuredFiltersGrid");
         if(record){
             var config = this.getFilter(record.data.id);
             var configIndex = Ext.Array.indexOf(this.filterConfigs, config);
             this.filterStore.remove(record);
-            this.filterStore.insert( configIndex-1,record);
-            this.filterConfigs.move(configIndex, configIndex-1);
+            this.filterStore.insert( configIndex+moveAmount,record);
+            this.filterConfigs.move(configIndex, configIndex+moveAmount);
             grid.getSelectionModel().select(record);
         }
-
-        var b= 0;
-
     },
     getSelectedRecord : function(){
         var grid = Ext.getCmp("configuredFiltersGrid");
@@ -390,9 +386,6 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         return record;
 
-    },
-    moveDown : function(){
-      var b = 0;
     },
     getFilter : function(id){
         for ( var i = 0 ; i < this.filterConfigs.length; i ++){
