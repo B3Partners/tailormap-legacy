@@ -130,7 +130,7 @@ Ext.define("viewer.components.sf.Reset", {
         Ext.create("Ext.button.Button", {
             id: "reset" + this.config.name,
             name: "reset" + this.config.name,
-            text: "asdf",
+            text: this.config.config.label,
             renderTo: this.config.name + "_reset",
             listeners: {
                 click:{

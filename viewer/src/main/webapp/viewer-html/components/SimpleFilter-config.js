@@ -146,6 +146,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                                     var store = ac.getStore();
 
                                     store.removeAll();
+                                    if(!appLayer){
+                                        return;
+                                    }
 
                                     Ext.Array.each(appLayer.attributes, function(att) {
                                         store.add({
