@@ -54,15 +54,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(config && config.filters) {
             var me = this;
             Ext.Array.each(config.filters, function(filter) {
-                var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
-                var soort = me.filterTypes.findRecord("type", type).get("label");
-                var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
-                var description = type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + filter.attributeName;
-                if(appLayer){
-                    filter.appLayerId = appLayer.id;
-                }
-                me.filterConfigs.push(filter);
-                me.filterStore.add({soort: soort, description: description, id:filter.config.id});
+                me.addFilter(filter,config)
             });
         }
 
@@ -251,10 +243,22 @@ Ext.define("viewer.components.CustomConfiguration",{
                     },{
                         xtype: 'button',
                         text: 'u',
-                        margin: '0 0 5 0'
+                        margin: '0 0 5 0',
+                        listeners:{
+                            click:{
+                                scope:me,
+                                fn: me.moveUp
+                            }
+                        }
                     },{
                         xtype: 'button',
-                        text: 'd'
+                        text: 'd',
+                        listeners:{
+                            click:{
+                                scope:me,
+                                fn: me.moveDown
+                            }
+                        }
                     }]
                 }, {
                     xtype: 'gridpanel',
@@ -296,6 +300,17 @@ Ext.define("viewer.components.CustomConfiguration",{
             renderTo: "filterConfigFieldset"
         });
         Ext.getCmp("filterConfigFieldset").doLayout();
+    },
+    addFilter : function(filter,config){
+        var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
+        var soort = this.filterTypes.findRecord("type", type).get("label");
+        var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
+        var description = type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + filter.attributeName;
+        if(appLayer){
+            filter.appLayerId = appLayer.id;
+        }
+        this.filterConfigs.push(filter);
+        this.filterStore.add({soort: soort, description: description, id:filter.config.id});
     },
     gridSelect: function(grid, record, index, eOpts) {
         this.currentEditIndex = index;
@@ -341,6 +356,13 @@ Ext.define("viewer.components.CustomConfiguration",{
                 break;
             }
         }
+    },
+    moveUp : function(){
+        var a = 0;
+
+    },
+    moveDown : function(){
+      var b = 0;
     },
     getConfiguration: function() {
         // Save possible open configs
