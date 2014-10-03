@@ -334,15 +334,18 @@ Ext.define("viewer.components.CustomConfiguration",{
                 config: this.filterConfigurer.getConfig()
             };
 
+            var record = this.getSelectedRecord();
+            var oldIndex = this.filterStore.indexOf(record);
             this.removeConfig( filterControl.config.id );
 
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
             var appLayer = appConfig.appLayers[filterControl.appLayerId];
             var description = soort === "Reset" ? " - " : appLayer.alias + "." + filterControl.attributeName;
             console.log("add: ", soort, description, filterControl);
-            this.filterConfigs.push(filterControl);
+          //  this.filterConfigs.push(filterControl);
+            Ext.Array.insert(this.filterConfigs, oldIndex, [filterControl]);
             var soortString = this.filterTypes.findRecord("type", soort).get("label");
-            this.filterStore.add({soort: soortString, description: description});
+            this.filterStore.insert(oldIndex,{soort: soortString, description: description, id:filterControl.config.id});
             this.resetConfig(true);
         }
     },
@@ -358,11 +361,43 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
     },
     moveUp : function(){
-        var a = 0;
+        // haal geselecteerde record op
+        // haal bijbehorende filterconfig op
+        // haal positie van beiden op
+        // verwijder beiden
+        // voeg toe op plek  -1
+        var record = this.getSelectedRecord();
+        if(record){
+            var config = this.getFilter(record.data.id);
+            var configIndex = Ext.Array.indexOf(this.filterConfigs, config);
+            this.filterStore.remove(record);
+            this.filterStore.insert( configIndex-1,record);
+            this.filterConfigs.move(configIndex, configIndex-1);
+        }
+
+        var b= 0;
+
+    },
+    getSelectedRecord : function(){
+        var grid = Ext.getCmp("configuredFiltersGrid");
+        var records = grid.getSelectionModel().getSelection();
+        var record = null;
+        if(records.length > 0){
+            record = records[0];
+        }
+        return record;
 
     },
     moveDown : function(){
       var b = 0;
+    },
+    getFilter : function(id){
+        for ( var i = 0 ; i < this.filterConfigs.length; i ++){
+            if(this.filterConfigs[i].config.id === id){
+                return this.filterConfigs[i];
+            }
+        }
+        return null;
     },
     getConfiguration: function() {
         // Save possible open configs
@@ -408,3 +443,13 @@ Ext.define("viewer.components.CustomConfiguration",{
     }
 });
 
+Array.prototype.move = function (old_index, new_index) {
+    if (new_index >= this.length) {
+        var k = new_index - this.length;
+        while ((k--) + 1) {
+            this.push(undefined);
+        }
+    }
+    this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+    return this; // for testing purposes
+};
