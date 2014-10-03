@@ -45,8 +45,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.filterStore = Ext.create("Ext.data.Store", {
             fields: ["soort", "description","id"],
-            data: [
-            ]
+            data: []
         });
 
         this.filterConfigs = [];
@@ -54,7 +53,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(config && config.filters) {
             var me = this;
             Ext.Array.each(config.filters, function(filter) {
-                me.addFilter(filter,config)
+                me.addFilter(filter,config);
             });
         }
 
@@ -125,7 +124,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             editable: false,
                             valueField: "id",
                             listeners: {
-                                change: function(combo, id, eOpts) {
+                                change: function(combo, id) {
                                     if(id === null){
                                         return;
                                     }
@@ -165,8 +164,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                             valueField: "name",
                             listeners: {
                                 select: function(combo, records, eOpts) {
-                                    var attributeName = records[0].get("name");
-
                                     Ext.getCmp("attributeInfo").setValue("Type: " + records[0].get("type"));
                                 }
                             }
@@ -189,10 +186,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             anchor: '100%',
                             width: 500
                         },
-                        items: [/*{
-                            xtype: 'label',
-                            text: 'Selecteer een laag en attribuut'
-                        }*/]
+                        items: []
                     }]
                 },{
                     xtype: 'panel',
@@ -284,16 +278,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }]
             }]
         });
-
-        /*this.titleField = Ext.create('Ext.form.field.Text', {
-            fieldLabel: 'Titel (optioneel, wordt gebruikt voor tabbladen)',
-            name: 'title',
-            value: title,
-            labelWidth: 275,
-            width: 500,
-            renderTo: Ext.get(parentid)
-        });
-        this.titleField.focus(false, true);*/
         return this;
     },
     createFilterConfig: function(type,config){
@@ -316,7 +300,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.filterConfigs.push(filter);
         this.filterStore.add({soort: soort, description: description, id:filter.config.id});
     },
-    gridSelect: function(grid, record, index, eOpts) {
+    gridSelect: function(grid, record, index) {
         this.currentEditIndex = index;
         var config = this.filterConfigs[this.currentEditIndex];
         var type = config.class.substring(config.class.lastIndexOf(".")+1).toLowerCase();
@@ -328,7 +312,6 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.createFilterConfig(type, config.config);
     },
     saveCurrentConfig: function(button, e, eOpts) {
-        console.log("addClick", this);
         if(this.filterConfigurer) {
             var filterConfigurerClass = this.filterConfigurer.self.getName();
             var filterControl = {
@@ -346,8 +329,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
             var appLayer = appConfig.appLayers[filterControl.appLayerId];
             var description = soort === "Reset" ? " - " : appLayer.alias + "." + filterControl.attributeName;
-            console.log("add: ", soort, description, filterControl);
-          //  this.filterConfigs.push(filterControl);
             Ext.Array.insert(this.filterConfigs, oldIndex, [filterControl]);
             var soortString = this.filterTypes.findRecord("type", soort).get("label");
             this.filterStore.insert(oldIndex,{soort: soortString, description: description, id:filterControl.config.id});
@@ -385,7 +366,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             record = records[0];
         }
         return record;
-
     },
     getFilter : function(id){
         for ( var i = 0 ; i < this.filterConfigs.length; i ++){
@@ -438,7 +418,12 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.filterConfigurer = null;
     }
 });
-
+/**
+ * Method for moving items around in an array. Found on http://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
+ * @param {type} old_index Move item from position old_index
+ * @param {type} new_index Move the item to position new_index
+ * @returns {Array.prototype}
+ */
 Array.prototype.move = function (old_index, new_index) {
     if (new_index >= this.length) {
         var k = new_index - this.length;
