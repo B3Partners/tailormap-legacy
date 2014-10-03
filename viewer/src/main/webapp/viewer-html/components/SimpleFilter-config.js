@@ -368,12 +368,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         // verwijder beiden
         // voeg toe op plek  -1
         var record = this.getSelectedRecord();
+        var grid = Ext.getCmp("configuredFiltersGrid");
         if(record){
             var config = this.getFilter(record.data.id);
             var configIndex = Ext.Array.indexOf(this.filterConfigs, config);
             this.filterStore.remove(record);
             this.filterStore.insert( configIndex-1,record);
             this.filterConfigs.move(configIndex, configIndex-1);
+            grid.getSelectionModel().select(record);
         }
 
         var b= 0;
