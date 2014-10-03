@@ -336,6 +336,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
             var record = this.getSelectedRecord();
             var oldIndex = this.filterStore.indexOf(record);
+            oldIndex = oldIndex !== -1 ? oldIndex : this.filterConfigs.length;
             this.removeConfig( filterControl.config.id );
 
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
