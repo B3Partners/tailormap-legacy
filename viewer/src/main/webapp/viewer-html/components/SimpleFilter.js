@@ -23,9 +23,11 @@ Ext.define("viewer.components.SimpleFilter", {
         layers: null,
         name: null
     },
+    simpleFilters:null,
     constructor: function (conf){
         viewer.components.SimpleFilter.superclass.constructor.call(this, conf);
         this.initConfig(conf);
+        this.simpleFilters = [];
         var parentDiv = Ext.get(this.div);
 
         this.container = Ext.create('Ext.container.Container', {
@@ -38,7 +40,7 @@ Ext.define("viewer.components.SimpleFilter", {
 
         var me = this;
         Ext.Array.each(this.config.filters, function(filter, index) {
-            Ext.create(filter.class, {
+            var filter = Ext.create(filter.class, {
                 appLayerId: me.config.layers[filter.appLayerId], // convert from index to actual appLayerId
                 attributeName: filter.attributeName,
                 config: filter.config,
@@ -47,6 +49,9 @@ Ext.define("viewer.components.SimpleFilter", {
                 name: me.name + "_" + index,
                 viewerController: me.viewerController
             });
+            if(filter instanceof viewer.components.sf.SimpleFilter){
+                me.simpleFilters.push(filter);
+            }
         });
         return this;
     },

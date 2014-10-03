@@ -92,6 +92,60 @@ Ext.define("viewer.components.sf.SimpleFilter",{
                 this.viewerController.logger.warning("Cannot retrieve min/max for attribute: " + this.attributeName + ". " + result.responseText);
             }
         });
+    },
+    reset : function(){
+        var layer = this.viewerController.getAppLayerById(this.appLayerId);
+
+        if (!layer) {
+            return;
+        }
+        this.viewerController.removeFilter(this.config.name, layer);
+    }
+});
+
+Ext.define("viewer.components.sf.Reset", {
+    constructor : function(config){
+        this.initConfig(config);
+        var t =
+            "<div style=\"color: {steunkleur2}; background: {steunkleur1}; padding-left: 5px; padding-top: 3px; padding-bottom: 16px\">" +
+            "<div style=\"color: black; margin-top: 4px; padding: 3px; background-color: #ced3d9\">" +
+            "  <table width=\"100%\">" +
+            "    <tbody>" +
+            (!Ext.isEmpty(config.label) ? "        <tr><td colspan=\"3\" align=\"center\">{label}</td></tr>" : "") +
+            "        <tr>" +
+            "            <td colspan=\"3\"><div id=\"{name}_reset\"></div></td>" +
+            "        </tr>" +
+            "    </tbody>" +
+            "  </table>" +
+            "</div>";
+
+        var vc = this.config.simpleFilter.viewerController;
+        new Ext.Template(t).append(this.config.simpleFilter.name, {
+            steunkleur1: vc.app.details.steunkleur1,
+            steunkleur2: vc.app.details.steunkleur2,
+            label: config.label,
+            name: this.config.name
+        });
+
+        Ext.create("Ext.button.Button", {
+            id: "reset" + this.config.name,
+            name: "reset" + this.config.name,
+            text: "asdf",
+            renderTo: this.config.name + "_reset",
+            listeners: {
+                click:{
+                    scope:this,
+                    fn: this.reset
+                }
+            }
+        });
+    },
+    reset : function(){
+        var filters = this.config.simpleFilter.simpleFilters;
+        for (var i = 0 ; i < filters.length ; i++ ){
+            var filter = filters[i];
+            filter.reset();
+        }
     }
 });
 
