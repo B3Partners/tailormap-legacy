@@ -57,9 +57,12 @@ Ext.define("viewer.components.CustomConfiguration",{
                 var type = filter.class.substring(filter.class.lastIndexOf(".")+1);
                 var soort = me.filterTypes.findRecord("type", type).get("label");
                 var appLayer = appConfig.appLayers[config.layers[filter.appLayerId]];
-                filter.appLayerId = appLayer.id;
+                var description = type === "Reset" ? " - " : (appLayer.alias || appLayer.layerName) + "." + filter.attributeName;
+                if(appLayer){
+                    filter.appLayerId = appLayer.id;
+                }
                 me.filterConfigs.push(filter);
-                me.filterStore.add({soort: soort, description: (appLayer.alias || appLayer.layerName) + "." + filter.attributeName, id:filter.config.id});
+                me.filterStore.add({soort: soort, description: description, id:filter.config.id});
             });
         }
 
@@ -317,7 +320,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
             var soort = filterConfigurerClass.substring(filterConfigurerClass.lastIndexOf('.')+1, filterConfigurerClass.length - 6);
             var appLayer = appConfig.appLayers[filterControl.appLayerId];
-            var description = appLayer.alias + "." + filterControl.attributeName;
+            var description = soort === "Reset" ? " - " : appLayer.alias + "." + filterControl.attributeName;
             console.log("add: ", soort, description, filterControl);
             this.filterConfigs.push(filterControl);
             var soortString = this.filterTypes.findRecord("type", soort).get("label");

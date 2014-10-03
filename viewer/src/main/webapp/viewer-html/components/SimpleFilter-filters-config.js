@@ -73,6 +73,28 @@ Ext.define("viewer.components.sf.Config", {
     }
 });
 
+
+Ext.define("viewer.components.sf.ResetConfig", {
+    extend: "viewer.components.sf.Config",
+    constructor : function (config){
+        viewer.components.sf.ResetConfig.superclass.constructor.call(this, config);
+
+    },
+
+    getFormItems : function(){
+        var items = [{
+            fieldLabel: 'Label',
+            name: 'label',
+            value: this.configObject.label ? this.configObject.label : ""
+        }];
+
+        return items;
+    },
+    getTitle : function(){
+        return "Reset filter knop";
+    }
+});
+
 Ext.define("viewer.components.sf.CheckboxConfig", {
     extend: "viewer.components.sf.Config",
     constructor: function(config) {
