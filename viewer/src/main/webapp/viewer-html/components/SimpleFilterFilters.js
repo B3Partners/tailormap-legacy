@@ -100,6 +100,20 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             return;
         }
         this.viewerController.removeFilter(this.config.name, layer);
+    },
+    mustEscapeAttribute : function(){
+        var appLayer = this.viewerController.getAppLayerById(this.appLayerId);
+        var attributes = this.viewerController.getAttributesFromAppLayer(appLayer, null, false);
+        if(!attributes){
+            return false;
+        }
+        for (var i = 0 ; i < attributes.length ; i++){
+            var attribute = attributes[i];
+            if(attribute.name === this.attributeName){
+                return attribute.type === "string";
+            }
+        }
+        return false;
     }
 });
 
@@ -239,11 +253,12 @@ Ext.define("viewer.components.sf.Checkbox", {
     },
     getCQL : function(){
         var cql = "";
+        var mustEscape = this.mustEscapeAttribute();
         for (var i = 0 ; i < this.options.length ;i++){
             var checkbox = Ext.getCmp(this.config.name + this.options[i].id);
             if(checkbox.getValue()){
                 cql += cql !== "" ? " OR " : "";
-                cql += this.config.attributeName +  " = " + checkbox.getName();
+                cql += this.config.attributeName +  " = " +  (mustEscape ? "'" : "")  +checkbox.getName() + (mustEscape ? "'" : "");
             }
         }
         return cql;
@@ -290,8 +305,9 @@ Ext.define("viewer.components.sf.Radio", {
     getCQL: function () {
         var checkbox = Ext.getCmp(this.config.name + this.options[0].id);
         var cql = "";
+        var mustEscape = this.mustEscapeAttribute();
         if (checkbox.getGroupValue()) {
-            cql = this.config.attributeName + " = " + checkbox.getGroupValue();
+            cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + checkbox.getGroupValue() + (mustEscape ? "'" : "");
         }
         return cql;
     }
@@ -455,7 +471,8 @@ Ext.define("viewer.components.sf.Combo", {
     },
 
     getCQL : function(){
-        var cql = this.config.attributeName + " = '" + this.combo.getValue() + "'";
+        var mustEscape = this.mustEscapeAttribute();
+        var cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.combo.getValue() + (mustEscape ? "'" : "");
         return cql;
     },
     reset : function(){
@@ -650,17 +667,21 @@ Ext.define("viewer.components.sf.Slider", {
     getCQL : function(){
         var cql = "";
         var sliderType = this.config.config.sliderType ;
+        var mustEscape = this.mustEscapeAttribute();
         if(sliderType === "range"){
-            var min = this.slider.getValue(0);
-            var max = this.slider.getValue(1);
+            var min = (mustEscape ? "'" : "") + this.slider.getValue(0) + (mustEscape ? "'" : "");
+            var max = (mustEscape ? "'" : "") + this.slider.getValue(1) + (mustEscape ? "'" : "");
 
             cql = this.config.attributeName + " > " + min + " AND " + this.config.attributeName + " < " + max;
-        }else if (sliderType === "eq"){
-            cql = this.config.attributeName + " = " + this.slider.getValue();
-        }else if (sliderType === "gt"){
-            cql = this.config.attributeName + " > " + this.slider.getValue();
-        }else if (sliderType === "lt"){
-            cql = this.config.attributeName + " < " + this.slider.getValue();
+        }else{
+            var value = (mustEscape ? "'" : "") + this.slider.getValue() + (mustEscape ? "'" : "");
+            if (sliderType === "eq"){
+                cql = this.config.attributeName + " = " + value;
+            }else if (sliderType === "gt"){
+                cql = this.config.attributeName + " > " + value;
+            }else if (sliderType === "lt"){
+                cql = this.config.attributeName + " < " + value;
+            }
         }
         return cql;
     },
