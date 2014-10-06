@@ -101,6 +101,11 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         }
         this.viewerController.removeFilter(this.config.name, layer);
     },
+    getWidth : function(){
+        var div = Ext.get(this.config.simpleFilter.div);
+        var width = div.getWidth() - 15;
+        return width;
+    },
     mustEscapeAttribute : function(){
         var appLayer = this.viewerController.getAppLayerById(this.appLayerId);
         var attributes = this.viewerController.getAttributesFromAppLayer(appLayer, null, false);
@@ -400,7 +405,7 @@ Ext.define("viewer.components.sf.Combo", {
         this.combo = Ext.create("Ext.form.field.ComboBox", {
             store: this.store,
             queryMode: 'local',
-            width: 160, // XXX
+            width: this.getWidth(),
             displayField: 'value',
             valueField: 'value',
             renderTo: this.config.name + "_combo",
@@ -585,7 +590,7 @@ Ext.define("viewer.components.sf.Slider", {
         if(c.sliderType === "range") {
             this.slider = Ext.create('Ext.slider.Multi', {
                 id: n + "_extSlider",
-                width: 160, // XXX
+                width: this.getWidth(),
                 values: [c.start[0], c.start[1]],
                 increment: c.step,
                 minValue: c.min,
@@ -603,7 +608,7 @@ Ext.define("viewer.components.sf.Slider", {
         } else if(c.sliderType === "eq" || c.sliderType === "gt" || c.sliderType === "lt" )  {
             this.slider = Ext.create('Ext.slider.Single', {
                 id: n + "_extSlider",
-                width: 160, // XXX
+                width: this.getWidth(),
                 value: c.start,
                 increment: c.step,
                 minValue: c.min,
