@@ -61,9 +61,9 @@ public class ApplicationActionBean implements ActionBean {
     private String appConfigJSON;
 
     private String viewerType;
-    
+
     private JSONObject user;
-    
+
     private String loginUrl;
     private HashMap<String,Object> globalLayout;
 
@@ -123,11 +123,11 @@ public class ApplicationActionBean implements ActionBean {
     public void setAppConfigJSON(String appConfigJSON) {
         this.appConfigJSON = appConfigJSON;
     }
-    
+
     public String getViewerType(){
         return viewerType;
     }
-    
+
     public void setViewerType(String viewerType){
         this.viewerType = viewerType;
     }
@@ -147,7 +147,7 @@ public class ApplicationActionBean implements ActionBean {
     public void setLoginUrl(String loginUrl) {
         this.loginUrl = loginUrl;
     }
-    
+
     public HashMap getGlobalLayout() {
         return globalLayout;
     }
@@ -175,18 +175,18 @@ public class ApplicationActionBean implements ActionBean {
         }
         return null;
     }
-    
+
     public Resolution saveCache() throws JSONException, IOException{
         Resolution view = view();
-        
+
         EntityManager em = Stripersist.getEntityManager();
         SelectedContentCache cache = new SelectedContentCache();
-        JSONObject sc = cache.createSelectedContent(application, false);
+        JSONObject sc = cache.createSelectedContent(application, false,false, false);
         application.getDetails().put("selected_content_cache", new ClobElement(sc.toString()));
         em.getTransaction().commit();
         return view;
     }
-    
+
      public Resolution retrieveCache() throws JSONException, IOException{
         Resolution view = view();
         EntityManager em = Stripersist.getEntityManager();
@@ -195,7 +195,7 @@ public class ApplicationActionBean implements ActionBean {
         appConfigJSON = el.getValue();
         return view;
     }
-    
+
     @DefaultHandler
     public Resolution view() throws JSONException, IOException {
         application = findApplication(name, version);
@@ -204,15 +204,15 @@ public class ApplicationActionBean implements ActionBean {
             getContext().getValidationErrors().addGlobalError(new LocalizableError("app.notfound", name + (version != null ? " v" + version : "")));
             return new ForwardResolution("/WEB-INF/jsp/error.jsp");
         }
-        
+
         RedirectResolution login = new RedirectResolution(LoginActionBean.class)
                 .addParameter("name", name) // binded parameters not included ?
-                .addParameter("version", version)                     
+                .addParameter("version", version)
                 .addParameter("debug", debug)
                 .includeRequestParameters(true);
-        
-        loginUrl = login.getUrl(context.getLocale()); 
-        
+
+        loginUrl = login.getUrl(context.getLocale());
+
         String username = context.getRequest().getRemoteUser();
         if(application.isAuthenticatedRequired() && username == null) {
             return login;
@@ -227,12 +227,12 @@ public class ApplicationActionBean implements ActionBean {
                 roles.put(role, Boolean.TRUE);
             }
         }
-        
+
         buildComponentSourceHTML();
-        
+
         appConfigJSON = application.toJSON(context.getRequest(),false, false);
         this.viewerType = retrieveViewerType();
-        
+
         //make hashmap for jsonobject.
         this.globalLayout = new HashMap<String,Object>();
         JSONObject layout = application.getGlobalLayout();
@@ -244,7 +244,7 @@ public class ApplicationActionBean implements ActionBean {
         context.getResponse().addHeader("X-UA-Compatible", "IE=edge");
         return new ForwardResolution("/WEB-INF/jsp/app.jsp");
     }
-    
+
     /**
      * Build a hash key to make the single component source for all components
      * cacheable but updateable when the roles of the user change. This is not
@@ -252,38 +252,38 @@ public class ApplicationActionBean implements ActionBean {
      */
     public static int getRolesCachekey(HttpServletRequest request) {
         Set<String> roles = Authorizations.getRoles(request);
-        
+
         if(roles.isEmpty()) {
             return 0;
         }
-        
+
         List<String> sorted = new ArrayList<String>(roles);
         Collections.sort(sorted);
-        
+
         int hash = 0;
         for(String role: sorted) {
             hash = hash ^ role.hashCode();
         }
         return hash;
     }
-    
+
     private void buildComponentSourceHTML() throws IOException {
-       
+
         StringBuilder sb = new StringBuilder();
 
         // Sort components by classNames, so order is always the same for debugging
         List<ConfiguredComponent> comps = new ArrayList<ConfiguredComponent>(application.getComponents());
         Collections.sort(comps);
-        
+
         if(isDebug()) {
-            
+
             Set<String> classNamesDone = new HashSet<String>();
             for(ConfiguredComponent cc: comps) {
-                
+
                 if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
                     continue;
                 }
-                
+
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
 
@@ -312,14 +312,14 @@ public class ApplicationActionBean implements ActionBean {
             // Create a hash value that will change when the classNames used
             // in the application change, so that a browser will not use a
             // previous version from cache with other contents.
-            
+
             int hash = 0;
             Set<String> classNamesDone = new HashSet<String>();
             for(ConfiguredComponent cc: comps) {
                 if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest())) {
                     continue;
                 }
-                
+
                 if(!classNamesDone.contains(cc.getClassName())) {
                     hash = hash ^ cc.getClassName().hashCode();
                 } else {
@@ -329,11 +329,11 @@ public class ApplicationActionBean implements ActionBean {
             if(user != null) {
                 // Update component sources when roles of user change
                 hash = hash ^ getRolesCachekey(context.getRequest());
-                
+
                 // Update component sources when roles of configured components
                 // may have changed
                 hash = hash ^ (int)application.getAuthorizationsModified().getTime();
-            }            
+            }
 
             String url = new ForwardResolution(ComponentActionBean.class, "source")
                     .addParameter("app", name)
@@ -349,7 +349,7 @@ public class ApplicationActionBean implements ActionBean {
 
         componentSourceHTML = sb.toString();
     }
-    
+
     private String retrieveViewerType (){
         String type = "FlamingoMap";
         String typePrefix = "viewer.mapcomponents";

@@ -19,11 +19,13 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.ClobElement;
+import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.beanutils.BeanUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -201,6 +203,10 @@ public class ApplicationLayer {
     }
 
     public JSONObject toJSONObject() throws JSONException {
+        return toJSONObject(false, false);
+    }
+    
+    public JSONObject toJSONObject(boolean includeAttributes, boolean includeRelations) throws JSONException {
 
         JSONObject o = new JSONObject();
         o.put("id", getId());
@@ -220,9 +226,87 @@ public class ApplicationLayer {
                 d.put(e.getKey(), e.getValue().getValue());
             }
         }
+        
+        if(includeAttributes) {
+            addAttributesJSON(o, includeRelations);
+        }
 
         return o;
     }
+    
+    public void addAttributesJSON(JSONObject json, boolean includeRelations) throws JSONException {
+        Layer layer = getService().getSingleLayer(getLayerName());
+        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();        
+        SimpleFeatureType ft = null;
+        if(layer != null) {
+            ft = layer.getFeatureType();
+            if(ft != null) {
+                featureTypeAttributes = makeAttributeDescriptorList(ft);
+            }            
+        }
+
+        Integer geometryAttributeIndex = null;
+        JSONArray jattributes = new JSONArray();
+        json.put("attributes", jattributes);
+
+        for(ConfiguredAttribute ca: getAttributes()) {
+            JSONObject j = ca.toJSONObject();                
+            AttributeDescriptor ad = featureTypeAttributes.get(ca.getFullName());
+            if(ad != null) {
+                j.put("alias", ad.getAlias());
+                j.put("type", ad.getType());
+
+                if(ft != null && ca.getAttributeName().equals(ft.getGeometryAttribute())) {
+                    geometryAttributeIndex = jattributes.length();
+                }
+            }
+            jattributes.put(j);
+        }
+
+        if(ft != null) {
+            json.put("geometryAttribute", ft.getGeometryAttribute());
+            if(includeRelations) {
+                json.put("relations", getRelationsJSON());
+            }
+        }
+        if(geometryAttributeIndex != null) {
+            json.put("geometryAttributeIndex", geometryAttributeIndex);
+        }        
+    }
+    
+    public JSONArray getRelationsJSON() throws JSONException {
+        JSONArray j = new JSONArray();
+        Layer layer = getService().getSingleLayer(getLayerName());
+        if(layer != null && layer.getFeatureType() != null) {
+            for(FeatureTypeRelation rel: layer.getFeatureType().getRelations()){
+                JSONObject jRel = rel.toJSONObject();
+                j.put(jRel);
+            }
+        }
+        return j;
+    }
+    
+    /**
+     * Makes a list of al the attributeDescriptors of the given FeatureType and
+     * all the child FeatureTypes (related by join/relate)
+     */
+    private Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft) {
+        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
+        for(AttributeDescriptor ad: ft.getAttributes()) {
+            String name=ft.getId()+":"+ad.getName();
+            //stop when already added. Stop a infinite configurated loop
+            if (featureTypeAttributes.containsKey(name)){
+                return featureTypeAttributes;
+            }
+            featureTypeAttributes.put(name, ad);
+        }
+        if (ft.getRelations()!=null){
+            for (FeatureTypeRelation rel : ft.getRelations()){
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));                
+            }
+        }
+        return featureTypeAttributes;
+    }    
 
     ApplicationLayer deepCopy(Map originalToCopy) throws Exception {
         ApplicationLayer copy = (ApplicationLayer) BeanUtils.cloneBean(this);

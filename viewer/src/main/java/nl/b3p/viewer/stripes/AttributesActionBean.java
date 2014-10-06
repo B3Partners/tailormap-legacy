@@ -256,42 +256,7 @@ public class AttributesActionBean implements ActionBean {
             error = "Not authorized";
         } else {
 
-            Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
-            SimpleFeatureType ft = null;
-            if(layer != null) {
-                ft = layer.getFeatureType();
-                if(ft != null) {
-                    featureTypeAttributes = makeAttributeDescriptorList(ft);
-                }
-            }
-
-            Integer geometryAttributeIndex = null;
-            JSONArray attributes = new JSONArray();
-            List<ConfiguredAttribute> confAttributes;
-            confAttributes=appLayer.getAttributes();
-
-            for(ConfiguredAttribute ca: confAttributes) {
-                JSONObject j = ca.toJSONObject();
-                AttributeDescriptor ad = featureTypeAttributes.get(ca.getFullName());
-                if(ad != null) {
-                    j.put("alias", ad.getAlias());
-                    j.put("type", ad.getType());
-
-                    if(ft != null && ca.getAttributeName().equals(ft.getGeometryAttribute())) {
-                        geometryAttributeIndex = attributes.length();
-                    }
-                }
-                attributes.put(j);
-            }
-
-            if(ft != null) {
-                json.put("geometryAttribute", ft.getGeometryAttribute());
-                json.put("relations",relationsToJSON(ft.getRelations()));
-            }
-            if(geometryAttributeIndex != null) {
-                json.put("geometryAttributeIndex", geometryAttributeIndex);
-            }
-            json.put("attributes", attributes);
+            appLayer.addAttributesJSON(json, true);
             json.put("success", Boolean.TRUE);
         }
 
@@ -500,34 +465,4 @@ public class AttributesActionBean implements ActionBean {
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
-    /**
-     * Makes a list of al the attributeDescriptors of the given FeatureType and
-     * all the child FeatureTypes (related by join/relate)
-     */
-    private Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft) {
-        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
-        for(AttributeDescriptor ad: ft.getAttributes()) {
-            String name=ft.getId()+":"+ad.getName();
-            //stop when already added. Stop a infinite configurated loop
-            if (featureTypeAttributes.containsKey(name)){
-                return featureTypeAttributes;
-            }
-            featureTypeAttributes.put(name, ad);
-        }
-        if (ft.getRelations()!=null){
-            for (FeatureTypeRelation rel : ft.getRelations()){
-                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
-            }
-        }
-        return featureTypeAttributes;
-    }
-
-    private JSONArray relationsToJSON(List<FeatureTypeRelation> relations) throws JSONException {
-        JSONArray jRelations = new JSONArray();
-        for (FeatureTypeRelation rel : relations){
-            JSONObject jRel = rel.toJSONObject();
-            jRelations.put(jRel);
-        }
-        return jRelations;
-    }
 }

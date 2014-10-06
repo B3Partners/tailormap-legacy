@@ -8,36 +8,36 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define("viewer.viewercontroller.ViewerController", {
-    extend: "Ext.util.Observable", 
+    extend: "Ext.util.Observable",
 
     queryParams: null,
-    
+
     /** Map of name to component configuration object with the following properties:
      *  className: class name to construct
      *  instance: the created instance
      */
     components: {},
-    
+
     /** Map container: element displaying a map including map controls */
     mapComponent: null,
-    
+
     /** App configuration object */
     app: null,
 
     /** Optional the layout manager if layout specified in app configuration */
     layoutManager: null,
-    
+
     /** A map which stores the current instantiated layerObjects */
     layers : null,
     /** A logger    */
     logger: null,
-    
+
     dataSelectionChecker:null,
     /** Layers initialized?*/
     layersInitialized: false,
     /**
-     * Creates a ViewerController and initializes the map container. 
-     * 
+     * Creates a ViewerController and initializes the map container.
+     *
      * @param {String} viewerType Currently only the value "flamingo" and "openlayers" are supported.
      * @param {String} domId The DOM element id where the viewer should be displayed/created
      * @param {Object} app App configuration object. Properties:
@@ -55,9 +55,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker",{viewerController:this});
         this.app = app;
-        
+
         this.queryParams = Ext.urlDecode(window.location.search.substring(1));
-        
+
         var logLevel=viewer.components.Logger.LEVEL_ERROR;
         if (this.isDebug()){
             logLevel=viewer.components.Logger.LEVEL_DEBUG;
@@ -79,18 +79,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (domId){
                 layoutOptions.wrapperId= domId;
             }
-            this.layoutManager = Ext.create('viewer.LayoutManager', 
-                layoutOptions                
-            );            
+            this.layoutManager = Ext.create('viewer.LayoutManager',
+                layoutOptions,
+                app.components // Components configuration is used for floating panels
+            );
         }
         this.layers = {};
-        
+
         //get the map id
         var mapId = this.layoutManager.getMapId();
-       
+
         // Get config for map
         var comps = this.app.components;
-        var config = {};            
+        var config = {};
         for (var c in comps){
             var component = comps[c];
             if(component.className == "viewer.mapcomponents.FlamingoMap" ||
@@ -107,18 +108,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }else{
             this.logger.error("No correct viewerType defined. This might be a problem. ViewerType: " + viewerType);
         }
-        
+
         this.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
             this.spinupDataStores, this);
-              
+
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
-        
+
         if(viewerType == "openlayers") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
     },
-    
+
     showLoading: function(msg) {
         var loadingMsg = 'Loading...';
         if(msg) loadingMsg += ' ' + msg;
@@ -126,16 +127,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         document.getElementById('loader').style.display = 'block';
         document.getElementById('loadwrapper').style.zIndex = '900000';
     },
-    
+
     hideLoading: function() {
         document.getElementById('loadwrapper').style.zIndex = '0';
         document.getElementById('loader').style.display = 'none';
     },
-    
+
     isDebug: function() {
         return this.queryParams.hasOwnProperty("debug") && this.queryParams.debug == "true";
     },
-    
+
     spinupDataStores: function() {
         if(this.app.details["dataStoreSpinupDisabled"]){
             return;
@@ -162,11 +163,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 failure: function(result) {
                     me.logger.error("DataStore spinup Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
                 }
-            });                 
+            });
         }
-        
+
     },
-    
+
     /** @private Guard variable to prevent double event execution */
     mapContainerLoaded: false,
     /** @private Event handler for when the MapContainer is loaded */
@@ -189,7 +190,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             if (contentBottomLayout.heightmeasure){
                 mapBottom+= contentBottomLayout.heightmeasure == "px" ? "" : contentBottomLayout.heightmeasure;
             }
-            
+
             var max = this.app.maxExtent;
             var maxExtent;
             if(max != undefined){
@@ -219,23 +220,23 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             });
             this.mapComponent.addMap(map);
-            
+
             this.initializeConfiguredComponents();
             var layersloaded = this.valuesFromURL(this.queryParams);
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
-                this.initLayers();                
+                this.initLayers();
             }
             this.layersInitialized=true;
             this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
         } catch(e) {
             this.logger.error(e);
-        }  
+        }
     },
-    
-    /** Constructs all components defined in the app configuration object. To be 
+
+    /** Constructs all components defined in the app configuration object. To be
      * called after the layout elements are created and the map container is
-     * loaded. 
+     * loaded.
      */
     initializeConfiguredComponents: function(){
         var list =  this.layoutManager.getComponentList();
@@ -251,15 +252,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.createComponent(component.name, component.className, component.config, component.details);
             }
         }
-        
+
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING);
-    },    
-    
+    },
+
     createComponent: function(name, className, config, details){
         if(this.components[name] != undefined) {
             throw "Component with name " + name + " (class " + className + ") already added, cannot add component of class " + className + " with the same name";
         }
-        
+
         // XXX
         if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap") {
             return null;
@@ -268,7 +269,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         config.viewerController = this;
         config.name=name;
         config.details=details;
-               
+
         try{
             var instance = Ext.create(className, config);
 
@@ -280,9 +281,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 instance: instance
             };
         } catch(e) {
-            
+
             this.logger.error("Error creating component with className " + className + ": error "+e+ " with config"+ config);
-            
+
             if(this.isDebug()){
                 if(e instanceof Error) {
                     console.log(e);
@@ -295,29 +296,29 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         return instance;
     },
-    
+
     addService: function(service) {
         if(this.app.services[service.id] == undefined) {
             this.app.services[service.id] = service;
         }
     },
-            
+
     addOrReplaceService: function (service){
         this.app.services[service.id] = service;
     },
-   
+
     addAppLayer:function(appLayer) {
        if(this.app.appLayers[appLayer.id] == undefined) {
            this.app.appLayers[appLayer.id] = appLayer;
        }
     },
-            
+
     addOrReplaceAppLayer: function(appLayer){
         this.app.appLayers[appLayer.id] = appLayer;
     },
-    
-    
-   
+
+
+
     counter: 0,
     max: 0,
     /**
@@ -337,7 +338,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var me = this;
         var f = function  (map,options){
             this.counter++;
-            if(this.counter >= this.max){                
+            if(this.counter >= this.max){
                 setTimeout(function(){
                     me.app.selectedContent = selectedContent;
                     me.uncheckUnselectedContent();
@@ -345,7 +346,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,f, me);
                     me.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
                 },1);
-                
+
             }
         }
         //fallback if the framework is out of sync
@@ -373,7 +374,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     uncheckUnselectedContent: function() {
         var selectedAppLayers = [];
-        
+
         for(var i in this.app.selectedContent) {
             var content = this.app.selectedContent[i];
             if(content.type == "appLayer") {
@@ -385,7 +386,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         for(var i in this.app.appLayers) {
             var appLayer = this.app.appLayers[i];
-            
+
             if(appLayer.checked) {
                 if(Ext.Array.indexOf(selectedAppLayers, appLayer.id + "") == -1) {
                     appLayer.checked = false;
@@ -393,13 +394,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
     },
-    
+
     /**
      * Depth-first traversal of selected content
      */
     traverseSelectedContent: function(onLevel, onAppLayer) {
         var app = this.app;
-        
+
         var traverseLevel = function(level) {
             if(!level){
                 return;
@@ -418,10 +419,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             }
         };
-        
+
         for(var i in app.selectedContent) {
             var c = app.selectedContent[i];
-            
+
             if(c.type == "level") {
                 traverseLevel(app.levels[c.id]);
             } else if(c.type == "appLayer") {
@@ -441,7 +442,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }, Ext.emptyFn);
         return me.found;
     },
-    
+
     getLevelAppLayerIds: function(level) {
         var appLayers = [];
         if (level) {
@@ -464,7 +465,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *Get the level that is the parent of the appLayer by the given id
      *@param appLayerId the id of the applayer.
      *@return the level that is parent of this applayer or null if not found.
-     */    
+     */
     getAppLayerParent: function(appLayerId){
         //make sure its a string so the compare works.
         appLayerId=""+appLayerId;
@@ -475,14 +476,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     return level;
                 }
             }
-        }        
+        }
         return null;
     },
     /**
      *Get the level that is the parent of the level by the given id
      *@param levelId the id of the level.
      *@return the level that is parent of this level or null if not found.
-     */    
+     */
     getLevelParent: function(levelId){
         //make sure its a string so the compare works.
         levelId=""+levelId;
@@ -493,10 +494,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     return level;
                 }
             }
-        }        
+        }
         return null;
     },
-    
+
     /**
      * Returns a array of documents in the given level and every level above.
      * @param level the level
@@ -516,7 +517,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             Ext.apply(documents,parentDocuments);
         }
         return documents;
-    },    
+    },
 
     /** Remove all layers
      */
@@ -526,7 +527,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      *Initialize layers and levels
-     *@param background true/false/undefined. 
+     *@param background true/false/undefined.
      *True if only the background levels and layers must be initialized, false only the other level and layers must be initialized
      *and undefined if both must be initialized (first background, then foreground)
      */
@@ -545,32 +546,32 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     this.initLevel(content.id,background);
                 }
             }
-        
+
         }
     },
-      
+
     /**
      *Initialize applayers
-     *@param background true/false/undefined. 
+     *@param background true/false/undefined.
      *True if only the background levels and layers must be initialized, false only the other level and layers must be initialized
      *and undefined if both must be initialized (first background, then foreground)
-     */    
+     */
     initAppLayer: function(appLayerId,background) {
         var appLayer = this.app.appLayers[appLayerId];
         if (appLayer.background!=background){
             return;
         }
-        
+
         var layer = this.getOrCreateLayer(appLayer);
-        
+
         if (layer){
             this.mapComponent.getMap().setLayerVisible(layer, appLayer.checked);
         }
     },
-      
+
     /**
      *Initialize layers and levels
-     *@param background true/false/undefined. 
+     *@param background true/false/undefined.
      *True if only the background levels and layers must be initialized, false only the other level and layers must be initialized
      *and undefined if both must be initialized (first background, then foreground)
      */
@@ -584,7 +585,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.initAppLayer(level.layers[i],background);
             }
         }
-        
+
         if(level.children) {
             for (var i = level.children.length - 1 ; i >= 0 ; i--){
                 this.initLevel(level.children[i],background);
@@ -615,7 +616,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.logger.warning("getLayer() old method call is used!");
             }
         }
-        if(this.layers[appLayer.id] == undefined){  
+        if(this.layers[appLayer.id] == undefined){
             if (!this.layersInitialized){
                 this.logger.warning("Layers not initialized! getLayer() caller should wait for the layers to be added!");
             }else{
@@ -632,7 +633,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     getOrCreateLayer: function(appLayer){
         var id = appLayer.id;
-        if(this.layers[id] == undefined){            
+        if(this.layers[id] == undefined){
             this.createLayer(appLayer);
         }
         return this.layers[id];
@@ -650,7 +651,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *@param serviceId the id of the service
      *@param layerName the name of the layer
      *@return the application layer JSON object.
-     *@deprecated the combination serviceId and layerName is not unique. 
+     *@deprecated the combination serviceId and layerName is not unique.
      *Use viewer.viewerController.ViewerController#getAppLayerById
      */
     getAppLayer : function (serviceId, layerName){
@@ -670,38 +671,38 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.logger.warning("viewerController.getAppLayer() with serviceId and LayerName found "+count+
                 " application layers with serviceId: '"+serviceId+"' and layerName: '"+layerName+"' returning the first");
         }
-            
+
         return foundAppLayer;
     },
 
     getAppLayerFeatureService: function(appLayer) {
-        
+
         if(appLayer.featureService == undefined) {
             // XXX appLayer can be custom service or from service registry...
             if(appLayer.added) {
                 var service = this.app.services[appLayer.serviceId];
-                appLayer.featureService = Ext.create("viewer.DirectFeatureService", { 
+                appLayer.featureService = Ext.create("viewer.DirectFeatureService", {
                     appLayer: appLayer,
                     protocol: service.protocol,
                     url: service.url
                 });
             } else {
-                appLayer.featureService = Ext.create("viewer.AppLayerService", { 
+                appLayer.featureService = Ext.create("viewer.AppLayerService", {
                     appId: this.app.id,
                     appLayer: appLayer,
-                    debug: this.isDebug()                    
+                    debug: this.isDebug()
                 });
             }
         }
         return appLayer.featureService;
     },
-    
+
     /**
      * Creates a layer with the given applicationLayer
      * @param appLayer the application layer that is used to create a layer
      * @return the created viewer.viewerController.controller.layer
      */
-    createLayer : function (appLayer){        
+    createLayer : function (appLayer){
         var id = appLayer.id;
         var service = this.app.services[appLayer.serviceId];
         var layer = service.layers[appLayer.layerName];
@@ -718,7 +719,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         var layerObj = null;
-        
+
         try {
             if(service.protocol =="wms" ){
                 var layerUrl = service.url;
@@ -741,7 +742,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
 
                 var layerConfig = { };
-                
+
                 // styling options
                 var style = "registry_default";
                 if(appLayer.details != undefined && appLayer.details.style != undefined) {
@@ -757,7 +758,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 } else if(/^sld:/.test(style)) {
                     var slds = service.styleLibraries != undefined ? service.styleLibraries : {};
                     sld = slds[style];
-                    
+
                     // ArcGIS requires the STYLE parameter for GetMap requests
                     // to name the used UserStyle from the SLD
                     if(service.url.toLowerCase().indexOf("/arcgis/") != -1) {
@@ -767,14 +768,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                             //console.log("Detected ArcGIS WMS service #" + service.id + ", for layer " + layer.name + " using SLD #" + sld.id + " setting STYLE parameter to " + ogcOptions.styles);
                         }
                     }
-                    
+
                     if(sld.extraLegendParameters) {
                         try {
                             layerConfig.extraLegendParameters = Ext.Object.fromQueryString(sld.extraLegendParameters);
                         } catch(e) {
                             this.logger.error("Invalid extra legend parameters for SLD '" + sld.title + "': " + sld.extraLegendParameters + "; error: " + e);
                         }
-                    }                    
+                    }
                 } else if(/^wms:/.test(style)) {
                     ogcOptions.styles = style.substring(4);
                     layerConfig.wmsStyle = ogcOptions.styles;
@@ -793,10 +794,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
 
                 layerObj = this.mapComponent.createWMSLayer(layer.name,layerUrl , ogcOptions, options,this);
-                
+
                 Ext.apply(layerObj.config, layerConfig);
 
-            }else if(service.protocol == "arcims" || service.protocol == "arcgis"){            
+            }else if(service.protocol == "arcims" || service.protocol == "arcgis"){
                 options.layers= layer.name;
                 if(layer.details && layer.details.all_children) {
                     options.layers = layer.details.all_children;
@@ -805,9 +806,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     options.type= "ArcIMS";
                     options.mapservice=service.serviceName;
                     layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,service.url, options,this);
-                }else{                
-                    options.type= "ArcGIS";                
-                    layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);                
+                }else{
+                    options.type= "ArcGIS";
+                    layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);
                 }
             }else if (service.protocol == "tiled"){
                 var res=layer.resolutions.split(",");
@@ -834,7 +835,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 appLayer.layerName,
                 e);
             this.logger.error(msg);
-            
+
             if(this.isDebug()){
                 if(e instanceof Error) {
                     console.log(e);
@@ -842,16 +843,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         console.log(e.stack);
                     }
                 }
-            }            
-            
+            }
+
             return null;
         }
-            
+
         layerObj.serviceId = appLayer.serviceId;
         layerObj.appLayerId = appLayer.id;
         this.layers[id] = layerObj;
-        this.mapComponent.getMap().addLayer(layerObj);  
-        
+        this.mapComponent.getMap().addLayer(layerObj);
+
         return layerObj;
     },
     /**
@@ -880,7 +881,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getServiceLayerById: function (id){
         for (var i in this.app.services){
             var service = this.app.services[i];
-            
+
             for(var j in service.layers){
                 var layer = service.layers[j];
                 if(id == layer.id){
@@ -897,7 +898,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getServiceLayer: function(appLayer){
         return this.app.services[appLayer.serviceId].layers[appLayer.layerName];
     },
-    /** 
+    /**
      * Receives an array with visible map layers ids
      * @return a array of Layer id's (same as appLayerIds) objects
      **/
@@ -929,52 +930,52 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * Compare the min/max scale of the layer with the scale
      * @param appLayer the applayer
      * @param scale (optional) compare with this scale. If ommited, use the current scale of the map
-     * @return 0 if within scale 
+     * @return 0 if within scale
      *        -1 if applayer.maxScale < scale
      *         1 if appLayer.minScale > scale
      */
     compareToScale: function (appLayer,scale){
         //get the serviceLayer
         var serviceLayer=this.getServiceLayer(appLayer);
-        
+
         var minScale=serviceLayer.minScale;
         var maxScale=serviceLayer.maxScale;
-        
-        //fix for Esri Configurations. Sometimes users switch max with min. Make 
+
+        //fix for Esri Configurations. Sometimes users switch max with min. Make
         //the min the minimal scale and max the maximal scale
         if (this.isMinMaxSwitched(minScale, maxScale)){
             minScale=serviceLayer.maxScale;
             maxScale=serviceLayer.minScale;
         }
-        
+
         /* If minScale or maxScale is '0' then ignore that check
          * It's not correct but this is how it's configured in ESRI by most of the users.
          */
         //no min/max scale or 0? Return true;
         if (!minScale && !maxScale){
             return 0;
-        }        
-        
+        }
+
         //if scale empty, get from map
         if (scale==undefined || scale==null){
             scale = this.mapComponent.getMap().getScale();
         }
-        
-        
+
+
         var service=this.app.services[appLayer.serviceId];
         //fix some things with scale and resolution differences in servers:
         var scaleCorrection = this.calculateScaleCorrection(service,minScale,maxScale);
-        scale = scale * scaleCorrection;        
-        
+        scale = scale * scaleCorrection;
+
         if (minScale && scale < minScale){
-            return 1;            
+            return 1;
         }
         if (maxScale && scale > maxScale){
             return -1;
-        }            
-        return 0;      
+        }
+        return 0;
     },
-            
+
     /**
      *  Checks if the min/max scale are switched. Sometimes (esri)users switch max with min.
      *  @param minScale The minimum scale as given in the layer
@@ -1002,9 +1003,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     zoomToLayer: function (appLayer){
         var compare = this.compareToScale(appLayer);
         var serviceLayer=this.getServiceLayer(appLayer);
-        var serviceScaleCorrection = 1;                
-        var service=this.app.services[appLayer.serviceId];        
-        
+        var serviceScaleCorrection = 1;
+        var service=this.app.services[appLayer.serviceId];
+
         //fix some things with scale and resolution differences in servers:
         serviceScaleCorrection = 1 / this.calculateScaleCorrection(service,serviceLayer.minScale,serviceLayer.maxScale);
         var mapResolutions = this.mapComponent.getMap().getResolutions();
@@ -1041,21 +1042,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     /**
      * Fixes the different implementation of scalehint and scaledenominator in services
-     * - ArcGis doesn't give the scale in pixel per unit, calculate the 'ArcGis scale'  
+     * - ArcGis doesn't give the scale in pixel per unit, calculate the 'ArcGis scale'
      * -Geoserver 2.2.3 doesn't return units per pixel (resolution) in the scalehint but the scale.
         Dirty fix. When min/max scale (resolution) is larger then 750 it's propberly a scaledenominator.
-        Then transform the resolution of the map to a scaledenominator      
+        Then transform the resolution of the map to a scaledenominator
         @return {number} The correction needed to go from resolution to scaledenominator.So:
             resolution * returnValue = scaledenominator
      */
      calculateScaleCorrection: function (service,minScale,maxScale){
-        if (service && service.protocol === "arcgis"){            
+        if (service && service.protocol === "arcgis"){
             //scale * (dpi / ratio dpi to dpm)
             return 96/0.0254;
         }
         //Chose arbitrary values 750 minscale and 5000 maxscale
         //return correction for scaledenominator
-        else if (minScale > 750 || 
+        else if (minScale > 750 ||
                 ((minScale === undefined || minScale ===0 )&& maxScale > 5000)){
             return 1/0.00028;
         }
@@ -1077,20 +1078,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return layerObj.getLegendGraphic();
         }
     },
-    
+
     /**
      * Retrieve info about the layer legend and call the success function with
      * that info. Implemented by Layer subclasses. NOTE: the success function
-     * can be called immediately <i>during execution</i> of this function OR at 
+     * can be called immediately <i>during execution</i> of this function OR at
      * a later time.
-     * 
-     * If the layer has no legend, if the protocol is unsupported or if an error 
+     *
+     * If the layer has no legend, if the protocol is unsupported or if an error
      * occurs (this will have been logged) the failure function is called with
      * the appLayer argument.
-     * 
-     * The success function is called with the given appLayer argument and a 
+     *
+     * The success function is called with the given appLayer argument and a
      * Object argument with the following properties:
-     * 
+     *
      * name: optional String, server provided label for the legend of this layer
      * parts: Array of:
      *   label: optional String, label for legend part
@@ -1098,21 +1099,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      *        encoded image by ArcGIS
      */
     getLayerLegendInfo: function(appLayer, success, failure) {
-        
+
         try {
-            
+
             // Check override for appLayer by service admin
             if(appLayer.details != undefined && appLayer.details.legendImageUrl != undefined) {
                 success(appLayer, { parts: [ {url: appLayer.details.legendImageUrl}] });
                 return;
             }
-            
+
             var l = this.getLayer(appLayer);
             if(!l) {
                 failure(appLayer);
                 return;
             }
-            
+
             var serviceLayer = this.getServiceLayer(appLayer);
 
             // check for WMS STYLE
@@ -1122,11 +1123,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var wmsStyle = l.config.wmsStyle;
                 if(serviceLayer.details != undefined && serviceLayer.details['wms.styles']) {
                     var styles = Ext.JSON.decode(serviceLayer.details['wms.styles']);
-                    
+
                     var info = null;
                     Ext.Array.each(styles, function(theStyle) {
                         if(theStyle.name == wmsStyle && theStyle.legendURLs && theStyle.legendURLs.length > 0) {
-                            
+
                             info = { parts: [] };
                             Ext.Array.each(theStyle.legendURLs, function(legendURL) {
                                 info.parts.push( { url: legendURL });
@@ -1139,7 +1140,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                         return;
                     }
                 }
-            } 
+            }
             if(l.config.sld) {
                 if(l.getLegendGraphic) {
                     // l.getLegendGraphic() will create GetLegendGraphic URL
@@ -1148,7 +1149,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     return;
                 }
             }
-            
+
             // Check override by service admin
             if(serviceLayer.details != undefined && serviceLayer.details['alternateLegendImageUrl']) {
                 success(appLayer, { parts: [ {url: serviceLayer.details.alternateLegendImageUrl}] });
@@ -1157,7 +1158,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
             // Use default legend (for WMS, Legend URL from the first, default Style)
              if(serviceLayer.legendImageUrl) {
-                success(appLayer, { 
+                success(appLayer, {
                     parts: [ {
                         url: serviceLayer.legendImageUrl,
                         label: appLayer.alias
@@ -1166,7 +1167,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 });
                 return;
             }
-            
+
             if(l.getLayerLegendInfo) {
                 l.getLayerLegendInfo(
                     function(legendInfo) {
@@ -1180,14 +1181,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.logger.error("Layer class " + l.$className + " does not support getLayerLegendInfo");
                 failure(appLayer);
             }
-        
+
         } catch(e) {
             this.logger.error("Error creating legend info for appLayerId " + appLayer.id + ": " + e);
             failure(appLayer);
-        }        
+        }
     },
-    
-    getLayerMetadata : function (serviceId, layerName){  
+
+    getLayerMetadata : function (serviceId, layerName){
         var layer = this.app.services[serviceId].layers[layerName];
         return layer.details["metadata.stylesheet"];
     },
@@ -1208,16 +1209,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             });
         }
         appLayer.filter.addOrReplace(filter);
-        
+
         var mapLayer = this.getLayer(appLayer);
-        
+
         if (appLayer.relations && appLayer.relations.length > 0 && appLayer.filter && appLayer.filter.getCQL()){
             var me = this;
             var url = Ext.urlAppend(actionBeans["sld"], "transformFilter=t");
             //alert("do reformat filter!!!");
             Ext.create("viewer.SLD",{
                 actionbeanUrl : url
-            }).transformFilter(filter.getCQL(),appLayer.id,
+            }).transformFilter(appLayer.filter.getCQL(),appLayer.id,
                 function(newFilter){
                     //success
                     var cqlBandage = Ext.create("viewer.components.CQLFilterWrapper",{
@@ -1305,7 +1306,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         } else {
             return null;
         }
-    },   
+    },
     /**
      * Get the attributes of the appLayer
      */
@@ -1316,7 +1317,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //if no featureTypeId given, get the one of the application layer.
         if (featureTypeId== undefined || featureTypeId==null){
             var serviceLayer=this.getServiceLayer(appLayer);
-            featureTypeId=serviceLayer.featureTypeId;            
+            featureTypeId=serviceLayer.featureTypeId;
         }
         if (addJoinedAttributes==undefined || addJoinedAttributes==null ){
             addJoinedAttributes=true;
@@ -1324,7 +1325,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var joinedFeatureTypes=[];
         joinedFeatureTypes.push(featureTypeId);
         if (addJoinedAttributes && appLayer.relations){
-             joinedFeatureTypes=joinedFeatureTypes.concat(this.getJoinedFeatureTypes(appLayer.relations,featureTypeId));            
+             joinedFeatureTypes=joinedFeatureTypes.concat(this.getJoinedFeatureTypes(appLayer.relations,featureTypeId));
         }
         var attributes=[];
         for (var i =0; i < appLayer.attributes.length; i++){
@@ -1333,7 +1334,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 attributes.push(attr);
             }
         }
-        
+
         return attributes;
     },
     /**
@@ -1366,7 +1367,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return joinedFeatureTypes;
     },
-            
+
     valuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
@@ -1406,7 +1407,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     me.mapComponent.getMap().zoomToExtent(me.newExtent);
                     me.mapComponent.getMap().removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
                 };
-                this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);   
+                this.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
             }else if (key === "levelOrder"){
                selectedContent=[];
                if(!Ext.isArray(value)){
@@ -1450,11 +1451,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     loadBookmarkLayers : function(values){
         var appLayers = this.app.appLayers;
-        
+
         for ( var i in appLayers){
             var appLayer = appLayers[i];
             var isBookmarked = false;
-            
+
             for(var x = 0 ; x < values.length ; x++){
                 var appLayerId = values[x];
                 if(appLayer.id == appLayerId){
@@ -1462,7 +1463,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     break;
                 }
             }
-            
+
             if(isBookmarked){
                 appLayer.checked = true;
             }else{
@@ -1473,7 +1474,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
     succesReadUrl : function(code){
         var paramJSON = Ext.JSON.decode(code);
-        
+
         var params = new Object();
         for ( var i = 0 ; i < paramJSON["params"].length ; i++){
             var parameter = paramJSON["params"][i];
@@ -1489,7 +1490,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var paramJSON = {
             params:[]
         };
-        
+
         var url = document.URL;
         var index = url.indexOf("?");
         var newUrl = "";
@@ -1499,11 +1500,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             newUrl = url+"?";
         }
         var param = {
-            name: "url", 
+            name: "url",
             value: newUrl
         };
         paramJSON.params.push(param);
-        
+
         if(index > 0){
             var params = url.substring(index +1);
             var parameters = params.split("&");
@@ -1514,13 +1515,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 var value = parameter.substring(index2 +1);
                 if(type != "layers" && type != "extent" && type != "bookmark" && type != "levelOrder"){
                     paramJSON.params.push({
-                        name: type, 
+                        name: type,
                         value: value
                     });
                 }
             }
         }
-        
+
         var visLayers = this.getVisibleLayers();
         for (var i = visLayers.length-1; i >= 0 ; i--){
             var appLayer = this.getAppLayerById(visLayers[i]);
@@ -1531,28 +1532,28 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         if(visLayers.length != 0 ){
             paramJSON.params.push({
-                name: "layers", 
+                name: "layers",
                 value: visLayers
             });
         }
-        
-        var extent = this.mapComponent.getMap().getExtent();       
+
+        var extent = this.mapComponent.getMap().getExtent();
         paramJSON.params.push({
-            name: "extent", 
+            name: "extent",
             value: extent
         });
-        
+
         var levelOrder = [];
         for (var i=0; i < this.app.selectedContent.length; i++){
             var levelId = this.app.selectedContent[i].id;
             levelOrder.push(levelId);
         }
-        
+
         paramJSON.params.push({
             name: "levelOrder",
             value: levelOrder
         });
-        
+
         paramJSON.params.push({
             name: "selectedContent",
             value: this.app.selectedContent
@@ -1571,14 +1572,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     /**
      * Gets the layout height for a layout container
      * @param layoutid the id that represents the container for example: 'top_menu'
-     * @returns a number 
+     * @returns a number
      */
     getLayoutHeight: function(layoutid){
         var height=-1;
         var layoutObject=this.getLayout(layoutid);
         if (layoutObject &&
             layoutObject.height){
-            height=layoutObject.height;                
+            height=layoutObject.height;
         }
         return height;
     },
@@ -1594,7 +1595,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return null;
     },
-    
+
     getTopMenuHeightInPixels: function (){
         var topMenuLayout=this.getLayout('top_menu');
         var top = Number(topMenuLayout.height && topMenuLayout.height>=0 ? topMenuLayout.height : 0);
@@ -1605,8 +1606,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return top;
     },
       /**
-       * Entrypoint for updating the components. 
-       * @param Boolean informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will 
+       * Entrypoint for updating the components.
+       * @param Boolean informLayoutmanager If true, than the layoutmanager will be called. Not set of false, will not inform the layoutmanager (and thus the map will
        * not be updated). Used to prevent endless calling of functions
        *  @returns {boolean} Always true
        */

@@ -22,6 +22,9 @@ Ext.onReady(function(){
     if(showHelp()){
         createHelpTab();
     }
+    if(showConfigureHeight()) {
+        createHeightLayoutTab();
+    }
     if(metadata.configSource != undefined) {
         customConfiguration= new Ext.create("viewer.components.CustomConfiguration","config", configObject);
     } else {
@@ -225,6 +228,35 @@ function createLayoutTab(){
     }
 }
 
+function createHeightLayoutTab() {
+    var compHeight = '';
+    if(configObject && configObject.hasOwnProperty('componentHeight')) {
+        compHeight = configObject.componentHeight;
+    }
+    var componentLayoutForm = new Ext.form.FormPanel({
+        frame: false,
+        width: 480,
+        border: 0,
+        items: [{
+            xtype:'fieldset',
+            columnWidth: 0.5,
+            title: 'Component afmetingen',
+            collapsible: false,
+            defaultType: 'textfield',
+            layout: 'anchor',
+            items:[{
+                xtype: 'numberfield',
+                fieldLabel: 'Hoogte (px)',
+                id: "componentHeight",
+                name: 'componentHeight',
+                value: compHeight,
+                labelWidth:100
+            }]
+        }],
+        renderTo: "component-layout"
+    }); 
+}
+
 function toggleXY(show){
     if(show){
         Ext.getCmp('x').show();
@@ -292,6 +324,12 @@ function continueSave(config){
             config['showHelpButton'] = showHelpButton.getValue() ? "true" : "false";
         }
     }
+    if(showConfigureHeight()) {
+        var heightConfig = Ext.getCmp('componentHeight');
+        if(heightConfig && heightConfig.getValue() !== '') {
+            config['componentHeight'] = parseInt(heightConfig.getValue(), 10);
+        }
+    }
     var configFormObject = Ext.get("configObject");
     configFormObject.dom.value = JSON.stringify(config);
     document.getElementById('configForm').submit();
@@ -302,6 +340,21 @@ function showHelp() {
         return true;
     }
     return false;
+}
+
+function showConfigureHeight() {
+    var showComponentHeight = false,
+        heightRegions = ["leftmargin_top", "leftmargin_bottom", "rightmargin_top", "rightmargin_bottom"];
+    if(metadata.hasOwnProperty('restrictions')) {
+        for(x in metadata.restrictions) {
+            for(y in heightRegions) {
+                if(metadata.restrictions[x] === heightRegions[y]) {
+                    showComponentHeight = true;
+                }
+            }
+        }
+    }
+    return showComponentHeight;
 }
 
 Ext.onReady(function() {
@@ -317,6 +370,12 @@ Ext.onReady(function() {
     if(metadata.type != undefined && metadata.type == "popup"){
         tabs.push({
             contentEl:'layout', 
+            title: 'Layout'
+        });
+    }
+    if(showConfigureHeight()){
+        tabs.push({
+            contentEl:'component-layout', 
             title: 'Layout'
         });
     }

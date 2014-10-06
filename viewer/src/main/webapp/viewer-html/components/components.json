@@ -842,6 +842,16 @@
         }
     },
     {
+        className: "viewer.components.SimpleFilter",
+        name: "Simpel filter",
+        shortName: "SF",
+        closureCompilerSafe: true,
+        restrictions: ["leftmargin_top","leftmargin_bottom","rightmargin_top","rightmargin_bottom"],
+        sources: ["SimpleFilter.js","SimpleFilterFilters.js"],
+        singleton: false,
+        configSource: ["ConfigObject.js","SimpleFilter-filters-config.js","SimpleFilter-config.js"]
+    },
+    {
         className: "viewer.components.Graph",
         name: "Graph",
         shortName: "Gr",

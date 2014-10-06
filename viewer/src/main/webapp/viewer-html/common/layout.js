@@ -38,9 +38,14 @@ Ext.define('viewer.LayoutManager', {
     autoRender: true,
     tabComponents: {},
     popupWin: null,
+    // container for all floating panels
+    floatingPanels: [],
+    // components configuration
+    componentsConfig: null,
     
-    constructor: function(config) {
+    constructor: function(config, componentsConfig) {
         Ext.apply(this, config || {});
+        this.componentsConfig = componentsConfig;
         if(this.autoRender) {
             this.createLayout();
         }
@@ -126,6 +131,18 @@ Ext.define('viewer.LayoutManager', {
                     layout.flex = 1;
                     layout.height = '100%';
                 }
+
+                if(regionlayout && regionlayout.hasOwnProperty('enableFloating') && regionlayout.enableFloating) {
+                    // Region is set to floating, calculate the height of the components in the centerItem
+                    var centerComponentsHeight = this.getComponentsHeight(me.filterComponentList(centerItem.regionConfig.components));
+                    // If height is set for all components centerComponentsHeight will be set
+                    if(centerComponentsHeight) {
+                        // Add the height of the subregions to compute total height
+                        layout.height = centerComponentsHeight + me.getSubRegionsHeight(items);
+                    }
+                    // Create and return the floating panel
+                    return me.createFloatingPanel(regionlayout, centerItem.regionDefaultConfig.region, items, layout, extLayout);
+                }
                 layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, centerItem.regionDefaultConfig.columnOrientation));
                 return Ext.apply({
                     xtype: 'container',
@@ -136,7 +153,8 @@ Ext.define('viewer.LayoutManager', {
             }
         } else {
             regionlayout = regionitems[0].regionConfig.layout;
-            var componentItems = me.createComponents(me.filterComponentList(regionitems[0].regionConfig.components), regionitems[0].regionDefaultConfig, regionlayout,regionitems[0].name);
+            var componentsList = me.filterComponentList(regionitems[0].regionConfig.components);
+            var componentItems = me.createComponents(componentsList, regionitems[0].regionDefaultConfig, regionlayout,regionitems[0].name);
             componentItems = me.getRegionContent(componentItems, regionlayout);
             if(regionitems[0].regionDefaultConfig.region != "none" && regionitems[0].regionDefaultConfig.region != "popupwindow") {
                 layout = regionitems[0].regionDefaultConfig.defaultLayout;
@@ -164,6 +182,14 @@ Ext.define('viewer.LayoutManager', {
                         backgroundColor: regionlayout.bgcolor
                     };
                 }
+                
+                if(regionlayout && regionlayout.hasOwnProperty('enableFloating') && regionlayout.enableFloating) {
+                    // Region is set to floating, calculate the height of the components in the centerItem
+                    layout.height = this.getComponentsHeight(componentsList);
+                    // Create and return the floating panel
+                    return me.createFloatingPanel(regionlayout, regionitems[0].regionDefaultConfig.region, componentItems, layout, extLayout);
+                }
+                
                 layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, regionitems[0].regionDefaultConfig.columnOrientation));
                 return Ext.apply({
                     xtype: 'container',
@@ -230,6 +256,60 @@ Ext.define('viewer.LayoutManager', {
                 me.popupWin = Ext.create('viewer.components.ScreenPopup', popupWindowConfig);
             }
         }
+        return {};
+    },
+    
+    /**
+     * Helper function to compute the height of subregions
+     * This will be the total of the heights set in the viewer-admin layoutmanager
+     * or the default heights
+     */
+    getSubRegionsHeight: function(regions) {
+        var totalHeight = 0;
+        Ext.Array.each(regions, function(item, region) {
+            if(region !== 'center') {
+                if(item.height) totalHeight += item.height;
+            };
+        });
+        return totalHeight;
+    },
+    
+    /**
+     * Create a floating panel. Returns an empty object so the Layout manager will
+     * skip rendering (since it is rendered directly)
+     * 
+     * @param regionLayout      The layout config object for the panel
+     * @param region            The border-layout region. Used for aligning panel left or right
+     * @param componentItems    The items which will be placed inside the panel
+     * @param layout            The layout (width and height) from the layoutmanager
+     * @param extLayout         The Ext.Layout type (vbox or hbox)
+     */
+    createFloatingPanel: function(regionLayout, region, componentItems, layout, extLayout) {
+        // Determine alignment based on region
+        var alignment = (region === 'west' ? 'left' : 'right');
+        // Create a window to act as floating panel
+        var popupWindow = Ext.create('Ext.window.Window', {
+            title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
+            autoShow: true,
+            closable: false,
+            width: layout.width,
+            height: layout.height ? (layout.height + 12) : '90%', // we are adding 12 px to account for borders and margins of the window
+            resizable: false,
+            draggable: false,
+            layout: extLayout,
+            modal: false,
+            renderTo: Ext.getBody(),
+            autoScroll: true,
+            items: componentItems
+        });
+        // Align the floating panel to the left or right of the screen
+        this.alignFloatingPanel(popupWindow, alignment);
+        // Save panels in store so they can be re-aligned when resizing the screen
+        this.floatingPanels.push({
+            window: popupWindow,
+            alignment: alignment
+        });
+        // Return empty object
         return {};
     },
     
@@ -339,6 +419,27 @@ Ext.define('viewer.LayoutManager', {
         return centerItem;
     },
 
+    /**
+     * Compute the total height of components in a region. Used for floating panels.
+     * It is required that a height for all components is set otherwise the floating
+     * panel will have a default height.
+     * When not all heights are set this will return 0
+     */
+    getComponentsHeight: function(components) {
+        var setComponents = 0, totalHeight = 0, me = this;
+        Ext.Array.each(components, function(component) {
+            if(
+                me.componentsConfig.hasOwnProperty(component.name) &&
+                me.componentsConfig[component.name].hasOwnProperty('config') &&
+                me.componentsConfig[component.name].config.hasOwnProperty('componentHeight')
+            ) {
+                totalHeight += parseInt(me.componentsConfig[component.name].config.componentHeight, 10);
+                setComponents++;
+            }
+        });
+        return (setComponents === components.length ? totalHeight : 0);
+    },
+
     createComponents: function(components, regionDefaultConfig, regionlayout,regionName) {
         var componentItems = [];
         var cmpId = null;
@@ -364,6 +465,11 @@ Ext.define('viewer.LayoutManager', {
                     }
                 }
                 compFlex = 1;
+                // If a height is set in the viewer admin then the component will have a fixed height, otherwise flex
+                if(me.componentsConfig.hasOwnProperty(component.name) && me.componentsConfig[component.name].config.hasOwnProperty('componentHeight')) {
+                    compFlex = 0;
+                    compStyle.height = parseInt(me.componentsConfig[component.name].config.componentHeight, 10) + 'px';
+                }
             }
             var cmpView = {
                 xtype: 'container',
@@ -508,6 +614,10 @@ Ext.define('viewer.LayoutManager', {
         this.popupWin.hide();
     },
 
+    alignFloatingPanel: function(panel, alignment) {
+        panel.alignTo(Ext.getBody(), (alignment === 'left' ? 'tl-tl' : 'tr-tr'), (alignment === 'left' ? [10, 10] : [-10, 10]));
+    },
+
     resizeLayout: function(continueFunction) {
         var me = this;
         if(Ext.isWebKit) {
@@ -515,6 +625,10 @@ Ext.define('viewer.LayoutManager', {
             me.mainLayoutContainer.setHeight(me.getContainerheight());
         }
         me.mainLayoutContainer.doLayout();
+        // Re-align floating panels so they do not fall off-screen
+        Ext.Array.each(me.floatingPanels, function(panel) {
+            me.alignFloatingPanel(panel.window, panel.alignment);
+        });
         setTimeout(function(){
             if(continueFunction != undefined){
                 continueFunction();
