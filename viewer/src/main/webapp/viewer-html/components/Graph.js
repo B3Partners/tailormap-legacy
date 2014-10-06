@@ -197,6 +197,7 @@ Ext.define("viewer.components.Graph", {
                     json.linkedData = linked;
                     break;
                 }
+                break;
             }
         }
     },
