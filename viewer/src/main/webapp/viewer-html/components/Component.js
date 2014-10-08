@@ -79,6 +79,14 @@ Ext.define("viewer.components.Component",{
             return this.config.div;
         }
     },
+    
+    getContentContainer: function() {
+        if(this.config.isPopup) {
+            return this.popup.getContainer();
+        }
+        return this.config.div;
+    },
+    
     /**
      * Renders a button in the div (holder)
      * if a titlebarIcon is set, its used to generate in the button. Otherwise the title or name.
@@ -369,7 +377,7 @@ Ext.define("viewer.components.Component",{
             var extComponents = me.getExtComponents();
             for(var i = 0; i < extComponents.length; i++) {
                 var comp = Ext.getCmp(extComponents[i]);
-                if(comp!=undefined && comp != null) {
+                if(comp !== undefined && comp !== null) {
                     if(comp.updateLayout) comp.updateLayout();
                     // else if(comp.updateLayout) comp.updateLayout();
                     // else if(comp.forceComponentLayout) comp.forceComponentLayout();

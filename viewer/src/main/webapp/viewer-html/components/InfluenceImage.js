@@ -83,7 +83,7 @@ Ext.define ("viewer.components.InfluenceImage",{
      * @param bbox the bbox for this image (as new viewer.viewercontroller.controller.Extent)
      */
     addImage: function(imageUrl,bbox){                
-        if (this.imageLayer==null){
+        if (!this.imageLayer){
             this.imageLayer = this.config.viewerController.mapComponent.createImageLayer(this.name + "ImageLayer", imageUrl, bbox);
             this.config.viewerController.mapComponent.getMap().addLayer(this.imageLayer);
         }else{            

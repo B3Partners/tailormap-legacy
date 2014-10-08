@@ -39,6 +39,7 @@ Ext.define('Doc', {
 Ext.define ("viewer.components.Search",{
     extend: "viewer.components.Component",
     form: null,
+    mainContainer: null,
     searchResult: null,
     results: null,
     margin: "0 5 0 0",
@@ -61,7 +62,8 @@ Ext.define ("viewer.components.Search",{
         //not yet configurable:
         showRemovePin: true
     },    
-    constructor: function (conf){            
+    constructor: function (conf){
+        conf.details.useExtLayout = true;
         viewer.components.Search.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         this.renderButton(); 
@@ -87,10 +89,10 @@ Ext.define ("viewer.components.Search",{
     renderButton: function() {
         var me = this;
         viewer.components.Search.superclass.renderButton.call(this,{
-            text: me.title,
-            icon: me.iconUrl,
-            tooltip: me.tooltip,
-            label: me.label,
+            text: me.config.title,
+            icon: me.config.iconUrl,
+            tooltip: me.config.tooltip,
+            label: me.config.label,
             handler: function() {
                 me.popup.show();
             }
@@ -100,7 +102,7 @@ Ext.define ("viewer.components.Search",{
         var me = this;
         this.form = Ext.create("Ext.form.Panel",{
             frame: false,
-            height: this.formHeight || this.defaultFormHeight,
+            height: this.config.formHeight || this.defaultFormHeight,
             items: this.getFormItems(),
             border: 0,
             style: { 
@@ -110,7 +112,7 @@ Ext.define ("viewer.components.Search",{
         this.resultPanelId = Ext.id();
 
         var options = {
-            id: this.name + 'Container',
+            itemId: this.name + 'Container',
             width: '100%',
             height: '100%',
             layout: {
@@ -120,9 +122,8 @@ Ext.define ("viewer.components.Search",{
             style: {
                 backgroundColor: 'White'
             },
-            renderTo: this.getContentDiv(),
             items: [ this.form, {
-                id: this.name + 'ContentPanel',
+                itemId: this.name + 'ContentPanel',
                 xtype: "container",
                 autoScroll: true,
                 // width: '100%',
@@ -130,12 +131,13 @@ Ext.define ("viewer.components.Search",{
                 html: '<div id="' + me.resultPanelId + '" style="width: 100%; height: 100%; padding: 0px 10px 0px 10px;"></div>'
             }]
         };
-        if(!this.isPopup) {
+        if(!this.config.isPopup) {
             options.title = this.config.title;
             options.bodyPadding = '10 0 10 0';
+            options.renderTo = this.getContentDiv();
         } else {
             options.items.push({
-                id: this.name + 'ClosingPanel',
+                itemId: this.name + 'ClosingPanel',
                 xtype: "container",
                 width: '100%',
                 height: MobileManager.isMobile() ? 45 : 25,
@@ -154,8 +156,11 @@ Ext.define ("viewer.components.Search",{
                 ]
             });
         }
-        this.mainContainer = Ext.create(this.isPopup ? 'Ext.container.Container' : 'Ext.panel.Panel', options);
-        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
+        this.mainContainer = Ext.create(this.config.isPopup ? 'Ext.container.Container' : 'Ext.panel.Panel', options);
+        if(this.config.isPopup) {
+            this.popup.getContentContainer().add(this.mainContainer);
+        }
+        this.form.query("#cancel"+ this.name)[0].setVisible(false);
     },
     getFormItems: function(){
         var me = this;
@@ -175,7 +180,8 @@ Ext.define ("viewer.components.Search",{
                 margin:"0 5 5 0 ",
                 anchor: '100%',
                 emptyText: 'Maak uw keuze',
-                id: 'searchName' + this.name,
+                name: 'searchName' + this.name,
+                itemId: 'searchName' + this.name,
                 listeners: {
                     change: {
                         fn: function(combo, newValue) {
@@ -185,7 +191,7 @@ Ext.define ("viewer.components.Search",{
                     }
                 }
             });
-            itemList.push(this.searchName );
+            itemList.push(this.searchName);
             if (this.searchconfigs.length> 0){
                 var queryMode = 'local';
                 var extraParams = {};
@@ -221,7 +227,7 @@ Ext.define ("viewer.components.Search",{
                     autoSelect:false,
                     displayField: "label",
                     queryMode: queryMode,
-                    id: 'searchfield' + this.name,
+                    itemId: 'searchfield' + this.name,
                     minChars: 2,
                     listConfig:{
                         listeners:{
@@ -296,7 +302,7 @@ Ext.define ("viewer.components.Search",{
             margin: this.margin,
             componentCls: 'mobileLarge',
             name: 'cancel',
-            id: 'cancel'+ this.name,
+            itemId: 'cancel'+ this.name,
             listeners: {
                 click:{
                     scope: this,
@@ -311,7 +317,7 @@ Ext.define ("viewer.components.Search",{
             margin: this.margin,
             componentCls: 'mobileLarge',
             name: 'removePin',
-            id: 'removePin'+ this.name,
+            itemId: 'removePin'+ this.name,
             hidden: true,
             listeners: {
                 click: {
@@ -338,17 +344,17 @@ Ext.define ("viewer.components.Search",{
             this.results.destroy();
         }
         this.searchField.getPicker().hide();
-        var searchText = Ext.getCmp( "searchfield" + this.name).getValue();
+        var searchText = Ext.ComponentQuery.query( "#searchfield" + this.name)[0].getValue();
         var searchName = '';
         if(this.searchconfigs.length === 1){
             searchName = this.searchconfigs[0].id;
         }else{
-            searchName = this.form.getChildByElement("searchName" + this.name).getValue();
+            searchName = this.form.query("#searchName" + this.name)[0].getValue();
         }
         
         if(searchName !== null && searchText !== ""){
-            this.executeSearch(searchText, searchName)
-            this.form.getChildByElement("cancel"+ this.name).setVisible(true);
+            this.executeSearch(searchText, searchName);
+            this.form.query("#cancel"+ this.name)[0].setVisible(true);
         } else {
             Ext.MessageBox.alert("Foutmelding", "Alle velden dienen ingevuld te worden.");
             // search request is not complete
@@ -384,7 +390,7 @@ Ext.define ("viewer.components.Search",{
             requestParams["searchRequestId"]= this.searchRequestId;
             this.getExtraRequestParams(requestParams,searchName);
             var me = this;
-            Ext.getCmp(this.name + 'ContentPanel').setLoading({
+            Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0].setLoading({
                 msg: 'Bezig met zoeken'
             });
             Ext.Ajax.request({
@@ -402,12 +408,12 @@ Ext.define ("viewer.components.Search",{
                             me.results.setTitle(me.results.title + " (Maximum bereikt. Verfijn zoekopdracht)");
                         }
                     }
-                    Ext.getCmp(me.name + 'ContentPanel').setLoading(false);
+                    Ext.ComponentQuery.query('#' + me.name + 'ContentPanel')[0].setLoading(false);
                 },
                 failure: function(result, request) {
                     var response = Ext.JSON.decode(result.responseText);
                     Ext.MessageBox.alert("Foutmelding", response.error);
-                    Ext.getCmp(me.name + 'ContentPanel').setLoading(false);
+                    Ext.ComponentQuery.query('#' + me.name + 'ContentPanel')[0].setLoading(false);
                 }
             });
         }
@@ -422,7 +428,7 @@ Ext.define ("viewer.components.Search",{
             html = "<div style=\"padding: 10px;\">Er zijn geen resultaten gevonden.</div>";
         }
         var me = this;
-        this.form.getChildByElement("cancel"+ this.name).setVisible(false);
+        this.form.query("#cancel"+ this.name)[0].setVisible(false);
         var panelList = [{
                 xtype: 'panel', // << fake hidden panel
                 hidden: true,
@@ -476,7 +482,7 @@ Ext.define ("viewer.components.Search",{
         if(this.searchResult && this.searchResult.length === 1){
             this.handleSearchResult(this.searchResult[0]);
         }else{
-            if(this.isPopup) {
+            if(this.config.isPopup) {
                 this.popup.show();
             }
         }
@@ -497,12 +503,12 @@ Ext.define ("viewer.components.Search",{
             xtype: 'button',
             componentCls: 'searchResultButton',
             tooltip: 'Zoom naar locatie',
-            id: "searchButton_" + index,
+            itemId: "searchButton_" + index,
             listeners: {
                 click: {
                     scope: me,
                     fn: function(button, e, eOpts) {
-                        var config = this.searchResult[button.id.split("_")[1]];
+                        var config = this.searchResult[button.itemId.split("_")[1]];
                         me.handleSearchResult(config);
                     }
                 }
@@ -515,13 +521,13 @@ Ext.define ("viewer.components.Search",{
         if (this.searchName) {
             this.searchName.setValue("");
         }
-        Ext.getCmp(this.name + 'ContentPanel').setLoading(false);
-        this.form.getChildByElement("cancel" + this.name).setVisible(false);
+        Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0].setLoading(false);
+        this.form.query("#cancel" + this.name)[0].setVisible(false);
         this.results.destroy();
     },
     removePin: function(){
         this.config.viewerController.mapComponent.getMap().removeMarker("searchmarker");
-        this.form.getChildByElement("removePin"+ this.name).setVisible(false);
+        this.form.query("#removePin"+ this.name)[0].setVisible(false);
     },
     handleSearchResult : function(result){
 
@@ -569,11 +575,11 @@ Ext.define ("viewer.components.Search",{
             }
         }
         
-        if(this.isPopup) {
+        if(this.config.isPopup) {
             this.hideWindow();
         }
-        if (this.showRemovePin){
-            this.form.getChildByElement("removePin"+ this.name).setVisible(true);
+        if (this.config.showRemovePin){
+            this.form.query("#removePin"+ this.name)[0].setVisible(true);
         }
     },
     getExtComponents: function() {
@@ -669,7 +675,7 @@ Ext.define ("viewer.components.Search",{
 
         this.searchResult = this.searchResult.concat(results);
         this.showSearchResults();
-        Ext.getCmp(this.name + 'ContentPanel').setLoading(false);
+        Ext.ComponentQuery.query('#' + this.name + 'ContentPanel')[0].setLoading(false);
     },
     loadVariables: function(param){
         var searchConfigId = param.substring(0,param.indexOf(":"));

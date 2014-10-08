@@ -195,14 +195,18 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
             }],
             listeners: {
-                beforeexpand: function(){
-                    Ext.Array.each(me.panel.items.items, function(item) {
-                        item.collapse();
+                beforeexpand: function(expandItem){
+                    Ext.Array.each(me.panel.query('> panel'), function(item) {
+                        if(item.itemId !== expandItem.itemId) {
+                            item.collapse();
+                        }
                     });
                 },
                 expand: function() {
-                    me.showExtraconfig(me.getType(config.id), config.id);
-                }
+                    setTimeout(function() {
+                        me.showExtraconfig(me.getType(config.id), config.id);
+                    }, 0);
+                },
             }
         };
         return searchField;

@@ -97,7 +97,7 @@ Ext.define ("viewer.components.AttributeFilter",{
 			items.push(this.value);
 
 			this.container =  Ext.create("Ext.container.Container",{
-				id:"attributeFilter-"+this.config.id+"-"+this.config.number,
+				// id:"attributeFilter-"+this.config.id+"-"+this.config.number,
 				layout: {
 					type: 'hbox',
                                         align: 'stretch'

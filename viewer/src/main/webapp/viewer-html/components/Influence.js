@@ -50,7 +50,7 @@ Ext.define ("viewer.components.Influence",{
         viewer.components.Influence.superclass.constructor.call(this, conf);
         var me = this;
         
-        this.removeButton=this.form.getChildByElement(this.name+"_remove")
+        this.removeButton = this.form.query('#' + this.name+"_remove")[0];
         this.removeButton.setVisible(false);
         
         this.toolMapClick = this.config.viewerController.mapComponent.createTool({
@@ -77,7 +77,7 @@ Ext.define ("viewer.components.Influence",{
             layers: this.config.layers
         };
         this.layerSelector = Ext.create("viewer.components.LayerSelector",config);
-        Ext.getCmp(this.name + 'LayerSelectorPanel').add(this.layerSelector.combobox);
+        Ext.ComponentQuery.query('#' + this.name + 'LayerSelectorPanel')[0].add(this.layerSelector.combobox);
         return this;
     },
     /**
@@ -89,7 +89,7 @@ Ext.define ("viewer.components.Influence",{
         //the items that must be placed before the search items.
         var formItemsBefore = new Array();
         formItemsBefore.push({
-            id: this.name + 'LayerSelectorPanel',
+            itemId: this.name + 'LayerSelectorPanel',
             xtype: "container",
             width: '100%',
             height: 30,
@@ -131,7 +131,7 @@ Ext.define ("viewer.components.Influence",{
                     fn: this.removeInfluence
                 }
             },
-            id: this.name+"_remove"
+            itemId: this.name+"_remove"
         });
         
         return itemList;

@@ -32,7 +32,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             changeablePosition:true,
             changeableSize:true,
             items:null,
-            position : 'center'
+            position : 'center',
+            useExtLayout: false
         }
     },
     component: null,
@@ -69,10 +70,12 @@ Ext.define ("viewer.components.ScreenPopup",{
             this.currentOrientation = MobileManager.getOrientation();
         }
 		
-        if(this.config.details.items){
+        if(this.config.details && this.config.details.items){
             config.items = this.config.details.items;
             config.bodyStyle= { background: '#fff'};
-        }else{
+        }else if(this.config.details && this.config.details.useExtLayout) {
+            config.bodyStyle= { background: '#fff'};
+        } else {
             var con = document.createElement('div');
             con.style.height=  "100%";
             con.style["background"] = "#FFFFFF";
@@ -140,6 +143,9 @@ Ext.define ("viewer.components.ScreenPopup",{
     },
     getContentId : function (){
         return this.popupWin.contentEl.id;
+    },
+    getContentContainer: function() {
+        return this.popupWin;
     },
     show : function(){
         this.popupWin.show();
