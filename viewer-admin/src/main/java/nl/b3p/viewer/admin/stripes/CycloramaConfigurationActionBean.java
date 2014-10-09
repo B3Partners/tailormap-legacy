@@ -39,6 +39,7 @@ import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.CycloramaAccount;
@@ -127,19 +128,15 @@ public class CycloramaConfigurationActionBean implements ActionBean {
                 String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), account.getPassword());
                 account.setPrivateBase64Key(privateBase64Key);
                 account.setFilename(key.getFileName());
+                key.delete();
             }
             EntityManager em = Stripersist.getEntityManager();
             em.persist(account);
             em.getTransaction().commit();
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
+            context.getValidationErrors().add("Key", new SimpleError("Something is wrong with the key"));
             log.error("Something went wrong with reading the key",ex);
-        } catch (NoSuchAlgorithmException ex) {
-            log.error("Cannot process keyfile", ex);
-        } catch (CertificateException ex) {
-            log.error("Something is wrong with the certificate",ex);
-        } catch (UnrecoverableKeyException ex) {
-            log.error("Cannot process keyfile", ex);
         }
         return view();
     }

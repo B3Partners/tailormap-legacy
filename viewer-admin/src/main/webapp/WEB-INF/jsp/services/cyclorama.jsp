@@ -26,7 +26,7 @@
                 <stripes:messages/>
             </p>
             <stripes:select name="account" onchange="changeSelection(this)">
-                <stripes:option value="-1" label=" -- Kies een key -- "/>
+                <stripes:option value="-1" label=" -- Nieuwe key -- "/>
                 <stripes:options-collection collection="${actionBean.accounts}" label="filename" value="id"/>
             </stripes:select>
 
@@ -53,11 +53,8 @@
             var activelink = 'menu_cyclorama';
 
             function changeSelection(obj){
-                if(parseInt(obj.value) !== -1){
-                    var url = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean"/>';
-                    window.location = url + "?account="+obj.value;
-                }
-
+                var url = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean"/>';
+                window.location = url + "?account="+obj.value;
             }
         </script>
     </stripes:layout-component>
