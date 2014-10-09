@@ -26,9 +26,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
@@ -36,7 +37,12 @@ import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.StrictBinding;
+import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.CycloramaAccount;
+import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,6 +53,9 @@ import sun.security.rsa.RSAPrivateCrtKeyImpl;
  *
  * @author Meine Toonen
  */
+@UrlBinding("/action/cyclorama/{$event}")
+@StrictBinding
+@RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class CycloramaConfigurationActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CycloramaConfigurationActionBean.class);
 
@@ -56,9 +65,16 @@ public class CycloramaConfigurationActionBean implements ActionBean {
     private ActionBeanContext context;
     private final String JSP = "/WEB-INF/jsp/services/cyclorama.jsp";
 
-    private String username;
-    private String password;
+    @Validate
     private FileBean key;
+    private List<CycloramaAccount> accounts = new ArrayList<CycloramaAccount>();
+
+    @Validate
+    @ValidateNestedProperties({
+        @Validate(field = "username"),
+        @Validate(field = "password")
+    })
+    private CycloramaAccount account;
 
     // <editor-fold desc="Getters and setters" defaultstate="collapsed">
     @Override
@@ -71,22 +87,6 @@ public class CycloramaConfigurationActionBean implements ActionBean {
         return context;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public FileBean getKey() {
         return key;
     }
@@ -95,19 +95,37 @@ public class CycloramaConfigurationActionBean implements ActionBean {
         this.key = key;
     }
 
+    public List<CycloramaAccount> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<CycloramaAccount> accounts) {
+        this.accounts = accounts;
+    }
+
+    public CycloramaAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(CycloramaAccount account) {
+        this.account = account;
+    }
+
     // </editor-fold>
+
     @DefaultHandler
     public Resolution view() {
+        EntityManager em = Stripersist.getEntityManager();
+        accounts = em.createQuery("FROM CycloramaAccount", CycloramaAccount.class).getResultList();
+
         return new ForwardResolution(JSP);
     }
 
     public Resolution save() throws KeyStoreException {
         try {
-            String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), password);
+            String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), account.getPassword());
             CycloramaAccount account = new CycloramaAccount();
             account.setFilename(key.getFileName());
-            account.setUsername(username);
-            account.setPassword(password);
             account.setPrivateBase64Key(privateBase64Key);
             EntityManager em = Stripersist.getEntityManager();
             em.persist(account);
