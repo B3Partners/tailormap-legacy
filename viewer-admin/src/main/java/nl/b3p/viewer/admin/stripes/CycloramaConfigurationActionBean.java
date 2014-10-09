@@ -18,6 +18,8 @@ package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.DefaultHandler;
+import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
 
@@ -30,6 +32,10 @@ public class CycloramaConfigurationActionBean implements ActionBean{
     private ActionBeanContext context;
     private final String JSP = "/WEB-INF/jsp/services/cyclorama.jsp";
 
+    private String username;
+    private String password;
+    private FileBean key;
+
     // <editor-fold desc="Getters and setters" defaultstate="collapsed">
     @Override
     public void setContext(ActionBeanContext abc) {
@@ -41,9 +47,41 @@ public class CycloramaConfigurationActionBean implements ActionBean{
         return context;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public FileBean getKey() {
+        return key;
+    }
+
+    public void setKey(FileBean key) {
+        this.key = key;
+    }
+
     // </editor-fold>
 
+    @DefaultHandler
     public Resolution view(){
         return new ForwardResolution(JSP);
     }
+
+    public Resolution save(){
+
+        return new ForwardResolution(JSP);
+    }
+
+
 }

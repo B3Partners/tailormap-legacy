@@ -44,5 +44,8 @@
                 </table>
             </stripes:form>
         </div>
+            <script type="text/javascript">
+          var activelink = 'menu_cyclorama';
+            </script>
     </stripes:layout-component>
 </stripes:layout-render>
