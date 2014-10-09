@@ -53,7 +53,7 @@
             var activelink = 'menu_cyclorama';
 
             function changeSelection(obj){
-                if(obj.value !== -1){
+                if(parseInt(obj.value) !== -1){
                     var url = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean"/>';
                     window.location = url + "?account="+obj.value;
                 }

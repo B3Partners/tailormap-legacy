@@ -123,10 +123,11 @@ public class CycloramaConfigurationActionBean implements ActionBean {
 
     public Resolution save() throws KeyStoreException {
         try {
-            String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), account.getPassword());
-            CycloramaAccount account = new CycloramaAccount();
-            account.setFilename(key.getFileName());
-            account.setPrivateBase64Key(privateBase64Key);
+            if (account.getPrivateBase64Key() == null) {
+                String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), account.getPassword());
+                account.setPrivateBase64Key(privateBase64Key);
+                account.setFilename(key.getFileName());
+            }
             EntityManager em = Stripersist.getEntityManager();
             em.persist(account);
             em.getTransaction().commit();
@@ -140,7 +141,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
         } catch (UnrecoverableKeyException ex) {
             log.error("Cannot process keyfile", ex);
         }
-        return new ForwardResolution(JSP);
+        return view();
     }
 
     private String getBase64EncodedPrivateKeyFromPfxUpload(InputStream in, String password)
