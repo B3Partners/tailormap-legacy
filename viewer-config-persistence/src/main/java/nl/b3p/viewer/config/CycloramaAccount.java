@@ -18,6 +18,7 @@ package nl.b3p.viewer.config;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
 /**
  *
@@ -32,6 +33,9 @@ public class CycloramaAccount {
 
     private String username;
     private String password;
+    private String filename;
+    @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String privateBase64Key;
 
     public Long getId() {
@@ -66,5 +70,12 @@ public class CycloramaAccount {
         this.privateBase64Key = privateBase64Key;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
 }

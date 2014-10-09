@@ -16,18 +16,39 @@
  */
 package nl.b3p.viewer.admin.stripes;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import nl.b3p.viewer.config.CycloramaAccount;
+import org.apache.commons.codec.binary.Base64;
+import org.stripesstuff.stripersist.Stripersist;
+import sun.security.rsa.RSAPrivateCrtKeyImpl;
 
 /**
  *
  * @author Meine Toonen
  */
-public class CycloramaConfigurationActionBean implements ActionBean{
+public class CycloramaConfigurationActionBean implements ActionBean {
+
+    private final String CERT_TYPE = "PKCS12";
+    private final String KEY_FORMAT = "PKCS#8";
 
     private ActionBeanContext context;
     private final String JSP = "/WEB-INF/jsp/services/cyclorama.jsp";
@@ -72,16 +93,66 @@ public class CycloramaConfigurationActionBean implements ActionBean{
     }
 
     // </editor-fold>
-
     @DefaultHandler
-    public Resolution view(){
+    public Resolution view() {
         return new ForwardResolution(JSP);
     }
 
-    public Resolution save(){
+    public Resolution save() throws KeyStoreException {
 
+        try {
+            String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), password);
+            int a = 0;
+            CycloramaAccount account = new CycloramaAccount();
+            account.setFilename(key.getFileName());
+            account.setUsername(username);
+            account.setPassword(password);
+            account.setPrivateBase64Key(privateBase64Key);
+            EntityManager em = Stripersist.getEntityManager();
+            em.persist(account);
+            em.getTransaction().commit();
+
+        } catch (IOException ex) {
+            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CertificateException ex) {
+            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnrecoverableKeyException ex) {
+            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return new ForwardResolution(JSP);
     }
 
+    private String getBase64EncodedPrivateKeyFromPfxUpload(InputStream in, String password)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException,
+            CertificateException, UnrecoverableKeyException {
 
+        String base64 = null;
+
+        PrivateKey privateKey = null;
+
+        KeyStore ks = java.security.KeyStore.getInstance(CERT_TYPE);
+        ks.load(new BufferedInputStream(in), password.toCharArray());
+
+        Enumeration<String> aliases = ks.aliases();
+
+        while (aliases.hasMoreElements()) {
+            String alias = aliases.nextElement();
+
+            Key key = ks.getKey(alias, password.toCharArray());
+            String keyFormat = key.getFormat();
+
+            if ((key instanceof RSAPrivateCrtKeyImpl) && keyFormat.equals(KEY_FORMAT)) {
+                privateKey = (PrivateKey) key;
+            }
+        }
+
+        if (privateKey != null) {
+            Base64 encoder = new Base64();
+            base64 = new String(encoder.encode(privateKey.getEncoded()));
+        }
+
+        return base64;
+    }
 }
