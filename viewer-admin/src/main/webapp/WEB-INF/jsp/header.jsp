@@ -34,6 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" id="menu_attributen">Attributen</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" id="menu_solrconfig">Zoekbronnen</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" id="menu_relation">Join/Relate</stripes:link></li>
+                            <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean" id="menu_cyclorama">Cyclorama</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean" id="menu_layarservices">Layar services</stripes:link></li>
                             <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" id="menu_layarsource">Layar bronnen</stripes:link></li>
                        </ul>
@@ -43,9 +44,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </ul>
             </li>
 </security:allowed>
-            
+
 <stripes:useActionBean var="bean2" beanclass="nl.b3p.viewer.admin.stripes.UserActionBean"/>
-<security:allowed bean="bean2">            
+<security:allowed bean="bean2">
             <li class="menu-level1">
                 <a href="#">Beheer toegang</a>
                 <ul class="slideoutmenu">
@@ -53,10 +54,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.UserActionBean" id="menu_gebruikers">Gebruikers</stripes:link></li>
                 </ul>
             </li>
-</security:allowed>            
-            
+</security:allowed>
+
 <stripes:useActionBean var="bean3" beanclass="nl.b3p.viewer.admin.stripes.ChooseApplicationActionBean"/>
-<security:allowed bean="bean3">            
+<security:allowed bean="bean3">
             <li class="menu-level1">
                 <a href="#">Applicatiebeheer</a>
                 <ul class="slideoutmenu">
@@ -73,7 +74,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </li>
                     </c:if>
                 </ul>
-</security:allowed>                            
+</security:allowed>
             </li>
         </ul>
         <div id="userinfo">
