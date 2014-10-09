@@ -38,6 +38,8 @@ import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
 import nl.b3p.viewer.config.CycloramaAccount;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
 import sun.security.rsa.RSAPrivateCrtKeyImpl;
 
@@ -46,6 +48,7 @@ import sun.security.rsa.RSAPrivateCrtKeyImpl;
  * @author Meine Toonen
  */
 public class CycloramaConfigurationActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(CycloramaConfigurationActionBean.class);
 
     private final String CERT_TYPE = "PKCS12";
     private final String KEY_FORMAT = "PKCS#8";
@@ -99,10 +102,8 @@ public class CycloramaConfigurationActionBean implements ActionBean {
     }
 
     public Resolution save() throws KeyStoreException {
-
         try {
             String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), password);
-            int a = 0;
             CycloramaAccount account = new CycloramaAccount();
             account.setFilename(key.getFileName());
             account.setUsername(username);
@@ -113,13 +114,13 @@ public class CycloramaConfigurationActionBean implements ActionBean {
             em.getTransaction().commit();
 
         } catch (IOException ex) {
-            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Something went wrong with reading the key",ex);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Cannot process keyfile", ex);
         } catch (CertificateException ex) {
-            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Something is wrong with the certificate",ex);
         } catch (UnrecoverableKeyException ex) {
-            Logger.getLogger(CycloramaConfigurationActionBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Cannot process keyfile", ex);
         }
         return new ForwardResolution(JSP);
     }
@@ -140,11 +141,11 @@ public class CycloramaConfigurationActionBean implements ActionBean {
         while (aliases.hasMoreElements()) {
             String alias = aliases.nextElement();
 
-            Key key = ks.getKey(alias, password.toCharArray());
-            String keyFormat = key.getFormat();
+            Key ksKey = ks.getKey(alias, password.toCharArray());
+            String keyFormat = ksKey.getFormat();
 
-            if ((key instanceof RSAPrivateCrtKeyImpl) && keyFormat.equals(KEY_FORMAT)) {
-                privateKey = (PrivateKey) key;
+            if ((ksKey instanceof RSAPrivateCrtKeyImpl) && keyFormat.equals(KEY_FORMAT)) {
+                privateKey = (PrivateKey) ksKey;
             }
         }
 
