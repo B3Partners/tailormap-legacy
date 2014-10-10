@@ -28,6 +28,7 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ["id", "filename"],
             data: []
         });
+        var me = this;
 
         this.form.add([
              {
@@ -59,43 +60,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 value: config.layers,
                 listeners: {
                     change: function (combo, id) {
-                        if (id === null) {
-                            return;
-                        }
-                        var layerId = id;
-
-                        var appLayer = appConfig.appLayers[layerId];
-
-                        var ac1 = Ext.getCmp("attributeCombo1");
-                        ac1.clearValue();
-                        var photoIdAttribute = ac1.getStore();
-
-                        photoIdAttribute.removeAll();
-
-                        var ac2 = Ext.getCmp("attributeCombo2");
-                        ac2.clearValue();
-                        var photoDescriptionAttribute = ac2.getStore();
-
-                        photoDescriptionAttribute .removeAll();
-
-                        if (!appLayer) {
-                            return;
-                        }
-
-                        Ext.Array.each(appLayer.attributes, function (att) {
-                            photoIdAttribute.add({
-                                name: att.name,
-                                alias: att.alias || att.name,
-                                type: att.type
-                            });
-
-                            photoDescriptionAttribute.add({
-                                name: att.name,
-                                alias: att.alias || att.name,
-                                type: att.type
-                            });
-                        });
-
+                        me.populateAttributeCombos(id);
                     }
                 }
             }, {
@@ -110,7 +75,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 width: 500,
                 editable: false,
                 name: "imageIdAttribute",
-                value: config.imageIdAttribute,
                 valueField: "name",
                 labelWidth:this.labelWidth,
                 listeners: {
@@ -130,7 +94,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 editable: false,
                 width: 500,
                 name: "imageDescriptionAttribute",
-                value: config.imageDescriptionAttribute,
                 valueField: "name",
                 labelWidth:this.labelWidth,
                 listeners: {
@@ -141,6 +104,51 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         ]);
         this.loadKeys(config.keyCombo);
+        if(config.layers){
+            this.populateAttributeCombos(config.layers);
+            Ext.getCmp("attributeCombo1").setValue(config.imageIdAttribute);
+            Ext.getCmp("attributeCombo2").setValue(config.imageDescriptionAttribute);
+
+        }
+
+    },
+    populateAttributeCombos : function(id){
+        if (id === null) {
+            return;
+        }
+        var layerId = id;
+
+        var appLayer = appConfig.appLayers[layerId];
+
+        var ac1 = Ext.getCmp("attributeCombo1");
+        ac1.clearValue();
+        var photoIdAttribute = ac1.getStore();
+
+        photoIdAttribute.removeAll();
+
+        var ac2 = Ext.getCmp("attributeCombo2");
+        ac2.clearValue();
+        var photoDescriptionAttribute = ac2.getStore();
+
+        photoDescriptionAttribute.removeAll();
+
+        if (!appLayer) {
+            return;
+        }
+
+        Ext.Array.each(appLayer.attributes, function (att) {
+            photoIdAttribute.add({
+                name: att.name,
+                alias: att.alias || att.name,
+                type: att.type
+            });
+
+            photoDescriptionAttribute.add({
+                name: att.name,
+                alias: att.alias || att.name,
+                type: att.type
+            });
+        });
     },
     createLayerStore: function() {
         var store = Ext.create("Ext.data.Store", {
