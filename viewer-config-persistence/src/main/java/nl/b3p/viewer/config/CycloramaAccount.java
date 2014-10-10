@@ -83,6 +83,7 @@ public class CycloramaAccount {
     public JSONObject toJSON() throws JSONException{
         JSONObject account = new JSONObject();
         account.put("username",username);
+        account.put("id",id);
         account.put("filename",filename);
         return account;
     }

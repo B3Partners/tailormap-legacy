@@ -17,17 +17,36 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
+    keyStore:null,
     constructor: function (parentid,config){
           if(config === undefined || config === null){
             config = new Object();
         }
         config.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+        this.keyStore = Ext.create("Ext.data.Store", {
+            fields: ["id", "filename"],
+            data: []
+        });
 
-        var me=this;
         this.form.add([
+             {
+                xtype: "combo",
+                id: "keyCombo",
+                fieldLabel: "Key (PFX bestand)",
+                labelWidth:this.labelWidth,
+                store: this.keyStore,
+                queryMode: "local",
+                width: 500,
+                displayField: "filename",
+                editable: false,
+                valueField: "id",
+                name: "keyCombo",
+                value: config.keyCombo
+            },
             {
                 xtype: "combo",
+                width: 500,
                 id: "layerCombo",
                 fieldLabel: "Laag",
                 labelWidth:this.labelWidth,
@@ -88,6 +107,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }),
                 queryMode: "local",
                 displayField: "alias",
+                width: 500,
                 editable: false,
                 name: "imageIdAttribute",
                 value: config.imageIdAttribute,
@@ -108,6 +128,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 queryMode: "local",
                 displayField: "alias",
                 editable: false,
+                width: 500,
                 name: "imageDescriptionAttribute",
                 value: config.imageDescriptionAttribute,
                 valueField: "name",
@@ -119,8 +140,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }
             }
         ]);
-
-
+        this.loadKeys(config.keyCombo);
     },
     createLayerStore: function() {
         var store = Ext.create("Ext.data.Store", {
@@ -134,4 +154,20 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         return store;
     },
+    loadKeys : function(value){
+        var me = this;
+        Ext.Ajax.request({
+            url: contextPath+"/action/cyclorama/accountList",
+            success: function ( result, request ) {
+                var keys = Ext.JSON.decode(result.responseText);
+                Ext.each(keys,function(key){
+                    me.keyStore.add(key);
+                });
+                Ext.getCmp("keyCombo").setValue(value);
+            },
+            failure: function() {
+                Ext.MessageBox.alert("Foutmelding", "Er is een onbekende fout opgetreden waardoor de lijst met kaartlagen niet kan worden weergegeven");
+            }
+        });
+    }
 });
