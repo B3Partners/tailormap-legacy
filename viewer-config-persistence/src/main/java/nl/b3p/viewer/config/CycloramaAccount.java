@@ -19,6 +19,8 @@ package nl.b3p.viewer.config;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -76,6 +78,13 @@ public class CycloramaAccount {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public JSONObject toJSON() throws JSONException{
+        JSONObject account = new JSONObject();
+        account.put("username",username);
+        account.put("filename",filename);
+        return account;
     }
 
 }

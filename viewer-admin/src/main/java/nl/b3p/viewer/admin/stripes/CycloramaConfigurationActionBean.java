@@ -19,6 +19,7 @@ package nl.b3p.viewer.admin.stripes;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -37,6 +38,7 @@ import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.SimpleError;
@@ -47,6 +49,9 @@ import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 import sun.security.rsa.RSAPrivateCrtKeyImpl;
 
@@ -116,9 +121,7 @@ public class CycloramaConfigurationActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution view() {
-        EntityManager em = Stripersist.getEntityManager();
-        accounts = em.createQuery("FROM CycloramaAccount", CycloramaAccount.class).getResultList();
-
+        accounts = getAccountList();
         return new ForwardResolution(JSP);
     }
 
@@ -143,6 +146,16 @@ public class CycloramaConfigurationActionBean implements ActionBean {
             log.error("Something went wrong with reading the key",ex);
         }
         return view();
+    }
+
+    public Resolution accountList() throws JSONException{
+        List<CycloramaAccount> list = getAccountList();
+        JSONArray accountArray = new JSONArray();
+        for (CycloramaAccount account : list) {
+            JSONObject accountObj = account.toJSON();
+            accountArray.put(accountObj);
+        }
+        return new StreamingResolution("application/json", new StringReader(accountArray.toString()));
     }
 
     private String getBase64EncodedPrivateKeyFromPfxUpload(InputStream in, String password)
@@ -175,5 +188,11 @@ public class CycloramaConfigurationActionBean implements ActionBean {
         }
 
         return base64;
+    }
+
+    public List<CycloramaAccount> getAccountList(){
+        EntityManager em = Stripersist.getEntityManager();
+        List<CycloramaAccount> list = em.createQuery("FROM CycloramaAccount", CycloramaAccount.class).getResultList();
+        return list;
     }
 }
