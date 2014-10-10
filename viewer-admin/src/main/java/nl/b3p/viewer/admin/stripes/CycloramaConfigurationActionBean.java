@@ -124,11 +124,15 @@ public class CycloramaConfigurationActionBean implements ActionBean {
 
     public Resolution save() throws KeyStoreException {
         try {
-            if (account.getPrivateBase64Key() == null) {
+            if (key != null) {
                 String privateBase64Key = getBase64EncodedPrivateKeyFromPfxUpload(key.getInputStream(), account.getPassword());
                 account.setPrivateBase64Key(privateBase64Key);
                 account.setFilename(key.getFileName());
                 key.delete();
+            }else{
+                if(account.getPrivateBase64Key() == null){
+                    context.getValidationErrors().add("Key", new SimpleError("Geef een PFX bestand op."));
+                }
             }
             EntityManager em = Stripersist.getEntityManager();
             em.persist(account);
