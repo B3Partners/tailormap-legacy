@@ -31,7 +31,23 @@ Ext.define("viewer.components.CustomConfiguration",{
         var me = this;
 
         this.form.add([
-             {
+            {
+                xtype: "textfield",
+                name: "width",
+                value: config.width,
+                width: 500,
+                labelWidth:this.labelWidth,
+                fieldLabel: "Breedte popup"
+            },
+            {
+                xtype: "textfield",
+                name: "height",
+                value: config.height,
+                width: 500,
+                labelWidth:this.labelWidth,
+                fieldLabel: "Hoogte popup"
+            },
+            {
                 xtype: "combo",
                 id: "keyCombo",
                 fieldLabel: "Key (PFX bestand)",

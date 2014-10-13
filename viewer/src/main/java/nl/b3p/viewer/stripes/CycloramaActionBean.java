@@ -167,8 +167,8 @@ public class CycloramaActionBean implements ActionBean {
         }
 
 
-        return new ForwardResolution("/WEB-INF/jsp/app/globespotter.jsp");
-       // return new StreamingResolution("application/json", json.toString());
+       // return new ForwardResolution("/WEB-INF/jsp/app/globespotter.jsp");
+        return new StreamingResolution("application/json", json.toString());
     }
 
       private String getTIDFromBase64EncodedString(String base64Encoded, String token)

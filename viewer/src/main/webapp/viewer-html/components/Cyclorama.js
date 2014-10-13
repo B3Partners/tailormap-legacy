@@ -20,6 +20,7 @@
  */
 Ext.define ("viewer.components.Cyclorama",{
     extend: "viewer.components.Component",
+    window:null,
     config:{
     },
     constructor: function (conf){
@@ -36,7 +37,7 @@ Ext.define ("viewer.components.Cyclorama",{
         mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, this.onFeatureInfo,this);
     },
     onFeatureInfo: function (appLayer,event){
-        if(appLayer.id === this.layers && event.features){
+        if(appLayer.id === parseInt(this.config.layers) && event.features){
             if(event.features.length >1 ){
                 this.showOptions(event.features);
             }else if(event.features.length === 1){
@@ -45,13 +46,64 @@ Ext.define ("viewer.components.Cyclorama",{
         }
     },
     showOptions : function(features){
+        this.openGlobespotter(features[0]);
         // laat meerdere opties zien
         // klik is open globespotter
     },
+
+              /*  <!-- Test API: https://www.globespotter.nl/api/test/viewer_bapi.swf -->
+                <!-- 2.1 API: https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf -->
+                <!-- 2.6 API: https://globespotter.cyclomedia.com/v26/api/viewer_api.swf -->
+*/
     openGlobespotter : function(feature){
-        // Get link from backend
+        var params = {
+            imageId: feature[this.config.imageIdAttribute] ,
+            appId: appId,
+            accountId: this.config.keyCombo
+        };
+        Ext.Ajax.request({
+            url: actionBeans["cyclorama"],
+            params: params,
+            scope: this,
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                var a = 0;
+                this.linkReceived(response);
+            },
+            failure: function(result) {
+               this.viewerController.logger.error(result);
+            }
+        });
+
     },
-    linkReceived: function(link){
-        // Open popup
+    linkReceived: function(response){
+         // Get link from backend
+        var width = parseInt(this.config.width);
+        var height = parseInt(this.config.height);
+        if(this.window){
+            this.window.destroy();
+        }
+        this.window = Ext.create('Ext.window.Window', {
+            title: "Cyclorama rondkijk foto's",
+            height: height,
+            resizable: false,
+            width: width,
+            layout: 'fit',
+            html:
+                    ' <div>' +
+                        ' <object id="Globespotter" name="TID">' +
+                            ' <param name="allowScriptAccess" value="always" />' +
+                            ' <param name="allowFullScreen" value="true" />' +
+                            ' <embed src="https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf"' +
+                                ' quality="high" bgcolor="#888888"' +
+                                ' width="' + (width - 10) + '" height="' + (height - 10)+
+                                ' type="application/x-shockwave-flash"' +
+                                ' allowScriptAccess="always"' +
+                                ' allowfullscreen="true"' +
+                                ' FlashVars="&APIKey=' + response.apiKey + '&imageid=' + response.imageId + '&MapSRSName=EPSG:28992&TID=' + response.tid + '">' +
+                            ' </embed>' +
+                        ' </object>' +
+                    '</div>'
+        }).show();
     }
 });
