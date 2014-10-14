@@ -23,6 +23,7 @@ Ext.define ("viewer.components.Cyclorama",{
     toolMapClick:null,
     deActivatedTools:null,
     window:null,
+    optionWindow:null,
     config:{
     },
     constructor: function (conf){
@@ -52,9 +53,44 @@ Ext.define ("viewer.components.Cyclorama",{
         }
     },
     showOptions : function(features){
-        this.openGlobespotter(features[0]);
-        // laat meerdere opties zien
-        // klik is open globespotter
+        var store = Ext.create('Ext.data.Store', {
+            fields:[this.config.imageIdAttribute],
+            data:{'items':features},
+            proxy: {
+                type: 'memory',
+                reader: {
+                    type: 'json',
+                    root: 'items'
+                }
+            }
+        });
+
+        var grid = Ext.create('Ext.grid.Panel', {
+            title: 'Simpsons',
+            store: store,
+            columns: [
+                { header: 'Image id',  dataIndex: this.config.imageIdAttribute,flex:1 }
+            ],
+            listeners:{
+                itemdblclick:{
+                    scope:this,
+                    fn:function(grid,item){
+                        this.openGlobespotter(item.data);
+                    }
+                }
+            }
+        });
+
+        if(this.optionWindow){
+            this.optionWindow.destroy();
+        }
+        this.optionWindow = Ext.create('Ext.window.Window', {
+            title: 'Hello',
+            height: 200,
+            width: 400,
+            layout: 'fit',
+            items: grid
+        }).show();
     },
     openGlobespotter : function(feature){
         var params = {
