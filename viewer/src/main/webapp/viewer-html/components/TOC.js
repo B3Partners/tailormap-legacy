@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ Ext.define ("viewer.components.TOC",{
         if (config.showToggleAllLayers!==undefined){
             this.showAllLayersOff=config.showToggleAllLayers;
             this.showAllLayersOn=config.showToggleAllLayers;
-        }   
+        }
         this.toggleAllLayersState = this.config.initToggleAllLayers;
         this.loadTree();
         this.loadInitLayers();
@@ -80,7 +80,7 @@ Ext.define ("viewer.components.TOC",{
         return this;
     },
     // Build the tree
-    loadTree : function(){        
+    loadTree : function(){
         // Get the current state of the map
         this.backgroundLayers = new Array();
         this.selectedContent = this.config.viewerController.app.selectedContent;
@@ -99,13 +99,13 @@ Ext.define ("viewer.components.TOC",{
                 children: []
             }
         });
-        
+
         store.addListener("beforeexpand",this.beforeExpand, this);
         store.addListener("expand",this.onExpand,this);
-        
+
         var title = "";
         if(this.config.title && !this.config.viewerController.layoutManager.isTabComponent(this.name)) title = this.config.title;
-        
+
         var tools = [];
         // If no config is present for 'showHelpButton' or 'showHelpButton' is "true" we will show the help button
         if(this.config && (!this.config.hasOwnProperty('showHelpButton') || this.config.showHelpButton !== "false")) {
@@ -116,7 +116,7 @@ Ext.define ("viewer.components.TOC",{
                 }
             }];
         }
-        
+
         var dockedItems = [];
         if(this.showAllLayersOn || this.showAllLayersOff){
             dockedItems = [
@@ -188,11 +188,11 @@ Ext.define ("viewer.components.TOC",{
         // Create background
         this.createBackgroundLevel(nodes);
         this.insertLayer(nodes);
-        
+
         var map = this.config.viewerController.mapComponent.getMap();
         var scale = map.getResolution();
         this.checkScaleLayer(this.panel.getRootNode(),scale);
-        
+
         this.registerQtips();
     },
     isExpanded : function(level , triState){
@@ -202,8 +202,8 @@ Ext.define ("viewer.components.TOC",{
         }
         if (level.background) {
             expand = false;
-        }  
-        
+        }
+
         return expand;
     },
     // Add a level to the tree, and load all it's levels and applayers
@@ -215,7 +215,7 @@ Ext.define ("viewer.components.TOC",{
         }
         var levelId = "level-"+level.id;
         var treeNodeLayer = {
-            text: '<span id="span_'+levelId+'">'+level.name+'</span>', 
+            text: '<span id="span_'+levelId+'">'+level.name+'</span>',
             // id: levelId,
             expandable: !level.background,
             collapsible: !level.background,
@@ -241,10 +241,10 @@ Ext.define ("viewer.components.TOC",{
             this.addQtip("Informatie over de kaart", 'span_'+levelId);
             treeNodeLayer.layerObj.url = level.url;
         }
-        
+
         var childsChecked = 0;
         var totalChilds = 0;
-        
+
         if(level.children != undefined ){
             for(var i = 0 ; i < level.children.length; i++){
                 var l = this.addLevel(level.children[i]);
@@ -281,7 +281,7 @@ Ext.define ("viewer.components.TOC",{
             }
         }
         var triState = this.calculateTriState(childsChecked, totalChilds);
-        
+
         var expand = this.isExpanded(level, triState);
         treeNodeLayer.layerObj.children = nodes;
         treeNodeLayer.expanded = expand;
@@ -329,12 +329,12 @@ Ext.define ("viewer.components.TOC",{
                 this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
                 treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
             }
-            
+
             if(serviceLayer.details ["download.url"] != undefined){
                 this.addQtip("Metadata voor de kaartlaag", 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
-            
+
         }
         var retChecked = false;
         if(this.config.layersChecked){
@@ -343,7 +343,7 @@ Ext.define ("viewer.components.TOC",{
         } else if(appLayerObj.checked) {
             treeNodeLayer.hidden_check = appLayerObj.checked;
             retChecked = appLayerObj.checked;
-        }        
+        }
         return {
             node: treeNodeLayer,
             checked: retChecked
@@ -371,7 +371,7 @@ Ext.define ("viewer.components.TOC",{
                 }
             }
             var background = {
-                text: "Achtergrond", 
+                text: "Achtergrond",
                 // id: this.name + "Achtergrond",
                 expanded: this.config.expandOnStartup,
                 expandable: true,
@@ -404,7 +404,7 @@ Ext.define ("viewer.components.TOC",{
     },
     setLayerQtip: function (text,layerId){
         this.setQtip(text,"span_layer-"+layerId);
-    },            
+    },
     setLevelQtip: function (text,levelid){
         this.setQtip(text,"span_level-"+levelid);
     },
@@ -446,7 +446,7 @@ Ext.define ("viewer.components.TOC",{
         if (this.toggleAllLayersState && this.showAllLayersOff ||
             !this.toggleAllLayersState && this.showAllLayersOn){
             this.toggleAllLayersState = !this.toggleAllLayersState;
-            
+
             if (Ext.get("toggleAllLayersButton")){
                 Ext.getCmp("toggleAllLayersButton").setText(this.toggleAllLayersState ? this.config.toggleAllLayersOnText:this.config.toggleAllLayersOffText);
             }
@@ -462,7 +462,7 @@ Ext.define ("viewer.components.TOC",{
     },
     /**
      * Is called when a node is expanding.
-     * Call register quickTips after a small timeout to make sure the element is 
+     * Call register quickTips after a small timeout to make sure the element is
      * created in the DOM
      */
     onExpand: function(node){
@@ -477,7 +477,7 @@ Ext.define ("viewer.components.TOC",{
         var root = this.panel.getRootNode(),
             me = this;
         Ext.Array.each(config, function(node) {
-           me.insertNode(root, node); 
+           me.insertNode(root, node);
         });
         root.expand();
     },
@@ -493,7 +493,7 @@ Ext.define ("viewer.components.TOC",{
             });
         }
     },
-    
+
     setTriState: function(node) {
         var me = this;
         var checked = me.getNodeChecked(node);
@@ -519,7 +519,7 @@ Ext.define ("viewer.components.TOC",{
             }
         }
     },
-    
+
     updateTriState: function(node) {
         var me = this;
         var totalChecked = 0;
@@ -550,14 +550,14 @@ Ext.define ("viewer.components.TOC",{
         }
         return tristate;
     },
-    
+
     updateTriStateClass: function(node, totalChecked, totalNodes) {
         var tristate = 0;
         if(!this.config.groupCheck){
             return tristate;
         }
         tristate = this.calculateTriState(totalChecked, totalNodes);
-        
+
         if(node != null) {
             if(tristate === -1) {
                 node.data.tristate = -1;
@@ -575,11 +575,11 @@ Ext.define ("viewer.components.TOC",{
         }
         return tristate;
     },
-    
+
     checkChildNodes: function(node, checked) {
         var me = this;
         node.eachChild(function(childNode) {
-            if((!childNode.hasChildNodes() && me.config.layersChecked) || (childNode.hasChildNodes() && me.config.groupCheck)){ 
+            if((!childNode.hasChildNodes() && me.config.layersChecked) || (childNode.hasChildNodes() && me.config.groupCheck)){
                 childNode.set('checked', checked);
             }else {
                 childNode.set('hidden_check', checked);
@@ -591,7 +591,7 @@ Ext.define ("viewer.components.TOC",{
             }
         });
     },
-    
+
     getNodeChecked: function(node) {
         if(Ext.isDefined(node.data)) {
             if(node.data.checked !== undefined && node.data.checked !== null) return node.data.checked;
@@ -603,14 +603,14 @@ Ext.define ("viewer.components.TOC",{
         }
         return false;
     },
-    
+
     hasTriState: function(node) {
         if(Ext.isDefined(node.data) && Ext.isDefined(node.data.tristate)) {
             if(node.data.tristate === 0) return true;
         }
         return false;
     },
-    
+
     layerVisibilityChanged : function (map,object){
         var layer = object.layer;
         var vis = object.visible;
@@ -625,7 +625,7 @@ Ext.define ("viewer.components.TOC",{
             this.setTriState(node);
         }
     },
-    
+
     updateMap: function(nodeObj, checked) {
         if(nodeObj.isLeaf()){
             var node = nodeObj.raw;
@@ -633,7 +633,7 @@ Ext.define ("viewer.components.TOC",{
                 node = nodeObj.data;
             }
             var layer = node.layerObj;
-    
+
             if(checked){
                 this.config.viewerController.setLayerVisible(layer.appLayer, true);
             }else{
@@ -642,13 +642,13 @@ Ext.define ("viewer.components.TOC",{
         }
     },
     /*************************  Event handlers ***********************************************************/
-     
+
     checkboxClicked : function(nodeObj,checked,toc){
         this.updateMap(nodeObj, checked);
         this.setTriState(nodeObj);
-        
+
         var scale = this.config.viewerController.mapComponent.getMap().getScale();
-        
+
         this.checkScaleLayer(nodeObj,scale);
     },
     // Open the popup with the metadata/info of the level/applayer
@@ -679,29 +679,30 @@ Ext.define ("viewer.components.TOC",{
             if(child.data && child.data.layerObj) layerObj = child.data.layerObj;
             // if(child.raw && child.raw.layerObj) layerObj = child.raw.layerObj;
             var record = this.panel.getView().getNodeByRecord(child);
-            // Check for not existing/visible layers (ie. layers in (background) levels 
+            // Check for not existing/visible layers (ie. layers in (background) levels
             if(record != null){
                 var extElement = Ext.fly(record);
                 //if(this.isInScale(scale, layer.minScale, layer.maxScale)){
                 var spanEl = document.getElementById("span_"+layerObj.nodeId);
+                var ztsId= ("span_"+child.data.id+"_zoomtoscale").replace(/\./g, '_');
+                        var zts=Ext.get(ztsId);
                 if(spanEl === null) {
                     return;
                 }
                 if (this.config.viewerController.isWithinScale(layerObj.appLayer,scale)){
                     extElement.removeCls("toc-outofscale");
                     extElement.addCls("toc-inscale");
-                    spanEl.parentNode.className.replace('toc-zoomtoscale', '');
+                    if(zts){
+                        zts.remove();
+                    }
                 }else{
                     extElement.removeCls("toc-inscale");
                     extElement.addCls( "toc-outofscale");
                     if (child.data.checked){
                         var parent = Ext.get(spanEl.parentNode);
-                        parent.addCls('toc-zoomtoscale');    
-                        var ztsId= ("span_"+child.data.id+"_zoomtoscale").replace(/\./g, '_');
-                        var zts=Ext.get(ztsId);
+                        parent.addCls('toc-zoomtoscale');
                         //if ZoomToScale object !exists create one.
                         if (!zts){
-                            parent.insertHtml("beforeEnd",'<br/>');
                             var newSpan = document.createElement("span");
                             newSpan.id=ztsId;
                             newSpan.innerHTML=this.config.zoomToScaleText;
@@ -709,7 +710,7 @@ Ext.define ("viewer.components.TOC",{
                             zts.addCls("toc-zoomtoscale-text");
                             var me = this;
                             zts.addListener("click",
-                                function (evt,el,o){ 
+                                function (evt,el,o){
                                     me.zoomToScale(layerObj.appLayer);
                                 },
                                 this);
@@ -724,7 +725,7 @@ Ext.define ("viewer.components.TOC",{
                 this.checkScaleLayer (childNode, scale);
             }
         }
-        
+
     },
     getExtComponents: function() {
         return [ this.panel.getId() ];
@@ -736,5 +737,5 @@ Ext.define ("viewer.components.TOC",{
     doResize: function() {
         var me = this;
         me.panel.updateLayout();
-    } 
+    }
 });
