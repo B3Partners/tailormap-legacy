@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
- * @description The class for controls 
+ * @description The class for controls
  * @param id The id of the tool
  * @param frameworkObject The frameworkspecific object, to store as a reference
  * @param type The type of tool to be created
@@ -31,7 +31,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         ZOOMOUT_BOX                : 3,
         ZOOMOUT_BUTTON             : 6,
         PAN                        : 4,
-        SUPERPAN                   : 5,        
+        SUPERPAN                   : 5,
         GET_FEATURE_INFO           : 10,
         MEASURELINE               : 11,
         MEASUREAREA               : 12,
@@ -49,7 +49,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         //only one tool can be active, other are disabled
         MAP_TOOL                   : 25
     },
-    tool: null,    
+    tool: null,
     mapComponent: null,
     events: null,
     config :{
@@ -61,10 +61,10 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
         iconUrl_up: null,
         iconUrl_over: null,
         iconUrl_sel:null,
-        iconUrl_dis:null,        
+        iconUrl_dis:null,
         viewerController:null
     },
-    
+
     constructor: function (config){
         this.initConfig(config);
         viewer.viewercontroller.controller.Tool.superclass.constructor.call(this, config);
@@ -91,7 +91,7 @@ Ext.define("viewer.viewercontroller.controller.Tool",{
     fire : function (event,options){
         this.fireEvent(event,this,options);
     },
-    
+
     isActive : function(){
         Ext.Error.raise({msg: "Tool.isActive() not implemented! Must be implemented in sub-class"});
     },
