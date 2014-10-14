@@ -312,7 +312,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
                     showAllNodes(treeview, childnode);
                 });
             }
-        }
+        };
         if(!visible) {
             // !visible -> A filter is being applied
             // Save all nodes that are being filtered in hiddenNodes array
@@ -343,7 +343,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
 
     addNode: function(record) {
         var me = this;
-        if(me.checkBackendOnMove && me.backendCheckUrl != '') {
+        if(me.checkBackendOnMove && me.backendCheckUrl !== '') {
             me.addToSelectionWithBackendCheck(record);
         } else {
             me.addToSelection(record);
