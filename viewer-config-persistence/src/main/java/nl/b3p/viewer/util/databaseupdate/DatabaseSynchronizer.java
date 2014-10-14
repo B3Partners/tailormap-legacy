@@ -28,24 +28,24 @@ import org.stripesstuff.stripersist.Stripersist;
 
 /**
  * Class for Synchronizing the database with the application entitymodel.
- * The class contains a static script holder ('updates'). With versions and the scripts that 
+ * The class contains a static script holder ('updates'). With versions and the scripts that
  * are needed for upgrading to that version (from the previous defined version).
  * The version of the database model is stored in the database metadata table.
- * First the class checks if there is a 'metadata' table. If not, we assume the 
- * database is empty or without Flamingo tables. All scripts that are defined for 
- * version '0' are called: 
+ * First the class checks if there is a 'metadata' table. If not, we assume the
+ * database is empty or without Flamingo tables. All scripts that are defined for
+ * version '0' are called:
  * - the (at build) auto generated schema-export script
  * - the init script with data that is needed to start.
  * The database is at the latest defined version (fully up to date) so the latest
  * defined version is set in the metadata tabel. >> Update done.
- * 
+ *
  * If there is a metadata table and a record with the key Metadata.DATABASE_VERSION_KEY
  * then that is the current version of the database model.
  * All scripts that are defined after that version are loaded and called; updating the
  * database to the entity model.
- * 
+ *
  * The scripts are stored in: 'src/main/resources/scripts'
- * When adding a new script in that folder just define the script name 
+ * When adding a new script in that folder just define the script name
  * (without database product name) in the 'updates' param with a new version number.
  * When loading the scripts, the loader is first looking for the script with the defined
  * name. For example 'newscript.sql'. If the script is not found the loader is searching
@@ -75,26 +75,29 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("0", new ArrayList<String>());
         updates.get("0").add("schema-export.sql");
         updates.get("0").add("initialize_database.sql");
-        
+
         updates.put("1", new ArrayList());
         updates.get("1").add("add_solr_config.sql");
-        
+
         updates.put("2", new ArrayList());
         updates.get("2").add("update_solr_config.sql");
-        
+
         updates.put("3", new ArrayList());
         updates.get("3").add("add_url_level.sql");
-        
+
         updates.put("4", new ArrayList());
         updates.get("4").add("configure_exception_layer.sql");
+
+        updates.put("5", new ArrayList());
+        updates.get("5").add("add_cyclorama_account.sql");
     }
     /**
      * Function is called in init() of servlet.
      * Starts the updating process.
      */
     public void doInit(){
-        
-        try {            
+
+        try {
             checkScriptDir();
             log.info("Try to update the database");
             Stripersist.requestInit();
@@ -140,13 +143,13 @@ public class DatabaseSynchronizer implements Servlet {
                         if(updatedVersion.equals("0")){
                             //if version == 0 the database is created with the schema, version is latest one.
                             updatedVersion=(String) updates.keySet().toArray()[updates.size()-1];
-                        }                        
+                        }
                         mdVersion.setConfigValue(updatedVersion);
                         em.persist(mdVersion);
                         trans.commit();
                         log.info("Database updated to version: "+updatedVersion);
                         //em.getTransaction().commit();
-                                               
+
                     }else{
                         log.info("No updates done on database, maybe a error occured");
                     }
@@ -216,8 +219,8 @@ public class DatabaseSynchronizer implements Servlet {
                         if (!forOtherProduct){
                             scriptName = script.getName();
                         }
-                    }                    
-                    if (scriptName!=null){                
+                    }
+                    if (scriptName!=null){
                         boolean found=false;
                         for (Entry<String, List<String>> entry : this.updates.entrySet()) {
                             for (String registeredScript : entry.getValue()){
@@ -240,18 +243,18 @@ public class DatabaseSynchronizer implements Servlet {
             }
         }
     }
-    
+
     public class ScriptWorker implements Work{
         LinkedHashMap<String, List<String>> updateScripts;
         private String successVersion=null;
         private boolean errored=false;
-        
-        
+
+
         public ScriptWorker(LinkedHashMap<String, List<String>> scripts){
             this.updateScripts=scripts;
         }
         @Override
-        public void execute(Connection cnctn) throws SQLException {                
+        public void execute(Connection cnctn) throws SQLException {
             ScriptRunner runner = new ScriptRunner(cnctn, true, true);
             for (Entry<String, List<String>> entry : this.updateScripts.entrySet()) {
                 List<String> scripts = entry.getValue();
@@ -309,20 +312,20 @@ public class DatabaseSynchronizer implements Servlet {
     public ServletConfig getServletConfig() {
         return sc;
     }
-    
+
     @Override
     public void service(ServletRequest sr, ServletResponse sr1) throws ServletException, IOException {
         return;
     }
-    
+
     @Override
     public String getServletInfo() {
         return"";
     }
-    
+
     @Override
     public void destroy() {
-        
+
     }
     //</editor-fold>
 }

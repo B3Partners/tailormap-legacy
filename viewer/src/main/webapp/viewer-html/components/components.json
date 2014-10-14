@@ -905,5 +905,16 @@
             propertyNames: {},
             source: {}
         }
+    },
+    {
+        className: "viewer.components.Cyclorama",
+        name: "Cyclorama foto's",
+        shortName: "Cr",
+        group: "Component",
+        sources: ["Cyclorama.js"],
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","Cyclorama-config.js"],
+        restrictions: ["content"],
+        singleton: true,
+        showHelp: true
     }
 ]

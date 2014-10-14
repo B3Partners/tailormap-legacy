@@ -10,8 +10,8 @@
         <persistence-unit-defaults>
             <cascade-persist/>
         </persistence-unit-defaults>
-    </persistence-unit-metadata>   
- 
+    </persistence-unit-metadata>
+
     <named-native-query name="getLayerTree" result-class="nl.b3p.viewer.config.services.Layer">
         <query><![CDATA[
             select * from layer where id in (
@@ -21,7 +21,7 @@
                     select l.id from layer_tree, layer l where l.parent = layer_tree.id
                 )
                 select * from layer_tree)
-        ]]></query>    
+        ]]></query>
     </named-native-query>
     <named-native-query name="getLevelTree" result-class="nl.b3p.viewer.config.app.Level">
         <query><![CDATA[
@@ -32,9 +32,9 @@
                     select l.id from level_tree, level_ l where l.parent = level_tree.id
                 )
                 select * from level_tree) order by id
-        ]]></query>    
-    </named-native-query>    
-    
+        ]]></query>
+    </named-native-query>
+
     <!-- For PostgreSQL the IDENTITY strategy will use (big)serial columns -->
 
     <entity class="nl.b3p.viewer.config.services.Category">
@@ -68,7 +68,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.SimpleFeatureType">
         <attributes>
             <id name="id">
@@ -76,7 +76,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.AttributeDescriptor">
         <attributes>
             <id name="id">
@@ -84,7 +84,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.FeatureTypeRelation">
         <attributes>
             <id name="id">
@@ -92,7 +92,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.FeatureTypeRelationKey">
         <attributes>
             <id name="id">
@@ -100,7 +100,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.SolrConf">
         <attributes>
             <id name="id">
@@ -108,7 +108,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.Document">
         <attributes>
             <id name="id">
@@ -156,23 +156,23 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.LayarService">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
             </id>
         </attributes>
-    </entity>    
-    
+    </entity>
+
     <entity class="nl.b3p.viewer.config.services.LayarSource">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
             </id>
         </attributes>
-    </entity>  
-    
+    </entity>
+
     <entity class="nl.b3p.viewer.config.app.Resource">
         <attributes>
             <basic name="data">
@@ -180,7 +180,7 @@
             </basic>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.StyleLibrary">
         <attributes>
             <id name="id">
@@ -188,7 +188,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.metadata.Metadata">
         <attributes>
             <id name="id">
@@ -196,4 +196,14 @@
             </id>
         </attributes>
     </entity>
+
+
+    <entity class="nl.b3p.viewer.config.CycloramaAccount">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
 </entity-mappings>
