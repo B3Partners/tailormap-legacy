@@ -195,7 +195,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             cls: 'plain-button',
             listeners: {
                 click: function() {
-                    me.addSelectedLayers()
+                    me.addSelectedLayers();
                 }
             }
         });
@@ -300,7 +300,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         });
     },
-    
+
     setAllNodesVisible: function(visible) {
         var me = this;
         var treeview = me.tree.getView();

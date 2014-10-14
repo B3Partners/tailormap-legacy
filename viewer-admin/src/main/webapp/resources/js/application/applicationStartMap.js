@@ -51,7 +51,7 @@ Ext.onReady(function() {
         movelefticon: movelefticon,
         moveupicon: moveupicon,
         movedownicon: movedownicon
-    }
+    };
 
     // Creation of TreeSelection component
     var kaartSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
