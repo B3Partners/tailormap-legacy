@@ -20,6 +20,8 @@
  */
 Ext.define ("viewer.components.Cyclorama",{
     extend: "viewer.components.Component",
+    toolMapClick:null,
+    deActivatedTools:null,
     window:null,
     config:{
     },
@@ -31,18 +33,22 @@ Ext.define ("viewer.components.Cyclorama",{
         return this;
     },
     initComp : function(){
-        console.log("layers initialized");
-        var appLayer = this.viewerController.getAppLayerById(this.config.layers);
-        var mapLayer = this.viewerController.getLayer(appLayer);
-        mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, this.onFeatureInfo,this);
+        this.toolMapClick =  this.viewerController.mapComponent.createTool({
+            type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
+            id: this.name + "toolMapClick",
+            handler:{
+                fn: this.mapClicked,
+                scope:this
+            },
+            viewerController: this.config.viewerController
+        });
+        this.toolMapClick.activateTool();
     },
-    onFeatureInfo: function (appLayer,event){
-        if(appLayer.id === parseInt(this.config.layers) && event.features){
-            if(event.features.length >1 ){
-                this.showOptions(event.features);
-            }else if(event.features.length === 1){
-                this.openGlobespotter(event.features[0]);
-            }
+    processResponse: function (response){
+        if(response.features.length >1 ){
+            this.showOptions(response.features);
+        }else if(response.features.length === 1){
+            this.openGlobespotter(response.features[0]);
         }
     },
     showOptions : function(features){
@@ -50,11 +56,6 @@ Ext.define ("viewer.components.Cyclorama",{
         // laat meerdere opties zien
         // klik is open globespotter
     },
-
-              /*  <!-- Test API: https://www.globespotter.nl/api/test/viewer_bapi.swf -->
-                <!-- 2.1 API: https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf -->
-                <!-- 2.6 API: https://globespotter.cyclomedia.com/v26/api/viewer_api.swf -->
-*/
     openGlobespotter : function(feature){
         var params = {
             imageId: feature[this.config.imageIdAttribute] ,
@@ -67,7 +68,6 @@ Ext.define ("viewer.components.Cyclorama",{
             scope: this,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                var a = 0;
                 this.linkReceived(response);
             },
             failure: function(result) {
@@ -90,20 +90,53 @@ Ext.define ("viewer.components.Cyclorama",{
             width: width,
             layout: 'fit',
             html:
-                    ' <div>' +
-                        ' <object id="Globespotter" name="TID">' +
-                            ' <param name="allowScriptAccess" value="always" />' +
-                            ' <param name="allowFullScreen" value="true" />' +
-                            ' <embed src="https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf"' +
-                                ' quality="high" bgcolor="#888888"' +
-                                ' width="' + (width - 10) + '" height="' + (height - 10)+
-                                ' type="application/x-shockwave-flash"' +
-                                ' allowScriptAccess="always"' +
-                                ' allowfullscreen="true"' +
-                                ' FlashVars="&APIKey=' + response.apiKey + '&imageid=' + response.imageId + '&MapSRSName=EPSG:28992&TID=' + response.tid + '">' +
-                            ' </embed>' +
-                        ' </object>' +
-                    '</div>'
+                ' <div>' +
+                    ' <object id="Globespotter" name="TID">' +
+                        ' <param name="allowScriptAccess" value="always" />' +
+                        ' <param name="allowFullScreen" value="true" />' +
+                        ' <embed src="https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf"' +
+                            ' quality="high" bgcolor="#888888"' +
+                            ' width="' + (width - 10) + '" height="' + (height - 10)+
+                            ' type="application/x-shockwave-flash"' +
+                            ' allowScriptAccess="always"' +
+                            ' allowfullscreen="true"' +
+                            ' FlashVars="&APIKey=' + response.apiKey + '&imageid=' + response.imageId + '&MapSRSName=EPSG:28992&TID=' + response.tid + '">' +
+                        ' </embed>' +
+                    ' </object>' +
+                '</div>'
         }).show();
+    },
+    mapClicked: function (tool, event) {
+        var me = this;
+        var appLayer = this.viewerController.getAppLayerById(this.config.layers);
+        var coords = event.coord;
+        var x = coords.x;
+        var y = coords.y;
+
+        var attributes = [];
+        attributes.push(this.config.imageIdAttribute);
+        attributes.push(this.config.imageDescriptionAttribute);
+
+        var extraParams = {
+            attributesToInclude: attributes,
+            graph: true
+        };
+        this.viewerController.mapComponent.getMap().setMarker("edit", x, y);
+        var featureInfo = Ext.create("viewer.FeatureInfo", {
+            viewerController: me.viewerController
+        });
+        var radius = me.viewerController.mapComponent.getMap().getResolution() * 4;
+        featureInfo.layersFeatureInfo(x, y, radius, [appLayer], extraParams,function(response){
+            for ( var i = 0 ; i < response.length; i++){
+                var resp = response[i];
+                if(parseInt( resp.request.appLayer) === parseInt(me.config.layers)){
+                    me.processResponse(resp, resp.request.appLayer);
+                }
+            }
+
+        }, function(error){
+               this.viewerController.logger.error(error);
+        },me);
     }
+
 });
