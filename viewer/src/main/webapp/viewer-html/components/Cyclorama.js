@@ -131,7 +131,7 @@ Ext.define ("viewer.components.Cyclorama",{
                         ' <param name="allowFullScreen" value="true" />' +
                         ' <embed src="https://www.globespotter.nl/v2/api/bapi/viewer_bapi.swf"' +
                             ' quality="high" bgcolor="#888888"' +
-                            ' width="' + (width - 10) + '" height="' + (height - 10)+
+                            ' width="' + (width - 12) + '" height="' + (height - 33)+
                             ' type="application/x-shockwave-flash"' +
                             ' allowScriptAccess="always"' +
                             ' allowfullscreen="true"' +
