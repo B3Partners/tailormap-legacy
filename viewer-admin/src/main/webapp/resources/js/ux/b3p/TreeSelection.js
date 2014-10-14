@@ -181,7 +181,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             me.selectedlayers.on('checkchange', function(record, checked) {
                 var recordid = record.get('id').substring(1);
                 var recordtype = record.get('type');
-                if(recordtype == "layer") {
+                if(recordtype === "layer") {
                     me.handleLayerCheckChange(record, recordid, checked);
                 }
             });
@@ -251,7 +251,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         recordid = parseInt(recordid);
         if(!checked) {
             me.selectedlayers.getRootNode().eachChild(function(rootlevel) {
-                if(rootlevel.get('type') == 'level') {
+                if(rootlevel.get('type') === 'level') {
                     Ext.Array.remove(rootlevel.get('checkedlayers'), recordid);
                 }
             });
@@ -259,7 +259,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         } else {
             // We are not using recordid here, but request the record id from the record because of the type-prefix
             var rootNode = me.findRootNode(record.get('id'));
-            if(rootNode.get('type') == 'level') {
+            if(rootNode.get('type') === 'level') {
                 var rootNodeCheckedLayers = rootNode.get('checkedlayers');
                 if(!Ext.Array.contains(rootNodeCheckedLayers, recordid)) {
                     rootNodeCheckedLayers.push(recordid);
@@ -287,7 +287,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
             var node = rootNode.findChild('id', record.get('id'), true);
             var sib = null;
-            if(direction == 'down') {
+            if(direction === 'down') {
                 sib = node.nextSibling;
                 if(sib !== null) {
                     rootNode.insertBefore(sib, node);
@@ -364,7 +364,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             success: function ( result, request ) {
                 result = Ext.JSON.decode(result.responseText);
                 if(result.result) {
-                    me.addToSelection(record)
+                    me.addToSelection(record);
                 } else {
                     Ext.MessageBox.alert("Foutmelding", result.message);
                 }
@@ -376,24 +376,25 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     },
 
     addToSelection: function(record) {
+        console.log("addToSelection:", record);
         var me = this;
         var nodeType = record.get('type');
-        if(((nodeType == "layer" || nodeType == "document") && !record.get('isVirtual')) || (me.allowLevelMove && nodeType == "level" && !me.onRootLevel(record, me.tree))) {
+        if(((nodeType === "layer" || nodeType === "document") && !record.get('isVirtual')) || (me.allowLevelMove && nodeType === "level" && !me.onRootLevel(record, me.tree))) {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
                 var objData = record.data;
                 objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
                 objData.isLeaf = true;
                 objData.leaf = true;
-                if(nodeType == "level") {
+                if(nodeType === "level") {
                     objData.isLeaf = false;
                     objData.leaf = false;
                     objData.checkedlayers = [];
                 }
-                if(me.useCheckboxes && nodeType != "level") objData.checked = false;
+                if(me.useCheckboxes && nodeType !== "level") objData.checked = false;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = me.selectedlayers.getRootNode();
-                if(treenode != null) {
+                if(treenode) {
                     treenode.appendChild(newNode);
                 }
             }
@@ -411,7 +412,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         var rootNode = me.selectedlayers.getRootNode();
         Ext.Array.each(me.selectedlayers.getSelectionModel().getSelection(), function(record) {
             rootNode.removeChild(rootNode.findChild('id', record.get('id'), true));
-            if(me.useCheckboxes && record.get('type') == 'level') {
+            if(me.useCheckboxes && record.get('type') === 'level') {
                 me.checkedLayers = Ext.Array.difference(me.checkedLayers, record.get('checkedlayers'));
             }
         });
@@ -425,7 +426,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         }
         me.selectedlayers.getRootNode().eachChild(function(record) {
             if(!me.returnJson) {
-                if(addedLayers != '') addedLayers += ',';
+                if(addedLayers !== '') addedLayers += ',';
                 addedLayers += record.get('id');
             } else {
                 addedLayers.push({
