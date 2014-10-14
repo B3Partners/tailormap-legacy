@@ -11,25 +11,25 @@ div {
 }
 
 #loadwrapper {
-    position: relative; 
-    margin: 0 auto; 
-    text-align: left; 
+    position: relative;
+    margin: 0 auto;
+    text-align: left;
     width: 100px
 }
 
 #loader {
     position: absolute;
-        
+
     display: none;
-    text-align: center;    
+    text-align: center;
     padding: 5px;
     font: bold small sans-serif;
     background-color: #ffffaa;
     border: 1px solid #888888;
-    
+
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    border-radius: 4px; 
+    border-radius: 4px;
 }
 
 /* messages */
@@ -120,6 +120,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     float: right;
     margin-right: 10px;
     font-style: italic;
+    cursor: pointer;
 }
 .toc-inscale {
     color: black;
@@ -127,7 +128,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .no_treenode_icon{
     background-image: none;
     width: 1px;
-} 
+}
 .customIconButton button {
     width: 100% !important;
     height: 100%;
@@ -185,7 +186,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .x-nlg .x-tab-default-mr,
 .x-nlg .x-tab-default-bl,
 .x-nlg .x-tab-default-bc,
-.x-nlg .x-tab-default-br{ 
+.x-nlg .x-tab-default-br{
     background-image: none;
     background-color: #f5f5f5;
 }
@@ -197,7 +198,7 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 }
 /* End Override ExtJS style */
 
-/* 
+/*
    IOS7 on iPad has an issue with height of the html/body
    http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue
    To resolve this issue we add a class to the HTML tag and set a fixed height for the wrapper + disable touch on html element (to prevent scroll / bounce effect)
