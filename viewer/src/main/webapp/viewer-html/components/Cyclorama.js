@@ -66,7 +66,6 @@ Ext.define ("viewer.components.Cyclorama",{
         });
 
         var grid = Ext.create('Ext.grid.Panel', {
-            title: 'Simpsons',
             store: store,
             columns: [
                 { header: 'Image id',  dataIndex: this.config.imageIdAttribute,flex:1 }
@@ -85,7 +84,7 @@ Ext.define ("viewer.components.Cyclorama",{
             this.optionWindow.destroy();
         }
         this.optionWindow = Ext.create('Ext.window.Window', {
-            title: 'Hello',
+            title: "Maak een keuze uit de verschillende foto's",
             height: 200,
             width: 400,
             layout: 'fit',
