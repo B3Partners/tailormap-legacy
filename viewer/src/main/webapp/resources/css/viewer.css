@@ -147,6 +147,13 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     z-index: 15000;
 }
 
+/**
+* Fix for ExtJS not setting the cursor to move for draggable windows.
+*/
+.x-header-draggable {
+  cursor: move;
+}
+
 /* Override ExtJS style */
 .x-btn-default, .x-btn-default-large, .x-btn-default-small, .x-tab-default {
     background-color: #f5f5f5 !important;
