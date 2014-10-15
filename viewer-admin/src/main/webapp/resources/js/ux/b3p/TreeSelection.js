@@ -58,7 +58,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         // Definition of the store, which takes care of loading the necessary json
         me.treeStore = Ext.create('Ext.data.TreeStore', {
             model: 'TreeNode',
-            autoLoad: true,
             proxy: {
                 type: 'ajax',
                 url: me.treeUrl
@@ -71,7 +70,6 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         // Definition of the store, which takes care of loading the necessary json
         me.selectedLayersStore = Ext.create('Ext.data.TreeStore', {
             model: 'TreeNode',
-            autoLoad: true,
             proxy: {
                 type: 'ajax',
                 url: me.selectedLayersUrl
@@ -93,7 +91,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.treeContainer,
             width: 325,
             height: 600,
-            scroll: 'both',
+            autoScroll: true,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.addNode(record);
@@ -163,7 +161,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             renderTo: me.selectedLayersContainer,
             width: 325,
             height: 600,
-            scroll: 'both',
+            autoScroll: true,
             listeners: {
                 itemdblclick: function(view, record, item, index, event, eOpts) {
                     me.removeLayers();
@@ -376,29 +374,49 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
     },
 
     addToSelection: function(record) {
-        console.log("addToSelection:", record);
         var me = this;
         var nodeType = record.get('type');
         if(((nodeType === "layer" || nodeType === "document") && !record.get('isVirtual')) || (me.allowLevelMove && nodeType === "level" && !me.onRootLevel(record, me.tree))) {
             var addedNode = me.selectedlayers.getRootNode().findChild('id', record.get('id'), true);
             if(addedNode === null) {
-                var objData = record.data;
-                objData.text = objData.name; // For some reason text is not mapped to name when creating a new model
-                objData.isLeaf = true;
-                objData.leaf = true;
-                if(nodeType === "level") {
-                    objData.isLeaf = false;
-                    objData.leaf = false;
-                    objData.checkedlayers = [];
-                }
-                if(me.useCheckboxes && nodeType !== "level") objData.checked = false;
+                var objData = this.copyNode(record);
+                var expandAfter = objData.children && objData.children.length && !objData.isLeaf;
                 var newNode = Ext.create('TreeNode', objData);
                 var treenode = me.selectedlayers.getRootNode();
                 if(treenode) {
                     treenode.appendChild(newNode);
+                    if(expandAfter) {
+                        newNode.expand();
+                    }
                 }
             }
         }
+    },
+    
+    copyNode: function(record) {
+        var nodeType = record.get('type');
+        var objData = {
+            id: record.get('id'),
+            isLeaf: nodeType !== "level",
+            leaf: nodeType !== "level",
+            text: record.get('name'),
+            name: record.get('name'),
+            type: nodeType
+        };
+        if(nodeType === "level") {
+            objData.checkedlayers = [];
+            if(record.childNodes && record.childNodes.length) {
+                objData.children = [];
+                for(var i = 0; i < record.childNodes.length; i++) {
+                    objData.children.push(this.copyNode(record.childNodes[i]));
+                }
+            }
+        } else {
+            if(this.useCheckboxes) {
+                objData.checked = false;
+            }
+        }
+        return objData;
     },
 
     onRootLevel: function(record, tree) {
