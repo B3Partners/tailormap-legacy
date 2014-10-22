@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/crisp/ext-theme-crisp-all.css">
-        <link href="${contextPath}/resources/css/viewer-admin.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css">
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>
@@ -50,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             }
         </script>
     </head>
-    <body>
+    <body class="x-body">
         <stripes:layout-component name="header" />
         <stripes:layout-component name="body"/>
     </body>

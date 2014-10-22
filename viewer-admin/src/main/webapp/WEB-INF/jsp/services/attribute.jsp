@@ -29,9 +29,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Attributen<a href="#Attribuutlijst_Help" title="Help" class="helplink"></a></h1><br />
+            <h1>Attributen<a href="#Attribuutlijst_Help" title="Help" class="helplink"></a></h1>
 
-            <div style="margin-bottom: 10px;">
+            <div style="margin-top: 35px; margin-bottom: -20px;">
                 <p>Attributen beheren voor</p>
                 <select name="featureSourceId" id="featureSourceId">
                     <option value="-1">Maak uw keuze..</option>

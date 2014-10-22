@@ -26,15 +26,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <p>
-        <stripes:errors/>
-        <stripes:messages/>
-        </p>
         <div id="content">
-            <h1>Layar services<a href="#Layarservices_Beheren_Help" title="Help" class="helplink"></a></h1><br />  
-            <p style="margin-bottom: 5px">
+            <stripes:errors/>
+            <stripes:messages/>
+            <h1>Layar services<a href="#Layarservices_Beheren_Help" title="Help" class="helplink"></a></h1>  
+            <div style="margin-top: 35px; margin-bottom: -20px;">
                 Gebruik de volgende URL in Layar: <code><c:out value="${actionBean.url}"/></code>
-            </p>               
+            </div>               
             <div id="grid-container" class="documenten">
 
             </div>

@@ -35,10 +35,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
         <div class="textcontent">
             <h1 id="headertext">Autorisatieoverzicht voor gebruiker <c:out value="${actionBean.user.username}"/></h1>
-            <p>
-                <stripes:errors/>
-                <stripes:messages/>
-            </p>
+            <stripes:errors/>
+            <stripes:messages/>
             <h2>Groeplidmaatschap</h2>
             <c:forEach var="g" varStatus="status" items="${actionBean.user.groups}">${status.index > 0 ? "," : ""}
                 <c:out value="${g.name}"/></c:forEach>

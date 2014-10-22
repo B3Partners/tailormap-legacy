@@ -29,8 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Layarbronnen</h1><br/>
-            <div style="margin-bottom: 10px;">
+            <h1>Layarbronnen</h1>
+            <div style="margin-top: 35px; margin-bottom: -20px;">
                 <p>LayarBronnen beheren</p>
                 <select name="layarServiceId" id="layarServiceId">
                     <option value="-1">Maak uw keuze..</option>

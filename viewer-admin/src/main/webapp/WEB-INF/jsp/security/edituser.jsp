@@ -24,11 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
-        <p>
             <stripes:errors/>
             <stripes:messages/>
-        </p>
-
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.UserActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">

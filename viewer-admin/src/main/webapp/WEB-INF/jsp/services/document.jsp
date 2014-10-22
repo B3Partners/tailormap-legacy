@@ -26,12 +26,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <p>
-        <stripes:errors/>
-        <stripes:messages/>
-        </p>
         <div id="content">
-            <h1>Documenten<a href="#Documenten_Beheren_help" title="Help" class="helplink"></a></h1><br />
+            <stripes:errors/>
+            <stripes:messages/>
+            <h1>Documenten<a href="#Documenten_Beheren_help" title="Help" class="helplink"></a></h1>
             <div id="grid-container" class="documenten"></div>
             <div id="form-container" class="documenten">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>

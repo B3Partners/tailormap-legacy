@@ -29,11 +29,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
         <div id="content">
             <div id="formcontent">
-                <p>
-                    <stripes:errors/>
-                    <stripes:messages/>
+                <stripes:errors/>
+                <stripes:messages/>
                 <h1 id="headertext">Applicatie instellingen: <c:out value="${actionBean.applicationName}"/></h1>
-                </p>
                 <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm">
                     <stripes:hidden name="application" value="${actionBean.application}"/>
                     <stripes:hidden name="mashupName"/>

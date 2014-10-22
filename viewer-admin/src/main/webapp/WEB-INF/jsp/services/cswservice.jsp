@@ -23,13 +23,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>CSW service</title>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-
-        <div id="formcontent">        
-            <p>
-                <stripes:errors/>
-                <stripes:messages/>
-            </p>
-
+        <div id="formcontent">
+            <stripes:errors/>
+            <stripes:messages/>
             <stripes:form id="searchForm" beanclass="nl.b3p.viewer.admin.stripes.CatalogServiceActionBean">
                 <stripes:hidden id="category" name="category"/>
                 <h1 id="headertext">CSW Service doorzoeken</h1>

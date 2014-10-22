@@ -24,10 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="body">
         <div id="formcontent">
-        <p>
             <stripes:errors/>
             <stripes:messages/>
-        </p>
             <script type="text/javascript" src="${contextPath}/resources/js/services/editfeaturetyperelation.js"></script>
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean">
                 <c:choose>

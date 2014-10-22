@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
     <stripes:layout-component name="body">
         <div id="content">
-            <h1>Attribuutbronnen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1><br />
+            <h1>Attribuutbronnen<a href="#Attribuutbronnen_Help" title="Help" class="helplink"></a></h1>
 
             <div id="grid-container" class="attributesources">
                 
