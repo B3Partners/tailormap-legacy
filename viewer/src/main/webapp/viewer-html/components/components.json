@@ -535,7 +535,7 @@
         shortName: "HTML",
         sources: ["HTML.js"],
         configSource: ["ConfigObject.js","HTML-config.js"],
-        restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom","header","footer"]
+        restrictions: ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom","header","footer", "popupwindow"]
     },
 
     {

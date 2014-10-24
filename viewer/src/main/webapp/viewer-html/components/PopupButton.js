@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ Ext.define ("viewer.components.PopupButton",{
         viewerController:null,
         label: ""
     },
-    constructor: function (conf){        
+    constructor: function (conf){
         this.windowClosing = false;
         this.popup = conf.viewerController.layoutManager.popupWin;
         var selected = !this.popup.popupWin.isHidden() ||false ;
@@ -38,13 +38,13 @@ Ext.define ("viewer.components.PopupButton",{
         this.renderButton({
             handler: function(){
                 me.popup.show();
-                me.setButtonState('click',true);
+                me.setButtonState('click',false);
             },
             text: me.title,
             icon: me.iconUrl,
             tooltip: me.tooltip,
             label: me.label
-        });      
+        });
         var state = 'normal';
         if(selected){
             state = 'click';

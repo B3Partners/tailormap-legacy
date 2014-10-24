@@ -677,15 +677,15 @@ Ext.define("viewer.components.sf.Slider", {
             var min = (mustEscape ? "'" : "") + this.slider.getValue(0) + (mustEscape ? "'" : "");
             var max = (mustEscape ? "'" : "") + this.slider.getValue(1) + (mustEscape ? "'" : "");
 
-            cql = this.config.attributeName + " > " + min + " AND " + this.config.attributeName + " < " + max;
+            cql = this.config.attributeName + " >= " + min + " AND " + this.config.attributeName + " <= " + max;
         }else{
             var value = (mustEscape ? "'" : "") + this.slider.getValue() + (mustEscape ? "'" : "");
             if (sliderType === "eq"){
                 cql = this.config.attributeName + " = " + value;
             }else if (sliderType === "gt"){
-                cql = this.config.attributeName + " > " + value;
+                cql = this.config.attributeName + " >= " + value;
             }else if (sliderType === "lt"){
-                cql = this.config.attributeName + " < " + value;
+                cql = this.config.attributeName + " <= " + value;
             }
         }
         return cql;

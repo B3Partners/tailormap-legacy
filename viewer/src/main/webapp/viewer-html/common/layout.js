@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ Ext.define('viewer.LayoutManager', {
     floatingPanels: [],
     // components configuration
     componentsConfig: null,
-    
+
     constructor: function(config, componentsConfig) {
         Ext.apply(this, config || {});
         this.componentsConfig = componentsConfig;
@@ -60,7 +60,7 @@ Ext.define('viewer.LayoutManager', {
         // console.log('VIEWPORTITEMS: ', viewportItems);
         me.renderLayout(viewportItems);
     },
-    
+
     filterComponentList: function(components) {
         var me = this;
         var result = Ext.Array.filter(components, function(comp) {
@@ -68,7 +68,7 @@ Ext.define('viewer.LayoutManager', {
         });
         return result;
     },
-    
+
     createRegionList: function() {
         var me = this;
         var layoutItems = {};
@@ -104,7 +104,7 @@ Ext.define('viewer.LayoutManager', {
         });
         return viewportItems;
     },
-    
+
     getLayoutRegion: function(regionid, regionitems) {
         var me = this;
         var layout = {
@@ -168,7 +168,7 @@ Ext.define('viewer.LayoutManager', {
                 } else if(regionlayout.height != '' && regionlayout.heightmeasure == '%') {
                     layout.flex = parseInt(regionlayout.height) / 100;
                 }
-                
+
                 extLayout = 'fit';
                 if(regionlayout.useTabs == false && componentItems.length > 1 && !Ext.isDefined(regionitems[0].regionDefaultConfig.singleComponentBlock) && !regionitems[0].regionDefaultConfig.singleComponentBlock) {
                     extLayout = { type: 'vbox', align: 'stretch' };
@@ -182,14 +182,14 @@ Ext.define('viewer.LayoutManager', {
                         backgroundColor: regionlayout.bgcolor
                     };
                 }
-                
+
                 if(regionlayout && regionlayout.hasOwnProperty('enableFloating') && regionlayout.enableFloating) {
                     // Region is set to floating, calculate the height of the components in the centerItem
                     layout.height = this.getComponentsHeight(componentsList);
                     // Create and return the floating panel
                     return me.createFloatingPanel(regionlayout, regionitems[0].regionDefaultConfig.region, componentItems, layout, extLayout);
                 }
-                
+
                 layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, regionitems[0].regionDefaultConfig.columnOrientation));
                 return Ext.apply({
                     xtype: 'container',
@@ -200,7 +200,7 @@ Ext.define('viewer.LayoutManager', {
                     cls: 'layout-' + regionitems[0].name
                 }, layout);
             } else if(regionitems[0].regionDefaultConfig.region == "popupwindow") {
-                
+
                 var width = 400;
                 if(regionlayout.width != '' && regionlayout.widthmeasure == 'px') {
                     width = parseInt(regionlayout.width);
@@ -217,12 +217,12 @@ Ext.define('viewer.LayoutManager', {
                 if(regionlayout.useTabs == false && componentItems.length > 1) {
                     popupLayout = { type: 'hbox', align: 'stretch' };
                 }
-                
+
                 var title = ' ';
                 if(regionlayout.title && regionlayout.title != '') {
                     title = regionlayout.title;
                 }
-                
+
                 var posx = 0,
                     posy = 0,
                     position = 'center';
@@ -231,10 +231,10 @@ Ext.define('viewer.LayoutManager', {
                     posy = regionlayout.posy;
                     position = 'fixed';
                 }
-                
+
                 var popupWindowConfig = {
                    title: title,
-                   showOnStartup:true,
+                   showOnStartup:false,
                    details:{
                         closable: true,
                         closeAction: 'hide',
@@ -258,7 +258,7 @@ Ext.define('viewer.LayoutManager', {
         }
         return {};
     },
-    
+
     /**
      * Helper function to compute the height of subregions
      * This will be the total of the heights set in the viewer-admin layoutmanager
@@ -273,11 +273,11 @@ Ext.define('viewer.LayoutManager', {
         });
         return totalHeight;
     },
-    
+
     /**
      * Create a floating panel. Returns an empty object so the Layout manager will
      * skip rendering (since it is rendered directly)
-     * 
+     *
      * @param regionLayout      The layout config object for the panel
      * @param region            The border-layout region. Used for aligning panel left or right
      * @param componentItems    The items which will be placed inside the panel
@@ -312,7 +312,7 @@ Ext.define('viewer.LayoutManager', {
         // Return empty object
         return {};
     },
-    
+
     getCollapseConfig: function(regionLayout, columnOrientation) {
         var me = this;
         if(columnOrientation === 'vertical' && regionLayout.hasOwnProperty('enableCollapse') && regionLayout.enableCollapse) {
@@ -334,7 +334,7 @@ Ext.define('viewer.LayoutManager', {
         }
         return {};
     },
-    
+
     getSubLayoutRegion: function(regionitems) {
         var me = this;
         var items = {};
@@ -397,7 +397,7 @@ Ext.define('viewer.LayoutManager', {
         });
         return me.reorderSubRegions(items);
     },
-    
+
     reorderSubRegions: function(subregions) {
         var order = ['north','west','center','east','south'];
         var items = [];
@@ -408,7 +408,7 @@ Ext.define('viewer.LayoutManager', {
         });
         return items;
     },
-    
+
     getSubRegionCenterItem: function(regionitems) {
         var centerItem = null;
         Ext.Array.each(regionitems, function(item, index) {
@@ -446,7 +446,7 @@ Ext.define('viewer.LayoutManager', {
         var me = this;
         var first = true;
         var singleBlock = (Ext.isDefined(regionDefaultConfig.singleComponentBlock) && regionDefaultConfig.singleComponentBlock);
-        
+
         Ext.Array.each(components, function(component) {
             if(!singleBlock || (singleBlock && first)) {
                 cmpId = Ext.id();
@@ -489,7 +489,7 @@ Ext.define('viewer.LayoutManager', {
             if(!singleBlock || (singleBlock && first)) {
                 componentItems.push(cmpView);
             }
-            
+
             var componentItem = {
                 htmlId: cmpId,
                 componentName: component.name,
@@ -570,9 +570,9 @@ Ext.define('viewer.LayoutManager', {
             style: containerStyle
         });
     },
-            
+
     getContainerheight: function() {
-        var me = this, containerHeight = '100%';        
+        var me = this, containerHeight = '100%';
         if(Ext.isWebKit && Ext.webKitVersion < 530) {
             // There is a bug in webkit which allows the inner div to extend further than the max-height of the wrapper div
             // Seems to be fixed in future Chrome versions (https://bugs.webkit.org/show_bug.cgi?id=26559) so remove this fix when possible
@@ -592,7 +592,7 @@ Ext.define('viewer.LayoutManager', {
     getComponentList: function() {
         return this.componentList;
     },
-    
+
     setTabTitle: function(componentId, title) {
         // Not sure if this works, don't know for sure how to set a tab title
         var me = this;
@@ -600,16 +600,16 @@ Ext.define('viewer.LayoutManager', {
             Ext.getCmp(me.tabComponents[componentId].tabId).tabBar.items.getAt(me.tabComponents[componentId].tabNo).setText(title);
         }
     },
-    
+
     isTabComponent: function(componentId) {
         var me = this;
         return Ext.isDefined(me.tabComponents[componentId]);
     },
-    
+
     showStartupPopup: function() {
         this.popupWin.show();
     },
-    
+
     hideStartupPopup: function() {
         this.popupWin.hide();
     },
