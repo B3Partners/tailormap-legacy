@@ -322,6 +322,8 @@ Ext.define('viewer.LayoutManager', {
                 collapsible: true,
                 animCollapse: false,
                 title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
+                collapsed: regionLayout.hasOwnProperty('defaultCollapsed') && regionLayout.defaultCollapsed,
+                hideMode: 'offsets',
                 listeners: {
                     collapse: function() {
                         me.resizeLayout();
@@ -620,6 +622,9 @@ Ext.define('viewer.LayoutManager', {
 
     resizeLayout: function(continueFunction) {
         var me = this;
+        if(!me.mainLayoutContainer) {
+            return;
+        }
         if(Ext.isWebKit) {
             // Webkit bug
             me.mainLayoutContainer.setHeight(me.getContainerheight());
