@@ -96,6 +96,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     color: ${steunkleur2};
                 }
                 
+                /* Text color for collapsed side-panels */
+                .x-panel-header svg text {
+                    fill: ${steunkleur2};
+                }
+                
                 /* Openlayers Overzichtskaartbg */
                 .olControlOverviewMapElement {
                     background-color: ${steunkleur1} !important;
