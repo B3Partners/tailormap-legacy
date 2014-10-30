@@ -341,7 +341,8 @@ Ext.define('viewer.LayoutManager', {
             renderTo: Ext.getBody(),
             autoScroll: true,
             items: componentItems,
-            minWidth: layout.width
+            minWidth: layout.width,
+            cls: 'floating-window'
         };
         // Create a window to act as floating panel
         var popupWindow = Ext.create('Ext.window.Window', config);
