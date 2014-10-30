@@ -113,6 +113,41 @@ Ext.define('viewer.LayoutManager', {
         };
         var regionlayout = null;
         var extLayout = '';
+
+        // Check if left_menu has floating option
+        if(regionid === 'center' && regionitems.length > 1) {
+            var floatingLeftMenu = false,
+                centerItem = null;
+            for(var i = 0; i < regionitems.length; i++) {
+                // Keep ref to centerItem for later use
+                if(regionitems[i].name === 'content') {
+                    centerItem = regionitems[i];
+                }
+                // Check if floating is enabled
+                if(regionitems[i].name === 'left_menu' && regionitems[i].regionConfig.layout.enableFloating) {
+                    floatingLeftMenu = true;
+                    // Create floating region
+                    var componentsList = me.filterComponentList(regionitems[i].regionConfig.components);
+                    var componentItems = me.createComponents(componentsList, regionitems[i].regionDefaultConfig, regionitems[i].regionConfig.layout, regionitems[i].name);
+                    // Create the floating panel
+                    me.createFloatingPanel(
+                        /*regionLayout=*/{ panelTitle: '' },
+                        /*region=*/'center',
+                        /*componentItems=*/componentItems,
+                        /*layout=*/{ width: 58, height: componentsList.length * 46 }, // default button width/height + padding
+                        /*extLayout=*/{ type: 'vbox', align: 'stretch' }
+                    );
+                    // Add some CSS to move tools to the right place
+                    var css = '.olControlPanel { left: 68px; } .olControlPanWestItemInactive { left: 68px !important; }';
+                    Ext.util.CSS.createStyleSheet(css, "floatingmenu");
+                }
+            }
+            // Left menu is floating, only add centerItem to layout
+            if(floatingLeftMenu) {
+                regionitems = [ centerItem ];
+            }
+        }
+
         if(regionitems.length > 1) {
             var items = me.getSubLayoutRegion(regionitems);
             var centerItem = me.getSubRegionCenterItem(regionitems);
@@ -286,22 +321,30 @@ Ext.define('viewer.LayoutManager', {
      */
     createFloatingPanel: function(regionLayout, region, componentItems, layout, extLayout) {
         // Determine alignment based on region
-        var alignment = (region === 'west' ? 'left' : 'right');
-        // Create a window to act as floating panel
-        var popupWindow = Ext.create('Ext.window.Window', {
+        var alignment = region === 'west' ?
+                            'left' :
+                            region === 'center' ?
+                                'center' :
+                                'right';
+        // popupwindow config
+        var windowPadding = 12;
+        var config = {
             title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
             autoShow: true,
             closable: false,
             width: layout.width,
-            height: layout.height ? (layout.height + 12) : '90%', // we are adding 12 px to account for borders and margins of the window
+            height: layout.height ? (layout.height + windowPadding) : '90%', // we are adding 12 px to account for borders and margins of the window
             resizable: false,
             draggable: false,
             layout: extLayout,
             modal: false,
             renderTo: Ext.getBody(),
             autoScroll: true,
-            items: componentItems
-        });
+            items: componentItems,
+            minWidth: layout.width
+        };
+        // Create a window to act as floating panel
+        var popupWindow = Ext.create('Ext.window.Window', config);
         // Align the floating panel to the left or right of the screen
         this.alignFloatingPanel(popupWindow, alignment);
         // Save panels in store so they can be re-aligned when resizing the screen
@@ -571,6 +614,14 @@ Ext.define('viewer.LayoutManager', {
             width: '100%',
             style: containerStyle
         });
+        me.afterLayout();
+    },
+    
+    afterLayout: function() {
+        var me = this;
+        Ext.Array.each(me.floatingPanels, function(panel) {
+            me.alignFloatingPanel(panel.window, panel.alignment);
+        });
     },
 
     getContainerheight: function() {
@@ -617,6 +668,13 @@ Ext.define('viewer.LayoutManager', {
     },
 
     alignFloatingPanel: function(panel, alignment) {
+        if(alignment === 'center') {
+            var centerpart = Ext.select('.layout-content');
+            if(centerpart.elements.length !== 0) {
+                panel.alignTo(centerpart.elements[0], 'tl-tl' , [5, 5]);
+            }
+            return;
+        }
         panel.alignTo(Ext.getBody(), (alignment === 'left' ? 'tl-tl' : 'tr-tr'), (alignment === 'left' ? [10, 10] : [-10, 10]));
     },
 
