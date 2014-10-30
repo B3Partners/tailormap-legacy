@@ -271,6 +271,10 @@ Ext.onReady(function() {
                                                     'Balk in/uit kunnen klappen : ' +
                                                     '<input type="checkbox" id="' + layoutRegion.get('id') + '_enableCollapse" />' +
                                                 '</div>';
+                    layoutRegionConfigHtml += '<div class="tabsconfig" style="display: none;" id="' + layoutRegion.get('id') + '_default_collapse_setting">' +
+                                                    'Balk standaard ingeklapt : ' +
+                                                    '<input type="checkbox" id="' + layoutRegion.get('id') + '_defaultCollapsed" />' +
+                                                '</div>';
                 }
                 if(layoutRegion.get('configureFloating')) {
                     layoutRegionConfigHtml += '<div class="tabsconfig">' +
@@ -466,16 +470,33 @@ Ext.onReady(function() {
                           }
                           Ext.fly(regionId + '_enableFloating').dom.checked = floatingChecked;
                     }
-                    if(layoutRegion.get('configureCollapsible')|| layoutRegion.get('configureFloating')) {
+                    if(layoutRegion.get('configureCollapsible')) {
                         var collapseChecked = false;
+                        var defaultCollapsed = false;
                         if(Ext.isDefined(layoutJson[regionId]['layout']['enableCollapse']) && layoutJson[regionId]['layout']['enableCollapse']) {
                             collapseChecked = layoutJson[regionId]['layout']['enableCollapse'];
                         }
-                        Ext.fly(regionId + '_enableCollapse').dom.checked = collapseChecked;
+                        if(Ext.isDefined(layoutJson[regionId]['layout']['defaultCollapsed']) && layoutJson[regionId]['layout']['defaultCollapsed']) {
+                            defaultCollapsed = layoutJson[regionId]['layout']['defaultCollapsed'];
+                        }
+                        var enableCollapseCheckbox = Ext.get(regionId + '_enableCollapse');
+                        var defaultCollapseContainer = Ext.get(regionId + '_default_collapse_setting');
+                        enableCollapseCheckbox.dom.checked = collapseChecked;
+                        enableCollapseCheckbox.on('click', function() {
+                            defaultCollapseContainer.dom.style.display = enableCollapseCheckbox.dom.checked ? 'block' : 'none';
+                        });
+                        if(collapseChecked) {
+                            defaultCollapseContainer.dom.style.display = 'block';
+                            Ext.fly(regionId + '_defaultCollapsed').dom.checked = defaultCollapsed;
+                        }
+                    }
+                    
+                    if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
                         Ext.fly(regionId + '_panelTitle').set({
                             value:(layoutJson[regionId]['layout']['panelTitle'] || '')
                         });
                     }
+                    
                     var bgcolor = '';
                     if(Ext.isDefined(layoutJson[regionId]['layout']['bgcolor'])) {
                         bgcolor = layoutJson[regionId]['layout']['bgcolor'];
@@ -806,7 +827,7 @@ Ext.onReady(function() {
             if(region.get('configureCollapsible')) {
                 Ext.apply(layoutConfig, {
                     'enableCollapse': Ext.fly(regionId + '_enableCollapse').dom.checked,
-                    'panelTitle': Ext.fly(regionId + '_panelTitle').getValue() || ''
+                    'defaultCollapsed': Ext.fly(regionId + '_defaultCollapsed').dom.checked
                 });
             }
             if(region.get('configureFloating')) {
