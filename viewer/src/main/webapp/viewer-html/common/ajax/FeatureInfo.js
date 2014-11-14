@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,18 +20,18 @@ Ext.define("viewer.FeatureInfo", {
         actionBeanUrl: null,
         viewerController: null
     },
-    constructor: function(config) {        
-        this.initConfig(config);      
+    constructor: function(config) {
+        this.initConfig(config);
         if(this.config.actionbeanUrl == null) {
             this.config.actionbeanUrl = actionBeans["featureinfo"];
-        }        
+        }
     },
     getVisibleAppLayers: function() {
         var visibleLayerIds = this.viewerController.getVisibleLayers();
-        
+
         var visibleAppLayers = {};
-        
-        for(var i in visibleLayerIds) {            
+
+        for(var i in visibleLayerIds) {
             var id=visibleLayerIds[i];
             var appLayer = viewerController.getAppLayerById(id);
             if(appLayer != null) {
@@ -51,8 +51,8 @@ Ext.define("viewer.FeatureInfo", {
             timeout: 60000,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
-                
-                for(var i in response) {
+
+                for(var i = 0 ; i < response.length ; i++) {
                     var r = response[i];
                     if(r.request.appLayer) {
                         r.appLayer = me.viewerController.app.appLayers[r.request.appLayer];
@@ -67,11 +67,11 @@ Ext.define("viewer.FeatureInfo", {
                     failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
-        });        
+        });
     },
     featureInfo: function(x, y, distance, successFunction, failureFunction) {
         var visibleAppLayers = this.getVisibleAppLayers();
-        
+
         var queries = [];
         for(var id in visibleAppLayers) {
             var appLayer = this.viewerController.app.appLayers[id];
@@ -81,7 +81,7 @@ Ext.define("viewer.FeatureInfo", {
             }
             queries.push(query);
         }
-        
+
         var params = {featureInfo: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(queries)};
 
         this.featureInfoInternal(params, successFunction, failureFunction);
@@ -89,11 +89,11 @@ Ext.define("viewer.FeatureInfo", {
     layersFeatureInfo: function(x, y, distance, appLayers, extraParams, successFunction, failureFunction,scope) {
 
         var visibleAppLayers = this.getVisibleAppLayers();
-        
+
         var queries = [];
         for(var i in appLayers) {
             var appLayer = appLayers[i];
-            
+
             if(visibleAppLayers[appLayer.id] === true) {
                 var query = { appLayer: appLayer.id };
                 if(appLayer.filter) {
@@ -102,19 +102,19 @@ Ext.define("viewer.FeatureInfo", {
                 queries.push(query);
             }
         }
-        
+
         var params = {
-            featureInfo: true, 
-            x: x, 
-            y: y, 
-            distance: distance, 
+            featureInfo: true,
+            x: x,
+            y: y,
+            distance: distance,
             queryJSON: Ext.JSON.encode(queries)
         };
         Ext.merge(params, extraParams);
         if(queries.length > 0) {
             return this.featureInfoInternal(params, successFunction, failureFunction,scope);
         }
-    },    
+    },
     editFeatureInfo: function(x, y, distance, appLayer, successFunction, failureFunction, extraParams) {
         var query = [{appLayer: appLayer.id}];
         var params ={application: this.viewerController.app.id, featureInfo: true, edit: true, arrays: true, x: x, y: y, distance: distance, queryJSON: Ext.JSON.encode(query)};
@@ -139,6 +139,6 @@ Ext.define("viewer.FeatureInfo", {
                     failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
                 }
             }
-        });         
+        });
     }
 });

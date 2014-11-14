@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.Maptip",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
     balloon: null,
     maptipComponent: null,
     config: {
@@ -47,59 +47,59 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * @constructor
      */
-    constructor: function (conf){     
+    constructor: function (conf){
         conf.isPopup=true;
         viewer.components.Maptip.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        
+
         //make the balloon
         this.balloon = new Balloon(this.getDiv(),this.getViewerController().mapComponent,"balloon",this.width,this.height);
         this.balloon.zIndex = this.balloon.zIndex+1;
-        //set the offset of the map        
-        var me = this;        
-        //if topmenu height is in % then recalc on every resize.        
+        //set the offset of the map
+        var me = this;
+        //if topmenu height is in % then recalc on every resize.
         var topMenuLayout=this.viewerController.getLayout('top_menu');
         if (topMenuLayout.heightmeasure && topMenuLayout.heightmeasure =="%"){
             Ext.EventManager.onWindowResize(function(){
-                me.onResize();            
+                me.onResize();
             }, this);
-        }        
+        }
         this.onResize();
-        
+
         //listen to the on addlayer
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onLayerRemoved,this);
         //listen to the onmaptipcancel
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);             
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_CANCEL,this.onMaptipCancel,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT,function(map,options){
             this.balloon.close();
-        },this);             
-                
+        },this);
+
         //Add the maptip component to the framework
         conf.type = viewer.viewercontroller.controller.Component.MAPTIP;
         this.maptipComponent = this.getViewerController().mapComponent.createComponent(conf);
-        this.getViewerController().mapComponent.addComponent(this.maptipComponent);        
+        this.getViewerController().mapComponent.addComponent(this.maptipComponent);
         return this;
-    },    
+    },
     /**
      * Event handler for when a layer is added to the map
      * @see event ON_LAYER_ADDED
      */
-    onAddLayer: function(map,options){     
+    onAddLayer: function(map,options){
         var mapLayer = options.layer;
         if (mapLayer==null)
             return;
         if (!this.isLayerConfigured(mapLayer)){
             return;
         }
-        if(this.isSummaryLayer(mapLayer)){            
+        if(this.isSummaryLayer(mapLayer)){
             if (mapLayer.appLayerId){
                 var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
                 var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-                //Store the current map extent for every maptip request.            
+                //Store the current map extent for every maptip request.
                 this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,function(map,options){
                     this.setRequestExtent(map.getExtent());
-                },this);         
+                },this);
 
                 //do server side getFeature.
                 if (layer.hasFeatureType){
@@ -113,16 +113,16 @@ Ext.define ("viewer.components.Maptip",{
                     }
                 }
             }else{
-                mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);         
+                mapLayer.addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP_DATA,this.onMapData,this);
             }
         }
     },
-    
+
     onLayerRemoved: function(map,options) {
         var mapLayer = options.layer;
         if (mapLayer==null)
-            return;        
-        if(this.isSummaryLayer(mapLayer)){            
+            return;
+        if(this.isSummaryLayer(mapLayer)){
             if (mapLayer.appLayerId){
                 var appLayer=this.viewerController.app.appLayers[mapLayer.appLayerId];
                 var layer = this.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
@@ -133,22 +133,22 @@ Ext.define ("viewer.components.Maptip",{
         }
 
     },
-    
+
     onResize : function(){
-        var top = this.viewerController.getTopMenuHeightInPixels();        
+        var top = this.viewerController.getTopMenuHeightInPixels();
         this.balloon.offsetY=Number(top);
     },
-    
+
     /**
      * Enable doing server requests.
      * @param appLayer the applayer
      */
-    addLayerInServerRequest: function (appLayer){ 
+    addLayerInServerRequest: function (appLayer){
         //first time register for event and make featureinfo ajax request handler.
         if (!this.serverRequestEnabled){
             this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_MAPTIP,this.doServerRequest,this);
             this.requestManager = Ext.create(viewer.components.RequestManager,Ext.create("viewer.FeatureInfo", {viewerController: this.viewerController}), this.viewerController);
-            
+
             this.serverRequestEnabled = true;
         }
         if (this.serverRequestLayers ==null){
@@ -162,12 +162,12 @@ Ext.define ("viewer.components.Maptip",{
     doServerRequest: function(map,options){
         if (!this.requestManager || !this.enabled){
             return;
-        }        
+        }
         var radius=4*map.getResolution();
         var me=this;
-        
+
         var currentScale = this.viewerController.mapComponent.getMap().getScale();
-        
+
         var inScaleLayers = new Array();
         if (this.serverRequestLayers){
             for (var i=0; i < this.serverRequestLayers.length; i++){
@@ -188,7 +188,7 @@ Ext.define ("viewer.components.Maptip",{
                     layer.fireEvent(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, data.appLayer,data);
                 }
             }
-            
+
             me.onMapData(null, options);
         }, this.onFailure);
     },
@@ -211,8 +211,8 @@ Ext.define ("viewer.components.Maptip",{
         try{
             var browserZoomRatio = this.getBrowserZoomRatio();
 
-            if (browserZoomRatio!=1){            
-                options.y= Math.round(browserZoomRatio * (options.y));        
+            if (browserZoomRatio!=1){
+                options.y= Math.round(browserZoomRatio * (options.y));
                 options.x= Math.round(browserZoomRatio * options.x);
             }
 
@@ -238,8 +238,8 @@ Ext.define ("viewer.components.Maptip",{
             this.worldPosition = options.coord;
             //alert(layer);
             var me = this;
-            var data=options.data;        
-            var components=[];    
+            var data=options.data;
+            var components=[];
             //this.balloon.getContentElement().insertHtml("beforeEnd", "BOEEEEE");
             if (data==null || data =="null" || data==undefined){
                 return;
@@ -247,7 +247,7 @@ Ext.define ("viewer.components.Maptip",{
             components = this.createInfoHtmlElements(data);
             if (!Ext.isEmpty(components)){
                 var x= options.x;
-                var y= options.y;               
+                var y= options.y;
                 this.balloon.setPosition(x,y,true,browserZoomRatio);
                 this.balloon.addElements(components);
                 this.balloon.show();
@@ -262,7 +262,7 @@ Ext.define ("viewer.components.Maptip",{
     createInfoHtmlElements: function (data){
         var me = this;
         var components=[];
-        for (var layerIndex in data){            
+        for (var layerIndex = 0 ; layerIndex < data.length ;layerIndex ++ ){
             var layer=data[layerIndex];
             if (layer.error){
                 this.viewerController.logger.error(layer.error);
@@ -283,7 +283,7 @@ Ext.define ("viewer.components.Maptip",{
                 }
                 var showRightColumn = (details && details["summary.image"]);
                 var layerName= layer.request.appLayer;
-                for (var index in layer.features){
+                for (var index = 0 ; index< layer.features.length ; index ++){
                     var feature = layer.features[index];
                     //backwards compatibility. If the feature is the attributes (old way) use the feature as attribute obj.
                     var attributes = feature.attributes? feature.attributes : feature;
@@ -293,7 +293,7 @@ Ext.define ("viewer.components.Maptip",{
                     if (appLayer){
                         id += appLayer.serviceId;
                     }
-                    id += "_"+layerName+"_"+index;                        
+                    id += "_"+layerName+"_"+index;
                     featureDiv.id= id;
                     //left column
                     var leftColumnDiv = new Ext.Element(document.createElement("div"));
@@ -333,20 +333,20 @@ Ext.define ("viewer.components.Maptip",{
                         var detailDiv = new Ext.Element(document.createElement("div"));
                         detailDiv.addCls("feature_summary_detail");
                         //detailDiv.insertHtml("beforeEnd","<a href='javascript: alert(\"boe\")'>Detail</a>");
-                        if (this.getMoreLink()!=null){ 
+                        if (this.getMoreLink()!=null){
                             var detailElem=document.createElement("a");
                             detailElem.href='javascript: void(0)';
                             detailElem.feature=attributes;
                             detailElem.appLayer=appLayer;
                             var detailLink = new Ext.Element(detailElem);
                             detailLink.addListener("click",
-                                function (evt,el,o){ 
+                                function (evt,el,o){
                                     me.showDetails(el.appLayer,el.feature);
                                 },
                                 this);
                             detailLink.insertHtml("beforeEnd",this.getMoreLink());
                             detailDiv.appendChild(detailLink);
-                        }                            
+                        }
                         leftColumnDiv.appendChild(detailDiv);
 
                     featureDiv.appendChild(leftColumnDiv);
@@ -389,10 +389,10 @@ Ext.define ("viewer.components.Maptip",{
         featureDiv.addCls("feature_detail_feature");
         featureDiv.setStyle("background-color", "white");
         featureDiv.id="f_details_"+appLayer.serviceId+"_"+appLayer.layerName;
-        
+
         var noHtmlEncode = "true" == appLayer.details['summary.noHtmlEncode'];
         var nl2br = "true" == appLayer.details['summary.nl2br'];
-        
+
         if (appLayer.details){
             //title
             if (this.detailShowTitle && appLayer.details["summary.title"] ){
@@ -459,7 +459,7 @@ Ext.define ("viewer.components.Maptip",{
                 featureDiv.appendChild(attributesDiv);
             }
         }
-        cDiv.appendChild(featureDiv);        
+        cDiv.appendChild(featureDiv);
         this.popup.show();
     },
     onFailure: function(e){
@@ -476,7 +476,7 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * Replaces all [feature names] with the values of the feature.
      * @param text the text that must be search for 'feature names'
-     * @param feature a object with object[key]=value 
+     * @param feature a object with object[key]=value
      * @param noHtmlEncode allow HTML tags in feature values
      * @param nl2br Replace newlines in feature values with br tags
      * @return a new text with all [key]'s  replaced
@@ -493,13 +493,13 @@ Ext.define ("viewer.components.Maptip",{
             }
             if(nl2br) {
                 value = Ext.util.Format.nl2br(value);
-            }            
+            }
             newText=newText.replace(regex,value);
         }
         //remove all remaining [...]
         var begin=newText.indexOf("[");
         var end=newText.indexOf("]");
-        while(begin >=0 && end>0){            
+        while(begin >=0 && end>0){
             newText=newText.replace(newText.substring(begin,end+1),"");
             begin=newText.indexOf("[");
             end=newText.indexOf("]");
@@ -512,7 +512,7 @@ Ext.define ("viewer.components.Maptip",{
      * @return a string of layer names in the given layer that have a maptip configured.
      */
     isSummaryLayer: function(layer){
-        var details = layer.getDetails();        
+        var details = layer.getDetails();
         return this.isSummaryDetails(details);
     },
     /**
@@ -532,7 +532,7 @@ Ext.define ("viewer.components.Maptip",{
     /**
      * Checks if a layer is enabled for this component.
      * If no layers are configured then true is returned
-     * Otherwise the appLayerId is checked of the given mapLayer in the list 
+     * Otherwise the appLayerId is checked of the given mapLayer in the list
      * of configured layers.
      */
     isLayerConfigured: function (mapLayer){
@@ -573,7 +573,7 @@ Ext.define ("viewer.components.Maptip",{
         }
         return null;
     },
-    
+
     /**
      */
     setRequestExtent: function (requestExtent){
@@ -606,7 +606,7 @@ Ext.define ("viewer.components.Maptip",{
     getExtComponents: function() {
         return [];
     }
-    
+
 });
 
 /** Creates a balloon.
@@ -622,14 +622,14 @@ Ext.define ("viewer.components.Maptip",{
  * @param balloonArrowHeight the hight of the arrowImage (optional, default: 40);
  */
 function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight, offsetX,offsetY, balloonCornerSize, balloonArrowHeight){
-    this.mapDiv=Ext.get(mapDiv);    
+    this.mapDiv=Ext.get(mapDiv);
     this.viewerController=viewerController;
     this.balloonId=balloonId;
     this.balloonWidth=300;
     this.balloonHeight=300;
     this.balloonCornerSize=20;
     this.balloonArrowHeight=20;
-    this.balloonContent=null;    
+    this.balloonContent=null;
     this.mouseIsOverElement=new Object();
     this.maptipId=0;
     this.closeOnMouseOut=true;
@@ -642,7 +642,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
     this.arrowImgPath=contextPath+"/viewer-html/components/resources/images/maptip/arrow.png";
     //this.leftOfPoint;
     //this.topOfPoint;
-    
+
     //the balloon jquery dom element.
     this.balloon=null;
     this.x=null;
@@ -673,8 +673,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         this.balloon=new Ext.Element(document.createElement("div"));
         this.balloon.addCls("infoBalloon");
         this.balloon.id = this.balloonId;
-                
-        this.balloon.applyStyles({            
+
+        this.balloon.applyStyles({
             'position': 'absolute',
             'width':""+this.balloonWidth+"px",
             'height':""+this.balloonHeight+"px",
@@ -682,7 +682,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         });
 
         var maxCornerSize=this.balloonHeight-(this.balloonArrowHeight*2)+2-this.balloonCornerSize;
-        
+
         var topLeftEl=document.createElement("div");
         topLeftEl.innerHTML="<img style='position: absolute;' src='"+this.roundImgPath+"'/>";
         var topLeft = new Ext.Element(topLeftEl);
@@ -697,12 +697,12 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         });
         topLeft.on("mouseover",function(){
             this.onMouseOver('topLeft');
-        },this); 
+        },this);
         topLeft.on("mouseout",function(){
             this.onMouseOut('topLeft');
-        },this);  
+        },this);
         this.balloon.appendChild(topLeft);
-        
+
         var topRightEl = document.createElement("div");
         topRightEl.innerHTML="<img style='position: absolute; left: -1004px;' src='"+this.roundImgPath+"'/>";
         var topRight= new Ext.Element(topRightEl);
@@ -715,17 +715,17 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         });
         topRight.on("mouseover",function(){
             this.onMouseOver('topRight');
-        },this); 
+        },this);
         topRight.on("mouseout",function(){
             this.onMouseOut('topRight');
-        },this); 
+        },this);
         this.balloon.appendChild(topRight);
-        
+
         var bottomLeftEl = document.createElement("div");
         bottomLeftEl.innerHTML="<img style='position: absolute; top: -748px;' src='"+this.roundImgPath+"'/>";
         var bottomLeft=new Ext.Element(bottomLeftEl);
         bottomLeft.addCls("balloonCornerBottomLeft");
-        bottomLeft.applyStyles({        
+        bottomLeft.applyStyles({
             'height':this.balloonCornerSize+'px',
             'left':  '0px',
             'bottom': this.balloonArrowHeight-1+'px',
@@ -733,12 +733,12 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         });
         bottomLeft.on("mouseover",function(){
             this.onMouseOver('bottomLeft');
-        },this); 
+        },this);
         bottomLeft.on("mouseout",function(){
             this.onMouseOut('bottomLeft');
-        },this); 
+        },this);
         this.balloon.appendChild(bottomLeft);
-        
+
         var bottomRightEl = document.createElement("div");
         bottomRightEl.innerHTML="<img style='position: absolute; top: -748px; left: -1004px;' src='"+this.roundImgPath+"'/>";
         var bottomRight = new Ext.Element(bottomRightEl);
@@ -751,19 +751,19 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         });
         bottomRight.on("mouseover",function(){
             this.onMouseOver('bottomRight');
-        },this); 
+        },this);
         bottomRight.on("mouseout",function(){
             this.onMouseOut('bottomRight');
-        },this); 
+        },this);
         this.balloon.appendChild(bottomRight);
-        
+
         //arrows
         this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img src='"+this.arrowImgPath+"'/></div>");
         this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowTopRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+this.balloonArrowHeight+"px;' src='"+this.arrowImgPath+"'/></div>");
         this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomLeft' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(2*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
         this.balloon.insertHtml("beforeEnd","<div class='balloonArrow balloonArrowBottomRight' style='display: none; width:"+this.balloonArrowHeight+"px; height:"+this.balloonArrowHeight+"px;'><img style='left: -"+(3*this.balloonArrowHeight)+"px;' src='"+this.arrowImgPath+"'/></div>");
-        
-        //content        
+
+        //content
         var balloonContentEl = document.createElement("div");
         //balloonContentEl.innerHTML=
         this.balloonContent= new Ext.Element(balloonContentEl);
@@ -774,10 +774,10 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         });
         this.balloonContent.on("mouseover",function(){
             this.onMouseOver('balloonContent');
-        },this); 
+        },this);
         this.balloonContent.on("mouseout",function(){
             this.onMouseOut('balloonContent');
-        },this); 
+        },this);
         this.balloon.appendChild(this.balloonContent);
         //closing button
         if(this.showCloseButton){
@@ -803,17 +803,17 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             })
 
         );*/
-        
+
         this.x=x;
         this.y=y;
 
         //calculate position
         this._resetPositionOfBalloon(x,y);
-        
+
         //append the balloon.
         Ext.get(this.mapDiv).appendChild(this.balloon);
 
-    }      
+    }
     /**
      *Private function. Use setPosition(x,y,true) to reset the position
      *Reset the position to the point. And displays the right Arrow to the point
@@ -825,8 +825,8 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         //calculate position
         var centerCoord= this.viewerController.getMap().getCenter();
         //var centerPixel= this.viewerController.getMap().coordinateToPixel(centerCoord.x,centerCoord.y);
-        //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);        
-        var centerX = this.mapDiv.getWidth()/2; 
+        //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);
+        var centerX = this.mapDiv.getWidth()/2;
         var centerY = this.mapDiv.getHeight()/2;
         //determine the left and top.
         if (x > centerX){
@@ -868,7 +868,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      *@param the id of the element.
      */
     this.onMouseOut= function(elementId){
-        this.mouseIsOverElement[elementId]=0;   
+        this.mouseIsOverElement[elementId]=0;
         if (this.closeOnMouseOut){
             var thisObj=this;
             setTimeout(function(){
@@ -877,7 +877,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
                 }
             },50);
         }
-        
+
     }
     this.isMouseOver = function(){
         for (var elementid in this.mouseIsOverElement){
@@ -896,22 +896,22 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      *@param browserZoomRatio if the browser is zoomed.
      *redrawn (this.resetPositionOfBalloon is called)
      */
-    this.setPosition = function (x,y,resetPositionOfBalloon,browserZoomRatio){       
+    this.setPosition = function (x,y,resetPositionOfBalloon,browserZoomRatio){
         //new maptip position so update the maptipId
         this.maptipId++;
-        
+
         if (this.balloon==undefined){
             this._createBalloon(x,y);
         }else if(resetPositionOfBalloon){
             this._resetPositionOfBalloon(x,y);
         }
         if (x!=undefined && y != undefined){
-            
+
             this.x=x;
             this.y=y;
             if (browserZoomRatio!=undefined && browserZoomRatio!=null && browserZoomRatio!=1){
                 this.x = this.x*browserZoomRatio;
-                this.y = this.y*browserZoomRatio;                
+                this.y = this.y*browserZoomRatio;
             }
         }else if (this.x ==undefined || this.y == undefined){
             throw "No coords found for this balloon";
@@ -920,7 +920,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             y=this.y;
         }
         this.balloon.applyStyles({'display':'block'});
-       
+
 
         //calculate position
         //var infoPixel= this.viewerController.getMap().coordinateToPixel(x,y);
@@ -953,7 +953,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
      *@param browserZoomRatio the ratio the browser is zoomed (in or out)
      */
     this.setPositionWorldCoords = function (xcoord,ycoord,resetPositionOfBalloon, browserZoomRatio){
-        var pixel= this.viewerController.getMap().coordinateToPixel(xcoord,ycoord);   
+        var pixel= this.viewerController.getMap().coordinateToPixel(xcoord,ycoord);
         this.setPosition(pixel.x, pixel.y, resetPositionOfBalloon,browserZoomRatio);
     }
     /**
@@ -966,7 +966,7 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
         delete this.balloon;
     }
     /*Get the DOM element where the content can be placed.*/
-    this.getContentElement = function(){     
+    this.getContentElement = function(){
         if (this.balloon==undefined || this.balloonContent ==undefined)
             return null;
         return this.balloonContent;
@@ -1016,6 +1016,6 @@ function Balloon(mapDiv,viewerController,balloonId, balloonWidth, balloonHeight,
             }else{
             }
         },1000);
-    }  
+    }
 }
 
