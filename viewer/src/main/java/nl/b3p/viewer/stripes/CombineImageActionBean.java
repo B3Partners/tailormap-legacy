@@ -43,19 +43,19 @@ import org.json.JSONObject;
 public class CombineImageActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
     private static LinkedHashMap<String,CombineImageSettings> imageSettings = new LinkedHashMap<String,CombineImageSettings>();
-    
+
     public static final String WMS = "WMS";
     public static final String ARCIMS = "ARCIMS";
     public static final String ARCSERVER = "ARCSERVER";
     public static final String IMAGE="IMAGE";
     public static final String ARCSERVERREST = "ARCSERVERREST";
-    
+
     private static int maxStoredSettings= 500;
     private static int minStoredSettings=400;
-    
+
     private ActionBeanContext context;
     private int maxResponseTime = 10000;
-        
+
     @Validate
     private String params;
     @Validate
@@ -71,23 +71,23 @@ public class CombineImageActionBean implements ActionBean {
     private String bbox=null;
     @Validate
     private String geom = null;
-    
+
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public void setContext(ActionBeanContext context) {
         this.context=context;
     }
-    
+
     public ActionBeanContext getContext() {
         return this.context;
     }
-    
+
     public String getParams() {
         return params;
     }
 
     public void setParams(String params) {
         this.params = params;
-    }    
+    }
 
     public String getImageId() {
         return imageId;
@@ -104,7 +104,7 @@ public class CombineImageActionBean implements ActionBean {
     public void setKeepAlive(String keepAlive) {
         this.keepAlive = keepAlive;
     }
-    
+
     public Integer getWidth() {
         return width;
     }
@@ -137,20 +137,20 @@ public class CombineImageActionBean implements ActionBean {
         this.geom = geom;
     }
     //</editor-fold>
-    
+
     @DefaultHandler
-    public Resolution create() throws JSONException, Exception {        
+    public Resolution create() throws JSONException, Exception {
         JSONObject jRequest = new JSONObject(params);
         JSONObject jResponse = new JSONObject();
         String error=null;
         String pageFormat = jRequest.has("pageformat") ? jRequest.getString("pageformat") : PrintActionBean.A4;
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PrintActionBean.PORTRAIT;
-        
+
         if (orientation==null || pageFormat ==null){
             error = "invalid parameters";
         }else{
             try{
-                
+
                 CombineImageSettings cis =CombineImageSettings.fromJson(jRequest);
                 //if no imageId is set, create a new one.
                 if (imageId==null){
@@ -158,11 +158,11 @@ public class CombineImageActionBean implements ActionBean {
                 }
                 //this.getContext().getRequest().getSession().setAttribute(imageId, cis);
                 //TODO: better fix....
-                if (imageSettings.size()>maxStoredSettings){ 
+                if (imageSettings.size()>maxStoredSettings){
                     Set<String> keyset=imageSettings.keySet();
-                    for (String key : keyset){
-                        imageSettings.remove(key);
-                        if (imageSettings.size()< minStoredSettings){
+                    for (Iterator<String> iterator = keyset.iterator(); iterator.hasNext();) {
+                        iterator.remove();
+                        if (imageSettings.size() < minStoredSettings) {
                             break;
                         }
                     }
@@ -175,17 +175,17 @@ public class CombineImageActionBean implements ActionBean {
             }catch(Exception e){
                 log.error("",e);
             }
-        }        
+        }
         if(error != null) {
             jResponse.put("error", error);
-            
+
         }
         return new StreamingResolution("application/json", new StringReader(jResponse.toString()));
     }
     /**
      * Combines the image settings to a new image.
      * @return a image.
-     * @throws Exception 
+     * @throws Exception
      */
     public Resolution getImage() throws Exception {
         if (imageId==null || imageSettings.get(imageId)==null){
@@ -237,21 +237,21 @@ public class CombineImageActionBean implements ActionBean {
             public void stream(HttpServletResponse response) throws Exception {
                 OutputStream out = response.getOutputStream();
                 response.setDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
-                CombineImagesHandler.combineImage(out, settings,settings.getMimeType(),maxResponseTime);                
+                CombineImagesHandler.combineImage(out, settings,settings.getMimeType(),maxResponseTime);
             }
         };
         return res;
     }
-    
+
     /**
-     * Create unique number. 
+     * Create unique number.
      */
-    public static String uniqueId() {        
+    public static String uniqueId() {
         // Use miliseconds to generate a code
         long now = (new Date()).getTime();
         String val1 = Long.toString(now, Character.MAX_RADIX).toUpperCase();
         // add random to make sure it's unique
-        Random rg = new Random();        
+        Random rg = new Random();
         long rnum = (long) rg.nextInt(1000);
         String val2 = Long.toString(rnum, Character.MAX_RADIX).toUpperCase();
         return val1 + val2;
