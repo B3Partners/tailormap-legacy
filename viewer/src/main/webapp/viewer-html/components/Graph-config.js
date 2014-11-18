@@ -27,7 +27,7 @@ Ext.define("viewer.components.CustomConfiguration", {
     graphTypeStore:null,
     panel:null,
     constructor: function(parentId, configObject) {
-        if (configObject.layers) {
+        if (configObject && configObject.layers) {
             graph_layersArrayIndexesToAppLayerIds(configObject);
         }
         this.configObject = configObject || {};
