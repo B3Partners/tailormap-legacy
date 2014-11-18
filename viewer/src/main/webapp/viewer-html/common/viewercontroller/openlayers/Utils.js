@@ -682,7 +682,6 @@ OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
             this.clustering = false;
         }
         this.clusters = clusters;
-        console.timeEnd("clustering");
     }
 };
 
