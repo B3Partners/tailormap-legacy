@@ -62,6 +62,7 @@ Ext.define ("viewer.components.Help",{
                 padding: 0,
                 border: 0,
                 renderTo: this.getContentDiv(),
+                autoScroll: true,
                 layout: 'fit'
             };
             if(!this.showAsPopup) {

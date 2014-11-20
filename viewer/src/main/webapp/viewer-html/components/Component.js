@@ -33,7 +33,8 @@ Ext.define("viewer.components.Component",{
         viewerController: null,
         isPopup : false,
         hasSharedPopup:false,
-        regionName: ""
+        regionName: "",
+        containerId: ''
     },
     defaultButtonWidth: 46,
     defaultButtonHeight: 46,
@@ -84,7 +85,7 @@ Ext.define("viewer.components.Component",{
         if(this.config.isPopup) {
             return this.popup.getContainer();
         }
-        return this.config.div;
+        return Ext.getCmp(this.config.containerId);
     },
     
     /**
@@ -109,7 +110,7 @@ Ext.define("viewer.components.Component",{
         me.options = options;
         if(options.icon) {
             buttonIcon = options.icon;
-            buttonCls = "customIconButton"
+            buttonCls = "customIconButton";
         } else if(me.haveSprite) {
             buttonCls = 'applicationSpriteClass buttonDefaultClass_normal ' + baseClass + '_normal';
         } else {

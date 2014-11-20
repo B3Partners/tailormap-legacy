@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
 <!DOCTYPE html>
-<html>
+<html class="x-border-box">
     <head>
         <title><c:out value="${actionBean.application.name}"/></title>
                

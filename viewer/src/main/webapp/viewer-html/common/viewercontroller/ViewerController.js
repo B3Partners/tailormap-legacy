@@ -244,6 +244,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             var component = this.app.components[layoutComponent.componentName];
             if(component) {
                 component.config.div = layoutComponent.htmlId;
+                component.config.containerId = layoutComponent.containerId;
                 component.config.isPopup = layoutComponent.isPopup;
                 component.config.hasSharedPopup = layoutComponent.hasSharedPopup;
                 component.config.showOnStartup = layoutComponent.showOnStartup;

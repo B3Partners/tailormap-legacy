@@ -59,8 +59,7 @@ Ext.define ("viewer.components.TOC",{
         initToggleAllLayers: true,
         showAllLayersOff: false,
         showAllLayersOn: false,
-        expandOnEnabledLayer:false,
-        showHorizontalScrollbar: true // Not a config option in viewer-admin yet, could be added in the future
+        expandOnEnabledLayer:false
     },
     constructor: function (config){
         viewer.components.TOC.superclass.constructor.call(this, config);
@@ -143,10 +142,9 @@ Ext.define ("viewer.components.TOC",{
         }
 
         this.panel =Ext.create('Ext.tree.Panel', {
-            renderTo: this.getContentDiv(),
             title: title,
             height: "100%",
-            scroll: this.config.showHorizontalScrollbar ? 'both' : false,
+            autoScroll: true,
             useArrows: true,
             rootVisible: false,
             floating: false,
@@ -166,6 +164,7 @@ Ext.define ("viewer.components.TOC",{
             tools: tools,
             dockedItems: dockedItems
         });
+        this.getContentContainer().add(this.panel);
     },
     // Start the treetraversal
     loadInitLayers : function(){

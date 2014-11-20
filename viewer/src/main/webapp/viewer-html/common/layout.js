@@ -384,8 +384,10 @@ Ext.define('viewer.LayoutManager', {
                 }
                 compFlex = 1;
             }
+            var containerId = Ext.id();
             var cmpView = {
                 xtype: 'container',
+                id: containerId,
                 // Title is used in tabs
                 title: component.name,
                 cls: 'component-view',
@@ -405,6 +407,7 @@ Ext.define('viewer.LayoutManager', {
             
             var componentItem = {
                 htmlId: cmpId,
+                containerId: containerId,
                 componentName: component.name,
                 componentClass: component.componentClass
             };
