@@ -169,7 +169,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             }
                         },
                         { fieldLabel: 'URL *', name: 'url', value: config.url, itemId: 'url'+config.id, width: 720 },
-                        { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130 },
+                        { xtype: 'container', itemId: 'solrConfig' + config.id, hidden: true, height: 130, autoScroll: true },
                         { xtype: 'container', itemId: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', layout: { type: 'vbox', align: 'stretch' } },
                         {
                             xtype:'button',

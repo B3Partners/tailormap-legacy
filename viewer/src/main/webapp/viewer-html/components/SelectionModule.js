@@ -1263,6 +1263,9 @@ Ext.define ("viewer.components.SelectionModule",{
     createCustomNodesList: function(node, userServiceId, isTopLayer) {
         var me = this;
         var treeNode = null;
+        if(!node) {
+            return;
+        }
         var hasChildren = Ext.isDefined(node.children);
         // If topLayer is virtual, do not create node for topLayer
         if(!(isTopLayer && node.virtual)) {
