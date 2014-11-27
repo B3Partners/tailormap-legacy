@@ -384,7 +384,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 // Provide function to handle clicking the 'config layers' link
                 labelClick: function(evt, target) {
                     // If the target clicked is not the link, do nothing
-                    if(target.className !== 'configureLayer') return;
+                    if(!target.className || target.className.indexOf('configureLayer') === -1) return;
                     // Link is clicked, show window with layers
                     me.showLayerconfig(target, searchconfigId, searchConfig);
                 }

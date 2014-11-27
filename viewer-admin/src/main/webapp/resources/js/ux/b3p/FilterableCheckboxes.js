@@ -77,11 +77,14 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     
     render: function() {
         var me = this;
-        var checkboxes = '';
+        var checkboxContainerId = Ext.id();
+        var checkboxes = '<div id="' + checkboxContainerId + '">';
         Ext.Array.each(me.itemList, function(item) {
             item['htmlId'] = Ext.id();
             checkboxes += (me.createCheckbox(item['htmlId'], item[me.valueField], item[me.titleField]));
         });
+        checkboxes += '</div>';
+
         // var containerId = Ext.id();
         var fields = [{
             xtype:'container',
@@ -116,11 +119,6 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             width: '100%',
             style: {
                 border: '0px'
-            },
-            listeners: {
-                click: function(evt, target) {
-                    me.labelClick !== null && me.labelClick(evt, target);
-                }
             }
         }];
         var container = Ext.create('Ext.container.Container', {
@@ -135,6 +133,19 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             Ext.getCmp(me.renderTo).add(container);
         }
         me.setChecked();
+        // Add click listener to checkboxes if configured
+        if(me.labelClick !== null) {
+            var checkboxcontainer = document.getElementById(checkboxContainerId);
+            function handleClick(e) {
+                var target = e.target || e.srcElement || window.event.target || window.event.srcElement;
+                me.labelClick(e, target);
+            }
+            if (checkboxcontainer.addEventListener) {
+                checkboxcontainer.addEventListener('click', handleClick, false);
+            } else if (checkboxcontainer.attachEvent)  { // legacy IE
+                checkboxcontainer.attachEvent('onclick', handleClick);
+            }
+        }
     },
     
     getList: function() {
@@ -174,7 +185,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         var visibletxt = 'block';
         if(!visible) visibletxt = 'none';
         Ext.Array.each(me.itemList, function(item) {
-            me.setCheckboxVisible(item.htmlId, visibletxt)
+            me.setCheckboxVisible(item.htmlId, visibletxt);
         });
     },
     
