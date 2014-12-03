@@ -34,7 +34,7 @@ import org.opengis.feature.simple.SimpleFeature;
  */
 public class CSVDownloader extends FeatureDownloader{
 
-    
+
     private char separator = ';';
     private PrintWriter pw;
     private File f;
@@ -43,7 +43,7 @@ public class CSVDownloader extends FeatureDownloader{
     }
 
     @Override
-    public void init() throws IOException {  
+    public void init() throws IOException {
         f = File.createTempFile("csvFeatures", ".csv");
         pw = new PrintWriter(f);
         List<String> header = new ArrayList<String>();
@@ -61,7 +61,12 @@ public class CSVDownloader extends FeatureDownloader{
         List<String> row = new ArrayList<String>();
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
-                row.add(oldFeature.getAttribute(configuredAttribute.getAttributeName()).toString());
+                Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
+                String value = null;
+                if(attribute != null){
+                    value = attribute.toString();
+                }
+                row.add(value);
             }
         }
         writeRow(row);
@@ -72,7 +77,7 @@ public class CSVDownloader extends FeatureDownloader{
         pw.close();
         return f;
     }
-    
+
     private void writeRow(List<String> row){
         String completeString = "";
         for (String col : row) {
