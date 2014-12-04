@@ -39,6 +39,7 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
@@ -48,7 +49,7 @@ import org.opengis.feature.simple.SimpleFeature;
  * @author Meine Toonen
  */
 public class ExcelDownloader extends FeatureDownloader{
-   
+
     private Workbook wb;
     private Sheet sheet;
     private int currentRow = -1;
@@ -57,14 +58,14 @@ public class ExcelDownloader extends FeatureDownloader{
     public ExcelDownloader(List<ConfiguredAttribute> attributes, SimpleFeatureSource fs, Map<String, AttributeDescriptor> featureTypeAttributes, Map<String, String> attributeAliases) {
         super(attributes, fs, featureTypeAttributes,attributeAliases);
     }
-    
+
     @Override
     public void init() throws IOException {
         wb =  new XSSFWorkbook();
 
         styles = createStyles(wb);
 
-        sheet = wb.createSheet(fs.getName().toString());
+        sheet = wb.createSheet(WorkbookUtil.createSafeSheetName(fs.getName().toString()));
 
         //turn off gridlines
         sheet.setDisplayGridlines(false);
@@ -104,7 +105,7 @@ public class ExcelDownloader extends FeatureDownloader{
                 colNum++;
             }
         }
-        
+
         //freeze the first row
         sheet.createFreezePane(0, 1);
         currentRow = 1;
@@ -118,10 +119,14 @@ public class ExcelDownloader extends FeatureDownloader{
         int colNum = 0;
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible()){
-                String value = oldFeature.getAttribute(configuredAttribute.getAttributeName()).toString();
+                Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
+                String value = null;
+                if(attribute != null){
+                    value = attribute.toString();
+                }
                 cell = row.createCell(colNum);
                 String styleName = "cell_normal";;
-                cell.setCellValue(value);          
+                cell.setCellValue(value);
                 cell.setCellStyle(styles.get(styleName));
                 colNum++;
             }
@@ -138,7 +143,7 @@ public class ExcelDownloader extends FeatureDownloader{
         out.close();
         return file;
     }
-    
+
     /**
      * create a library of cell styles
      */
@@ -163,7 +168,7 @@ public class ExcelDownloader extends FeatureDownloader{
 
         return styles;
     }
-     
+
     private static CellStyle createBorderedStyle(Workbook wb){
         CellStyle style = wb.createCellStyle();
         style.setBorderRight(CellStyle.BORDER_THIN);

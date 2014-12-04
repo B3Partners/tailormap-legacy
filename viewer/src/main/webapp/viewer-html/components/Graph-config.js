@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,6 +27,9 @@ Ext.define("viewer.components.CustomConfiguration", {
     graphTypeStore:null,
     panel:null,
     constructor: function(parentId, configObject) {
+        if (configObject && configObject.layers) {
+            graph_layersArrayIndexesToAppLayerIds(configObject);
+        }
         this.configObject = configObject || {};
         this.graphConfigs = [];
         this.nextId = 1;
@@ -86,7 +89,7 @@ Ext.define("viewer.components.CustomConfiguration", {
         }
     },
     addGraphConfig: function(config) {
-        
+
         var me = this;
         var nextId = me.nextId;
         var newconfig = config || {
@@ -177,7 +180,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
-                       valueField: 'id',
+                       valueField: 'name',
                        value: config.categoryAttribute || null,
                        width: 400
                    },
@@ -192,7 +195,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                        store: store,
                        queryMode: 'local',
                        displayField: 'longname',
-                       valueField: 'id',
+                       valueField: 'name',
                        value: config.serieAttribute || null,
                        width: 400
                    },
@@ -226,16 +229,16 @@ Ext.define("viewer.components.CustomConfiguration", {
     getLayerList: function() {
         var me = this;
         me.layers = null;
-        Ext.Ajax.request({ 
+        Ext.Ajax.request({
             url: contextPath+"/action/componentConfigLayerList",
             params:{
                 appId:applicationId,
                 attribute:true
-            }, 
+            },
             success: function ( result, request ) {
                 var layers = Ext.JSON.decode(result.responseText);
                 me.layers = Ext.create('Ext.data.Store', {fields: ['id', 'alias'],data : layers});
-                me.createGraphForm();  
+                me.createGraphForm();
                 me.addInitialGraphConfig();
             },
             failure: function() {
@@ -254,12 +257,12 @@ Ext.define("viewer.components.CustomConfiguration", {
         category.getStore().removeAll();
         var currentCategoryValue = category.getValue();
         var currentSerieValue = serie.getValue();
-        Ext.Ajax.request({ 
+        Ext.Ajax.request({
             url: contextPath+"/action/applicationtreelayer",
             params:{
                 applicationLayer: appLayerId,
                 attributes:true
-            }, 
+            },
             success: function ( result, request ) {
                 var attributeData = Ext.JSON.decode(result.responseText);
                 var newList = [];
@@ -293,9 +296,10 @@ Ext.define("viewer.components.CustomConfiguration", {
             var gCO = this.graphConfigs[i];
             var graphConfig = this.getGraphConfig(gCO.id);
             graphs.push(graphConfig);
-            
+
         }
         config.graphs = graphs;
+        graph_appLayerIdsToLayersArrayIndexes(config);
         return config;
     },
     getGraphConfig : function (id){

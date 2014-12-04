@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @class 
+ * @class
  * @constructor
  * @description
  */
@@ -32,8 +32,8 @@ Ext.define("viewer.viewercontroller.openlayers.Utils",{
  */
 OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
     button: null,
-    
-    initialize: function(options) {        
+
+    initialize: function(options) {
         OpenLayers.Control.prototype.initialize.apply(
             this, arguments
             );
@@ -44,10 +44,10 @@ OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
             'down':function(evt,delta){
                 this.wheelDown(evt,delta);//this.handler.wheelZoom(evt);
             }
-        });        
-    },    
-    /**      * 
-     * Method: wheelChange  
+        });
+    },
+    /**      *
+     * Method: wheelChange
      * Copied from: @see OpenLayers.Control.Navigation#wheelChange
      * Parameters:
      * evt - {Event}
@@ -72,11 +72,11 @@ OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
         this.map.setCenter( newCenter, newZoom );
     },
 
-    /** 
+    /**
      * Method: wheelUp
      * Copied from: @see OpenLayers.Control.Navigation#wheelUp
      * User spun scroll wheel up
-     * 
+     *
      * Parameters:
      * evt - {Event}
      * delta - {Integer}
@@ -85,11 +85,11 @@ OpenLayers.Control.MouseWheelZoom = OpenLayers.Class(OpenLayers.Control, {
         this.wheelChange(evt, delta || 1);
     },
 
-    /** 
+    /**
      * Method: wheelDown
      * Copied from: @see OpenLayers.Control.Navigation#wheelDown
      * User spun scroll wheel down
-     * 
+     *
      * Parameters:
      * evt - {Event}
      * delta - {Integer}
@@ -336,13 +336,13 @@ OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control,{
         this.handler = new OpenLayers.Handler.Click(
             this, {
                 'click': this.onClick,
-                'dblclick': this.onDblclick 
+                'dblclick': this.onDblclick
             }, this.handlerOptions
         );
     },
-    onClick: function(evt) {        
+    onClick: function(evt) {
     },
-    onDblclick: function(evt) {          
+    onDblclick: function(evt) {
     }
 });
 
@@ -351,7 +351,7 @@ function handleResponse(xy, request, url,layerNames) {
         this.cache = new Object();
     }
     if(!this.cache[url]){
-        
+
         this.cache[url] = new Object();
         this.cache[url].features = new Array();
         this.cache[url].counter = 0;
@@ -393,12 +393,12 @@ function handleResponse(xy, request, url,layerNames) {
 /**
  * Method: request
  * Sends a GetFeatureInfo request to the WMS
- * 
+ *
  * Parameters:
  * clickPosition - {<OpenLayers.Pixel>} The position on the map where the
  *     mouse event occurred.
  * options - {Object} additional options for this method.
- * 
+ *
  * Valid options:
  * - *hover* {Boolean} true if we do the request for the hover handler
  */
@@ -451,7 +451,7 @@ function requestWmsGFI(clickPosition, options) {
         }
     }
 }
-    
+
 /**
  * Method: buildWMSOptions
  * Build an object with the relevant WMS options for the GetFeatureInfo request
@@ -522,7 +522,7 @@ function buildWMSOptions(url, layers, clickPosition, format) {
     };
 }
 
-// https://github.com/openlayers/openlayers/issues/929#issuecomment-28795011       
+// https://github.com/openlayers/openlayers/issues/929#issuecomment-28795011
 OpenLayers.Layer.Grid.prototype.initGriddedTiles = function(bounds) {
     this.clearTileQueue();
 
@@ -530,7 +530,7 @@ OpenLayers.Layer.Grid.prototype.initGriddedTiles = function(bounds) {
     // tiles required to cover the viewport plus at least one for panning
 
     var viewSize = this.map.getSize();
-    var minRows = Math.ceil(viewSize.h/this.tileSize.h) + 
+    var minRows = Math.ceil(viewSize.h/this.tileSize.h) +
                   Math.max(1, 2 * this.buffer);
     var minCols = Math.ceil(viewSize.w/this.tileSize.w) +
                   Math.max(1, 2 * this.buffer);
@@ -549,7 +549,7 @@ OpenLayers.Layer.Grid.prototype.initGriddedTiles = function(bounds) {
     var tilelon = tileLayout.tilelon;
     var tilelat = tileLayout.tilelat;
 
-    var startX = tileoffsetx; 
+    var startX = tileoffsetx;
     var startLon = tileoffsetlon;
 
     var rowidx = 0;
@@ -571,9 +571,9 @@ OpenLayers.Layer.Grid.prototype.initGriddedTiles = function(bounds) {
 
         do {
             if(!colidx) tileoffsetlon = startLon;
-            var tileBounds = 
-                new OpenLayers.Bounds(tileoffsetlon, 
-                                      tileoffsetlat, 
+            var tileBounds =
+                new OpenLayers.Bounds(tileoffsetlon,
+                                      tileoffsetlat,
                                       tileoffsetlon + tilelon,
                                       tileoffsetlat + tilelat);
 
@@ -599,11 +599,11 @@ OpenLayers.Layer.Grid.prototype.initGriddedTiles = function(bounds) {
                     Math.pow(tileCenter.lat - center.lat, 2)
             });
 
-            tileoffsetlon += tilelon;       
+            tileoffsetlon += tilelon;
             tileoffsetx += this.tileSize.w;
         } while ((tileoffsetlon <= bounds.right + tilelon * this.buffer)
                  || colidx < minCols);
-         
+
         tileoffsetlat -= tilelat;
         tileoffsety += this.tileSize.h;
     } while((tileoffsetlat >= bounds.bottom - tilelat * this.buffer)
@@ -617,10 +617,72 @@ OpenLayers.Layer.Grid.prototype.initGriddedTiles = function(bounds) {
 
     //now actually draw the tiles
     tileData.sort(function(a, b) {
-        return a.distance - b.distance; 
+        return a.distance - b.distance;
     });
     for (var i=0, ii=tileData.length; i<ii; ++i) {
         tileData[i].tile.draw();
-    }                
-}    
+    }
+};
+
+
+// Override Cluster strategy to only create clusters for features within map
+// bounds, and thus also recluster on panning
+// http://acuriousanimal.com/blog/2012/10/09/improved-performance-on-the-animatedcluster-for-openlayers/
+// http://acuriousanimal.com/blog/2013/02/08/animatedcluster-pan-related-bug-fixed/
+
+OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
+
+    if((!event || event.zoomChanged || (event.type == "moveend" && !event.zoomChanged)) && this.features) {
+        this.resolution = this.layer.map.getResolution();
+        var clusters = [];
+        var feature, clustered, cluster;
+        var screenBounds = this.layer.map.getExtent();
+        for(var i=0; i<this.features.length; ++i) {
+            feature = this.features[i];
+            if(feature.geometry) {
+                if(!screenBounds.intersectsBounds(feature.geometry.getBounds())) {
+                    continue;
+                }
+                clustered = false;
+                for(var j=clusters.length-1; j>=0; --j) {
+                    cluster = clusters[j];
+                    if(this.shouldCluster(cluster, feature)) {
+                        this.addToCluster(cluster, feature);
+                        clustered = true;
+                        break;
+                    }
+                }
+                if(!clustered) {
+                    clusters.push(this.createCluster(this.features[i]));
+                }
+            }
+        }
+        this.clustering = true;
+        this.layer.removeAllFeatures();
+        this.clustering = false;
+        if(clusters.length > 0) {
+            if(this.threshold > 1) {
+                var clone = clusters.slice();
+                clusters = [];
+                var candidate;
+                for(var i=0, len=clone.length; i<len; ++i) {
+                    candidate = clone[i];
+                    if(candidate.attributes.count < this.threshold) {
+                        Array.prototype.push.apply(clusters, candidate.cluster);
+                    } else {
+                        clusters.push(candidate);
+                    }
+                }
+            }
+            this.clustering = true;
+            // A legitimate feature addition could occur during this
+            // addFeatures call.  For clustering to behave well, features
+            // should be removed from a layer before requesting a new batch.
+            this.layer.addFeatures(clusters);
+            this.clustering = false;
+        }
+        this.clusters = clusters;
+    }
+};
+
 

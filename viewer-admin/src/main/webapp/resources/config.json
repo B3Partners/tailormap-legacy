@@ -1,9 +1,0 @@
-[
-{id:'flamingo',name:'Flamingo Map',shortName:'Fm',restrictions:['content'],addOnce:true,notInCombinationWith:['openlayers']},
-{id:'openlayers',name:'OpenLayers Map',shortName:'Om',restrictions:['content'],addOnce:true,notInCombinationWith:['flamingo']},
-{id:'tabs',name:'Tabs',shortName:'Tb',restrictions:['leftmargin_top', 'rightmargin_top'],addOnce:false},
-{id:'zoom',name:'Zoom',shortName:'Zm',restrictions:['top_menu'],addOnce:true},
-{id:'pan',name:'Pan',shortName:'Pa',restrictions:['top_menu'],addOnce:false},
-{id:'streetview',name:'Streetview',shortName:'Sv',restrictions:['top_menu'],addOnce:true},
-{id:'identify',name:'Identify',shortName:'Id',restrictions:['top_menu'],addOnce:true}
-];

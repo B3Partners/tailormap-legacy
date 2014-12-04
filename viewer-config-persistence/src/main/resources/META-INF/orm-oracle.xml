@@ -11,17 +11,17 @@
             <cascade-persist/>
         </persistence-unit-defaults>
     </persistence-unit-metadata>
-    
+
     <named-native-query name="getLayerTree" result-class="nl.b3p.viewer.config.services.Layer">
         <query><![CDATA[
             select * from layer start with id = :rootId connect by parent = prior id
-        ]]></query>    
+        ]]></query>
     </named-native-query>
     <named-native-query name="getLevelTree" result-class="nl.b3p.viewer.config.app.Level">
         <query><![CDATA[
             select * from level_ start with id = :rootId connect by parent = prior id
-        ]]></query>    
-    </named-native-query>    
+        ]]></query>
+    </named-native-query>
 
     <!-- For Oracle, manually assign sequences for generated id columns -->
 
@@ -51,7 +51,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.FeatureSource">
         <attributes>
             <id name="id">
@@ -78,7 +78,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.FeatureTypeRelation">
         <attributes>
             <id name="id">
@@ -87,7 +87,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.FeatureTypeRelationKey">
         <attributes>
             <id name="id">
@@ -96,7 +96,7 @@
             </id>
         </attributes>
     </entity>
-    
+
        <entity class="nl.b3p.viewer.config.services.SolrConf">
         <attributes>
             <id name="id">
@@ -105,7 +105,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.Document">
         <attributes>
             <id name="id">
@@ -159,7 +159,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.LayarService">
         <attributes>
             <id name="id">
@@ -168,7 +168,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.LayarSource">
         <attributes>
             <id name="id">
@@ -177,7 +177,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.services.StyleLibrary">
         <attributes>
             <id name="id">
@@ -186,7 +186,7 @@
             </id>
         </attributes>
     </entity>
-    
+
     <entity class="nl.b3p.viewer.config.metadata.Metadata">
         <attributes>
             <id name="id">
@@ -194,5 +194,17 @@
                 <sequence-generator name="metadata_id_seq" sequence-name="metadata_id_seq"/>
             </id>
         </attributes>
-    </entity>    
+    </entity>
+
+
+    <entity class="nl.b3p.viewer.config.CycloramaAccount">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="cycloramaaccount_id_seq"/>
+                <sequence-generator name="cycloramaaccount_id_seq" sequence-name="cycloramaaccount_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
+
 </entity-mappings>

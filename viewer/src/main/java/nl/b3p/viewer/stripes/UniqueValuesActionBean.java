@@ -43,7 +43,7 @@ public class UniqueValuesActionBean implements ActionBean {
 
     private ActionBeanContext context;
     @Validate
-    private ApplicationLayer applicationLayer;    
+    private ApplicationLayer applicationLayer;
     @Validate
     private SimpleFeatureType featureType;
     @Validate
@@ -55,7 +55,7 @@ public class UniqueValuesActionBean implements ActionBean {
     @Validate
     private int maxFeatures = 250;
 
-    // <editor-fold desc="Getters and Setters">
+    // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
     public ActionBeanContext getContext() {
         return context;
     }
@@ -105,6 +105,7 @@ public class UniqueValuesActionBean implements ActionBean {
     }
 
     // </editor-fold>
+
     @DefaultHandler
     public Resolution getUniqueValues() throws JSONException {
         JSONObject json = new JSONObject();
@@ -127,7 +128,7 @@ public class UniqueValuesActionBean implements ActionBean {
                 json.put("success", Boolean.TRUE);
             }
             json.put("uniqueValues", uniqueValues);
-            
+
         } catch (Exception e) {
             log.error("getUniqueValues() failed", e);
             json.put("msg", "Unieke waardes ophalen mislukt voor laag " + applicationLayer.getLayerName() + ": " + e.toString());

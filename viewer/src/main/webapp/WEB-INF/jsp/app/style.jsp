@@ -44,6 +44,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     border-color: ${steunkleur1}; /* Border round the content */
                 }
 
+                .x-window.floating-window {
+                    border-color: #FFFFFF;
+                    box-shadow: 0 1px 0 0 #FFFFFF inset, 0 -1px 0 0 #FFFFFF inset, -1px 0 0 0 #FFFFFF inset, 1px 0 0 0 #FFFFFF inset;
+                    background-color: #FFFFFF;
+                }
+                
+                .x-window.floating-window .x-window-header-default-top {
+                    background-color: #FFFFFF; /* Header background color */
+                    box-shadow: 0 1px 0 0 #FFFFFF inset, -1px 0 0 0 #FFFFFF inset, 1px 0 0 0 #FFFFFF inset;
+                }
+                
+                /* Popup content colors */
+                .x-window.floating-window .x-window-body-default {
+                    background-color: #FFFFFF;  /* Visible when dragging the popup  */
+                    border-color: #FFFFFF; /* Border round the content */
+                }
+                
                 /* Panel header colors */
                 .x-panel-header-default {
                     background-color: ${steunkleur1};
@@ -100,6 +117,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 .x-panel-header-title-default /* Panel headers */,
                 .x-window-header-title-default /* Popup headers */ {
                     color: ${steunkleur2};
+                }
+                
+                /* Text color for collapsed side-panels */
+                .x-panel-header svg text {
+                    fill: ${steunkleur2};
                 }
                 
                 /* Openlayers Overzichtskaartbg */

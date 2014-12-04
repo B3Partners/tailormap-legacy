@@ -4,7 +4,7 @@
 
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>4.4.6-SNAPSHOT</version>
+    <version>4.4.8-SNAPSHOT</version> 
     <packaging>pom</packaging>
 
     <name>flamingo-mc</name>
@@ -53,7 +53,7 @@
                 <artifactId>gt-render</artifactId>
                 <version>${geotools.version}</version>
                 <type>jar</type>
-            </dependency>       
+            </dependency>
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
@@ -71,7 +71,7 @@
                 <artifactId>stripersist</artifactId>
                 <version>1.0.3</version>
             </dependency>
-        
+
             <dependency>
                 <groupId>org.flamingo-mc.viewer-config-persistence</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
@@ -106,7 +106,7 @@
                 <artifactId>twitter4j-core</artifactId>
                 <version>3.0.5</version>
             </dependency>
-            
+
             <!-- nl b3p csw-->
             <dependency>
                 <groupId>nl.b3p</groupId>
@@ -153,7 +153,7 @@
                 <artifactId>lucene-core</artifactId>
                 <version>4.6.0</version>
             </dependency>
-           
+
             <dependency>
                 <artifactId>solr-solrj</artifactId>
                 <groupId>org.apache.solr</groupId>
@@ -161,7 +161,7 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
-            
+
             <!-- viewer-commons -->
             <dependency>
                 <groupId>junit</groupId>
@@ -191,7 +191,7 @@
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
-           
+
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-data</artifactId>
@@ -214,7 +214,7 @@
                 <version>${geotools.version}</version>
                 <type>jar</type>
             </dependency>
-           
+
          <!-- Solr dependencies for indexing and searching -->
             <dependency>
                 <groupId>org.apache.solr</groupId>
@@ -247,7 +247,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-    
+
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
@@ -263,8 +263,8 @@
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>3.6.8.Final</version>
             </dependency>
-            
-            
+
+
             <!-- viewer-config-persistence -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -303,7 +303,7 @@
                 <artifactId>gt-jdbc-postgis</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
-            
+
             <!-- web-commons -->
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -317,13 +317,13 @@
                 <version>${geotools.version}</version>
                 <type>jar</type>
             </dependency>
-            
+
             <!-- viewer-admin-->
-          
-            <dependency>  
+
+            <dependency>
                 <groupId>org.stripesstuff</groupId>
                 <artifactId>stripesstuff</artifactId>
-                <version>0.2</version>
+                <version>0.4.1</version>
             </dependency>
             <dependency>
                 <groupId>javax.mail</groupId>
@@ -356,7 +356,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <repositories>
         <repository>
             <id>org.flamingo-mc</id>

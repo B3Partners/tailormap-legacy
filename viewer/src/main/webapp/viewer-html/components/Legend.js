@@ -193,13 +193,15 @@ Ext.define("viewer.components.Legend", {
         this.config.viewerController.traverseSelectedContent(
             Ext.emptyFn,
             function(appLayer) {
-                me.legends[appLayer.id] = {
-                    order: index++,
-                    waitingForInfo: false,
-                    element: null
-                };
-                
-                me.createLegendForAppLayer(appLayer);
+                if(appLayer && appLayer.id) {
+                    me.legends[appLayer.id] = {
+                        order: index++,
+                        waitingForInfo: false,
+                        element: null
+                    };
+
+                    me.createLegendForAppLayer(appLayer);
+                }
             }
         );
     },
@@ -285,31 +287,26 @@ Ext.define("viewer.components.Legend", {
         divLayer.appendChild(divName);
 
         var img, divImage;        
-        for(var i in legendInfo.parts) {
-            (function() { // IIFE needed for img.onload handler to reference divLabel
+        Ext.Array.each(legendInfo.parts, function(part) {
+            divImage = document.createElement("div");
+            var divLabel = document.createElement("div");
 
-                var part = legendInfo.parts[i];
+            img = document.createElement("img");
+            img.src = part.url;
+            img.onload = function() {
+                //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
+                divLabel.style.lineHeight = (this.height + 4) + "px";
+            };
 
-                divImage = document.createElement("div");
-                var divLabel = document.createElement("div");
-
-                img = document.createElement("img");
-                img.src = part.url;
-                img.onload = function() {
-                    //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);
-                    divLabel.style.lineHeight = (this.height + 4) + "px";
-                };
-
-                divImage.className = "image";
-                divImage.appendChild(img);
-                divLayer.appendChild(divImage);
-                if (part.label && legendInfo.parts.length > 1){
-                    divLabel.className = "label";
-                    divLabel.innerHTML = Ext.htmlEncode(part.label);
-                    divLayer.appendChild(divLabel);                        
-                }
-            }());
-        }
+            divImage.className = "image";
+            divImage.appendChild(img);
+            divLayer.appendChild(divImage);
+            if (part.label && legendInfo.parts.length > 1){
+                divLabel.className = "label";
+                divLabel.innerHTML = Ext.htmlEncode(part.label);
+                divLayer.appendChild(divLabel);
+            }
+        });
         Ext.fly(divLayer).setVisibilityMode(Ext.Element.DISPLAY);
         return divLayer;
     },

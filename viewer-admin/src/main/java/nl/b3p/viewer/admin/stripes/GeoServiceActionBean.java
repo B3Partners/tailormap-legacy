@@ -23,7 +23,6 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -88,8 +87,8 @@ public class GeoServiceActionBean implements ActionBean {
 
     private static final Log log = LogFactory.getLog(GeoServiceActionBean.class);
     private static final String JSP = "/WEB-INF/jsp/services/geoservice.jsp";
-    private static final String JSP_EDIT_SLD = "/WEB-INF/jsp/services/editsld.jsp";    
-    
+    private static final String JSP_EDIT_SLD = "/WEB-INF/jsp/services/editsld.jsp";
+
     private ActionBeanContext context;
     @Validate(on = {"add"}, required = true)
     private Category category;
@@ -129,14 +128,14 @@ public class GeoServiceActionBean implements ActionBean {
     @Validate
     private String crs;
     @Validate
-    private Boolean useIntersect;
+    private boolean useIntersect;
     @Validate
     private WMSExceptionType exception_type;
-    
+
     private WaitPageStatus status;
     private JSONObject newService;
     private JSONObject updatedService;
-    
+
     @Validate
     @ValidateNestedProperties({
             @Validate(on="saveSld",field="title", required=true),
@@ -146,15 +145,15 @@ public class GeoServiceActionBean implements ActionBean {
             @Validate(on="saveSld",field="extraLegendParameters")
     })
     private StyleLibrary sld;
-    
+
     @Validate
     private String sldType = "external";
-    
+
     @Validate(on="cqlToFilter")
     private String cql;
-    
+
     private String generatedSld;
-    
+
     private boolean updatable;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -365,7 +364,7 @@ public class GeoServiceActionBean implements ActionBean {
     public void setCql(String cql) {
         this.cql = cql;
     }
-    
+
     public boolean isUseIntersect() {
         return useIntersect;
     }
@@ -381,11 +380,11 @@ public class GeoServiceActionBean implements ActionBean {
     public void setException_type(WMSExceptionType exception_type) {
         this.exception_type = exception_type;
     }
-    
-    
+
+
     //</editor-fold>
-   
-    
+
+
     @DefaultHandler
     public Resolution edit() {
         if (service != null) {
@@ -401,7 +400,7 @@ public class GeoServiceActionBean implements ActionBean {
                 TileService ser = (TileService) service;
                 tilingProtocol = ser.getTilingProtocol();
 
-                //tiling service has 1 layer with that has the settings.                
+                //tiling service has 1 layer with that has the settings.
                 Layer layer = ser.getTilingLayer();
                 //set the resolutions
 
@@ -421,7 +420,7 @@ public class GeoServiceActionBean implements ActionBean {
                     tileSize = tileSet.getHeight();
                 }
 
-                //set the service Bbox               
+                //set the service Bbox
                 if (layer.getBoundingBoxes().size() == 1) {
                     BoundingBox bb = layer.getBoundingBoxes().values().iterator().next();
                     serviceBbox = "" + bb.getMinx() + ","
@@ -440,7 +439,7 @@ public class GeoServiceActionBean implements ActionBean {
             }else if(protocol.equals(WMSService.PROTOCOL)){
                 overrideUrl = ((WMSService)service).getOverrideUrl();
             }
-            
+
             if(service.getDetails().containsKey(GeoService.DETAIL_USE_INTERSECT)){
                 ClobElement ce =service.getDetails().get(GeoService.DETAIL_USE_INTERSECT);
                 useIntersect = Boolean.parseBoolean(ce.getValue());
@@ -484,22 +483,20 @@ public class GeoServiceActionBean implements ActionBean {
             }else if (l.getDetails().containsKey("image_extension")){
                 l.getDetails().remove("image_extension");
             }
-            
+
             // For the moment only for tiled services, the caches of the applictions which use the service are worth invalidating
             List<Application> apps = findApplications();
             for (Application application : apps) {
                 SelectedContentCache.setApplicationCacheDirty(application, true);
             }
         }
-        
+
         if (service instanceof WMSService) {
             ((WMSService)service).setOverrideUrl(overrideUrl);
             ((WMSService)service).setException_type(exception_type);
         }
-        
-        if (useIntersect!=null){
-            service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(useIntersect.toString()));
-        }
+
+        service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
 
         service.setUsername(username);
         service.setPassword(password);
@@ -511,8 +508,8 @@ public class GeoServiceActionBean implements ActionBean {
 
         return edit();
     }
-    
-     
+
+
     private List<Application> findApplications() {
         List<Application> apps = new ArrayList();
 
@@ -574,12 +571,12 @@ public class GeoServiceActionBean implements ActionBean {
             return new ForwardResolution(JSP);
         }
     }
-    
+
     @Before
     public void setUpdatable() {
         updatable = service instanceof Updatable;
     }
-    
+
     public Resolution update() throws JSONException {
         if(!isUpdatable()) {
             getContext().getMessages().add(new SimpleMessage("Services van protocol {0} kunnen niet worden geupdate",
@@ -587,14 +584,14 @@ public class GeoServiceActionBean implements ActionBean {
             return new ForwardResolution(JSP);
         }
         UpdateResult result = ((Updatable)service).update();
-        
+
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
             return new ForwardResolution(JSP);
         }
-        
+
         Map<UpdateResult.Status,List<String>> byStatus = result.getLayerNamesByStatus();
-        
+
         log.info(String.format("Update layer stats: unmodified %d, updated %d, new %d, missing %d",
                 byStatus.get(UpdateResult.Status.UNMODIFIED).size(),
                 byStatus.get(UpdateResult.Status.UPDATED).size(),
@@ -605,14 +602,14 @@ public class GeoServiceActionBean implements ActionBean {
         log.info("Updated layers: " + byStatus.get(UpdateResult.Status.UPDATED));
         log.info("New layers: " + byStatus.get(UpdateResult.Status.NEW));
         log.info("Missing layers: " + byStatus.get(UpdateResult.Status.MISSING));
-                
+
         List<Application> apps = findApplications();
         for (Application application : apps) {
             SelectedContentCache.setApplicationCacheDirty(application, true);
         }
-                
+
         Stripersist.getEntityManager().getTransaction().commit();
-        
+
         updatedService = new JSONObject();
         updatedService.put("id", "s" + service.getId());
         updatedService.put("name", service.getName());
@@ -620,9 +617,9 @@ public class GeoServiceActionBean implements ActionBean {
         updatedService.put("isLeaf", service.getTopLayer() == null);
         updatedService.put("status", "ok");//Math.random() > 0.5 ? "ok" : "error");
         updatedService.put("parentid", "c" + category.getId());
-        
+
         getContext().getMessages().add(new SimpleMessage("De service is geupdate"));
-        
+
         return new ForwardResolution(JSP);
     }
 
@@ -731,24 +728,24 @@ public class GeoServiceActionBean implements ActionBean {
 
     @DontValidate
     public Resolution addSld() {
-        return new ForwardResolution(JSP_EDIT_SLD);        
+        return new ForwardResolution(JSP_EDIT_SLD);
     }
-    
+
     @Before(on="editSld")
     public void setSldType() {
         if(sld != null) {
             sldType = sld.getExternalUrl() != null ? "external" : "body";
         }
     }
-    
+
     public Resolution editSld() {
         if(sld != null) {
-            return new ForwardResolution(JSP_EDIT_SLD);        
+            return new ForwardResolution(JSP_EDIT_SLD);
         } else {
             return edit();
         }
     }
-    
+
     public Resolution deleteSld() {
         if(sld != null) {
             service.getStyleLibraries().remove(sld);
@@ -758,7 +755,7 @@ public class GeoServiceActionBean implements ActionBean {
         }
         return edit();
     }
-    
+
     @ValidationMethod(on="saveSld")
     public void validateSld() {
         if("external".equals(sldType) && StringUtils.isBlank(sld.getExternalUrl())) {
@@ -770,18 +767,18 @@ public class GeoServiceActionBean implements ActionBean {
             sld.setExternalUrl(null);
         }
     }
-    
+
     private static final String NS_SLD = "http://www.opengis.net/sld";
     private static final String NS_OGC = "http://www.opengis.net/ogc";
     private static final String NS_GML = "http://www.opengis.net/gml";
-    
+
     public Resolution generateSld() throws Exception {
-        
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();        
+        DocumentBuilder db = dbf.newDocumentBuilder();
         Document sldDoc = db.newDocument();
-        
+
         Element sldEl = sldDoc.createElementNS(NS_SLD, "StyledLayerDescriptor");
         sldDoc.appendChild(sldEl);
         sldEl.setAttributeNS(NS_SLD, "version", "1.0.0");
@@ -789,12 +786,12 @@ public class GeoServiceActionBean implements ActionBean {
         sldEl.setAttribute("xmlns:ogc", NS_OGC);
         sldEl.setAttribute("xmlns:gml", NS_GML);
         service.loadLayerTree();
-        
+
         Queue<Layer> layerStack = new LinkedList();
         Layer l = service.getTopLayer();
         while(l != null) {
             layerStack.addAll(service.getLayerChildrenCache(l));
-            
+
             if(l.getName() != null) {
                 Element nlEl = sldDoc.createElementNS(NS_SLD, "NamedLayer");
                 sldEl.appendChild(nlEl);
@@ -805,13 +802,13 @@ public class GeoServiceActionBean implements ActionBean {
                 Element nEl = sldDoc.createElementNS(NS_SLD, "Name");
                 nEl.setTextContent(l.getName());
                 nlEl.appendChild(nEl);
-                
+
                 if(l.getFeatureType() != null) {
                     String protocol = "";
                     if(l.getFeatureType().getFeatureSource() != null) {
                         protocol = " (protocol " + l.getFeatureType().getFeatureSource().getProtocol() + ")";
                     }
-                    
+
                     String ftComment = " This layer has a feature type" + protocol + " you can use in a FeatureTypeConstraint element as follows:\n";
                     ftComment += "            <LayerFeatureConstraints>\n";
                     ftComment += "                <FeatureTypeConstraint>\n";
@@ -837,63 +834,63 @@ public class GeoServiceActionBean implements ActionBean {
                     ftComment += "        ";
                     nlEl.appendChild(sldDoc.createComment(ftComment));
                 }
-                
+
                 nlEl.appendChild(sldDoc.createComment(" Add a UserStyle or NamedStyle element here "));
                 String styleComment = " (no server-side named styles are known other than 'default') ";
                 ClobElement styleDetail = l.getDetails().get(Layer.DETAIL_WMS_STYLES);
                 if(styleDetail != null) {
                     try {
                         JSONArray styles = new JSONArray(styleDetail.getValue());
-                        
+
                         if(styles.length() > 0) {
                             styleComment = " The following NamedStyles are available according to the capabilities: \n";
-                            
+
                             for(int i = 0; i < styles.length(); i++) {
                                 JSONObject jStyle = styles.getJSONObject(i);
-                                
+
                                 styleComment += "            <NamedStyle><Name>" + jStyle.getString("name") + "</Name></NamedStyle>";
                                 if(jStyle.has("title")) {
                                     styleComment += " (" + jStyle.getString("title") + ")";
                                 }
                                 styleComment += "\n";
                             }
-                        }                        
-                        
+                        }
+
                     } catch(JSONException e) {
                     }
                     styleComment += "        ";
                 }
                 nlEl.appendChild(sldDoc.createComment(styleComment));
             }
-            
+
             l = layerStack.poll();
         }
-        
+
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer t = tf.newTransformer();
         t.setOutputProperty(OutputKeys.INDENT, "yes");
         t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        
+
         DOMSource source = new DOMSource(sldDoc);
         ByteArrayOutputStream bos =  new ByteArrayOutputStream();
         StreamResult result = new StreamResult(bos);
         t.transform(source, result);
-        generatedSld = new String(bos.toByteArray(), "UTF-8");  
-        
+        generatedSld = new String(bos.toByteArray(), "UTF-8");
+
         // indent doesn't add newline after XML declaration
         generatedSld = generatedSld.replaceFirst("\"\\?><StyledLayerDescriptor", "\"?>\n<StyledLayerDescriptor");
-        return new ForwardResolution(JSP_EDIT_SLD);  
+        return new ForwardResolution(JSP_EDIT_SLD);
     }
-    
+
     @DontValidate
     public Resolution cqlToFilter() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
-        
+
         try {
-            List<Filter> filters = CQL.toFilterList(cql);            
-            
+            List<Filter> filters = CQL.toFilterList(cql);
+
             FilterTransformer filterTransformer = new FilterTransformer();
             filterTransformer.setIndentation(4);
             filterTransformer.setOmitXMLDeclaration(true);
@@ -905,7 +902,7 @@ public class GeoServiceActionBean implements ActionBean {
             }
 
             json.put("filter", sw.toString());
-  
+
             json.put("success", Boolean.TRUE);
         } catch(Exception e) {
             String error = ExceptionUtils.getMessage(e);
@@ -914,22 +911,22 @@ public class GeoServiceActionBean implements ActionBean {
             }
             json.put("error", error);
         }
-        return new StreamingResolution("application/json", new StringReader(json.toString()));                     
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-    
+
     public Resolution validateSldXml() {
-        Resolution jsp = new ForwardResolution(JSP_EDIT_SLD);  
+        Resolution jsp = new ForwardResolution(JSP_EDIT_SLD);
         Document sldXmlDoc = null;
         String stage = "Fout bij parsen XML document";
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
             DocumentBuilder db = dbf.newDocumentBuilder();
-            
+
             sldXmlDoc = db.parse(new ByteArrayInputStream(sld.getSldBody().getBytes("UTF-8")));
-            
+
             stage = "Fout bij controleren SLD";
-            
+
             Element root = sldXmlDoc.getDocumentElement();
             if(!"StyledLayerDescriptor".equals(root.getLocalName())) {
                 throw new Exception("Root element moet StyledLayerDescriptor zijn");
@@ -938,11 +935,11 @@ public class GeoServiceActionBean implements ActionBean {
             if(version == null || !("1.0.0".equals(version) || "1.1.0".equals(version))) {
                 throw new Exception("Geen of ongeldige SLD versie!");
             }
-            
+
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema s = sf.newSchema(new URL("http://schemas.opengis.net/sld/" + version + "/StyledLayerDescriptor.xsd"));
             s.newValidator().validate(new DOMSource(sldXmlDoc));
-                
+
         } catch(Exception e) {
             String extra = "";
             if(e instanceof SAXParseException) {
@@ -962,18 +959,18 @@ public class GeoServiceActionBean implements ActionBean {
             ));
             return jsp;
         }
-        
+
         getContext().getMessages().add(new SimpleMessage("SLD is valide!"));
-        
+
         return jsp;
     }
-    
+
     public Resolution saveSld() {
-        
+
         if(sld.getId() == null) {
             service.getStyleLibraries().add(sld);
         }
-        
+
         if(sld.isDefaultStyle()) {
             for(StyleLibrary otherSld: service.getStyleLibraries()) {
                 if(otherSld.getId() != null && !otherSld.getId().equals(sld.getId())) {
@@ -985,19 +982,19 @@ public class GeoServiceActionBean implements ActionBean {
         try {
             sld.setNamedLayerUserStylesJson(null);
             InputSource sldBody = null;
-            
+
             if(sld.getExternalUrl() == null) {
                 sldBody = new InputSource(new StringReader(sld.getSldBody()));
             } else {
                 sldBody = new InputSource(new URL(sld.getExternalUrl()).openStream());
             }
-        
+
             sld.setNamedLayerUserStylesJson(StyleLibrary.parseSLDNamedLayerUserStyles(sldBody).toString(4));
         } catch(Exception e) {
             log.error("Fout bij bepalen UserStyle namen van NamedLayers", e);
             getContext().getValidationErrors().addGlobalError(new SimpleError("Kan geen namen van styles per layer bepalen: " + e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
-        
+
         Stripersist.getEntityManager().getTransaction().commit();
         getContext().getMessages().add(new SimpleMessage("SLD opgeslagen"));
         return edit();

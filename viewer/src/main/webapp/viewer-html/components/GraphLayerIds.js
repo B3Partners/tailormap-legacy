@@ -16,7 +16,7 @@
  */
 
 
-function transparencySlider_layersArrayIndexesToAppLayerIds(config) {
+function graph_layersArrayIndexesToAppLayerIds(config) {
     // In config.sliders the selectedLayers property for each slider
     // is an index in the config.layers array which contains the
     // app layer id (updated when app is copied).
@@ -24,32 +24,28 @@ function transparencySlider_layersArrayIndexesToAppLayerIds(config) {
     // selection grid
 
     var layers = config.layers;
-    Ext.Array.each(config.sliders, function(slider) {
-        var newSelectedLayers = [];
-        for(var i = 0; i < slider.selectedLayers.length; i++) {
-            var index = slider.selectedLayers[i];
-            if(index >= 0 && index < layers.length) {
-                newSelectedLayers.push(layers[index]);
-            }
+    Ext.Array.each(config.graphs, function(graph) {
+        var newSelectedLayer = null;
+        var index = graph.layer;
+        if(index !== null) {
+            newSelectedLayer = layers[index];
         }
-        slider.selectedLayers = newSelectedLayers;
+        graph.layer = newSelectedLayer;
     });
 }
 
-function transparencySlider_appLayerIdsToLayersArrayIndexes(config) {
+function graph_appLayerIdsToLayersArrayIndexes(config) {
     // Change app layer id's to indexes in config.layers array
 
     config.layers = [];
-    Ext.Array.each(config.sliders, function(slider) {
-        for(var i = 0; i < slider.selectedLayers.length; i++) {
-            var appLayerId = slider.selectedLayers[i];
+    Ext.Array.each(config.graphs, function(graph) {
+            var appLayerId = graph.layer;
             var index = Ext.Array.indexOf(config.layers, appLayerId);
-            if(index == -1) {
+            if(index === -1) {
                 config.layers.push(appLayerId);
-                slider.selectedLayers[i] = config.layers.length - 1;
+                graph.layer = config.layers.length - 1;
             } else {
-                slider.selectedLayers[i] = index;
+                graph.layer= index;
             }
-        }
     });
 }

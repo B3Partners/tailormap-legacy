@@ -58,17 +58,17 @@ public class FeatureToJson {
     private boolean arrays = false;
     private boolean edit = false;
     private boolean graph = false;
-    private List<Long> attributesToInclude = new ArrayList<Long>();
+    private List<String> attributesToInclude = new ArrayList<String>();
     private static final int TIMEOUT=5000;
-    
+
     public FeatureToJson(boolean arrays,boolean edit){
         this.arrays=arrays;
-        this.edit=edit;        
+        this.edit=edit;
     }
-    
-    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<Long> attributesToInclude){
+
+    public FeatureToJson(boolean arrays,boolean edit, boolean graph, List<String> attributesToInclude){
         this.arrays=arrays;
-        this.edit=edit;        
+        this.edit=edit;
         this.graph = graph;
         this.attributesToInclude=attributesToInclude;
     }
@@ -76,14 +76,14 @@ public class FeatureToJson {
      * Get the features as JSONArray with the given params
      * @param al The application layer(if there is a application layer)
      * @param ft The featuretype that must be used to get the features
-     * @param fs The featureSource 
+     * @param fs The featureSource
      * @param q  The query
      * @param sort The attribute name that is used to sort
      * @param dir Sort direction (DESC or ASC)
      * @return JSONArray with features.
      * @throws IOException
      * @throws JSONException
-     * @throws Exception 
+     * @throws Exception
      */
     public JSONArray getJSONFeatures(ApplicationLayer al,SimpleFeatureType ft, FeatureSource fs, Query q, String sort, String dir) throws IOException, JSONException, Exception{
         Map<String,String> attributeAliases = new HashMap<String,String>();
@@ -93,7 +93,7 @@ public class FeatureToJson {
                     attributeAliases.put(ad.getName(), ad.getAlias());
                 }
             }
-        }        
+        }
         List<String> propertyNames;
         if(al != null) {
             propertyNames = this.setPropertyNames(al, q, ft,edit);
@@ -123,13 +123,13 @@ public class FeatureToJson {
         }
         FeatureIterator<SimpleFeature> it = null;
         JSONArray features = new JSONArray();
-        try{                        
+        try{
             it=fs.getFeatures(q).features();
             int featureIndex=0;
             while(it.hasNext()){
                 SimpleFeature feature = it.next();
                 /* if offset not supported and there are more features returned then
-                 * only get the features after index >= start*/  
+                 * only get the features after index >= start*/
                 if (offsetSupported || featureIndex >= start){
                     JSONObject j = this.toJSONFeature(new JSONObject(),feature,ft,al,propertyNames,attributeAliases,0);
                     features.put(j);
@@ -144,13 +144,13 @@ public class FeatureToJson {
         }
         return features;
     }
-    
+
     private JSONObject toJSONFeature(JSONObject j,SimpleFeature f, SimpleFeatureType ft, ApplicationLayer al, List<String> propertyNames,Map<String,String> attributeAliases, int index) throws JSONException, Exception{
-        if(arrays) {            
+        if(arrays) {
             for(String name: propertyNames) {
                 Object value = f.getAttribute(name);
                 j.put("c" + index++, formatValue(value));
-            }    
+            }
         } else {
             for(String name: propertyNames) {
                 String alias = null;
@@ -158,7 +158,7 @@ public class FeatureToJson {
                     alias=attributeAliases.get(name);
                 }
                 j.put(alias != null ? alias : name, formatValue(f.getAttribute(name)));
-            }                     
+            }
         }
         //if edit and not yet set
         if(edit && j.optString(FID,null)==null) {
@@ -182,14 +182,14 @@ public class FeatureToJson {
                     FeatureSource foreignFs = rel.getForeignFeatureType().openGeoToolsFeatureSource(TIMEOUT);
                     FeatureIterator<SimpleFeature> foreignIt=null;
                     try{
-                        Query foreignQ = new Query(foreignFs.getName().toString());                    
+                        Query foreignQ = new Query(foreignFs.getName().toString());
                         //create filter
                         Filter filter = createFilter(feature,rel);
                         if (filter==null){
                             continue;
                         }
                         //if join only get 1 feature
-                        foreignQ.setMaxFeatures(1);                   
+                        foreignQ.setMaxFeatures(1);
                         foreignQ.setFilter(filter);
                         //set propertynames
                         List<String> propertyNames;
@@ -210,13 +210,13 @@ public class FeatureToJson {
                                 }
                             }
                         }
-                        //Get Feature and populate JSON object with the values.                    
-                        foreignIt=foreignFs.getFeatures(foreignQ).features();                        
+                        //Get Feature and populate JSON object with the values.
+                        foreignIt=foreignFs.getFeatures(foreignQ).features();
                         while (foreignIt.hasNext()){
                             SimpleFeature foreignFeature = foreignIt.next();
                             //join it in the same json
                             j= toJSONFeature(j,foreignFeature, rel.getForeignFeatureType(), al,propertyNames,attributeAliases,index);
-                        }                        
+                        }
                     }finally{
                         if (foreignIt!=null){
                             foreignIt.close();
@@ -240,14 +240,14 @@ public class FeatureToJson {
         }
         return j;
     }
-    
+
     HashMap<Long,List<String>> propertyNamesQueryCache = new HashMap<Long,List<String>>();
     HashMap<Long,Boolean> haveInvisiblePropertiesCache = new HashMap<Long,Boolean>();
     HashMap<Long,List<String>> propertyNamesReturnCache = new HashMap<Long,List<String>>();
     /**
      * Get the propertynames and add the needed propertynames to the query.
      */
-    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q, SimpleFeatureType sft,boolean edit) {        
+    private List<String> setPropertyNames(ApplicationLayer appLayer, Query q, SimpleFeatureType sft,boolean edit) {
         List<String> propertyNames = new ArrayList<String>();
         boolean haveInvisibleProperties = false;
         if (propertyNamesQueryCache.containsKey(sft.getId())){
@@ -256,9 +256,9 @@ public class FeatureToJson {
                 q.setPropertyNames(propertyNamesQueryCache.get(sft.getId()));
             }
             return propertyNamesReturnCache.get(sft.getId());
-        }else{            
+        }else{
             for(ConfiguredAttribute ca: appLayer.getAttributes(sft)) {
-                if((!edit && !graph && ca.isVisible()) || (edit && ca.isEditable()) || (graph && attributesToInclude.contains(ca.getId()))) {
+                if((!edit && !graph && ca.isVisible()) || (edit && ca.isEditable()) || (graph && attributesToInclude.contains(ca.getAttributeName()))) {
                     propertyNames.add(ca.getAttributeName());
                 } else {
                     haveInvisibleProperties = true;
@@ -292,7 +292,7 @@ public class FeatureToJson {
             propertyNamesReturnCache.put(sft.getId(),propertyNames);
             return propertyNames;
         }
-    }   
+    }
     /**
      * Set sort in query based on the index of the propertynames list.
      * @param q the query on which the sort is added
@@ -319,7 +319,7 @@ public class FeatureToJson {
                 sortAttribute = sort;
             }
             this.setSortBy(q,sortAttribute,dir);
-        }                
+        }
     }
     /**
      * Set sort on query
@@ -328,21 +328,21 @@ public class FeatureToJson {
      * @param dir sorting direction DESC or ASC
      */
     private void setSortBy(Query q,String sort, String dir){
-        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());                
-        
+        FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+
         if(sort != null) {
             q.setSortBy(new SortBy[] {
                 ff2.sort(sort, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
             });
         }
-        
+
     }
-    
+
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-    
+
     private Object formatValue(Object value) {
         if(value instanceof Date) {
-            // JSON has no date type so format the date as it is used for 
+            // JSON has no date type so format the date as it is used for
             // display, not calculation
             return dateFormat.format((Date)value);
         } else {
@@ -351,7 +351,7 @@ public class FeatureToJson {
     }
 
     private Filter createFilter(SimpleFeature feature,FeatureTypeRelation rel) {
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();        
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         List<Filter> filters = new ArrayList<Filter>();
         for (FeatureTypeRelationKey key : rel.getRelationKeys()){
             AttributeDescriptor rightSide = key.getRightSide();
@@ -362,7 +362,7 @@ public class FeatureToJson {
             }
             if (AttributeDescriptor.GEOMETRY_TYPES.contains(rightSide.getType()) &&
                     AttributeDescriptor.GEOMETRY_TYPES.contains(leftSide.getType())){
-                filters.add(ff.not(ff.isNull(ff.property(rightSide.getName()))));                            
+                filters.add(ff.not(ff.isNull(ff.property(rightSide.getName()))));
                 filters.add(ff.intersects(ff.property(rightSide.getName()),ff.literal(value)));
             }else{
                 filters.add(ff.equals(ff.property(rightSide.getName()),ff.literal(value)));
@@ -376,14 +376,14 @@ public class FeatureToJson {
             return null;
         }
     }
-    
+
     public static Filter reformatFilter(Filter filter, SimpleFeatureType ft) throws Exception {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
         if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)){
             return filter;
         }
         for (FeatureTypeRelation rel : ft.getRelations()){
-            if (FeatureTypeRelation.JOIN.equals(rel.getType())){ 
+            if (FeatureTypeRelation.JOIN.equals(rel.getType())){
                 filter= reformatFilter(filter, rel.getForeignFeatureType());
                 filter = (Filter) filter.accept(new ValidFilterExtractor(rel), filter);
             }
