@@ -341,19 +341,19 @@ Ext.define('LayoutManager', {
                 }
                 if(layoutRegion.get('configureFloating')) {
                     var floatingChecked = false;
-                    if(Ext.isDefined(layoutJson[regionId]['layout']['enableFloating']) && layoutJson[regionId]['layout']['enableFloating']) {
-                        floatingChecked = layoutJson[regionId]['layout']['enableFloating'];
+                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['enableFloating']) && me.config.layoutJson[regionId]['layout']['enableFloating']) {
+                        floatingChecked = me.config.layoutJson[regionId]['layout']['enableFloating'];
                     }
                     Ext.fly(regionId + '_enableFloating').dom.checked = floatingChecked;
                 }
                 if(layoutRegion.get('configureCollapsible')) {
                     var collapseChecked = false;
                     var defaultCollapsed = false;
-                    if(Ext.isDefined(layoutJson[regionId]['layout']['enableCollapse']) && layoutJson[regionId]['layout']['enableCollapse']) {
-                        collapseChecked = layoutJson[regionId]['layout']['enableCollapse'];
+                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['enableCollapse']) && me.config.layoutJson[regionId]['layout']['enableCollapse']) {
+                        collapseChecked = me.config.layoutJson[regionId]['layout']['enableCollapse'];
                     }
-                    if(Ext.isDefined(layoutJson[regionId]['layout']['defaultCollapsed']) && layoutJson[regionId]['layout']['defaultCollapsed']) {
-                        defaultCollapsed = layoutJson[regionId]['layout']['defaultCollapsed'];
+                    if(Ext.isDefined(me.config.layoutJson[regionId]['layout']['defaultCollapsed']) && me.config.layoutJson[regionId]['layout']['defaultCollapsed']) {
+                        defaultCollapsed = me.config.layoutJson[regionId]['layout']['defaultCollapsed'];
                     }
                     var enableCollapseCheckbox = Ext.get(regionId + '_enableCollapse');
                     var defaultCollapseContainer = Ext.get(regionId + '_default_collapse_setting');
@@ -368,7 +368,7 @@ Ext.define('LayoutManager', {
                 }
                 if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
                     Ext.fly(regionId + '_panelTitle').set({
-                        value:(layoutJson[regionId]['layout']['panelTitle'] || '')
+                        value:(me.config.layoutJson[regionId]['layout']['panelTitle'] || '')
                     });
                 }
                 var bgcolor = '';
