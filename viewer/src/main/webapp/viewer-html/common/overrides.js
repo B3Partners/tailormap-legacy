@@ -15,18 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// FIX EXT JS 4.0.7 BUG ON COMBO LIST (Y POSITION FIX, SEE http://www.sencha.com/forum/showthread.php?152001-4.0.7-ComboBox-list-position-Incorrect-in-IE7)
-// PROPABLY FIXED IN EXT JS 4.1
-/* Ext.override(Ext.form.field.Picker, {
-    expand: function() {
-        var me = this;
-        me.callOverridden();
-        // FOR WHY SETTIMEOUT(FN, 0) WORKS SEE: http://stackoverflow.com/questions/1360238/myfunction-vs-window-settimeoutmyfunction-0
-        window.setTimeout(function() {
-            me.getPicker().el.alignTo(me.inputEl, 'tl-bl?');
-        }, 0);
-    }
-}); */
 if(typeof MobileManager !== "undefined" && MobileManager.isMobile()) {
     Ext.override(Ext.form.field.ComboBox, {
         editable: false 

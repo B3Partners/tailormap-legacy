@@ -186,3 +186,9 @@ var defaultHtmleditorTableConfig = {
     langBorder: 'Rand',
     langCellLabel: 'Label in cellen tonen'
 };
+
+Ext.override(Ext.form.field.HtmlEditor, 
+    // Fix upside down question mark appearing
+    // http://www.sencha.com/forum/showthread.php?79190-Mysterious-postdata-from-htmleditor
+    { defaultValue: "" }
+);

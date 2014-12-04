@@ -375,11 +375,15 @@ function updateServiceNode(service) {
     var tree = Ext.getCmp('servicestree');
     
     var oldNode = tree.getRootNode().findChild('id', service.id, true);
-    
-    if(oldNode != null) {
+    var parent = oldNode.parentNode;
+    if(oldNode !== null) {
         var newNode = Ext.create('GeoServiceTreeModel', service);
-        oldNode.parentNode.insertBefore(newNode, oldNode);
-        oldNode.remove();    
+        parent.insertBefore(newNode, oldNode);
+        oldNode.remove();
+        parent.collapse(false, function() {
+            parent.expand();
+            newNode.expand();
+        });
     }
 }
 
