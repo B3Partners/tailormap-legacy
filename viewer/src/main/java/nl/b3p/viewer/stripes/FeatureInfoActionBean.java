@@ -330,25 +330,4 @@ public class FeatureInfoActionBean implements ActionBean {
 
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
-
-    public static void main(String[] args) throws IOException{
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        org.geotools.xml.Configuration configuration2 = new org.geotools.filter.v1_1.OGCConfiguration();
-        org.geotools.xml.Encoder encoder = new org.geotools.xml.Encoder(configuration2);
-
-        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-
-        Coordinate coord = new Coordinate(1, 1);
-        Point point = geometryFactory.createPoint(coord);
-
-         //make dwithin filter
-        Filter f = ff.dwithin(ff.property("msGeometry"), ff.literal(point), 200, "m");
-        //encode
-        encoder.encode(f, org.geotools.filter.v1_1.OGC.Filter, baos);
-        String s = baos.toString();
-        System.out.println("Propertyislike matchcase=false filter: /n" + s);
-
-
-    }
 }
