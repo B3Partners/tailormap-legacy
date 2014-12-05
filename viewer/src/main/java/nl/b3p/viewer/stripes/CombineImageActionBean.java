@@ -161,6 +161,7 @@ public class CombineImageActionBean implements ActionBean {
                 if (imageSettings.size()>maxStoredSettings){
                     Set<String> keyset=imageSettings.keySet();
                     for (Iterator<String> iterator = keyset.iterator(); iterator.hasNext();) {
+                        iterator.next();
                         iterator.remove();
                         if (imageSettings.size() < minStoredSettings) {
                             break;
