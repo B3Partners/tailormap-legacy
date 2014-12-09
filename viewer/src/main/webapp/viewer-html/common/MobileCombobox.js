@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 Geert Plaisier
  *
  * This program is free software: you can redistribute it and/or modify
@@ -185,7 +185,7 @@ Ext.define ("viewer.components.MobileCombobox", {
         var me = this;
         if(me.options === null) me.createOptionsFromStore();
         var optionsHTML = '';
-        for(var i in me.options) {
+        for(var i = 0; i < me.options.length; i++) {
             optionsHTML += me.options[i].html;
         }
         return optionsHTML;
@@ -229,7 +229,7 @@ Ext.define ("viewer.components.MobileCombobox", {
             this.clearValue();
         }else{
             var me = this;
-            for(var i in me.options) {
+            for(var i = 0; i < me.options.length; i++) {
                 if(me.options[i].value == value) me.inputEl.dom.selectedIndex = me.options[i].index;
             }
             if(this.rendered) me.fireChangeEvent();
@@ -248,7 +248,7 @@ Ext.define ("viewer.components.MobileCombobox", {
      */
     getValue: function() {
         if(!this.rendered) return null;
-        for(var i in this.options) {
+        for(var i = 0; i < this.options.length; i++) {
             if(this.options[i].index === this.inputEl.dom.selectedIndex) return this.options[i].value;
         }
         return null;

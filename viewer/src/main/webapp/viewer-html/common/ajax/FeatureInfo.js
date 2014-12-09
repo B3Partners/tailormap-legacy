@@ -31,7 +31,7 @@ Ext.define("viewer.FeatureInfo", {
 
         var visibleAppLayers = {};
 
-        for(var i in visibleLayerIds) {
+        for(var i = 0; i < visibleLayerIds.length; i++) {
             var id=visibleLayerIds[i];
             var appLayer = viewerController.getAppLayerById(id);
             if(appLayer != null) {
@@ -73,7 +73,7 @@ Ext.define("viewer.FeatureInfo", {
         var visibleAppLayers = this.getVisibleAppLayers();
 
         var queries = [];
-        for(var id in visibleAppLayers) {
+        for(var i = 0; i < visibleAppLayers.length; i++) {
             var appLayer = this.viewerController.app.appLayers[id];
             var query = { appLayer: appLayer.id };
             if(appLayer.filter) {
@@ -91,7 +91,7 @@ Ext.define("viewer.FeatureInfo", {
         var visibleAppLayers = this.getVisibleAppLayers();
 
         var queries = [];
-        for(var i in appLayers) {
+        for(var i = 0; i < appLayers.length; i++) {
             var appLayer = appLayers[i];
 
             if(visibleAppLayers[appLayer.id] === true) {
