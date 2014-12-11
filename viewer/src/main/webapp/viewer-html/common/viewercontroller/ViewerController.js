@@ -93,6 +93,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var comps = this.app.components;
         var config = {};
         for (var c in comps){
+            if(!comps.hasOwnProperty(c)) {
+                continue;
+            }
             var component = comps[c];
             if(component.className == "viewer.mapcomponents.FlamingoMap" ||
                 component.className == "viewer.mapcomponents.OpenLayersMap"){
@@ -363,6 +366,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     onSelectedContentChanged : function (){
         var appLayers = this.app.appLayers;
         for(var key in appLayers ){
+            if(!appLayers.hasOwnProperty(key)) {
+                continue;
+            }
             var appLayer = appLayers[key];
             if(appLayer.filter){
                 var mapLayer = this.getLayer(appLayer);
@@ -376,7 +382,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     uncheckUnselectedContent: function() {
         var selectedAppLayers = [];
 
-        for(var i in this.app.selectedContent) {
+        for(var i = 0; i < this.app.selectedContent.length; i++) {
             var content = this.app.selectedContent[i];
             if(content.type == "appLayer") {
                 selectedAppLayers.push(content.id);
@@ -386,8 +392,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         for(var i in this.app.appLayers) {
+            if(!this.app.appLayers.hasOwnProperty(i)) {
+                continue;
+            }
             var appLayer = this.app.appLayers[i];
-
             if(appLayer.checked) {
                 if(Ext.Array.indexOf(selectedAppLayers, appLayer.id + "") == -1) {
                     appLayer.checked = false;
@@ -408,22 +416,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             onLevel(level);
             if(level.children) {
-                for(var i in level.children) {
+                for(var i = 0; i < level.children.length; i++) {
                     var child = app.levels[level.children[i]];
                     traverseLevel(child);
                 }
             }
             if(level.layers) {
-                for(var i in level.layers) {
-                    var layer = app.appLayers[level.layers[i]];
+                for(var j = 0; j < level.layers.length; j++) {
+                    var layer = app.appLayers[level.layers[j]];
                     onAppLayer(layer);
                 }
             }
         };
 
-        for(var i in app.selectedContent) {
+        for(var i = 0; i < app.selectedContent.length; i++) {
             var c = app.selectedContent[i];
-
             if(c.type == "level") {
                 traverseLevel(app.levels[c.id]);
             } else if(c.type == "appLayer") {
@@ -448,12 +455,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var appLayers = [];
         if (level) {
             if (level.layers) {
-                for (var i in level.layers) {
+                for (var i = 0; i < level.layers.length; i++) {
                     appLayers.push(level.layers[i]);
                 }
             }
             if (level.children) {
-                for (var c in level.children) {
+                for (var c = 0; c < level.children.length; c++) {
                     var childId = level.children[c];
                     var childLayers = this.getLevelAppLayerIds(this.app.levels[childId]);
                     appLayers = appLayers.concat(childLayers);
@@ -470,7 +477,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getAppLayerParent: function(appLayerId){
         //make sure its a string so the compare works.
         appLayerId=""+appLayerId;
-        for (var levelId in this.app.levels){
+        for (var levelId in this.app.levels) {
+            if(!this.app.levels.hasOwnProperty(levelId)) {
+                continue;
+            }
             var level = this.app.levels[levelId];
             if (level.layers){
                 if(Ext.Array.contains(level.layers,appLayerId)){
@@ -489,6 +499,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         //make sure its a string so the compare works.
         levelId=""+levelId;
         for (var lid in this.app.levels){
+            if(!this.app.levels.hasOwnProperty(lid)) {
+                continue;
+            }
             var level = this.app.levels[lid];
             if (level.children){
                 if(Ext.Array.contains(level.children,levelId)){
@@ -659,7 +672,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.logger.warning("viewerController.getAppLayer() with serviceId and LayerName is not unique");
         var count=0;
         var foundAppLayer=null;
-        for ( var i in this.app.appLayers){
+        for ( var i in this.app.appLayers) {
+            if(!this.app.appLayers.hasOwnProperty(i)) {
+                continue;
+            }
             var appLayer = this.app.appLayers[i];
             if(appLayer.layerName== layerName && appLayer.serviceId == serviceId){
                 count++;
@@ -863,9 +879,15 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     getLayerByLayerId : function (id){
         this.logger.warning("viewerController.getLayerByLayerId() is not returning a unique layer!");
-        for (var i in this.app.services){
+        for (var i in this.app.services) {
+            if(!this.app.services.hasOwnProperty(i)) {
+                continue;
+            }
             var service = this.app.services[i];
             for(var j in service.layers){
+                if(!service.layers.hasOwnProperty(j)) {
+                    continue;
+                }
                 var layer = service.layers[j];
                 if(id == layer.id){
                     return this.getLayer(service.id,layer.name);
@@ -881,9 +903,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      **/
     getServiceLayerById: function (id){
         for (var i in this.app.services){
+            if(!this.app.services.hasOwnProperty(i)) {
+                continue;
+            }
             var service = this.app.services[i];
-
             for(var j in service.layers){
+                if(!service.layers.hasOwnProperty(j)) {
+                    continue;
+                }
                 var layer = service.layers[j];
                 if(id == layer.id){
                     return layer;
@@ -1276,7 +1303,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getComponents: function (){
         var results=[];
         for(var name in this.components) {
-            results.push(this.components[name].instance);
+            if(this.components.hasOwnProperty(name)) {
+                results.push(this.components[name].instance);
+            }
         }
         return results;
     },
@@ -1288,9 +1317,11 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     getComponentsByClassName : function(className) {
         var result = [];
         for(var name in this.components) {
-            var component = this.components[name];
-            if(component.className == className) {
-                result.push(component.instance);
+            if(this.components.hasOwnProperty(name)) {
+                var component = this.components[name];
+                if(component.className == className) {
+                    result.push(component.instance);
+                }
             }
         }
         return result;
@@ -1358,7 +1389,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 newJoined=newJoined.concat(this.getJoinedFeatureTypes(relation.relations,featureTypeId));
             }
             //don't add double ft
-            for (var b=0; b < newJoined.length; b++){
+            for (var b = 0; b < newJoined.length; b++){
                 if (joinedFeatureTypes.indexOf(newJoined[b])>=0){
                     return joinedFeatureTypes;
                 }else{
@@ -1375,7 +1406,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var appLayers = this.app.appLayers;
         var selectedContent = this.app.selectedContent;
 
-        for( var key in params){
+        for( var key in params) {
+            if(!params.hasOwnProperty(key)) {
+                continue;
+            }
             var value = params[key];
             if(key === "bookmark"){
                 var me = this;
@@ -1454,6 +1488,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var appLayers = this.app.appLayers;
 
         for ( var i in appLayers){
+            if(!appLayers.hasOwnProperty(i)) {
+                continue;
+            }
             var appLayer = appLayers[i];
             var isBookmarked = false;
 
@@ -1476,7 +1513,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     succesReadUrl : function(code){
         var paramJSON = Ext.JSON.decode(code);
 
-        var params = new Object();
+        var params = {};
         for ( var i = 0 ; i < paramJSON["params"].length ; i++){
             var parameter = paramJSON["params"][i];
             var key = parameter.name;
@@ -1635,8 +1672,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // We are execturing the doResize function manually on all components, instead of
         // firing an event, because all components are required execute this function
         for(var name in me.components) {
-            var component = me.components[name];
-            component.instance.resizeScreenComponent();
+            if(me.components.hasOwnProperty(name)) {
+                var component = me.components[name];
+                component.instance.resizeScreenComponent();
+            }
         }
         return true;
     },

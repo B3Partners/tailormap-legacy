@@ -152,6 +152,9 @@ Ext.define ("viewer.components.RelatedDocuments",{
         this.documentImg={};
         html+="<div class='documents_documents'>";
         for (var documentId in documents){
+            if(!documents.hasOwnProperty(documentId)) {
+                continue;
+            }
             var doc=documents[documentId];
             html+="<div class='document_entry'>";
                 html+="<div class='document_icon'>"
@@ -173,6 +176,9 @@ Ext.define ("viewer.components.RelatedDocuments",{
      */
     loadImages: function(){
         for (var imgId in this.documentImg){
+            if(!this.documentImg.hasOwnProperty(imgId)) {
+                continue;
+            }
             this.loadImage(imgId,this.documentImg[imgId]);
         }
     },

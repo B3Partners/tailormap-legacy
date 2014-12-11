@@ -554,7 +554,7 @@ Ext.define("viewer.components.CustomConfiguration",{
      * Helper function to get searchconfig for searchconfigId
      */     
     getConfig: function(searchconfigId) {
-        for(var x in this.searchconfigs) {
+        for(var x = 0; x < this.searchconfigs.length; x++) {
             if(this.searchconfigs[x].id === searchconfigId) {
                 return this.searchconfigs[x];
             }

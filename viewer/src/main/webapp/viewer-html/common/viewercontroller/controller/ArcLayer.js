@@ -53,6 +53,9 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                         parts: []
                     };
                     for(var i in agsLegend.legend) {
+                        if(!agsLegend.legend.hasOwnProperty(i)) {
+                            continue;
+                        }
                         var agsPart = agsLegend.legend[i];
                         var part = {
                             label: agsPart.label,
@@ -163,16 +166,19 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     // Do the following loop only once by building the serviceCache
                     // as indexed by layer id
                     for(var i in json.layers) {
+                        if(!json.layers.hasOwnProperty(i)) {
+                            continue;
+                        }
                         var layer = json.layers[i];
-                        
                         serviceCache[layer.layerId] = layer;
+                        
                     }
                     serviceCache.inProgress = false;
                     
                    //console.log("legend data received, calling success function");
                     onServiceCached(serviceCache);
                     
-                    for(var i in serviceCache.joiners) {
+                    for(var i = 0; i < serviceCache.joiners.length; i++) {
                         var joiner = serviceCache.joiners[i];
                         //console.log("legend data received, calling joined success function");
                         joiner.success(serviceCache);
@@ -186,7 +192,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
                     me.getViewerController().logger.error(errorMsg + "error retrieving legend JSON from ArcGIS: " + msg);
                     failure();
                     
-                    for(var i in serviceCache.joiners) {
+                    for(var i = 0; i < serviceCache.joiners.length; i++) {
                         //console.log("legend data Ajax failure, calling joined failure function");
                         var joiner = serviceCache.joiners[i];
                         joiner.failure();

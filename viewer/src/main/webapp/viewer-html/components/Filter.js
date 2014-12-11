@@ -193,9 +193,11 @@ Ext.define ("viewer.components.Filter",{
      */
     transformUniqueValuesToStore : function(values){        
         var newValues=[];
-        for (var attribute in values){            
-            for (var i =0; i < values[attribute].length; i++){
-                newValues.push({value: values[attribute][i]});
+        for (var attribute in values){
+            if(values.hasOwnProperty(attribute)) {
+                for (var i =0; i < values[attribute].length; i++){
+                    newValues.push({value: values[attribute][i]});
+                }
             }
         }
         return newValues;

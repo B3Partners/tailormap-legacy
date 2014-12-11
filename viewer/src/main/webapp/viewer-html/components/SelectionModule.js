@@ -276,7 +276,7 @@ Ext.define ("viewer.components.SelectionModule",{
         var me = this;
         var panelIds = [];
         var activePanels = me.getActiveTreePanels();
-        for(var i in activePanels) {
+        for(var i = 0; i < activePanels.length; i++) {
             panelIds.push(activePanels[i].id);
         }
         return panelIds;
@@ -317,6 +317,9 @@ Ext.define ("viewer.components.SelectionModule",{
     getActiveTreeType: function() {
         var panels= this.treePanels;
         for(var key in panels){
+            if(!panels.hasOwnProperty(key)) {
+                continue;
+            }
             var p = panels[key];
             if(p.treePanel && p.treePanel.getId() === this.activeTree.getId()){
                 return key;
@@ -1228,6 +1231,9 @@ Ext.define ("viewer.components.SelectionModule",{
         this.clearTree(rootNode);
         // Create service node
         for(var i in results) {
+            if(!results.hasOwnProperty(i)) {
+                continue;
+            }
             me.addCSWResult(results[i], rootNode);
         }
     },

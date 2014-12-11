@@ -151,11 +151,16 @@ Ext.define ("viewer.components.FeatureInfo",{
     onDataReturned: function(options){
         var found=false;
         var data = options.data;
-        for (var layerIndex in data){            
+        for (var layerIndex in data) {
+            if(!data.hasOwnProperty(layerIndex)){
+                continue;
+            }
             var layer=data[layerIndex];
-            for (var index in layer.features){
-                found=true;
-                break;
+            for (var index in layer.features) {
+                if(layer.features.hasOwnProperty(index)) {
+                    found = true;
+                    break;
+                }
             }
             if(found){
                 break;

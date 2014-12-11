@@ -305,8 +305,10 @@ Ext.define("viewer.viewercontroller.MapComponent",{
             this.initEvents();
         }
         for( var key in this.eventList){
-            if(this.eventList[key] == specific){
-                return key;
+            if(this.eventList.hasOwnProperty(key)) {
+                if(this.eventList[key] == specific){
+                    return key;
+                }
             }
         }
         return null;
