@@ -34,17 +34,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Registry of available JavaScript viewer components. 
- * 
+ * Registry of available JavaScript viewer components.
+ *
  * @author Matthijs Laan
  */
 public class ComponentRegistry {
     private static final Log log = LogFactory.getLog(ComponentRegistry.class);
 
-    private Map<String,ViewerComponent> components = new HashMap<String,ViewerComponent>();
-    
-    private List<File> componentPaths = new ArrayList();
-    
+    private final Map<String,ViewerComponent> components = new HashMap<String,ViewerComponent>();
+
+    private final List<File> componentPaths = new ArrayList();
+
     /* package */ boolean loadFromPath(ServletContext sc, String p) {
 
         File path = this.resolvePath(sc,p);
@@ -60,19 +60,19 @@ public class ComponentRegistry {
                 return name.equalsIgnoreCase("components.json");
             }
         });
-        
+
         for(String file: files) {
             String filename = path + File.separator + file;
             try {
                 String contents = "";
-                
+
                 Compiler compiler = new Compiler();
                 CompilerOptions options = new CompilerOptions();
                 CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
                 options.setOutputCharset("UTF-8");
-                
+
                 compiler.compile(JSSourceFile.fromCode("dummy.js",""), JSSourceFile.fromFile(filename, Charset.forName("UTF-8")), options);
-                
+
                 if(compiler.hasErrors()) {
                     log.warn(compiler.getErrorCount() + " error(s) minifying source file " + filename + "; using original source");
                     contents = IOUtils.toString(new FileInputStream(filename), "UTF-8");
@@ -113,7 +113,7 @@ public class ComponentRegistry {
                 log.error("Exception reading file " + file, e);
             }
         }
-        
+
         return true;
     }
 
@@ -124,28 +124,30 @@ public class ComponentRegistry {
             String className = metadata.getString("className");
 
             if(components.containsKey(className)) {
-                log.error("Duplicate component classname: " + className);
+                log.error(String.format("Ignoring duplicate component classname \"%s\" in when loading from path \"%s\"",
+                        className,
+                        path.toString()));
                 return;
             }
-            
+
             String group = "Rest";
             if(metadata.has("group")){
                 group = metadata.getString("group");
             }else{
                 metadata.put("group", group);
             }
-            File[] sourceFiles = new File[]{};
-            File[] configSourceFiles = new File[]{};            
-            try{            
+            File[] sourceFiles;
+            File[] configSourceFiles;
+            try {
                 sourceFiles = getFiles(path, metadata.optJSONArray("sources"));
-                configSourceFiles=getFiles(path, metadata.optJSONArray("configSource"));
-            }catch(FileNotFoundException e){
-                log.error(String.format("Error reading file in component class \"%s\": \"%s\"" ,className,e.getMessage()));
+                configSourceFiles = getFiles(path, metadata.optJSONArray("configSource"));
+            } catch(FileNotFoundException e) {
+                log.error(String.format("Error reading file in component class \"%s\": \"%s\"" ,className, e.getMessage()));
                 return;
             }
 
-            components.put(className, new ViewerComponent(path.getCanonicalPath(), className, sourceFiles,configSourceFiles, metadata,group));
-            log.info("Registered component " + className);
+            components.put(className, new ViewerComponent(path.getCanonicalPath(), className, sourceFiles, configSourceFiles, metadata,group));
+            log.debug("Registered component " + className);
 
         } catch(JSONException e) {
             log.error("Invalid component metadata in directory " + path + ": " + e.getMessage());
@@ -161,7 +163,7 @@ public class ComponentRegistry {
         Collections.sort(names);
         return names;
     }
-    
+
     public List<String> getClassNameListSortedByDisplayName() {
         List<String> names = new ArrayList<String>(components.keySet());
         Collections.sort(names, new Comparator<String>() {
@@ -169,18 +171,18 @@ public class ComponentRegistry {
             public int compare(String lhs, String rhs) {
                 ViewerComponent vcLhs = components.get(lhs);
                 ViewerComponent vcRhs = components.get(rhs);
-                
+
                 lhs = vcLhs.getMetadata().optString("name", lhs);
                 rhs = vcRhs.getMetadata().optString("name", rhs);
                 return lhs.compareTo(rhs);
             }
         });
         return names;
-    }    
-    
+    }
+
     private File[] getFiles(File path, JSONArray sources) throws IOException, JSONException{
         File[] sourceFiles = new File[] {};
-        
+
         if(sources != null) {
             sourceFiles = new File[sources.length()];
             for(int i = 0; i < sources.length(); i++) {
@@ -188,7 +190,7 @@ public class ComponentRegistry {
                 if(!sourceFile.canRead()) {
                     /*Maybe it's in an other configured path*/
                     sourceFile = this.getFileFromComponentPaths(sources.getString(i));
-                    if (sourceFile==null){                        
+                    if (sourceFile==null){
                         throw new FileNotFoundException (String.format("Cannot read sourcefile \"%s\"",
                                 sources.getString(i)));
                     }
@@ -198,20 +200,20 @@ public class ComponentRegistry {
         }
         return sourceFiles;
     }
-    
+
     private File resolvePath(ServletContext sc,String p){
         File path = new File(sc.getRealPath(p));
         log.debug(String.format("Real path for \"%s\": %s", p, path));
-        
+
         if (!path.exists() || !path.canRead()){
-            log.info(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"."
-                    + "trying as non-virtual path.", path));
+            log.debug(String.format("Cannot load component metadata from context path converted to real path: \"%s\", "
+                    + "trying as file path.", path));
             path = new File(p);
         }
-        
+
         if(!path.exists() || !path.canRead()) {
-            log.error(String.format("Cannot load component metadata from non-existing or unreadable paths \"%s\"", path));
-            return null;                    
+            log.error(String.format("Cannot load component metadata from file path \"%s\"", path));
+            return null;
         }
         return path;
     }
@@ -232,8 +234,8 @@ public class ComponentRegistry {
 
     public void setComponentPaths(ServletContext sc,String[] componentPaths) {
         this.componentPaths.clear();
-        for (int i = 0; i<componentPaths.length; i++){
-            File f = this.resolvePath(sc, componentPaths[i]);
+        for(String componentPath : componentPaths) {
+            File f = this.resolvePath(sc, componentPath);
             if (f!=null){
                 this.componentPaths.add(f);
             }
