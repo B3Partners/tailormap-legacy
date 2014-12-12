@@ -490,13 +490,13 @@ Ext.onReady(function() {
                             Ext.fly(regionId + '_defaultCollapsed').dom.checked = defaultCollapsed;
                         }
                     }
-                    
+
                     if(layoutRegion.get('configureCollapsible') || layoutRegion.get('configureFloating')) {
                         Ext.fly(regionId + '_panelTitle').set({
                             value:(layoutJson[regionId]['layout']['panelTitle'] || '')
                         });
                     }
-                    
+
                     var bgcolor = '';
                     if(Ext.isDefined(layoutJson[regionId]['layout']['bgcolor'])) {
                         bgcolor = layoutJson[regionId]['layout']['bgcolor'];

@@ -11,7 +11,7 @@
  * the Open Source LGPL 3.0 license.  Commercial use is permitted to the extent
  * that the code/component(s) do NOT become part of another Open Source or Commercially
  * licensed development library or toolkit without explicit permission.
- * 
+ *
  * License details: http://www.gnu.org/licenses/lgpl.html
  */
 /**
@@ -20,9 +20,9 @@
  * Creates new HtmlEditor.imageUpload plugin
  * @constructor
  * @param {Object} config The config object
- * 
+ *
  * How to use
- * 
+ *
 	Just instatiate a new HtmlEditor.imageUpload inside htmlEditor plugins option:
 
 	xtype: 'htmleditor',
@@ -32,7 +32,7 @@
     anchor: '100%',
 	value: ''
  */
- 
+
 Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
 
     /**
@@ -79,21 +79,21 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
      * Default 'htmlEditorImageUpload.php'
      */
     submitUrl: 'htmlEditorImageUpload.php',
-	
+
 	/**
      * @cfg {Boolean} disableServerSideEdit
      * Enables/disables server side image editing buttons.
      * Default false
      */
     disableServerSideEdit: false,
-	
+
 	/**
      * @cfg {String} disableDelete
      * Enables/disables server side image deletion.
      * Default false
      */
     disableDelete: false,
-	
+
 	/**
      * @cfg {String} styling
      * Enables/disables image css styling.
@@ -120,16 +120,16 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
    * @cfg {Boolean} values are:
    * true : Default
    * Allows the user to resize an image clicking on it and dragging with the mouse. (Only WebKit browsers)
-   * false 
+   * false
    * The image wont be resized if the user drags on it
    */
     dragResize: true,
-	
+
 	  /**
    * @cfg {Boolean} values are:
    * false : Default
    * Context menu for images enabled
-   * true 
+   * true
    * Context menu will not be avaible
    */
     enableContextMenu: false,
@@ -138,36 +138,36 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
    * @cfg {Boolean} values are:
    * true : Default
    * Allows the user to resize an image clicking on it and using the mousewheel. (Only WebKit browsers & Opera)
-   * false 
+   * false
    * The image wont be resized if the user uses mousewheel on it
    */
     wheelResize: true,
 
     /**
      * @cfg {String} iframeCss
-     * Path to the iframe css file. 
-     * It's important to do not merge this css with other CSS files, because it will be applied to the htmleditor 
+     * Path to the iframe css file.
+     * It's important to do not merge this css with other CSS files, because it will be applied to the htmleditor
      * iframe head. If more css rules are included, it can suffer undesired effects
      * Default 'css/iframe_styles.css'
      */
     iframeCss: 'css/iframe_styles.css',
-    
+
     t: function (str) {
         return this.lang[str] ? this.lang[str] : str;
     },
-	
+
     constructor: function (config) {
         Ext.apply(this, config);
         this.callParent(arguments);
     },
-	
+
     init: function (panel) {
         this.cmp = panel;
         this.cmp.on('render', this.onRender, this);
         this.cmp.on('initialize', this.initialize, this);
         this.cmp.on('beforedestroy', this.beforeDestroy, this);
     },
-	
+
     initialize: function () {
         var me = this;
         var cmpDoc = this.cmp.getDoc();
@@ -183,24 +183,24 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
 		me.cmp.mon(me.flyDoc, 'dblclick', me._dblClick, me);
 		me.cmp.mon(me.flyDoc, 'mouseup', me._docMouseUp, me);
 		me.cmp.mon(me.flyDoc, 'paste', me._removeSelectionHelpers, me);
-		
+
         // mousewheel resize event
-        if ((Ext.isWebKit || Ext.isOpera) && me.wheelResize) {	
+        if ((Ext.isWebKit || Ext.isOpera) && me.wheelResize) {
 			me.cmp.mon(me.flyDoc, 'mousewheel', me._wheelResize, me);
         }
 
         // mouse drag resize event
-        if (Ext.isWebKit && me.dragResize) {	
+        if (Ext.isWebKit && me.dragResize) {
 			me.cmp.mon(me.flyDoc, 'drag', me._dragResize, me);
         }
     },
-	
+
     beforeDestroy: function () {
         var me = this;
         if (me.uploadDialog) me.uploadDialog.destroy();
         if (me.contextMenu) contextMenu.destroy();
     },
-	
+
     onRender: function () {
 
         var imageButton = Ext.create('Ext.button.Button', {
@@ -219,7 +219,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
         this.cmp.getToolbar().add(imageButton);
 
     },
-	
+
 	//private
     _contextMenu: function () {
         var me = this;
@@ -266,7 +266,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
             scope: me
         });
     },
-	
+
     //private
     // instead of overriding the htmleditor header method we just append another css file to it's iframe head
     _injectCss: function (cmp, cssFile) {
@@ -286,7 +286,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
         else iframe.document.getElementsByTagName("head")[0].appendChild(ss);
 
     },
-	
+
     // private
     _dblClick: function (evt) {
         var me = this;
@@ -296,7 +296,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
             me._openImageDialog()
         }
     },
-	
+
     //private
     _openImageDialog: function () {
 
@@ -310,7 +310,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
         var imagesList = doc.body.getElementsByTagName("IMG");
         var imagesListLength = imagesList.length;
 
-        //insertAtCursor function is completely useless for this purpose, so I need to write all this stuff to insert html at caret position	
+        //insertAtCursor function is completely useless for this purpose, so I need to write all this stuff to insert html at caret position
         // I need to know if the browser uses the W3C way or the Internet Explorer method
         var ieBrowser = doc.selection && doc.selection.createRange ? true : false;
         var nonIeBrowser = win.getSelection && win.getSelection().getRangeAt ? true : false;
@@ -421,7 +421,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
 
         me.uploadDialog.show();
     },
-	
+
     //private
 	//Remove custom image attrs from the iframe body DOM
     _removeSelectionHelpers: function () {
@@ -433,7 +433,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
             imagesList[i].removeAttribute('iu_edit');
         }
     },
-	
+
 	//private
 	//When user uses mousewheel over an image
     _wheelResize: function (e) {
@@ -452,7 +452,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
             e.preventDefault();
         } else return;
     },
-	
+
 	//private
 	//When user drags over an image
     _dragResize: function (e) {
@@ -467,7 +467,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
             e.preventDefault();
         } else return;
     },
-    
+
 	//private
 	//When user clicks on content editable area
     _docMouseUp: function (evt) {
@@ -482,7 +482,7 @@ Ext.define('Ext.ux.form.HtmlEditor.imageUpload', {
             if ((me.wheelResize || me.dragResize) && (Ext.isWebKit || Ext.isOpera)) target.setAttribute('iu_edit', '1');
             else target.setAttribute('iu_edit', '2');
 
-            // select image. 
+            // select image.
             // On safari if we copy and paste the image, class attrs are converted to inline styles. It's a browser bug.
             if (Ext.isWebKit) {
                 var sel = this.cmp.getWin().getSelection ? this.cmp.getWin().getSelection() : this.cmp.getWin().document.selection;
@@ -509,9 +509,9 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
 	managerUrl:null,
 	autoScroll:true,
 	initComponent: function () {
-		
-		var me = this;		
-		
+
+		var me = this;
+
 		Ext.applyIf(me, {
             items: [
                 {
@@ -576,14 +576,14 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
         me.callParent(arguments);
         me.setTitle('Crop Image');
 	},
-	
+
 	//private
 	_attachOnLoadEvent: function (comp) {
 		var me = this;
 		var flyImg = Ext.fly(comp.getEl().dom);
 		comp.mon(flyImg, 'load', me._setupResizer, comp);
 	},
-	
+
 	//private
 	_sliderChange: function(slider)
 	{
@@ -592,20 +592,20 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
 		var zoom = Math.round(me.naturalWidth*(slider.getValue()/100));
 		imgToCrop.setWidth(zoom);
 	},
-	
+
 	//private
 	_setupResizer: function(ev,el)
-	{		
+	{
 		var imageComp = this;
 		var cropWindow = this.up('window');
-		
+
 		cropWindow.naturalWidth = el.width;
 		cropWindow.naturalHeight = el.height;
-		
+
 		cropWindow.setWidth(el.width+12);
 		cropWindow.setHeight(el.height+94);
 		cropWindow.center();
-		
+
 		if(!cropWindow.myResizer)
 		cropWindow.myResizer = Ext.create('Ext.resizer.Resizer', {
 			el: 'myResizable',
@@ -618,7 +618,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
 			pinned: true
 		});
 	},
-	
+
 	//private
 	//method to crop the image
     _cropImage: function (fileField) {
@@ -645,9 +645,9 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
 							'offsetTop':me.myResizer.getEl().dom.offsetTop
 						},
 						success: function (response) {
-							
+
 							var result = Ext.JSON.decode(response.responseText);
-							
+
 							if(result.success)
 							{
 								me.imgSrc = result.data['src'];
@@ -659,7 +659,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageCropDialog', {
 					});
 				}
 			}
-		});	
+		});
     }
 });
 
@@ -679,7 +679,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
     layout: {
         type: 'fit'
     },
-    title: '',   
+    title: '',
     listeners: {
         show: function (panel) {
             // we force the focus on the dialog window to avoid control artifacts on IE
@@ -690,7 +690,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
             panel.center();
         }
     },
-    
+
     initComponent: function () {
         var me = this;
         var imageStore = Ext.create('Ext.data.Store', {
@@ -728,7 +728,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 			while (store.getCount(0) > 0)
 			store.removeAt(0);
 		});
-		
+
         var alignStore = Ext.create('Ext.data.ArrayStore', {
             autoDestroy: true,
             idIndex: 0,
@@ -785,7 +785,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 ['pc', 'pc']
             ]
         });
-		
+
         var imageEditButtons = [];
         if(!me.disableServerSideEdit) {
             imageEditButtons = [{
@@ -814,7 +814,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 tooltip:'Resize Image'
             }];
         }
-        
+
         me.items = [{
             xtype: 'form',
             name: 'imageUploadForm',
@@ -843,7 +843,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                     valueField: 'src',
                     needsRefresh: false,
                     checkChangeBuffer: 500,
-                    listeners: {		
+                    listeners: {
                         'expand': {
 							fn: me._comboExpand,
 							scope:me
@@ -1282,14 +1282,14 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
                 }]
             }]
         }];
-		
+
         me.callParent(arguments);
         me.setTitle(me.t('Insert/Edit Image'));
     },
-	
+
 	/**
      * Returns the current image with all the data specified in the form. (Size, borders, padding e.t.c)
-     * @return {HTMLImageObject} 
+     * @return {HTMLImageObject}
      */
     getImage: function () {
         // we have to create the node on iframe's document or Opera will explode!
@@ -1323,7 +1323,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 
         return image;
     },
-	
+
 	//private
 	_comboExpand: function (combo, options) {
 		// I have to do this here because if I do store.load after Image Upload or Image Delete, the paging toolbar disappears.
@@ -1337,25 +1337,25 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 			})
 		} else combo.needsRefresh = false;
 	},
-	
+
 	//private
 	_comboChange: function (combo, oldValue, newValue) {
 		// in ie8 sometimes this event is fired and I dont know why. So if newValue is not defined I just ignore it.
 		if (newValue == undefined) return;
 		this._setPreviewImage(combo.getValue(), true);
 	},
-	
+
 	//private
 	_comboSelect: function(combo){
 		this._setPreviewImage(combo.getValue(), true);
 	},
-	
+
 	//private
 	_attachOnLoadEvent: function (comp) {
 		var flyImg = Ext.fly(comp.getEl().dom);
 		comp.mon(flyImg, 'load', this._resizePreviewImage, comp);
 	},
-	
+
 	//private
 	// loads the selected image info into the form
     _loadImageDetails: function () {
@@ -1418,7 +1418,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 
         } else this.down('#fieldOptions').collapse();
     },
-	
+
 	//private
 	//enables/disables constrain proportion toggle
     _toggleConstrain: function (btn) {
@@ -1434,12 +1434,12 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
             me.down('[name=height]').setRawValue(me.down('#naturalHeight').getValue());
         }
     },
-	
+
 	//private
 	_deleteImage:function (ev, a) {
-		
+
 		var me = this;
-		
+
 		if (!me.disableDelete){
 			Ext.Msg.show({
 				title: me.t('Confirmation'),
@@ -1456,7 +1456,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 								'image': a.getAttribute ? a.getAttribute('img_fullname') : a
 							},
 							success: function (response) {
-								
+
 								var result = Ext.JSON.decode(response.responseText);
 								if(result.success)
 								{
@@ -1480,7 +1480,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 			});
 		}
 	},
-	
+
 	//private
 	//method to upload the image to the server
     _uploadImage: function (fileField) {
@@ -1506,7 +1506,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
             });
         }
     },
-	
+
 	//private
 	_serverAction: function (params) {
 
@@ -1517,23 +1517,23 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 			method: 'POST',
 			params: params,
 			success: function (response) {
-				
+
 				var result = Ext.JSON.decode(response.responseText);
-				
+
 				if(result.success)
 				{
 					var combo = me.down('[name=src]');
                     combo.needsRefresh = true;
                     combo.setRawValue(result.data['src']);
                     me._setPreviewImage(result.data['src'], true);
-					
+
 				}else{
 					Ext.Msg.alert('Error', 'Error: ' + result.errors);
 				}
 			}
 		});
 	},
-	
+
 	//private
 	_rotateImageClick: function(){
 		var me = this;
@@ -1542,13 +1542,13 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 			image: me.down('[name=src]').getValue()
 		});
 	},
-	
+
 	//private
 	_resizeImageClick: function(){
 		var me = this;
 		var width = me.down('[name=width]').getValue();
 		var height = me.down('[name=height]').getValue();
-		
+
 		Ext.Msg.show({
 			title: me.t('Confirmation'),
 			msg: me.t('Image will be permanently resized to: ')+width+'x'+height+' px',
@@ -1561,42 +1561,42 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
 						image: me.down('[name=src]').getValue(),
 						width: width,
 						height: height
-					});			
+					});
 				}
 			}
-		});	
+		});
 	},
-	
+
 	//private
 	_deleteImageClick: function(){
 		var me = this;
 		var src = me.down('[name=src]').getValue();
 		var imageName = src.substring(src.lastIndexOf('/')+1);
-		me._deleteImage(null,imageName); 
+		me._deleteImage(null,imageName);
 	},
-	
+
 	//private
 	_openCropDialogClick: function()
 	{
 		 var me = this;
 		 var imageSrc = me.down('[name=src]').getValue();
-		  
+
 		 me.cropDialog = Ext.create('Ext.ux.form.HtmlEditor.ImageCropDialog', {
             imgSrc: imageSrc,
 			managerUrl: me.managerUrl
         });
-		
+
 		me.cropDialog.on('imagecropped', function () {
-			
+
 			var combo = me.down('[name=src]');
             combo.needsRefresh = true;
             me._setPreviewImage(me.cropDialog.imgSrc, true);
 			me.cropDialog.close()
 		});
-		
+
 		me.cropDialog.show();
 	},
-	
+
 	//private
 	//Check if the image size respects aspect ratio
     _checkConstrain: function (combo, newValue, oldValue) {
@@ -1614,7 +1614,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
             sizeField.setRawValue(Math.round((ratio * newValue)));
         }
     },
-	
+
 	//private
 	//Loads selected image on preview panel
     _setPreviewImage: function (src, resetImageSize) {
@@ -1623,13 +1623,13 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
         this.previewComponent.setHeight('');
 
         this.down('#vistaPrevia').resetImageSize = resetImageSize;
-       
+
 		// when I change the src the _resizePreviewImage method will be fired.
         // It happens because _resizePreviewImage is attached to the image onload event
 		if(!(/^https:\/\//.test(src))) this.previewComponent.setSrc(src+'?'+Math.floor(Math.random()*111111));
 		else this.previewComponent.setSrc(src);
     },
-	
+
 	//private
 	//Resizes the image to fit on the preview panel
     _resizePreviewImage: function (evt, el) {
@@ -1648,7 +1648,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
         myForm.down('#naturalHeight').setValue(image.height);
         myForm.down('#ratio').setValue(image.height / image.width);
         myForm.down('#realSize').setValue(image.width + 'x' + image.height);
-		
+
 		// enable server image editing buttons
 		if (!comp.disableServerSideEdit){
 			if(image.src!='' && image.src!='blank' && image.src.search(document.domain) >= 0)
@@ -1673,7 +1673,7 @@ Ext.define('Ext.ux.form.HtmlEditor.ImageDialog', {
             myForm.down('[name=heightUnits]').setRawValue('px');
 
         } else {
-            // toggle off constrain button if image ratio is different		
+            // toggle off constrain button if image ratio is different
             if (Math.round(widthComp.getValue() / heightComp.getValue()) != Math.round(image.width / image.height)) constrainComp.toggle(false);
         }
 

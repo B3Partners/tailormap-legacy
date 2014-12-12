@@ -197,7 +197,7 @@ Ext.onReady(function() {
             }
         ]
     });
-    
+
     applyTreeScrollFix(tree.getView());
 });
 
@@ -374,15 +374,15 @@ function addServiceNode(service) {
 
 function updateServiceNode(service) {
     service.text = service.name; // For some reason text is not mapped to name when creating a new model
-    
+
     var tree = Ext.getCmp('servicestree');
-    
+
     var oldNode = tree.getRootNode().findChild('id', service.id, true);
-    
+
     if(oldNode != null) {
         var newNode = Ext.create('GeoServiceTreeModel', service);
         oldNode.parentNode.insertBefore(newNode, oldNode);
-        oldNode.remove();    
+        oldNode.remove();
     }
 }
 

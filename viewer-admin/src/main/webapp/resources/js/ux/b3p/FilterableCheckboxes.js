@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  *
 
 Class for creating a list with filterable checkboxes
-Usage example: 
+Usage example:
 Ext.onReady(function(){
     var filterableCheckboxes = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
         requestUrl: someURL,
@@ -37,11 +37,11 @@ titleField (optional): Fieldname in JSON object in JSON array which holds the "l
 checked (optional): Array with values of the checkboxes which need to be pre-selected
 renderLabel (optional): Function to render label. Must return text which renders as label. Arguments for the function are id, name
 labelClick (optional): Function to catch clicking on the label to execute custom function
- * 
+ *
  */
 
 Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
-        
+
     requestUrl: '',
     requestParams: {},
     renderTo: '',
@@ -72,7 +72,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             this.getList();
         }
     },
-    
+
     render: function() {
         var me = this;
         var checkboxes = '';
@@ -130,13 +130,13 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         }
         me.setChecked();
     },
-    
+
     getList: function() {
         var me = this;
         me.itemList = [];
-        Ext.Ajax.request({ 
-            url: me.requestUrl, 
-            params: me.requestParams, 
+        Ext.Ajax.request({
+            url: me.requestUrl,
+            params: me.requestParams,
             success: function ( result, request ) {
                 me.itemList = Ext.JSON.decode(result.responseText);
                 if (me.layerFilter){
@@ -153,7 +153,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             }
         });
     },
-    
+
     createCheckbox: function(id, value, name) {
         // Using ordinairy HTML checkboxes, Ext checkboxes are too slow when having large numbers
         var label = name;
@@ -162,7 +162,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         }
         return '<div id="' + id + '"><input type="checkbox" id="checkbox-' + id + '" value="' + value + '" /> <label for="checkbox-' + id + '">' + label + '</label></div>';
     },
-    
+
     setCheckBoxesVisible: function(checkboxes, visible) {
         var me = this;
         var visibletxt = 'block';
@@ -171,16 +171,16 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             me.setCheckboxVisible(item.htmlId, visibletxt)
         });
     },
-    
+
     setCheckboxVisible: function(checkboxid, visibletxt) {
         document.getElementById(checkboxid).style.display = visibletxt;
     },
-            
+
     resetChecked: function(checked) {
         this.checked = checked;
         this.setChecked();
     },
-    
+
     setChecked: function() {
         var me = this;
         Ext.Array.each(me.itemList, function(item) {
@@ -191,7 +191,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             }
         });
     },
-    
+
     getChecked: function() {
         var me = this;
         var checked = [];
@@ -202,5 +202,5 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         });
         return checked;
     }
-    
+
 });

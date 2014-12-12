@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,20 +29,20 @@ Ext.define('Ext.ux.b3p.ColorPickerButton', {
         if(me.startColor) me.currentColor = me.startColor;
         else if(me.defaultColor) me.currentColor = me.defaultColor;
         me.textField = Ext.get(config.textfield);
-        
+
         me.renderColorpicker();
         me.appendTextfieldListener();
-        
+
         if(Ext.Array.contains(me.colorPicker.colors, me.currentColor.substring(1))) {
             me.colorPicker.select(me.currentColor.substring(1));
         }
-        
+
         if(Ext.isDefined(me.openOnLeft) && me.openOnLeft === true) {
             me.colorPicker.el.setStyle({
                 marginLeft: '-145px'
             });
         }
-        
+
         if(Ext.isDefined(me.openOnTop) && me.openOnTop === true) {
             me.colorPicker.el.setStyle({
                 marginTop: '-90px',

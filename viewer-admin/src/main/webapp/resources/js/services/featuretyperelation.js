@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ Ext.onReady(function(){
             displayMsg: 'Relaties {0} - {1} of {2}',
             emptyMsg: "Geen relaties weer te geven"
         }),
-        plugins: [ 
+        plugins: [
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
                 enableTooltip: false
             })
@@ -131,7 +131,7 @@ Ext.onReady(function(){
             }
         }
     }));
-    
+
 });
 
 function editObject(objId) {

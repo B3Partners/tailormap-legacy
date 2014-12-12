@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,25 +27,25 @@ Ext.onReady(function(){
     Ext.get('featureSourceSelect').on('change', function() {
         attributes=[];
         featureSourceChanged(this,Ext.get('featuretypeSelect'));
-    });                
+    });
 
     Ext.get('foreignFeatureSourceSelect').on('change', function(){
         foreignAttributes=[];
         featureSourceChanged(this, Ext.get('foreignFeaturetypeSelect'));
     });
-    
+
     Ext.get('featuretypeSelect').on('change', function(){
         attributes=[];
         featureTypeChanged(this, setAttributes);
     });
-    
+
     Ext.get('foreignFeaturetypeSelect').on('change', function(){
         foreignAttributes=[];
         featureTypeChanged(this, setForeignAttributes);
     });
-    
+
     // Init with change, because a certain select value can be preselected
-    //featureTypeChanged(ft);     
+    //featureTypeChanged(ft);
 });
 
 var attributes=[];
@@ -60,7 +60,7 @@ function setForeignAttributes(att){
 
 function featureSourceChanged(el,resultEl){
     var fsId = parseInt(el.getValue());
-    var el = Ext.get('featuretypeSelect');  
+    var el = Ext.get('featuretypeSelect');
     if (fsId < 0 ){
         return;
     }
@@ -69,25 +69,25 @@ function featureSourceChanged(el,resultEl){
         url: featureTypeUrl,
         params: {featureSourceId: fsId},
         success: function(result){
-            var response = Ext.JSON.decode(result.responseText);            
+            var response = Ext.JSON.decode(result.responseText);
             if(response.success) {
                 var fts= response.featuretypes;
                 var html="<option value=\"-1\">Maak uw keuze.</option>";
                 for (var id in fts){
-                    var ft=fts[id];       
-                    html+="<option value=\""+ft.id+"\"";                    
-                    html+=">"+ft.name+"</option>";        
-                } 
+                    var ft=fts[id];
+                    html+="<option value=\""+ft.id+"\"";
+                    html+=">"+ft.name+"</option>";
+                }
                 resultEl.update(html);
             } else {
                 alert(response.error);
-                
+
             }
         },
-        failure: function(result){            
-            failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);            
+        failure: function(result){
+            failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
         }
-    });    
+    });
 }
 function featureTypeChanged(el,setAttFunction){
     var ftId= parseInt(el.getValue());
@@ -107,8 +107,8 @@ function featureTypeChanged(el,setAttFunction){
                 alert(response.error);
             }
         },
-        failure: function(result){            
-            failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);            
+        failure: function(result){
+            failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
         }
     });
 }
@@ -124,15 +124,15 @@ function addAttributeBoxes(leftValue,rightValue){
         leftBox.addCls("relation_left_side");
         var html="<option value=\"-1\">Maak uw keuze.</option>";
         for (var id in attributes){
-            var at=attributes[id];       
+            var at=attributes[id];
             html+="<option value=\""+at.id+"\"";
             if (leftValue==at.id){
-                html+=" selected=\"selected\"";                
+                html+=" selected=\"selected\"";
             }
-            html+=">"+at.name+"</option>";        
-        }        
+            html+=">"+at.name+"</option>";
+        }
         leftBox.update(html);
-        
+
         //right box
         var rightEl=document.createElement("select");
         rightEl.id="rightSide_"+(attributeBoxes.length/2);
@@ -141,23 +141,23 @@ function addAttributeBoxes(leftValue,rightValue){
         rightBox.addCls("relation_right_side");
         var html="<option value=\"-1\">Maak uw keuze.</option>";
         for (var id in foreignAttributes){
-            var at=foreignAttributes[id];       
-            html+="<option value=\""+at.id+"\"";   
+            var at=foreignAttributes[id];
+            html+="<option value=\""+at.id+"\"";
             if (rightValue==at.id){
-                html+=" selected=\"selected\"";                
+                html+=" selected=\"selected\"";
             }
-            html+=">"+at.name+"</option>";        
+            html+=">"+at.name+"</option>";
         }
         rightBox.update(html);
-        
+
         attributeBoxes.push(leftBox);
         attributeBoxes.push(rightBox);
-        
+
         var container=Ext.get("attributeContainer");
         container.insertHtml('beforeEnd','- ');
-        container.appendChild(leftBox);        
+        container.appendChild(leftBox);
         container.insertHtml('beforeEnd',' = ');
-        container.appendChild(rightBox);        
+        container.appendChild(rightBox);
         container.insertHtml('beforeEnd','<br>');
     }
 }

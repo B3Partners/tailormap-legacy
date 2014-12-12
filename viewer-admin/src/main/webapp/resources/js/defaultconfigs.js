@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2011-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ function appendPanel(header, content, container) {
         var headercontent = headerobj.innerText || headerobj.textContent;
         headerobj.style.display = 'none';
         contentobj.className += ' insidePanel';
-        
+
         var panelContainer = container || Ext.getBody();
         var panel = Ext.create('Ext.panel.Panel', {
             title: headercontent,
@@ -114,7 +114,7 @@ Ext.define('Ext.b3p.iFramePopupController', {
         var me = this;
         var iframe = me.getIframe();
         if(!frametitle) frametitle = '';
-        if(iframe) {              
+        if(iframe) {
             iframe.set({ src: url });
             me.popupWindow.setTitle(frametitle);
             me.popupWindow.show();

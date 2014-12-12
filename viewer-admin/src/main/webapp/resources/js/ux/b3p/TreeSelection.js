@@ -53,7 +53,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         }
         this.applyTreeScrollFix();
     },
-    
+
     /**
      *  Apply fixes to the trees for ExtJS scrolling issues
      */
@@ -61,7 +61,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
         var views = [];
         views.push(this.tree.getView());
         views.push(this.selectedlayers.getView());
-        
+
         for(var i in views) {
             applyTreeScrollFix(views[i]);
         }
@@ -331,7 +331,7 @@ Ext.define('Ext.ux.b3p.TreeSelection', {
             }
         });
     },
-    
+
     setAllNodesVisible: function(visible) {
         var me = this;
         var treeview = me.tree.getView();

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ Ext.onReady(function() {
             return this[this.persistenceProperty][fieldName];
         }
     });
-    
+
     // Buttonconfig is probably the same for every TreeSelection component
     var buttonIconConfig = {
         moverighticon: moverighticon,
@@ -67,7 +67,7 @@ Ext.onReady(function() {
         moveupicon: moveupicon,
         movedownicon: movedownicon
     }
-    
+
     // Creation of TreeSelection component
     var kaartSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
         // URL of left tree (base tree)
@@ -98,7 +98,7 @@ Ext.onReady(function() {
         checkedLayers: checkedLayers,
         onlyMoveRootLevels: true
     }));
-    
+
     Ext.get('startmapform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('checkedlayersinput').set({value:kaartSelectie.getCheckedLayers()});

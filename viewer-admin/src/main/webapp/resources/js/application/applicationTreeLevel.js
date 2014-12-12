@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ Ext.require([
 ]);
 
 Ext.onReady(function() {
-    
+
     // Definition of the TreeNode model, used in all the tree's
     Ext.define('TreeNode', {
         extend: 'Ext.data.Model',
@@ -62,7 +62,7 @@ Ext.onReady(function() {
             return this[this.persistenceProperty][fieldName];
         }
     });
-    
+
     // Buttonconfig is probably the same for every TreeSelection component
     var buttonIconConfig = {
         moverighticon: moverighticon,
@@ -70,7 +70,7 @@ Ext.onReady(function() {
         moveupicon: moveupicon,
         movedownicon: movedownicon
     }
-    
+
     // Creation of TreeSelection component
     var kaartSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
         // URL of left tree (base tree)
@@ -94,7 +94,7 @@ Ext.onReady(function() {
         // DIV-ID to which the move buttons are rendered
         layerMoveButtons: 'layermove-buttons'
     }));
-    
+
     // document tree
     var docsSelectie = Ext.create('Ext.ux.b3p.TreeSelection', Ext.apply(buttonIconConfig, {
         // URL of left tree (base tree)
@@ -118,25 +118,25 @@ Ext.onReady(function() {
         // DIV-ID to which the move buttons are rendered
         layerMoveButtons: 'docmove-buttons'
     }));
-    
+
     var tabconfig = [{
-        contentEl:'rights-tab', 
+        contentEl:'rights-tab',
         title: 'Rechten'
     },{
-        contentEl:'documents-tab', 
+        contentEl:'documents-tab',
         title: 'Documenten'
     },{
-        contentEl:'context-tab', 
+        contentEl:'context-tab',
         title: 'Context'
     }];
 
     if(layersAllowed) {
         tabconfig.unshift({
-            contentEl:'tree-tab', 
+            contentEl:'tree-tab',
             title: 'Kaarten'
         });
     }
-    
+
     var htmlEditorRendered = false;
     Ext.select('.tabdiv', true).removeCls('tabdiv').addCls('x-hide-offsets');
     Ext.createWidget('tabpanel', {
@@ -175,7 +175,7 @@ Ext.onReady(function() {
             }
         }
     });
-    
+
     Ext.get('levelform').on('submit', function() {
         Ext.fly('selectedlayersinput').set({value:kaartSelectie.getSelection()});
         Ext.fly('selecteddocsinput').set({value:docsSelectie.getSelection()});

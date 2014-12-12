@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ Ext.onReady(function(){
         remoteFilter: true,
         proxy: {
             type: 'ajax',
-            url: gridurl,            
+            url: gridurl,
             reader: {
                 type: 'json',
                 root: 'gridrows',
@@ -96,7 +96,7 @@ Ext.onReady(function(){
                 hideable: false,
                 menuDisabled: true,
                 renderer: function(value) {
-                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) + 
+                    return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                       ' | ' +
                       Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
                 }
@@ -108,7 +108,7 @@ Ext.onReady(function(){
             displayMsg: 'Layarbronnen {0} - {1} of {2}',
             emptyMsg: "Geen layarbronnen weer te geven"
         }),
-        plugins: [ 
+        plugins: [
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
                 enableTooltip: false
             })

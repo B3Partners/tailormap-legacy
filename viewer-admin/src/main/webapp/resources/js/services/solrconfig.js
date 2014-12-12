@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ Ext.onReady(function(){
             {name: 'lastUpdated', type: 'string'},
             {name: 'featureSourceName', type: 'string'},
             {name: 'featureTypeName', type: 'string'}
-            
+
         ]
     });
 
@@ -103,7 +103,7 @@ Ext.onReady(function(){
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return removeFromIndex(\'{0}\');">Verwijder uit index</a>', value);
                     }else{
-                        
+
                         return Ext.String.format('<a href="#" onclick="return editObject(\'{0}\');">Bewerken</a>', value) +
                            ' | ' +
                            Ext.String.format('<a href="#" onclick="return removeObject(\'{0}\');">Verwijderen</a>', value);
@@ -118,7 +118,7 @@ Ext.onReady(function(){
             displayMsg: 'Zoekbronnen {0} - {1} of {2}',
             emptyMsg: "Geen zoekbronnen weer te geven"
         }),
-        plugins: [ 
+        plugins: [
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
                 enableTooltip: false
             })
@@ -131,7 +131,7 @@ Ext.onReady(function(){
             }
         }
     }));
-    
+
 });
 
 function editObject(id){
@@ -164,7 +164,7 @@ function addToIndex(objId){
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
     return false;
-    
+
 }
 
 function removeFromIndex(objId){
@@ -172,5 +172,5 @@ function removeFromIndex(objId){
     var gridCmp = Ext.getCmp('editGrid')
     gridCmp.getSelectionModel().select(gridCmp.getStore().find('id', objId));
     return false;
-    
+
 }

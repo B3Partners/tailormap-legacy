@@ -107,10 +107,10 @@ Ext.ux.form.HtmlEditor.Table = Ext.extend(Ext.util.Observable, {
                                     var border = frm.findField('border').getValue();
                                     var rowcol = [frm.findField('row').getValue(), frm.findField('col').getValue()];
                                     if (rowcol.length == 2 && rowcol[0] > 0 && rowcol[1] > 0) {
-                                        
+
                                         var doc = this.cmp.getDoc();
                                         var win = this.cmp.win;
-                                        
+
                                         var table = doc.createElement('table');
                                         table.style.borderCollapse = 'collapse';
                                         table.style.width = '100%';
@@ -127,9 +127,9 @@ Ext.ux.form.HtmlEditor.Table = Ext.extend(Ext.util.Observable, {
                                             }
                                             table.appendChild(tableRow);
                                         }
-                                        
+
                                         // EDIT: copied this code from HtmlEditorImage
-                                        // insertAtCursor function is completely useless for this purpose, so I need to write all this stuff to insert html at caret position	
+                                        // insertAtCursor function is completely useless for this purpose, so I need to write all this stuff to insert html at caret position
                                         // I need to know if the browser uses the W3C way or the Internet Explorer method
                                         var sel = "";
                                         var range = "";
@@ -155,7 +155,7 @@ Ext.ux.form.HtmlEditor.Table = Ext.extend(Ext.util.Observable, {
                                             range.select();
                                             range.pasteHTML(table.outerHTML);
                                         }
-                                        
+
                                     }
                                     this.tableWindow.hide();
                                 }else{
@@ -175,7 +175,7 @@ Ext.ux.form.HtmlEditor.Table = Ext.extend(Ext.util.Observable, {
                             scope: this
                         }]
                     });
-                
+
                 }else{
                     this.tableWindow.getEl().frame();
                 }

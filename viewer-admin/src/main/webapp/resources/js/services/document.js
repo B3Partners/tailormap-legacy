@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ Ext.onReady(function(){
             displayMsg: 'Document {0} - {1} of {2}',
             emptyMsg: "Geen documenten weer te geven"
         }),
-        plugins: [ 
+        plugins: [
             Ext.create('Ext.ux.grid.GridHeaderFilters', {
                 enableTooltip: false
             })
@@ -123,7 +123,7 @@ Ext.onReady(function(){
             }
         }
     }));
-    
+
 });
 
 function editObject(objId) {
