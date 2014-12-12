@@ -27,8 +27,6 @@ import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.security.Group;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 /**
  *
@@ -36,9 +34,9 @@ import org.json.JSONException;
  */
 @UrlBinding("/action/componentConfigSource")
 @StrictBinding
-@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN}) 
+@RolesAllowed({Group.ADMIN,Group.APPLICATION_ADMIN})
 public class ComponentConfigSourceActionBean implements ActionBean {
-    
+
     private ActionBeanContext context;
 
     public ActionBeanContext getContext() {
@@ -48,7 +46,7 @@ public class ComponentConfigSourceActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
+
     @Validate
     private String className;
 
@@ -62,13 +60,13 @@ public class ComponentConfigSourceActionBean implements ActionBean {
 
     public Resolution source() {
         ViewerComponent vc = ComponentRegistry.getInstance().getViewerComponent(className);
-        
+
         Resolution notFound = new ErrorResolution(HttpServletResponse.SC_NOT_FOUND);
         if(vc == null) {
             return notFound;
         }
-                    
-        File[] files = vc.getConfigSources();            
+
+        File[] files = vc.getConfigSources();
 
         long lastModified = -1;
         for(File f: files) {
@@ -86,8 +84,8 @@ public class ComponentConfigSourceActionBean implements ActionBean {
                 for(File f: theFiles) {
                     if(theFiles.length != 1) {
                         out.write(("\n\n// Source file: " + f.getName() + "\n\n").getBytes("UTF-8"));
-                    }                        
-                    IOUtils.copy(new FileInputStream(f), out);                        
+                    }
+                    IOUtils.copy(new FileInputStream(f), out);
                 }
             }
         };
@@ -100,6 +98,6 @@ public class ComponentConfigSourceActionBean implements ActionBean {
                 }
             }
         }
-        return res;        
+        return res;
     }
 }

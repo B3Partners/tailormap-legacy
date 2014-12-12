@@ -17,7 +17,6 @@
 package nl.b3p.viewer.admin.stripes;
 
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -46,7 +45,7 @@ import org.stripesstuff.stripersist.Stripersist;
 @RolesAllowed({Group.ADMIN,Group.REGISTRY_ADMIN})
 public class GeoServiceRegistryActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(GeoServiceRegistryActionBean.class);
-    
+
     private static final String JSP = "/WEB-INF/jsp/services/geoserviceregistry.jsp";
     private ActionBeanContext context;
 
@@ -62,7 +61,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     public void setContext(ActionBeanContext context) {
         this.context = context;
     }
-    
+
     public ActionBeanContext getContext() {
         return context;
     }
@@ -78,7 +77,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     public Category getCategory() {
         return category;
     }
-    
+
     public void setCategory(Category category) {
         this.category = category;
     }
@@ -95,10 +94,10 @@ public class GeoServiceRegistryActionBean implements ActionBean {
     @DefaultHandler
     public Resolution view() {
         category = Category.getRootCategory();
-                
+
         return new ForwardResolution(JSP);
     }
-    
+
     @After(on={"addSubcategory","saveCategory","removeCategory"}, stages= LifecycleStage.BindingAndValidation)
     public void loadCategory() {
         EntityManager em = Stripersist.getEntityManager();
@@ -115,34 +114,34 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             category = em.find(Category.class, id);
         }
     }
-    
+
     private String checkCategoryAndNameError() {
         if(category == null) {
             return "Categorie niet gevonden";
         } else if(name == null) {
             return "Naam is niet ingevuld";
-        } else {        
+        } else {
             return null;
         }
     }
-    
+
     public Resolution addSubcategory() throws JSONException {
         EntityManager em = Stripersist.getEntityManager();
-        
+
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
-        
+
         String error = checkCategoryAndNameError();
-        
+
         if(error == null) {
             for(Category child: category.getChildren()) {
                 if(name.equals(child.getName())) {
                     error = "Categorie met dezelfde naam bestaat al";
                 }
-            }            
+            }
         }
-        
+
         if(error == null) {
             try {
                 Category c = new Category();
@@ -169,34 +168,34 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 while(t.getCause() != null) {
                     t = t.getCause();
                     error += "; " + t;
-                }                
+                }
             }
         }
-        
+
         if(error != null) {
             json.put("error", error);
-        }              
+        }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-    
+
     public Resolution saveCategory() throws JSONException {
-        
+
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
-        
+
         String error = checkCategoryAndNameError();
-        
+
         if(error == null) {
-            if(category.getParent() != null) {	
+            if(category.getParent() != null) {
                 for(Category sibling: category.getParent().getChildren()) {
                      if(sibling != category && name.equals(sibling.getName())) {
                          error = "Categorie met dezelfde naam bestaat al";
                      }
-                 }            
+                 }
             }
         }
-        
+
         if(error == null) {
             try {
                 category.setName(name);
@@ -213,13 +212,13 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 }
             }
         }
-        
+
         if(error != null) {
             json.put("error", error);
-        }              
+        }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-    
+
     public Resolution removeCategory() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -253,19 +252,19 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 }
             }
         }
-        
+
         if(error != null) {
             json.put("error", error);
-        }              
+        }
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
-    
+
     public Resolution tree() throws JSONException {
 
         EntityManager em = Stripersist.getEntityManager();
-        
+
         final JSONArray children = new JSONArray();
-        
+
         String type = nodeId.substring(0, 1);
         int id = Integer.parseInt(nodeId.substring(1));
         if(type.equals("c")) {
@@ -339,7 +338,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
                 children.put(j);
             }
         }
-        
+
         return new StreamingResolution("application/json") {
            @Override
            public void stream(HttpServletResponse response) throws Exception {

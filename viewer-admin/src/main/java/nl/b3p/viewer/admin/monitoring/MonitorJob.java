@@ -34,18 +34,18 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 public class MonitorJob implements Job, InterruptableJob {
     private static final Log log = LogFactory.getLog(MonitorJob.class);
-    
+
     private boolean interrupted = false;
-    
+
     public void interrupt() throws UnableToInterruptJobException {
         log.info("Setting interrupt flag");
         interrupted = true;
-    }    
-        
+    }
+
     private boolean isInterrupted() {
         return interrupted;
     }
-    
+
     public void execute(JobExecutionContext jec) throws JobExecutionException {
 
         try {
@@ -55,7 +55,7 @@ public class MonitorJob implements Job, InterruptableJob {
             StringBuilder monitoringFailures = new StringBuilder();
 
             int online = 0, offline = 0;
-            
+
             // TODO: where monitoringEnabled = true...
             for(GeoService gs: (List<GeoService>)em.createQuery("from GeoService").getResultList()) {
 
@@ -66,12 +66,12 @@ public class MonitorJob implements Job, InterruptableJob {
                             gs.getUrl()
                             );
                 try {
-                    
+
                     if(isInterrupted()) {
                         log.info("Interrupted, ending monitoring job");
                         return;
                     }
-                    
+
                     gs.checkOnline();
                     online++;
                     gs.setMonitoringStatusOK(true);
@@ -97,7 +97,7 @@ public class MonitorJob implements Job, InterruptableJob {
                             message));
                 }
             }
-            
+
             em.getTransaction().commit();
 
             log.info(String.format("Total services %d, online: %d, offline: %d, runtime: %d s",
@@ -105,9 +105,9 @@ public class MonitorJob implements Job, InterruptableJob {
                     online,
                     offline,
                     jec.getJobRunTime() / 1000));
-            
+
             if(offline > 0) {
-                
+
                 Set emails = new HashSet();
                 for(User admin: (List<User>)em.createQuery("select u from User u "
                         + "join u.groups g "
@@ -115,7 +115,7 @@ public class MonitorJob implements Job, InterruptableJob {
                     emails.add(admin.getDetails().get(User.DETAIL_EMAIL));
                 }
                 emails.remove(null);
-                
+
                 if(!emails.isEmpty()) {
                     StringBuilder mail = new StringBuilder();
 
@@ -126,19 +126,19 @@ public class MonitorJob implements Job, InterruptableJob {
                             offline,
                             f.format(jec.getNextFireTime())));
                     mail.append(monitoringFailures);
-                    
+
                     mail(jec, emails, offline + " services zijn offline bij controle", mail.toString());
                 }
-                
+
             }
         } catch(Exception e) {
             log.error("Error", e);
         } finally {
             Stripersist.requestComplete();
         }
-        
+
     }
-    
+
     private void mail(JobExecutionContext jec, Set emails, String subject, String mail) {
         try {
             log.info("Sending mail to service admins: " + Arrays.toString(emails.toArray()));
@@ -147,7 +147,7 @@ public class MonitorJob implements Job, InterruptableJob {
                 if(isInterrupted()) {
                     log.info("Interrupted, ending monitoring job");
                     return;
-                }               
+                }
 
                 try {
                     Mailer.sendMail(
@@ -160,7 +160,7 @@ public class MonitorJob implements Job, InterruptableJob {
             }
         } catch(Exception e) {
             log.error("Error sending mail to service admins", e);
-        }        
+        }
     }
-    
+
 }
